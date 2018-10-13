@@ -1,0 +1,45 @@
+#!/bin/sh
+
+# Copyright (c) 2018, Ian Smith (m4r35n357)
+# All rights reserved.
+# For licencing see LICENCE file
+
+build () {
+	name=$1
+	c99 -O3 -DNDEBUG -o $name $name.c taylor-ode.c -lm -lmpfr -s
+	c99 -O3 -DNDEBUG -static -o $name-static $name.c taylor-ode.c -lm -lmpfr -lgmp -s
+	c99 -Og -Wall -g -o $name-dbg $name.c taylor-ode.c -lm -lmpfr
+	ls -lhrt --color $name*
+}
+
+c99 -Og -Wall -g -o ad-test-dbg taylor-ode.c ad.c ad-test.c -lm -lmpfr
+c99 -Og -Wall -g -o ad-test-newton-dbg taylor-ode.c ad.c ad-test-newton.c -lm -lmpfr
+ls -lhrt --color ad-test*
+echo ""
+
+build tsm-lorenz
+echo ""
+build tsm-thomas
+echo ""
+build tsm-sprott-thomas
+echo ""
+build tsm-rossler
+echo ""
+build tsm-halvorsen
+echo ""
+build tsm-rf
+echo ""
+build tsm-sj
+echo ""
+build tsm-bouali
+echo ""
+build tsm-rucklidge
+echo ""
+build tsm-rayleigh-benard
+echo ""
+build tsm-lotka-volterra
+echo ""
+build tsm-logistic
+echo ""
+build tsm-constant
+
