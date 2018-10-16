@@ -17,13 +17,6 @@ long n_max = 7, n, steps;
 mpfr_t x0, x1, x_step, x_prev, f_prev, f_value, tmp, D0, D1, D2, D3, D5, D6, D7, *w1, *w2, *w3, *w5, *w6, *w7, *w_value, *w_tmp, *w_tmp1, *w_tmp2, *w_tmp3, *wx, *wf, *wxa, *wxb, f_tol, x_tol, int_tol;
 model m;
 
-void test_sqrt (mpfr_t *f, mpfr_t *x, int n) {
-    if (mpfr_sgn(*x) > 0) {
-        ad_sqrt(f, x, n);
-        ad_minus(f, f, w_value, n);
-    }
-}
-
 void test_sqr (mpfr_t *f, mpfr_t *x, int n) {
     ad_square(f, x, n, &tmp);
     ad_minus(f, f, w_value, n);

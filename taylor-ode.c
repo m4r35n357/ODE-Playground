@@ -71,12 +71,12 @@ void t_square (mpfr_t *S, mpfr_t *U, int k) {
             for (int j = 0; j < (k - 1) / 2 + 1; j++) {
                 mpfr_fma(*S, U[j], U[k - j], *S, RND);
             }
-            mpfr_mul_si(*S, *S, 2, RND);
+            mpfr_mul_2ui(*S, *S, 1, RND);
         } else {
             for (int j = 0; j < (k - 2) / 2 + 1; j++) {
                 mpfr_fma(*S, U[j], U[k - j], *S, RND);
             }
-            mpfr_mul_si(*S, *S, 2, RND);
+            mpfr_mul_2ui(*S, *S, 1, RND);
             mpfr_fma(*S, U[k / 2], U[k / 2], *S, RND);
         }
     }
@@ -103,49 +103,13 @@ void t_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int k) {
     mpfr_div(Q[k], Q[k], V[0], RND);
 }
 
-void t_sqrt (mpfr_t *R, mpfr_t *U, int k) {
-    assert(mpfr_sgn(U[0]) > 0);
-    assert(R != U);
-    assert(k >= 0);
-    if (k == 0) {
-        mpfr_sqrt(R[0], U[0], RND);
-    } else {
-        mpfr_set_zero(R[k], RND);
-        if (k % 2 == 1) {
-            for (int j = 1; j < (k - 1) / 2 + 1; j++) {
-                mpfr_fma(R[k], R[j], R[k - j], R[k], RND);
-            }
-            mpfr_mul_ui(R[k], R[k], 2, RND);
-        } else {
-            for (int j = 1; j < (k - 2) / 2 + 1; j++) {
-                mpfr_fma(R[k], R[j], R[k - j], R[k], RND);
-            }
-            mpfr_mul_ui(R[k], R[k], 2, RND);
-            mpfr_fma(R[k], R[k / 2], R[k / 2], R[k], RND);
-        }
-        mpfr_sub(R[k], U[k], R[k], RND);
-        mpfr_div_ui(R[k], R[k], 2, RND);
-        mpfr_div(R[k], R[k], R[0], RND);
+void t_chain (mpfr_t *dFdX, mpfr_t *dFdU, mpfr_t *U, int k, mpfr_t *dUdX) {
+    mpfr_set_zero(dFdX[k], 1);
+    for (int j = 0; j < k; j++) {
+        mpfr_mul_si(*dUdX, U[k - j], k - j, RND);
+        mpfr_fma(dFdX[k], dFdU[j], *dUdX, dFdX[k], RND);
     }
-}
-
-void t_power (mpfr_t *P, mpfr_t *U, mpfr_t *a, int k) {
-    assert(mpfr_sgn(U[0]) > 0);
-    assert(P != U);
-    assert(k >= 0);
-    mpfr_set_zero(P[k], 1);
-    if (k == 0) {
-        mpfr_pow(P[0], U[0], *a, RND);
-    } else {
-        for (int j = 0; j < k; j++) {
-            mpfr_mul_si(P[k], *a, k - j, RND);
-            mpfr_sub_si(P[k], P[k], j, RND);
-            mpfr_mul(P[k], P[k], U[k - j], RND);
-            mpfr_mul(P[k], P[k], P[j], RND);
-        }
-        mpfr_div_si(P[k], P[k], k, RND);
-        mpfr_div(P[k], P[k], U[0], RND);
-    }
+    mpfr_div_si(dFdX[k], dFdX[k], k, RND);
 }
 
 void t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp) {
@@ -155,12 +119,7 @@ void t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp) {
     if (k == 0) {
         mpfr_exp(E[0], U[0], RND);
     } else {
-        mpfr_set_zero(E[k], 1);
-        for (int j = 0; j < k; j++) {
-            mpfr_mul_si(*tmp, U[k - j], k - j, RND);
-            mpfr_fma(E[k], *tmp, E[j], E[k], RND);
-        }
-        mpfr_div_si(E[k], E[k], k, RND);
+        t_chain(E, E, U, k, tmp);
     }
 }
 
@@ -171,14 +130,23 @@ void t_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp) {
     if (k == 0) {
         mpfr_sin_cos(S[0], C[0], U[0], RND);
     } else {
-        mpfr_set_zero(S[k], 1);
-        mpfr_set_zero(C[k], 1);
-        for (int j = 0; j < k; j++) {
-            mpfr_mul_si(*tmp, U[k - j], k - j, RND);
-            mpfr_fma(S[k], *tmp, C[j], S[k], RND);
-            mpfr_fma(C[k], *tmp, S[j], C[k], RND);
-        }
-        mpfr_div_si(S[k], S[k], k, RND);
-        mpfr_div_si(C[k], C[k], - k, RND);
+        t_chain(S, C, U, k, tmp);
+        t_chain(C, S, U, k, tmp);
+        mpfr_neg(C[k], C[k], RND);
+    }
+}
+
+void t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp) {
+    assert(tmp != T && tmp != S2 && tmp != U);
+    assert(T != S2 && T != U && S2 != U);
+    assert(k >= 0);
+    if (k == 0) {
+        mpfr_tan(T[0], U[0], RND);
+        mpfr_sqr(*tmp, T[0], RND);
+        mpfr_add_ui(S2[0], *tmp, 1, RND);
+    } else {
+        t_chain(T, S2, U, k, tmp);
+        t_chain(S2, T, T, k, tmp);
+        mpfr_mul_2ui(S2[k], S2[k], 1, RND);
     }
 }

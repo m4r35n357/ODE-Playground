@@ -6,6 +6,9 @@
  * (c) 2018 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
+/*
+ * Signature for solver model functions
+ */
 typedef void (*model)(mpfr_t *, mpfr_t *, int);
 
 /*
@@ -69,16 +72,6 @@ void ad_product(mpfr_t *P, mpfr_t *V, mpfr_t *U, int n, mpfr_t *tmp);
 void ad_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int n);
 
 /*
- * Calculates Taylor Series for the square root of U, result stored in jet R
- */
-void ad_sqrt (mpfr_t *R, mpfr_t *U, int n);
-
-/*
- * Calculates Taylor Series for U raised to the power a, result stored in jet P
- */
-void ad_power (mpfr_t *P, mpfr_t *U, mpfr_t *a, int n);
-
-/*
  * Calculates Taylor Series for the exponential of U, results stored in jet E
  */
 void ad_exp (mpfr_t *E, mpfr_t *U, int n, mpfr_t *tmp);
@@ -87,3 +80,8 @@ void ad_exp (mpfr_t *E, mpfr_t *U, int n, mpfr_t *tmp);
  * Calculates Taylor Series for the sine and cosine of U, results stored in jets S and C
  */
 void ad_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n, mpfr_t *tmp);
+
+/*
+ * Calculates Taylor Series for the tangent and squared secant of U, results stored in jets T and S2
+ */
+void ad_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n, mpfr_t *tmp);
