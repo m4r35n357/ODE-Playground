@@ -1,5 +1,9 @@
 
-This is a collection of programs for evolving systems of ODE using the Taylor Series Method.
+This is a collection of programs for evolving systems of ODE using the Taylor Series Method.  It was inspired by this paper and associated software:
+
+https://web.ma.utexas.edu/users/mzou/taylor/taylor.pdf
+
+That software uses code generation, and it inspired me to try coding something by hand.  These programs are the result.
 
 Dependencies:
 MPFR
