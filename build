@@ -35,8 +35,6 @@ build tsm-bouali
 echo ""
 build tsm-rucklidge
 echo ""
-build tsm-rayleigh-benard
-echo ""
 build tsm-lotka-volterra
 echo ""
 build tsm-logistic

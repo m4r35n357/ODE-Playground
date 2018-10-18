@@ -2,6 +2,8 @@
  * Sprott-Jafari System
  *
  * Example: ./tsm-sj-dbg 16 10 .01 100001 0 3.9 .7 8.888 4
+ *
+ * (c) 2018 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
 #include <mpfr.h>

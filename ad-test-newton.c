@@ -1,9 +1,9 @@
 /*
  * Automatic Differentiation of Taylor Series, Newton's method
  *
- * (c) 2018 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * Example: ./ad-test-newton-dbg 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 8 8000 >/dev/null
  *
- * Example: ./ad-test-newton-dbg 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 8 8000 &
+ * (c) 2018 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
 #include <stdio.h>
