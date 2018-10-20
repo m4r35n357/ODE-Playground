@@ -35,7 +35,8 @@ To generate and plot an ODE using lower level operations:
 
 (c version with Pi3D trajectory plot)
 ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
-(c version with visula python trajectory plot)
+
+(c version with visual python trajectory plot)
 ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotTrajectory.py 3 0 1 2
 
 For a few more ideas:
