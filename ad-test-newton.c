@@ -14,7 +14,7 @@
 #include "ad.h"
 
 long n_max = 7, n, steps;
-mpfr_t x0, x1, x_step, x_prev, f_prev, f_value, tmp, D0, D1, D2, D3, D5, D6, D7, *w1, *w2, *w3, *w5, *w6, *w7, *w_value, *w_tmp, *w_tmp1, *w_tmp2, *w_tmp3, *wx, *wf, *wxa, *wxb, f_tol, x_tol, int_tol;
+mpfr_t x0, x1, x_step, x_prev, f_prev, f_value, tmp, D0, D1, D2, D3, D5, D6, D7, *w1, *w2, *w3, *w5, *w6, *w7, *w_value, *w_tmp1, *w_tmp2, *w_tmp3, *wx, *wf, f_tol, x_tol, int_tol;
 model m;
 
 void test_sqr (mpfr_t *f, mpfr_t *x, int n) {
@@ -38,19 +38,7 @@ void test_polynomial (mpfr_t *f, mpfr_t *x, int n) {
     ad_minus(f, f, w5, n);
 }
 
-void quintic (mpfr_t *f, mpfr_t *x, int n) {
-    ad_minus(w_tmp2, x, w1, n);
-    ad_plus(w_tmp1, x, w2, n);
-    ad_product(w_tmp3, w_tmp2, w_tmp1, n, &tmp);
-    ad_minus(w_tmp1, x, w3, n);
-    ad_product(w_tmp2, w_tmp3, w_tmp1, n, &tmp);
-    ad_plus(w_tmp1, x, w5, n);
-    ad_product(w_tmp3, w_tmp2, w_tmp1, n, &tmp);
-    ad_minus(w_tmp1, x, w6, n);
-    ad_product(f, w_tmp3, w_tmp1, n, &tmp);
-}
-
-void sextic (mpfr_t *f, mpfr_t *x, int n) {
+void septic (mpfr_t *f, mpfr_t *x, int n) {
     ad_minus(w_tmp2, x, w1, n);
     ad_plus(w_tmp1, x, w2, n);
     ad_product(w_tmp3, w_tmp2, w_tmp1, n, &tmp);
@@ -61,7 +49,8 @@ void sextic (mpfr_t *f, mpfr_t *x, int n) {
     ad_minus(w_tmp1, x, w6, n);
     ad_product(w_tmp2, w_tmp3, w_tmp1, n, &tmp);
     ad_plus(w_tmp1, x, w7, n);
-    ad_product(f, w_tmp2, w_tmp1, n, &tmp);
+    ad_product(w_tmp3, w_tmp2, w_tmp1, n, &tmp);
+    ad_product(f, w_tmp3, x, n, &tmp);
 }
 
 int main (int argc, char **argv) {
@@ -102,7 +91,7 @@ int main (int argc, char **argv) {
     mpfr_set_si(wx[1], 1, RND);
     wf = t_jet(n_max);
 
-    m = sextic;
+    m = septic;
 
     mpfr_sub(tmp, x1, x0, RND);
     mpfr_div_si(x_step, tmp, steps, RND);

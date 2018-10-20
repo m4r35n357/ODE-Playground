@@ -1,5 +1,7 @@
 #
 
+*.o
+
 latest.zip
 
 ad-test-dbg
