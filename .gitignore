@@ -3,6 +3,11 @@
 .idea/
 *.o
 
+__init__.py
+__pycache__/
+test.py
+tsm_mp.py
+
 latest.zip
 
 ad-test-dbg
