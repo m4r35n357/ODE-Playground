@@ -12,7 +12,9 @@ Build them using the command:
 
 ./build
 
-The built programs are all called tsm-<NAME>... .  Each source file should contain an example invocation near the top.
+The built programs are all called tsm-<NAME>... .  Each source file should contain an example invocation near the top.  To see them all:
+
+grep Example *.c
 
 There is also a (single precision) roughly equivalent Python 3 version of the solver with built-in models which has no external dependencies.  There are also some plotting and graphing utilities written in Python 3 which need:
 
@@ -38,8 +40,4 @@ To generate and plot an ODE using lower level operations:
 
 (c version with visual python trajectory plot)
 ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotTrajectory.py 3 0 1 2
-
-For a few more ideas:
-
-grep Example *.c
 

@@ -6,10 +6,10 @@
 
 build () {
 	name=$1
-	c99 -O3 -DNDEBUG -o $name $name.c taylor-ode.c -lm -lmpfr -s
-	c99 -O3 -DNDEBUG -static -o $name-static $name.c taylor-ode.c -lm -lmpfr -lgmp -s
-	c99 -Og -Wall -g -o $name-dbg $name.c taylor-ode.c -lm -lmpfr
-	ls -lhrt --color $name*
+	c99 -O3 -DNDEBUG -o ${name} ${name}.c taylor-ode.c -lm -lmpfr -s
+	c99 -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c -lm -lmpfr -lgmp -s
+	c99 -Og -Wall -g -o ${name}-dbg ${name}.c taylor-ode.c -lm -lmpfr
+	ls -lhrt --color ${name}*
 }
 
 c99 -Og -Wall -g -o ad-test-dbg taylor-ode.c ad.c ad-test.c -lm -lmpfr

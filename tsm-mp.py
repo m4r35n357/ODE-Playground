@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# coding=utf-8
 
 from math import sin, cos, tan, sqrt
 from sys import stderr, argv
