@@ -56,7 +56,6 @@ def horner(jet, n, h):
     return result
 
 
-# noinspection PyUnboundLocalVariable
 def main():
     model = argv[1]
     n = int(argv[3])
