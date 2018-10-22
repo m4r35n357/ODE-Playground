@@ -62,13 +62,9 @@ def main():
     h = float(argv[4])
     steps = int(argv[5])
 
-    x = float(argv[6])
-    y = float(argv[7])
-    z = float(argv[8])
+    x, y, z = float(argv[6]), float(argv[7]), float(argv[8])
+    cx, cy, cz = jet_0(n + 1), jet_0(n + 1), jet_0(n + 1)
 
-    cx = jet_0(n + 1)
-    cy = jet_0(n + 1)
-    cz = jet_0(n + 1)
     if model == "lorenz":
         s, r, b = float(argv[9]), float(argv[10]), float(argv[11]) / float(argv[12])
         for step in range(1, steps):
