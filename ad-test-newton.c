@@ -110,11 +110,11 @@ int main (int argc, char **argv) {
             if (mpfr_sgn(tmp) < 0) {
                 fprintf(stderr, "Bracketed root, solving . . .\n");
                 if (n == 1) {
-                    ad_bisect(m, t_jet_constant(n, x_prev), t_jet_constant(n, wx[0]), 100, f_tol, x_tol);
+                    ad_bisect(m, t_jet_constant(n, x_prev), t_jet_constant(n, wx[0]), 100, f_tol, x_tol, t_jet(n), t_jet(n), t_jet(n));
                 } else if (n == 2) {
                     ad_newton(m, t_jet(n), t_jet_constant(n, wx[0]), 100, f_tol, x_tol);
                 } else {
-                    ad_householder(m, t_jet(n), t_jet_constant(n, wx[0]), n, 100, f_tol, x_tol);
+                    ad_householder(m, t_jet(n), t_jet_constant(n, wx[0]), n, 100, f_tol, x_tol, t_jet(n), t_jet_constant(n, D1));
                 }
                 fprintf(stderr, "\n");
             }

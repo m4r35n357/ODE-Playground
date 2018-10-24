@@ -29,13 +29,10 @@ void derivative_output (mpfr_t *jet, long n, char* f_colour, char *fk_colour) {
     jet_output(jet, n, f_colour, fk_colour);
 }
 
-int ad_bisect (model m, mpfr_t *xa, mpfr_t *xb, int max_it, mpfr_t f_tol, mpfr_t x_tol) {
+int ad_bisect (model m, mpfr_t *xa, mpfr_t *xb, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *xc, mpfr_t *fa, mpfr_t *fc) {
     int counter = 0;
-    mpfr_t delta, tmp, *fa, *xc, *fc;
+    mpfr_t delta, tmp;
     mpfr_inits(tmp, delta, NULL);
-    xc = t_jet(1);
-    fa = t_jet(1);
-    fc = t_jet(1);
     m(fa, xa, 1);
     mpfr_sub(delta, xb[0], xa[0], RND);
     while(mpfr_cmp_abs(fc[0], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
@@ -72,13 +69,10 @@ int ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x
     return 0;
 }
 
-int ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol) {
+int ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *f_reciprocal, mpfr_t *w1) {
     int counter = 0;
-    mpfr_t delta, D1, *f_reciprocal, *w1;
+    mpfr_t delta;
     mpfr_init_set_ui(delta, 1, RND);
-    f_reciprocal = t_jet(n);
-    mpfr_init_set_si(D1, 1, RND);
-    w1 = t_jet_constant(n, D1);
     while(mpfr_cmp_abs(f[0], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
         mpfr_set_si(x[1], 1, RND);
         m(f, x, n);
