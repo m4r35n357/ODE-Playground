@@ -106,19 +106,15 @@ void ad_minus (mpfr_t *P, mpfr_t *V, mpfr_t *U, int n) {
     }
 }
 
-void ad_square (mpfr_t *S, mpfr_t *U, int n, mpfr_t *tmp) {
-    assert(S != U);
+void ad_square (mpfr_t *S, mpfr_t *U, int n) {
     for (int k = 0; k < n; k++) {
-        t_square(tmp, U, k);
-        mpfr_set(S[k], *tmp, RND);
+        t_square(&S[k], U, k);
     }
 }
 
-void ad_product (mpfr_t *P, mpfr_t *V, mpfr_t *U, int n, mpfr_t *tmp) {
-    assert(P != U && P != V);
+void ad_product (mpfr_t *P, mpfr_t *V, mpfr_t *U, int n) {
     for (int k = 0; k < n; k++) {
-        t_product(tmp, V, U, k);
-        mpfr_set(P[k], *tmp, RND);
+        t_product(&P[k], V, U, k);
     }
 }
 

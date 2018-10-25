@@ -59,12 +59,12 @@ void ad_minus (mpfr_t *P, mpfr_t *V, mpfr_t *U, int n);
 /*
  * Calculates Taylor Series for the square of U, result stored in jet S
  */
-void ad_square (mpfr_t *S, mpfr_t *U, int n, mpfr_t *tmp);
+void ad_square (mpfr_t *S, mpfr_t *U, int n);
 
 /*
  * Calculates Taylor Series for U * V, result stored in jet P
  */
-void ad_product(mpfr_t *P, mpfr_t *V, mpfr_t *U, int n, mpfr_t *tmp);
+void ad_product(mpfr_t *P, mpfr_t *V, mpfr_t *U, int n);
 
 /*
  * Calculates Taylor Series for U / V, result stored in jet Q

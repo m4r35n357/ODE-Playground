@@ -18,21 +18,21 @@ mpfr_t x0, x1, x_step, x_prev, f_prev, f_value, tmp, D0, D1, D2, D3, D5, D6, D7,
 model m;
 
 void test_sqr (mpfr_t *f, mpfr_t *x, int n) {
-    ad_square(f, x, n, &tmp);
+    ad_square(f, x, n);
     ad_minus(f, f, w_value, n);
 }
 
 void cosx_x3 (mpfr_t *f, mpfr_t *x, int n) {
-    ad_square(w_tmp1, x, n, &tmp);
-    ad_product(w_tmp2, w_tmp1, x, n, &tmp);
+    ad_square(w_tmp1, x, n);
+    ad_product(w_tmp2, w_tmp1, x, n);
     ad_sin_cos(w_tmp1, f, x, n, &tmp);
     ad_minus(f, w_tmp1, w_tmp2, n);
     ad_minus(f, f, w_value, n);
 }
 
 void test_polynomial (mpfr_t *f, mpfr_t *x, int n) {
-    ad_square(f, x, n, &tmp);
-    ad_product(w_tmp2, f, x, n, &tmp);
+    ad_square(f, x, n);
+    ad_product(w_tmp2, f, x, n);
     ad_scale(w_tmp1, x, D2, n);
     ad_minus(f, w_tmp2, w_tmp1, n);
     ad_minus(f, f, w5, n);
@@ -41,16 +41,16 @@ void test_polynomial (mpfr_t *f, mpfr_t *x, int n) {
 void septic (mpfr_t *f, mpfr_t *x, int n) {
     ad_minus(w_tmp2, x, w1, n);
     ad_plus(w_tmp1, x, w2, n);
-    ad_product(w_tmp3, w_tmp2, w_tmp1, n, &tmp);
+    ad_product(w_tmp3, w_tmp2, w_tmp1, n);
     ad_minus(w_tmp1, x, w3, n);
-    ad_product(w_tmp2, w_tmp3, w_tmp1, n, &tmp);
+    ad_product(w_tmp2, w_tmp3, w_tmp1, n);
     ad_plus(w_tmp1, x, w5, n);
-    ad_product(w_tmp3, w_tmp2, w_tmp1, n, &tmp);
+    ad_product(w_tmp3, w_tmp2, w_tmp1, n);
     ad_minus(w_tmp1, x, w6, n);
-    ad_product(w_tmp2, w_tmp3, w_tmp1, n, &tmp);
+    ad_product(w_tmp2, w_tmp3, w_tmp1, n);
     ad_plus(w_tmp1, x, w7, n);
-    ad_product(w_tmp3, w_tmp2, w_tmp1, n, &tmp);
-    ad_product(f, w_tmp3, x, n, &tmp);
+    ad_product(w_tmp3, w_tmp2, w_tmp1, n);
+    ad_product(f, w_tmp3, x, n);
 }
 
 int main (int argc, char **argv) {
