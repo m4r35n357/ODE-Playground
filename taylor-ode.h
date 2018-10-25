@@ -17,6 +17,11 @@ const int BASE;
 const mpfr_rnd_t RND;
 
 /*
+ * Trigonometric or hyperbolic
+ */
+typedef enum {TRIG, HYP} geometry;
+
+/*
  * Prints an index column, and any number of data columns, into a single line
  */
 void t_line_output (mpfr_t t, int item_count, ...);
@@ -64,12 +69,12 @@ void t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp);
 /*
  * Calculates kth elements of the sine and cosine of U, results stored in jets S and C
  */
-void t_sin_cos(mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp);
+void t_sin_cos(mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp, geometry g);
 
 /*
  * Calculates Taylor Series for the tangent and squared secant of U, results stored in jets T and S2
  */
-void t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp);
+void t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, geometry g);
 
 /*
  * Calculates Taylor Series for U * V, result stored in jet P

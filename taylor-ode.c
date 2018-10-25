@@ -13,6 +13,8 @@ const int BASE = 10;
 
 const mpfr_rnd_t RND = GMP_RNDN;
 
+//typedef enum {TRIG, HYP} geometry;
+
 void t_line_output (mpfr_t t, int count, ...) {
     va_list data;
     va_start(data, count);
@@ -117,7 +119,7 @@ void t_chain (mpfr_t *dFdX, mpfr_t *dFdU, mpfr_t *U, int k, mpfr_t *dUdX) {
 
 void t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp) {
     assert(E != U);
-    assert(sizeof *E == sizeof *U);
+    assert(sizeof *U == sizeof *E);
     assert(sizeof *tmp == sizeof (mpfr_t));
     assert(k >= 0);
     if (k == 0) {
@@ -127,34 +129,50 @@ void t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp) {
     }
 }
 
-void t_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp) {
+void t_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp, geometry g) {
     assert(S != C && S != U && C != U);
     assert(sizeof *U == sizeof *S);
     assert(sizeof *U == sizeof *C);
     assert(sizeof *tmp == sizeof (mpfr_t));
     assert(k >= 0);
     if (k == 0) {
-        mpfr_sin_cos(S[0], C[0], U[0], RND);
+        if (g == TRIG) {
+            mpfr_sin_cos(S[0], C[0], U[0], RND);
+        } else {
+            mpfr_sinh_cosh(S[0], C[0], U[0], RND);
+        }
     } else {
         t_chain(S, C, U, k, tmp);
         t_chain(C, S, U, k, tmp);
-        mpfr_neg(C[k], C[k], RND);
+        if (g == TRIG) {
+            mpfr_neg(C[k], C[k], RND);
+        }
     }
 }
 
-void t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp) {
+void t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, geometry g) {
     assert(T != S2 && T != U && S2 != U);
     assert(sizeof *U == sizeof *T);
     assert(sizeof *U == sizeof *S2);
     assert(sizeof *tmp == sizeof (mpfr_t));
     assert(k >= 0);
     if (k == 0) {
-        mpfr_tan(T[0], U[0], RND);
-        mpfr_sqr(*tmp, T[0], RND);
-        mpfr_add_ui(S2[0], *tmp, 1, RND);
+        if (g == TRIG) {
+            mpfr_tan(T[0], U[0], RND);
+            mpfr_sqr(*tmp, T[0], RND);
+            mpfr_add_ui(S2[0], *tmp, 1, RND);
+        } else {
+            mpfr_tanh(T[0], U[0], RND);
+            mpfr_sqr(*tmp, T[0], RND);
+            mpfr_ui_sub(S2[0], 1, *tmp, RND);
+        }
     } else {
         t_chain(T, S2, U, k, tmp);
         t_chain(S2, T, T, k, tmp);
-        mpfr_mul_2ui(S2[k], S2[k], 1, RND);
+        if (g == TRIG) {
+            mpfr_mul_2ui(S2[k], S2[k], 1, RND);
+        } else {
+            mpfr_mul_si(S2[k], S2[k], -2, RND);
+        }
     }
 }

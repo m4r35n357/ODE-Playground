@@ -77,11 +77,21 @@ void ad_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int n);
 void ad_exp (mpfr_t *E, mpfr_t *U, int n, mpfr_t *tmp);
 
 /*
- * Calculates Taylor Series for the sine and cosine of U, results stored in jets S and C
+ * Calculates Taylor Series for the trigonometric sine and cosine of U, results stored in jets S and C
  */
 void ad_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n, mpfr_t *tmp);
 
 /*
- * Calculates Taylor Series for the tangent and squared secant of U, results stored in jets T and S2
+ * Calculates Taylor Series for the hyperbolic sine and cosine of U, results stored in jets S and C
+ */
+void ad_sinh_cosh (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n, mpfr_t *tmp);
+
+/*
+ * Calculates Taylor Series for the trigonometric tangent and squared secant of U, results stored in jets T and S2
  */
 void ad_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n, mpfr_t *tmp);
+
+/*
+ * Calculates Taylor Series for the hyperbolic tangent and squared secant of U, results stored in jets T and S2
+ */
+void ad_tanh_sech2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n, mpfr_t *tmp);

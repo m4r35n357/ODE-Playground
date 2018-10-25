@@ -134,12 +134,24 @@ void ad_exp (mpfr_t *E, mpfr_t *U, int n, mpfr_t *tmp) {
 
 void ad_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n, mpfr_t *tmp) {
     for (int k = 0; k < n; k++) {
-        t_sin_cos(S, C, U, k, tmp);
+        t_sin_cos(S, C, U, k, tmp, TRIG);
+    }
+}
+
+void ad_sinh_cosh (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n, mpfr_t *tmp) {
+    for (int k = 0; k < n; k++) {
+        t_sin_cos(S, C, U, k, tmp, HYP);
     }
 }
 
 void ad_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n, mpfr_t *tmp) {
     for (int k = 0; k < n; k++) {
-        t_tan_sec2(T, S2, U, k, tmp);
+        t_tan_sec2(T, S2, U, k, tmp, TRIG);
+    }
+}
+
+void ad_tanh_sech2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n, mpfr_t *tmp) {
+    for (int k = 0; k < n; k++) {
+        t_tan_sec2(T, S2, U, k, tmp, HYP);
     }
 }

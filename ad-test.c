@@ -138,8 +138,26 @@ int main (int argc, char **argv) {
     derivative_output(wc, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
+    printf("%s%s%s\n", KCYN, "f(x) = sinh(x), f(x) = cosh(x), x = pi / 3", KNRM);
+    ad_sinh_cosh(ws, wc, PI_3, n, &tmp);
+    jet_output(ws, n, KNRM, KGRY);
+    jet_output(wc, n, KNRM, KGRY);
+    derivative_output(ws, n, KBLD, KGRY);
+    printf("%s", KNRM);
+    derivative_output(wc, n, KBLD, KGRY);
+    printf("%s\n", KNRM);
+
     printf("%s%s%s\n", KCYN, "f(x) = tan(x), f(x) = sec(x)^2, x = pi / 4", KNRM);
     ad_tan_sec2(wt, ws2, PI_4, n, &tmp);
+    jet_output(wt, n, KNRM, KGRY);
+    jet_output(ws2, n, KNRM, KGRY);
+    derivative_output(wt, n, KBLD, KGRY);
+    printf("%s", KNRM);
+    derivative_output(ws2, n, KBLD, KGRY);
+    printf("%s\n", KNRM);
+
+    printf("%s%s%s\n", KCYN, "f(x) = tanh(x), f(x) = sech(x)^2, x = pi / 4", KNRM);
+    ad_tanh_sech2(wt, ws2, PI_4, n, &tmp);
     jet_output(wt, n, KNRM, KGRY);
     jet_output(ws2, n, KNRM, KGRY);
     derivative_output(wt, n, KBLD, KGRY);

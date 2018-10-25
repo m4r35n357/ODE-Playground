@@ -53,15 +53,15 @@ int main (int argc, char **argv) {
         mpfr_set(cy[0], y, RND);
         mpfr_set(cz[0], z, RND);
         for (int k = 0; k < order; k++) {
-            t_tan_sec2(wsx, wcx, cx, k, &tmp);
-            t_tan_sec2(wsy, wcy, cy, k, &tmp);
-            t_tan_sec2(wsz, wcz, cz, k, &tmp);
+            t_tan_sec2(wsx, wcx, cx, k, &tmp, TRIG);
+            t_tan_sec2(wsy, wcy, cy, k, &tmp, TRIG);
+            t_tan_sec2(wsz, wcz, cz, k, &tmp, TRIG);
             mpfr_mul(wax[k], cx[k], a, RND);
             mpfr_mul(way[k], cy[k], a, RND);
             mpfr_mul(waz[k], cz[k], a, RND);
-            t_sin_cos(wsax, wcax, wax, k, &tmp);
-            t_sin_cos(wsay, wcay, way, k, &tmp);
-            t_sin_cos(wsaz, wcaz, waz, k, &tmp);
+            t_sin_cos(wsax, wcax, wax, k, &tmp, TRIG);
+            t_sin_cos(wsay, wcay, way, k, &tmp, TRIG);
+            t_sin_cos(wsaz, wcaz, waz, k, &tmp, TRIG);
             //  x' = sin(Ay) - Bsin(x)
             mpfr_fms(tmp, wsx[k], b, wsay[k], RND);
             mpfr_div_si(cx[k + 1], tmp, - (k + 1), RND);

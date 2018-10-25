@@ -44,9 +44,9 @@ int main (int argc, char **argv) {
         mpfr_set(cy[0], y, RND);
         mpfr_set(cz[0], z, RND);
         for (int k = 0; k < order; k++) {
-            t_sin_cos(wsx, wcx, cx, k, &tmp);
-            t_sin_cos(wsy, wcy, cy, k, &tmp);
-            t_sin_cos(wsz, wcz, cz, k, &tmp);
+            t_sin_cos(wsx, wcx, cx, k, &tmp, TRIG);
+            t_sin_cos(wsy, wcy, cy, k, &tmp, TRIG);
+            t_sin_cos(wsz, wcz, cz, k, &tmp, TRIG);
             //  x' = sin(y) - Bx
             mpfr_fms(tmp, cx[k], b, wsy[k], RND);
             mpfr_div_si(cx[k + 1], tmp, - (k + 1), RND);
