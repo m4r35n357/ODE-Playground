@@ -13,8 +13,6 @@ const int BASE = 10;
 
 const mpfr_rnd_t RND = GMP_RNDN;
 
-//typedef enum {TRIG, HYP} geometry;
-
 void t_line_output (mpfr_t t, int count, ...) {
     va_list data;
     va_start(data, count);

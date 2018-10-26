@@ -17,7 +17,7 @@ const int BASE;
 const mpfr_rnd_t RND;
 
 /*
- * Trigonometric or hyperbolic
+ * Selects either a trigonometric or hyperbolic version of the function
  */
 typedef enum {TRIG, HYP} geometry;
 
@@ -75,8 +75,3 @@ void t_sin_cos(mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp, geometry g);
  * Calculates Taylor Series for the tangent and squared secant of U, results stored in jets T and S2
  */
 void t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, geometry g);
-
-/*
- * Calculates Taylor Series for U * V, result stored in jet P
- */
-void t_ln (mpfr_t *L, mpfr_t *U, int k, mpfr_t *tmp);
