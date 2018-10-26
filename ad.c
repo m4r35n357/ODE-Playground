@@ -89,34 +89,43 @@ int ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_
 }
 
 void ad_scale (mpfr_t *S, mpfr_t *U, mpfr_t a, int n) {
+    assert(S != U);
+    assert(sizeof *S == sizeof *U);
+    assert(sizeof *a == sizeof (mpfr_t));
     for (int k = 0; k < n; k++) {
         mpfr_mul(S[k], U[k], a, RND);
     }
 }
 
-void ad_plus (mpfr_t *P, mpfr_t *V, mpfr_t *U, int n) {
+void ad_plus (mpfr_t *P, mpfr_t *U, mpfr_t *V, int n) {
+    assert(P != U && P != V);
+    assert(sizeof *P == sizeof *U && sizeof *P == sizeof *V);
     for (int k = 0; k < n; k++) {
-        mpfr_add(P[k], V[k], U[k], RND);
+        mpfr_add(P[k], U[k], V[k], RND);
     }
 }
 
-void ad_minus (mpfr_t *P, mpfr_t *V, mpfr_t *U, int n) {
+void ad_minus (mpfr_t *P, mpfr_t *U, mpfr_t *V, int n) {
+    assert(P != U && P != V);
+    assert(sizeof *P == sizeof *U && sizeof *P == sizeof *V);
     for (int k = 0; k < n; k++) {
-        mpfr_sub(P[k], V[k], U[k], RND);
+        mpfr_sub(P[k], U[k], V[k], RND);
     }
 }
 
 void ad_square (mpfr_t *S, mpfr_t *U, int n) {
     assert(S != U);
+    assert(sizeof *S == sizeof *U);
     for (int k = 0; k < n; k++) {
         t_square(&S[k], U, k);
     }
 }
 
-void ad_product (mpfr_t *P, mpfr_t *V, mpfr_t *U, int n) {
+void ad_product (mpfr_t *P, mpfr_t *U, mpfr_t *V, int n) {
     assert(P != U && P != V);
+    assert(sizeof *P == sizeof *U && sizeof *P == sizeof *V);
     for (int k = 0; k < n; k++) {
-        t_product(&P[k], V, U, k);
+        t_product(&P[k], U, V, k);
     }
 }
 

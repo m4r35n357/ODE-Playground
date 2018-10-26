@@ -97,8 +97,7 @@ void t_product (mpfr_t *P, mpfr_t *U, mpfr_t *V, int k) {
 void t_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int k) {
     assert(mpfr_sgn(V[0]) != 0);
     assert(Q != U && Q != V && U != V);
-    assert(sizeof *U == sizeof *Q);
-    assert(sizeof *V == sizeof *Q);
+    assert(sizeof *U == sizeof *Q && sizeof *V == sizeof *Q);
     assert(k >= 0);
     mpfr_set_zero(Q[k], 1);
     for (int j = 1; j < k + 1; j++) {
@@ -131,8 +130,7 @@ void t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp) {
 
 void t_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp, geometry g) {
     assert(S != C && S != U && C != U);
-    assert(sizeof *U == sizeof *S);
-    assert(sizeof *U == sizeof *C);
+    assert(sizeof *U == sizeof *S && sizeof *U == sizeof *C);
     assert(sizeof *tmp == sizeof (mpfr_t));
     assert(k >= 0);
     if (k == 0) {
@@ -152,8 +150,7 @@ void t_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp, geometry g)
 
 void t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, geometry g) {
     assert(T != S2 && T != U && S2 != U);
-    assert(sizeof *U == sizeof *T);
-    assert(sizeof *U == sizeof *S2);
+    assert(sizeof *U == sizeof *T && sizeof *U == sizeof *S2);
     assert(sizeof *tmp == sizeof (mpfr_t));
     assert(k >= 0);
     if (k == 0) {
