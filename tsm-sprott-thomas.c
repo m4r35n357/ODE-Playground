@@ -77,7 +77,7 @@ int main (int argc, char **argv) {
         t_horner(&x, cx, order, h);
         t_horner(&y, cy, order, h);
         t_horner(&z, cz, order, h);
-        mpfr_mul_si(t, h, step, RND);
+        mpfr_mul_ui(t, h, step, RND);
     }
     return 0;
 }

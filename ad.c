@@ -20,7 +20,7 @@ void jet_output (mpfr_t *jet, long n, char* f_colour, char *fk_colour) {
 void jet_to_derivs (mpfr_t *jet, long n) {
     for (int i = 1, fac = 1; i < n; i++) {
         fac *= i;
-        mpfr_mul_si(jet[i], jet[i], fac, RND);
+        mpfr_mul_ui(jet[i], jet[i], fac, RND);
     }
 }
 
@@ -79,7 +79,7 @@ int ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_
         ad_quotient(f_reciprocal, w1, f, n);
         jet_to_derivs(f_reciprocal, n);
         mpfr_div(delta, f_reciprocal[n - 2], f_reciprocal[n - 1], RND);
-        mpfr_mul_si(delta, delta, n - 1, RND);
+        mpfr_mul_ui(delta, delta, n - 1, RND);
         mpfr_add(x[0], x[0], delta, RND);
         counter++;
         if (counter > max_it) return 1;

@@ -34,12 +34,12 @@ int main (int argc, char **argv) {
         for (int k = 0; k < order; k++) {
             //  x' = Ax
             mpfr_mul(tmp, cx[k], a, RND);
-            mpfr_div_si(cx[k + 1], tmp, k + 1, RND);
+            mpfr_div_ui(cx[k + 1], tmp, k + 1, RND);
         }
 
         // sum the series using Horner's method and advance one step
         t_horner(&x, cx, order, h);
-        mpfr_mul_si(t, h, step, RND);
+        mpfr_mul_ui(t, h, step, RND);
     }
     return 0;
 }

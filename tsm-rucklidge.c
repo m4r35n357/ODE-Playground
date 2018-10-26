@@ -43,20 +43,20 @@ int main (int argc, char **argv) {
             t_product(&tmp, cy, cz, k);
             mpfr_fmms(tmp2, alpha, cy[k], kappa, cx[k], RND);
             mpfr_sub(tmp, tmp2, tmp, RND);
-            mpfr_div_si(cx[k + 1], tmp, k + 1, RND);
+            mpfr_div_ui(cx[k + 1], tmp, k + 1, RND);
             //  y' = x
-            mpfr_div_si(cy[k + 1], cx[k], k + 1, RND);
+            mpfr_div_ui(cy[k + 1], cx[k], k + 1, RND);
             //  z' = y^2 - z
             t_square(&tmp, cy, k);
             mpfr_sub(tmp, tmp, cz[k], RND);
-            mpfr_div_si(cz[k + 1], tmp, k + 1, RND);
+            mpfr_div_ui(cz[k + 1], tmp, k + 1, RND);
         }
 
         // sum the series using Horner's method and advance one step
         t_horner(&x, cx, order, h);
         t_horner(&y, cy, order, h);
         t_horner(&z, cz, order, h);
-        mpfr_mul_si(t, h, step, RND);
+        mpfr_mul_ui(t, h, step, RND);
     }
     return 0;
 }

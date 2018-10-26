@@ -94,9 +94,9 @@ int main (int argc, char **argv) {
     m = septic;
 
     mpfr_sub(tmp, x1, x0, RND);
-    mpfr_div_si(x_step, tmp, steps, RND);
+    mpfr_div_ui(x_step, tmp, steps, RND);
     for (int k = 0; k < steps + 1; k++) {
-        mpfr_mul_si(tmp, x_step, k, RND);
+        mpfr_mul_ui(tmp, x_step, k, RND);
         mpfr_add(wx[0], x0, tmp, RND);
         m(wf, wx, n_max);
         mpfr_printf("%.3RNe ", wx[0]);

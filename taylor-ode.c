@@ -108,10 +108,10 @@ void t_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int k) {
 void t_chain (mpfr_t *dFdX, mpfr_t *dFdU, mpfr_t *U, int k, mpfr_t *dUdX) {
     mpfr_set_zero(dFdX[k], 1);
     for (int j = 0; j < k; j++) {
-        mpfr_mul_si(*dUdX, U[k - j], k - j, RND);
+        mpfr_mul_ui(*dUdX, U[k - j], k - j, RND);
         mpfr_fma(dFdX[k], dFdU[j], *dUdX, dFdX[k], RND);
     }
-    mpfr_div_si(dFdX[k], dFdX[k], k, RND);
+    mpfr_div_ui(dFdX[k], dFdX[k], k, RND);
 }
 
 void t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp) {

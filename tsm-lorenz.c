@@ -43,12 +43,12 @@ int main (int argc, char **argv) {
         for (int k = 0; k < order; k++) {
             //  x' = S(y - x)
             mpfr_fmms(tmp, s, cy[k], s, cx[k], RND);
-            mpfr_div_si(cx[k + 1], tmp, k + 1, RND);
+            mpfr_div_ui(cx[k + 1], tmp, k + 1, RND);
             //  y' = x(R - z) - y
             t_product(&tmp, cx, cz, k);
             mpfr_fms(tmp, r, cx[k], tmp, RND);
             mpfr_sub(tmp, tmp, cy[k], RND);
-            mpfr_div_si(cy[k + 1], tmp, k + 1, RND);
+            mpfr_div_ui(cy[k + 1], tmp, k + 1, RND);
             //  z' = xy - Bz
             t_product(&tmp, cx, cy, k);
             mpfr_fms(tmp, b, cz[k], tmp, RND);
@@ -59,7 +59,7 @@ int main (int argc, char **argv) {
         t_horner(&x, cx, order, h);
         t_horner(&y, cy, order, h);
         t_horner(&z, cz, order, h);
-        mpfr_mul_si(t, h, step, RND);
+        mpfr_mul_ui(t, h, step, RND);
     }
     return 0;
 }

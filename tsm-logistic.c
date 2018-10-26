@@ -40,12 +40,12 @@ int main (int argc, char **argv) {
             mpfr_mul(wa[k], a, cx[k], RND);
             mpfr_sub(wb[k], w1[k], cx[k], RND);
             t_product(&tmp, wa, wb, k);
-            mpfr_div_si(cx[k + 1], tmp, k + 1, RND);
+            mpfr_div_ui(cx[k + 1], tmp, k + 1, RND);
         }
 
         // sum the series using Horner's method and advance one step
         t_horner(&x, cx, order, h);
-        mpfr_mul_si(t, h, step, RND);
+        mpfr_mul_ui(t, h, step, RND);
     }
     return 0;
 }

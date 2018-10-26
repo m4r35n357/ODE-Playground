@@ -48,7 +48,7 @@ int main (int argc, char **argv) {
             mpfr_sub(wa[k], w1[k], cy[k], RND);
             t_product(&tmp, cx, wa, k);
             mpfr_fmms(tmp, a, tmp, b, cz[k], RND);
-            mpfr_div_si(cx[k + 1], tmp, k + 1, RND);
+            mpfr_div_ui(cx[k + 1], tmp, k + 1, RND);
             //  y' = - Gy(1 - x^2)
             t_square(&tmp, cx, k);
             mpfr_sub(wb[k], w1[k], tmp, RND);
@@ -57,14 +57,14 @@ int main (int argc, char **argv) {
             mpfr_div_si(cy[k + 1], tmp, - (k + 1), RND);
             //  z' = Mx
             mpfr_mul(tmp, m, cx[k], RND);
-            mpfr_div_si(cz[k + 1], tmp, k + 1, RND);
+            mpfr_div_ui(cz[k + 1], tmp, k + 1, RND);
         }
 
         // sum the series using Horner's method and advance one step
         t_horner(&x, cx, order, h);
         t_horner(&y, cy, order, h);
         t_horner(&z, cz, order, h);
-        mpfr_mul_si(t, h, step, RND);
+        mpfr_mul_ui(t, h, step, RND);
     }
     return 0;
 }
