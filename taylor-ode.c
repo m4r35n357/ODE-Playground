@@ -106,6 +106,7 @@ void t_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int k) {
 }
 
 void t_chain (mpfr_t *dFdX, mpfr_t *dFdU, mpfr_t *U, int k, mpfr_t *dUdX) {
+    assert (k > 0);
     mpfr_set_zero(dFdX[k], 1);
     for (int j = 0; j < k; j++) {
         mpfr_mul_ui(*dUdX, U[k - j], k - j, RND);
