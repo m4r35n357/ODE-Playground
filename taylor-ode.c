@@ -164,10 +164,9 @@ void t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, geometry 
     } else {
         t_chain(T, S2, U, k, tmp);
         t_chain(S2, T, T, k, tmp);
-        if (g == TRIG) {
-            mpfr_mul_2ui(S2[k], S2[k], 1, RND);
-        } else {
-            mpfr_mul_si(S2[k], S2[k], -2, RND);
+        mpfr_mul_2ui(S2[k], S2[k], 1, RND);
+        if (g == HYP) {
+            mpfr_neg(S2[k], S2[k], RND);
         }
     }
 }
