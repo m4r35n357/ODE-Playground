@@ -72,6 +72,11 @@ void ad_product(mpfr_t *P, mpfr_t *V, mpfr_t *U, int n);
 void ad_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int n);
 
 /*
+ * Calculates Taylor Series for U^a, results stored in jet P
+ */
+void ad_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int k);
+
+/*
  * Calculates Taylor Series for the exponential of U, results stored in jet E
  */
 void ad_exp (mpfr_t *E, mpfr_t *U, int n, mpfr_t *tmp);

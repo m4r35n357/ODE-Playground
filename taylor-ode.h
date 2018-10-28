@@ -62,6 +62,11 @@ void t_product (mpfr_t *P, mpfr_t *V, mpfr_t *U, int k);
 void t_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int k);
 
 /*
+ * Calculates kth element of U^a, results stored in jet P
+ */
+void t_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int k);
+
+/*
  * Calculates kth element of the exponential of U, results stored in jet E
  */
 void t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp);

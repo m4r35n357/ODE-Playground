@@ -20,8 +20,8 @@
 #define KBLD "\x1B[1;37m"
 
 long order, n;
-mpfr_t x, y, tmp, D_1, D0, D05, D1, D2, D3, D4, *cx, *cy, *cx0, *cx1, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2,
-        *wsq, *wsum, *wprod, *wquot;
+mpfr_t x, y, tmp, D_1, D_05, D0, D1, D2, D3, D9, *cx, *cy, *cx0, *cx1, *c1, *c2, *c3, *cx9, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2,
+        *wsq, *wsum, *wprod, *wnum, *wdenom, *wquot, *wpwr, *wtmp;
 
 int main (int argc, char **argv) {
     assert(argc == 4);
@@ -35,35 +35,46 @@ int main (int argc, char **argv) {
     mpfr_init_set_str(y, argv[3], BASE, RND);
 
     mpfr_init_set_si(D_1, -1, RND);
-    mpfr_init_set_si(D0, 0, RND);
-    mpfr_init_set_d(D05, 0.5, RND);
-    mpfr_init_set_si(D1, 1, RND);
-    mpfr_init_set_si(D2, 2, RND);
-    mpfr_init_set_si(D3, 3, RND);
-    mpfr_init_set_si(D4, 4, RND);
+    mpfr_init_set_d(D_05, -0.5, RND);
+    mpfr_init_set_ui(D0, 0, RND);
+    mpfr_init_set_ui(D1, 1, RND);
+    mpfr_init_set_ui(D2, 2, RND);
+    mpfr_init_set_ui(D3, 3, RND);
+    mpfr_init_set_ui(D9, 9, RND);
 
     cx = t_jet_constant(n, x);
     cy = t_jet_constant(n, y);
 
     cx0 = t_jet_constant(n, D0);
-    mpfr_set_si(cx0[1], 1, RND);
-
+    mpfr_set_ui(cx0[1], 1, RND);
     cx1 = t_jet_constant(n, D1);
+    mpfr_set_ui(cx1[1], 1, RND);
+
+    c1 = t_jet_constant(n, D1);
+    c2 = t_jet_constant(n, D2);
+    c3 = t_jet_constant(n, D3);
+
+    cx9 = t_jet_constant(n, D9);
+    mpfr_set_ui(cx9[1], 1, RND);
 
     mpfr_const_pi(tmp, RND);
     mpfr_div_ui(tmp, tmp, 3, RND);
     PI_3 = t_jet_constant(n, tmp);
-    mpfr_set_si(PI_3[1], 1, RND);
+    mpfr_set_ui(PI_3[1], 1, RND);
 
     mpfr_const_pi(tmp, RND);
     mpfr_div_ui(tmp, tmp, 4, RND);
     PI_4 = t_jet_constant(n, tmp);
-    mpfr_set_si(PI_4[1], 1, RND);
+    mpfr_set_ui(PI_4[1], 1, RND);
 
+    wtmp = t_jet(n);
     wsq = t_jet(n);
     wsum = t_jet(n);
     wprod = t_jet(n);
+    wnum = t_jet(n);
+    wdenom = t_jet(n);
     wquot = t_jet(n);
+    wpwr = t_jet(n);
     we = t_jet(n);
     wl = t_jet(n);
     ws = t_jet(n);
@@ -73,8 +84,8 @@ int main (int argc, char **argv) {
 
     printf("\n%sx = %s, y = %s, order = %ld%s\n\n", KBLD, argv[2], argv[3], n - 1, KNRM);
 
-    mpfr_set_si(cx[1], 1, RND);
-    mpfr_set_si(cy[1], 0, RND);
+    mpfr_set_ui(cx[1], 1, RND);
+    mpfr_set_ui(cy[1], 0, RND);
 
     printf("%s%s%s\n", KCYN, "f(x) = x", KNRM);
     jet_output(cx, n, KNRM, KGRY);
@@ -106,16 +117,33 @@ int main (int argc, char **argv) {
     derivative_output(wsq, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = 1 / x", KNRM);
-    ad_quotient(wquot, cx1, cx, n);
+    printf("%s%s%s\n", KCYN, "f(x) = 1 / (x + 3)", KNRM);
+    ad_plus(wdenom, cx, c3, n);
+    ad_power(wpwr, wdenom, D_1, n);
+    jet_output(wpwr, n, KNRM, KGRY);
+    derivative_output(wpwr, n, KBLD, KGRY);
+    ad_quotient(wquot, c1, wdenom, n);
     jet_output(wquot, n, KNRM, KGRY);
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
+    printf("%s%s%s\n", KCYN, "f(x) = (2x + 3) / (x + 2)", KNRM);
+    ad_scale(wtmp, cx, D2, n);
+    ad_plus(wnum, wtmp, c3, n);
+    ad_plus(wdenom, cx, c2, n);
+    ad_quotient(wquot, wnum, wdenom, n);
+    jet_output(wquot, n, KNRM, KGRY);
+    derivative_output(wquot, n, KBLD, KGRY);
+    printf("%s\n", KNRM);
+
+    printf("%s%s%s\n", KCYN, "f(x) = x^a, x = 9, a = -0.5", KNRM);
+    ad_power(wpwr, cx9, D_05, n);
+    jet_output(wpwr, n, KNRM, KGRY);
+    derivative_output(wpwr, n, KBLD, KGRY);
+    printf("%s\n", KNRM);
+
     printf("%s%s%s\n", KCYN, "f(x) = e^x", KNRM);
-    mpfr_set_si(cx1[1], 1, RND);
     ad_exp(we, cx1, n, &tmp);
-    mpfr_set_si(cx1[1], 0, RND);
     jet_output(we, n, KNRM, KGRY);
     derivative_output(we, n, KBLD, KGRY);
     printf("%s\n", KNRM);
@@ -182,8 +210,8 @@ int main (int argc, char **argv) {
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    mpfr_set_si(cx[1], 0, RND);
-    mpfr_set_si(cy[1], 1, RND);
+    mpfr_set_ui(cx[1], 0, RND);
+    mpfr_set_ui(cy[1], 1, RND);
 
     printf("%s%s%s\n", KCYN, "f(x, y) = x * y, d/dy", KNRM);
     ad_product(wprod, cx, cy, n);

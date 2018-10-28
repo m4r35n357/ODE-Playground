@@ -135,6 +135,12 @@ void ad_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int n) {
     }
 }
 
+void ad_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int n) {
+    for (int k = 0; k < n; k++) {
+        t_power(P, U, a, k);
+    }
+}
+
 void ad_exp (mpfr_t *E, mpfr_t *U, int n, mpfr_t *tmp) {
     for (int k = 0; k < n; k++) {
         t_exp(E, U, k, tmp);

@@ -105,6 +105,26 @@ void t_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int k) {
     mpfr_div(Q[k], Q[k], V[0], RND);
 }
 
+void t_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int k) {
+    assert(mpfr_sgn(U[0]) != 0);
+    assert(P != U);
+    assert(sizeof *U == sizeof *P);
+    assert(k >= 0);
+    mpfr_set_zero(P[k], 1);
+    if (k == 0) {
+        mpfr_pow(P[0], U[0], a, RND);
+    } else {
+        for (int j = 0; j < k; j++) {
+            mpfr_mul_ui(P[k], a, k - j, RND);
+            mpfr_sub_ui(P[k], P[k], j, RND);
+            mpfr_mul(P[k], P[k], U[k - j], RND);
+            mpfr_mul(P[k], P[k], P[j], RND);
+        }
+        mpfr_div_ui(P[k], P[k], k, RND);
+        mpfr_div(P[k], P[k], U[0], RND);
+    }
+}
+
 void t_chain (mpfr_t *dFdX, mpfr_t *dFdU, mpfr_t *U, int k, mpfr_t *dUdX) {
     assert (k > 0);
     mpfr_set_zero(dFdX[k], 1);
