@@ -118,7 +118,7 @@ int main (int argc, char **argv) {
                     ad_newton(m, t_jet(n), t_jet_constant(n, wx[0]), 100, f_tol, x_tol);
                 } else {
                     fprintf(stderr, "using Householder's method of degree %lu\n", n - 1);
-                    ad_householder(m, t_jet(n), t_jet_constant(n, wx[0]), n, 100, f_tol, x_tol, t_jet(n), D_1, &tmp, &tmp1);
+                    ad_householder(m, t_jet(n), t_jet_constant(n, wx[0]), n, 100, f_tol, x_tol, t_jet(n), t_jet_constant(n, D1));
                 }
                 fprintf(stderr, "\n");
             }

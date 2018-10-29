@@ -69,14 +69,14 @@ int ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x
     return 0;
 }
 
-int ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *f_reciprocal, mpfr_t neg1, mpfr_t *tmp1, mpfr_t *tmp2) {
+int ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *f_reciprocal, mpfr_t *w1) {
     int counter = 0;
     mpfr_t delta;
     mpfr_init_set_ui(delta, 1, RND);
     while(mpfr_cmp_abs(f[0], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
         mpfr_set_si(x[1], 1, RND);
         m(f, x, n);
-        ad_power(f_reciprocal, f, neg1, n, tmp1, tmp2);
+        ad_quotient(f_reciprocal, w1, f, n);
         jet_to_derivs(f_reciprocal, n);
         mpfr_div(delta, f_reciprocal[n - 2], f_reciprocal[n - 1], RND);
         mpfr_mul_ui(delta, delta, n - 1, RND);
