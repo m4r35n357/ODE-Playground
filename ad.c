@@ -138,44 +138,65 @@ void ad_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int n) {
     }
 }
 
-void ad_exp (mpfr_t *E, mpfr_t *U, int n, mpfr_t *tmp) {
+void ad_exp (mpfr_t *E, mpfr_t *U, int n) {
+    mpfr_t tmp;
+    mpfr_init(tmp);
     for (int k = 0; k < n; k++) {
-        t_exp(E, U, k, tmp);
+        t_exp(E, U, k, &tmp);
     }
+    mpfr_clear(tmp);
 }
 
-void ad_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n, mpfr_t *tmp) {
+void ad_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n) {
+    mpfr_t tmp;
+    mpfr_init(tmp);
     for (int k = 0; k < n; k++) {
-        t_sin_cos(S, C, U, k, tmp, TRIG);
+        t_sin_cos(S, C, U, k, &tmp, TRIG);
     }
+    mpfr_clear(tmp);
 }
 
-void ad_sinh_cosh (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n, mpfr_t *tmp) {
+void ad_sinh_cosh (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n) {
+    mpfr_t tmp;
+    mpfr_init(tmp);
     for (int k = 0; k < n; k++) {
-        t_sin_cos(S, C, U, k, tmp, HYP);
+        t_sin_cos(S, C, U, k, &tmp, HYP);
     }
+    mpfr_clear(tmp);
 }
 
-void ad_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n, mpfr_t *tmp) {
+void ad_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n) {
+    mpfr_t tmp;
+    mpfr_init(tmp);
     for (int k = 0; k < n; k++) {
-        t_tan_sec2(T, S2, U, k, tmp, TRIG);
+        t_tan_sec2(T, S2, U, k, &tmp, TRIG);
     }
+    mpfr_clear(tmp);
 }
 
-void ad_tanh_sech2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n, mpfr_t *tmp) {
+void ad_tanh_sech2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n) {
+    mpfr_t tmp;
+    mpfr_init(tmp);
     for (int k = 0; k < n; k++) {
-        t_tan_sec2(T, S2, U, k, tmp, HYP);
+        t_tan_sec2(T, S2, U, k, &tmp, HYP);
     }
+    mpfr_clear(tmp);
 }
 
-void ad_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int n, mpfr_t *tmp1, mpfr_t *tmp2) {
+void ad_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int n) {
+    mpfr_t tmp1, tmp2;
+    mpfr_inits(tmp1, tmp2, NULL);
     for (int k = 0; k < n; k++) {
-        t_power(P, U, a, k, tmp1, tmp2);
+        t_power(P, U, a, k, &tmp1, &tmp2);
     }
+    mpfr_clears(tmp1, tmp2, NULL);
 }
 
-void ad_ln (mpfr_t *L, mpfr_t *U, int n, mpfr_t *tmp) {
+void ad_ln (mpfr_t *L, mpfr_t *U, int n) {
+    mpfr_t tmp;
+    mpfr_init(tmp);
     for (int k = 0; k < n; k++) {
-        t_ln(L, U, k, tmp);
+        t_ln(L, U, k, &tmp);
     }
+    mpfr_clear(tmp);
 }
