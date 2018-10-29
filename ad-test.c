@@ -160,7 +160,7 @@ int main (int argc, char **argv) {
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = septic(x)", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = 1 / septic(x)", KNRM);
     septic(wtmp, cx, n);
     ad_power(wpwr, wtmp, D_1, n, w_tmp1, w_tmp2);
     jet_output(wpwr, n, KNRM, KGRY);

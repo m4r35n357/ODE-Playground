@@ -105,8 +105,10 @@ void t_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int k) {
     mpfr_div(Q[k], Q[k], V[0], RND);
 }
 
-void ddot (mpfr_t *DD, mpfr_t *V, mpfr_t *U, int k, mpfr_t *tmp) {
+static void ddot (mpfr_t *DD, mpfr_t *V, mpfr_t *U, int k, mpfr_t *tmp) {
+    assert(DD != tmp);
     assert(sizeof *DD == sizeof (mpfr_t));
+    assert(sizeof *tmp == sizeof (mpfr_t));
     assert(sizeof *U == sizeof *V);
     assert(k > 0);
     mpfr_set_zero(*DD, 1);
@@ -198,7 +200,7 @@ void t_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp1, mpfr_t *tmp2)
 }
 
 void t_ln (mpfr_t *L, mpfr_t *U, int k, mpfr_t *tmp) {
-    assert(mpfr_sgn(U[0]) != 0);
+    assert(mpfr_sgn(U[0]) > 0);
     assert(tmp != L && tmp != U);
     assert(L != U);
     assert(k >= 0);
