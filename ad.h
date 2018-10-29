@@ -39,7 +39,7 @@ int ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x
 /*
  * Finds a root of fn(f, x) by Householder's method, where f and x are Taylor Series
  */
-int ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *f_reciprocal, mpfr_t *w1);
+int ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *f_reciprocal, mpfr_t neg1, mpfr_t *tmp1, mpfr_t *tmp2);
 
 /*
  * Scales Taylor Series U by a factor a, result stored in jet S
@@ -72,11 +72,6 @@ void ad_product(mpfr_t *P, mpfr_t *V, mpfr_t *U, int n);
 void ad_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int n);
 
 /*
- * Calculates Taylor Series for U^a, results stored in jet P
- */
-void ad_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int k);
-
-/*
  * Calculates Taylor Series for the exponential of U, results stored in jet E
  */
 void ad_exp (mpfr_t *E, mpfr_t *U, int n, mpfr_t *tmp);
@@ -100,3 +95,13 @@ void ad_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n, mpfr_t *tmp);
  * Calculates Taylor Series for the hyperbolic tangent and squared secant of U, results stored in jets T and S2
  */
 void ad_tanh_sech2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n, mpfr_t *tmp);
+
+/*
+ * Calculates Taylor Series for U^a, results stored in jet P
+ */
+void ad_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int n, mpfr_t *tmp1, mpfr_t *tmp2);
+
+/*
+ * Calculates Taylor Series for the natural logarithm of U, results stored in jet L
+ */
+void ad_ln (mpfr_t *L, mpfr_t *U, int n, mpfr_t *tmp);

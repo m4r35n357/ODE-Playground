@@ -62,11 +62,6 @@ void t_product (mpfr_t *P, mpfr_t *V, mpfr_t *U, int k);
 void t_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int k);
 
 /*
- * Calculates kth element of U^a, results stored in jet P
- */
-void t_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int k);
-
-/*
  * Calculates kth element of the exponential of U, results stored in jet E
  */
 void t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp);
@@ -80,3 +75,14 @@ void t_sin_cos(mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp, geometry g);
  * Calculates Taylor Series for the tangent and squared secant of U, results stored in jets T and S2
  */
 void t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, geometry g);
+
+/*
+ * Calculates kth element of U^a, results stored in jet P
+ */
+void t_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp1, mpfr_t *tmp2);
+
+/*
+ * Calculates Taylor Series for U * V, result stored in jet P
+ */
+void t_ln (mpfr_t *L, mpfr_t *U, int k, mpfr_t *tmp);
+

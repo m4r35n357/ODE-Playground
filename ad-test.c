@@ -20,8 +20,23 @@
 #define KBLD "\x1B[1;37m"
 
 long order, n;
-mpfr_t x, y, tmp, D_1, D_05, D0, D1, D2, D3, D9, *cx, *cy, *cx0, *cx1, *c1, *c2, *c3, *cx9, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2,
-        *wsq, *wsum, *wprod, *wnum, *wdenom, *wquot, *wpwr, *wtmp;
+mpfr_t x, y, tmp, D_1, D_05, D0, D1, D2, D3, D5, D6, D7, D9, *cx, *cy, *cx0, *cx1, *c1, *c2, *c3, *c5, *c6, *c7, *cx9, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2,
+        *wsq, *wsum, *wprod, *wnum, *wdenom, *wquot, *wpwr, *wtmp, *w_tmp1, *w_tmp2, *w_tmp3;
+
+void septic (mpfr_t *f, mpfr_t *x, int n) {
+    ad_minus(w_tmp2, x, c1, n);
+    ad_plus(w_tmp1, x, c2, n);
+    ad_product(w_tmp3, w_tmp2, w_tmp1, n);
+    ad_minus(w_tmp1, x, c3, n);
+    ad_product(w_tmp2, w_tmp3, w_tmp1, n);
+    ad_plus(w_tmp1, x, c5, n);
+    ad_product(w_tmp3, w_tmp2, w_tmp1, n);
+    ad_minus(w_tmp1, x, c6, n);
+    ad_product(w_tmp2, w_tmp3, w_tmp1, n);
+    ad_plus(w_tmp1, x, c7, n);
+    ad_product(w_tmp3, w_tmp2, w_tmp1, n);
+    ad_product(f, w_tmp3, x, n);
+}
 
 int main (int argc, char **argv) {
     assert(argc == 4);
@@ -40,6 +55,9 @@ int main (int argc, char **argv) {
     mpfr_init_set_ui(D1, 1, RND);
     mpfr_init_set_ui(D2, 2, RND);
     mpfr_init_set_ui(D3, 3, RND);
+    mpfr_init_set_ui(D5, 5, RND);
+    mpfr_init_set_ui(D6, 6, RND);
+    mpfr_init_set_ui(D7, 7, RND);
     mpfr_init_set_ui(D9, 9, RND);
 
     cx = t_jet_constant(n, x);
@@ -53,7 +71,9 @@ int main (int argc, char **argv) {
     c1 = t_jet_constant(n, D1);
     c2 = t_jet_constant(n, D2);
     c3 = t_jet_constant(n, D3);
-
+    c5 = t_jet_constant(n, D5);
+    c6 = t_jet_constant(n, D6);
+    c7 = t_jet_constant(n, D7);
     cx9 = t_jet_constant(n, D9);
     mpfr_set_ui(cx9[1], 1, RND);
 
@@ -81,6 +101,10 @@ int main (int argc, char **argv) {
     wc = t_jet(n);
     wt = t_jet(n);
     ws2 = t_jet(n);
+
+    w_tmp1 = t_jet(n);
+    w_tmp2 = t_jet(n);
+    w_tmp3 = t_jet(n);
 
     printf("\n%sx = %s, y = %s, order = %ld%s\n\n", KBLD, argv[2], argv[3], n - 1, KNRM);
 
@@ -117,12 +141,31 @@ int main (int argc, char **argv) {
     derivative_output(wsq, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
+    printf("%s%s%s\n", KCYN, "f(x) = 1 / x", KNRM);
+    ad_power(wpwr, cx, D_1, n, w_tmp1, w_tmp2);
+    jet_output(wpwr, n, KNRM, KGRY);
+    derivative_output(wpwr, n, KBLD, KGRY);
+    ad_quotient(wquot, c1, cx, n);
+    jet_output(wquot, n, KNRM, KGRY);
+    derivative_output(wquot, n, KBLD, KGRY);
+    printf("%s\n", KNRM);
+
     printf("%s%s%s\n", KCYN, "f(x) = 1 / (x + 3)", KNRM);
     ad_plus(wdenom, cx, c3, n);
-    ad_power(wpwr, wdenom, D_1, n);
+    ad_power(wpwr, wdenom, D_1, n, w_tmp1, w_tmp2);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
     ad_quotient(wquot, c1, wdenom, n);
+    jet_output(wquot, n, KNRM, KGRY);
+    derivative_output(wquot, n, KBLD, KGRY);
+    printf("%s\n", KNRM);
+
+    printf("%s%s%s\n", KCYN, "f(x) = septic(x)", KNRM);
+    septic(wtmp, cx, n);
+    ad_power(wpwr, wtmp, D_1, n, w_tmp1, w_tmp2);
+    jet_output(wpwr, n, KNRM, KGRY);
+    derivative_output(wpwr, n, KBLD, KGRY);
+    ad_quotient(wquot, c1, wtmp, n);
     jet_output(wquot, n, KNRM, KGRY);
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
@@ -137,7 +180,7 @@ int main (int argc, char **argv) {
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^a, x = 9, a = -0.5", KNRM);
-    ad_power(wpwr, cx9, D_05, n);
+    ad_power(wpwr, cx9, D_05, n, w_tmp1, w_tmp2);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s\n", KNRM);
@@ -146,6 +189,12 @@ int main (int argc, char **argv) {
     ad_exp(we, cx1, n, &tmp);
     jet_output(we, n, KNRM, KGRY);
     derivative_output(we, n, KBLD, KGRY);
+    printf("%s\n", KNRM);
+
+    printf("%s%s%s\n", KCYN, "f(x) = log(x)", KNRM);
+    ad_ln(wl, cx, n, &tmp);
+    jet_output(wl, n, KNRM, KGRY);
+    derivative_output(wl, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = sin(x), f(x) = cos(x), x = 0", KNRM);
