@@ -4,13 +4,6 @@ from math import sin, cos, tan, exp, sinh, cosh, tanh, sqrt
 from sys import stderr
 
 
-TrigTuple = namedtuple('TrigTupleType', ['pri', 'sec'])
-
-
-def t_stepper(args):
-    return int(args[1]), float(args[2]), int(args[3])
-
-
 def jet_0(n):
     return [0.0 for _ in range(n)]
 
@@ -193,7 +186,7 @@ def ad_sin_cos(u, hyperbolic=False):
     cos_jet = jet_0(n)
     for k in range(n):
         sin_jet[k], cos_jet[k] = t_sin_cos(sin_jet, cos_jet, u, k, hyperbolic)
-    return TrigTuple(pri=sin_jet, sec=cos_jet)
+    return sin_jet, cos_jet
 
 
 def ad_tan_sec2(u, hyperbolic=False):
@@ -202,7 +195,7 @@ def ad_tan_sec2(u, hyperbolic=False):
     sec2_jet = jet_0(n)
     for k in range(n):
         tan_jet[k], sec2_jet[k] = t_tan_sec2(tan_jet, sec2_jet, u, k, hyperbolic)
-    return TrigTuple(pri=tan_jet, sec=sec2_jet)
+    return tan_jet, sec2_jet
 
 
 def ad_ln(u):
