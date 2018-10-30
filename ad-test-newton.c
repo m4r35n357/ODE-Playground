@@ -25,7 +25,7 @@ void test_sqr (mpfr_t *f, mpfr_t *x, int n) {
 void cosx_x3 (mpfr_t *f, mpfr_t *x, int n) {
     ad_square(w_tmp1, x, n);
     ad_product(w_tmp2, w_tmp1, x, n);
-    ad_sin_cos(w_tmp1, f, x, n, &tmp);
+    ad_sin_cos(w_tmp1, f, x, n);
     ad_minus(f, w_tmp1, w_tmp2, n);
     ad_minus(f, f, w_value, n);
 }
