@@ -117,7 +117,7 @@ def t_pwr(p, u, a, k):
     if k == 0:
         return u[0]**a
     else:
-        return (a * (p[0] * u[k] + ddot(p, u, k)) - ddot(p, u, k)) / u[0]
+        return (a * (p[0] * u[k] + ddot(p, u, k)) - ddot(u, p, k)) / u[0]
 
 
 def t_ln(l, u, k):
@@ -225,7 +225,7 @@ def ad_pwr(u, a):
     n = len(u)
     pwr_jet = jet_0(n)
     for k in range(n):
-        pwr_jet[k] = t_pwr(a, pwr_jet, u, k)
+        pwr_jet[k] = t_pwr(pwr_jet, u, a, k)
     return pwr_jet
 
 
