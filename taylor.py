@@ -222,4 +222,40 @@ def ad_pwr(u, a):
     return pwr_jet
 
 
-print(__name__ + " module loaded", file=stderr)
+def ad_newton(model, x, target=0.0, tol=1.0e-12, max_it=100):
+    f = [1.0, 0.0]
+    delta = 1.0
+    counter = 1
+    while abs(f[0]) > tol or abs(delta) > tol:
+        f = model(x, target)
+        delta = - f[0] / f[1]
+        x[0] += delta
+        print("{:3d} {:22.15e} {:22.15e} {:10.3e}".format(counter, x[0], f[0] + target, delta))
+        counter += 1
+        if counter > max_it:
+            break
+
+
+if __name__ == "__main__":
+    a = jet_c(2.0, 2, diff=True)
+
+    def fun(x, value):
+        body = ad_sqr(x)
+        return ad_minus(body, jet_c(value, len(x)))
+
+    ad_newton(fun, a, target=64.0)
+
+    from math import pi
+
+    a = jet_c(pi / 3.0, 7, diff=True)
+    b, c = ad_sin_cos(a)
+    derivatives(b)
+    derivatives(c)
+
+    a = jet_c(pi / 4.0, 7, diff=True)
+    b, c = ad_tan_sec2(a)
+    derivatives(b)
+    derivatives(c)
+
+else:
+    print(__name__ + " module loaded", file=stderr)

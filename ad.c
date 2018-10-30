@@ -30,8 +30,8 @@ void derivative_output (mpfr_t *jet, long n, char* f_colour, char *fk_colour) {
 }
 
 int ad_bisect (model m, mpfr_t *xa, mpfr_t *xb, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *xc, mpfr_t *fa, mpfr_t *fc) {
-    int counter = 0;
     mpfr_t delta, tmp;
+    int counter = 0;
     mpfr_inits(delta, tmp, NULL);
     m(fa, xa, 1);
     mpfr_sub(delta, xb[0], xa[0], RND);
@@ -46,8 +46,7 @@ int ad_bisect (model m, mpfr_t *xa, mpfr_t *xb, int max_it, mpfr_t f_tol, mpfr_t
             mpfr_set(xa[0], xc[0], RND);
         }
         mpfr_sub(delta, xb[0], xa[0], RND);
-        counter++;
-        if (counter > max_it) return 1;
+        if (++counter > max_it) break;
     }
     mpfr_fprintf(stderr, "%3d %20.12RNe %20.12RNe %20.12RNe\n", counter, xc[0], fc[0], delta);
     mpfr_clears(delta, tmp, NULL);
@@ -55,16 +54,14 @@ int ad_bisect (model m, mpfr_t *xa, mpfr_t *xb, int max_it, mpfr_t f_tol, mpfr_t
 }
 
 int ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x_tol) {
-    int counter = 0;
     mpfr_t delta;
+    int counter = 0;
     mpfr_init_set_ui(delta, 1, RND);
-    mpfr_set_si(x[1], 1, RND);
     while(mpfr_cmp_abs(f[0], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
         m(f, x, 2);
         mpfr_div(delta, f[0], f[1], RND);
         mpfr_sub(x[0], x[0], delta, RND);
-        counter++;
-        if (counter > max_it) return 1;
+        if (++counter > max_it) break;
     }
     mpfr_fprintf(stderr, "%3d %20.12RNe %20.12RNe %20.12RNe\n", counter, x[0], f[0], delta);
     mpfr_clear(delta);
@@ -72,10 +69,9 @@ int ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x
 }
 
 int ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *f_reciprocal, mpfr_t *w1) {
-    int counter = 0;
     mpfr_t delta;
+    int counter = 0;
     mpfr_init_set_ui(delta, 1, RND);
-    mpfr_set_si(x[1], 1, RND);
     while(mpfr_cmp_abs(f[0], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
         m(f, x, n);
         ad_quotient(f_reciprocal, w1, f, n);
@@ -83,8 +79,7 @@ int ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_
         mpfr_div(delta, f_reciprocal[n - 2], f_reciprocal[n - 1], RND);
         mpfr_mul_ui(delta, delta, n - 1, RND);
         mpfr_add(x[0], x[0], delta, RND);
-        counter++;
-        if (counter > max_it) return 1;
+        if (++counter > max_it) break;
     }
     mpfr_fprintf(stderr, "%3d %20.12RNe %20.12RNe %20.12RNe\n", counter, x[0], f[0], delta);
     mpfr_clear(delta);

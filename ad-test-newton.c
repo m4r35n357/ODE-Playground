@@ -112,13 +112,13 @@ int main (int argc, char **argv) {
                 fprintf(stderr, "Bracketed root, solving ");
                 if (n == 1) {
                     fprintf(stderr, "using bisection\n");
-                    ad_bisect(m, t_jet_constant(n, x_prev), t_jet_constant(n, wx[0]), 100, f_tol, x_tol, t_jet(n), t_jet(n), t_jet(n));
+                    ad_bisect(m, t_jet_constant(n, x_prev), wx, 100, f_tol, x_tol, t_jet(n), t_jet(n), t_jet(n));
                 } else if (n == 2) {
                     fprintf(stderr, "using Newton's method\n");
-                    ad_newton(m, t_jet(n), t_jet_constant(n, wx[0]), 100, f_tol, x_tol);
+                    ad_newton(m, t_jet_constant(n, D1), wx, 100, f_tol, x_tol);
                 } else {
                     fprintf(stderr, "using Householder's method of degree %lu\n", n - 1);
-                    ad_householder(m, t_jet(n), t_jet_constant(n, wx[0]), n, 100, f_tol, x_tol, t_jet(n), t_jet_constant(n, D1));
+                    ad_householder(m, t_jet_constant(n, D1), wx, n, 100, f_tol, x_tol, t_jet(n), t_jet_constant(n, D1));
                 }
                 fprintf(stderr, "\n");
             }
