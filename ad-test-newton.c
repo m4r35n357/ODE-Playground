@@ -89,7 +89,7 @@ int main (int argc, char **argv) {
     w_tmp3 = t_jet(n_max);
 
     wx = t_jet_constant(n_max, x0);
-    mpfr_set_si(wx[1], 1, RND);
+    set_ad_status(wx, VARIABLE);
     wf = t_jet(n_max);
 
     m = septic;

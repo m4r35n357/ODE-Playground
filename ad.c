@@ -9,6 +9,14 @@
 #include "taylor-ode.h"
 #include "ad.h"
 
+void set_ad_status (mpfr_t *jet, ad_status s) {
+    if (s == VARIABLE) {
+        mpfr_set_ui(jet[1], 1, RND);
+    } else {
+        mpfr_set_ui(jet[1], 0, RND);
+    }
+}
+
 void jet_output (mpfr_t *jet, long n, char* f_colour, char *fk_colour) {
     mpfr_printf("%s%9.6RNf ", f_colour, jet[0]);
     for (int i = 1; i < n; i++) {

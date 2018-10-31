@@ -7,9 +7,19 @@
  */
 
 /*
+ * Whether a jet is intended for automatic diffentiation, or not
+ */
+typedef enum {VARIABLE, CONSTANT} ad_status;
+
+/*
  * Signature for solver model functions
  */
 typedef void (*model)(mpfr_t *, mpfr_t *, int);
+
+/*
+ * Selects a jet for automatic diffentiation, or not
+ */
+void set_ad_status (mpfr_t *jet, ad_status s);
 
 /*
  * Prints a Taylor coefficient jet to order n

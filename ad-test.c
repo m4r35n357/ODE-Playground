@@ -64,9 +64,10 @@ int main (int argc, char **argv) {
     cy = t_jet_constant(n, y);
 
     cx0 = t_jet_constant(n, D0);
-    mpfr_set_ui(cx0[1], 1, RND);
+    set_ad_status(cx0, VARIABLE);
+
     cx1 = t_jet_constant(n, D1);
-    mpfr_set_ui(cx1[1], 1, RND);
+    set_ad_status(cx1, VARIABLE);
 
     c1 = t_jet_constant(n, D1);
     c2 = t_jet_constant(n, D2);
@@ -75,17 +76,17 @@ int main (int argc, char **argv) {
     c6 = t_jet_constant(n, D6);
     c7 = t_jet_constant(n, D7);
     cx9 = t_jet_constant(n, D9);
-    mpfr_set_ui(cx9[1], 1, RND);
+    set_ad_status(cx9, VARIABLE);
 
     mpfr_const_pi(tmp, RND);
     mpfr_div_ui(tmp, tmp, 3, RND);
     PI_3 = t_jet_constant(n, tmp);
-    mpfr_set_ui(PI_3[1], 1, RND);
+    set_ad_status(PI_3, VARIABLE);
 
     mpfr_const_pi(tmp, RND);
     mpfr_div_ui(tmp, tmp, 4, RND);
     PI_4 = t_jet_constant(n, tmp);
-    mpfr_set_ui(PI_4[1], 1, RND);
+    set_ad_status(PI_4, VARIABLE);
 
     wtmp = t_jet(n);
     wsq = t_jet(n);
@@ -108,8 +109,8 @@ int main (int argc, char **argv) {
 
     printf("\n%sx = %s, y = %s, order = %ld%s\n\n", KBLD, argv[2], argv[3], n - 1, KNRM);
 
-    mpfr_set_ui(cx[1], 1, RND);
-    mpfr_set_ui(cy[1], 0, RND);
+    set_ad_status(cx, VARIABLE);
+    set_ad_status(cy, CONSTANT);
 
     printf("%s%s%s\n", KCYN, "f(x) = x", KNRM);
     jet_output(cx, n, KNRM, KGRY);
@@ -259,8 +260,8 @@ int main (int argc, char **argv) {
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    mpfr_set_ui(cx[1], 0, RND);
-    mpfr_set_ui(cy[1], 1, RND);
+    set_ad_status(cx, CONSTANT);
+    set_ad_status(cy, VARIABLE);
 
     printf("%s%s%s\n", KCYN, "f(x, y) = x * y, d/dy", KNRM);
     ad_product(wprod, cx, cy, n);
