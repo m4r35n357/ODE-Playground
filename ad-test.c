@@ -61,13 +61,14 @@ int main (int argc, char **argv) {
     mpfr_init_set_ui(D9, 9, RND);
 
     cx = t_jet_constant(n, x);
+    cx0 = t_jet_constant(n, D0);
+    cx1 = t_jet_constant(n, D1);
     cy = t_jet_constant(n, y);
 
-    cx0 = t_jet_constant(n, D0);
+    set_ad_status(cx, VARIABLE);
     set_ad_status(cx0, VARIABLE);
-
-    cx1 = t_jet_constant(n, D1);
     set_ad_status(cx1, VARIABLE);
+    set_ad_status(cy, CONSTANT);
 
     c1 = t_jet_constant(n, D1);
     c2 = t_jet_constant(n, D2);
@@ -108,9 +109,6 @@ int main (int argc, char **argv) {
     w_tmp3 = t_jet(n);
 
     printf("\n%sx = %s, y = %s, order = %ld%s\n\n", KBLD, argv[2], argv[3], n - 1, KNRM);
-
-    set_ad_status(cx, VARIABLE);
-    set_ad_status(cy, CONSTANT);
 
     printf("%s%s%s\n", KCYN, "f(x) = x", KNRM);
     jet_output(cx, n, KNRM, KGRY);

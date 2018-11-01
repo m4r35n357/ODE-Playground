@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from collections import namedtuple
+
 from math import sin, cos, tan, exp, sinh, cosh, tanh, sqrt
 from sys import stderr
 
@@ -22,6 +22,14 @@ def derivatives(jet):
     for i in range(1, n):
         fac *= i
         jet[i] *= fac
+
+
+def jet_output(jet):
+    n = len(jet)
+    print("{:14.6e} ".format(jet[0]), end='')
+    for i in range(1, n):
+        print("{:14.6e}".format(jet[i]), end='')
+    print("\n")
 
 
 def t_horner(jet, n, h):
