@@ -37,7 +37,7 @@ void derivative_output (mpfr_t *jet, long n, char* f_colour, char *fk_colour) {
     jet_output(jet, n, f_colour, fk_colour);
 }
 
-int ad_bisect (model m, mpfr_t *xa, mpfr_t *xb, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *xc, mpfr_t *fa, mpfr_t *fc) {
+void ad_bisect (model m, mpfr_t *xa, mpfr_t *xb, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *xc, mpfr_t *fa, mpfr_t *fc) {
     mpfr_t delta, tmp;
     int counter = 0;
     mpfr_inits(delta, tmp, NULL);
@@ -58,10 +58,9 @@ int ad_bisect (model m, mpfr_t *xa, mpfr_t *xb, int max_it, mpfr_t f_tol, mpfr_t
     }
     mpfr_fprintf(stderr, "%3d %20.12RNe %20.12RNe %20.12RNe\n", counter, xc[0], fc[0], delta);
     mpfr_clears(delta, tmp, NULL);
-    return 0;
 }
 
-int ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x_tol) {
+void ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x_tol) {
     mpfr_t delta;
     int counter = 0;
     mpfr_init_set_ui(delta, 1, RND);
@@ -73,10 +72,9 @@ int ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x
     }
     mpfr_fprintf(stderr, "%3d %20.12RNe %20.12RNe %20.12RNe\n", counter, x[0], f[0], delta);
     mpfr_clear(delta);
-    return 0;
 }
 
-int ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *f_reciprocal, mpfr_t *w1) {
+void ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *f_reciprocal, mpfr_t *w1) {
     mpfr_t delta;
     int counter = 0;
     mpfr_init_set_ui(delta, 1, RND);
@@ -91,7 +89,6 @@ int ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_
     }
     mpfr_fprintf(stderr, "%3d %20.12RNe %20.12RNe %20.12RNe\n", counter, x[0], f[0], delta);
     mpfr_clear(delta);
-    return 0;
 }
 
 void ad_scale (mpfr_t *S, mpfr_t *U, mpfr_t a, int n) {

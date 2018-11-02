@@ -39,17 +39,17 @@ void derivative_output (mpfr_t *jet, long n, char* f_colour, char *fk_colour);
 /*
  * Finds a root of fn(f, x) by bisection, where f and x are Taylor Series
  */
-int ad_bisect (model m, mpfr_t *xa, mpfr_t *xb, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *xc, mpfr_t *fa, mpfr_t *fc);
+void ad_bisect (model m, mpfr_t *xa, mpfr_t *xb, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *xc, mpfr_t *fa, mpfr_t *fc);
 
 /*
  * Finds a root of fn(f, x) by Newton's method, where f and x are Taylor Series
  */
-int ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x_tol);
+void ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x_tol);
 
 /*
  * Finds a root of fn(f, x) by Householder's method, where f and x are Taylor Series
  */
-int ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *f_reciprocal, mpfr_t *w1);
+void ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *f_reciprocal, mpfr_t *w1);
 
 /*
  * Scales Taylor Series U by a factor a, result stored in jet S

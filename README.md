@@ -3,7 +3,7 @@ This is a collection of programs for evolving systems of ODE using the Taylor Se
 
 https://web.ma.utexas.edu/users/mzou/taylor/taylor.pdf
 
-That software uses code generation, and it inspired me to try coding something by hand.  These programs are the result.  The main objective was to solve coupled nonlinear equations and investigate chaotic systems.  As part of the verification I have added a demonstration of ustin Taylor series to find roots in single variable nonlinear equations.
+That software uses code generation, and it inspired me to try coding something by hand.  These programs are the result.  The main objective was to solve coupled nonlinear equations and investigate chaotic systems.  As part of the verification I have added a demonstration of using Taylor series to find roots in single variable nonlinear equations.
 
 Dependencies of c programs:
 MPFR 4 or later! (otherwise stick to the Python version)
@@ -22,7 +22,7 @@ vpython
 pi3d
 matplotlib
 
-It is an easy task to convert the Python solver to use gmpy2 (MPFR)
+It is an easy task to convert the Python solver to use gmpy2 (MPFR) if desired.
 
 To test the top level Taylor series operation:
 ./ad-test-dbg 7 2 1

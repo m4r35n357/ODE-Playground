@@ -14,7 +14,7 @@
 #include "ad.h"
 
 long n_max = 7, n, steps;
-mpfr_t x0, x1, x_step, x_prev, f_prev, f_value, tmp, tmp1, D_1, D0, D1, D2, D3, D5, D6, D7, *w1, *w2, *w3, *w5, *w6, *w7, *w_value, *w_tmp1, *w_tmp2, *w_tmp3, *wx, *wf, f_tol, x_tol, int_tol;
+mpfr_t x0, x1, x_step, x_prev, f_prev, f_value, tmp, tmp1, D_1, D_05, D0, D1, D2, D3, D5, D6, D7, *w1, *w2, *w3, *w5, *w6, *w7, *w_value, *w_tmp1, *w_tmp2, *w_tmp3, *wx, *wf, f_tol, x_tol, int_tol;
 model m;
 
 void test_sqr (mpfr_t *f, mpfr_t *x, int n) {
@@ -53,6 +53,12 @@ void septic (mpfr_t *f, mpfr_t *x, int n) {
     ad_product(f, w_tmp3, x, n);
 }
 
+void lorentz (mpfr_t *f, mpfr_t *x, int n) {
+    ad_square(w_tmp1, x, n);
+    ad_minus(w_tmp2, w1, w_tmp1, n);
+    ad_power(f, w_tmp2, D_05, n);
+}
+
 int main (int argc, char **argv) {
     assert(argc == 8);
 
@@ -69,6 +75,7 @@ int main (int argc, char **argv) {
     mpfr_init_set_str(x_tol, argv[7], BASE, RND);
 
     mpfr_init_set_si(D_1, -1, RND);
+    mpfr_init_set_d(D_05, -0.5, RND);
     mpfr_init_set_si(D0, 0, RND);
     mpfr_init_set_si(D1, 1, RND);
     mpfr_init_set_si(D2, 2, RND);
