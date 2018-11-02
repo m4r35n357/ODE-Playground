@@ -29,7 +29,7 @@ def jet_output(jet):
     print("{:14.6e} ".format(jet[0]), end='')
     for i in range(1, n):
         print("{:14.6e}".format(jet[i]), end='')
-    print("\n")
+    print("")
 
 
 def t_horner(jet, n, h):
@@ -245,25 +245,25 @@ def ad_newton(model, x, target=0.0, tol=1.0e-12, max_it=100):
 
 
 if __name__ == "__main__":
-    a = jet_c(2.0, 2, diff=True)
-
     def fun(x, value):
         body = ad_sqr(x)
         return ad_minus(body, jet_c(value, len(x)))
 
-    ad_newton(fun, a, target=64.0)
+    ad_newton(fun, jet_c(2.0, 2, diff=True), target=64.0)
+    print("")
 
     from math import pi
-
-    a = jet_c(pi / 3.0, 7, diff=True)
-    b, c = ad_sin_cos(a)
-    derivatives(b)
-    derivatives(c)
-
-    a = jet_c(pi / 4.0, 7, diff=True)
-    b, c = ad_tan_sec2(a)
-    derivatives(b)
-    derivatives(c)
+    sine, cosine = ad_sin_cos(jet_c(pi / 3.0, 7, diff=True))
+    derivatives(sine)
+    jet_output(sine)
+    derivatives(cosine)
+    jet_output(cosine)
+    print("")
+    tangent, secant2 = ad_tan_sec2(jet_c(pi / 4.0, 7, diff=True))
+    derivatives(tangent)
+    jet_output(tangent)
+    derivatives(secant2)
+    jet_output(secant2)
 
 else:
     print(__name__ + " module loaded", file=stderr)
