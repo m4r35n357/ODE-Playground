@@ -16,7 +16,7 @@ mpfr_t t, x, y, z, a, h, tmp, w4x, w4y, w4z, *cx, *cy, *cz;
 int main (int argc, char **argv) {
     assert(argc == 9);
     // initialize from command arguments
-    t_stepper(argc, argv, &order, &t, &h, &nsteps);
+    t_stepper(argv, &order, &t, &h, &nsteps);
     mpfr_inits(tmp, w4x, w4y, w4z, NULL);
     mpfr_init_set_str(x, argv[5], BASE, RND);
     mpfr_init_set_str(y, argv[6], BASE, RND);

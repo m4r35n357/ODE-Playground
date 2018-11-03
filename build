@@ -4,11 +4,13 @@
 # All rights reserved.
 # For licencing see LICENCE file
 
+WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra'
+
 build () {
 	name=$1
 	c99 -O3 -DNDEBUG -o ${name} ${name}.c taylor-ode.c -lm -lmpfr -s
 	c99 -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c -lm -lmpfr -lgmp -s
-	c99 -Og -Wall -g -o ${name}-dbg ${name}.c taylor-ode.c -lm -lmpfr
+	c99 -Og $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode.c -lm -lmpfr
 	ls -lhrt --color ${name}*
 }
 

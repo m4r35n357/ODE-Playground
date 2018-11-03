@@ -29,7 +29,7 @@ void t_line_output (mpfr_t t, int item_count, ...);
 /*
  * Sets the order, step size, and number of steps for the integration
  */
-void t_stepper (int argc, char **argv, long *n, mpfr_t *t, mpfr_t *h, long *nsteps);
+void t_stepper (char **argv, long *n, mpfr_t *t, mpfr_t *h, long *nsteps);
 
 /*
  * Creates an initialized derivative jet of the specified size, with no values set

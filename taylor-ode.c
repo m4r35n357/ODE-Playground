@@ -23,7 +23,7 @@ void t_line_output (mpfr_t t, int count, ...) {
     mpfr_printf("%.5RNe\n", t);
 }
 
-void t_stepper (int argc, char **argv, long *n, mpfr_t *t, mpfr_t *h, long *nsteps) {
+void t_stepper (char **argv, long *n, mpfr_t *t, mpfr_t *h, long *nsteps) {
     mpfr_set_default_prec(strtod(argv[1], NULL) * log(10.0) / log(2.0));
     *n = strtol(argv[2], NULL, BASE);
     assert(*n > 1);
