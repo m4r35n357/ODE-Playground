@@ -97,21 +97,19 @@ def t_exp(e, u, k):
         return e[0] * u[k] + ddot(e, u, k)
 
 
-def t_sin_cos(s, c, u, k, hyperbolic=False):
+def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
-        return (sinh(u[0]), cosh(u[0])) if hyperbolic else (sin(u[0]), cos(u[0]))
+        return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
     else:
-        return c[0] * u[k] + ddot(c, u, k),\
-               s[0] * u[k] + ddot(s, u, k) if hyperbolic else - (s[0] * u[k] - ddot(s, u, k))
+        return c[0] * u[k] + ddot(c, u, k), s[0] * u[k] + ddot(s, u, k) if hyp else - (s[0] * u[k] - ddot(s, u, k))
 
 
-def t_tan_sec2(t, s2, u, k, hyperbolic=False):
+def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
-        return (tanh(u[0]), 1.0 - tanh(u[0])**2) if hyperbolic else (tan(u[0]), tan(u[0])**2 + 1.0)
+        return (tanh(u[0]), 1.0 - tanh(u[0])**2) if hyp else (tan(u[0]), tan(u[0]) ** 2 + 1.0)
     else:
         t[k] = s2[0] * u[k] + ddot(s2, u, k)
-        s2[k] = 2.0 * (t[0] * t[k] + ddot(t, t, k))
-        return t[k], - s2[k] if hyperbolic else s2[k]
+        return t[k], - 2.0 * (t[0] * t[k] + ddot(t, t, k)) if hyp else 2.0 * (t[0] * t[k] + ddot(t, t, k))
 
 
 def t_pwr(p, u, a, k):
