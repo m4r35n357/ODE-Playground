@@ -19,27 +19,21 @@ c99 -Og -Wall -g -o ad-test-newton-dbg taylor-ode.c ad.c ad-test-newton.c -lm -l
 ls -lhrt --color ad-test*
 echo ""
 
-build tsm-lorenz
-echo ""
-build tsm-thomas
-echo ""
-build tsm-sprott-thomas
-echo ""
-build tsm-rossler
-echo ""
-build tsm-halvorsen
-echo ""
-build tsm-rf
-echo ""
-build tsm-sj
-echo ""
-build tsm-bouali
-echo ""
-build tsm-rucklidge
-echo ""
-build tsm-lotka-volterra
-echo ""
-build tsm-logistic
-echo ""
-build tsm-constant
+for model in \
+tsm-lorenz \
+tsm-thomas \
+tsm-sprott-thomas \
+tsm-rossler \
+tsm-halvorsen \
+tsm-rf \
+tsm-sj \
+tsm-bouali \
+tsm-rucklidge \
+tsm-lotka-volterra \
+tsm-logistic \
+tsm-constant
+do
+	build ${model}
+	echo ""
+done
 
