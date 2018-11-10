@@ -27,6 +27,7 @@ tsm-logistic-static
 tsm-lorenz
 tsm-lorenz-dbg
 tsm-lorenz-static
+tsm-lorenz-128
 tsm-lotka-volterra
 tsm-lotka-volterra-dbg
 tsm-lotka-volterra-static
@@ -51,4 +52,6 @@ tsm-rayleigh-benard-static
 tsm-rucklidge
 tsm-rucklidge-dbg
 tsm-rucklidge-static
+
+unused_functions.c
 
