@@ -6,16 +6,22 @@
 
 WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra'
 
+CC='/usr/bin/c99'
+if [ x"$1" = x'clang' ]
+then
+	CC='/usr/bin/clang'
+fi
+
 build () {
 	name=$1
-	c99 -O3 -DNDEBUG -o ${name} ${name}.c taylor-ode.c -lm -lmpfr -s
-	c99 -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c -lm -lmpfr -lgmp -s
-	c99 -Og $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode.c -lm -lmpfr
+	${CC} -O3 -DNDEBUG -o ${name} ${name}.c taylor-ode.c -lm -lmpfr -s
+	${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c -lm -lmpfr -lgmp -s
+	${CC} -Og $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode.c -lm -lmpfr
 	ls -lhrt --color ${name}*
 }
 
-c99 -Og -Wall -g -o ad-test-dbg taylor-ode.c ad.c ad-test.c -lm -lmpfr
-c99 -Og -Wall -g -o ad-test-newton-dbg taylor-ode.c ad.c ad-test-newton.c -lm -lmpfr
+${CC} -Og -Wall -g -o ad-test-dbg taylor-ode.c ad.c ad-test.c -lm -lmpfr
+${CC} -Og -Wall -g -o ad-test-newton-dbg taylor-ode.c ad.c ad-test-newton.c -lm -lmpfr
 ls -lhrt --color ad-test*
 echo ""
 
