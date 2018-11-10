@@ -158,7 +158,7 @@ def main():
                 cz[k + 1] = - (a * cz[k] + D4 * cx[k] + D4 * cy[k] + t_prod(cx, cx, k)) / (k + 1)
             x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
     elif model == "nh":
-        a_ = jet_c(n, float(argv[9]))
+        a_ = jet_c(float(argv[9]), n)
         for step in range(1, steps):
             print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
             cx[0], cy[0], cz[0] = x, y, z
