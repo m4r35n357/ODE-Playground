@@ -4,7 +4,8 @@
 # All rights reserved.
 # For licencing see LICENCE file
 
-WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra'
+#WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra'
+WARNINGS='-Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra'
 
 CC='/usr/bin/c99'
 if [ x"$1" = x'clang' ]
