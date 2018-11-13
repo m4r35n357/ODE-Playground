@@ -51,7 +51,7 @@ mpfr_t *t_jet_constant (int n, mpfr_t value) {
     return jet;
 }
 
-void t_horner (mpfr_t *sum, mpfr_t *jet, long n, mpfr_t h) {
+void t_horner (mpfr_t *sum, const mpfr_t *jet, long n, mpfr_t h) {
     assert(sizeof *sum == sizeof (mpfr_t));
     assert(n > 0);
     mpfr_set(*sum, jet[n], RND);
@@ -60,7 +60,7 @@ void t_horner (mpfr_t *sum, mpfr_t *jet, long n, mpfr_t h) {
     }
 }
 
-void t_square (mpfr_t *S, mpfr_t *U, int k) {
+void t_square (mpfr_t *S, const mpfr_t *U, int k) {
     assert(sizeof *S == sizeof (mpfr_t));
     assert(k >= 0);
     if (k == 0) {
@@ -82,7 +82,7 @@ void t_square (mpfr_t *S, mpfr_t *U, int k) {
     }
 }
 
-void t_product (mpfr_t *P, mpfr_t *U, mpfr_t *V, int k) {
+void t_product (mpfr_t *P, const mpfr_t *U, const mpfr_t *V, int k) {
     assert(sizeof *P == sizeof (mpfr_t));
     assert(sizeof *U == sizeof *V);
     assert(k >= 0);
@@ -92,7 +92,7 @@ void t_product (mpfr_t *P, mpfr_t *U, mpfr_t *V, int k) {
     }
 }
 
-void t_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int k) {
+void t_quotient (mpfr_t *Q, const mpfr_t *U, const mpfr_t *V, int k) {
     assert(mpfr_sgn(V[0]) != 0);
     assert(Q != U && Q != V && U != V);
     assert(sizeof *U == sizeof *Q && sizeof *V == sizeof *Q);
@@ -105,7 +105,7 @@ void t_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int k) {
     mpfr_div(Q[k], Q[k], V[0], RND);
 }
 
-static void ddot (mpfr_t *DD, mpfr_t *V, mpfr_t *U, int k, mpfr_t *tmp) {
+static void ddot (mpfr_t *DD, const mpfr_t *V, const mpfr_t *U, int k, mpfr_t *tmp) {
     assert(DD != tmp);
     assert(sizeof *DD == sizeof (mpfr_t));
     assert(sizeof *tmp == sizeof (mpfr_t));
@@ -119,7 +119,7 @@ static void ddot (mpfr_t *DD, mpfr_t *V, mpfr_t *U, int k, mpfr_t *tmp) {
     mpfr_div_ui(*DD, *DD, k, RND);
 }
 
-void t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp) {
+void t_exp (mpfr_t *E, const mpfr_t *U, int k, mpfr_t *tmp) {
     assert(E != U);
     assert(sizeof *U == sizeof *E);
     assert(sizeof *tmp == sizeof (mpfr_t));
@@ -132,7 +132,7 @@ void t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp) {
     }
 }
 
-void t_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp, geometry g) {
+void t_sin_cos (mpfr_t *S, mpfr_t *C, const mpfr_t *U, int k, mpfr_t *tmp, geometry g) {
     assert(S != C && S != U && C != U);
     assert(sizeof *U == sizeof *S && sizeof *U == sizeof *C);
     assert(sizeof *tmp == sizeof (mpfr_t));
@@ -154,7 +154,7 @@ void t_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp, geometry g)
     }
 }
 
-void t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, geometry g) {
+void t_tan_sec2 (mpfr_t *T, mpfr_t *S2, const mpfr_t *U, int k, mpfr_t *tmp, geometry g) {
     assert(T != S2 && T != U && S2 != U);
     assert(sizeof *U == sizeof *T && sizeof *U == sizeof *S2);
     assert(sizeof *tmp == sizeof (mpfr_t));
@@ -181,7 +181,7 @@ void t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, geometry 
     }
 }
 
-void t_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp1, mpfr_t *tmp2) {
+void t_power (mpfr_t *P, const mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp1, mpfr_t *tmp2) {
     assert(mpfr_sgn(U[0]) != 0);
     assert(P != U);
     assert(sizeof *U == sizeof *P);
@@ -199,7 +199,7 @@ void t_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp1, mpfr_t *tmp2)
     }
 }
 
-void t_ln (mpfr_t *L, mpfr_t *U, int k, mpfr_t *tmp) {
+void t_ln (mpfr_t *L, const mpfr_t *U, int k, mpfr_t *tmp) {
     assert(mpfr_sgn(U[0]) > 0);
     assert(tmp != L && tmp != U);
     assert(L != U);

@@ -17,15 +17,17 @@
 
 typedef __float128 quad;
 
-typedef struct { quad x, y; } pair;
+typedef struct { quad *x, *y; } jet_pair;
+
+typedef struct { quad x, y; } quad_pair;
 
 typedef enum {TRIG, HYP} geometry;
 
-long order, n;
-quad x, y, tmp, *cx, *cy, *cx0, *cx1, *cx9, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2, *wsq, *wsum, *wprod, *wquot, *wpwr;
+long order = 10, nsteps = 1001, n;
 
-//long order = 10, nsteps = 1001;
-//quad t, x, y, z, s, r, b, h, *cx, *cy, *cz;
+quad t, x, y, z, s, r, b, h, tmp, *cx, *cy, *cz, *cx0, *cx1, *cx9, *PI_3, *PI_4, *we, *wl, *wsq, *wsum, *wprod, *wquot, *wpwr;
+
+jet_pair ts_pair;
 
 void t_line_output (quad t, int count, ...) {
     char buf[18];
@@ -62,7 +64,7 @@ quad *t_jet_constant (int n, quad value) {
     return jet;
 }
 
-quad t_horner (quad *jet, long n, quad h) {
+quad t_horner (const quad *jet, long n, quad h) {
     assert(n > 0);
     quad sum = jet[n];
     for (int j = n - 1; j > - 1; j--) {
@@ -71,7 +73,7 @@ quad t_horner (quad *jet, long n, quad h) {
     return sum;
 }
 
-quad t_square (quad *U, int k) {
+quad t_square (const quad *U, int k) {
     assert(k >= 0);
     if (k == 0) {
         return U[0] * U[0];
@@ -91,7 +93,7 @@ quad t_square (quad *U, int k) {
     }
 }
 
-quad t_product (quad *V, quad *U, int k) {
+quad t_product (const quad *V, const quad *U, int k) {
     assert(sizeof *U == sizeof *V);
     assert(k >= 0);
     quad P = 0.0q;
@@ -101,7 +103,7 @@ quad t_product (quad *V, quad *U, int k) {
     return P;
 }
 
-quad t_quotient (quad *Q, quad *U, quad *V, int k) {
+quad t_quotient (const quad *Q, const quad *U, const quad *V, int k) {
     assert(V[0] != 0.0q);
     assert(Q != U && Q != V && U != V);
     assert(sizeof *U == sizeof *Q && sizeof *V == sizeof *Q);
@@ -113,7 +115,7 @@ quad t_quotient (quad *Q, quad *U, quad *V, int k) {
     return (U[k] - tmp) / V[0];
 }
 
-quad ddot (quad *V, quad *U, int k) {
+quad ddot (const quad *V, const quad *U, int k) {
     assert(sizeof *U == sizeof *V);
     quad dd = 0.0q;
     for (int j = 1; j < k; j++) {
@@ -122,7 +124,7 @@ quad ddot (quad *V, quad *U, int k) {
     return dd / k;
 }
 
-quad t_exp (quad *E, quad *U, int k) {
+quad t_exp (const quad *E, const quad *U, int k) {
     assert(E != U);
     assert(sizeof *U == sizeof *E);
     assert(k >= 0);
@@ -133,52 +135,53 @@ quad t_exp (quad *E, quad *U, int k) {
     }
 }
 
-pair t_sin_cos (quad *S, quad *C, quad *U, int k, geometry g) {
+quad_pair t_sin_cos (const quad *S, const quad *C, const quad *U, int k, geometry g) {
     assert(S != C && S != U && C != U);
     assert(sizeof *U == sizeof *S && sizeof *U == sizeof *C);
     assert(k >= 0);
     if (k == 0) {
         if (g == TRIG) {
-            sincosq(U[0], S, C);
-            return (pair) {S[0], C[0]};
+            quad sin, cos;
+            sincosq(U[0], &sin, &cos);
+            return (quad_pair) {sin, cos};
         } else {
-            return (pair) {sinhq(U[0]), coshq(U[0])};
+            return (quad_pair) {sinhq(U[0]), coshq(U[0])};
         }
     } else {
         quad sin = C[0] * U[k] + ddot(C, U, k);
         quad cos = S[0] * U[k] + ddot(S, U, k);
         if (g == TRIG) {
-            return (pair) {sin, - cos};
+            return (quad_pair) {sin, - cos};
         } else {
-            return (pair) {sin, cos};
+            return (quad_pair) {sin, cos};
         }
     }
 }
 
-pair t_tan_sec2 (quad *T, quad *S2, quad *U, int k, geometry g) {
+quad_pair t_tan_sec2 (const quad *T, const quad *S2, const quad *U, int k, geometry g) {
     assert(T != S2 && T != U && S2 != U);
     assert(sizeof *U == sizeof *T && sizeof *U == sizeof *S2);
     assert(k >= 0);
     if (k == 0) {
         if (g == TRIG) {
             quad tan = tanq(U[0]);
-            return (pair) {tan, 1.0q + tan * tan};
+            return (quad_pair) {tan, 1.0q + tan * tan};
         } else {
             quad tanh = tanhq(U[0]);
-            return (pair) {tanh, 1.0q - tanh * tanh};
+            return (quad_pair) {tanh, 1.0q - tanh * tanh};
         }
     } else {
         quad tan = S2[0] * U[k] + ddot(S2, U, k);
         quad sec2 = 2.0q * (T[0] * tan + ddot(T, T, k));
         if (g == TRIG) {
-            return (pair) {tan, sec2};
+            return (quad_pair) {tan, sec2};
         } else {
-            return (pair) {tan, - sec2};
+            return (quad_pair) {tan, - sec2};
         }
     }
 }
 
-quad t_power (quad *P, quad *U, quad a, int k) {
+quad t_power (const quad *P, const quad *U, const quad a, int k) {
     assert(U[0] > 0.0q);
     assert(P != U);
     assert(sizeof *U == sizeof *P);
@@ -190,88 +193,93 @@ quad t_power (quad *P, quad *U, quad a, int k) {
     }
 }
 
-void ad_scale (quad *S, quad *U, quad a, int n) {
+quad *ad_scale (const quad *U, quad a, int n) {
+    quad *scaled = t_jet(n);
     for (int k = 0; k < n; k++) {
-        S[k] = a * U[k];
+        scaled[k] = a * U[k];
     }
+    return scaled;
 }
 
-void ad_plus (quad *P, quad *U, quad *V, int n) {
+quad *ad_plus (const quad *U, const quad *V, int n) {
+    quad *sum = t_jet(n);
     for (int k = 0; k < n; k++) {
-        P[k] = U[k] + V[k];
+        sum[k] = U[k] + V[k];
     }
+    return sum;
 }
 
-void ad_minus (quad *M, quad *U, quad *V, int n) {
+quad *ad_minus (const quad *U, const quad *V, int n) {
+    quad *difference = t_jet(n);
     for (int k = 0; k < n; k++) {
-        M[k] = U[k] - V[k];
+        difference[k] = U[k] - V[k];
     }
+    return difference;
 }
 
-void ad_square (quad *S, quad *U, int n) {
+quad *ad_square (const quad *U, int n) {
+    quad *square = t_jet(n);
     for (int k = 0; k < n; k++) {
-        S[k] = t_square(U, k);
+        square[k] = t_square(U, k);
     }
+    return square;
 }
 
-void ad_product (quad *P, quad *V, quad *U, int n) {
-    assert(P != U && P != V);
+quad *ad_product (const quad *V, const quad *U, int n) {
+    quad *product = t_jet(n);
     for (int k = 0; k < n; k++) {
-        P[k] = t_product(V, U, k);
+        product[k] = t_product(V, U, k);
     }
+    return product;
 }
 
-void ad_quotient (quad *Q, quad *U, quad *V, int n) {
+quad *ad_quotient (const quad *U, const quad *V, int n) {
+    quad *quotient = t_jet(n);
     for (int k = 0; k < n; k++) {
-        Q[k] = t_quotient(Q, U, V, k);
+        quotient[k] = t_quotient(quotient, U, V, k);
     }
+    return quotient;
 }
 
-void ad_exp (quad *E, quad *U, int n) {
+quad *ad_exp (const quad *U, int n) {
+    quad *exp = t_jet(n);
     for (int k = 0; k < n; k++) {
-        E[k] = t_exp(E, U, k);
+        exp[k] = t_exp(exp, U, k);
     }
+    return exp;
 }
 
-void ad_sin_cos (quad *S, quad *C, quad *U, int n) {
+jet_pair ad_sin_cos (const quad *U, int n, geometry g) {
+    quad *sin = t_jet(n);
+    quad *cos = t_jet(n);
     for (int k = 0; k < n; k++) {
-        pair result = t_sin_cos(S, C, U, k, TRIG);
-        S[k] = result.x;
-        C[k] = result.y;
+        quad_pair result = t_sin_cos(sin, cos, U, k, g);
+        sin[k] = result.x;
+        cos[k] = result.y;
     }
+    return (jet_pair) {sin, cos};
 }
 
-void ad_sinh_cosh (quad *S, quad *C, quad *U, int n) {
+jet_pair ad_tan_sec2 (const quad *U, int n, geometry g) {
+    quad *tan = t_jet(n);
+    quad *sec2 = t_jet(n);
     for (int k = 0; k < n; k++) {
-        pair result = t_sin_cos(S, C, U, k, HYP);
-        S[k] = result.x;
-        C[k] = result.y;
+        quad_pair result = t_tan_sec2(tan, sec2, U, k, g);
+        tan[k] = result.x;
+        sec2[k] = result.y;
     }
+    return (jet_pair) {tan, sec2};
 }
 
-void ad_tan_sec2 (quad *T, quad *S2, quad *U, int n) {
+quad *ad_power (const quad *U, quad a, int n) {
+    quad *power = t_jet(n);
     for (int k = 0; k < n; k++) {
-        pair result = t_tan_sec2(T, S2, U, k, TRIG);
-        T[k] = result.x;
-        S2[k] = result.y;
+        power[k] = t_power(power, U, a, k);
     }
+    return power;
 }
 
-void ad_tanh_sech2 (quad *T, quad *S2, quad *U, int n) {
-    for (int k = 0; k < n; k++) {
-        pair result = t_tan_sec2(T, S2, U, k, HYP);
-        T[k] = result.x;
-        S2[k] = result.y;
-    }
-}
-
-void ad_power (quad *P, quad *U, quad a, int n) {
-    for (int k = 0; k < n; k++) {
-        P[k] = t_power(P, U, a, k);
-    }
-}
-
-void jet_output (quad *jet, long n, char* f_colour, char *fk_colour) {
+void jet_output (const quad *jet, long n, char* f_colour, char *fk_colour) {
     char buf[15];
     quadmath_snprintf(buf, sizeof buf, "%9.6Qf", jet[0]);
     printf("%s%s", f_colour, buf);
@@ -294,7 +302,7 @@ void derivative_output (quad *jet, long n, char* f_colour, char *fk_colour) {
     jet_output(jet, n, f_colour, fk_colour);
 }
 
-int main (int argc, char **argv) {
+int ad_test (int argc, char **argv) {
     assert(argc == 4);
 
     n = strtol(argv[1], NULL, 10);
@@ -322,14 +330,8 @@ int main (int argc, char **argv) {
     wsq = t_jet(n);
     wsum = t_jet(n);
     wprod = t_jet(n);
-    wquot = t_jet(n);
     wpwr = t_jet(n);
-    we = t_jet(n);
     wl = t_jet(n);
-    ws = t_jet(n);
-    wc = t_jet(n);
-    wt = t_jet(n);
-    ws2 = t_jet(n);
 
     printf("\n%sx = %s, y = %s, order = %ld%s\n\n", KBLD, argv[2], argv[3], n - 1, KNRM);
 
@@ -342,108 +344,111 @@ int main (int argc, char **argv) {
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^2", KNRM);
-    ad_product(wprod, cx, cx, n);
+    wprod = ad_product(cx, cx, n);
     jet_output(wprod, n, KNRM, KGRY);
-    ad_square(wsq, cx, n);
+    wsq = ad_square(cx, n);
     jet_output(wsq, n, KNRM, KGRY);
     derivative_output(wsq, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^3", KNRM);
-    ad_square(wsq, cx, n);
-    ad_product(wprod, wsq, cx, n);
+    wsq = ad_square(cx, n);
+    wprod = ad_product(wsq, cx, n);
     jet_output(wprod, n, KNRM, KGRY);
     derivative_output(wprod, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^4", KNRM);
-    ad_square(wsq, cx, n);
-    ad_product(wprod, wsq, wsq, n);
+    wsq = ad_square(cx, n);
+    wprod = ad_product(wsq, wsq, n);
     jet_output(wprod, n, KNRM, KGRY);
-    ad_product(wprod, cx, cx, n);
-    ad_square(wsq, wprod, n);
+    wprod = ad_product(cx, cx, n);
+    wsq = ad_square(wprod, n);
     jet_output(wsq, n, KNRM, KGRY);
     derivative_output(wsq, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = 1 / x", KNRM);
-    ad_quotient(wquot, cx1, cx, n);
+    wpwr = ad_power(cx, - 1.0q, n);
+    jet_output(wpwr, n, KNRM, KGRY);
+    derivative_output(wpwr, n, KBLD, KGRY);
+    wquot = ad_quotient(cx1, cx, n);
     jet_output(wquot, n, KNRM, KGRY);
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^a, x = 9, a = -0.5", KNRM);
-    ad_power(wpwr, cx9, - 0.5q, n);
+    wpwr = ad_power(cx9, - 0.5q, n);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = e^x", KNRM);
     cx1[1] = 1.0q;
-    ad_exp(we, cx1, n);
+    we = ad_exp(cx1, n);
     cx1[1] = 0.0q;
     jet_output(we, n, KNRM, KGRY);
     derivative_output(we, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = sin(x), f(x) = cos(x), x = 0", KNRM);
-    ad_sin_cos(ws, wc, cx0, n);
-    jet_output(ws, n, KNRM, KGRY);
-    derivative_output(ws, n, KBLD, KGRY);
+    ts_pair = ad_sin_cos(cx0, n, TRIG);
+    jet_output(ts_pair.x, n, KNRM, KGRY);
+    derivative_output(ts_pair.x, n, KBLD, KGRY);
     printf("%s", KNRM);
-    jet_output(wc, n, KNRM, KGRY);
-    derivative_output(wc, n, KBLD, KGRY);
+    jet_output(ts_pair.y, n, KNRM, KGRY);
+    derivative_output(ts_pair.y, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = sin(x), f(x) = cos(x), x = pi / 3", KNRM);
-    ad_sin_cos(ws, wc, PI_3, n);
-    jet_output(ws, n, KNRM, KGRY);
-    derivative_output(ws, n, KBLD, KGRY);
+    ts_pair = ad_sin_cos(PI_3, n, TRIG);
+    jet_output(ts_pair.x, n, KNRM, KGRY);
+    derivative_output(ts_pair.x, n, KBLD, KGRY);
     printf("%s", KNRM);
-    jet_output(wc, n, KNRM, KGRY);
-    derivative_output(wc, n, KBLD, KGRY);
+    jet_output(ts_pair.y, n, KNRM, KGRY);
+    derivative_output(ts_pair.y, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = sinh(x), f(x) = cosh(x), x = pi / 3", KNRM);
-    ad_sinh_cosh(ws, wc, PI_3, n);
-    jet_output(ws, n, KNRM, KGRY);
-    derivative_output(ws, n, KBLD, KGRY);
+    ts_pair = ad_sin_cos(PI_3, n, HYP);
+    jet_output(ts_pair.x, n, KNRM, KGRY);
+    derivative_output(ts_pair.x, n, KBLD, KGRY);
     printf("%s", KNRM);
-    jet_output(wc, n, KNRM, KGRY);
-    derivative_output(wc, n, KBLD, KGRY);
+    jet_output(ts_pair.y, n, KNRM, KGRY);
+    derivative_output(ts_pair.y, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = tan(x), f(x) = sec(x)^2, x = pi / 4", KNRM);
-    ad_tan_sec2(wt, ws2, PI_4, n);
-    jet_output(wt, n, KNRM, KGRY);
-    derivative_output(wt, n, KBLD, KGRY);
+    ts_pair = ad_tan_sec2(PI_4, n, TRIG);
+    jet_output(ts_pair.x, n, KNRM, KGRY);
+    derivative_output(ts_pair.x, n, KBLD, KGRY);
     printf("%s", KNRM);
-    jet_output(ws2, n, KNRM, KGRY);
-    derivative_output(ws2, n, KBLD, KGRY);
+    jet_output(ts_pair.y, n, KNRM, KGRY);
+    derivative_output(ts_pair.y, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = tanh(x), f(x) = sech(x)^2, x = pi / 4", KNRM);
-    ad_tanh_sech2(wt, ws2, PI_4, n);
-    jet_output(wt, n, KNRM, KGRY);
-    derivative_output(wt, n, KBLD, KGRY);
+    ts_pair = ad_tan_sec2(PI_4, n, HYP);
+    jet_output(ts_pair.x, n, KNRM, KGRY);
+    derivative_output(ts_pair.x, n, KBLD, KGRY);
     printf("%s", KNRM);
-    jet_output(ws2, n, KNRM, KGRY);
-    derivative_output(ws2, n, KBLD, KGRY);
+    jet_output(ts_pair.y, n, KNRM, KGRY);
+    derivative_output(ts_pair.y, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x, y) = x * y, d/dx", KNRM);
-    ad_product(wprod, cx, cy, n);
+    wprod = ad_product(cx, cy, n);
     jet_output(wprod, n, KNRM, KGRY);
     derivative_output(wprod, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x, y) = e^x / (x - y * sin(x^2), d/dx", KNRM);
-    ad_square(wsq, cx, n);
-    ad_sin_cos(ws, wc, wsq, n);
-    ad_product(wprod, cy, ws, n);
-    ad_minus(wsum, cx, wprod, n);
-    ad_exp(we, cx, n);
-    ad_quotient(wquot, we, wsum, n);
+    wsq = ad_square(cx, n);
+    ts_pair = ad_sin_cos(wsq, n, TRIG);
+    wprod = ad_product(cy, ts_pair.x, n);
+    wsum = ad_minus(cx, wprod, n);
+    we = ad_exp(cx, n);
+    wquot = ad_quotient(we, wsum, n);
     jet_output(wquot, n, KNRM, KGRY);
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
@@ -452,18 +457,18 @@ int main (int argc, char **argv) {
     cy[1] = 1.0q;
 
     printf("%s%s%s\n", KCYN, "f(x, y) = x * y, d/dy", KNRM);
-    ad_product(wprod, cx, cy, n);
+    wprod = ad_product(cx, cy, n);
     jet_output(wprod, n, KNRM, KGRY);
     derivative_output(wprod, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x, y) = e^x / (x - y * sin(x^2), d/dy", KNRM);
-    ad_square(wsq, cx, n);
-    ad_sin_cos(ws, wc, wsq, n);
-    ad_product(wprod, cy, ws, n);
-    ad_minus(wsum, cx, wprod, n);
-    ad_exp(we, cx, n);
-    ad_quotient(wquot, we, wsum, n);
+    wsq = ad_square(cx, n);
+    ts_pair = ad_sin_cos(wsq, n, TRIG);
+    wprod = ad_product(cy, ts_pair.x, n);
+    wsum = ad_minus(cx, wprod, n);
+    we = ad_exp(cx, n);
+    wquot = ad_quotient(we, wsum, n);
     jet_output(wquot, n, KNRM, KGRY);
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
@@ -471,8 +476,7 @@ int main (int argc, char **argv) {
     return 0;
 }
 
-/*
-int main(int argc, char **argv) {
+int t_test(int argc, char **argv) {
     assert(argc == 12);
     // initialize from command arguments
     t_stepper(argc, argv, &order, &t, &h, &nsteps);
@@ -507,4 +511,12 @@ int main(int argc, char **argv) {
     }
     return 0;
 }
-*/
+
+int main(int argc, char **argv) {
+    // ./tsm-lorenz-128 7 2 1
+    ad_test(argc, argv);
+
+    // ./tsm-lorenz-128 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
+    //t_test(argc, argv);
+}
+
