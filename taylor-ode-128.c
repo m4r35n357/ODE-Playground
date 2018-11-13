@@ -23,6 +23,8 @@ typedef struct { quad x, y; } quad_pair;
 
 typedef enum {TRIG, HYP} geometry;
 
+typedef enum {VARIABLE, CONSTANT} ad_status;
+
 long order = 10, nsteps = 1001, n;
 
 quad t, x, y, z, s, r, b, h, tmp, *cx, *cy, *cz, *cx0, *cx1, *cx9, *PI_3, *PI_4, *we, *wl, *wsq, *wsum, *wprod, *wquot, *wpwr;
@@ -115,7 +117,7 @@ quad t_quotient (const quad *Q, const quad *U, const quad *V, int k) {
     return (U[k] - tmp) / V[0];
 }
 
-quad ddot (const quad *V, const quad *U, int k) {
+static quad ddot (const quad *V, const quad *U, int k) {
     assert(sizeof *U == sizeof *V);
     quad dd = 0.0q;
     for (int j = 1; j < k; j++) {
@@ -190,6 +192,14 @@ quad t_power (const quad *P, const quad *U, const quad a, int k) {
         return powq(U[0], a);
     } else {
         return (a * (P[0] * U[k] + ddot(P, U, k)) - ddot(U, P, k)) / U[0];
+    }
+}
+
+void set_ad_status (quad *jet, ad_status status) {
+    if (status == VARIABLE) {
+        jet[1] = 1.0q;
+    } else {
+        jet[1] = 0.0q;
     }
 }
 
@@ -335,8 +345,8 @@ int ad_test (int argc, char **argv) {
 
     printf("\n%sx = %s, y = %s, order = %ld%s\n\n", KBLD, argv[2], argv[3], n - 1, KNRM);
 
-    cx[1] = 1.0q;
-    cy[1] = 0.0q;
+    set_ad_status(cx, VARIABLE);
+    set_ad_status(cy, CONSTANT);
 
     printf("%s%s%s\n", KCYN, "f(x) = x", KNRM);
     jet_output(cx, n, KNRM, KGRY);
@@ -384,9 +394,9 @@ int ad_test (int argc, char **argv) {
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = e^x", KNRM);
-    cx1[1] = 1.0q;
+    set_ad_status(cx1, VARIABLE);
     we = ad_exp(cx1, n);
-    cx1[1] = 0.0q;
+    set_ad_status(cx1, CONSTANT);
     jet_output(we, n, KNRM, KGRY);
     derivative_output(we, n, KBLD, KGRY);
     printf("%s\n", KNRM);
@@ -453,8 +463,8 @@ int ad_test (int argc, char **argv) {
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    cx[1] = 0.0q;
-    cy[1] = 1.0q;
+    set_ad_status(cx, CONSTANT);
+    set_ad_status(cy, VARIABLE);
 
     printf("%s%s%s\n", KCYN, "f(x, y) = x * y, d/dy", KNRM);
     wprod = ad_product(cx, cy, n);
@@ -513,10 +523,12 @@ int t_test(int argc, char **argv) {
 }
 
 int main(int argc, char **argv) {
-    // ./tsm-lorenz-128 7 2 1
-    ad_test(argc, argv);
-
-    // ./tsm-lorenz-128 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
-    //t_test(argc, argv);
+    if (argc == 4) {
+        // ./tsm-lorenz-128 7 2 1
+        ad_test(argc, argv);
+    } else if (argc == 12) {
+        // ./tsm-lorenz-128 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
+        t_test(argc, argv);
+    }
 }
 

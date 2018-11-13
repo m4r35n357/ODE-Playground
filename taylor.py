@@ -86,15 +86,18 @@ def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
         return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
     else:
-        return c[0] * u[k] + ddot(c, u, k), s[0] * u[k] + ddot(s, u, k) if hyp else - (s[0] * u[k] - ddot(s, u, k))
+        sn = c[0] * u[k] + ddot(c, u, k)
+        cn = s[0] * u[k] + ddot(s, u, k)
+        return sn, cn if hyp else - cn
 
 
 def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
         return (tanh(u[0]), 1.0 - tanh(u[0])**2) if hyp else (tan(u[0]), tan(u[0])**2 + 1.0)
     else:
-        t[k] = s2[0] * u[k] + ddot(s2, u, k)
-        return t[k], - 2.0 * (t[0] * t[k] + ddot(t, t, k)) if hyp else 2.0 * (t[0] * t[k] + ddot(t, t, k))
+        tn = s2[0] * u[k] + ddot(s2, u, k)
+        sc2 = 2.0 * (t[0] * tn + ddot(t, t, k))
+        return t[k], - sc2 if hyp else sc2
 
 
 def t_pwr(p, u, a, k):
