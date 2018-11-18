@@ -38,17 +38,17 @@ void derivative_output (mpfr_t *jet, long n, char* f_colour, char *fk_colour) {
 }
 
 void ad_bisect (model m, mpfr_t *xa, mpfr_t *xb, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *xc, mpfr_t *fa, mpfr_t *fc) {
-    mpfr_t delta, tmp;
+    mpfr_t delta, _;
     int counter = 0;
-    mpfr_inits(delta, tmp, NULL);
+    mpfr_inits(delta, _, NULL);
     m(fa, xa, 1);
     mpfr_sub(delta, xb[0], xa[0], RND);
     while(mpfr_cmp_abs(fc[0], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
         mpfr_add(xc[0], xa[0], xb[0], RND);
         mpfr_div_ui(xc[0], xc[0], 2, RND);
         m(fc, xc, 1);
-        mpfr_mul(tmp, fa[0], fc[0], RND);
-        if (mpfr_sgn(tmp) < 0) {
+        mpfr_mul(_, fa[0], fc[0], RND);
+        if (mpfr_sgn(_) < 0) {
             mpfr_set(xb[0], xc[0], RND);
         } else {
             mpfr_set(xa[0], xc[0], RND);
@@ -57,7 +57,7 @@ void ad_bisect (model m, mpfr_t *xa, mpfr_t *xb, int max_it, mpfr_t f_tol, mpfr_
         if (++counter > max_it) break;
     }
     mpfr_fprintf(stderr, "%3d %20.12RNe %20.12RNe %20.12RNe\n", counter, xc[0], fc[0], delta);
-    mpfr_clears(delta, tmp, NULL);
+    mpfr_clears(delta, _, NULL);
 }
 
 void ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x_tol) {
@@ -91,112 +91,112 @@ void ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f
     mpfr_clear(delta);
 }
 
-void ad_scale (mpfr_t *S, mpfr_t *U, mpfr_t a, int n) {
-    assert(S != U);
-    assert(sizeof *S == sizeof *U);
+void ad_scale (mpfr_t *s, mpfr_t *u, mpfr_t a, int n) {
+    assert(s != u);
+    assert(sizeof *s == sizeof *u);
     assert(sizeof *a == sizeof (mpfr_t));
     for (int k = 0; k < n; k++) {
-        mpfr_mul(S[k], U[k], a, RND);
+        mpfr_mul(s[k], u[k], a, RND);
     }
 }
 
-void ad_plus (mpfr_t *P, mpfr_t *U, mpfr_t *V, int n) {
-    assert(P != U && P != V);
-    assert(sizeof *P == sizeof *U && sizeof *P == sizeof *V);
+void ad_plus (mpfr_t *p, mpfr_t *u, mpfr_t *v, int n) {
+    assert(p != u && p != v);
+    assert(sizeof *p == sizeof *u && sizeof *p == sizeof *v);
     for (int k = 0; k < n; k++) {
-        mpfr_add(P[k], U[k], V[k], RND);
+        mpfr_add(p[k], u[k], v[k], RND);
     }
 }
 
-void ad_minus (mpfr_t *P, mpfr_t *U, mpfr_t *V, int n) {
-    assert(P != U && P != V);
-    assert(sizeof *P == sizeof *U && sizeof *P == sizeof *V);
+void ad_minus (mpfr_t *p, mpfr_t *u, mpfr_t *v, int n) {
+    assert(p != u && p != v);
+    assert(sizeof *p == sizeof *u && sizeof *p == sizeof *v);
     for (int k = 0; k < n; k++) {
-        mpfr_sub(P[k], U[k], V[k], RND);
+        mpfr_sub(p[k], u[k], v[k], RND);
     }
 }
 
-void ad_square (mpfr_t *S, mpfr_t *U, int n) {
-    assert(S != U);
-    assert(sizeof *S == sizeof *U);
+void ad_square (mpfr_t *s, mpfr_t *u, int n) {
+    assert(s != u);
+    assert(sizeof *s == sizeof *u);
     for (int k = 0; k < n; k++) {
-        t_square(&S[k], U, k);
+        t_square(&s[k], u, k);
     }
 }
 
-void ad_product (mpfr_t *P, mpfr_t *U, mpfr_t *V, int n) {
-    assert(P != U && P != V);
-    assert(sizeof *P == sizeof *U && sizeof *P == sizeof *V);
+void ad_product (mpfr_t *p, mpfr_t *u, mpfr_t *v, int n) {
+    assert(p != u && p != v);
+    assert(sizeof *p == sizeof *u && sizeof *p == sizeof *v);
     for (int k = 0; k < n; k++) {
-        t_product(&P[k], U, V, k);
+        t_product(&p[k], u, v, k);
     }
 }
 
-void ad_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int n) {
+void ad_quotient (mpfr_t *q, mpfr_t *u, mpfr_t *v, int n) {
     for (int k = 0; k < n; k++) {
-        t_quotient(Q, U, V, k);
+        t_quotient(q, u, v, k);
     }
 }
 
-void ad_exp (mpfr_t *E, mpfr_t *U, int n) {
-    mpfr_t tmp;
-    mpfr_init(tmp);
+void ad_exp (mpfr_t *e, mpfr_t *u, int n) {
+    mpfr_t _;
+    mpfr_init(_);
     for (int k = 0; k < n; k++) {
-        t_exp(E, U, k, &tmp);
+        t_exp(e, u, k, &_);
     }
-    mpfr_clear(tmp);
+    mpfr_clear(_);
 }
 
-void ad_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n) {
-    mpfr_t tmp;
-    mpfr_init(tmp);
+void ad_sin_cos (mpfr_t *s, mpfr_t *c, mpfr_t *u, int n) {
+    mpfr_t _;
+    mpfr_init(_);
     for (int k = 0; k < n; k++) {
-        t_sin_cos(S, C, U, k, &tmp, TRIG);
+        t_sin_cos(s, c, u, k, &_, TRIG);
     }
-    mpfr_clear(tmp);
+    mpfr_clear(_);
 }
 
-void ad_sinh_cosh (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n) {
-    mpfr_t tmp;
-    mpfr_init(tmp);
+void ad_sinh_cosh (mpfr_t *s, mpfr_t *c, mpfr_t *u, int n) {
+    mpfr_t _;
+    mpfr_init(_);
     for (int k = 0; k < n; k++) {
-        t_sin_cos(S, C, U, k, &tmp, HYP);
+        t_sin_cos(s, c, u, k, &_, HYP);
     }
-    mpfr_clear(tmp);
+    mpfr_clear(_);
 }
 
-void ad_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n) {
-    mpfr_t tmp;
-    mpfr_init(tmp);
+void ad_tan_sec2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int n) {
+    mpfr_t _;
+    mpfr_init(_);
     for (int k = 0; k < n; k++) {
-        t_tan_sec2(T, S2, U, k, &tmp, TRIG);
+        t_tan_sec2(t, s2, u, k, &_, TRIG);
     }
-    mpfr_clear(tmp);
+    mpfr_clear(_);
 }
 
-void ad_tanh_sech2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n) {
-    mpfr_t tmp;
-    mpfr_init(tmp);
+void ad_tanh_sech2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int n) {
+    mpfr_t _;
+    mpfr_init(_);
     for (int k = 0; k < n; k++) {
-        t_tan_sec2(T, S2, U, k, &tmp, HYP);
+        t_tan_sec2(t, s2, u, k, &_, HYP);
     }
-    mpfr_clear(tmp);
+    mpfr_clear(_);
 }
 
-void ad_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int n) {
-    mpfr_t tmp1, tmp2;
-    mpfr_inits(tmp1, tmp2, NULL);
+void ad_power (mpfr_t *p, mpfr_t *u, mpfr_t a, int n) {
+    mpfr_t _1, _2;
+    mpfr_inits(_1, _2, NULL);
     for (int k = 0; k < n; k++) {
-        t_power(P, U, a, k, &tmp1, &tmp2);
+        t_power(p, u, a, k, &_1, &_2);
     }
-    mpfr_clears(tmp1, tmp2, NULL);
+    mpfr_clears(_1, _2, NULL);
 }
 
-void ad_ln (mpfr_t *L, mpfr_t *U, int n) {
-    mpfr_t tmp;
-    mpfr_init(tmp);
+void ad_ln (mpfr_t *l, mpfr_t *u, int n) {
+    mpfr_t _;
+    mpfr_init(_);
     for (int k = 0; k < n; k++) {
-        t_ln(L, U, k, &tmp);
+        t_ln(l, u, k, &_);
     }
-    mpfr_clear(tmp);
+    mpfr_clear(_);
 }
