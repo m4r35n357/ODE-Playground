@@ -20,22 +20,21 @@
 #define KBLD "\x1B[1;37m"
 
 long order, n;
-mpfr_t x, y, tmp, D_1, D_05, D0, D1, D2, D3, D5, D6, D7, D9, *cx, *cy, *cx0, *cx1, *c1, *c2, *c3, *c5, *c6, *c7, *cx9, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2,
-        *wsq, *wsum, *wprod, *wnum, *wdenom, *wquot, *wpwr, *wtmp, *w_tmp1, *w_tmp2, *w_tmp3;
+mpfr_t x, y, _, D_1, D_05, D0, D1, D2, D3, D5, D6, D7, D9, *cx, *cy, *cx0, *cx1, *c1, *c2, *c3, *c5, *c6, *c7, *cx9, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2, *wsq, *wsum, *wprod, *wnum, *wdenom, *wquot, *wpwr, *__, *_1, *_2, *_3;
 
 void septic (mpfr_t *f, mpfr_t *x, int n) {
-    ad_minus(w_tmp2, x, c1, n);
-    ad_plus(w_tmp1, x, c2, n);
-    ad_product(w_tmp3, w_tmp2, w_tmp1, n);
-    ad_minus(w_tmp1, x, c3, n);
-    ad_product(w_tmp2, w_tmp3, w_tmp1, n);
-    ad_plus(w_tmp1, x, c5, n);
-    ad_product(w_tmp3, w_tmp2, w_tmp1, n);
-    ad_minus(w_tmp1, x, c6, n);
-    ad_product(w_tmp2, w_tmp3, w_tmp1, n);
-    ad_plus(w_tmp1, x, c7, n);
-    ad_product(w_tmp3, w_tmp2, w_tmp1, n);
-    ad_product(f, w_tmp3, x, n);
+    ad_minus(_2, x, c1, n);
+    ad_plus(_1, x, c2, n);
+    ad_product(_3, _2, _1, n);
+    ad_minus(_1, x, c3, n);
+    ad_product(_2, _3, _1, n);
+    ad_plus(_1, x, c5, n);
+    ad_product(_3, _2, _1, n);
+    ad_minus(_1, x, c6, n);
+    ad_product(_2, _3, _1, n);
+    ad_plus(_1, x, c7, n);
+    ad_product(_3, _2, _1, n);
+    ad_product(f, _3, x, n);
 }
 
 int main (int argc, char **argv) {
@@ -43,7 +42,7 @@ int main (int argc, char **argv) {
 
     mpfr_set_default_prec(113);
 
-    mpfr_inits(tmp, NULL);
+    mpfr_inits(_, NULL);
     n = strtol(argv[1], NULL, BASE);
     assert(n > 1);
     mpfr_init_set_str(x, argv[2], BASE, RND);
@@ -79,17 +78,16 @@ int main (int argc, char **argv) {
     cx9 = t_jet_constant(n, D9);
     set_ad_status(cx9, VARIABLE);
 
-    mpfr_const_pi(tmp, RND);
-    mpfr_div_ui(tmp, tmp, 3, RND);
-    PI_3 = t_jet_constant(n, tmp);
+    mpfr_const_pi(_, RND);
+    mpfr_div_ui(_, _, 3, RND);
+    PI_3 = t_jet_constant(n, _);
     set_ad_status(PI_3, VARIABLE);
 
-    mpfr_const_pi(tmp, RND);
-    mpfr_div_ui(tmp, tmp, 4, RND);
-    PI_4 = t_jet_constant(n, tmp);
+    mpfr_const_pi(_, RND);
+    mpfr_div_ui(_, _, 4, RND);
+    PI_4 = t_jet_constant(n, _);
     set_ad_status(PI_4, VARIABLE);
 
-    wtmp = t_jet(n);
     wsq = t_jet(n);
     wsum = t_jet(n);
     wprod = t_jet(n);
@@ -103,10 +101,10 @@ int main (int argc, char **argv) {
     wc = t_jet(n);
     wt = t_jet(n);
     ws2 = t_jet(n);
-
-    w_tmp1 = t_jet(n);
-    w_tmp2 = t_jet(n);
-    w_tmp3 = t_jet(n);
+    __ = t_jet(n);
+    _1 = t_jet(n);
+    _2 = t_jet(n);
+    _3 = t_jet(n);
 
     printf("\n%sx = %s, y = %s, order = %ld%s\n\n", KBLD, argv[2], argv[3], n - 1, KNRM);
 
@@ -160,18 +158,18 @@ int main (int argc, char **argv) {
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = 1 / septic(x)", KNRM);
-    septic(wtmp, cx, n);
-    ad_power(wpwr, wtmp, D_1, n);
+    septic(__, cx, n);
+    ad_power(wpwr, __, D_1, n);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
-    ad_quotient(wquot, c1, wtmp, n);
+    ad_quotient(wquot, c1, __, n);
     jet_output(wquot, n, KNRM, KGRY);
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = (2x + 3) / (x + 2)", KNRM);
-    ad_scale(wtmp, cx, D2, n);
-    ad_plus(wnum, wtmp, c3, n);
+    ad_scale(__, cx, D2, n);
+    ad_plus(wnum, __, c3, n);
     ad_plus(wdenom, cx, c2, n);
     ad_quotient(wquot, wnum, wdenom, n);
     jet_output(wquot, n, KNRM, KGRY);

@@ -11,7 +11,7 @@
 #include "taylor-ode.h"
 
 long order, nsteps;
-mpfr_t t, x, y, z, a, b, g, m, h, tmp, *wa, *wb, *w1, *cx, *cy, *cz;
+mpfr_t t, x, y, z, a, b, g, m, h, _, *wa, *wb, *w1, *cx, *cy, *cz;
 
 int main (int argc, char **argv) {
     assert(argc == 12);
@@ -31,8 +31,8 @@ int main (int argc, char **argv) {
     cz = t_jet(order + 1);
     wa = t_jet(order);
     wb = t_jet(order);
-    mpfr_init_set_ui(tmp, 1, RND);
-    w1 = t_jet_constant(order, tmp);
+    mpfr_init_set_ui(_, 1, RND);
+    w1 = t_jet_constant(order, _);
 
     // main loop
     for (long step = 1; step < nsteps + 1; step++) {
@@ -46,18 +46,18 @@ int main (int argc, char **argv) {
         for (int k = 0; k < order; k++) {
             //  x' = Ax(1 - y) - Bz
             mpfr_sub(wa[k], w1[k], cy[k], RND);
-            t_product(&tmp, cx, wa, k);
-            mpfr_fmms(tmp, a, tmp, b, cz[k], RND);
-            mpfr_div_ui(cx[k + 1], tmp, k + 1, RND);
+            t_product(&_, cx, wa, k);
+            mpfr_fmms(_, a, _, b, cz[k], RND);
+            mpfr_div_ui(cx[k + 1], _, k + 1, RND);
             //  y' = - Gy(1 - x^2)
-            t_square(&tmp, cx, k);
-            mpfr_sub(wb[k], w1[k], tmp, RND);
-            t_product(&tmp, cy, wb, k);
-            mpfr_mul(tmp, tmp, g, RND);
-            mpfr_div_si(cy[k + 1], tmp, - (k + 1), RND);
+            t_square(&_, cx, k);
+            mpfr_sub(wb[k], w1[k], _, RND);
+            t_product(&_, cy, wb, k);
+            mpfr_mul(_, _, g, RND);
+            mpfr_div_si(cy[k + 1], _, - (k + 1), RND);
             //  z' = Mx
-            mpfr_mul(tmp, m, cx[k], RND);
-            mpfr_div_ui(cz[k + 1], tmp, k + 1, RND);
+            mpfr_mul(_, m, cx[k], RND);
+            mpfr_div_ui(cz[k + 1], _, k + 1, RND);
         }
 
         // sum the series using Horner's method and advance one step

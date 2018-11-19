@@ -60,155 +60,158 @@ void t_horner (mpfr_t *sum, const mpfr_t *jet, long n, mpfr_t h) {
     }
 }
 
-void t_square (mpfr_t *S, const mpfr_t *U, int k) {
-    assert(sizeof *S == sizeof (mpfr_t));
+void t_square (mpfr_t *s, const mpfr_t *u, int k) {
+    assert(sizeof *s == sizeof (mpfr_t));
     assert(k >= 0);
     if (k == 0) {
-        mpfr_sqr(*S, U[0], RND);
+        mpfr_sqr(*s, u[0], RND);
     } else {
-        mpfr_set_zero(*S, 1);
+        mpfr_set_zero(*s, 1);
         if (k % 2 == 1) {
             for (int j = 0; j < (k - 1) / 2 + 1; j++) {
-                mpfr_fma(*S, U[j], U[k - j], *S, RND);
+                mpfr_fma(*s, u[j], u[k - j], *s, RND);
             }
-            mpfr_mul_2ui(*S, *S, 1, RND);
+            mpfr_mul_2ui(*s, *s, 1, RND);
         } else {
             for (int j = 0; j < (k - 2) / 2 + 1; j++) {
-                mpfr_fma(*S, U[j], U[k - j], *S, RND);
+                mpfr_fma(*s, u[j], u[k - j], *s, RND);
             }
-            mpfr_mul_2ui(*S, *S, 1, RND);
-            mpfr_fma(*S, U[k / 2], U[k / 2], *S, RND);
+            mpfr_mul_2ui(*s, *s, 1, RND);
+            mpfr_fma(*s, u[k / 2], u[k / 2], *s, RND);
         }
     }
 }
 
-void t_product (mpfr_t *P, const mpfr_t *U, const mpfr_t *V, int k) {
-    assert(sizeof *P == sizeof (mpfr_t));
-    assert(sizeof *U == sizeof *V);
+void t_product (mpfr_t *p, const mpfr_t *u, const mpfr_t *v, int k) {
+    assert(sizeof *p == sizeof (mpfr_t));
+    assert(sizeof *u == sizeof *v);
     assert(k >= 0);
-    mpfr_set_zero(*P, 1);
+    mpfr_set_zero(*p, 1);
     for (int j = 0; j < k + 1; j++) {
-        mpfr_fma(*P, U[j], V[k - j], *P, RND);
+        mpfr_fma(*p, u[j], v[k - j], *p, RND);
     }
 }
 
-void t_quotient (mpfr_t *Q, const mpfr_t *U, const mpfr_t *V, int k) {
-    assert(mpfr_sgn(V[0]) != 0);
-    assert(Q != U && Q != V && U != V);
-    assert(sizeof *U == sizeof *Q && sizeof *V == sizeof *Q);
+void t_quotient (mpfr_t *q, const mpfr_t *u, const mpfr_t *v, int k) {
+    assert(mpfr_sgn(v[0]) != 0);
+    assert(q != u && q != v && u != v);
+    assert(sizeof *u == sizeof *q && sizeof *v == sizeof *q);
     assert(k >= 0);
-    mpfr_set_zero(Q[k], 1);
+    mpfr_set_zero(q[k], 1);
     for (int j = 1; j < k + 1; j++) {
-        mpfr_fma(Q[k], V[j], Q[k - j], Q[k], RND);
+        mpfr_fma(q[k], v[j], q[k - j], q[k], RND);
     }
-    mpfr_sub(Q[k], U[k], Q[k], RND);
-    mpfr_div(Q[k], Q[k], V[0], RND);
+    mpfr_sub(q[k], u[k], q[k], RND);
+    mpfr_div(q[k], q[k], v[0], RND);
 }
 
-static void ddot (mpfr_t *DD, const mpfr_t *V, const mpfr_t *U, int k, mpfr_t *tmp) {
-    assert(DD != tmp);
-    assert(sizeof *DD == sizeof (mpfr_t));
-    assert(sizeof *tmp == sizeof (mpfr_t));
-    assert(sizeof *U == sizeof *V);
+static void ddot (mpfr_t *d, const mpfr_t *v, const mpfr_t *u, int k, mpfr_t *_) {
+    assert(d != _);
+    assert(sizeof *d == sizeof (mpfr_t));
+    assert(sizeof *u == sizeof *v);
+    assert(sizeof *_ == sizeof (mpfr_t));
     assert(k > 0);
-    mpfr_set_zero(*DD, 1);
+    mpfr_set_zero(*d, 1);
     for (int j = 1; j < k; j++) {
-        mpfr_mul_ui(*tmp, U[j], j, RND);
-        mpfr_fma(*DD, *tmp, V[k - j], *DD, RND);
+        mpfr_mul_ui(*_, u[j], j, RND);
+        mpfr_fma(*d, *_, v[k - j], *d, RND);
     }
-    mpfr_div_ui(*DD, *DD, k, RND);
+    mpfr_div_ui(*d, *d, k, RND);
 }
 
-void t_exp (mpfr_t *E, const mpfr_t *U, int k, mpfr_t *tmp) {
-    assert(E != U);
-    assert(sizeof *U == sizeof *E);
-    assert(sizeof *tmp == sizeof (mpfr_t));
+void t_exp (mpfr_t *e, const mpfr_t *u, int k, mpfr_t *_) {
+    assert(e != u);
+    assert(sizeof *u == sizeof *e);
+    assert(sizeof *_ == sizeof (mpfr_t));
     assert(k >= 0);
     if (k == 0) {
-        mpfr_exp(E[0], U[0], RND);
+        mpfr_exp(e[0], u[0], RND);
     } else {
-        ddot(&E[k], E, U, k, tmp);
-        mpfr_fma(E[k], E[0], U[k], E[k], RND);
+        ddot(&e[k], e, u, k, _);
+        mpfr_fma(e[k], e[0], u[k], e[k], RND);
     }
 }
 
-void t_sin_cos (mpfr_t *S, mpfr_t *C, const mpfr_t *U, int k, mpfr_t *tmp, geometry g) {
-    assert(S != C && S != U && C != U);
-    assert(sizeof *U == sizeof *S && sizeof *U == sizeof *C);
-    assert(sizeof *tmp == sizeof (mpfr_t));
+void t_sin_cos (mpfr_t *s, mpfr_t *c, const mpfr_t *u, int k, mpfr_t *_, geometry g) {
+    assert(s != c && s != u && c != u);
+    assert(sizeof *u == sizeof *s && sizeof *u == sizeof *c);
+    assert(sizeof *_ == sizeof (mpfr_t));
     assert(k >= 0);
     if (k == 0) {
         if (g == TRIG) {
-            mpfr_sin_cos(S[0], C[0], U[0], RND);
+            mpfr_sin_cos(s[0], c[0], u[0], RND);
         } else {
-            mpfr_sinh_cosh(S[0], C[0], U[0], RND);
+            mpfr_sinh_cosh(s[0], c[0], u[0], RND);
         }
     } else {
-        ddot(&S[k], C, U, k, tmp);
-        mpfr_fma(S[k], C[0], U[k], S[k], RND);
-        ddot(&C[k], S, U, k, tmp);
-        mpfr_fma(C[k], S[0], U[k], C[k], RND);
+        ddot(&s[k], c, u, k, _);
+        mpfr_fma(s[k], c[0], u[k], s[k], RND);
+        ddot(&c[k], s, u, k, _);
+        mpfr_fma(c[k], s[0], u[k], c[k], RND);
         if (g == TRIG) {
-            mpfr_neg(C[k], C[k], RND);
+            mpfr_neg(c[k], c[k], RND);
         }
     }
 }
 
-void t_tan_sec2 (mpfr_t *T, mpfr_t *S2, const mpfr_t *U, int k, mpfr_t *tmp, geometry g) {
-    assert(T != S2 && T != U && S2 != U);
-    assert(sizeof *U == sizeof *T && sizeof *U == sizeof *S2);
-    assert(sizeof *tmp == sizeof (mpfr_t));
+void t_tan_sec2 (mpfr_t *t, mpfr_t *s2, const mpfr_t *u, int k, mpfr_t *_, geometry g) {
+    assert(t != s2 && t != u && s2 != u);
+    assert(sizeof *u == sizeof *t && sizeof *u == sizeof *s2);
+    assert(sizeof *_ == sizeof (mpfr_t));
     assert(k >= 0);
     if (k == 0) {
         if (g == TRIG) {
-            mpfr_tan(T[0], U[0], RND);
-            mpfr_sqr(*tmp, T[0], RND);
-            mpfr_add_ui(S2[0], *tmp, 1, RND);
+            mpfr_tan(t[0], u[0], RND);
+            mpfr_sqr(*_, t[0], RND);
+            mpfr_add_ui(s2[0], *_, 1, RND);
         } else {
-            mpfr_tanh(T[0], U[0], RND);
-            mpfr_sqr(*tmp, T[0], RND);
-            mpfr_ui_sub(S2[0], 1, *tmp, RND);
+            mpfr_tanh(t[0], u[0], RND);
+            mpfr_sqr(*_, t[0], RND);
+            mpfr_ui_sub(s2[0], 1, *_, RND);
         }
     } else {
-        ddot(&T[k], S2, U, k, tmp);
-        mpfr_fma(T[k], S2[0], U[k], T[k], RND);
-        ddot(&S2[k], T, T, k, tmp);
-        mpfr_fma(S2[k], T[0], T[k], S2[k], RND);
-        mpfr_mul_2ui(S2[k], S2[k], 1, RND);
+        ddot(&t[k], s2, u, k, _);
+        mpfr_fma(t[k], s2[0], u[k], t[k], RND);
+        ddot(&s2[k], t, t, k, _);
+        mpfr_fma(s2[k], t[0], t[k], s2[k], RND);
+        mpfr_mul_2ui(s2[k], s2[k], 1, RND);
         if (g == HYP) {
-            mpfr_neg(S2[k], S2[k], RND);
+            mpfr_neg(s2[k], s2[k], RND);
         }
     }
 }
 
-void t_power (mpfr_t *P, const mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp1, mpfr_t *tmp2) {
-    assert(mpfr_sgn(U[0]) != 0);
-    assert(P != U);
-    assert(sizeof *U == sizeof *P);
+void t_power (mpfr_t *p, const mpfr_t *u, mpfr_t a, int k, mpfr_t *_, mpfr_t *__) {
+    assert(mpfr_sgn(u[0]) != 0);
+    assert(p != u);
+    assert(sizeof *u == sizeof *p);
+    assert(sizeof *_ == sizeof (mpfr_t));
+    assert(sizeof *__ == sizeof (mpfr_t));
     assert(k >= 0);
-    mpfr_set_zero(P[k], 1);
+    mpfr_set_zero(p[k], 1);
     if (k == 0) {
-        mpfr_pow(P[0], U[0], a, RND);
+        mpfr_pow(p[0], u[0], a, RND);
     } else {
-        ddot(tmp1, P, U, k, tmp2);
-        mpfr_fma(*tmp1, P[0], U[k], *tmp1, RND);
-        mpfr_mul(P[k], *tmp1, a, RND);
-        ddot(tmp1, U, P, k, tmp2);
-        mpfr_sub(P[k], P[k], *tmp1, RND);
-        mpfr_div(P[k], P[k], U[0], RND);
+        ddot(__, p, u, k, _);
+        mpfr_fma(*__, p[0], u[k], *__, RND);
+        mpfr_mul(p[k], *__, a, RND);
+        ddot(__, u, p, k, _);
+        mpfr_sub(p[k], p[k], *__, RND);
+        mpfr_div(p[k], p[k], u[0], RND);
     }
 }
 
-void t_ln (mpfr_t *L, const mpfr_t *U, int k, mpfr_t *tmp) {
-    assert(mpfr_sgn(U[0]) > 0);
-    assert(tmp != L && tmp != U);
-    assert(L != U);
+void t_ln (mpfr_t *l, const mpfr_t *u, int k, mpfr_t *_) {
+    assert(mpfr_sgn(u[0]) > 0);
+    assert(_ != l && _ != u);
+    assert(l != u);
+    assert(sizeof *_ == sizeof (mpfr_t));
     assert(k >= 0);
     if (k == 0) {
-        mpfr_log(L[0], U[0], RND);
+        mpfr_log(l[0], u[0], RND);
     } else {
-        ddot(&L[k], U, L, k, tmp);
-        mpfr_sub(L[k], U[k], L[k], RND);
-        mpfr_div(L[k], L[k], U[0], RND);
+        ddot(&l[k], u, l, k, _);
+        mpfr_sub(l[k], u[k], l[k], RND);
+        mpfr_div(l[k], l[k], u[0], RND);
     }
 }

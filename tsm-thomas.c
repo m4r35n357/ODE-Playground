@@ -11,13 +11,13 @@
 #include "taylor-ode.h"
 
 long order, nsteps;
-mpfr_t t, x, y, z, b, h, tmp, *wsy, *wcy, *wsz, *wcz, *wsx, *wcx, *cx, *cy, *cz;
+mpfr_t t, x, y, z, b, h, _, *wsy, *wcy, *wsz, *wcz, *wsx, *wcx, *cx, *cy, *cz;
 
 int main (int argc, char **argv) {
     assert(argc == 9);
     // initialize from command arguments
     t_stepper(argv, &order, &t, &h, &nsteps);
-    mpfr_inits(tmp, NULL);
+    mpfr_inits(_, NULL);
     mpfr_init_set_str(x, argv[5], BASE, RND);
     mpfr_init_set_str(y, argv[6], BASE, RND);
     mpfr_init_set_str(z, argv[7], BASE, RND);
@@ -44,18 +44,18 @@ int main (int argc, char **argv) {
         mpfr_set(cy[0], y, RND);
         mpfr_set(cz[0], z, RND);
         for (int k = 0; k < order; k++) {
-            t_sin_cos(wsx, wcx, cx, k, &tmp, TRIG);
-            t_sin_cos(wsy, wcy, cy, k, &tmp, TRIG);
-            t_sin_cos(wsz, wcz, cz, k, &tmp, TRIG);
+            t_sin_cos(wsx, wcx, cx, k, &_, TRIG);
+            t_sin_cos(wsy, wcy, cy, k, &_, TRIG);
+            t_sin_cos(wsz, wcz, cz, k, &_, TRIG);
             //  x' = sin(y) - Bx
-            mpfr_fms(tmp, cx[k], b, wsy[k], RND);
-            mpfr_div_si(cx[k + 1], tmp, - (k + 1), RND);
+            mpfr_fms(_, cx[k], b, wsy[k], RND);
+            mpfr_div_si(cx[k + 1], _, - (k + 1), RND);
             //  y' = sin(z) - By
-            mpfr_fms(tmp, cy[k], b, wsz[k], RND);
-            mpfr_div_si(cy[k + 1], tmp, - (k + 1), RND);
+            mpfr_fms(_, cy[k], b, wsz[k], RND);
+            mpfr_div_si(cy[k + 1], _, - (k + 1), RND);
             //  z' = sin(x) - Bz
-            mpfr_fms(tmp, cz[k], b, wsx[k], RND);
-            mpfr_div_si(cz[k + 1], tmp, - (k + 1), RND);
+            mpfr_fms(_, cz[k], b, wsx[k], RND);
+            mpfr_div_si(cz[k + 1], _, - (k + 1), RND);
         }
 
         // sum the series using Horner's method and advance one step
