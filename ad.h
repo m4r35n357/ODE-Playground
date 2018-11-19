@@ -110,8 +110,3 @@ void ad_tanh_sech2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n);
  * Calculates Taylor Series for U^a, results stored in jet P
  */
 void ad_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int n);
-
-/*
- * Calculates Taylor Series for the natural logarithm of U, results stored in jet L
- */
-void ad_ln (mpfr_t *L, mpfr_t *U, int n);

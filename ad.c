@@ -191,12 +191,3 @@ void ad_power (mpfr_t *p, mpfr_t *u, mpfr_t a, int n) {
     }
     mpfr_clears(_1, _2, NULL);
 }
-
-void ad_ln (mpfr_t *l, mpfr_t *u, int n) {
-    mpfr_t _;
-    mpfr_init(_);
-    for (int k = 0; k < n; k++) {
-        t_ln(l, u, k, &_);
-    }
-    mpfr_clear(_);
-}

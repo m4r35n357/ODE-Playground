@@ -20,7 +20,7 @@
 #define KBLD "\x1B[1;37m"
 
 long order, n;
-mpfr_t x, y, _, D_1, D_05, D0, D1, D2, D3, D5, D6, D7, D9, *cx, *cy, *cx0, *cx1, *c1, *c2, *c3, *c5, *c6, *c7, *cx9, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2, *wsq, *wsum, *wprod, *wnum, *wdenom, *wquot, *wpwr, *__, *_1, *_2, *_3;
+mpfr_t x, y, _, D_1, D_05, D0, D1, D2, D3, D5, D6, D7, D9, *cx, *cy, *cx0, *cx1, *c1, *c2, *c3, *c5, *c6, *c7, *cx9, *PI_3, *PI_4, *we, *ws, *wc, *wt, *ws2, *wsq, *wsum, *wprod, *wquot, *wpwr, *__, *_1, *_2, *_3;
 
 void septic (mpfr_t *f, mpfr_t *x, int n) {
     ad_minus(_2, x, c1, n);
@@ -91,12 +91,9 @@ int main (int argc, char **argv) {
     wsq = t_jet(n);
     wsum = t_jet(n);
     wprod = t_jet(n);
-    wnum = t_jet(n);
-    wdenom = t_jet(n);
     wquot = t_jet(n);
     wpwr = t_jet(n);
     we = t_jet(n);
-    wl = t_jet(n);
     ws = t_jet(n);
     wc = t_jet(n);
     wt = t_jet(n);
@@ -107,11 +104,6 @@ int main (int argc, char **argv) {
     _3 = t_jet(n);
 
     printf("\n%sx = %s, y = %s, order = %ld%s\n\n", KBLD, argv[2], argv[3], n - 1, KNRM);
-
-    printf("%s%s%s\n", KCYN, "f(x) = x", KNRM);
-    jet_output(cx, n, KNRM, KGRY);
-    derivative_output(cx, n, KBLD, KGRY);
-    printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^2", KNRM);
     ad_product(wprod, cx, cx, n);
@@ -147,31 +139,12 @@ int main (int argc, char **argv) {
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = 1 / (x + 3)", KNRM);
-    ad_plus(wdenom, cx, c3, n);
-    ad_power(wpwr, wdenom, D_1, n);
-    jet_output(wpwr, n, KNRM, KGRY);
-    derivative_output(wpwr, n, KBLD, KGRY);
-    ad_quotient(wquot, c1, wdenom, n);
-    jet_output(wquot, n, KNRM, KGRY);
-    derivative_output(wquot, n, KBLD, KGRY);
-    printf("%s\n", KNRM);
-
     printf("%s%s%s\n", KCYN, "f(x) = 1 / septic(x)", KNRM);
     septic(__, cx, n);
     ad_power(wpwr, __, D_1, n);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
     ad_quotient(wquot, c1, __, n);
-    jet_output(wquot, n, KNRM, KGRY);
-    derivative_output(wquot, n, KBLD, KGRY);
-    printf("%s\n", KNRM);
-
-    printf("%s%s%s\n", KCYN, "f(x) = (2x + 3) / (x + 2)", KNRM);
-    ad_scale(__, cx, D2, n);
-    ad_plus(wnum, __, c3, n);
-    ad_plus(wdenom, cx, c2, n);
-    ad_quotient(wquot, wnum, wdenom, n);
     jet_output(wquot, n, KNRM, KGRY);
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
@@ -186,12 +159,6 @@ int main (int argc, char **argv) {
     ad_exp(we, cx1, n);
     jet_output(we, n, KNRM, KGRY);
     derivative_output(we, n, KBLD, KGRY);
-    printf("%s\n", KNRM);
-
-    printf("%s%s%s\n", KCYN, "f(x) = log(x)", KNRM);
-    ad_ln(wl, cx, n);
-    jet_output(wl, n, KNRM, KGRY);
-    derivative_output(wl, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = sin(x), f(x) = cos(x), x = 0", KNRM);
