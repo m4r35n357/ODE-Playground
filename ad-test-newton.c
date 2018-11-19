@@ -17,12 +17,12 @@ long n_max = 7, n, steps;
 mpfr_t x0, x1, x_step, x_prev, f_prev, f_value, tmp, tmp1, D_1, D_05, D0, D1, D2, D3, D5, D6, D7, *w1, *w2, *w3, *w5, *w6, *w7, *w_value, *_1, *_2, *_3, *wx, *wf, f_tol, x_tol, int_tol;
 model m;
 
-void test_sqr (mpfr_t *f, mpfr_t *x, int n) {
+void test_sqr (mpfr_t *f, const mpfr_t *x, int n) {
     ad_square(f, x, n);
     ad_minus(f, f, w_value, n);
 }
 
-void cosx_x3 (mpfr_t *f, mpfr_t *x, int n) {
+void cosx_x3 (mpfr_t *f, const mpfr_t *x, int n) {
     ad_square(_1, x, n);
     ad_product(_2, _1, x, n);
     ad_sin_cos(_1, f, x, n);
@@ -30,7 +30,7 @@ void cosx_x3 (mpfr_t *f, mpfr_t *x, int n) {
     ad_minus(f, f, w_value, n);
 }
 
-void test_polynomial (mpfr_t *f, mpfr_t *x, int n) {
+void test_polynomial (mpfr_t *f, const mpfr_t *x, int n) {
     ad_square(f, x, n);
     ad_product(_2, f, x, n);
     ad_scale(_1, x, D2, n);
@@ -38,7 +38,7 @@ void test_polynomial (mpfr_t *f, mpfr_t *x, int n) {
     ad_minus(f, f, w5, n);
 }
 
-void septic (mpfr_t *f, mpfr_t *x, int n) {
+void septic (mpfr_t *f, const mpfr_t *x, int n) {
     ad_minus(_2, x, w1, n);
     ad_plus(_1, x, w2, n);
     ad_product(_3, _2, _1, n);
@@ -53,7 +53,7 @@ void septic (mpfr_t *f, mpfr_t *x, int n) {
     ad_product(f, _3, x, n);
 }
 
-void lorentz (mpfr_t *f, mpfr_t *x, int n) {
+void lorentz (mpfr_t *f, const mpfr_t *x, int n) {
     ad_square(_1, x, n);
     ad_minus(_2, w1, _1, n);
     ad_power(f, _2, D_05, n);
