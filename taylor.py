@@ -97,7 +97,7 @@ def t_tan_sec2(t, s2, u, k, hyp=False):
     else:
         tn = s2[0] * u[k] + ddot(s2, u, k)
         sc2 = 2.0 * (t[0] * tn + ddot(t, t, k))
-        return t[k], - sc2 if hyp else sc2
+        return tn, - sc2 if hyp else sc2
 
 
 def t_pwr(p, u, a, k):
