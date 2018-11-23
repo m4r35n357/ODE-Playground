@@ -1,7 +1,7 @@
 /*
  * Automatic Differentiation of Taylor Series, Newton's method
  *
- * Example: ./ad-test-newton-dbg 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 8 50000 >/dev/null
+ * Example: ./ad-test-newton-dbg 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
  *
  * (c) 2018 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -13,13 +13,20 @@
 #include "taylor-ode.h"
 #include "ad.h"
 
-long n_max = 7, n, steps;
+long n_max = 13, n, steps;
+
 mpfr_t x0, x1, x_step, x_prev, f_prev, f_value, tmp, tmp1, D_1, D_05, D0, D1, D2, D3, D5, D6, D7, *w1, *w2, *w3, *w5, *w6, *w7, *w_value, *_1, *_2, *_3, *wx, *wf, f_tol, x_tol, int_tol;
+
 model m;
 
 void test_sqr (mpfr_t *f, const mpfr_t *x, int n) {
     ad_square(f, x, n);
     ad_minus(f, f, w_value, n);
+}
+
+void trig (mpfr_t *f, const mpfr_t *x, int n) {
+    ad_tan_sec2(_1, _2, x, n);
+    ad_minus(f, _1, w_value, n);
 }
 
 void cosx_x3 (mpfr_t *f, const mpfr_t *x, int n) {

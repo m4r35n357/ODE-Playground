@@ -8,18 +8,18 @@ from matplotlib import pyplot
 def main():
     print("X-Y Plotter: {}".format(argv))
     if len(argv) < 3:
-        raise Exception('>>> ERROR! Please supply order and x/y limits <<<')
-    columns = int(argv[1])
-    x_max = float(argv[2])
-    y_max = float(argv[3])
+        raise Exception('>>> ERROR! Please supply x/y limits <<<')
+    x_max = float(argv[1])
+    y_max = float(argv[2])
     line = stdin.readline()
+    columns = len(line.split(' ')) - 1
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')
     ax1.set_xlabel('x', color='.2')
     ax1.set_ylabel('function and derivatives', color='.2')
     ax1.set_xlim(-x_max, x_max)
     ax1.set_ylim(-y_max, y_max)
-    colour = ['k', 'r', 'g', 'b', 'y', 'c', 'm']
+    colour = ['k-', 'r-', 'g-', 'b-', 'y-', 'c-', 'm-', 'r:', 'g:', 'b:', 'y:', 'c:', 'm:']
     data = []
     for c in range(columns):
         data.append([])
@@ -28,8 +28,8 @@ def main():
         for c in range(columns):
             data[c].append(float(p[c]))
         line = stdin.readline()
-    for c in range(1, columns):
-        ax1.plot(data[0], data[c], '{}-'.format(colour[c - 1]), linewidth=1, markersize=0)
+    for c in range(columns - 1, 0, -1):
+        ax1.plot(data[0], data[c], '{}'.format(colour[c - 1]), linewidth=2 if c == 1 else 1, markersize=0)
     pyplot.show()
 
 
