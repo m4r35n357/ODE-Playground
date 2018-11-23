@@ -25,16 +25,15 @@ void test_sqr (mpfr_t *f, const mpfr_t *x, int n) {
 }
 
 void trig (mpfr_t *f, const mpfr_t *x, int n) {
-    ad_tan_sec2(_1, _2, x, n);
-    ad_minus(f, _1, w_value, n);
+    ad_tan_sec2(f, _1, x, n);
 }
 
 void cosx_x3 (mpfr_t *f, const mpfr_t *x, int n) {
     ad_square(_1, x, n);
     ad_product(_2, _1, x, n);
-    ad_sin_cos(_1, f, x, n);
-    ad_minus(f, _1, _2, n);
-    ad_minus(f, f, w_value, n);
+    ad_sin_cos(_1, _3, x, n);
+    ad_minus(_3, _1, _2, n);
+    ad_minus(f, _3, w_value, n);
 }
 
 void test_polynomial (mpfr_t *f, const mpfr_t *x, int n) {
