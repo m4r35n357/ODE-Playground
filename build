@@ -15,9 +15,9 @@ fi
 
 build () {
 	name=$1
-	${CC} -O3 -DNDEBUG -o ${name} ${name}.c taylor-ode.c -lm -lmpfr -s
-	${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c -lm -lmpfr -lgmp -s
-	${CC} -Og $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode.c -lm -lmpfr
+	${CC} -O3 -DNDEBUG -o ${name} ${name}.c taylor-ode.o -lm -lmpfr -s
+	${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.o -lm -lmpfr -lgmp -s
+	${CC} -Og $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode-dbg.o -lm -lmpfr
 	ls -lhrt --color ${name}*
 }
 
@@ -26,6 +26,8 @@ ${CC} -Og -Wall -g -o ad-test-newton-dbg taylor-ode.c ad.c ad-test-newton.c -lm 
 ls -lhrt --color ad-test*
 echo ""
 
+${CC} -c -O3 -DNDEBUG -o taylor-ode.o taylor-ode.c
+${CC} -c -Og $WARNINGS -g -o taylor-ode-dbg.o taylor-ode.c
 for model in \
 tsm-lorenz \
 tsm-thomas \
