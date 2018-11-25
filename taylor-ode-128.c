@@ -348,33 +348,21 @@ int ad_test (int argc, char **argv) {
     set_ad_status(cx, VARIABLE);
     set_ad_status(cy, CONSTANT);
 
-    printf("%s%s%s\n", KCYN, "f(x) = x", KNRM);
-    jet_output(cx, n, KNRM, KGRY);
-    derivative_output(cx, n, KBLD, KGRY);
-    printf("%s\n", KNRM);
-
     printf("%s%s%s\n", KCYN, "f(x) = x^2", KNRM);
-    wprod = ad_product(cx, cx, n);
-    jet_output(wprod, n, KNRM, KGRY);
     wsq = ad_square(cx, n);
     jet_output(wsq, n, KNRM, KGRY);
-    derivative_output(wsq, n, KBLD, KGRY);
-    printf("%s\n", KNRM);
-
-    printf("%s%s%s\n", KCYN, "f(x) = x^3", KNRM);
-    wsq = ad_square(cx, n);
-    wprod = ad_product(wsq, cx, n);
+    wprod = ad_product(cx, cx, n);
     jet_output(wprod, n, KNRM, KGRY);
-    derivative_output(wprod, n, KBLD, KGRY);
+    derivative_output(wsq, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^4", KNRM);
     wsq = ad_square(cx, n);
-    wprod = ad_product(wsq, wsq, n);
-    jet_output(wprod, n, KNRM, KGRY);
-    wprod = ad_product(cx, cx, n);
-    wsq = ad_square(wprod, n);
+    wsq = ad_square(wsq, n);
     jet_output(wsq, n, KNRM, KGRY);
+    wprod = ad_product(cx, cx, n);
+    wprod = ad_product(wprod, wprod, n);
+    jet_output(wprod, n, KNRM, KGRY);
     derivative_output(wsq, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 

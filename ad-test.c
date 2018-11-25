@@ -106,27 +106,20 @@ int main (int argc, char **argv) {
     printf("\n%sx = %s, y = %s, order = %ld%s\n\n", KBLD, argv[2], argv[3], n - 1, KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^2", KNRM);
-    ad_product(wprod, cx, cx, n);
-    jet_output(wprod, n, KNRM, KGRY);
     ad_square(wsq, cx, n);
     jet_output(wsq, n, KNRM, KGRY);
+    ad_product(wprod, cx, cx, n);
+    jet_output(wprod, n, KNRM, KGRY);
     derivative_output(wsq, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = x^3", KNRM);
-    ad_square(wsq, cx, n);
-    ad_product(wprod, wsq, cx, n);
-    jet_output(wprod, n, KNRM, KGRY);
-    derivative_output(wprod, n, KBLD, KGRY);
-    printf("%s\n", KNRM);
-
     printf("%s%s%s\n", KCYN, "f(x) = x^4", KNRM);
-    ad_square(wsq, cx, n);
-    ad_product(wprod, wsq, wsq, n);
-    jet_output(wprod, n, KNRM, KGRY);
-    ad_product(wprod, cx, cx, n);
-    ad_square(wsq, wprod, n);
+    ad_square(__, cx, n);
+    ad_square(wsq, __, n);
     jet_output(wsq, n, KNRM, KGRY);
+    ad_product(__, cx, cx, n);
+    ad_product(wprod, __, __, n);
+    jet_output(wprod, n, KNRM, KGRY);
     derivative_output(wsq, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
