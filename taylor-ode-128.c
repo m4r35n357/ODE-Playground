@@ -1,7 +1,7 @@
 /*
- * Compile using c99 -g -Og -o tsm-lorenz-128 taylor-ode-128.c -lquadmath
+ * Compile using c99 -g -o tsm-lorenz-128 taylor-ode-128.c -lquadmath
  * or, using Clang:
- * clang -Wall -g -Og -o tsm-lorenz-128 taylor-ode-128.c -lquadmath -I'/usr/lib/gcc/x86_64-linux-gnu/7/include'
+ * clang -Wall -g -o tsm-lorenz-128 taylor-ode-128.c -lquadmath -I'/usr/lib/gcc/x86_64-linux-gnu/7/include'
  */
 
 #include <stdio.h>
