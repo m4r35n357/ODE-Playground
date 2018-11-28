@@ -21,6 +21,8 @@ build () {
 	ls -lhrt --color ${name}*
 }
 
+/bin/rm -f *.o
+
 ${CC} -c -O3 -DNDEBUG -o taylor-ode.o taylor-ode.c
 ${CC} -c -Og $WARNINGS -g -o taylor-ode-dbg.o taylor-ode.c
 ${CC} -c -Og $WARNINGS -g -o ad-dbg.o ad.c

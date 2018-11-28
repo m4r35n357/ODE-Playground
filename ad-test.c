@@ -142,19 +142,19 @@ int main (int argc, char **argv) {
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = x^a, x = 9, a = -0.5", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = 9.0^-0.5", KNRM);
     ad_power(wpwr, cx9, D_05, n);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = e^x", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = e^1", KNRM);
     ad_exp(we, cx1, n);
     jet_output(we, n, KNRM, KGRY);
     derivative_output(we, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = sin(x), f(x) = cos(x), x = 0", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = sin(0), f(x) = cos(0)", KNRM);
     ad_sin_cos(ws, wc, cx0, n);
     jet_output(ws, n, KNRM, KGRY);
     derivative_output(ws, n, KBLD, KGRY);
@@ -163,7 +163,7 @@ int main (int argc, char **argv) {
     derivative_output(wc, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = sin(x), f(x) = cos(x), x = pi / 3", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = sin(pi/3), f(x) = cos(pi/3)", KNRM);
     ad_sin_cos(ws, wc, PI_3, n);
     jet_output(ws, n, KNRM, KGRY);
     derivative_output(ws, n, KBLD, KGRY);
@@ -172,7 +172,7 @@ int main (int argc, char **argv) {
     derivative_output(wc, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = sinh(x), f(x) = cosh(x), x = pi / 3", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = sinh(pi/3), f(x) = cosh(pi/3)", KNRM);
     ad_sinh_cosh(ws, wc, PI_3, n);
     jet_output(ws, n, KNRM, KGRY);
     derivative_output(ws, n, KBLD, KGRY);
@@ -181,7 +181,7 @@ int main (int argc, char **argv) {
     derivative_output(wc, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = tan(x), f(x) = sec(x)^2, x = pi / 4", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = tan(pi/4), f(x) = sec(pi/4)^2", KNRM);
     ad_tan_sec2(wt, ws2, PI_4, n);
     jet_output(wt, n, KNRM, KGRY);
     derivative_output(wt, n, KBLD, KGRY);
@@ -190,7 +190,7 @@ int main (int argc, char **argv) {
     derivative_output(ws2, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = tanh(x), f(x) = sech(x)^2, x = pi / 4", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = tanh(pi/4), f(x) = sech(pi/4)^2", KNRM);
     ad_tanh_sech2(wt, ws2, PI_4, n);
     jet_output(wt, n, KNRM, KGRY);
     derivative_output(wt, n, KBLD, KGRY);
