@@ -1,4 +1,5 @@
 
+from sys import stderr
 from taylor import jet_0, jet_c, t_prod, t_quot, t_sqr, t_exp, t_sin_cos, t_tan_sec2, t_pwr, t_ln
 
 
@@ -12,9 +13,9 @@ class Series:
         self.diff_status = diff
 
     def __str__(self):
-        string = "{:14.6e} ".format(self.jet[0], end='')
-        for i in range(1, self.n):
-            string += "{:14.6e}".format(self.jet[i], end='')
+        string = ""
+        for i in range(0, self.n):
+            string += "{:6e} ".format(self.jet[i], end='')
         return string
 
     def __neg__(self):
@@ -189,34 +190,32 @@ class Series:
 
 def newton(model, initial, target=0.0, tol=1.0e-12, max_it=100):
     x = Series(jet_c(initial, 2), diff=True)
-    t = Series(jet_c(target, 2))
     f = Series(jet_c(1.0, 2))
     delta = 1.0
     counter = 1
     while abs(f.jet[0]) > tol or abs(delta) > tol:
-        f = model(x, t)
+        f = model(x, target)
         delta = - f.jet[0] / f.jet[1]
         x.jet[0] += delta
-        print("{:3d} {:22.15e} {:22.15e} {:10.3e}".format(counter, x.jet[0], f.jet[0] + t.jet[0], delta))
+        print("{:3d} {:22.15e} {:22.15e} {:10.3e}".format(counter, x.jet[0], f.jet[0] + target, delta), file=stderr)
         counter += 1
         if counter > max_it:
             break
-    return counter, x.jet[0], f.jet[0] + t.jet[0], delta
+    return counter, x.jet[0], f.jet[0] + target, delta
 
 
 def householder(model, initial, n, target=0.0, tol=1.0e-12, max_it=100):
     x = Series(jet_c(initial, n), diff=True)
-    t = Series(jet_c(target, n))
     f = Series(jet_c(1.0, n))
     delta = 1.0
     counter = 1
     while abs(f.jet[0]) > tol or abs(delta) > tol:
-        f = model(x, t)
+        f = model(x, target)
         r = (f ** -1).derivatives
         delta = r.jet[n - 2] / r.jet[n - 1]
         x.jet[0] += delta * (n - 1)
-        print("{:3d} {:22.15e} {:22.15e} {:10.3e}".format(counter, x.jet[0], f.jet[0] + t.jet[0], delta))
+        print("{:3d} {:22.15e} {:22.15e} {:10.3e}".format(counter, x.jet[0], f.jet[0] + target, delta), file=stderr)
         counter += 1
         if counter > max_it:
             break
-    return counter, x.jet[0], f.jet[0] + t.jet[0], delta
+    return counter, x.jet[0], f.jet[0] + target, delta
