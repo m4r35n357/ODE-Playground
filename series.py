@@ -19,81 +19,81 @@ class Series:
         return string
 
     def __neg__(self):
-        jet = jet_0(self.n)
+        neg_jet = jet_0(self.n)
         for k in range(self.n):
-            jet[k] = - self.jet[k]
-        return Series(jet)
+            neg_jet[k] = - self.jet[k]
+        return Series(neg_jet)
 
     def __add__(self, other):
-        jet = jet_0(self.n)
+        add_jet = jet_0(self.n)
         if isinstance(other, Series):
             assert len(other.jet) == self.n
             for k in range(self.n):
-                jet[k] = self.jet[k] + other.jet[k]
+                add_jet[k] = self.jet[k] + other.jet[k]
         else:
-            jet[0] = self.jet[0] + other
+            add_jet[0] = self.jet[0] + other
             for k in range(1, self.n):
-                jet[k] = self.jet[k]
-        return Series(jet)
+                add_jet[k] = self.jet[k]
+        return Series(add_jet)
 
     def __radd__(self, other):
         return self.__add__(other)
 
     def __sub__(self, other):
-        jet = jet_0(self.n)
+        sub_jet = jet_0(self.n)
         if isinstance(other, Series):
             assert len(other.jet) == self.n
             for k in range(self.n):
-                jet[k] = self.jet[k] - other.jet[k]
+                sub_jet[k] = self.jet[k] - other.jet[k]
         else:
-            jet[0] = self.jet[0] - other
+            sub_jet[0] = self.jet[0] - other
             for k in range(1, self.n):
-                jet[k] = self.jet[k]
-        return Series(jet)
+                sub_jet[k] = self.jet[k]
+        return Series(sub_jet)
 
     def __rsub__(self, other):
-        jet = jet_0(self.n)
-        jet[0] = other - self.jet[0]
+        rsub_jet = jet_0(self.n)
+        rsub_jet[0] = other - self.jet[0]
         for k in range(1, self.n):
-            jet[k] = - self.jet[k]
-        return Series(jet)
+            rsub_jet[k] = - self.jet[k]
+        return Series(rsub_jet)
 
     def __mul__(self, other):
-        jet = jet_0(self.n)
+        mul_jet = jet_0(self.n)
         if isinstance(other, Series):
             assert len(other.jet) == self.n
             for k in range(self.n):
-                jet[k] = t_prod(self.jet, other.jet, k)
+                mul_jet[k] = t_prod(self.jet, other.jet, k)
         else:
             for k in range(self.n):
-                jet[k] = self.jet[k] * other
-        return Series(jet)
+                mul_jet[k] = self.jet[k] * other
+        return Series(mul_jet)
 
     def __rmul__(self, other):
         return self.__mul__(other)
 
     def __truediv__(self, other):
-        q = jet_0(self.n)
+        div_jet = jet_0(self.n)
         if isinstance(other, Series):
             assert len(other.jet) == self.n
             for k in range(self.n):
-                q[k] = t_quot(q, self.jet, other.jet, k)
+                div_jet[k] = t_quot(div_jet, self.jet, other.jet, k)
         else:
             for k in range(self.n):
-                q[k] = self.jet[k] / other
-        return Series(q)
+                div_jet[k] = self.jet[k] / other
+        return Series(div_jet)
 
     def __rtruediv__(self, other):
-        q = (self ** -1).jet
+        rdiv_jet = (self ** -1).jet
         for k in range(self.n):
-            q[k] = other * q[k]
-        return Series(q)
+            rdiv_jet[k] = rdiv_jet[k] * other
+        return Series(rdiv_jet)
 
     def __pow__(self, a):
-        pwr_jet = jet_0(self.n)
+        pow_jet = jet_0(self.n)
         for k in range(self.n):
-            pwr_jet[k] = t_pwr(pwr_jet, self.jet, a, k)
-        return Series(pwr_jet)
+            pow_jet[k] = t_pwr(pow_jet, self.jet, a, k)
+        return Series(pow_jet)
 
     @property
     def diff(self):
