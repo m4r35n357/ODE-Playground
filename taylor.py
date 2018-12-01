@@ -95,4 +95,3 @@ def t_ln(l, u, k):
         return log(u[0])
     else:
         return (u[k] - ddot(u, l, k)) / u[0]
-

@@ -187,6 +187,10 @@ class Series:
             ln_jet[k] = t_ln(ln_jet, self.jet, k)
         return Series(ln_jet)
 
+    @property
+    def abs(self):
+        return self.sqr.__pow__(0.5)
+
 
 def newton(model, initial, target=0.0, tol=1.0e-12, max_it=100):
     x = Series(jet_c(initial, 2), diff=True)
