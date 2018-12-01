@@ -12,7 +12,7 @@ def main():
     x_max = float(argv[1])
     y_max = float(argv[2])
     line = stdin.readline()
-    columns = len(line.split(' ')) - 1
+    columns = len(line.split()) - 1
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')
     ax1.set_xlabel('x', color='.2')
@@ -24,9 +24,12 @@ def main():
     for c in range(columns):
         data.append([])
     while line:
-        p = line.split(' ')
+        p = line.split()
         for c in range(columns):
-            data[c].append(float(p[c]))
+            try:
+                data[c].append(float(p[c]))
+            except ValueError:
+                print(p)
         line = stdin.readline()
     for c in range(columns - 1, 0, -1):
         ax1.plot(data[0], data[c], '{}'.format(colour[c - 1]), linewidth=2 if c == 1 else 1, markersize=0)
