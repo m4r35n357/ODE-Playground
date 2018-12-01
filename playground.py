@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# Example: ./playground.py 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
+
 from sys import argv, stderr
 from math import pi
 from series import Series, newton, householder

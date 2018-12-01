@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
+#  Example: ./tsm_thomas.py 16 10 0.1 30001 1 0 0 .19 | ./plotPi3d.py
+
 from sys import argv
 from taylor import jet_0, t_horner, t_sin_cos
 
-n, h, steps = int(argv[1]), float(argv[2]), int(argv[3])
-x, y, z = float(argv[4]), float(argv[5]), float(argv[6])
-b = float(argv[7])
+n, h, steps = int(argv[2]), float(argv[3]), int(argv[4])
+x, y, z = float(argv[5]), float(argv[6]), float(argv[7])
+b = float(argv[8])
 
 cx, cy, cz = jet_0(n + 1), jet_0(n + 1), jet_0(n + 1)
 wsx, wcx = jet_0(n), jet_0(n)

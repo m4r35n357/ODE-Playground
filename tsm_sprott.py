@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
+#  Example: ./tsm_sprott.py 16 10 0.1 30001 1 0 0 | ./plotPi3d.py
+
 from sys import argv
 from taylor import jet_0, t_prod, t_horner, jet_c, t_sqr
 
-n, h, steps = int(argv[1]), float(argv[2]), int(argv[3])
-x, y, z = float(argv[4]), float(argv[5]), float(argv[6])
+n, h, steps = int(argv[2]), float(argv[3]), int(argv[4])
+x, y, z = float(argv[5]), float(argv[6]), float(argv[7])
 
 cx, cy, cz = jet_0(n + 1), jet_0(n + 1), jet_0(n + 1)
 w1 = jet_c(1.0, n)
