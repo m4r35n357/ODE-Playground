@@ -29,7 +29,7 @@ w_f = Series(jet_0(N_MAX))
 for k in range(steps):
     w_x.jet[0] = x0 + k * x_step
     w_f = fun(w_x, 0.0)
-    print("{:6e} {}".format(w_x.jet[0], w_f.derivatives))
+    print("{:.6e} {}".format(w_x.jet[0], w_f.derivatives))
     if k > 0:
         # noinspection PyUnboundLocalVariable
         if f_prev * w_f.jet[0] < 0.0:

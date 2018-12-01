@@ -15,7 +15,7 @@ class Series:
     def __str__(self):
         string = ""
         for i in range(0, self.n):
-            string += "{:6e} ".format(self.jet[i], end='')
+            string += "{:.6e} ".format(self.jet[i], end='')
         return string
 
     def __neg__(self):
