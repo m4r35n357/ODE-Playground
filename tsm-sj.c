@@ -28,7 +28,7 @@ int main (int argc, char **argv) {
     cx = t_jet(order + 1);
     cy = t_jet(order + 1);
     cz = t_jet(order + 1);
-    w_b = t_jet_constant(order, b);
+    w_b = t_jet_c(order, b);
 
     // main loop
     for (long step = 1; step < nsteps + 1; step++) {

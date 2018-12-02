@@ -26,7 +26,7 @@ int main (int argc, char **argv) {
     wa = t_jet(order);
     wb = t_jet(order);
     mpfr_set_str(tmp, "1.0", BASE, RND);
-    w1 = t_jet_constant(order, tmp);
+    w1 = t_jet_c(order, tmp);
 
     // main loop
     for (long step = 1; step < nsteps + 1; step++) {

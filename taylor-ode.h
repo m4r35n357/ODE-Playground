@@ -39,7 +39,7 @@ mpfr_t *t_jet (int size);
 /*
  * Creates a derivative jet of the specified size, with element zero set to value and the rest zeroed
  */
-mpfr_t *t_jet_constant (int size, mpfr_t value);
+mpfr_t *t_jet_c (int size, mpfr_t value);
 
 /*
  * Sums a Taylor series safely and efficiently

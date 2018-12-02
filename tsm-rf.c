@@ -33,7 +33,7 @@ int main (int argc, char **argv) {
     wb = t_jet(order);
     wc = t_jet(order);
     mpfr_set_ui(_, 1, RND);
-    w1 = t_jet_constant(order, _);
+    w1 = t_jet_c(order, _);
     mpfr_init_set_ui(D3, 3, RND);
 
     // main loop

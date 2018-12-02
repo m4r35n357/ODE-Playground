@@ -89,19 +89,19 @@ int main (int argc, char **argv) {
     mpfr_init_set_si(D5, 5, RND);
     mpfr_init_set_si(D6, 6, RND);
     mpfr_init_set_si(D7, 7, RND);
-    w1 = t_jet_constant(n_max, D1);
-    w2 = t_jet_constant(n_max, D2);
-    w3 = t_jet_constant(n_max, D3);
-    w5 = t_jet_constant(n_max, D5);
-    w6 = t_jet_constant(n_max, D6);
-    w7 = t_jet_constant(n_max, D7);
+    w1 = t_jet_c(n_max, D1);
+    w2 = t_jet_c(n_max, D2);
+    w3 = t_jet_c(n_max, D3);
+    w5 = t_jet_c(n_max, D5);
+    w6 = t_jet_c(n_max, D6);
+    w7 = t_jet_c(n_max, D7);
 
-    w_value = t_jet_constant(n_max, f_value);
+    w_value = t_jet_c(n_max, f_value);
     _1 = t_jet(n_max);
     _2 = t_jet(n_max);
     _3 = t_jet(n_max);
 
-    wx = t_jet_constant(n_max, x0);
+    wx = t_jet_c(n_max, x0);
     set_ad_status(wx, VARIABLE);
     wf = t_jet(n_max);
 
@@ -126,13 +126,13 @@ int main (int argc, char **argv) {
                     fprintf(stderr, "Bracketed root, solving ");
                     if (n == 1) {
                         fprintf(stderr, "using bisection\n");
-                        ad_bisect(m, t_jet_constant(n, x_prev), wx, 100, f_tol, x_tol, t_jet(n), t_jet(n), t_jet(n));
+                        ad_bisect(m, t_jet_c(n, x_prev), wx, 100, f_tol, x_tol, t_jet(n), t_jet(n), t_jet(n));
                     } else if (n == 2) {
                         fprintf(stderr, "using Newton's method\n");
-                        ad_newton(m, t_jet_constant(n, D1), wx, 100, f_tol, x_tol);
+                        ad_newton(m, t_jet_c(n, D1), wx, 100, f_tol, x_tol);
                     } else {
                         fprintf(stderr, "using Householder's method of degree %lu\n", n - 1);
-                        ad_householder(m, t_jet_constant(n, D1), wx, n, 100, f_tol, x_tol, t_jet(n), t_jet_constant(n, D1));
+                        ad_householder(m, t_jet_c(n, D1), wx, n, 100, f_tol, x_tol, t_jet(n), t_jet_c(n, D1));
                     }
                     fprintf(stderr, "\n");
                 }

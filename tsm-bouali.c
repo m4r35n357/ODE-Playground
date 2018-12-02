@@ -32,7 +32,7 @@ int main (int argc, char **argv) {
     wa = t_jet(order);
     wb = t_jet(order);
     mpfr_init_set_ui(_, 1, RND);
-    w1 = t_jet_constant(order, _);
+    w1 = t_jet_c(order, _);
 
     // main loop
     for (long step = 1; step < nsteps + 1; step++) {

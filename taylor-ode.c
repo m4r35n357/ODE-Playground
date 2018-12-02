@@ -41,7 +41,7 @@ mpfr_t *t_jet (int n) {
     return jet;
 }
 
-mpfr_t *t_jet_constant (int n, mpfr_t value) {
+mpfr_t *t_jet_c (int n, mpfr_t value) {
     assert(n > 0);
     mpfr_t *jet = t_jet(n);
     mpfr_set(jet[0], value, RND);
