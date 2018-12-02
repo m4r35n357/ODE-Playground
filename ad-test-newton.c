@@ -72,7 +72,7 @@ int main (int argc, char **argv) {
     mpfr_inits(x_step, x_prev, f_prev, tmp, tmp1, NULL);
 
     n = strtol(argv[1], NULL, BASE);
-    assert(n > 0 && n <= n_max);
+    assert(n > -1 && n <= n_max);
     mpfr_init_set_str(x0, argv[2], BASE, RND);
     mpfr_init_set_str(x1, argv[3], BASE, RND);
     steps = strtol(argv[4], NULL, BASE);
@@ -119,21 +119,23 @@ int main (int argc, char **argv) {
             mpfr_printf("%.6RNe ", wf[i]);
         }
         printf("\n");
-        if(k > 0) {
-            mpfr_mul(tmp, f_prev, wf[0], RND);
-            if (mpfr_sgn(tmp) < 0) {
-                fprintf(stderr, "Bracketed root, solving ");
-                if (n == 1) {
-                    fprintf(stderr, "using bisection\n");
-                    ad_bisect(m, t_jet_constant(n, x_prev), wx, 100, f_tol, x_tol, t_jet(n), t_jet(n), t_jet(n));
-                } else if (n == 2) {
-                    fprintf(stderr, "using Newton's method\n");
-                    ad_newton(m, t_jet_constant(n, D1), wx, 100, f_tol, x_tol);
-                } else {
-                    fprintf(stderr, "using Householder's method of degree %lu\n", n - 1);
-                    ad_householder(m, t_jet_constant(n, D1), wx, n, 100, f_tol, x_tol, t_jet(n), t_jet_constant(n, D1));
+        if (n != 0) {
+            if(k > 0) {
+                mpfr_mul(tmp, f_prev, wf[0], RND);
+                if (mpfr_sgn(tmp) < 0) {
+                    fprintf(stderr, "Bracketed root, solving ");
+                    if (n == 1) {
+                        fprintf(stderr, "using bisection\n");
+                        ad_bisect(m, t_jet_constant(n, x_prev), wx, 100, f_tol, x_tol, t_jet(n), t_jet(n), t_jet(n));
+                    } else if (n == 2) {
+                        fprintf(stderr, "using Newton's method\n");
+                        ad_newton(m, t_jet_constant(n, D1), wx, 100, f_tol, x_tol);
+                    } else {
+                        fprintf(stderr, "using Householder's method of degree %lu\n", n - 1);
+                        ad_householder(m, t_jet_constant(n, D1), wx, n, 100, f_tol, x_tol, t_jet(n), t_jet_constant(n, D1));
+                    }
+                    fprintf(stderr, "\n");
                 }
-                fprintf(stderr, "\n");
             }
         }
         mpfr_set(x_prev, wx[0], RND);
