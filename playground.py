@@ -16,7 +16,11 @@ def septic(a, value):
 
 
 def playground(a, value):
-    return (2 * a).sin - 2 * a.sin * a.cos - value
+    # return (2 * a).sin - 2 * a.sin * a.cos - value
+    # return (2 * a).cos - a.cos.sqr + a.sin.sqr - value
+    # return (3 * a).sin - 3 * a.sin + 4 * a.sin * a.sin.sqr - value
+    # return (3 * a).cos + 3 * a.cos - 4 * a.cos * a.cos.sqr - value
+    return a.abs - value
 
 
 N_MAX = 13

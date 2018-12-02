@@ -42,7 +42,7 @@ def t_prod(u, v, k):
 
 
 def t_quot(q, u, v, k):
-    assert v[0] != 0.0
+    assert abs(v[0]) != 0.0
     tq = 0.0
     for j in range(1, k + 1):
         tq += v[j] * q[k - j]
@@ -50,7 +50,7 @@ def t_quot(q, u, v, k):
 
 
 def t_sqrt(r, u, k):
-    assert u[0] > 0.0
+    assert abs(u[0]) > 0.0
     if k == 0:
         return sqrt(u[0])
     else:
@@ -98,7 +98,7 @@ def t_tan_sec2(t, s2, u, k, hyp=False):
 
 
 def t_pwr(p, u, a, k):
-    assert u[0] != 0.0
+    assert abs(u[0]) != 0.0
     if k == 0:
         return u[0]**a
     else:
@@ -106,7 +106,7 @@ def t_pwr(p, u, a, k):
 
 
 def t_ln(l, u, k):
-    assert u[0] > 0.0
+    assert abs(u[0]) > 0.0
     if k == 0:
         return log(u[0])
     else:

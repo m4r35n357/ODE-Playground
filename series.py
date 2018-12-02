@@ -197,7 +197,7 @@ class Series:
 
     @property
     def abs(self):
-        return self.sqr.__pow__(0.5)
+        return self.sqr.sqrt
 
 
 def bisect(model, ax, bx, target=0.0, tol=1.0e-12, max_it=100):
