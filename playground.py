@@ -3,7 +3,6 @@
 # Example: ./playground.py 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
 
 from sys import argv, stderr
-from math import pi
 from series import Series, newton, householder
 from taylor import jet_0, jet_c
 
@@ -17,8 +16,7 @@ def septic(a, value):
 
 
 def playground(a, value):
-    # return (a.sqr)**0.5 - value
-    return a.sqrt - a ** 0.5 - value
+    return ((2 * a ** 2) / 3) * (3 / (2 * a ** 2)) - value
 
 
 N_MAX = 13
@@ -48,40 +46,3 @@ for k in range(steps):
                 householder(fun, w_x.jet[0], n)
     x_prev = w_x.jet[0]
     f_prev = w_f.jet[0]
-
-
-print("", file=stderr)
-sine, cosine = Series(jet_c(pi / 3.0, 7), diff=True).sin_cos
-print(sine, file=stderr)
-print(sine.derivatives, file=stderr)
-print(cosine, file=stderr)
-print(cosine.derivatives, file=stderr)
-print("", file=stderr)
-
-tangent, secant2 = Series(jet_c(pi / 4.0, 7), diff=True).tan_sec2
-print(tangent, file=stderr)
-print(tangent.derivatives, file=stderr)
-print(secant2, file=stderr)
-print(secant2.derivatives, file=stderr)
-print("", file=stderr)
-
-z = Series(jet_c(3, 7), diff=True)
-print(z, file=stderr)
-print("", file=stderr)
-print(z + 2, file=stderr)
-print(2 + z, file=stderr)
-print(z + z, file=stderr)
-print("", file=stderr)
-print(z - 2, file=stderr)
-print(2 - z, file=stderr)
-print(z - z, file=stderr)
-print("", file=stderr)
-print(z * 2, file=stderr)
-print(2 * z, file=stderr)
-print(z + z, file=stderr)
-print("", file=stderr)
-print(z / 2, file=stderr)
-print(2 / z, file=stderr)
-print(z / z, file=stderr)
-print("", file=stderr)
-print(z ** 2, file=stderr)
