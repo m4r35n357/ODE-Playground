@@ -105,6 +105,33 @@ void t_quotient (mpfr_t *q, const mpfr_t *u, const mpfr_t *v, int k) {
     mpfr_div(q[k], q[k], v[0], RND);
 }
 
+void t_sqrt (mpfr_t *r, const mpfr_t *u, int k) {
+    assert(mpfr_sgn(u[0]) > 0);
+    assert(r != u);
+    assert(sizeof *u == sizeof *r);
+    assert(k >= 0);
+    if (k == 0) {
+        mpfr_sqrt(r[0], u[0], RND);
+    } else {
+        mpfr_set_zero(r[k], RND);
+        if (k % 2 == 1) {
+            for (int j = 1; j < (k - 1) / 2 + 1; j++) {
+                mpfr_fma(r[k], r[j], r[k - j], r[k], RND);
+            }
+            mpfr_mul_ui(r[k], r[k], 2, RND);
+        } else {
+            for (int j = 1; j < (k - 2) / 2 + 1; j++) {
+                mpfr_fma(r[k], r[j], r[k - j], r[k], RND);
+            }
+            mpfr_mul_ui(r[k], r[k], 2, RND);
+            mpfr_fma(r[k], r[k / 2], r[k / 2], r[k], RND);
+        }
+        mpfr_sub(r[k], u[k], r[k], RND);
+        mpfr_div_ui(r[k], r[k], 2, RND);
+        mpfr_div(r[k], r[k], r[0], RND);
+    }
+}
+
 static void ddot (mpfr_t *d, const mpfr_t *v, const mpfr_t *u, int k, mpfr_t *_) {
     assert(d != _);
     assert(sizeof *d == sizeof (mpfr_t));

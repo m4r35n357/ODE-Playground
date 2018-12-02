@@ -42,3 +42,6 @@ print(2 / z, file=stderr)
 print(z / z, file=stderr)
 print("", file=stderr)
 print(z ** 2, file=stderr)
+
+print("", file=stderr)
+print(Series(jet_c(2.0, 7), diff=True).sqrt, file=stderr)

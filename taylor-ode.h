@@ -62,6 +62,11 @@ void t_product (mpfr_t *P, const mpfr_t *U, const mpfr_t *V, int k);
 void t_quotient (mpfr_t *Q, const mpfr_t *U, const mpfr_t *V, int k);
 
 /*
+ * Calculates kth element of the square root of U, results stored in jet R
+ */
+void t_sqrt (mpfr_t *R, const mpfr_t *U, int k);
+
+/*
  * Calculates kth element of the exponential of U, results stored in jet E
  */
 void t_exp (mpfr_t *E, const mpfr_t *U, int k, mpfr_t *tmp);

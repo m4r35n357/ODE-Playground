@@ -58,11 +58,11 @@ def t_sqrt(r, u, k):
         if k % 2 == 1:
             for j in range(1, (k - 1) // 2 + 1):
                 rt += r[j] * r[k - j]
-            return (u[k] - 2.0 * rt) / (2.0 * u[0])
+            return (u[k] - 2.0 * rt) / (2.0 * r[0])
         else:
             for j in range(1, (k - 2) // 2 + 1):
                 rt += r[j] * r[k - j]
-            return (u[k] - 2.0 * rt - r[k // 2]**2) / (2.0 * u[0])
+            return (u[k] - 2.0 * rt - r[k // 2]**2) / (2.0 * r[0])
 
 
 def ddot(v, u, k):

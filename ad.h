@@ -82,6 +82,11 @@ void ad_product(mpfr_t *P, const mpfr_t *V, const mpfr_t *U, int n);
 void ad_quotient (mpfr_t *Q, const mpfr_t *U, const mpfr_t *V, int n);
 
 /*
+ * Calculates Taylor Series for the square root of U, result stored in jet R
+ */
+void ad_sqrt (mpfr_t *R, const mpfr_t *U, int n);
+
+/*
  * Calculates Taylor Series for the exponential of U, results stored in jet E
  */
 void ad_exp (mpfr_t *E, const mpfr_t *U, int n);

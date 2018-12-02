@@ -138,6 +138,12 @@ void ad_quotient (mpfr_t *q, const mpfr_t *u, const mpfr_t *v, int n) {
     }
 }
 
+void ad_sqrt (mpfr_t *r, const mpfr_t *u, int n) {
+    for (int k = 0; k < n; k++) {
+        t_sqrt(r, u, k);
+    }
+}
+
 void ad_exp (mpfr_t *e, const mpfr_t *u, int n) {
     mpfr_t _;
     mpfr_init(_);
