@@ -37,26 +37,26 @@ void derivative_output (mpfr_t *jet, long n, char* f_colour, char *fk_colour) {
     jet_output(jet, n, f_colour, fk_colour);
 }
 
-void ad_bisect (model m, mpfr_t *xa, mpfr_t *xb, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *xc, mpfr_t *fa, mpfr_t *fc) {
+void ad_bisect (model m, mpfr_t *a, mpfr_t *b, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *c, mpfr_t *fa, mpfr_t *fc) {
     mpfr_t delta, _;
     int counter = 0;
     mpfr_inits(delta, _, NULL);
-    m(fa, xa, 1);
-    mpfr_sub(delta, xb[0], xa[0], RND);
+    m(fa, a, 1);
+    mpfr_sub(delta, b[0], a[0], RND);
     while(mpfr_cmp_abs(fc[0], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
-        mpfr_add(xc[0], xa[0], xb[0], RND);
-        mpfr_div_ui(xc[0], xc[0], 2, RND);
-        m(fc, xc, 1);
+        mpfr_add(c[0], a[0], b[0], RND);
+        mpfr_div_ui(c[0], c[0], 2, RND);
+        m(fc, c, 1);
         mpfr_mul(_, fa[0], fc[0], RND);
         if (mpfr_sgn(_) < 0) {
-            mpfr_set(xb[0], xc[0], RND);
+            mpfr_set(b[0], c[0], RND);
         } else {
-            mpfr_set(xa[0], xc[0], RND);
+            mpfr_set(a[0], c[0], RND);
         }
-        mpfr_sub(delta, xb[0], xa[0], RND);
+        mpfr_sub(delta, b[0], a[0], RND);
         if (++counter > max_it) break;
     }
-    mpfr_fprintf(stderr, "%3d %20.12RNe %20.12RNe %20.12RNe\n", counter, xc[0], fc[0], delta);
+    mpfr_fprintf(stderr, "%3d %20.12RNe %20.12RNe %20.12RNe\n", counter, c[0], fc[0], delta);
     mpfr_clears(delta, _, NULL);
 }
 
@@ -74,15 +74,15 @@ void ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t 
     mpfr_clear(delta);
 }
 
-void ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *f_reciprocal, mpfr_t *w1) {
+void ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *f_recip, mpfr_t *w1) {
     mpfr_t delta;
     int counter = 0;
     mpfr_init_set_ui(delta, 1, RND);
     while(mpfr_cmp_abs(f[0], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
         m(f, x, n);
-        ad_quotient(f_reciprocal, w1, f, n);
-        jet_to_derivs(f_reciprocal, n);
-        mpfr_div(delta, f_reciprocal[n - 2], f_reciprocal[n - 1], RND);
+        ad_quotient(f_recip, w1, f, n);
+        jet_to_derivs(f_recip, n);
+        mpfr_div(delta, f_recip[n - 2], f_recip[n - 1], RND);
         mpfr_mul_ui(delta, delta, n - 1, RND);
         mpfr_add(x[0], x[0], delta, RND);
         if (++counter > max_it) break;

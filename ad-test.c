@@ -59,24 +59,23 @@ int main (int argc, char **argv) {
     mpfr_init_set_ui(D7, 7, RND);
     mpfr_init_set_ui(D9, 9, RND);
 
-    cx = t_jet_c(n, x);
-    cx0 = t_jet_c(n, D0);
-    cx1 = t_jet_c(n, D1);
-    cy = t_jet_c(n, y);
-
-    set_ad_status(cx, VARIABLE);
-    set_ad_status(cx0, VARIABLE);
-    set_ad_status(cx1, VARIABLE);
-    set_ad_status(cy, CONSTANT);
-
     c1 = t_jet_c(n, D1);
     c2 = t_jet_c(n, D2);
     c3 = t_jet_c(n, D3);
     c5 = t_jet_c(n, D5);
     c6 = t_jet_c(n, D6);
     c7 = t_jet_c(n, D7);
+
+    cx = t_jet_c(n, x);
+    cx0 = t_jet_c(n, D0);
+    cx1 = t_jet_c(n, D1);
     cx9 = t_jet_c(n, D9);
+    cy = t_jet_c(n, y);
+    set_ad_status(cx, VARIABLE);
+    set_ad_status(cx0, VARIABLE);
+    set_ad_status(cx1, VARIABLE);
     set_ad_status(cx9, VARIABLE);
+    set_ad_status(cy, CONSTANT);
 
     mpfr_const_pi(_, RND);
     mpfr_div_ui(_, _, 3, RND);

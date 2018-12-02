@@ -49,7 +49,7 @@ void ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t 
 /*
  * Finds a root of fn(f, x) by Householder's method, where f and x are Taylor Series
  */
-void ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *f_reciprocal, mpfr_t *w1);
+void ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *f_recip, mpfr_t *w1);
 
 /*
  * Scales Taylor Series U by a factor a, result stored in jet S
