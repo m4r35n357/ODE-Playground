@@ -1,5 +1,5 @@
 
-from math import sin, cos, tan, exp, sinh, cosh, tanh, log
+from math import sin, cos, tan, exp, sinh, cosh, tanh, log, sqrt
 
 
 def jet_0(n):
@@ -47,6 +47,22 @@ def t_quot(q, u, v, k):
     for j in range(1, k + 1):
         tq += v[j] * q[k - j]
     return (u[k] - tq) / v[0]
+
+
+def t_sqrt(r, u, k):
+    assert u[0] > 0.0
+    if k == 0:
+        return sqrt(u[0])
+    else:
+        rt = 0.0
+        if k % 2 == 1:
+            for j in range(1, (k - 1) // 2 + 1):
+                rt += r[j] * r[k - j]
+            return (u[k] - 2.0 * rt) / (2.0 * u[0])
+        else:
+            for j in range(1, (k - 2) // 2 + 1):
+                rt += r[j] * r[k - j]
+            return (u[k] - 2.0 * rt - r[k // 2]**2) / (2.0 * u[0])
 
 
 def ddot(v, u, k):

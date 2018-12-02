@@ -1,6 +1,6 @@
 
 from sys import stderr
-from taylor import jet_0, jet_c, t_prod, t_quot, t_sqr, t_exp, t_sin_cos, t_tan_sec2, t_pwr, t_ln
+from taylor import jet_0, jet_c, t_prod, t_quot, t_sqr, t_exp, t_sin_cos, t_tan_sec2, t_pwr, t_ln, t_sqrt
 
 
 class Series:
@@ -84,9 +84,10 @@ class Series:
         return Series(div_jet)
 
     def __rtruediv__(self, other):
-        rdiv_jet = (self ** -1).jet
+        other_jet = jet_c(other, self.n)
+        rdiv_jet = jet_0(self.n)
         for k in range(self.n):
-            rdiv_jet[k] = rdiv_jet[k] * other
+            rdiv_jet[k] = t_quot(rdiv_jet, other_jet, self.jet, k)
         return Series(rdiv_jet)
 
     def __pow__(self, a):
@@ -118,6 +119,13 @@ class Series:
         for k in range(self.n):
             sqr_jet[k] = t_sqr(self.jet, k)
         return Series(sqr_jet)
+
+    @property
+    def sqrt(self):
+        sqrt_jet = jet_0(self.n)
+        for k in range(self.n):
+            sqrt_jet[k] = t_sqrt(sqrt_jet, self.jet, k)
+        return Series(sqrt_jet)
 
     @property
     def exp(self):

@@ -16,14 +16,18 @@ def septic(a, value):
     return (a + 7) * (a + 5) * (a + 2) * a * (a - 1) * (a - 3) * (a - 6) - value
 
 
+def playground(a, value):
+    # return (a.sqr)**0.5 - value
+    return a.sqrt - a ** 0.5 - value
+
+
 N_MAX = 13
 n = int(argv[1])
 x0 = float(argv[2])
 x1 = float(argv[3])
 steps = int(argv[4])
 target = float(argv[5])
-# fun = cosx_x3
-fun = septic
+fun = playground
 
 x_step = (x1 - x0) / steps
 w_x = Series(jet_c(x0, N_MAX), diff=True)
