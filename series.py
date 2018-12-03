@@ -201,11 +201,11 @@ class Series:
 
 
 def bisect(model, ax, bx, target=0.0, tol=1.0e-12, max_it=100):
-    a = Series(jet_c(ax, 2))
-    b = Series(jet_c(bx, 2))
-    c = Series(jet_0(2))
+    a = Series(jet_c(ax, 1))
+    b = Series(jet_c(bx, 1))
+    c = Series(jet_0(1))
     fa = model(a, target)
-    fc = Series(jet_c(1.0, 2))
+    fc = Series(jet_c(1.0, 1))
     delta = b.jet[0] - a.jet[0]
     counter = 1
     while abs(fc.jet[0]) > tol or abs(delta) > tol:
