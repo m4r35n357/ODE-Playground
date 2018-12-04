@@ -1,0 +1,121 @@
+\documentclass[11pt]{article}
+%Gummi|063|=)
+\usepackage{datetime}
+\usepackage{mathtools}
+\usepackage{listings}
+\usepackage{graphicx}
+\title{\textbf{Taylor Series Method for Solving ODEs}}
+\author{Ian Smith}
+\date{December 2018}
+\graphicspath{ {images/} }
+\begin{document}
+
+\maketitle
+
+\abstract
+Here is a simple and accurate numerical approach for evolving a system of nonlinear ordinary differential equations (ODEs).
+Time varying quantities are represented using arbitrary degree Taylor Series, with the derivative terms in the series generated via recurrence relationships.
+Horner's method is then used to calculate the value at the next timestep. 
+
+\section{Introduction}
+Starting with a differential equation (ODE), or system of such equations:
+\begin{equation}
+\dot{x} = f(x)
+\end{equation}
+We can represent the variable(s) $x$ as a Taylor Series in the time domain.
+Solving the equation in this context means that from the given initial condition(s), $x$, we want to evolve the system state to a later time.
+The interval between those initial condition(s) and that later time is the time step, $h$.
+So, in the time domain we have:
+\begin{equation}
+\begin{aligned}
+x(h) &= x + \frac{x'h}{1!} + \frac{x''h^2}{2!} + \frac{x'''h^3}{3!} + ... + \frac{x^kh^k}{k!} + ...\\
+&= \sum_{k=0}^{\infty} \frac{x^kh^k}{k!}\\
+\end{aligned}
+\end{equation}
+Rather than using the $x$ derivatives $x^k$ (note superscript!) directly, and carrying around the factorial terms, we define a "jet" of (subscripted) Taylor Coefficients (TCs) as follows:
+\begin{equation}
+x_k = \frac{x^k}{k!}
+\end{equation}
+so that we now have the simpler form:
+\begin{equation}
+\begin{aligned}
+x(h) &= \sum_{k=0}^{\infty} x_kh^k
+\end{aligned}
+\end{equation}
+Differentiating this with respect to time ($h$) we can represent the LHS of the ODE:
+\begin{equation}
+\begin{aligned}
+\dot{x}(h) &= \sum_{k=1}^{\infty} k x_kh^{k-1} = \sum_{k=0}^{\infty} (k + 1) x_{k+1}h^k
+\end{aligned}
+\end{equation}
+but we can also say, as in (4):
+\begin{equation}
+\dot{x}(h) = \sum_{k=0}^{\infty} \dot{x}_kh^k
+\end{equation}
+equating the two polynomials by powers of $h$ we get for the $k^{th}$ term:
+\begin{equation}
+\dot{x}_k = (k + 1) x_{k+1}
+\end{equation}
+or
+\begin{equation}
+x_{k+1} = \frac{\dot{x}_k} {k + 1} 
+\end{equation}
+This is a key realtionship between the "derivative" of the ODE, and the next term in the taylor series.
+\section{Procedure}
+We will use the letter $F$ to represent the ODE function in (1) when expressed in terms of the TCs.
+
+As can be seen from (2) and (3), $x_0 = x^0$ is just $x$, the initial condition(s), and $\dot{x}_0$ is just the differential equation $F$ itself.
+We can evaluate it and divide by $k + 1$ to get $x_1$.
+Now we need to use the differential equations with $x_1$ to get $\dot{x}_1$, and divide by $k + 1$ again to get $x_2$, and so on.  Explicitly, the two processes are:
+\begin{equation}
+\begin{aligned}
+\dot{x}_k &= F(x_k) \\
+x_{k+1} &= \frac{\dot{x}_k} {k + 1}
+\end{aligned}
+\end{equation}
+Which would typically be combined into a single step in code:
+\begin{equation}
+x_{k+1} = \frac{F(x_k)} {k + 1}
+\end{equation}
+In this way we build up the derivative "jet" term by term.
+Obtaining $F(x_k)$ from $f(t)$ is where the recurrence relations (where necessary) come in.
+
+Once we have enough terms, we use Horner's method to sum the polynomial.
+\section{Examples}
+\subsection{Exponential Decay}
+Time domain ($\dot{x} = f(x)$):
+\begin{equation}
+\dot{x} = - a x
+\end{equation}
+Taylor coefficients ($\dot{x}_k = F(x_k) / k + 1$):
+\begin{equation}
+x_{k+1} = \frac{- a x_k} {k + 1}
+\end{equation}
+In this simple case (multiplication by a scalar) we do not need to use any recurrence formula, as $x_{k+1}$ depends only on $x_k$.
+Addition and subtraction of TCs are similar in this regard.
+
+Where multiplication and division of TCs and functions with TC arguments are concerned, the situation is slightly more complex.
+\subsection{Lorenz Equations}
+Time domain ($\dot{x} = f(x)$):
+\begin{equation}
+\begin{aligned}
+\dot{x} &= - \sigma (y - x) \\
+\dot{y} &= - \rho x - xz - y \\
+\dot{z} &= - xy - \beta z \\
+\end{aligned}
+\end{equation}
+Taylor coefficients ($\dot{x}_k = F(x_k) / k + 1$):
+\begin{equation}
+\begin{aligned}
+x_{k+1} &= \frac{- \sigma (y_k - x_k)}{k + 1} \\
+y_{k+1} &= \frac{- \rho x_k - (x.z)_k - y_k}{k + 1} \\
+z_{k+1} &= \frac{- (x.y)_k - \beta z_k}{k + 1} \\
+\end{aligned}
+\end{equation}
+In this case we need to use the recurrence formula for the two products $(x.z)_k$ and $(x.y)_k$, e.g:
+\begin{equation}
+(x.y)_k = \sum_{j=0}^{\infty} x_k y_{k - j}
+\end{equation}
+In general, an $x_{k+1}$ depends on all the lower degree terms $x_0$ to $x_k$, which is why we need to store the jets for the duration of the time step.
+\end{document}
+
