@@ -20,7 +20,8 @@ def playground(a, value):
     # return (2 * a).cos - a.cos.sqr + a.sin.sqr - value
     # return (3 * a).sin - 3 * a.sin + 4 * a.sin * a.sin.sqr - value
     # return (3 * a).cos + 3 * a.cos - 4 * a.cos * a.cos.sqr - value
-    return a.abs - value
+    # return a.sqr.sqrt - value
+    return a.exp.ln - value
 
 
 N_MAX = 13
@@ -29,6 +30,7 @@ x0 = float(argv[2])
 x1 = float(argv[3])
 steps = int(argv[4])
 target = float(argv[5])
+
 fun = septic
 
 x_step = (x1 - x0) / steps
@@ -42,7 +44,7 @@ for k in range(steps):
         if k > 0:
             # noinspection PyUnboundLocalVariable
             if f_prev * w_f.jet[0] < 0.0:
-                print("Bracketed root, solving", file=stderr)
+                print("Bracketed root, solving ", file=stderr, end='')
                 if n == 1:
                     print("using Bisection", file=stderr)
                     # noinspection PyUnboundLocalVariable
@@ -51,7 +53,7 @@ for k in range(steps):
                     print("using Newton's method", file=stderr)
                     newton(fun, w_x.jet[0], target=target)
                 else:
-                    print("using Householder's method", file=stderr)
+                    print("using Householder's method of degree {}".format(n - 1), file=stderr)
                     householder(fun, w_x.jet[0], n, target=target)
     x_prev = w_x.jet[0]
     f_prev = w_f.jet[0]
