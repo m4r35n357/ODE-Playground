@@ -87,7 +87,7 @@ void t_tan_sec2 (mpfr_t *T, mpfr_t *S2, const mpfr_t *U, int k, mpfr_t *tmp, geo
 void t_power (mpfr_t *P, const mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp1, mpfr_t *tmp2);
 
 /*
- * Calculates Taylor Series for U * V, result stored in jet P
+ * Calculates kth element of the natural logarithm of U, result stored in jet L
  */
 void t_ln (mpfr_t *L, const mpfr_t *U, int k, mpfr_t *tmp);
 
