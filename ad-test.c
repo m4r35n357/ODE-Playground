@@ -20,7 +20,7 @@
 #define KBLD "\x1B[1;37m"
 
 long order, n;
-mpfr_t x, y, _, D_1, D_05, D0, D05, D1, D2, D3, D5, D6, D7, D9, *cx, *cy, *cx0, *cx1, *c1, *c2, *c3, *c5, *c6, *c7, *cx9, *PI_3, *PI_4, *we, *ws, *wc, *wt, *ws2, *wsqr, *wsqrt, *wsum, *wprod, *wquot, *wpwr, *__, *_1, *_2, *_3;
+mpfr_t x, y, _, D_1, D_05, D0, D05, D1, D2, D3, D5, D6, D7, D9, *cx, *cy, *cx0, *cx1, *c1, *c2, *c3, *c5, *c6, *c7, *cx9, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2, *wsqr, *wsqrt, *wsum, *wprod, *wquot, *wpwr, *__, *_1, *_2, *_3;
 
 void septic (mpfr_t *f, const mpfr_t *x, int n) {
     ad_minus(_2, x, c1, n);
@@ -95,6 +95,7 @@ int main (int argc, char **argv) {
     wquot = t_jet(n);
     wpwr = t_jet(n);
     we = t_jet(n);
+    wl = t_jet(n);
     ws = t_jet(n);
     wc = t_jet(n);
     wt = t_jet(n);
@@ -164,7 +165,13 @@ int main (int argc, char **argv) {
     derivative_output(we, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = sin(0), f(x) = cos(0)", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = log(x)", KNRM);
+    ad_ln(wl, cx, n);
+    jet_output(wl, n, KNRM, KGRY);
+    derivative_output(wl, n, KBLD, KGRY);
+    printf("%s\n", KNRM);
+
+    printf("%s%s%s\n", KCYN, "f(x) = sin(x), f(x) = cos(x)", KNRM);
     ad_sin_cos(ws, wc, cx0, n);
     jet_output(ws, n, KNRM, KGRY);
     derivative_output(ws, n, KBLD, KGRY);

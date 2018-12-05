@@ -227,3 +227,18 @@ void t_power (mpfr_t *p, const mpfr_t *u, mpfr_t a, int k, mpfr_t *_, mpfr_t *__
         mpfr_div(p[k], p[k], u[0], RND);
     }
 }
+
+void t_ln (mpfr_t *l, const mpfr_t *u, int k, mpfr_t *_) {
+    assert(mpfr_sgn(u[0]) > 0);
+    assert(_ != l && _ != u);
+    assert(l != u);
+    assert(sizeof *_ == sizeof (mpfr_t));
+    assert(k >= 0);
+    if (k == 0) {
+        mpfr_log(l[0], u[0], RND);
+    } else {
+        ddot(&l[k], u, l, k, _);
+        mpfr_sub(l[k], u[k], l[k], RND);
+        mpfr_div(l[k], l[k], u[0], RND);
+    }
+}
