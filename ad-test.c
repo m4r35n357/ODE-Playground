@@ -187,7 +187,7 @@ int main (int argc, char **argv) {
     derivative_output(wl, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = sin(x), f(x) = cos(x)", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = sin(0), f(x) = cos(0)", KNRM);
     ad_sin_cos(ws, wc, cx0, n);
     jet_output(ws, n, KNRM, KGRY);
     derivative_output(ws, n, KBLD, KGRY);

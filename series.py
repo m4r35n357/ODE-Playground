@@ -167,18 +167,10 @@ class Series:
 
     @property
     def tan(self):
-        return self._t_s2(False)[0]
-
-    @property
-    def tan_sec2(self):
         return self._t_s2(False)
 
     @property
     def tanh(self):
-        return self._t_s2(True)[0]
-
-    @property
-    def tanh_sech2(self):
         return self._t_s2(True)
 
     def _t_s2(self, hyp):
@@ -186,7 +178,7 @@ class Series:
         sec2_jet = jet_0(self.n)
         for k in range(self.n):
             tan_jet[k], sec2_jet[k] = t_tan_sec2(tan_jet, sec2_jet, self.jet, k, hyp)
-        return Series(tan_jet), Series(sec2_jet)
+        return Series(tan_jet)
 
     @property
     def ln(self):
