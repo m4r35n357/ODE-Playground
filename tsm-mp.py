@@ -3,7 +3,7 @@
 from math import sqrt
 from sys import stderr, argv
 
-from taylor import jet_0, jet_c, t_horner, t_prod, t_sin_cos, t_tan_sec2
+from taylor import jet_0, jet_c, t_horner, t_prod, t_sin_cos, t_tan_sec2, t_sqr
 
 D0 = float('0.0')
 D05 = float('0.5')
@@ -73,7 +73,7 @@ def main():
             cx[0], cy[0], cz[0] = x, y, z
             for k in range(n):
                 w4[k] = jet1[k] - cy[k]
-                w5[k] = jet1[k] - t_prod(cx, cx, k)
+                w5[k] = jet1[k] - t_sqr(cx, k)
                 cx[k + 1] = (a * t_prod(cx, w4, k) - b * cz[k]) / (k + 1)
                 cy[k + 1] = - c * t_prod(cy, w5, k) / (k + 1)
                 cz[k + 1] = d * cx[k] / (k + 1)
@@ -128,7 +128,7 @@ def main():
             print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
             cx[0], cy[0], cz[0] = x, y, z
             for k in range(n):
-                w_x2_1 = t_prod(cx, cx, k) - jet1[k]
+                w_x2_1 = t_sqr(cx, k) - jet1[k]
                 w_a[k] = cz[k] + w_x2_1
                 w_b[k] = D3 * cz[k] - w_x2_1
                 w_c[k] = a + t_prod(cx, cy, k)
@@ -145,7 +145,7 @@ def main():
             for k in range(n):
                 cx[k + 1] = cy[k] / (k + 1)
                 cy[k + 1] = - cx[k] + t_prod(cy, cz, k) / (k + 1)
-                cz[k + 1] = (cz[k] + a * t_prod(cx, cx, k) - t_prod(cy, cy, k) - w_b[k]) / (k + 1)
+                cz[k + 1] = (cz[k] + a * t_sqr(cx, k) - t_sqr(cy, k) - w_b[k]) / (k + 1)
             x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
     elif model == "halvorsen":
         a = float(argv[9])
@@ -153,9 +153,9 @@ def main():
             print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
             cx[0], cy[0], cz[0] = x, y, z
             for k in range(n):
-                cx[k + 1] = - (a * cx[k] + D4 * cy[k] + D4 * cz[k] + t_prod(cy, cy, k)) / (k + 1)
-                cy[k + 1] = - (a * cy[k] + D4 * cz[k] + D4 * cx[k] + t_prod(cz, cz, k)) / (k + 1)
-                cz[k + 1] = - (a * cz[k] + D4 * cx[k] + D4 * cy[k] + t_prod(cx, cx, k)) / (k + 1)
+                cx[k + 1] = - (a * cx[k] + D4 * cy[k] + D4 * cz[k] + t_sqr(cy, k)) / (k + 1)
+                cy[k + 1] = - (a * cy[k] + D4 * cz[k] + D4 * cx[k] + t_sqr(cz, k)) / (k + 1)
+                cz[k + 1] = - (a * cz[k] + D4 * cx[k] + D4 * cy[k] + t_sqr(cx, k)) / (k + 1)
             x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
     elif model == "nh":
         a_ = jet_c(float(argv[9]), n)
@@ -165,7 +165,7 @@ def main():
             for k in range(n):
                 cx[k + 1] = cy[k] / (k + 1)
                 cy[k + 1] = (t_prod(cy, cz, k) - cx[k]) / (k + 1)
-                cz[k + 1] = (a_[k] - t_prod(cy, cy, k)) / (k + 1)
+                cz[k + 1] = (a_[k] - t_sqr(cy, k)) / (k + 1)
             x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
     elif model == "rucklidge":
         a, b = float(argv[9]), float(argv[10])
@@ -175,7 +175,7 @@ def main():
             for k in range(n):
                 cx[k + 1] = (a * cy[k] - b * cx[k] - t_prod(cy, cz, k)) / (k + 1)
                 cy[k + 1] = cx[k] / (k + 1)
-                cz[k + 1] = (t_prod(cy, cy, k) - cz[k]) / (k + 1)
+                cz[k + 1] = (t_sqr(cy, k) - cz[k]) / (k + 1)
             x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
     elif model == "damped":
         c1, c2 = float(argv[9]), float(argv[10])
