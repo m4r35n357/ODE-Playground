@@ -132,7 +132,7 @@ void t_sqrt (mpfr_t *r, const mpfr_t *u, int k) {
     }
 }
 
-static void ddot (mpfr_t *d, const mpfr_t *v, const mpfr_t *u, int k, mpfr_t *_) {
+static void _ddot (mpfr_t *d, const mpfr_t *v, const mpfr_t *u, int k, mpfr_t *_) {
     assert(d != _);
     assert(sizeof *d == sizeof (mpfr_t));
     assert(sizeof *u == sizeof *v);
@@ -154,7 +154,7 @@ void t_exp (mpfr_t *e, const mpfr_t *u, int k, mpfr_t *_) {
     if (k == 0) {
         mpfr_exp(e[0], u[0], RND);
     } else {
-        ddot(&e[k], e, u, k, _);
+        _ddot(&e[k], e, u, k, _);
         mpfr_fma(e[k], e[0], u[k], e[k], RND);
     }
 }
@@ -171,9 +171,9 @@ void t_sin_cos (mpfr_t *s, mpfr_t *c, const mpfr_t *u, int k, mpfr_t *_, geometr
             mpfr_sinh_cosh(s[0], c[0], u[0], RND);
         }
     } else {
-        ddot(&s[k], c, u, k, _);
+        _ddot(&s[k], c, u, k, _);
         mpfr_fma(s[k], c[0], u[k], s[k], RND);
-        ddot(&c[k], s, u, k, _);
+        _ddot(&c[k], s, u, k, _);
         mpfr_fma(c[k], s[0], u[k], c[k], RND);
         if (g == TRIG) {
             mpfr_neg(c[k], c[k], RND);
@@ -197,9 +197,9 @@ void t_tan_sec2 (mpfr_t *t, mpfr_t *s2, const mpfr_t *u, int k, mpfr_t *_, geome
             mpfr_ui_sub(s2[0], 1, *_, RND);
         }
     } else {
-        ddot(&t[k], s2, u, k, _);
+        _ddot(&t[k], s2, u, k, _);
         mpfr_fma(t[k], s2[0], u[k], t[k], RND);
-        ddot(&s2[k], t, t, k, _);
+        _ddot(&s2[k], t, t, k, _);
         mpfr_fma(s2[k], t[0], t[k], s2[k], RND);
         mpfr_mul_2ui(s2[k], s2[k], 1, RND);
         if (g == HYP) {
@@ -219,10 +219,10 @@ void t_power (mpfr_t *p, const mpfr_t *u, mpfr_t a, int k, mpfr_t *_, mpfr_t *__
     if (k == 0) {
         mpfr_pow(p[0], u[0], a, RND);
     } else {
-        ddot(__, p, u, k, _);
+        _ddot(__, p, u, k, _);
         mpfr_fma(*__, p[0], u[k], *__, RND);
         mpfr_mul(p[k], *__, a, RND);
-        ddot(__, u, p, k, _);
+        _ddot(__, u, p, k, _);
         mpfr_sub(p[k], p[k], *__, RND);
         mpfr_div(p[k], p[k], u[0], RND);
     }
@@ -237,7 +237,7 @@ void t_ln (mpfr_t *l, const mpfr_t *u, int k, mpfr_t *_) {
     if (k == 0) {
         mpfr_log(l[0], u[0], RND);
     } else {
-        ddot(&l[k], u, l, k, _);
+        _ddot(&l[k], u, l, k, _);
         mpfr_sub(l[k], u[k], l[k], RND);
         mpfr_div(l[k], l[k], u[0], RND);
     }

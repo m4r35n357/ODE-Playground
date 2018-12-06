@@ -11,14 +11,14 @@
 #include "taylor-ode.h"
 
 long order, nsteps;
-mpfr_t t, x, y, z, a, b, h, tmp, *wsx, *wcx, *wsy, *wcy, *wsz, *wcz, *wax, *way, *waz,
+mpfr_t t, x, y, z, a, b, h, _, *wsx, *wcx, *wsy, *wcy, *wsz, *wcz, *wax, *way, *waz,
         *wsax, *wcax, *wsay, *wcay, *wsaz, *wcaz, *cx, *cy, *cz;
 
 int main (int argc, char **argv) {
     assert(argc == 10);
     // initialize from command arguments
     t_stepper(argv, &order, &t, &h, &nsteps);
-    mpfr_inits(tmp, NULL);
+    mpfr_inits(_, NULL);
     mpfr_init_set_str(x, argv[5], BASE, RND);
     mpfr_init_set_str(y, argv[6], BASE, RND);
     mpfr_init_set_str(z, argv[7], BASE, RND);
@@ -55,24 +55,24 @@ int main (int argc, char **argv) {
         mpfr_set(cy[0], y, RND);
         mpfr_set(cz[0], z, RND);
         for (int k = 0; k < order; k++) {
-            t_tan_sec2(wsx, wcx, cx, k, &tmp, TRIG);
-            t_tan_sec2(wsy, wcy, cy, k, &tmp, TRIG);
-            t_tan_sec2(wsz, wcz, cz, k, &tmp, TRIG);
+            t_tan_sec2(wsx, wcx, cx, k, &_, TRIG);
+            t_tan_sec2(wsy, wcy, cy, k, &_, TRIG);
+            t_tan_sec2(wsz, wcz, cz, k, &_, TRIG);
             mpfr_mul(wax[k], cx[k], a, RND);
             mpfr_mul(way[k], cy[k], a, RND);
             mpfr_mul(waz[k], cz[k], a, RND);
-            t_sin_cos(wsax, wcax, wax, k, &tmp, TRIG);
-            t_sin_cos(wsay, wcay, way, k, &tmp, TRIG);
-            t_sin_cos(wsaz, wcaz, waz, k, &tmp, TRIG);
+            t_sin_cos(wsax, wcax, wax, k, &_, TRIG);
+            t_sin_cos(wsay, wcay, way, k, &_, TRIG);
+            t_sin_cos(wsaz, wcaz, waz, k, &_, TRIG);
             //  x' = sin(Ay) - Bsin(x)
-            mpfr_fms(tmp, wsx[k], b, wsay[k], RND);
-            mpfr_div_si(cx[k + 1], tmp, - (k + 1), RND);
+            mpfr_fms(_, wsx[k], b, wsay[k], RND);
+            mpfr_div_si(cx[k + 1], _, - (k + 1), RND);
             //  y' = sin(Az) - Bsin(y)
-            mpfr_fms(tmp, wsy[k], b, wsaz[k], RND);
-            mpfr_div_si(cy[k + 1], tmp, - (k + 1), RND);
+            mpfr_fms(_, wsy[k], b, wsaz[k], RND);
+            mpfr_div_si(cy[k + 1], _, - (k + 1), RND);
             //  z' = sin(Ax) - Bsin(z)
-            mpfr_fms(tmp, wsz[k], b, wsax[k], RND);
-            mpfr_div_si(cz[k + 1], tmp, - (k + 1), RND);
+            mpfr_fms(_, wsz[k], b, wsax[k], RND);
+            mpfr_div_si(cz[k + 1], _, - (k + 1), RND);
         }
 
         // sum the series using Horner's method and advance one step

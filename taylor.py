@@ -65,7 +65,7 @@ def t_sqrt(r, u, k):
             return (u[k] - 2.0 * rt - r[k // 2]**2) / (2.0 * r[0])
 
 
-def ddot(v, u, k):
+def _ddot(v, u, k):
     dd = 0.0
     for j in range(1, k):
         dd += j * u[j] * v[k - j]
@@ -76,15 +76,15 @@ def t_exp(e, u, k):
     if k == 0:
         return exp(u[0])
     else:
-        return e[0] * u[k] + ddot(e, u, k)
+        return e[0] * u[k] + _ddot(e, u, k)
 
 
 def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
         return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
     else:
-        sn = c[0] * u[k] + ddot(c, u, k)
-        cn = s[0] * u[k] + ddot(s, u, k)
+        sn = c[0] * u[k] + _ddot(c, u, k)
+        cn = s[0] * u[k] + _ddot(s, u, k)
         return sn, cn if hyp else - cn
 
 
@@ -92,8 +92,8 @@ def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
         return (tanh(u[0]), 1.0 - tanh(u[0])**2) if hyp else (tan(u[0]), tan(u[0])**2 + 1.0)
     else:
-        tn = s2[0] * u[k] + ddot(s2, u, k)
-        sc2 = 2.0 * (t[0] * tn + ddot(t, t, k))
+        tn = s2[0] * u[k] + _ddot(s2, u, k)
+        sc2 = 2.0 * (t[0] * tn + _ddot(t, t, k))
         return tn, - sc2 if hyp else sc2
 
 
@@ -102,7 +102,7 @@ def t_pwr(p, u, a, k):
     if k == 0:
         return u[0]**a
     else:
-        return (a * (p[0] * u[k] + ddot(p, u, k)) - ddot(u, p, k)) / u[0]
+        return (a * (p[0] * u[k] + _ddot(p, u, k)) - _ddot(u, p, k)) / u[0]
 
 
 def t_ln(l, u, k):
@@ -110,4 +110,4 @@ def t_ln(l, u, k):
     if k == 0:
         return log(u[0])
     else:
-        return (u[k] - ddot(u, l, k)) / u[0]
+        return (u[k] - _ddot(u, l, k)) / u[0]

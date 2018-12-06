@@ -11,13 +11,13 @@
 #include "taylor-ode.h"
 
 long order, nsteps;
-mpfr_t t, x, y, z, a, b, h, tmp, tmp2, *w_b, *cx, *cy, *cz;
+mpfr_t t, x, y, z, a, b, h, _, __, *w_b, *cx, *cy, *cz;
 
 int main (int argc, char **argv) {
     assert(argc == 10);
     // initialize from command arguments
     t_stepper(argv, &order, &t, &h, &nsteps);
-    mpfr_inits(tmp, tmp2, NULL);
+    mpfr_inits(_, __, NULL);
     mpfr_init_set_str(x, argv[5], BASE, RND);
     mpfr_init_set_str(y, argv[6], BASE, RND);
     mpfr_init_set_str(z, argv[7], BASE, RND);
@@ -43,16 +43,16 @@ int main (int argc, char **argv) {
             //  x' = y
             mpfr_div_ui(cx[k + 1], cy[k], k + 1, RND);
             //  y' = yz - x
-            t_product(&tmp, cy, cz, k);
-            mpfr_sub(tmp, tmp, cx[k], RND);
-            mpfr_div_ui(cy[k + 1], tmp, k + 1, RND);
+            t_product(&_, cy, cz, k);
+            mpfr_sub(_, _, cx[k], RND);
+            mpfr_div_ui(cy[k + 1], _, k + 1, RND);
             //  z' = z - ax^2 - y^2 - b
-            t_square(&tmp2, cy, k);
-            mpfr_sub(tmp, cz[k], w_b[k], RND);
-            mpfr_sub(tmp2, tmp, tmp2, RND);
-            t_square(&tmp, cx, k);
-            mpfr_fma(tmp, tmp, a, tmp2, RND);
-            mpfr_div_ui(cz[k + 1], tmp, k + 1, RND);
+            t_square(&_, cy, k);
+            mpfr_sub(__, cz[k], w_b[k], RND);
+            mpfr_sub(__, __, _, RND);
+            t_square(&_, cx, k);
+            mpfr_fma(_, _, a, __, RND);
+            mpfr_div_ui(cz[k + 1], _, k + 1, RND);
         }
 
         // sum the series using Horner's method and advance one step
