@@ -1,6 +1,13 @@
 
 from sys import stderr
+from enum import Enum
 from taylor import jet_0, jet_c, t_prod, t_quot, t_sqr, t_exp, t_sin_cos, t_tan_sec2, t_pwr, t_ln, t_sqrt
+
+
+class NewtonMode(Enum):
+        ROOT = 0
+        EXTREMUM = 1
+        INFLECTION = 2
 
 
 class Series:
@@ -215,20 +222,22 @@ def bisect(model, ax, bx, target=0.0, tol=1.0e-12, max_it=100):
     return counter, c.jet[0], fc.jet[0] + target, delta
 
 
-def newton(model, initial, target=0.0, tol=1.0e-12, max_it=100):
-    x = Series(jet_c(initial, 2), diff=True)
-    f = Series(jet_c(1.0, 2))
+def newton(model, initial, target=0.0, tol=1.0e-12, max_it=100, mode=NewtonMode.ROOT):
+    x = Series(jet_c(initial, 2 + mode.value), diff=True)
+    f = Series(jet_c(1.0, 2 + mode.value))
     delta = 1.0
     counter = 1
-    while abs(f.jet[0]) > tol or abs(delta) > tol:
-        f = model(x, target)
-        delta = - f.jet[0] / f.jet[1]
+    while abs(f.jet[0 + mode.value]) > tol or abs(delta) > tol:
+        print("{:3d} {:22.15e} {:22.15e} {:10.3e}".format(counter, x.jet[0], f.jet[0 + mode.value] + target, delta),
+              file=stderr)
+        f = model(x, target).derivatives
+        delta = - f.jet[0 + mode.value] / f.jet[1 + mode.value]
         x.jet[0] += delta
         counter += 1
         if counter > max_it:
             break
-    print("{:3d} {:22.15e} {:22.15e} {:10.3e}".format(counter, x.jet[0], f.jet[0] + target, delta), file=stderr)
-    return counter, x.jet[0], f.jet[0] + target, delta
+    print("{:3d} {:22.15e} {:22.15e} {:10.3e}".format(counter, x.jet[0], f.jet[0 + mode.value] + target, delta), file=stderr)
+    return counter, x.jet[0], f.jet[0 + mode.value] + target, delta
 
 
 def householder(model, initial, n, target=0.0, tol=1.0e-12, max_it=100):

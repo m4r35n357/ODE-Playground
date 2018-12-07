@@ -129,7 +129,7 @@ int main (int argc, char **argv) {
                         ad_bisect(m, t_jet_c(n, x_prev), wx, 100, f_tol, x_tol, t_jet(n), t_jet(n), t_jet(n));
                     } else if (n == 2) {
                         fprintf(stderr, "using Newton's method\n");
-                        ad_newton(m, t_jet_c(n, D1), wx, 100, f_tol, x_tol);
+                        ad_newton(m, t_jet_c(n, D1), wx, 100, f_tol, x_tol, ROOT);
                     } else {
                         fprintf(stderr, "using Householder's method of degree %lu\n", n - 1);
                         ad_householder(m, t_jet_c(n, D1), wx, n, 100, f_tol, x_tol, t_jet(n), t_jet_c(n, D1));
