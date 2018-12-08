@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Example: ./playground.py 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
+# Example: ./playground.py 2 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 50000 >/dev/null
 
 from sys import argv, stderr
 from series import SolveMode, Series, bisect, newton, householder
@@ -30,6 +30,8 @@ x0 = float(argv[2])
 x1 = float(argv[3])
 steps = int(argv[4])
 target = float(argv[5])
+f_tol = float(argv[6])
+x_tol = float(argv[7])
 
 fun = septic
 
@@ -54,11 +56,11 @@ for k in range(steps):
                 print("ROOT", file=stderr)
                 if n == 1:
                     # noinspection PyUnboundLocalVariable
-                    bisect(fun, w_x.jet[0], x_prev, target=target)
+                    bisect(fun, w_x.jet[0], x_prev, f_tol, x_tol, target=target)
                 elif n == 2:
-                    newton(fun, w_x.jet[0], target=target)
+                    newton(fun, w_x.jet[0], f_tol, x_tol, target=target)
                 else:
-                    householder(fun, w_x.jet[0], n, target=target)
+                    householder(fun, w_x.jet[0], n, f_tol, x_tol, target=target)
             # noinspection PyUnboundLocalVariable
             if f_dash_prev * w_f.jet[1] < 0.0:
                 if f_dash_prev > w_f.jet[1]:
@@ -67,21 +69,21 @@ for k in range(steps):
                     print("MINIMUM", file=stderr)
                 if n == 1:
                     # noinspection PyUnboundLocalVariable
-                    bisect(fun, w_x.jet[0], x_prev, mode=SolveMode.EXTREMUM)
+                    bisect(fun, w_x.jet[0], x_prev, f_tol, x_tol, mode=SolveMode.EXTREMUM)
                 elif n == 2:
-                    newton(fun, w_x.jet[0], mode=SolveMode.EXTREMUM)
+                    newton(fun, w_x.jet[0], f_tol, x_tol, mode=SolveMode.EXTREMUM)
                 else:
-                    householder(fun, w_x.jet[0], n, mode=SolveMode.EXTREMUM)
+                    householder(fun, w_x.jet[0], n, f_tol, x_tol, mode=SolveMode.EXTREMUM)
             # noinspection PyUnboundLocalVariable
             if f_dash_dash_prev * w_f.jet[2] < 0.0:
                 print("INFLECTION", file=stderr)
                 if n == 1:
                     # noinspection PyUnboundLocalVariable
-                    bisect(fun, w_x.jet[0], x_prev, mode=SolveMode.INFLECTION)
+                    bisect(fun, w_x.jet[0], x_prev, f_tol, x_tol, mode=SolveMode.INFLECTION)
                 elif n == 2:
-                    newton(fun, w_x.jet[0], mode=SolveMode.INFLECTION)
+                    newton(fun, w_x.jet[0], f_tol, x_tol, mode=SolveMode.INFLECTION)
                 else:
-                    householder(fun, w_x.jet[0], n, mode=SolveMode.INFLECTION)
+                    householder(fun, w_x.jet[0], n, f_tol, x_tol, mode=SolveMode.INFLECTION)
     x_prev = w_x.jet[0]
     f_prev = w_f.jet[0]
     f_dash_prev = w_f.jet[1]

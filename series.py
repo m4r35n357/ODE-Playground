@@ -198,7 +198,7 @@ class Series:
         return self.sqr.sqrt
 
 
-def bisect(model, ax, bx, target=0.0, tol=1.0e-12, max_it=100, mode=SolveMode.ROOT):
+def bisect(model, ax, bx, f_tol, x_tol, target=0.0, max_it=100, mode=SolveMode.ROOT):
     a = Series(jet_c(ax, 1 + mode.value))
     b = Series(jet_c(bx, 1 + mode.value))
     c = Series(jet_0(1 + mode.value))
@@ -206,7 +206,7 @@ def bisect(model, ax, bx, target=0.0, tol=1.0e-12, max_it=100, mode=SolveMode.RO
     fc = Series(jet_c(1.0, 1 + mode.value))
     delta = 1.0
     counter = 1
-    while abs(fc.jet[0 + mode.value]) > tol or abs(delta) > tol:
+    while abs(fc.jet[0 + mode.value]) > f_tol or abs(delta) > x_tol:
         c = (a + b) / 2.0
         fc = model(c, target).derivatives
         if fa.jet[0 + mode.value] * fc.jet[0 + mode.value] < 0.0:
@@ -222,12 +222,12 @@ def bisect(model, ax, bx, target=0.0, tol=1.0e-12, max_it=100, mode=SolveMode.RO
     return counter, c.jet[0], fc.jet[0 + mode.value] + target, delta
 
 
-def newton(model, initial, target=0.0, tol=1.0e-12, max_it=100, mode=SolveMode.ROOT):
+def newton(model, initial, f_tol, x_tol, target=0.0, max_it=100, mode=SolveMode.ROOT):
     x = Series(jet_c(initial, 2 + mode.value), diff=True)
     f = Series(jet_c(1.0, 2 + mode.value))
     delta = 1.0
     counter = 1
-    while abs(f.jet[0 + mode.value]) > tol or abs(delta) > tol:
+    while abs(f.jet[0 + mode.value]) > f_tol or abs(delta) > x_tol:
         f = model(x, target).derivatives
         delta = - f.jet[0 + mode.value] / f.jet[1 + mode.value]
         x.jet[0] += delta
@@ -239,12 +239,12 @@ def newton(model, initial, target=0.0, tol=1.0e-12, max_it=100, mode=SolveMode.R
     return counter, x.jet[0], f.jet[0 + mode.value] + target, delta
 
 
-def householder(model, initial, n, target=0.0, tol=1.0e-12, max_it=100, mode=SolveMode.ROOT):
+def householder(model, initial, n, f_tol, x_tol, target=0.0, max_it=100, mode=SolveMode.ROOT):
     x = Series(jet_c(initial, n + mode.value), diff=True)
     f = Series(jet_c(1.0, n + mode.value))
     delta = 1.0
     counter = 1
-    while abs(f.jet[0] + mode.value) > tol or abs(delta) > tol:
+    while abs(f.jet[0] + mode.value) > f_tol or abs(delta) > x_tol:
         f = model(x, target)
         r = (1 / f).derivatives
         delta = r.jet[n - 2 + mode.value] / r.jet[n - 1 + mode.value]
