@@ -228,8 +228,6 @@ def newton(model, initial, target=0.0, tol=1.0e-12, max_it=100, mode=NewtonMode.
     delta = 1.0
     counter = 1
     while abs(f.jet[0 + mode.value]) > tol or abs(delta) > tol:
-        print("{:3d} {:22.15e} {:22.15e} {:10.3e}".format(counter, x.jet[0], f.jet[0 + mode.value] + target, delta),
-              file=stderr)
         f = model(x, target).derivatives
         delta = - f.jet[0 + mode.value] / f.jet[1 + mode.value]
         x.jet[0] += delta

@@ -57,7 +57,10 @@ for k in range(steps):
                     householder(fun, w_x.jet[0], n, target=target)
             # noinspection PyUnboundLocalVariable
             if f_dash_prev * w_f.jet[1] < 0.0:
-                print("Bracketed extremum, solving ", file=stderr, end='')
+                if f_dash_prev > w_f.jet[1]:
+                    print("Bracketed maximum, solving ", file=stderr, end='')
+                else:
+                    print("Bracketed minimum, solving ", file=stderr, end='')
                 print("using Newton's method", file=stderr)
                 newton(fun, x_prev, mode=NewtonMode.EXTREMUM)
     x_prev = w_x.jet[0]
