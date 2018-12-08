@@ -63,6 +63,15 @@ for k in range(steps):
                     print("Bracketed minimum, solving ", file=stderr, end='')
                 print("using Newton's method", file=stderr)
                 newton(fun, x_prev, mode=NewtonMode.EXTREMUM)
+            # noinspection PyUnboundLocalVariable
+            if f_dash_dash_prev * w_f.jet[2] < 0.0:
+                if f_dash_dash_prev > w_f.jet[2]:
+                    print("Bracketed inflection, solving ", file=stderr, end='')
+                else:
+                    print("Bracketed inflection, solving ", file=stderr, end='')
+                print("using Newton's method", file=stderr)
+                newton(fun, x_prev, mode=NewtonMode.INFLECTION)
     x_prev = w_x.jet[0]
     f_prev = w_f.jet[0]
     f_dash_prev = w_f.jet[1]
+    f_dash_dash_prev = w_f.jet[2]
