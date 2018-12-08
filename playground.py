@@ -3,7 +3,7 @@
 # Example: ./playground.py 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
 
 from sys import argv, stderr
-from series import Series, bisect, newton, householder
+from series import NewtonMode, Series, bisect, newton, householder
 from taylor import jet_0, jet_c
 
 
@@ -55,5 +55,11 @@ for k in range(steps):
                 else:
                     print("using Householder's method of degree {}".format(n - 1), file=stderr)
                     householder(fun, w_x.jet[0], n, target=target)
+            # noinspection PyUnboundLocalVariable
+            if f_dash_prev * w_f.jet[1] < 0.0:
+                print("Bracketed extremum, solving ", file=stderr, end='')
+                print("using Newton's method", file=stderr)
+                newton(fun, x_prev, mode=NewtonMode.EXTREMUM)
     x_prev = w_x.jet[0]
     f_prev = w_f.jet[0]
+    f_dash_prev = w_f.jet[1]
