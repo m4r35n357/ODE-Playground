@@ -3,7 +3,7 @@
 # Example: ./playground.py 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
 
 from sys import argv, stderr
-from series import NewtonMode, Series, bisect, newton, householder
+from series import SolveMode, Series, bisect, newton, householder
 from taylor import jet_0, jet_c
 
 
@@ -36,6 +36,13 @@ fun = septic
 x_step = (x1 - x0) / steps
 w_x = Series(jet_c(x0, N_MAX), diff=True)
 w_f = Series(jet_0(N_MAX))
+if n != 0:
+    if n == 1:
+        print("Bisection", file=stderr)
+    elif n == 2:
+        print("Newton's method", file=stderr)
+    else:
+        print("Householder's method of degree {}".format(n - 1), file=stderr)
 for k in range(steps):
     w_x.jet[0] = x0 + k * x_step
     w_f = fun(w_x, target)
@@ -44,33 +51,37 @@ for k in range(steps):
         if k > 0:
             # noinspection PyUnboundLocalVariable
             if f_prev * w_f.jet[0] < 0.0:
-                print("Bracketed root, solving ", file=stderr, end='')
+                print("ROOT", file=stderr)
                 if n == 1:
-                    print("using Bisection", file=stderr)
                     # noinspection PyUnboundLocalVariable
                     bisect(fun, w_x.jet[0], x_prev, target=target)
                 elif n == 2:
-                    print("using Newton's method", file=stderr)
                     newton(fun, w_x.jet[0], target=target)
                 else:
-                    print("using Householder's method of degree {}".format(n - 1), file=stderr)
                     householder(fun, w_x.jet[0], n, target=target)
             # noinspection PyUnboundLocalVariable
             if f_dash_prev * w_f.jet[1] < 0.0:
                 if f_dash_prev > w_f.jet[1]:
-                    print("Bracketed maximum, solving ", file=stderr, end='')
+                    print("MAXIMUM", file=stderr)
                 else:
-                    print("Bracketed minimum, solving ", file=stderr, end='')
-                print("using Newton's method", file=stderr)
-                newton(fun, x_prev, mode=NewtonMode.EXTREMUM)
+                    print("MINIMUM", file=stderr)
+                if n == 1:
+                    # noinspection PyUnboundLocalVariable
+                    bisect(fun, w_x.jet[0], x_prev, mode=SolveMode.EXTREMUM)
+                elif n == 2:
+                    newton(fun, w_x.jet[0], mode=SolveMode.EXTREMUM)
+                else:
+                    householder(fun, w_x.jet[0], n, mode=SolveMode.EXTREMUM)
             # noinspection PyUnboundLocalVariable
             if f_dash_dash_prev * w_f.jet[2] < 0.0:
-                if f_dash_dash_prev > w_f.jet[2]:
-                    print("Bracketed inflection, solving ", file=stderr, end='')
+                print("INFLECTION", file=stderr)
+                if n == 1:
+                    # noinspection PyUnboundLocalVariable
+                    bisect(fun, w_x.jet[0], x_prev, mode=SolveMode.INFLECTION)
+                elif n == 2:
+                    newton(fun, w_x.jet[0], mode=SolveMode.INFLECTION)
                 else:
-                    print("Bracketed inflection, solving ", file=stderr, end='')
-                print("using Newton's method", file=stderr)
-                newton(fun, x_prev, mode=NewtonMode.INFLECTION)
+                    householder(fun, w_x.jet[0], n, mode=SolveMode.INFLECTION)
     x_prev = w_x.jet[0]
     f_prev = w_f.jet[0]
     f_dash_prev = w_f.jet[1]
