@@ -54,7 +54,7 @@ def main():
             x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
     elif model == "rossler":
         a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
-        b_ = jet_c(n, b)
+        b_ = jet_c(b, n)
         for step in range(1, steps):
             print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
             cx[0], cy[0], cz[0] = x, y, z
@@ -67,7 +67,7 @@ def main():
         a, b, c, d = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
         w4 = jet_0(n)
         w5 = jet_0(n)
-        jet1 = jet_c(n, D1)
+        jet1 = jet_c(D1, n)
         for step in range(1, steps):
             print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
             cx[0], cy[0], cz[0] = x, y, z
@@ -123,7 +123,7 @@ def main():
         w_a = jet_0(n)
         w_b = jet_0(n)
         w_c = jet_0(n)
-        jet1 = jet_c(n, D1)
+        jet1 = jet_c(D1, n)
         for step in range(1, steps):
             print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
             cx[0], cy[0], cz[0] = x, y, z
@@ -138,7 +138,7 @@ def main():
             x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
     elif model == "sj":
         a, b = float(argv[9]), float(argv[10])
-        w_b = jet_c(n, b)
+        w_b = jet_c(b, n)
         for step in range(1, steps):
             print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
             cx[0], cy[0], cz[0] = x, y, z
