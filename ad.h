@@ -12,11 +12,6 @@
 typedef enum {VARIABLE, CONSTANT} ad_status;
 
 /*
- * Whether Newton's method should find roots, or stationary points
- */
-typedef enum {ROOT = 0, STATIONARY = 1} newton_mode;
-
-/*
  * Signature for solver model functions
  */
 typedef void (*model)(mpfr_t *, const mpfr_t *, int);
@@ -49,7 +44,7 @@ void ad_bisect (model m, mpfr_t *xa, mpfr_t *xb, int max_it, mpfr_t f_tol, mpfr_
 /*
  * Finds a root of fn(f, x) by Newton's method, where f and x are Taylor Series
  */
-void ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x_tol, newton_mode mode);
+void ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x_tol);
 
 /*
  * Finds a root of fn(f, x) by Householder's method, where f and x are Taylor Series

@@ -60,13 +60,13 @@ void ad_bisect (model m, mpfr_t *a, mpfr_t *b, int max_it, mpfr_t f_tol, mpfr_t 
     mpfr_clears(delta, _, NULL);
 }
 
-void ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x_tol, newton_mode mode) {
+void ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x_tol) {
     mpfr_t delta;
     int counter = 0;
     mpfr_init_set_ui(delta, 1, RND);
-    while(mpfr_cmp_abs(f[0 + mode], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
-        m(f, x, 2 + mode);
-        mpfr_div(delta, f[0 + mode], f[1 + mode], RND);
+    while(mpfr_cmp_abs(f[0], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
+        m(f, x, 2);
+        mpfr_div(delta, f[0], f[1], RND);
         mpfr_sub(x[0], x[0], delta, RND);
         if (++counter > max_it) break;
     }
