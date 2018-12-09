@@ -47,8 +47,8 @@ if n != 0:
         print("Householder's method of degree {}".format(n - 1), file=stderr)
 for k in range(steps):
     w_x.jet[0] = x0 + k * x_step
-    w_f = fun(w_x, target)
-    print("{:.6e} {}".format(w_x.jet[0], w_f.derivatives))
+    w_f = fun(w_x, target).derivatives
+    print("{:.6e} {}".format(w_x.jet[0], w_f))
     if n != 0:
         if k > 0:
             # noinspection PyUnboundLocalVariable
@@ -76,7 +76,10 @@ for k in range(steps):
                     householder(fun, w_x.jet[0], n, f_tol, x_tol, mode=SolveMode.EXTREMUM)
             # noinspection PyUnboundLocalVariable
             if f_dash_dash_prev * w_f.jet[2] < 0.0:
-                print("INFLECTION", file=stderr)
+                if f_dash_dash_prev > w_f.jet[2]:
+                    print("+INFLECTION", file=stderr)
+                else:
+                    print("-INFLECTION", file=stderr)
                 if n == 1:
                     # noinspection PyUnboundLocalVariable
                     bisect(fun, w_x.jet[0], x_prev, f_tol, x_tol, mode=SolveMode.INFLECTION)

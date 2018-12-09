@@ -199,10 +199,10 @@ class Series:
 
 
 def bisect(model, ax, bx, f_tol, x_tol, target=0.0, max_it=100, mode=SolveMode.ROOT):
-    a = Series(jet_c(ax, 1 + mode.value))
-    b = Series(jet_c(bx, 1 + mode.value))
+    a = Series(jet_c(ax, 2 + mode.value), diff=True)
+    b = Series(jet_c(bx, 2 + mode.value), diff=True)
     c = Series(jet_0(1 + mode.value))
-    fa = model(a, target)
+    fa = model(a, target).derivatives
     fc = Series(jet_c(1.0, 1 + mode.value))
     delta = 1.0
     counter = 1
@@ -217,7 +217,7 @@ def bisect(model, ax, bx, f_tol, x_tol, target=0.0, max_it=100, mode=SolveMode.R
         counter += 1
         if counter > max_it:
             break
-    print("    {:3d} {:22.15e} {:22.15e} {:10.3e}".format(counter, c.jet[0], fc.jet[0 + mode.value] + target, delta),
+    print("    {:3d} {:13.6e} {:10.3e} {:10.3e}".format(counter, c.jet[0], fc.jet[0 + mode.value] + target, delta),
           file=stderr)
     return counter, c.jet[0], fc.jet[0 + mode.value] + target, delta
 
@@ -234,7 +234,7 @@ def newton(model, initial, f_tol, x_tol, target=0.0, max_it=100, mode=SolveMode.
         counter += 1
         if counter > max_it:
             break
-    print("    {:3d} {:22.15e} {:22.15e} {:10.3e}".format(counter, x.jet[0], f.jet[0 + mode.value] + target, delta),
+    print("    {:3d} {:13.6e} {:10.3e}{:10.3e}".format(counter, x.jet[0], f.jet[0 + mode.value] + target, delta),
           file=stderr)
     return counter, x.jet[0], f.jet[0 + mode.value] + target, delta
 
@@ -252,6 +252,6 @@ def householder(model, initial, n, f_tol, x_tol, target=0.0, max_it=100, mode=So
         counter += 1
         if counter > max_it:
             break
-    print("    {:3d} {:22.15e} {:22.15e} {:10.3e}".format(counter, x.jet[0], f.jet[0] + mode.value + target, delta),
+    print("    {:3d} {:13.6e} {:10.3e} {:10.3e}".format(counter, x.jet[0], f.jet[0] + mode.value + target, delta),
           file=stderr)
     return counter, x.jet[0], f.jet[0] + mode.value + target, delta
