@@ -12,7 +12,7 @@ def main():
     x_max = float(argv[1])
     y_max = float(argv[2])
     line = stdin.readline()
-    columns = len(line.split()) - 1
+    columns = len(line.split())
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')
     ax1.set_xlabel('x', color='.2')
