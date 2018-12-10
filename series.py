@@ -1,3 +1,6 @@
+#
+#  (c) 2018 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#
 
 from enum import Enum
 from taylor import jet_0, jet_c, t_prod, t_quot, t_sqr, t_exp, t_sin_cos, t_tan_sec2, t_pwr, t_ln, t_sqrt

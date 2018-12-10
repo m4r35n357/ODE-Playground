@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+#
+#  (c) 2018 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#
+
 # Example: ./playground.py 2 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 50000 >/dev/null
 
 from sys import argv, stderr
