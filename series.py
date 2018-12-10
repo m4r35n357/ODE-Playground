@@ -202,8 +202,8 @@ def bisect(model, ax, bx, f_tol, x_tol, target=0.0, max_it=100, mode=Solver.ROOT
     a = Series(jet_c(ax, 3), diff=True)
     b = Series(jet_c(bx, 3), diff=True)
     c = Series(jet_0(3))
-    f_sign = model(a, target).derivatives
     fc = Series(jet_c(1.0, 3))
+    f_sign = model(a, target).derivatives
     delta = 1.0
     counter = 1
     while abs(fc.jet[0 + mode.value]) > f_tol or abs(delta) > x_tol:

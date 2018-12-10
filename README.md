@@ -1,8 +1,8 @@
 ## Background
 
-This project is mainly a collection of programs for evolving systems of ODE using the Taylor Series Method (TSM), which is based on forward mode Automatic Differentiation (AD).
-TSM is a procedure for integrating ODEs at arbitrary order, and arbitrary precision (the former requires the latter), using recurrence relations between time derivatives of increasing order.
-It is thus a serious competitor to the fourth-order RK4 for the majority of practical cases.
+This project is mainly a collection of programs for evolving systems of ODEs using the Taylor Series Method (TSM), a rather old but poorly acknowledged technique based on forward mode Automatic Differentiation (AD).
+TSM is a procedure for integrating ODEs using Taylor Series of arbitrary order, calculated to arbitrary precision (the former requires the latter in practice), using recurrence relations between time derivatives of increasing order.
+It is thus (or should be!) a serious competitor to the fourth-order RK4 for the majority of practical cases.
 For the uninitiated, here is a review of the method itself and it's history of repeated "discovery".
 
 https://arxiv.org/abs/1111.7149
@@ -10,12 +10,35 @@ https://arxiv.org/abs/1111.7149
 My work was inspired by the following paper and its associated software:
 https://web.ma.utexas.edu/users/mzou/taylor/taylor.pdf
 
-That software uses code generation, and it inspired me to try coding something by hand.
+That software uses code generation to produce the recurrences and code to drive them, and it inspired me to try coding something by hand.
 These programs are the result.
 The main objective was to solve coupled nonlinear equations and investigate chaotic systems.
 
-As part of the work verifying my implementation of the Taylor recurrence rules, I added a demonstration of using Taylor series to find roots, extrema and inflection points in single variable nonlinear equations, like the Matlab implementation here.
+The Taylor recurrence rules generate "jets" of derivatives (the Taylor Series coefficients) term by term using previously calculated lower order derivatives.
+The functions provided cover the basic algebraic operations (+ - * /), and also include several common functions:
+* sqr
+* sqrt
+* exp
+* sin(h)_cos(h)
+* tan(h)_sec(h)2
+* pwr
+* ln
+
+There are also factories for derivative "jets", and an implementation of Horner's method for summing the Taylor Series.
+These "low-level" functions, properly called,  are all that is needed to "integrate" systems of ODEs.
+
+As part of the work verifying my implementation of these recurrence rules, I added a demonstration of using Taylor series to find roots, extrema and inflection points in single variable nonlinear equations, much like the Matlab implementation described here.
 http://www.neidinger.net/SIAMRev74362.pdf
+
+The "higher-level" functions generate Taylor series "jets" in one go, so are only useful for univariate functions.
+As well as adding operators for (negation and **), there are functions for:
+* sqr
+* sqrt
+* exp
+* sin(h)_cos(h)
+* tan(h)
+* ln
+* abs
 
 ## Plotting
 There are also some plotting and graphing utilities written in Python 3, which is required for plotting (the data can come from either c or Python, which share output "formats").
