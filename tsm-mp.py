@@ -27,6 +27,7 @@ def main():
     cx, cy, cz = jet_0(n + 1), jet_0(n + 1), jet_0(n + 1)
 
     if model == "lorenz":
+        #  Example: ./tsm-mp.py lorenz 16 10 .01 100001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
         s, r, b = float(argv[9]), float(argv[10]), float(argv[11]) / float(argv[12])
         for step in range(1, steps):
             print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
@@ -83,6 +84,7 @@ def main():
                 cz[k + 1] = d * cx[k] / (k + 1)
             x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
     elif model == "thomas":
+        #  Example: ./tsm-mp.py thomas 16 10 0.1 30001 1 0 0 .19 | ./plotPi3d.py
         b = float(argv[9])
         wsx, wcx = jet_0(n), jet_0(n)
         wsy, wcy = jet_0(n), jet_0(n)
@@ -140,6 +142,17 @@ def main():
                 cy[k + 1] = (t_prod(cx, w_b, k) + g * cy[k]) / (k + 1)
                 cz[k + 1] = - 2.0 * t_prod(cz, w_c, k) / (k + 1)
             x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
+    elif model == "sprott":
+        #  Example: ./tsm-mp.py sprott 16 10 0.1 30001 1 0 0 | ./plotPi3d.py
+        w1 = jet_c(1.0, n)
+        for step in range(1, steps):
+            print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
+            cx[0], cy[0], cz[0] = x, y, z
+            for k in range(n):
+                cx[k + 1] = (cy[k] + 2.0 * t_prod(cx, cy, k) + t_prod(cx, cz, k)) / (k + 1)
+                cy[k + 1] = (w1[k] - 2.0 * t_sqr(cx, k) + t_prod(cy, cz, k)) / (k + 1)
+                cz[k + 1] = (cx[k] - t_sqr(cx, k) - t_sqr(cy, k)) / (k + 1)
+            x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
     elif model == "sj":
         a, b = float(argv[9]), float(argv[10])
         w_b = jet_c(b, n)
@@ -152,6 +165,7 @@ def main():
                 cz[k + 1] = (cz[k] + a * t_sqr(cx, k) - t_sqr(cy, k) - w_b[k]) / (k + 1)
             x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
     elif model == "halvorsen":
+        #  Example: ./tsm-mp.py halvorsen 16 10 .01 100001 1 0 0 1.4 | ./plotPi3d.py
         a = float(argv[9])
         for step in range(1, steps):
             print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
