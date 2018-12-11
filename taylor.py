@@ -26,53 +26,34 @@ def t_sqr(u, k):
     if k == 0:
         return u[0]**2
     else:
-        sq = 0.0
         if k % 2 == 1:
-            for j in range((k - 1) // 2 + 1):
-                sq += u[j] * u[k - j]
-            return 2.0 * sq
+            return 2.0 * sum(u[j] * u[k - j] for j in range((k - 1) // 2 + 1))
         else:
-            for j in range((k - 2) // 2 + 1):
-                sq += u[j] * u[k - j]
-            return 2.0 * sq + u[k // 2]**2
+            return 2.0 * sum(u[j] * u[k - j] for j in range((k - 2) // 2 + 1)) + u[k // 2]**2
 
 
 def t_prod(u, v, k):
-    tp = 0.0
-    for j in range(k + 1):
-        tp += u[j] * v[k - j]
-    return tp
+    return sum(u[j] * v[k - j] for j in range(k + 1))
 
 
 def t_quot(q, u, v, k):
     assert abs(v[0]) != 0.0
-    tq = 0.0
-    for j in range(1, k + 1):
-        tq += v[j] * q[k - j]
-    return (u[k] - tq) / v[0]
+    return (u[k] - sum(v[j] * q[k - j] for j in range(1, k + 1))) / v[0]
 
 
 def t_sqrt(r, u, k):
-    assert abs(u[0]) > 0.0
+    assert u[0] > 0.0
     if k == 0:
         return sqrt(u[0])
     else:
-        rt = 0.0
         if k % 2 == 1:
-            for j in range(1, (k - 1) // 2 + 1):
-                rt += r[j] * r[k - j]
-            return (u[k] - 2.0 * rt) / (2.0 * r[0])
+            return (u[k] - 2.0 * sum(r[j] * r[k - j] for j in range(1, (k - 1) // 2 + 1))) / (2.0 * r[0])
         else:
-            for j in range(1, (k - 2) // 2 + 1):
-                rt += r[j] * r[k - j]
-            return (u[k] - 2.0 * rt - r[k // 2]**2) / (2.0 * r[0])
+            return (u[k] - 2.0 * sum(r[j] * r[k - j] for j in range(1, (k - 2) // 2 + 1)) - r[k // 2]**2) / (2.0 * r[0])
 
 
 def _ddot(v, u, k):
-    dd = 0.0
-    for j in range(1, k):
-        dd += j * u[j] * v[k - j]
-    return dd / k
+    return sum(j * u[j] * v[k - j] for j in range(1, k)) / k
 
 
 def t_exp(e, u, k):
@@ -109,7 +90,7 @@ def t_pwr(p, u, a, k):
 
 
 def t_ln(l, u, k):
-    assert abs(u[0]) > 0.0
+    assert u[0] > 0.0
     if k == 0:
         return log(u[0])
     else:
