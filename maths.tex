@@ -4,7 +4,7 @@
 \usepackage{mathtools}
 \usepackage{listings}
 \usepackage{graphicx}
-\title{\textbf{Taylor Series Method for Solving ODEs}}
+\title{\textbf{Taylor Series Method for Solving Ordinary Differential Equations}}
 \author{Ian Smith}
 \date{December 2018}
 \graphicspath{ {images/} }
@@ -13,18 +13,18 @@
 \maketitle
 
 \abstract
-Here is a simple and accurate numerical approach for evolving a system of nonlinear ordinary differential equations (ODEs).
-Time varying quantities are represented using arbitrary degree Taylor Series, with the derivative terms in the series generated via recurrence relationships.
-Horner's method is then used to calculate the value at the next timestep. 
+The procedure described here is a simple and accurate numerical approach for evolving a system of nonlinear ordinary differential equations (ODEs).
+Time varying quantities are represented using arbitrary degree Taylor Series in the coordinates of interest, with the derivative terms in the series generated via recurrence relationships.
+Horner's method is then used to calculate the coordinate values at the next timestep. 
 
 \section{Introduction}
-Starting with a differential equation (ODE), or system of such equations:
+Starting with an ordinary differential equation (ODE), or system of such equations:
 \begin{equation}
 \dot{x} = f(x)
 \end{equation}
-We can represent the variable(s) $x$ as a Taylor Series in the time domain.
+We can represent the time variation of the solution $x$ as a Taylor Series in the time domain.
 Solving the equation in this context means that from the given initial condition(s), $x$, we want to evolve the system state to a later time.
-The interval between those initial condition(s) and that later time is the time step, $h$.
+The interval between those initial condition(s) and that later time is called the time step, $h$.
 So, in the time domain we have:
 \begin{equation}
 \begin{aligned}
@@ -36,7 +36,7 @@ Rather than using the $x$ derivatives $x^k$ (note superscript!) directly, and ca
 \begin{equation}
 x_k = \frac{x^k}{k!}
 \end{equation}
-so that we now have the simpler form:
+so that we now have the simpler (polynomial) form:
 \begin{equation}
 \begin{aligned}
 x(h) &= \sum_{k=0}^{\infty} x_kh^k
@@ -48,11 +48,11 @@ Differentiating this with respect to time ($h$) we can represent the LHS of the 
 \dot{x}(h) &= \sum_{k=1}^{\infty} k x_kh^{k-1} = \sum_{k=0}^{\infty} (k + 1) x_{k+1}h^k
 \end{aligned}
 \end{equation}
-but we can also say, as in (4):
+but we can also say, as in (4), that:
 \begin{equation}
 \dot{x}(h) = \sum_{k=0}^{\infty} \dot{x}_kh^k
 \end{equation}
-equating the two polynomials by powers of $h$ we get for the $k^{th}$ term:
+equating the polynomials (5) and (6) by powers of $h$ we get for the $k^{th}$ term:
 \begin{equation}
 \dot{x}_k = (k + 1) x_{k+1}
 \end{equation}
@@ -60,7 +60,7 @@ or
 \begin{equation}
 x_{k+1} = \frac{\dot{x}_k} {k + 1} 
 \end{equation}
-This is a key realtionship between the "derivative" of the ODE, and the next term in the taylor series.
+This is a key relationship between the "derivative" of the ODE, and the next term in the taylor series.
 \section{Procedure}
 We will use the letter $F$ to represent the ODE function in (1) when expressed in terms of the TCs.
 
