@@ -17,6 +17,10 @@ D3 = float('3.0')
 D4 = float('4.0')
 
 
+def print_output(x, y, z, t):
+    print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, t))
+
+
 def main():
     model = argv[1]
     n = int(argv[3])
@@ -30,7 +34,7 @@ def main():
         #  Example: ./tsm-mp.py lorenz 16 10 .01 100001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
         s, r, b = float(argv[9]), float(argv[10]), float(argv[11]) / float(argv[12])
         for step in range(1, steps):
-            print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
+            print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
             for k in range(n):
                 cx[k + 1] = s * (cy[k] - cx[k]) / (k + 1)
@@ -40,7 +44,7 @@ def main():
     elif model == "lu":
         a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
         for step in range(1, steps):
-            print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
+            print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
             for k in range(n):
                 cx[k + 1] = a * (cy[k] - cx[k]) / (k + 1)
@@ -50,7 +54,7 @@ def main():
     elif model == "chen":
         a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
         for step in range(1, steps):
-            print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
+            print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
             for k in range(n):
                 cx[k + 1] = a * (cy[k] - cx[k]) / (k + 1)
@@ -61,7 +65,7 @@ def main():
         a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
         b_ = jet_c(b, n)
         for step in range(1, steps):
-            print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
+            print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
             for k in range(n):
                 cx[k + 1] = - (cy[k] + cz[k]) / (k + 1)
@@ -74,7 +78,7 @@ def main():
         w5 = jet_0(n)
         jet1 = jet_c(D1, n)
         for step in range(1, steps):
-            print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
+            print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
             for k in range(n):
                 w4[k] = jet1[k] - cy[k]
@@ -90,7 +94,7 @@ def main():
         wsy, wcy = jet_0(n), jet_0(n)
         wsz, wcz = jet_0(n), jet_0(n)
         for step in range(1, steps):
-            print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
+            print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
             for k in range(n):
                 wsx[k], wcx[k] = t_sin_cos(wsx, wcx, cx, k)
@@ -110,7 +114,7 @@ def main():
         wsay, wcay = jet_0(n), jet_0(n)
         wsaz, wcaz = jet_0(n), jet_0(n)
         for step in range(1, steps):
-            print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
+            print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
             for k in range(n):
                 wsx[k], wcx[k] = t_tan_sec2(wsx, wcx, cx, k)
@@ -131,7 +135,7 @@ def main():
         w_c = jet_0(n)
         jet1 = jet_c(D1, n)
         for step in range(1, steps):
-            print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
+            print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
             for k in range(n):
                 w_x2_1 = t_sqr(cx, k) - jet1[k]
@@ -146,7 +150,7 @@ def main():
         #  Example: ./tsm-mp.py sprott 16 10 0.1 30001 1 0 0 | ./plotPi3d.py
         w1 = jet_c(1.0, n)
         for step in range(1, steps):
-            print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
+            print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
             for k in range(n):
                 cx[k + 1] = (cy[k] + 2.0 * t_prod(cx, cy, k) + t_prod(cx, cz, k)) / (k + 1)
@@ -157,7 +161,7 @@ def main():
         a, b = float(argv[9]), float(argv[10])
         w_b = jet_c(b, n)
         for step in range(1, steps):
-            print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
+            print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
             for k in range(n):
                 cx[k + 1] = cy[k] / (k + 1)
@@ -168,7 +172,7 @@ def main():
         #  Example: ./tsm-mp.py halvorsen 16 10 .01 100001 1 0 0 1.4 | ./plotPi3d.py
         a = float(argv[9])
         for step in range(1, steps):
-            print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
+            print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
             for k in range(n):
                 cx[k + 1] = - (a * cx[k] + D4 * cy[k] + D4 * cz[k] + t_sqr(cy, k)) / (k + 1)
@@ -178,7 +182,7 @@ def main():
     elif model == "nh":
         a_ = jet_c(float(argv[9]), n)
         for step in range(1, steps):
-            print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
+            print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
             for k in range(n):
                 cx[k + 1] = cy[k] / (k + 1)
@@ -188,7 +192,7 @@ def main():
     elif model == "rucklidge":
         a, b = float(argv[9]), float(argv[10])
         for step in range(1, steps):
-            print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
+            print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
             for k in range(n):
                 cx[k + 1] = (a * cy[k] - b * cx[k] - t_prod(cy, cz, k)) / (k + 1)
@@ -198,7 +202,7 @@ def main():
     elif model == "damped":
         c1, c2 = float(argv[9]), float(argv[10])
         for step in range(1, steps):
-            print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, D0, step * h))
+            print_output(x, y, D0, step * h)
             cx[0], cy[0] = x, y
             for k in range(n):
                 cx[k + 1] = cy[k] / (k + 1)
@@ -208,7 +212,7 @@ def main():
         w = sqrt(float(argv[9]) / float(argv[10]))
         wsx, wcx = jet_0(n), jet_0(n)
         for step in range(1, steps):
-            print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, D0, step * h))
+            print_output(x, y, D0, step * h)
             cx[0], cy[0] = x, y
             for k in range(n):
                 wsx[k], wcx[k] = t_sin_cos(wsx, wcx, cx, k)
@@ -218,7 +222,7 @@ def main():
     elif model == "volterra":
         a, b, c, d = float(argv[8]), float(argv[9]), float(argv[10]), float(argv[11])
         for step in range(1, steps):
-            print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, D0, step * h))
+            print_output(x, y, D0, step * h)
             cx[0], cy[0] = x, y
             for k in range(n):
                 wxy = t_prod(cx, cy, k)
