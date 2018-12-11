@@ -13,6 +13,7 @@ https://web.ma.utexas.edu/users/mzou/taylor/taylor.pdf
 That software uses code generation to produce the recurrences and code to drive them, and it inspired me to try coding something by hand.
 These programs are the result.
 The main objective was to solve coupled nonlinear equations and investigate chaotic systems.
+There is a maths.tex file containing a technical note describing the majority of the procedure (apart from the recurrence relations which are obtained from the source listed below).
 
 The Taylor recurrence rules generate "jets" of derivatives (the Taylor Series coefficients) term by term using previously calculated lower order derivatives.
 The functions provided cover the basic algebraic operations (+ - * /), and also include several common functions:
@@ -24,11 +25,14 @@ The functions provided cover the basic algebraic operations (+ - * /), and also 
 * pwr
 * ln
 
+The recurrence relations used here are derived in http://aimsciences.org/journals/displayPaperPro.jsp?paperID=9241 (open access).
 There are also factories for derivative "jets", and an implementation of Horner's method for summing the Taylor Series.
 These "low-level" functions, properly called,  are all that is needed to "integrate" systems of ODEs.
+There is a fairly extensive collection of nonlinear ODEs already implemented, either in c or Python, or both in most cases.
 
-As part of the work verifying my implementation of these recurrence rules, I added a demonstration of using Taylor series to find roots, extrema and inflection points in single variable nonlinear equations, much like the Matlab implementation described here.
-http://www.neidinger.net/SIAMRev74362.pdf
+As part of the work verifying my implementation of these recurrence rules, I have added a demonstration of using Taylor series to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
+The demo can be used to find roots (and also extrema and inflection points by "extending" Newton to higher derivatives) in single variable nonlinear equations.
+
 
 The "higher-level" functions generate Taylor series "jets" in one go, so are only useful for univariate functions.
 As well as adding operators for (negation and **), there are functions for:
@@ -39,6 +43,21 @@ As well as adding operators for (negation and **), there are functions for:
 * tan(h)
 * ln
 * abs
+
+Using these higher level functions, Newton's method is implemented trivially, but I have also provided implementations of bisection and arbitrary degree Householder methods for comparison.
+The playground.py script generates the first 12 derivatives of a "model" function along with the value itself, across a range of the input variable.
+Optionally it will analyse that range for roots, extrema and inflection points using the lower order derivatives.
+Here is a seventh-degree polynomial model by way of example, and a trigonometric identity as a check of the sin and sqr functions:
+```python
+def septic(a, value):
+    return (a + 7) * (a + 5) * (a + 2) * a * (a - 1) * (a - 3) * (a - 6) - value
+
+def trig(a, value):
+    return (3 * a).sin - 3 * a.sin + 4 * a.sin * a.sin.sqr - value
+```
+Operators on or between jets and numbers are implemented by overloading, and the functions are implemented as properties of a jet.
+These two approaches produce a fairly readable format for coding the models.
+The value parameter allows simple calculation of function inverse values, as well as roots.
 
 ## Plotting
 There are also some plotting and graphing utilities written in Python 3, which is required for plotting (the data can come from either c or Python, which share output "formats").
@@ -104,7 +123,7 @@ To test the root, extremum and inflection finding:
 Matplotlib progressive ODE plotting
 ```
 ./tsm-mp.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
-./tsm_lorenz.py 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
+./tsm-mp.py 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
 ```
 
 3D ODE plotting
