@@ -123,11 +123,10 @@ To test the root, extremum and inflection finding:
 Matplotlib progressive ODE plotting
 ```
 ./tsm-mp.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
-./tsm-mp.py 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
 ```
 
 3D ODE plotting
 ```
-./tsm_lorenz.py 160 100 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
-./tsm_lorenz.py 160 100 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotTrajectory.py 3 0 1 2
+./tsm-mp.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
+./tsm-mp.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotTrajectory.py 3 0 1 2
 ```

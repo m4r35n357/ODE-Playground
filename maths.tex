@@ -83,11 +83,11 @@ Obtaining $F(x_k)$ from $f(t)$ is where the recurrence relations (where necessar
 Once we have enough terms, we use Horner's method to sum the polynomial.
 \section{Examples}
 \subsection{Exponential Decay}
-Time domain ($\dot{x} = f(x)$):
+Time domain, $\dot{x} = f(x)$:
 \begin{equation}
 \dot{x} = - a x
 \end{equation}
-Taylor coefficients ($\dot{x}_k = F(x_k) / k + 1$):
+Taylor coefficients, $\dot{x}_k = F(x_k) / k + 1$:
 \begin{equation}
 x_{k+1} = \frac{- a x_k} {k + 1}
 \end{equation}
@@ -96,7 +96,7 @@ Addition and subtraction of TCs are similar in this regard.
 
 Where multiplication and division of TCs and functions with TC arguments are concerned, the situation is slightly more complex.
 \subsection{Lorenz Equations}
-Time domain ($\dot{x} = f(x)$):
+Time domain, $\dot{x} = f(x)$:
 \begin{equation}
 \begin{aligned}
 \dot{x} &= - \sigma (y - x) \\
@@ -104,7 +104,7 @@ Time domain ($\dot{x} = f(x)$):
 \dot{z} &= - xy - \beta z \\
 \end{aligned}
 \end{equation}
-Taylor coefficients ($\dot{x}_k = F(x_k) / k + 1$):
+Taylor coefficients, $\dot{x}_k = F(x_k) / k + 1$:
 \begin{equation}
 \begin{aligned}
 x_{k+1} &= \frac{- \sigma (y_k - x_k)}{k + 1} \\

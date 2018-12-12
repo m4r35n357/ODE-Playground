@@ -19,6 +19,7 @@ def septic(a, value):
 
 
 def playground(a, value):
+    # Example: ./playground.py 1 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 10 >/dev/null
     # return (2 * a).sin - 2 * a.sin * a.cos - value
     # return (2 * a).cos - a.cos.sqr + a.sin.sqr - value
     # return (3 * a).sin - 3 * a.sin + 4 * a.sin * a.sin.sqr - value
@@ -26,7 +27,6 @@ def playground(a, value):
     # return a.sqr.sqrt - value
     # return a.exp.ln - value
     # return (a.exp + (a ** 2 - 4).exp).sqrt - value
-    # Example: ./playground.py 1 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 10 >/dev/null
     return (a.exp + (a ** 2 - 4).exp).ln - value
 
 
