@@ -28,55 +28,40 @@ class Series:
         return string
 
     def __neg__(self):
-        neg_jet = jet_0(self.n)
-        for k in range(self.n):
-            neg_jet[k] = - self.jet[k]
-        return Series(neg_jet)
+        return Series([- self.jet[k] for k in range(self.n)])
 
     def __add__(self, other):
-        add_jet = jet_0(self.n)
         if isinstance(other, Series):
             assert len(other.jet) == self.n
-            for k in range(self.n):
-                add_jet[k] = self.jet[k] + other.jet[k]
+            return Series([self.jet[k] + other.jet[k] for k in range(self.n)])
         else:
-            add_jet[0] = self.jet[0] + other
-            for k in range(1, self.n):
-                add_jet[k] = self.jet[k]
-        return Series(add_jet)
+            add_jet = [self.jet[k] for k in range(self.n)]
+            add_jet[0] += other
+            return Series(add_jet)
 
     def __radd__(self, other):
         return self.__add__(other)
 
     def __sub__(self, other):
-        sub_jet = jet_0(self.n)
         if isinstance(other, Series):
             assert len(other.jet) == self.n
-            for k in range(self.n):
-                sub_jet[k] = self.jet[k] - other.jet[k]
+            return Series([self.jet[k] - other.jet[k] for k in range(self.n)])
         else:
-            sub_jet[0] = self.jet[0] - other
-            for k in range(1, self.n):
-                sub_jet[k] = self.jet[k]
-        return Series(sub_jet)
+            sub_jet = [self.jet[k] for k in range(self.n)]
+            sub_jet[0] -= other
+            return Series(sub_jet)
 
     def __rsub__(self, other):
-        rsub_jet = jet_0(self.n)
-        rsub_jet[0] = other - self.jet[0]
-        for k in range(1, self.n):
-            rsub_jet[k] = - self.jet[k]
-        return Series(rsub_jet)
+        sub_jet = [- self.jet[k] for k in range(self.n)]
+        sub_jet[0] += other
+        return Series(sub_jet)
 
     def __mul__(self, other):
-        mul_jet = jet_0(self.n)
         if isinstance(other, Series):
             assert len(other.jet) == self.n
-            for k in range(self.n):
-                mul_jet[k] = t_prod(self.jet, other.jet, k)
+            return Series([t_prod(self.jet, other.jet, k) for k in range(self.n)])
         else:
-            for k in range(self.n):
-                mul_jet[k] = self.jet[k] * other
-        return Series(mul_jet)
+            return Series([self.jet[k] * other for k in range(self.n)])
 
     def __rmul__(self, other):
         return self.__mul__(other)
@@ -124,10 +109,7 @@ class Series:
 
     @property
     def sqr(self):
-        sqr_jet = jet_0(self.n)
-        for k in range(self.n):
-            sqr_jet[k] = t_sqr(self.jet, k)
-        return Series(sqr_jet)
+        return Series([t_sqr(self.jet, k) for k in range(self.n)])
 
     @property
     def sqrt(self):

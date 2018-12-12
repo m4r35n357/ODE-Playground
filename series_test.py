@@ -17,6 +17,7 @@ print("", file=stderr)
 
 z = Series(jet_c(3, 7), diff=True)
 print(z, file=stderr)
+print(- z, file=stderr)
 print("", file=stderr)
 print(z + 2, file=stderr)
 print(2 + z, file=stderr)

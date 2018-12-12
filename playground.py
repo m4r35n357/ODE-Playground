@@ -4,8 +4,6 @@
 #  (c) 2018 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
-# Example: ./playground.py 2 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 50000 >/dev/null
-
 from sys import argv, stderr
 from series import Solver, Series, bisect, newton, householder
 from taylor import jet_0, jet_c
@@ -16,6 +14,7 @@ def cosx_x3(a, value):
 
 
 def septic(a, value):
+    # Example: ./playground.py 2 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 50000 >/dev/null
     return (a + 7) * (a + 5) * (a + 2) * a * (a - 1) * (a - 3) * (a - 6) - value
 
 
@@ -25,7 +24,10 @@ def playground(a, value):
     # return (3 * a).sin - 3 * a.sin + 4 * a.sin * a.sin.sqr - value
     # return (3 * a).cos + 3 * a.cos - 4 * a.cos * a.cos.sqr - value
     # return a.sqr.sqrt - value
-    return a.exp.ln - value
+    # return a.exp.ln - value
+    # return (a.exp + (a ** 2 - 4).exp).sqrt - value
+    # Example: ./playground.py 1 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 10 >/dev/null
+    return (a.exp + (a ** 2 - 4).exp).ln - value
 
 
 def print_output(output):
@@ -41,7 +43,7 @@ target = float(argv[5])
 f_tol = float(argv[6])
 x_tol = float(argv[7])
 
-fun = septic
+fun = playground
 
 w_x = Series(jet_c(x0, N_MAX), diff=True)
 w_f = Series(jet_0(N_MAX))
