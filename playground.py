@@ -43,7 +43,7 @@ target = float(argv[5])
 f_tol = float(argv[6])
 x_tol = float(argv[7])
 
-fun = playground
+fun = septic
 
 w_x = Series(jet_c(x0, N_MAX), diff=True)
 w_f = Series(jet_0(N_MAX))

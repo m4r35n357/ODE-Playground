@@ -117,7 +117,7 @@ grep Example *.py
 
 To test the root, extremum and inflection finding:
 ```
-./playground.py 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 8 8000 >/dev/null
+./playground.py 2 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 50000 >/dev/null
 ```
 
 Matplotlib progressive ODE plotting
