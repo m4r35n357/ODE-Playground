@@ -88,7 +88,7 @@ To test the top level Taylor series operation:
 
 To test the root finding built on it:
 ```
-./ad-test-newton-dbg 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 8 8000 >/dev/null
+./ad-test-newton-dbg 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
 ```
 
 Matplotlib progressive ODE plotting
