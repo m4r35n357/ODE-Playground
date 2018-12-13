@@ -11,13 +11,13 @@
 #include "taylor-ode.h"
 
 long order, nsteps;
-mpfr_t t, x, y, a, b, c, d, h, tmp, wxy, *cx, *cy;
+mpfr_t t, x, y, a, b, c, d, h, _, wxy, *cx, *cy;
 
 int main (int argc, char **argv) {
     assert(argc == 11);
     // initialize from command arguments
     t_stepper(argv, &order, &t, &h, &nsteps);
-    mpfr_inits(tmp, wxy, NULL);
+    mpfr_inits(_, wxy, NULL);
     mpfr_init_set_str(x, argv[5], BASE, RND);
     mpfr_init_set_str(y, argv[6], BASE, RND);
     mpfr_init_set_str(a, argv[7], BASE, RND);
@@ -40,11 +40,11 @@ int main (int argc, char **argv) {
         for (int k = 0; k < order; k++) {
             t_product(&wxy, cx, cy, k);
             //  x' = Ax - Cxy
-            mpfr_fmms(tmp, a, cx[k], c, wxy, RND);
-            mpfr_div_ui(cx[k + 1], tmp, k + 1, RND);
+            mpfr_fmms(_, a, cx[k], c, wxy, RND);
+            mpfr_div_ui(cx[k + 1], _, k + 1, RND);
             //  y' = Dxy - By
-            mpfr_fmms(tmp, d, wxy, b, cy[k], RND);
-            mpfr_div_ui(cy[k + 1], tmp, k + 1, RND);
+            mpfr_fmms(_, d, wxy, b, cy[k], RND);
+            mpfr_div_ui(cy[k + 1], _, k + 1, RND);
         }
 
         // sum the series using Horner's method and advance one step

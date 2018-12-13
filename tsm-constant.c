@@ -11,13 +11,13 @@
 #include "taylor-ode.h"
 
 long order, nsteps;
-mpfr_t t, x, a, h, tmp, *cx;
+mpfr_t t, x, a, h, _, *cx;
 
 int main (int argc, char **argv) {
     assert(argc == 7);
     // initialize from command arguments
     t_stepper(argv, &order, &t, &h, &nsteps);
-    mpfr_inits(tmp, NULL);
+    mpfr_inits(_, NULL);
     mpfr_init_set_str(x, argv[5], BASE, RND);
     mpfr_init_set_str(a, argv[6], BASE, RND);
 
@@ -33,8 +33,8 @@ int main (int argc, char **argv) {
         mpfr_set(cx[0], x, RND);
         for (int k = 0; k < order; k++) {
             //  x' = Ax
-            mpfr_mul(tmp, cx[k], a, RND);
-            mpfr_div_ui(cx[k + 1], tmp, k + 1, RND);
+            mpfr_mul(_, cx[k], a, RND);
+            mpfr_div_ui(cx[k + 1], _, k + 1, RND);
         }
 
         // sum the series using Horner's method and advance one step
