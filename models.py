@@ -30,7 +30,8 @@ def playground(a, value):
     # return (3 * a).cos + 3 * a.cos - 4 * a.cos * a.cos.sqr - value
     # return a.sqr.sqrt - value
     # return a.exp.ln - value
-    return (a.exp + (a ** 2 - 4).exp).sqrt - value
+    return a.tan - a.sin / a.cos - value
+    # return a.tanh - a.sinh / a.cosh - value
 
 
-analyze(composite2)
+analyze(composite1)

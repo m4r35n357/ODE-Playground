@@ -127,7 +127,7 @@ int main (int argc, char **argv) {
     set_ad_status(wx, VARIABLE);
     wf = t_jet(n_max);
 
-    m = composite2;
+    m = composite1;
 
     mpfr_sub(tmp, x1, x0, RND);
     mpfr_div_ui(x_step, tmp, steps, RND);
