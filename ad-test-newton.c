@@ -1,8 +1,6 @@
 /*
  * Automatic Differentiation of Taylor Series, Newton's method
  *
- * Example: ./ad-test-newton-dbg 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
- *
  * (c) 2018 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
@@ -15,7 +13,7 @@
 
 long n_max = 13, n, steps;
 
-mpfr_t x0, x1, x_step, x_prev, f_prev, f_value, tmp, tmp1, D_1, D_05, D0, D1, D2, D3, D5, D6, D7, *w1, *w2, *w3, *w5, *w6, *w7, *w_value, *_1, *_2, *_3, *wx, *wf, f_tol, x_tol, int_tol;
+mpfr_t x0, x1, x_step, x_prev, f_prev, f_value, tmp, tmp1, D_1, D_05, D0, D1, D2, D3, D4, D5, D6, D7, *w1, *w2, *w3, *w4, *w5, *w6, *w7, *w_value, *_1, *_2, *_3, *wx, *wf, f_tol, x_tol, int_tol;
 
 model m;
 
@@ -29,6 +27,7 @@ void trig (mpfr_t *f, const mpfr_t *x, int n) {
 }
 
 void cosx_x3 (mpfr_t *f, const mpfr_t *x, int n) {
+    //  Example: ./ad-test-newton-dbg 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     ad_square(_1, x, n);
     ad_product(_2, _1, x, n);
     ad_sin_cos(_1, _3, x, n);
@@ -45,6 +44,7 @@ void test_polynomial (mpfr_t *f, const mpfr_t *x, int n) {
 }
 
 void septic (mpfr_t *f, const mpfr_t *x, int n) {
+    //  Example: ./ad-test-newton-dbg 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
     ad_minus(_2, x, w1, n);
     ad_plus(_1, x, w2, n);
     ad_product(_3, _2, _1, n);
@@ -57,6 +57,26 @@ void septic (mpfr_t *f, const mpfr_t *x, int n) {
     ad_plus(_1, x, w7, n);
     ad_product(_3, _2, _1, n);
     ad_product(f, _3, x, n);
+}
+
+void composite1 (mpfr_t *f, const mpfr_t *x, int n) {
+    //  Example: ./ad-test-newton-dbg 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
+    ad_square(_1, x, n);
+    ad_minus(_2, _1, w4, n);
+    ad_exp(_1, _2, n);
+    ad_exp(_2, x, n);
+    ad_plus(_3, _1, _2, n);
+    ad_ln(f, _3, n);
+}
+
+void composite2 (mpfr_t *f, const mpfr_t *x, int n) {
+    //  Example: ./ad-test-newton-dbg 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
+    ad_exp(_1, x, n);
+    ad_minus(_2, _1, w4, n);
+    ad_square(_1, _2, n);
+    ad_square(_2, x, n);
+    ad_plus(_3, _1, _2, n);
+    ad_sqrt(f, _3, n);
 }
 
 void lorentz (mpfr_t *f, const mpfr_t *x, int n) {
@@ -86,12 +106,14 @@ int main (int argc, char **argv) {
     mpfr_init_set_si(D1, 1, RND);
     mpfr_init_set_si(D2, 2, RND);
     mpfr_init_set_si(D3, 3, RND);
+    mpfr_init_set_si(D4, 4, RND);
     mpfr_init_set_si(D5, 5, RND);
     mpfr_init_set_si(D6, 6, RND);
     mpfr_init_set_si(D7, 7, RND);
     w1 = t_jet_c(n_max, D1);
     w2 = t_jet_c(n_max, D2);
     w3 = t_jet_c(n_max, D3);
+    w4 = t_jet_c(n_max, D4);
     w5 = t_jet_c(n_max, D5);
     w6 = t_jet_c(n_max, D6);
     w7 = t_jet_c(n_max, D7);
@@ -105,7 +127,7 @@ int main (int argc, char **argv) {
     set_ad_status(wx, VARIABLE);
     wf = t_jet(n_max);
 
-    m = septic;
+    m = composite2;
 
     mpfr_sub(tmp, x1, x0, RND);
     mpfr_div_ui(x_step, tmp, steps, RND);

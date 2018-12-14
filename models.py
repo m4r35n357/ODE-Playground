@@ -12,6 +12,16 @@ def septic(a, value):
     return (a + 7) * (a + 5) * (a + 2) * a * (a - 1) * (a - 3) * (a - 6) - value
 
 
+def composite1(a, value):
+    # Example: ./models.py 1 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 10 >/dev/null
+    return (a.exp + (a ** 2 - 4).exp).ln - value
+
+
+def composite2(a, value):
+    # Example: ./models.py 1 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 10 >/dev/null
+    return (a ** 2 + (a.exp - 4) ** 2).sqrt - value
+
+
 def playground(a, value):
     # Example: ./models.py 1 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 10 >/dev/null
     # return (2 * a).sin - 2 * a.sin * a.cos - value
@@ -20,8 +30,7 @@ def playground(a, value):
     # return (3 * a).cos + 3 * a.cos - 4 * a.cos * a.cos.sqr - value
     # return a.sqr.sqrt - value
     # return a.exp.ln - value
-    # return (a.exp + (a ** 2 - 4).exp).sqrt - value
-    return (a.exp + (a ** 2 - 4).exp).ln - value
+    return (a.exp + (a ** 2 - 4).exp).sqrt - value
 
 
-analyze(septic)
+analyze(composite2)
