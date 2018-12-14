@@ -6,15 +6,7 @@
 
 from math import sqrt
 from sys import stderr, argv
-
 from taylor import jet_0, jet_c, t_horner, t_prod, t_sin_cos, t_tan_sec2, t_sqr
-
-D0 = float('0.0')
-D05 = float('0.5')
-D1 = float('1.0')
-D2 = float('2.0')
-D3 = float('3.0')
-D4 = float('4.0')
 
 
 def print_output(x, y, z, t):
@@ -26,6 +18,11 @@ def main():
     n = int(argv[3])
     h = float(argv[4])
     steps = int(argv[5])
+    d0 = float('0.0')
+    d1 = float('1.0')
+    d2 = float('2.0')
+    d3 = float('3.0')
+    d4 = float('4.0')
 
     x, y, z = float(argv[6]), float(argv[7]), float(argv[8])
     cx, cy, cz = jet_0(n + 1), jet_0(n + 1), jet_0(n + 1)
@@ -76,7 +73,7 @@ def main():
         a, b, c, d = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
         w4 = jet_0(n)
         w5 = jet_0(n)
-        jet1 = jet_c(D1, n)
+        jet1 = jet_c(d1, n)
         for step in range(1, steps):
             print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
@@ -133,14 +130,14 @@ def main():
         w_a = jet_0(n)
         w_b = jet_0(n)
         w_c = jet_0(n)
-        jet1 = jet_c(D1, n)
+        jet1 = jet_c(d1, n)
         for step in range(1, steps):
             print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
             for k in range(n):
                 w_x2_1 = t_sqr(cx, k) - jet1[k]
                 w_a[k] = cz[k] + w_x2_1
-                w_b[k] = D3 * cz[k] - w_x2_1
+                w_b[k] = d3 * cz[k] - w_x2_1
                 w_c[k] = a + t_prod(cx, cy, k)
                 cx[k + 1] = (t_prod(cy, w_a, k) + g * cx[k]) / (k + 1)
                 cy[k + 1] = (t_prod(cx, w_b, k) + g * cy[k]) / (k + 1)
@@ -153,8 +150,8 @@ def main():
             print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
             for k in range(n):
-                cx[k + 1] = (cy[k] + 2.0 * t_prod(cx, cy, k) + t_prod(cx, cz, k)) / (k + 1)
-                cy[k + 1] = (w1[k] - 2.0 * t_sqr(cx, k) + t_prod(cy, cz, k)) / (k + 1)
+                cx[k + 1] = (cy[k] + d2 * t_prod(cx, cy, k) + t_prod(cx, cz, k)) / (k + 1)
+                cy[k + 1] = (w1[k] - d2 * t_sqr(cx, k) + t_prod(cy, cz, k)) / (k + 1)
                 cz[k + 1] = (cx[k] - t_sqr(cx, k) - t_sqr(cy, k)) / (k + 1)
             x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
     elif model == "sj":
@@ -175,9 +172,9 @@ def main():
             print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
             for k in range(n):
-                cx[k + 1] = - (a * cx[k] + D4 * cy[k] + D4 * cz[k] + t_sqr(cy, k)) / (k + 1)
-                cy[k + 1] = - (a * cy[k] + D4 * cz[k] + D4 * cx[k] + t_sqr(cz, k)) / (k + 1)
-                cz[k + 1] = - (a * cz[k] + D4 * cx[k] + D4 * cy[k] + t_sqr(cx, k)) / (k + 1)
+                cx[k + 1] = - (a * cx[k] + d4 * cy[k] + d4 * cz[k] + t_sqr(cy, k)) / (k + 1)
+                cy[k + 1] = - (a * cy[k] + d4 * cz[k] + d4 * cx[k] + t_sqr(cz, k)) / (k + 1)
+                cz[k + 1] = - (a * cz[k] + d4 * cx[k] + d4 * cy[k] + t_sqr(cx, k)) / (k + 1)
             x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
     elif model == "nh":
         a_ = jet_c(float(argv[9]), n)
@@ -202,7 +199,7 @@ def main():
     elif model == "damped":
         c1, c2 = float(argv[9]), float(argv[10])
         for step in range(1, steps):
-            print_output(x, y, D0, step * h)
+            print_output(x, y, d0, step * h)
             cx[0], cy[0] = x, y
             for k in range(n):
                 cx[k + 1] = cy[k] / (k + 1)
@@ -212,7 +209,7 @@ def main():
         w = sqrt(float(argv[9]) / float(argv[10]))
         wsx, wcx = jet_0(n), jet_0(n)
         for step in range(1, steps):
-            print_output(x, y, D0, step * h)
+            print_output(x, y, d0, step * h)
             cx[0], cy[0] = x, y
             for k in range(n):
                 wsx[k], wcx[k] = t_sin_cos(wsx, wcx, cx, k)
@@ -222,7 +219,7 @@ def main():
     elif model == "volterra":
         a, b, c, d = float(argv[8]), float(argv[9]), float(argv[10]), float(argv[11])
         for step in range(1, steps):
-            print_output(x, y, D0, step * h)
+            print_output(x, y, d0, step * h)
             cx[0], cy[0] = x, y
             for k in range(n):
                 wxy = t_prod(cx, cy, k)

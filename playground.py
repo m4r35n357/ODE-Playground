@@ -3,8 +3,8 @@
 #
 
 from sys import argv, stderr
-from series import Solver, Series, bisect, newton, householder
 from taylor import jet_c
+from series import Solver, Series, bisect, newton, householder
 
 
 def _print_output(output):

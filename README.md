@@ -22,6 +22,9 @@ The functions provided cover the basic algebraic operations (+ - * /), and also 
 * exp
 * sin(h)_cos(h)
 * tan(h)_sec(h)2
+* asin (Python only)
+* acos (Python only)
+* atan (Python only)
 * pwr
 * ln
 
@@ -41,6 +44,9 @@ As well as adding operators for (negation and **), there are functions for:
 * exp
 * sin(h)_cos(h)
 * tan(h)
+* asin (Python only)
+* acos (Python only)
+* atan (Python only)
 * ln
 * abs
 

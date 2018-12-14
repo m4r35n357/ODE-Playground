@@ -3,7 +3,8 @@
 #
 
 from enum import Enum
-from taylor import jet_0, jet_c, t_prod, t_quot, t_sqr, t_exp, t_sin_cos, t_tan_sec2, t_pwr, t_ln, t_sqrt
+from taylor import jet_0, jet_c, t_prod, t_quot, t_sqr, t_exp, t_sin_cos, t_tan_sec2, t_pwr, t_ln, t_sqrt, t_asin, \
+    t_acos, t_atan
 
 
 class Solver(Enum):
@@ -150,8 +151,7 @@ class Series:
         return self._s_c(True)
 
     def _s_c(self, hyp):
-        sin_jet = jet_0(self.n)
-        cos_jet = jet_0(self.n)
+        sin_jet, cos_jet = jet_0(self.n), jet_0(self.n)
         for k in range(self.n):
             sin_jet[k], cos_jet[k] = t_sin_cos(sin_jet, cos_jet, self.jet, k, hyp)
         return Series(sin_jet), Series(cos_jet)
@@ -165,11 +165,28 @@ class Series:
         return self._t_s2(True)
 
     def _t_s2(self, hyp):
-        tan_jet = jet_0(self.n)
-        sec2_jet = jet_0(self.n)
+        tan_jet, sec2_jet = jet_0(self.n), jet_0(self.n)
         for k in range(self.n):
             tan_jet[k], sec2_jet[k] = t_tan_sec2(tan_jet, sec2_jet, self.jet, k, hyp)
         return Series(tan_jet)
+
+    @property
+    def asin(self):
+        return self._arc(t_asin)
+
+    @property
+    def acos(self):
+        return self._arc(t_acos)
+
+    @property
+    def atan(self):
+        return self._arc(t_atan)
+
+    def _arc(self, fun):
+        h_jet, v_jet = jet_0(self.n), jet_0(self.n)
+        for k in range(self.n):
+            h_jet[k], v_jet[k] = fun(h_jet, v_jet, self.jet, k)
+        return Series(h_jet)
 
     @property
     def ln(self):

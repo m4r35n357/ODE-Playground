@@ -2,7 +2,7 @@
 #  (c) 2018 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
-from math import sin, cos, tan, exp, sinh, cosh, tanh, log, sqrt
+from math import sin, cos, tan, exp, sinh, cosh, tanh, log, sqrt, acos, asin, atan
 
 
 def jet_0(n):
@@ -79,6 +79,37 @@ def t_tan_sec2(t, s2, u, k, hyp=False):
         tn = s2[0] * u[k] + _ddot(s2, u, k)
         sc2 = 2.0 * (t[0] * tn + _ddot(t, t, k))
         return tn, - sc2 if hyp else sc2
+
+
+def t_asin(h, v, u, k):
+    if k == 0:
+        h = asin(u[0])
+        return h, cos(h)
+    else:
+        return _arc(h, v, u, k)
+
+
+def t_acos(h, v, u, k):
+    if k == 0:
+        h = acos(u[0])
+        return h, - sin(h)
+    else:
+        return _arc(h, v, u, k)
+
+
+def _arc(h, v, u, k):
+    assert abs(v[0]) != 0.0
+    h_jet = (u[k] - _ddot(v, h, k)) / v[0]
+    v_jet = u[0] * h_jet + _ddot(u, h, k)
+    return h_jet, - v_jet
+
+
+def t_atan(h, v, u, k):
+    if k == 0:
+        return atan(u[0]), 1.0 + u[0]**2
+    else:
+        assert abs(v[0]) != 0.0
+        return (u[k] - _ddot(v, h, k)) / v[0], 2.0 * (u[0] * u[k] + _ddot(u, u, k))
 
 
 def t_pwr(p, u, a, k):
