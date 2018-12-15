@@ -28,6 +28,9 @@ class Series:
             string += "{:.6e} ".format(self.jet[i], end='')
         return string
 
+    def __abs__(self):
+        return self.sqr.sqrt
+
     def __neg__(self):
         return Series([- self.jet[k] for k in range(self.n)])
 
@@ -91,13 +94,23 @@ class Series:
             pow_jet[k] = t_pwr(pow_jet, self.jet, a, k)
         return Series(pow_jet)
 
-    @property
-    def diff(self):
-        return self.diff_status
+    def _s_c(self, hyp):
+        sin_jet, cos_jet = jet_0(self.n), jet_0(self.n)
+        for k in range(self.n):
+            sin_jet[k], cos_jet[k] = t_sin_cos(sin_jet, cos_jet, self.jet, k, hyp)
+        return Series(sin_jet), Series(cos_jet)
 
-    @diff.setter
-    def diff(self, value):
-        self.diff_status = value
+    def _t_s2(self, hyp):
+        tan_jet, sec2_jet = jet_0(self.n), jet_0(self.n)
+        for k in range(self.n):
+            tan_jet[k], sec2_jet[k] = t_tan_sec2(tan_jet, sec2_jet, self.jet, k, hyp)
+        return Series(tan_jet)
+
+    def _arc(self, fun):
+        h_jet, v_jet = jet_0(self.n), jet_0(self.n)
+        for k in range(self.n):
+            h_jet[k], v_jet[k] = fun(h_jet, v_jet, self.jet, k)
+        return Series(h_jet)
 
     @property
     def derivatives(self):
@@ -150,12 +163,6 @@ class Series:
     def sinh_cosh(self):
         return self._s_c(True)
 
-    def _s_c(self, hyp):
-        sin_jet, cos_jet = jet_0(self.n), jet_0(self.n)
-        for k in range(self.n):
-            sin_jet[k], cos_jet[k] = t_sin_cos(sin_jet, cos_jet, self.jet, k, hyp)
-        return Series(sin_jet), Series(cos_jet)
-
     @property
     def tan(self):
         return self._t_s2(False)
@@ -163,12 +170,6 @@ class Series:
     @property
     def tanh(self):
         return self._t_s2(True)
-
-    def _t_s2(self, hyp):
-        tan_jet, sec2_jet = jet_0(self.n), jet_0(self.n)
-        for k in range(self.n):
-            tan_jet[k], sec2_jet[k] = t_tan_sec2(tan_jet, sec2_jet, self.jet, k, hyp)
-        return Series(tan_jet)
 
     @property
     def asin(self):
@@ -182,22 +183,12 @@ class Series:
     def atan(self):
         return self._arc(t_atan)
 
-    def _arc(self, fun):
-        h_jet, v_jet = jet_0(self.n), jet_0(self.n)
-        for k in range(self.n):
-            h_jet[k], v_jet[k] = fun(h_jet, v_jet, self.jet, k)
-        return Series(h_jet)
-
     @property
     def ln(self):
         ln_jet = jet_0(self.n)
         for k in range(self.n):
             ln_jet[k] = t_ln(ln_jet, self.jet, k)
         return Series(ln_jet)
-
-    @property
-    def abs(self):
-        return self.sqr.sqrt
 
 
 def bisect(model, ax, bx, f_tol, x_tol, target=0.0, max_it=100, mode=Solver.ROOT):

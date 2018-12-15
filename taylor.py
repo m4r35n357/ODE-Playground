@@ -77,8 +77,8 @@ def t_tan_sec2(t, s2, u, k, hyp=False):
         return (tanh(u[0]), 1.0 - tanh(u[0])**2) if hyp else (tan(u[0]), tan(u[0])**2 + 1.0)
     else:
         tn = s2[0] * u[k] + _ddot(s2, u, k)
-        sc2 = 2.0 * (t[0] * tn + _ddot(t, t, k))
-        return tn, - sc2 if hyp else sc2
+        s2 = 2.0 * (t[0] * tn + _ddot(t, t, k))
+        return tn, - s2 if hyp else s2
 
 
 def t_asin(h, v, u, k):
