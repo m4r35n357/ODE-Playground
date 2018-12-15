@@ -3,7 +3,7 @@
 #
 
 from sys import argv, stderr
-from taylor import jet_c
+from taylor import t_jet
 from series import Solver, Series, bisect, newton, householder
 
 
@@ -20,7 +20,7 @@ def analyze(model):
     target = float(argv[5])
     f_tol = float(argv[6])
     x_tol = float(argv[7])
-    w_x = Series(jet_c(x0, n_max), diff=True)
+    w_x = Series(t_jet(n_max, x0), diff=True)
     if n != 0:
         if n == 1:
             print("Bisection", file=stderr)

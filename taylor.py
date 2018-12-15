@@ -5,13 +5,9 @@
 from math import sin, cos, tan, exp, sinh, cosh, tanh, log, sqrt, acos, asin, atan
 
 
-def jet_0(n):
-    return [0.0 for _ in range(n)]
-
-
-def jet_c(constant, n):
-    jet = jet_0(n)
-    jet[0] = constant
+def t_jet(n, value=0.0):
+    jet = [0.0 for _ in range(n)]
+    jet[0] = value
     return jet
 
 

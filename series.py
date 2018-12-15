@@ -3,8 +3,8 @@
 #
 
 from enum import Enum
-from taylor import jet_0, jet_c, t_prod, t_quot, t_sqr, t_exp, t_sin_cos, t_tan_sec2, t_pwr, t_ln, t_sqrt, t_asin, \
-    t_acos, t_atan
+from taylor import t_jet, t_prod, t_quot, t_sqr, t_exp, t_sin_cos, t_tan_sec2, t_pwr, t_ln, t_sqrt, t_asin, t_acos, \
+    t_atan
 
 
 class Solver(Enum):
@@ -71,7 +71,7 @@ class Series:
         return self.__mul__(other)
 
     def __truediv__(self, other):
-        div_jet = jet_0(self.n)
+        div_jet = t_jet(self.n)
         if isinstance(other, Series):
             assert len(other.jet) == self.n
             for k in range(self.n):
@@ -82,39 +82,39 @@ class Series:
         return Series(div_jet)
 
     def __rtruediv__(self, other):
-        other_jet = jet_c(other, self.n)
-        rdiv_jet = jet_0(self.n)
+        other_jet = t_jet(self.n, other)
+        rdiv_jet = t_jet(self.n)
         for k in range(self.n):
             rdiv_jet[k] = t_quot(rdiv_jet, other_jet, self.jet, k)
         return Series(rdiv_jet)
 
     def __pow__(self, a):
-        pow_jet = jet_0(self.n)
+        pow_jet = t_jet(self.n)
         for k in range(self.n):
             pow_jet[k] = t_pwr(pow_jet, self.jet, a, k)
         return Series(pow_jet)
 
     def _s_c(self, hyp):
-        sin_jet, cos_jet = jet_0(self.n), jet_0(self.n)
+        sin_jet, cos_jet = t_jet(self.n), t_jet(self.n)
         for k in range(self.n):
             sin_jet[k], cos_jet[k] = t_sin_cos(sin_jet, cos_jet, self.jet, k, hyp)
         return Series(sin_jet), Series(cos_jet)
 
     def _t_s2(self, hyp):
-        tan_jet, sec2_jet = jet_0(self.n), jet_0(self.n)
+        tan_jet, sec2_jet = t_jet(self.n), t_jet(self.n)
         for k in range(self.n):
             tan_jet[k], sec2_jet[k] = t_tan_sec2(tan_jet, sec2_jet, self.jet, k, hyp)
         return Series(tan_jet)
 
     def _arc(self, fun):
-        h_jet, v_jet = jet_0(self.n), jet_0(self.n)
+        h_jet, v_jet = t_jet(self.n), t_jet(self.n)
         for k in range(self.n):
             h_jet[k], v_jet[k] = fun(h_jet, v_jet, self.jet, k)
         return Series(h_jet)
 
     @property
     def derivatives(self):
-        d = jet_c(self.jet[0], self.n)
+        d = t_jet(self.n, self.jet[0])
         fac = 1
         for i in range(1, self.n):
             fac *= i
@@ -127,14 +127,14 @@ class Series:
 
     @property
     def sqrt(self):
-        sqrt_jet = jet_0(self.n)
+        sqrt_jet = t_jet(self.n)
         for k in range(self.n):
             sqrt_jet[k] = t_sqrt(sqrt_jet, self.jet, k)
         return Series(sqrt_jet)
 
     @property
     def exp(self):
-        exp_jet = jet_0(self.n)
+        exp_jet = t_jet(self.n)
         for k in range(self.n):
             exp_jet[k] = t_exp(exp_jet, self.jet, k)
         return Series(exp_jet)
@@ -185,17 +185,17 @@ class Series:
 
     @property
     def ln(self):
-        ln_jet = jet_0(self.n)
+        ln_jet = t_jet(self.n)
         for k in range(self.n):
             ln_jet[k] = t_ln(ln_jet, self.jet, k)
         return Series(ln_jet)
 
 
 def bisect(model, ax, bx, f_tol, x_tol, target=0.0, max_it=100, mode=Solver.ROOT):
-    a = Series(jet_c(ax, 3), diff=True)
-    b = Series(jet_c(bx, 3), diff=True)
-    c = Series(jet_0(3))
-    fc = Series(jet_c(1.0, 3))
+    a = Series(t_jet(3, ax), diff=True)
+    b = Series(t_jet(3, bx), diff=True)
+    c = Series(t_jet(3))
+    fc = Series(t_jet(3, 1.0))
     f_sign = model(a, target).derivatives
     delta = 1.0
     counter = 1
@@ -214,8 +214,8 @@ def bisect(model, ax, bx, f_tol, x_tol, target=0.0, max_it=100, mode=Solver.ROOT
 
 
 def newton(model, initial, f_tol, x_tol, target=0.0, max_it=100, mode=Solver.ROOT):
-    x = Series(jet_c(initial, 2 + mode.value), diff=True)
-    f = Series(jet_c(1.0, 2 + mode.value))
+    x = Series(t_jet(2 + mode.value, initial), diff=True)
+    f = Series(t_jet(2 + mode.value, 1.0))
     delta = 1.0
     counter = 1
     while abs(f.jet[0 + mode.value]) > f_tol or abs(delta) > x_tol:
@@ -229,8 +229,8 @@ def newton(model, initial, f_tol, x_tol, target=0.0, max_it=100, mode=Solver.ROO
 
 
 def householder(model, initial, n, f_tol, x_tol, target=0.0, max_it=100, mode=Solver.ROOT):
-    x = Series(jet_c(initial, n + mode.value), diff=True)
-    f = Series(jet_c(1.0, n + mode.value))
+    x = Series(t_jet(n + mode.value, initial), diff=True)
+    f = Series(t_jet(n + mode.value, 1.0))
     delta = 1.0
     counter = 1
     while abs(f.jet[0] + mode.value) > f_tol or abs(delta) > x_tol:

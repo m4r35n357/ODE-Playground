@@ -6,7 +6,7 @@
 
 from math import sqrt
 from sys import stderr, argv
-from taylor import jet_0, jet_c, t_horner, t_prod, t_sin_cos, t_tan_sec2, t_sqr
+from taylor import t_jet, t_horner, t_prod, t_sin_cos, t_tan_sec2, t_sqr
 
 
 def print_output(x, y, z, t):
@@ -25,7 +25,7 @@ def main():
     d4 = float('4.0')
 
     x, y, z = float(argv[6]), float(argv[7]), float(argv[8])
-    cx, cy, cz = jet_0(n + 1), jet_0(n + 1), jet_0(n + 1)
+    cx, cy, cz = t_jet(n + 1), t_jet(n + 1), t_jet(n + 1)
 
     if model == "lorenz":
         #  Example: ./tsm-mp.py lorenz 16 10 .01 100001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
@@ -60,7 +60,7 @@ def main():
             x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
     elif model == "rossler":
         a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
-        b_ = jet_c(b, n)
+        b_ = t_jet(n, b)
         for step in range(1, steps):
             print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
@@ -71,9 +71,9 @@ def main():
             x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
     elif model == "bouali":
         a, b, c, d = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
-        w4 = jet_0(n)
-        w5 = jet_0(n)
-        jet1 = jet_c(d1, n)
+        w4 = t_jet(n)
+        w5 = t_jet(n)
+        jet1 = t_jet(n, d1)
         for step in range(1, steps):
             print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
@@ -87,9 +87,9 @@ def main():
     elif model == "thomas":
         #  Example: ./tsm-mp.py thomas 16 10 0.1 30001 1 0 0 .19 | ./plotPi3d.py
         b = float(argv[9])
-        wsx, wcx = jet_0(n), jet_0(n)
-        wsy, wcy = jet_0(n), jet_0(n)
-        wsz, wcz = jet_0(n), jet_0(n)
+        wsx, wcx = t_jet(n), t_jet(n)
+        wsy, wcy = t_jet(n), t_jet(n)
+        wsz, wcz = t_jet(n), t_jet(n)
         for step in range(1, steps):
             print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
@@ -103,13 +103,13 @@ def main():
             x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
     elif model == "st":
         a, b = float(argv[9]), float(argv[10])
-        wsx, wcx = jet_0(n), jet_0(n)
-        wsy, wcy = jet_0(n), jet_0(n)
-        wsz, wcz = jet_0(n), jet_0(n)
-        wax, way, waz = jet_0(n), jet_0(n), jet_0(n)
-        wsax, wcax = jet_0(n), jet_0(n)
-        wsay, wcay = jet_0(n), jet_0(n)
-        wsaz, wcaz = jet_0(n), jet_0(n)
+        wsx, wcx = t_jet(n), t_jet(n)
+        wsy, wcy = t_jet(n), t_jet(n)
+        wsz, wcz = t_jet(n), t_jet(n)
+        wax, way, waz = t_jet(n), t_jet(n), t_jet(n)
+        wsax, wcax = t_jet(n), t_jet(n)
+        wsay, wcay = t_jet(n), t_jet(n)
+        wsaz, wcaz = t_jet(n), t_jet(n)
         for step in range(1, steps):
             print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
@@ -127,10 +127,10 @@ def main():
             x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
     elif model == "rf":
         a, g = float(argv[9]), float(argv[10])
-        w_a = jet_0(n)
-        w_b = jet_0(n)
-        w_c = jet_0(n)
-        jet1 = jet_c(d1, n)
+        w_a = t_jet(n)
+        w_b = t_jet(n)
+        w_c = t_jet(n)
+        jet1 = t_jet(n, d1)
         for step in range(1, steps):
             print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
@@ -145,7 +145,7 @@ def main():
             x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
     elif model == "sprott":
         #  Example: ./tsm-mp.py sprott 16 10 0.1 30001 1 0 0 | ./plotPi3d.py
-        w1 = jet_c(1.0, n)
+        w1 = t_jet(n, 1.0)
         for step in range(1, steps):
             print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
@@ -156,7 +156,7 @@ def main():
             x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
     elif model == "sj":
         a, b = float(argv[9]), float(argv[10])
-        w_b = jet_c(b, n)
+        w_b = t_jet(n, b)
         for step in range(1, steps):
             print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
@@ -177,7 +177,7 @@ def main():
                 cz[k + 1] = - (a * cz[k] + d4 * cx[k] + d4 * cy[k] + t_sqr(cx, k)) / (k + 1)
             x, y, z = t_horner(cx, n, h), t_horner(cy, n, h), t_horner(cz, n, h)
     elif model == "nh":
-        a_ = jet_c(float(argv[9]), n)
+        a_ = t_jet(n, float(argv[9]))
         for step in range(1, steps):
             print_output(x, y, z, step * h)
             cx[0], cy[0], cz[0] = x, y, z
@@ -207,7 +207,7 @@ def main():
             x, y = t_horner(cx, n, h), t_horner(cy, n, h)
     elif model == "pendulum":
         w = sqrt(float(argv[9]) / float(argv[10]))
-        wsx, wcx = jet_0(n), jet_0(n)
+        wsx, wcx = t_jet(n), t_jet(n)
         for step in range(1, steps):
             print_output(x, y, d0, step * h)
             cx[0], cy[0] = x, y
