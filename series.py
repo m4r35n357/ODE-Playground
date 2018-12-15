@@ -20,7 +20,6 @@ class Series:
         self.n = len(self.jet)
         if diff:
             self.jet[1] = 1.0
-        self.diff_status = diff
 
     def __str__(self):
         string = ""

@@ -40,4 +40,4 @@ def playground(a, value):
     return a.atan - value
 
 
-analyze(playground)
+analyze(composite1)
