@@ -2,15 +2,8 @@
 #  (c) 2018 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
-from enum import Enum
 from taylor import t_jet, t_prod, t_quot, t_sqr, t_exp, t_sin_cos, t_tan_sec2, t_pwr, t_ln, t_sqrt, t_asin, t_acos, \
     t_atan
-
-
-class Solver(Enum):
-    ROOT = 0
-    EXTREMUM = 1
-    INFLECTION = 2
 
 
 class Series:
@@ -190,56 +183,3 @@ class Series:
         for k in range(self.n):
             ln_jet[k] = t_ln(ln_jet, self.jet, k)
         return Series(ln_jet)
-
-
-def bisect(model, ax, bx, f_tol, x_tol, target=0.0, max_it=100, mode=Solver.ROOT):
-    a = Series(t_jet(3, ax), diff=True)
-    b = Series(t_jet(3, bx), diff=True)
-    c = Series(t_jet(3))
-    fc = Series(t_jet(3, 1.0))
-    f_sign = ~ model(a, target)
-    delta = 1.0
-    counter = 1
-    while abs(fc.jet[0 + mode.value]) > f_tol or abs(delta) > x_tol:
-        c = (a + b) / 2.0
-        fc = ~ model(c, target)
-        if f_sign.jet[0 + mode.value] * fc.jet[0 + mode.value] < 0.0:
-            b = c
-        else:
-            a = c
-        delta = b.jet[0 + mode.value] - a.jet[0 + mode.value]
-        counter += 1
-        if counter > max_it:
-            break
-    return counter, c.jet[0], fc.jet[0 + mode.value] + target, delta
-
-
-def newton(model, initial, f_tol, x_tol, target=0.0, max_it=100, mode=Solver.ROOT):
-    x = Series(t_jet(2 + mode.value, initial), diff=True)
-    f = Series(t_jet(2 + mode.value, 1.0))
-    delta = 1.0
-    counter = 1
-    while abs(f.jet[0 + mode.value]) > f_tol or abs(delta) > x_tol:
-        f = ~ model(x, target)
-        delta = - f.jet[0 + mode.value] / f.jet[1 + mode.value]
-        x.jet[0] += delta
-        counter += 1
-        if counter > max_it:
-            break
-    return counter, x.jet[0], f.jet[0 + mode.value] + target, delta
-
-
-def householder(model, initial, n, f_tol, x_tol, target=0.0, max_it=100, mode=Solver.ROOT):
-    x = Series(t_jet(n + mode.value, initial), diff=True)
-    f = Series(t_jet(n + mode.value, 1.0))
-    delta = 1.0
-    counter = 1
-    while abs(f.jet[0] + mode.value) > f_tol or abs(delta) > x_tol:
-        f = model(x, target)
-        r = ~ (1 / f)
-        delta = r.jet[n - 2 + mode.value] / r.jet[n - 1 + mode.value]
-        x.jet[0] += delta * (n - 1 + mode.value)
-        counter += 1
-        if counter > max_it:
-            break
-    return counter, x.jet[0], f.jet[0] + mode.value + target, delta
