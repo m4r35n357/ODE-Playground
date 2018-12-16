@@ -30,6 +30,9 @@ class Series:
     def __abs__(self):
         return self.sqr.sqrt
 
+    def __pos__(self):
+        return Series([self.jet[k] for k in range(self.n)])
+
     def __neg__(self):
         return Series([- self.jet[k] for k in range(self.n)])
 
