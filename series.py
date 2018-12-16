@@ -97,17 +97,17 @@ class Series:
             pow_jet[k] = t_pwr(pow_jet, self.jet, a, k)
         return Series(pow_jet)
 
-    def _s_c(self, hyp):
-        sin_jet, cos_jet = t_jet(self.n), t_jet(self.n)
+    def _trans(self, fun):
+        jet = t_jet(self.n)
         for k in range(self.n):
-            sin_jet[k], cos_jet[k] = t_sin_cos(sin_jet, cos_jet, self.jet, k, hyp)
-        return Series(sin_jet), Series(cos_jet)
+            jet[k] = fun(jet, self.jet, k)
+        return Series(jet)
 
-    def _t_s2(self, hyp):
-        tan_jet, sec2_jet = t_jet(self.n), t_jet(self.n)
+    def _geom(self, fun, hyp):
+        jet_a, jet_b = t_jet(self.n), t_jet(self.n)
         for k in range(self.n):
-            tan_jet[k], sec2_jet[k] = t_tan_sec2(tan_jet, sec2_jet, self.jet, k, hyp)
-        return Series(tan_jet)
+            jet_a[k], jet_b[k] = fun(jet_a, jet_b, self.jet, k, hyp)
+        return Series(jet_a), Series(jet_b)
 
     def _arc(self, fun):
         h_jet, v_jet = t_jet(self.n), t_jet(self.n)
@@ -121,49 +121,47 @@ class Series:
 
     @property
     def sqrt(self):
-        sqrt_jet = t_jet(self.n)
-        for k in range(self.n):
-            sqrt_jet[k] = t_sqrt(sqrt_jet, self.jet, k)
-        return Series(sqrt_jet)
+        return self._trans(t_sqrt)
 
     @property
     def exp(self):
-        exp_jet = t_jet(self.n)
-        for k in range(self.n):
-            exp_jet[k] = t_exp(exp_jet, self.jet, k)
-        return Series(exp_jet)
+        return self._trans(t_exp)
+
+    @property
+    def ln(self):
+        return self._trans(t_ln)
 
     @property
     def sin(self):
-        return self._s_c(False)[0]
+        return self._geom(t_sin_cos, False)[0]
 
     @property
     def cos(self):
-        return self._s_c(False)[1]
+        return self._geom(t_sin_cos, False)[1]
 
     @property
     def sin_cos(self):
-        return self._s_c(False)
+        return self._geom(t_sin_cos, False)
 
     @property
     def sinh(self):
-        return self._s_c(True)[0]
+        return self._geom(t_sin_cos, True)[0]
 
     @property
     def cosh(self):
-        return self._s_c(True)[1]
+        return self._geom(t_sin_cos, True)[1]
 
     @property
     def sinh_cosh(self):
-        return self._s_c(True)
+        return self._geom(t_sin_cos, True)
 
     @property
     def tan(self):
-        return self._t_s2(False)
+        return self._geom(t_tan_sec2, False)[0]
 
     @property
     def tanh(self):
-        return self._t_s2(True)
+        return self._geom(t_tan_sec2, True)[0]
 
     @property
     def asin(self):
@@ -176,10 +174,3 @@ class Series:
     @property
     def atan(self):
         return self._arc(t_atan)
-
-    @property
-    def ln(self):
-        ln_jet = t_jet(self.n)
-        for k in range(self.n):
-            ln_jet[k] = t_ln(ln_jet, self.jet, k)
-        return Series(ln_jet)
