@@ -3,8 +3,14 @@
 from playground import analyze
 
 
+def lorentz(a, value):
+    # Example: ./models.py 0 .001 .999 1001 0 1e-9 1e-9 | ./plotMany.py 1 10 >/dev/null
+    return (1 - a.sqr) ** -0.05 - 1 / (1 - a.sqr).sqrt - value
+
+
 def cosx_x3(a, value):
-    return a.cos - a * a * a - value
+    # Example: ./models.py 1 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 10 >/dev/null
+    return a.cos - a * a.sqr - value
 
 
 def septic(a, value):
@@ -14,12 +20,12 @@ def septic(a, value):
 
 def composite1(a, value):
     # Example: ./models.py 1 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 10 >/dev/null
-    return (a.exp + (a ** 2 - 4).exp).ln - value
+    return (a.exp + (a.sqr - 4).exp).ln - value
 
 
 def composite2(a, value):
     # Example: ./models.py 1 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 10 >/dev/null
-    return (a ** 2 + (a.exp - 4) ** 2).sqrt - value
+    return (a.sqr + (a.exp - 4).sqr).sqrt - value
 
 
 def playground(a, value):
