@@ -36,6 +36,14 @@ class Series:
     def __neg__(self):
         return Series([- self.jet[k] for k in range(self.n)])
 
+    def __invert__(self):  # overload - returns a derivative Series
+        d = t_jet(self.n, self.jet[0])
+        fac = 1
+        for i in range(1, self.n):
+            fac *= i
+            d[i] = fac * self.jet[i]
+        return Series(d)
+
     def __add__(self, other):
         if isinstance(other, Series):
             assert len(other.jet) == self.n
@@ -115,15 +123,6 @@ class Series:
         return Series(h_jet)
 
     @property
-    def derivatives(self):
-        d = t_jet(self.n, self.jet[0])
-        fac = 1
-        for i in range(1, self.n):
-            fac *= i
-            d[i] = fac * self.jet[i]
-        return Series(d)
-
-    @property
     def sqr(self):
         return Series([t_sqr(self.jet, k) for k in range(self.n)])
 
@@ -198,12 +197,12 @@ def bisect(model, ax, bx, f_tol, x_tol, target=0.0, max_it=100, mode=Solver.ROOT
     b = Series(t_jet(3, bx), diff=True)
     c = Series(t_jet(3))
     fc = Series(t_jet(3, 1.0))
-    f_sign = model(a, target).derivatives
+    f_sign = ~ model(a, target)
     delta = 1.0
     counter = 1
     while abs(fc.jet[0 + mode.value]) > f_tol or abs(delta) > x_tol:
         c = (a + b) / 2.0
-        fc = model(c, target).derivatives
+        fc = ~ model(c, target)
         if f_sign.jet[0 + mode.value] * fc.jet[0 + mode.value] < 0.0:
             b = c
         else:
@@ -221,7 +220,7 @@ def newton(model, initial, f_tol, x_tol, target=0.0, max_it=100, mode=Solver.ROO
     delta = 1.0
     counter = 1
     while abs(f.jet[0 + mode.value]) > f_tol or abs(delta) > x_tol:
-        f = model(x, target).derivatives
+        f = ~ model(x, target)
         delta = - f.jet[0 + mode.value] / f.jet[1 + mode.value]
         x.jet[0] += delta
         counter += 1
@@ -237,7 +236,7 @@ def householder(model, initial, n, f_tol, x_tol, target=0.0, max_it=100, mode=So
     counter = 1
     while abs(f.jet[0] + mode.value) > f_tol or abs(delta) > x_tol:
         f = model(x, target)
-        r = (1 / f).derivatives
+        r = ~ (1 / f)
         delta = r.jet[n - 2 + mode.value] / r.jet[n - 1 + mode.value]
         x.jet[0] += delta * (n - 1 + mode.value)
         counter += 1

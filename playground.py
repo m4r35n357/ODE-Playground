@@ -30,7 +30,7 @@ def analyze(model):
             print("Householder's method of degree {}".format(n - 1), file=stderr)
     for k in range(steps):
         w_x.jet[0] = x0 + k * (x1 - x0) / steps
-        w_f = model(w_x, target).derivatives
+        w_f = ~ model(w_x, target)
         print("{:.6e} {}".format(w_x.jet[0], w_f))
         if n != 0:
             if k > 0:
