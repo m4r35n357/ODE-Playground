@@ -174,3 +174,11 @@ class Series:
     @property
     def atan(self):
         return self._arc(t_atan)
+
+    @property
+    def val(self):
+        return self.jet[0]
+
+    @val.setter
+    def val(self, value):
+        self.jet[0] = value
