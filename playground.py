@@ -26,18 +26,18 @@ def bisect(model, ax, bx, f_tol, x_tol, target=0.0, max_it=100, mode=Solver.ROOT
     f_sign = ~ model(a, target)
     delta = 1.0
     counter = 1
-    while abs(fc.jet[0 + mode.value]) > f_tol or abs(delta) > x_tol:
+    while abs(fc.jet[mode.value]) > f_tol or abs(delta) > x_tol:
         c = (a + b) / 2.0
         fc = ~ model(c, target)
-        if f_sign.jet[0 + mode.value] * fc.jet[0 + mode.value] < 0.0:
+        if f_sign.jet[mode.value] * fc.jet[mode.value] < 0.0:
             b = c
         else:
             a = c
-        delta = b.jet[0 + mode.value] - a.jet[0 + mode.value]
+        delta = b.jet[mode.value] - a.jet[mode.value]
         counter += 1
         if counter > max_it:
             break
-    return counter, c.val, fc.jet[0 + mode.value] + target, delta
+    return counter, c.val, fc.jet[mode.value] + target, delta
 
 
 def newton(model, initial, f_tol, x_tol, target=0.0, max_it=100, mode=Solver.ROOT):
@@ -45,14 +45,14 @@ def newton(model, initial, f_tol, x_tol, target=0.0, max_it=100, mode=Solver.ROO
     f = Series(t_jet(2 + mode.value, 1.0))
     delta = 1.0
     counter = 1
-    while abs(f.jet[0 + mode.value]) > f_tol or abs(delta) > x_tol:
+    while abs(f.jet[mode.value]) > f_tol or abs(delta) > x_tol:
         f = ~ model(x, target)
-        delta = - f.jet[0 + mode.value] / f.jet[1 + mode.value]
+        delta = - f.jet[mode.value] / f.jet[1 + mode.value]
         x.val += delta
         counter += 1
         if counter > max_it:
             break
-    return counter, x.val, f.jet[0 + mode.value] + target, delta
+    return counter, x.val, f.jet[mode.value] + target, delta
 
 
 def householder(model, initial, n, f_tol, x_tol, target=0.0, max_it=100, mode=Solver.ROOT):
@@ -60,7 +60,7 @@ def householder(model, initial, n, f_tol, x_tol, target=0.0, max_it=100, mode=So
     f = Series(t_jet(n + mode.value, 1.0))
     delta = 1.0
     counter = 1
-    while abs(f.jet[0 + mode.value]) > f_tol or abs(delta) > x_tol:
+    while abs(f.jet[mode.value]) > f_tol or abs(delta) > x_tol:
         f = model(x, target)
         r = ~ (1 / f)
         delta = r.jet[n - 2 + mode.value] / r.jet[n - 1 + mode.value]
@@ -68,7 +68,7 @@ def householder(model, initial, n, f_tol, x_tol, target=0.0, max_it=100, mode=So
         counter += 1
         if counter > max_it:
             break
-    return counter, x.val, f.jet[0 + mode.value] + target, delta
+    return counter, x.val, f.jet[mode.value] + target, delta
 
 
 def analyze(model):
