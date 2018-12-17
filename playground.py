@@ -63,7 +63,7 @@ def analyze(model):
     x1 = float(argv[3])
     assert x1 > x0
     steps = int(argv[4])
-    # assert steps > 0
+    assert steps > 0
     target = float(argv[5])
     f_tol = float(argv[6])
     x_tol = float(argv[7])
@@ -73,8 +73,6 @@ def analyze(model):
             print("Bisection", file=stderr)
         elif n == 2:
             print("Newton's method", file=stderr)
-        else:
-            print("Householder's method of degree {}".format(n - 1), file=stderr)
     for k in range(steps):
         w_x.val = x0 + k * (x1 - x0) / steps
         w_f = ~ model(w_x, target)
