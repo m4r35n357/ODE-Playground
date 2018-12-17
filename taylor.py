@@ -3,9 +3,11 @@
 #
 
 from math import sin, cos, tan, exp, sinh, cosh, tanh, log, sqrt, acos, asin, atan
+from sys import stderr
 
 
 def t_jet(n, value=0.0):
+    assert not isinstance(value, complex)
     jet = [0.0 for _ in range(n)]
     jet[0] = value
     return jet
@@ -122,3 +124,6 @@ def t_ln(l, u, k):
         return log(u[0])
     else:
         return (u[k] - _ddot(u, l, k)) / u[0]
+
+
+print(__name__ + " module loaded", file=stderr)

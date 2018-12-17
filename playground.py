@@ -113,3 +113,6 @@ def analyze(model):
         f_prev = w_f.val
         f_dash_prev = w_f.jet[1]
         f_dash_dash_prev = w_f.jet[2]
+
+
+print(__name__ + " module loaded", file=stderr)

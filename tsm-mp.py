@@ -5,7 +5,7 @@
 #
 
 from math import sqrt
-from sys import stderr, argv
+from sys import argv
 from taylor import t_jet, t_horner, t_prod, t_sin_cos, t_tan_sec2, t_sqr
 
 
@@ -228,7 +228,4 @@ def main():
             x, y = t_horner(cx, n, h), t_horner(cy, n, h)
 
 
-if __name__ == "__main__":
-    main()
-else:
-    print(__name__ + " module loaded", file=stderr)
+main()
