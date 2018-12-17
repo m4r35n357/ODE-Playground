@@ -42,11 +42,13 @@ class Series:
             assert len(other.jet) == self.n
             return Series([self.jet[k] + other.jet[k] for k in range(self.n)])
         else:
+            assert not isinstance(other, complex)
             add_jet = [self.jet[k] for k in range(self.n)]
             add_jet[0] += other
             return Series(add_jet)
 
     def __radd__(self, other):
+        assert not isinstance(other, complex)
         return self.__add__(other)
 
     def __sub__(self, other):
@@ -54,11 +56,13 @@ class Series:
             assert len(other.jet) == self.n
             return Series([self.jet[k] - other.jet[k] for k in range(self.n)])
         else:
+            assert not isinstance(other, complex)
             sub_jet = [self.jet[k] for k in range(self.n)]
             sub_jet[0] -= other
             return Series(sub_jet)
 
     def __rsub__(self, other):
+        assert not isinstance(other, complex)
         sub_jet = [- self.jet[k] for k in range(self.n)]
         sub_jet[0] += other
         return Series(sub_jet)
@@ -68,9 +72,11 @@ class Series:
             assert len(other.jet) == self.n
             return Series([t_prod(self.jet, other.jet, k) for k in range(self.n)])
         else:
+            assert not isinstance(other, complex)
             return Series([self.jet[k] * other for k in range(self.n)])
 
     def __rmul__(self, other):
+        assert not isinstance(other, complex)
         return self.__mul__(other)
 
     def __truediv__(self, other):
@@ -80,11 +86,13 @@ class Series:
             for k in range(self.n):
                 div_jet[k] = t_quot(div_jet, self.jet, other.jet, k)
         else:
+            assert not isinstance(other, complex)
             for k in range(self.n):
                 div_jet[k] = self.jet[k] / other
         return Series(div_jet)
 
     def __rtruediv__(self, other):
+        assert not isinstance(other, complex)
         other_jet = t_jet(self.n, other)
         rdiv_jet = t_jet(self.n)
         for k in range(self.n):
@@ -92,6 +100,7 @@ class Series:
         return Series(rdiv_jet)
 
     def __pow__(self, a):
+        assert not isinstance(a, complex)
         pow_jet = t_jet(self.n)
         for k in range(self.n):
             pow_jet[k] = t_pwr(pow_jet, self.jet, a, k)
