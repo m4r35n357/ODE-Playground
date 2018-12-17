@@ -55,28 +55,15 @@ def newton(model, initial, f_tol, x_tol, target=0.0, max_it=100, mode=Solver.ROO
     return counter, x.val, f.jet[mode.value] + target, delta
 
 
-def householder(model, initial, n, f_tol, x_tol, target=0.0, max_it=100, mode=Solver.ROOT):
-    x = Series(t_jet(n + mode.value, initial), diff=True)
-    f = Series(t_jet(n + mode.value, 1.0))
-    delta = 1.0
-    counter = 1
-    while abs(f.jet[mode.value]) > f_tol or abs(delta) > x_tol:
-        f = model(x, target)
-        r = ~ (1 / f)
-        delta = r.jet[n - 2 + mode.value] / r.jet[n - 1 + mode.value]
-        x.val += delta * (n - 1 + mode.value)
-        counter += 1
-        if counter > max_it:
-            break
-    return counter, x.val, f.jet[mode.value] + target, delta
-
-
 def analyze(model):
     n_max = 13
     n = int(argv[1])
+    assert n == 0 or n == 1 or n == 2
     x0 = float(argv[2])
     x1 = float(argv[3])
+    assert x1 > x0
     steps = int(argv[4])
+    # assert steps > 0
     target = float(argv[5])
     f_tol = float(argv[6])
     x_tol = float(argv[7])
@@ -102,8 +89,6 @@ def analyze(model):
                         _print_output(bisect(model, w_x.val, x_prev, f_tol, x_tol, target=target))
                     elif n == 2:
                         _print_output(newton(model, w_x.val, f_tol, x_tol, target=target))
-                    else:
-                        _print_output(householder(model, w_x.val, n, f_tol, x_tol, target=target))
                 # noinspection PyUnboundLocalVariable
                 if f_dash_prev * w_f.jet[1] < 0.0:
                     if f_dash_prev > w_f.jet[1]:
@@ -115,8 +100,6 @@ def analyze(model):
                         _print_output(bisect(model, w_x.val, x_prev, f_tol, x_tol, mode=Solver.EXTREMUM))
                     elif n == 2:
                         _print_output(newton(model, w_x.val, f_tol, x_tol, mode=Solver.EXTREMUM))
-                    else:
-                        _print_output(householder(model, w_x.val, n, f_tol, x_tol, mode=Solver.EXTREMUM))
                 # noinspection PyUnboundLocalVariable
                 if f_dash_dash_prev * w_f.jet[2] < 0.0:
                     if f_dash_dash_prev > w_f.jet[2]:
@@ -128,8 +111,6 @@ def analyze(model):
                         _print_output(bisect(model, w_x.val, x_prev, f_tol, x_tol, mode=Solver.INFLECTION))
                     elif n == 2:
                         _print_output(newton(model, w_x.val, f_tol, x_tol, mode=Solver.INFLECTION))
-                    else:
-                        _print_output(householder(model, w_x.val, n, f_tol, x_tol, mode=Solver.INFLECTION))
         x_prev = w_x.val
         f_prev = w_f.val
         f_dash_prev = w_f.jet[1]
