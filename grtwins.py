@@ -35,4 +35,4 @@ for result in analyze(playground, max_it=100):
         print("alpha = {}".format(result.x), file=stderr)
         print("r1 = {}".format(answer[0]), file=stderr)
         print("r2 = {}".format(r2), file=stderr)
-        print("ratio = {}".format(answer[1]), file=stderr)
+        print("radial / circular = {}".format(answer[1]), file=stderr)

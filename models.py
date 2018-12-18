@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from sys import stderr
 from playground import analyze
 
 
@@ -46,4 +47,5 @@ def playground(a, value):
     return a.atan - value
 
 
-analyze(composite1, max_it=100)
+for result in analyze(composite1, max_it=100):
+    print(result, file=stderr)
