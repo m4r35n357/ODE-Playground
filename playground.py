@@ -22,10 +22,6 @@ class Solver(Enum):
 Result = namedtuple('ResultType', ['count', 'sense', 'mode', 'x', 'f', 'dx'])
 
 
-def _print_output(output):
-    print("    {:3d} {} {:22.15e} {:10.3e} {:10.3e}".format(*output), file=stderr)
-
-
 def bisect(model, ax, bx, f_tol, x_tol, max_it, sense, target=0.0, mode=Solver.ROOT):
     a = Series(t_jet(3, ax), diff=True)
     b = Series(t_jet(3, bx), diff=True)
