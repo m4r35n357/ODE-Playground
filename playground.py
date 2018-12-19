@@ -1,6 +1,7 @@
 #
 #  (c) 2018 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
+
 from sys import argv, stderr
 from collections import namedtuple
 from enum import Enum

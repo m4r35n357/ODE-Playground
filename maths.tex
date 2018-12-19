@@ -95,21 +95,41 @@ In this simple case (multiplication by a scalar) we do not need to use any recur
 Addition and subtraction of TCs are similar in this regard.
 
 Where multiplication and division of TCs and functions with TC arguments are concerned, the situation is slightly more complex.
+\subsection{Code example}
+\begin{verbatim}
+#!/usr/bin/env python3
+from sys import argv
+n = int(argv[3])  # integrator controls
+h = float(argv[4])
+steps = int(argv[5])
+x = float(argv[6])  # coordinate
+a = float(argv[7])  # parameter
+cx = [0.0 for _ in range(n + 1)]  # jets
+for step in range(1, steps):
+    print("{:.9e} {:.5e}".format(x, step * h))
+    cx[0] = x
+    for k in range(n):  # build up the jets using the recurrence relations and the derivative rule
+        cx[k + 1] = a * x / (k + 1)
+    x = cx[n]
+    for i in range(n - 1, -1, -1):  # Horner's method
+        x = x * h + cx[i]
+\end{verbatim}
+
 \subsection{Lorenz Equations}
 Time domain, $\dot{x} = f(x)$:
 \begin{equation}
 \begin{aligned}
-\dot{x} &= - \sigma (y - x) \\
-\dot{y} &= - \rho x - xz - y \\
-\dot{z} &= - xy - \beta z \\
+\dot{x} &= \sigma (y - x) \\
+\dot{y} &= \rho x - xz - y \\
+\dot{z} &= xy - \beta z \\
 \end{aligned}
 \end{equation}
 Taylor coefficients, $\dot{x}_k = F(x_k) / k + 1$:
 \begin{equation}
 \begin{aligned}
-x_{k+1} &= \frac{- \sigma (y_k - x_k)}{k + 1} \\
-y_{k+1} &= \frac{- \rho x_k - (x.z)_k - y_k}{k + 1} \\
-z_{k+1} &= \frac{- (x.y)_k - \beta z_k}{k + 1} \\
+x_{k+1} &= \frac{\sigma (y_k - x_k)}{k + 1} \\
+y_{k+1} &= \frac{\rho x_k - (x.z)_k - y_k}{k + 1} \\
+z_{k+1} &= \frac{(x.y)_k - \beta z_k}{k + 1} \\
 \end{aligned}
 \end{equation}
 In this case we need to use the recurrence formula for the two products $(x.z)_k$ and $(x.y)_k$, e.g:
@@ -117,5 +137,37 @@ In this case we need to use the recurrence formula for the two products $(x.z)_k
 (x.y)_k = \sum_{j=0}^{\infty} x_k y_{k - j}
 \end{equation}
 In general, an $x_{k+1}$ depends on all the lower degree terms $x_0$ to $x_k$, which is why we need to store the jets for the duration of the time step.
+\subsection{Code example}
+\begin{verbatim}
+#!/usr/bin/env python3
+from sys import argv
+n = int(argv[3])  # integrator controls
+h = float(argv[4])
+steps = int(argv[5])
+x = float(argv[6])  # coordinates
+y = float(argv[7])
+z = float(argv[8])
+s = float(argv[9])  # parameters
+r = float(argv[10])
+b = float(argv[11]) / float(argv[12])
+cx = [0.0 for _ in range(n + 1)]  # jets
+cy = [0.0 for _ in range(n + 1)]
+cz = [0.0 for _ in range(n + 1)]
+for step in range(1, steps):
+    print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
+    cx[0] = x
+    cy[0] = y
+    cz[0] = z
+    for k in range(n):  # build up the jets using the recurrence relations and the derivative rule
+        cx[k + 1] = s * (cy[k] - cx[k]) / (k + 1)
+        cy[k + 1] = (r * cx[k] - sum(cx[j] * cz[k - j] for j in range(k + 1)) - cy[k]) / (k + 1)
+        cz[k + 1] = (sum(cx[j] * cy[k - j] for j in range(k + 1)) - b * cz[k]) / (k + 1)
+    x = cx[n]
+    y = cy[n]
+    z = cz[n]
+    for i in range(n - 1, -1, -1):  # Horner's method
+        x = x * h + cx[i]
+        y = y * h + cy[i]
+        z = z * h + cz[i]
+\end{verbatim}
 \end{document}
-
