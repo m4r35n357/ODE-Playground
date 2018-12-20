@@ -4,7 +4,7 @@
 
 from sys import stderr
 from taylor import t_jet, t_prod, t_quot, t_sqr, t_exp, t_sin_cos, t_tan_sec2, t_pwr, t_ln, t_sqrt, t_asin, t_acos, \
-    t_atan
+    t_atan, D1
 
 
 class Series:
@@ -13,7 +13,7 @@ class Series:
         self.jet = jet
         self.n = len(self.jet)
         if diff:
-            self.jet[1] = 1.0
+            self.jet[1] = D1
 
     def __str__(self):
         string = ""
