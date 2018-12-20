@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <stdarg.h>
-#include <math.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 
@@ -24,7 +23,7 @@ void t_line_output (mpfr_t t, int count, ...) {
 }
 
 void t_stepper (char **argv, long *n, mpfr_t *t, mpfr_t *h, long *nsteps) {
-    mpfr_set_default_prec(strtod(argv[1], NULL) * log(10.0) / log(2.0));
+    mpfr_set_default_prec(strtod(argv[1], NULL) * 3.32);
     *n = strtol(argv[2], NULL, BASE);
     assert(*n > 1);
     mpfr_init_set_ui(*t, 0, RND);
