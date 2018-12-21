@@ -3,11 +3,16 @@
 # Example: ./series_test.py
 
 from math import pi
+from gmpy2 import get_context, mpfr
+
+get_context().precision = 236  # Set this BEFORE importing any Taylor Series stuff!
 from series import Series
 from taylor import t_jet
 
-a = 3.0
-b = 4.0
+# noinspection PyArgumentList
+a = mpfr("3.0")
+# noinspection PyArgumentList
+b = mpfr("4.0")
 sine, cosine = Series(t_jet(7, pi / a), diff=True).sin_cos
 print("sin(pi / {})".format(a))
 print(~ sine)
@@ -16,8 +21,10 @@ print(~ cosine)
 print("tan(pi / {})".format(b))
 print(~ Series(t_jet(7, pi / 4.0), diff=True).tan)
 
-a = 3
-b = 4
+# noinspection PyArgumentList
+a = mpfr(3)
+# noinspection PyArgumentList
+b = mpfr(4)
 print("z = {}".format(a))
 z = Series(t_jet(7, a), diff=True)
 print("+, -")

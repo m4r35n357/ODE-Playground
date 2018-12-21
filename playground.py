@@ -5,7 +5,8 @@
 from sys import argv, stderr
 from collections import namedtuple
 from enum import Enum
-from taylor import t_jet
+from gmpy2 import mpfr
+from taylor import t_jet, D0, D1, D2
 from series import Series
 
 
@@ -23,18 +24,18 @@ class Solver(Enum):
 Result = namedtuple('ResultType', ['count', 'sense', 'mode', 'x', 'f', 'dx'])
 
 
-def bisect(model, ax, bx, f_tol, x_tol, max_it, sense, target=0.0, mode=Solver.ROOT):
+def bisect(model, ax, bx, f_tol, x_tol, max_it, sense, target=D0, mode=Solver.ROOT):
     a = Series(t_jet(3, ax), diff=True)
     b = Series(t_jet(3, bx), diff=True)
     c = Series(t_jet(3))
-    fc = Series(t_jet(3, 1.0))
+    fc = Series(t_jet(3, D1))
     f_sign = ~ model(a, target)
-    delta = 1.0
+    delta = D1
     counter = 1
     while abs(fc.jet[mode.value]) > f_tol or abs(delta) > x_tol:
-        c = (a + b) / 2.0
+        c = (a + b) / D2
         fc = ~ model(c, target)
-        if f_sign.jet[mode.value] * fc.jet[mode.value] < 0.0:
+        if f_sign.jet[mode.value] * fc.jet[mode.value] < D0:
             b = c
         else:
             a = c
@@ -45,10 +46,10 @@ def bisect(model, ax, bx, f_tol, x_tol, max_it, sense, target=0.0, mode=Solver.R
     return Result(count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + target, dx=delta)
 
 
-def newton(model, initial, f_tol, x_tol, max_it, sense, target=0.0, mode=Solver.ROOT):
+def newton(model, initial, f_tol, x_tol, max_it, sense, target=D0, mode=Solver.ROOT):
     x = Series(t_jet(2 + mode.value, initial), diff=True)
-    f = Series(t_jet(2 + mode.value, 1.0))
-    delta = 1.0
+    f = Series(t_jet(2 + mode.value, D1))
+    delta = D1
     counter = 1
     while abs(f.jet[mode.value]) > f_tol or abs(delta) > x_tol:
         f = ~ model(x, target)
@@ -65,14 +66,19 @@ def analyze(model, max_it):
     n_max = 7
     n = int(argv[1])
     assert n == 0 or n == 1 or n == 2
-    x0 = float(argv[2])
-    x1 = float(argv[3])
+    # noinspection PyArgumentList
+    x0 = mpfr(argv[2])
+    # noinspection PyArgumentList
+    x1 = mpfr(argv[3])
     assert x1 > x0
     steps = int(argv[4])
     assert steps > 0
-    target = float(argv[5])
-    f_tol = float(argv[6])
-    x_tol = float(argv[7])
+    # noinspection PyArgumentList
+    target = mpfr(argv[5])
+    # noinspection PyArgumentList
+    f_tol = mpfr(argv[6])
+    # noinspection PyArgumentList
+    x_tol = mpfr(argv[7])
     w_x = Series(t_jet(n_max, x0), diff=True)
     if n != 0:
         if n == 1:
@@ -85,7 +91,7 @@ def analyze(model, max_it):
         print("{:.6e} {}".format(w_x.val, w_f))
         if n != 0:
             if k > 0:
-                if f_prev * w_f.val < 0.0:
+                if f_prev * w_f.val < D0:
                     if f_prev > w_f.val:
                         sense = Sense.NEGATIVE
                     else:
@@ -95,7 +101,7 @@ def analyze(model, max_it):
                     elif n == 2:
                         result = newton(model, w_x.val, f_tol, x_tol, max_it, sense, target=target)
                     yield result
-                if f_dash_prev * w_f.jet[1] < 0.0:
+                if f_dash_prev * w_f.jet[1] < D0:
                     if f_dash_prev > w_f.jet[1]:
                         sense = Sense.NEGATIVE
                     else:
@@ -105,7 +111,7 @@ def analyze(model, max_it):
                     elif n == 2:
                         result = newton(model, w_x.val, f_tol, x_tol, max_it, sense, mode=Solver.EXTREMUM)
                     yield result
-                if f_dash_dash_prev * w_f.jet[2] < 0.0:
+                if f_dash_dash_prev * w_f.jet[2] < D0:
                     if f_dash_dash_prev > w_f.jet[2]:
                         sense = Sense.NEGATIVE
                     else:

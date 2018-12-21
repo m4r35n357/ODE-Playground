@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
 
 from sys import stderr
+from gmpy2 import get_context, mpfr
+get_context().precision = 236  # Set this BEFORE importing any Taylor Series stuff!
 from playground import analyze
+
+# noinspection PyArgumentList
+D_05 = mpfr("-0.5")
 
 
 def lorentz(a, value):
     # Example: ./models.py 0 .001 .999 1001 0 1e-9 1e-9 | ./plotMany.py 1 10 >/dev/null
-    return (1 - a.sqr) ** -0.05 - 1 / (1 - a.sqr).sqrt - value
+    return (1 - a.sqr) ** D_05 - 1 / (1 - a.sqr).sqrt - value
 
 
 def cosx_x3(a, value):
