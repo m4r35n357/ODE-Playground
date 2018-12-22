@@ -56,7 +56,7 @@ Optionally it will analyse that range for roots, extrema and inflection points u
 Here is a seventh-degree polynomial model by way of example, and a trigonometric identity as a check of the sin and sqr functions:
 ```python
 def septic(a, value):
-    return (a + 7) * (a + 5) * (a + 2) * a * (a - 1) * (a - 3) * (a - 6) - value
+    return (a + 7) * (5 + a) * (a + 2) * a * (a - 1) * (a - 3) * (a - 6) - value
 
 def trig(a, value):
     return (3 * a).sin - 3 * a.sin + 4 * a.sin * a.sin.sqr - value
@@ -68,10 +68,38 @@ The value parameter allows simple calculation of function inverse values, as wel
 ## Plotting
 There are also some plotting and graphing utilities written in Python 3, which is required for plotting (the data can come from either c or Python, which share output "formats").
 The dependencies are:
-* matplotlib for graphs
+* matplotlib for 2D graphs
 * vpython *or* pi3d for 3D trajectories
 
-## c version
+## Python/gmpy2 implementation
+
+There is also a (single precision) roughly equivalent Python 3 version of the programs with built-in models.
+Dependencies of Python 3 programs:
+* gmpy2 (based on MPFR)
+
+However, it is an easy task to convert the Python solver to use gmpy2 (MPFR) if desired.
+To find Python example invocations:
+```
+grep Example *.py
+```
+It is also worth looking for examples in the c file as below.
+To test the root, extremum and inflection finding:
+```
+./playground.py 2 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 50000 >/dev/null
+```
+
+Matplotlib progressive ODE plotting
+```
+./tsm-mp.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
+```
+
+3D ODE plotting
+```
+./tsm-mp.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
+./tsm-mp.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotTrajectory.py 3 0 1 2
+```
+
+## c implementation
 Dependencies of c programs:
 * MPFR 4 or later! (otherwise stick to the Python version)
 
@@ -109,30 +137,3 @@ Matplotlib progressive ODE plotting
 ```
 
 
-## Python version
-
-There is also a (single precision) roughly equivalent Python 3 version of the programs with built-in models which has no external dependencies.
-Dependencies of Python 3 programs:
-* None
-
-However, it is an easy task to convert the Python solver to use gmpy2 (MPFR) if desired.
-To find Python example invocations:
-```
-grep Example *.py
-```
-
-To test the root, extremum and inflection finding:
-```
-./playground.py 2 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 50000 >/dev/null
-```
-
-Matplotlib progressive ODE plotting
-```
-./tsm-mp.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
-```
-
-3D ODE plotting
-```
-./tsm-mp.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
-./tsm-mp.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotTrajectory.py 3 0 1 2
-```
