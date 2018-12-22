@@ -9,10 +9,10 @@ from taylor import t_jet, t_prod, t_quot, t_sqr, t_exp, t_sin_cos, t_tan_sec2, t
 
 class Series:
 
-    def __init__(self, jet, diff=False):
+    def __init__(self, jet, variable=False):
         self.jet = jet
         self.n = len(self.jet)
-        if diff:
+        if variable:
             self.jet[1] = D1
 
     def __str__(self):
@@ -30,7 +30,7 @@ class Series:
     def __neg__(self):
         return Series([- self.jet[k] for k in range(self.n)])
 
-    def __invert__(self):  # overload - returns a derivative Series
+    def __invert__(self):  # override - returns a derivative Series
         d = t_jet(self.n, self.jet[0])
         fac = 1
         for i in range(1, self.n):

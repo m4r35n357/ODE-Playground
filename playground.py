@@ -25,8 +25,8 @@ Result = namedtuple('ResultType', ['count', 'sense', 'mode', 'x', 'f', 'dx'])
 
 
 def bisect(model, ax, bx, f_tol, x_tol, max_it, sense, target=D0, mode=Solver.ROOT):
-    a = Series(t_jet(3, ax), diff=True)
-    b = Series(t_jet(3, bx), diff=True)
+    a = Series(t_jet(3, ax), variable=True)
+    b = Series(t_jet(3, bx), variable=True)
     c = Series(t_jet(3))
     fc = Series(t_jet(3, D1))
     f_sign = ~ model(a, target)
@@ -47,7 +47,7 @@ def bisect(model, ax, bx, f_tol, x_tol, max_it, sense, target=D0, mode=Solver.RO
 
 
 def newton(model, initial, f_tol, x_tol, max_it, sense, target=D0, mode=Solver.ROOT):
-    x = Series(t_jet(2 + mode.value, initial), diff=True)
+    x = Series(t_jet(2 + mode.value, initial), variable=True)
     f = Series(t_jet(2 + mode.value, D1))
     delta = D1
     counter = 1
@@ -79,7 +79,7 @@ def analyze(model, max_it):
     f_tol = mpfr(argv[6])
     # noinspection PyArgumentList
     x_tol = mpfr(argv[7])
-    w_x = Series(t_jet(n_max, x0), diff=True)
+    w_x = Series(t_jet(n_max, x0), variable=True)
     if n != 0:
         if n == 1:
             print("Bisection", file=stderr)
