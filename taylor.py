@@ -14,7 +14,6 @@ D2 = mpfr("2.0")
 
 
 def t_jet(n, value=D0):
-    assert not isinstance(value, (int, float, str))
     jet = [D0 for _ in range(n)]
     jet[0] = value
     return jet

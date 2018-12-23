@@ -1,6 +1,7 @@
 #
 #  (c) 2018 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
+
 from sys import stderr
 from gmpy2 import mpfr
 from taylor import t_jet, t_prod, t_quot, t_sqr, t_exp, t_sin_cos, t_tan_sec2, t_pwr, t_ln, t_sqrt, t_asin, t_acos, \
