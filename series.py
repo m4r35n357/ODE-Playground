@@ -17,6 +17,8 @@ class Series:
 
     @classmethod
     def from_numbers(cls, order, value, variable=False):
+        assert isinstance(order, int)
+        assert isinstance(value, (int, float, str))
         # noinspection PyArgumentList
         return cls(t_jet(order, mpfr(value)), variable)
 
