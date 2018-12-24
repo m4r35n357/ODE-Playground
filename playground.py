@@ -63,7 +63,7 @@ def newton(model, initial, f_tol, x_tol, max_it, sense, target=D0, mode=Solver.R
 
 def analyze(model, max_it):
     x_prev = f_prev = f_dash_prev = f_dash_dash_prev = result = None
-    n_max = 7
+    n_max = 13
     n = int(argv[1])
     assert n == 0 or n == 1 or n == 2
     # noinspection PyArgumentList

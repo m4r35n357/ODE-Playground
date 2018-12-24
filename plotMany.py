@@ -32,7 +32,8 @@ def main():
                 print(p)
         line = stdin.readline()
     for c in range(columns - 1, 0, -1):
-        ax1.plot(data[0], data[c], '{}'.format(colour[c - 1]), linewidth=2 if c == 1 else 1, markersize=0)
+        ax1.plot(data[0], data[c], '{}'.format(colour[c - 1]), linewidth=2 if c == 1 else 1, markersize=0, label=c-1)
+    ax1.legend(loc='lower right')
     pyplot.show()
 
 
