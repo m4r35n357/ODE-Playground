@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from sys import stderr
+from sys import stderr, argv
 from gmpy2 import get_context, mpfr
 get_context().precision = 236  # Set this BEFORE importing any Taylor Series stuff!
 from playground import analyze
@@ -11,7 +11,7 @@ D_05 = mpfr("-0.5")
 
 def lorentz(a, value):
     # Example: ./models.py 0 .001 .999 1001 0 1e-9 1e-9 | ./plotMany.py 1 10 >/dev/null
-    return (1 - a.sqr) ** D_05 - 1 / (1 - a.sqr).sqrt - value
+    return 1 / (1 - a.sqr).sqrt - value
 
 
 def cosx_x3(a, value):
@@ -46,11 +46,24 @@ def playground(a, value):
     # return a.tanh - a.sinh / a.cosh - value
     # return a.sin.asin - value
     # return a.cos.acos - value
-    # return a.tan.atan - value
-    # return a.asin - value
-    # return a.acos - value
-    return a.atan - value
+    return a.tan.atan - value
 
 
-for result in analyze(composite1, max_it=100):
+mode = int(argv[1])
+assert mode == 0 or mode == 1 or mode == 2
+# noinspection PyArgumentList
+x0 = mpfr(argv[2])
+# noinspection PyArgumentList
+x1 = mpfr(argv[3])
+assert x1 > x0
+steps = int(argv[4])
+assert steps > 0
+# noinspection PyArgumentList
+target = mpfr(argv[5])
+# noinspection PyArgumentList
+f_tol = mpfr(argv[6])
+# noinspection PyArgumentList
+x_tol = mpfr(argv[7])
+
+for result in analyze(composite1, mode, x0, x1, steps, target, f_tol, x_tol, 100, 13):
     print(result, file=stderr)

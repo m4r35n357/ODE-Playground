@@ -2,12 +2,15 @@
 #  (c) 2018 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
-from sys import argv, stderr
+from sys import stderr
 from collections import namedtuple
 from enum import Enum
 from gmpy2 import mpfr
 from taylor import t_jet, D0, D1, D2
 from series import Series
+
+# noinspection PyArgumentList
+De_12 = mpfr(1.0e-12)
 
 
 class Sense(Enum):
@@ -61,24 +64,8 @@ def newton(model, initial, f_tol, x_tol, max_it, sense, target=D0, mode=Solver.R
     return Result(count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + target, dx=delta)
 
 
-def analyze(model, max_it):
+def analyze(model, n, x0, x1, steps=1000, target=D0, f_tol=De_12, x_tol=De_12, max_it=100, n_max=13):
     x_prev = f_prev = f_dash_prev = f_dash_dash_prev = result = None
-    n_max = 13
-    n = int(argv[1])
-    assert n == 0 or n == 1 or n == 2
-    # noinspection PyArgumentList
-    x0 = mpfr(argv[2])
-    # noinspection PyArgumentList
-    x1 = mpfr(argv[3])
-    assert x1 > x0
-    steps = int(argv[4])
-    assert steps > 0
-    # noinspection PyArgumentList
-    target = mpfr(argv[5])
-    # noinspection PyArgumentList
-    f_tol = mpfr(argv[6])
-    # noinspection PyArgumentList
-    x_tol = mpfr(argv[7])
     w_x = Series(t_jet(n_max, x0), variable=True)
     if n != 0:
         if n == 1:
@@ -121,6 +108,8 @@ def analyze(model, max_it):
                     elif n == 2:
                         result = newton(model, w_x.val, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION)
                     yield result
+        else:
+            yield w_x.val, w_f.jet
         x_prev = w_x.val
         f_prev = w_f.val
         f_dash_prev = w_f.jet[1]
