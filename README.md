@@ -73,11 +73,10 @@ The dependencies are:
 
 ## Python/gmpy2 implementation
 
-There is also a (single precision) roughly equivalent Python 3 version of the programs with built-in models.
+There is a Python 3 version of the ODE solver programs with built-in models.  There is also a Series module
 Dependencies of Python 3 programs:
 * gmpy2 (based on MPFR)
 
-However, it is an easy task to convert the Python solver to use gmpy2 (MPFR) if desired.
 To find Python example invocations:
 ```
 grep Example *.py

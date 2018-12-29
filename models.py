@@ -19,7 +19,7 @@ def cosx_x3(a, value):
 
 def septic(a, value):
     # Example: ./models.py 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
-    return (a + 7) * (a + 5) * (a + 2) * a * (a - 1) * (a - 3) * (a - 6) - value
+    return (a + 7) * (5 + a) * (a + 2.0) * a * (1 - a) * (3.0 - a) * (a - 6) - value
 
 
 def composite1(a, value):

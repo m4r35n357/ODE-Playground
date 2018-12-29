@@ -6,9 +6,9 @@ from matplotlib import pyplot
 
 
 def main():
-    print("X-Y Plotter: {}".format(argv))
+    print("Function and Derivative Plotter: {}".format(argv))
     if len(argv) < 3:
-        raise Exception('>>> ERROR! Please supply x/y limits <<<')
+        raise Exception('>>> ERROR! Please supply x and y axis limits <<<')
     x_max = float(argv[1])
     y_max = float(argv[2])
     line = stdin.readline()

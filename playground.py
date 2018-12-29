@@ -8,9 +8,6 @@ from enum import Enum
 from taylor import t_jet, to_mpfr
 from series import Series
 
-# noinspection PyArgumentList
-De_12 = to_mpfr(1.0e-12)
-
 
 class Sense(Enum):
     POSITIVE = '+'
@@ -63,7 +60,7 @@ def newton(model, initial, f_tol, x_tol, max_it, sense, target=0, mode=Solver.RO
     return Result(count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + to_mpfr(target), dx=delta)
 
 
-def analyze(model, n, x0, x1, steps=1000, target=0, f_tol=De_12, x_tol=De_12, max_it=100, n_max=13):
+def analyze(model, n, x0, x1, steps=1000, target=0, f_tol=to_mpfr(1e-12), x_tol=to_mpfr(1e-12), max_it=100, n_max=13):
     x_prev = f_prev = f_dash_prev = f_dash_dash_prev = result = None
     w_x = Series(t_jet(n_max, x0), variable=True)
     if n != 0:
