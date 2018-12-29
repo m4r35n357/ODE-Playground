@@ -5,17 +5,20 @@
 from sys import stderr
 from gmpy2 import mpfr, sqrt, exp, sinh, cosh, sin, cos, tanh, tan, log, asin, acos, atan
 
+
 # noinspection PyArgumentList
-D0 = mpfr("0.0")
-# noinspection PyArgumentList
-D1 = mpfr("1.0")
-# noinspection PyArgumentList
-D2 = mpfr("2.0")
+def to_mpfr(x):
+    if isinstance(x, float):
+        return mpfr(str(x))
+    elif isinstance(x, (int, str)):
+        return mpfr(x)
+    else:
+        return x
 
 
-def t_jet(n, value=D0):
-    jet = [D0 for _ in range(n)]
-    jet[0] = value
+def t_jet(n, value=0):
+    jet = [to_mpfr(0) for _ in range(n)]
+    jet[0] = to_mpfr(value)
     return jet
 
 
@@ -42,14 +45,14 @@ def t_sqr(u, k):
     if k == 0:
         return u[0]**2
     else:
-        return D2 * (u[0] * u[k] + _ddot(u, u, k))
+        return 2 * (u[0] * u[k] + _ddot(u, u, k))
 
 
 def t_sqrt(r, u, k):
     if k == 0:
         return sqrt(u[0])
     else:
-        return (u[k] / D2 - _ddot(r, r, k)) / r[0]
+        return (u[k] / 2 - _ddot(r, r, k)) / r[0]
 
 
 def t_exp(e, u, k):
@@ -70,10 +73,10 @@ def t_sin_cos(s, c, u, k, hyp=False):
 
 def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
-        return (tanh(u[0]), D1 - tanh(u[0])**2) if hyp else (tan(u[0]), tan(u[0])**2 + D1)
+        return (tanh(u[0]), 1 - tanh(u[0])**2) if hyp else (tan(u[0]), tan(u[0])**2 + 1)
     else:
         tn = s2[0] * u[k] + _ddot(s2, u, k)
-        s2 = D2 * (t[0] * tn + _ddot(t, t, k))
+        s2 = 2 * (t[0] * tn + _ddot(t, t, k))
         return tn, - s2 if hyp else s2
 
 
@@ -93,9 +96,9 @@ def t_ln(l, u, k):
 
 def t_atan(h, v, u, k):
     if k == 0:
-        return atan(u[0]), D1 + u[0]**2
+        return atan(u[0]), 1 + u[0]**2
     else:
-        return (u[k] - _ddot(v, h, k)) / v[0], D2 * (u[0] * u[k] + _ddot(u, u, k))
+        return (u[k] - _ddot(v, h, k)) / v[0], 2 * (u[0] * u[k] + _ddot(u, u, k))
 
 
 def _arc(h, v, u, k):

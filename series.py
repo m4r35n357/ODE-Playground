@@ -3,9 +3,8 @@
 #
 
 from sys import stderr
-from gmpy2 import mpfr
 from taylor import t_jet, t_prod, t_quot, t_sqr, t_exp, t_sin_cos, t_tan_sec2, t_pwr, t_ln, t_sqrt, t_asin, t_acos, \
-    t_atan, D1
+    t_atan, to_mpfr
 
 
 class Series:
@@ -14,14 +13,13 @@ class Series:
         self.jet = jet
         self.n = len(self.jet)
         if variable:
-            self.jet[1] = D1
+            self.jet[1] = to_mpfr(1)
 
     @classmethod
     def from_numbers(cls, order, value, variable=False):
         assert isinstance(order, int)
         assert isinstance(value, (int, float, str))
-        # noinspection PyArgumentList
-        return cls(t_jet(order, mpfr(value)), variable)
+        return cls(t_jet(order, value), variable)
 
     def __str__(self):
         string = ""
@@ -52,7 +50,7 @@ class Series:
             return Series([self.jet[k] + other.jet[k] for k in range(self.n)])
         else:
             add_jet = [self.jet[k] for k in range(self.n)]
-            add_jet[0] += other
+            add_jet[0] += to_mpfr(other)
             return Series(add_jet)
 
     def __radd__(self, other):
@@ -64,12 +62,12 @@ class Series:
             return Series([self.jet[k] - other.jet[k] for k in range(self.n)])
         else:
             sub_jet = [self.jet[k] for k in range(self.n)]
-            sub_jet[0] -= other
+            sub_jet[0] -= to_mpfr(other)
             return Series(sub_jet)
 
     def __rsub__(self, other):
         sub_jet = [- self.jet[k] for k in range(self.n)]
-        sub_jet[0] += other
+        sub_jet[0] += to_mpfr(other)
         return Series(sub_jet)
 
     def __mul__(self, other):
@@ -77,6 +75,7 @@ class Series:
             assert len(other.jet) == self.n
             return Series([t_prod(self.jet, other.jet, k) for k in range(self.n)])
         else:
+            other = to_mpfr(other)
             return Series([self.jet[k] * other for k in range(self.n)])
 
     def __rmul__(self, other):
@@ -89,12 +88,13 @@ class Series:
             for k in range(self.n):
                 div_jet[k] = t_quot(div_jet, self.jet, other.jet, k)
         else:
+            other = to_mpfr(other)
             for k in range(self.n):
                 div_jet[k] = self.jet[k] / other
         return Series(div_jet)
 
     def __rtruediv__(self, other):
-        other_jet = t_jet(self.n, other)
+        other_jet = t_jet(self.n, to_mpfr(other))
         rdiv_jet = t_jet(self.n)
         for k in range(self.n):
             rdiv_jet[k] = t_quot(rdiv_jet, other_jet, self.jet, k)
@@ -103,7 +103,7 @@ class Series:
     def __pow__(self, a):
         pow_jet = t_jet(self.n)
         for k in range(self.n):
-            pow_jet[k] = t_pwr(pow_jet, self.jet, a, k)
+            pow_jet[k] = t_pwr(pow_jet, self.jet, to_mpfr(a), k)
         return Series(pow_jet)
 
     def _trans(self, fun):
@@ -190,7 +190,7 @@ class Series:
 
     @val.setter
     def val(self, value):
-        self.jet[0] = value
+        self.jet[0] = to_mpfr(value)
 
 
 print(__name__ + " module loaded", file=stderr)

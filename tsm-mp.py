@@ -5,9 +5,9 @@
 #
 
 from sys import argv
-from gmpy2 import get_context, mpfr, log, sqrt
+from gmpy2 import get_context, log, sqrt
 get_context().precision = int(int(argv[2]) * log(10.0) / log(2.0))
-from taylor import t_jet, t_horner, t_prod, t_sin_cos, t_tan_sec2, t_sqr
+from taylor import t_jet, t_horner, t_prod, t_sin_cos, t_tan_sec2, t_sqr, to_mpfr
 
 
 def print_output(x, y, z, t):
@@ -17,28 +17,16 @@ def print_output(x, y, z, t):
 def main():
     model = argv[1]
     n = int(argv[3])
-    # noinspection PyArgumentList
-    h = mpfr(argv[4])
+    h = to_mpfr(argv[4])
     steps = int(argv[5])
-    # noinspection PyArgumentList
-    d0 = mpfr('0.0')
-    # noinspection PyArgumentList
-    d1 = mpfr('1.0')
-    # noinspection PyArgumentList
-    d2 = mpfr('2.0')
-    # noinspection PyArgumentList
-    d3 = mpfr('3.0')
-    # noinspection PyArgumentList
-    d4 = mpfr('4.0')
+    d0 = to_mpfr(0)
 
-    # noinspection PyArgumentList
-    x0, y0, z0 = mpfr(argv[6]), mpfr(argv[7]), mpfr(argv[8])
+    x0, y0, z0 = to_mpfr(argv[6]), to_mpfr(argv[7]), to_mpfr(argv[8])
     x, y, z = t_jet(n + 1), t_jet(n + 1), t_jet(n + 1)
 
     if model == "lorenz":
         #  Example: ./tsm-mp.py lorenz 16 10 .01 3000 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
-        # noinspection PyArgumentList
-        sigma, rho, beta = mpfr(argv[9]), mpfr(argv[10]), mpfr(argv[11]) / mpfr(argv[12])
+        sigma, rho, beta = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11]) / to_mpfr(argv[12])
         print_output(x0, y0, z0, d0)
         for step in range(1, steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
@@ -49,8 +37,7 @@ def main():
             x0, y0, z0 = t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h)
             print_output(x0, y0, z0, step * h)
     elif model == "lu":
-        # noinspection PyArgumentList
-        a, b, c = mpfr(argv[9]), mpfr(argv[10]), mpfr(argv[11])
+        a, b, c = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11])
         print_output(x0, y0, z0, d0)
         for step in range(1, steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
@@ -61,8 +48,7 @@ def main():
             x0, y0, z0 = t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h)
             print_output(x0, y0, z0, step * h)
     elif model == "chen":
-        # noinspection PyArgumentList
-        a, b, c = mpfr(argv[9]), mpfr(argv[10]), mpfr(argv[11])
+        a, b, c = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11])
         print_output(x0, y0, z0, d0)
         for step in range(1, steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
@@ -73,8 +59,7 @@ def main():
             x0, y0, z0 = t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h)
             print_output(x0, y0, z0, step * h)
     elif model == "rossler":
-        # noinspection PyArgumentList
-        a, b, c = mpfr(argv[9]), mpfr(argv[10]), mpfr(argv[11])
+        a, b, c = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11])
         b_ = t_jet(n, b)
         print_output(x0, y0, z0, d0)
         for step in range(1, steps + 1):
@@ -86,11 +71,11 @@ def main():
             x0, y0, z0 = t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h)
             print_output(x0, y0, z0, step * h)
     elif model == "bouali":
-        # noinspection PyArgumentList
-        a, b, c, d = mpfr(argv[9]), mpfr(argv[10]), mpfr(argv[11]), mpfr(argv[12])
+        #  Example: ./tsm-mp.py bouali 80 40 0.02 50001 1 1 0 3 2.2 1 .01 | ./plotPi3d.py
+        a, b, c, d = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11]), to_mpfr(argv[12])
         w4 = t_jet(n)
         w5 = t_jet(n)
-        jet1 = t_jet(n, d1)
+        jet1 = t_jet(n, 1)
         print_output(x0, y0, z0, d0)
         for step in range(1, steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
@@ -104,8 +89,7 @@ def main():
             print_output(x0, y0, z0, step * h)
     elif model == "thomas":
         #  Example: ./tsm-mp.py thomas 16 10 0.1 30000 1 0 0 .19 | ./plotPi3d.py
-        # noinspection PyArgumentList
-        b = mpfr(argv[9])
+        b = to_mpfr(argv[9])
         sx, cx = t_jet(n), t_jet(n)
         sy, cy = t_jet(n), t_jet(n)
         sz, cz = t_jet(n), t_jet(n)
@@ -122,8 +106,7 @@ def main():
             x0, y0, z0 = t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h)
             print_output(x0, y0, z0, step * h)
     elif model == "st":
-        # noinspection PyArgumentList
-        a, b = mpfr(argv[9]), mpfr(argv[10])
+        a, b = to_mpfr(argv[9]), to_mpfr(argv[10])
         sx, cx = t_jet(n), t_jet(n)
         sy, cy = t_jet(n), t_jet(n)
         sz, cz = t_jet(n), t_jet(n)
@@ -148,19 +131,18 @@ def main():
             x0, y0, z0 = t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h)
             print_output(x0, y0, z0, step * h)
     elif model == "rf":
-        # noinspection PyArgumentList
-        a, g = mpfr(argv[9]), mpfr(argv[10])
+        a, g = to_mpfr(argv[9]), to_mpfr(argv[10])
         w_a = t_jet(n)
         w_b = t_jet(n)
         w_c = t_jet(n)
-        jet1 = t_jet(n, d1)
+        jet1 = t_jet(n, 1)
         print_output(x0, y0, z0, d0)
         for step in range(1, steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
             for k in range(n):
                 w_x2_1 = t_sqr(x, k) - jet1[k]
                 w_a[k] = z[k] + w_x2_1
-                w_b[k] = d3 * z[k] - w_x2_1
+                w_b[k] = 3 * z[k] - w_x2_1
                 w_c[k] = a + t_prod(x, y, k)
                 x[k + 1] = (t_prod(y, w_a, k) + g * x[k]) / (k + 1)
                 y[k + 1] = (t_prod(x, w_b, k) + g * y[k]) / (k + 1)
@@ -174,14 +156,13 @@ def main():
         for step in range(1, steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
             for k in range(n):
-                x[k + 1] = (y[k] + d2 * t_prod(x, y, k) + t_prod(x, z, k)) / (k + 1)
-                y[k + 1] = (w1[k] - d2 * t_sqr(x, k) + t_prod(y, z, k)) / (k + 1)
+                x[k + 1] = (y[k] + 2 * t_prod(x, y, k) + t_prod(x, z, k)) / (k + 1)
+                y[k + 1] = (w1[k] - 2 * t_sqr(x, k) + t_prod(y, z, k)) / (k + 1)
                 z[k + 1] = (x[k] - t_sqr(x, k) - t_sqr(y, k)) / (k + 1)
             x0, y0, z0 = t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h)
             print_output(x0, y0, z0, step * h)
     elif model == "sj":
-        # noinspection PyArgumentList
-        a, b = mpfr(argv[9]), mpfr(argv[10])
+        a, b = to_mpfr(argv[9]), to_mpfr(argv[10])
         w_b = t_jet(n, b)
         print_output(x0, y0, z0, d0)
         for step in range(1, steps + 1):
@@ -194,20 +175,18 @@ def main():
             print_output(x0, y0, z0, step * h)
     elif model == "halvorsen":
         #  Example: ./tsm-mp.py halvorsen 16 10 .01 100001 1 0 0 1.4 | ./plotPi3d.py
-        # noinspection PyArgumentList
-        a = mpfr(argv[9])
+        a = to_mpfr(argv[9])
         print_output(x0, y0, z0, d0)
         for step in range(1, steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
             for k in range(n):
-                x[k + 1] = - (a * x[k] + d4 * y[k] + d4 * z[k] + t_sqr(y, k)) / (k + 1)
-                y[k + 1] = - (a * y[k] + d4 * z[k] + d4 * x[k] + t_sqr(z, k)) / (k + 1)
-                z[k + 1] = - (a * z[k] + d4 * x[k] + d4 * y[k] + t_sqr(x, k)) / (k + 1)
+                x[k + 1] = - (a * x[k] + 4 * y[k] + 4 * z[k] + t_sqr(y, k)) / (k + 1)
+                y[k + 1] = - (a * y[k] + 4 * z[k] + 4 * x[k] + t_sqr(z, k)) / (k + 1)
+                z[k + 1] = - (a * z[k] + 4 * x[k] + 4 * y[k] + t_sqr(x, k)) / (k + 1)
             x0, y0, z0 = t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h)
             print_output(x0, y0, z0, step * h)
     elif model == "nh":
-        # noinspection PyArgumentList
-        a_ = t_jet(n, mpfr(argv[9]))
+        a_ = t_jet(n, to_mpfr(argv[9]))
         print_output(x0, y0, z0, d0)
         for step in range(1, steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
@@ -218,8 +197,7 @@ def main():
             x0, y0, z0 = t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h)
             print_output(x0, y0, z0, step * h)
     elif model == "rucklidge":
-        # noinspection PyArgumentList
-        a, b = mpfr(argv[9]), mpfr(argv[10])
+        a, b = to_mpfr(argv[9]), to_mpfr(argv[10])
         print_output(x0, y0, z0, d0)
         for step in range(1, steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
@@ -230,8 +208,7 @@ def main():
             x0, y0, z0 = t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h)
             print_output(x0, y0, z0, step * h)
     elif model == "damped":
-        # noinspection PyArgumentList
-        c1, c2 = mpfr(argv[9]), mpfr(argv[10])
+        c1, c2 = to_mpfr(argv[9]), to_mpfr(argv[10])
         print_output(x0, y0, z0, d0)
         for step in range(1, steps + 1):
             x[0], y[0] = x0, y0
@@ -241,8 +218,7 @@ def main():
             x0, y0 = t_horner(x, n, h), t_horner(y, n, h)
             print_output(x0, y0, d0, step * h)
     elif model == "pendulum":
-        # noinspection PyArgumentList
-        w = sqrt(mpfr(argv[9]) / mpfr(argv[10]))
+        w = sqrt(to_mpfr(argv[9]) / to_mpfr(argv[10]))
         sx, cx = t_jet(n), t_jet(n)
         print_output(x0, y0, z0, d0)
         for step in range(1, steps + 1):
@@ -254,8 +230,7 @@ def main():
             x0, y0 = t_horner(x, n, h), t_horner(y, n, h)
             print_output(x0, y0, d0, step * h)
     elif model == "volterra":
-        # noinspection PyArgumentList
-        a, b, c, d = mpfr(argv[8]), mpfr(argv[9]), mpfr(argv[10]), mpfr(argv[11])
+        a, b, c, d = to_mpfr(argv[8]), to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11])
         print_output(x0, y0, z0, d0)
         for step in range(1, steps + 1):
             x[0], y[0] = x0, y0
