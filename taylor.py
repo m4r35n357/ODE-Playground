@@ -8,12 +8,7 @@ from gmpy2 import mpfr, sqrt, exp, sinh, cosh, sin, cos, tanh, tan, log, asin, a
 
 # noinspection PyArgumentList
 def to_mpfr(x):
-    if isinstance(x, float):
-        return mpfr(str(x))
-    elif isinstance(x, (int, str)):
-        return mpfr(x)
-    else:
-        return x
+    return mpfr(str(x)) if isinstance(x, float) else mpfr(x) if isinstance(x, (int, str)) else x
 
 
 def t_jet(n, value=0):
@@ -42,24 +37,15 @@ def _ddot(v, u, k):
 
 
 def t_sqr(u, k):
-    if k == 0:
-        return u[0]**2
-    else:
-        return 2 * (u[0] * u[k] + _ddot(u, u, k))
+    return u[0]**2 if k == 0 else 2 * (u[0] * u[k] + _ddot(u, u, k))
 
 
 def t_sqrt(r, u, k):
-    if k == 0:
-        return sqrt(u[0])
-    else:
-        return (u[k] / 2 - _ddot(r, r, k)) / r[0]
+    return sqrt(u[0]) if k == 0 else (u[k] / 2 - _ddot(r, r, k)) / r[0]
 
 
 def t_exp(e, u, k):
-    if k == 0:
-        return exp(u[0])
-    else:
-        return e[0] * u[k] + _ddot(e, u, k)
+    return exp(u[0]) if k == 0 else e[0] * u[k] + _ddot(e, u, k)
 
 
 def t_sin_cos(s, c, u, k, hyp=False):
@@ -81,24 +67,15 @@ def t_tan_sec2(t, s2, u, k, hyp=False):
 
 
 def t_pwr(p, u, a, k):
-    if k == 0:
-        return u[0]**a
-    else:
-        return (a * (p[0] * u[k] + _ddot(p, u, k)) - _ddot(u, p, k)) / u[0]
+    return u[0] ** a if k == 0 else (a * (p[0] * u[k] + _ddot(p, u, k)) - _ddot(u, p, k)) / u[0]
 
 
 def t_ln(l, u, k):
-    if k == 0:
-        return log(u[0])
-    else:
-        return (u[k] - _ddot(u, l, k)) / u[0]
+    return log(u[0]) if k == 0 else (u[k] - _ddot(u, l, k)) / u[0]
 
 
 def t_atan(h, v, u, k):
-    if k == 0:
-        return atan(u[0]), 1 + u[0]**2
-    else:
-        return (u[k] - _ddot(v, h, k)) / v[0], 2 * (u[0] * u[k] + _ddot(u, u, k))
+    return atan(u[0]), 1 + u[0]**2 if k == 0 else (u[k] - _ddot(v, h, k)) / v[0], 2 * (u[0] * u[k] + _ddot(u, u, k))
 
 
 def _arc(h, v, u, k):
@@ -108,19 +85,11 @@ def _arc(h, v, u, k):
 
 
 def t_asin(h, v, u, k):
-    if k == 0:
-        h = asin(u[0])
-        return h, cos(h)
-    else:
-        return _arc(h, v, u, k)
+    return asin(u[0]), cos(asin(u[0])) if k == 0 else _arc(h, v, u, k)
 
 
 def t_acos(h, v, u, k):
-    if k == 0:
-        h = acos(u[0])
-        return h, - sin(h)
-    else:
-        return _arc(h, v, u, k)
+    return acos(u[0]), - sin(acos(u[0])) if k == 0 else _arc(h, v, u, k)
 
 
 print(__name__ + " module loaded", file=stderr)
