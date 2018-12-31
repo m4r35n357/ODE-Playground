@@ -16,7 +16,7 @@ class Series:
             self.jet[1] = to_mpfr(1)
 
     @classmethod
-    def from_numbers(cls, order, value, variable=False):
+    def from_console(cls, order, value, variable=False):
         assert isinstance(order, int)
         assert isinstance(value, (int, float, str))
         return cls(t_jet(order, value), variable)
