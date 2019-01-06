@@ -66,25 +66,46 @@ These two approaches produce a fairly readable format for coding the models.
 The value parameter allows simple calculation of function inverse values, as well as roots.
 
 ## Plotting
-There are also some plotting and graphing utilities written in Python 3, which is required for plotting (the data can come from either c or Python, which share output "formats").
+There are some plotting and graphing utilities written in Python 3, (the data itself can come from either c or Python, which share output "formats").
 The dependencies are:
 * matplotlib for 2D graphs
-* vpython *or* pi3d for 3D trajectories
+* pi3d for 3D trajectories (the visual python implementation is still distributed but is now considered legacy)
 
 ## Python/gmpy2 implementation
 
-There is a Python 3 version of the ODE solver programs with built-in models.  There is also a Series module
+There is a Python 3 version of the ODE solver programs with built-in models.
 Dependencies of Python 3 programs:
 * gmpy2 (based on MPFR)
+* matplotlib
+* pi3d
 
+Build environment (Debian/Ubuntu)
+```
+sudo apt install build-essential mesa-utils-extra python3-dev
+```
+This is a typical virtual environment example
+```
+cd $project
+mkvirtualenv --python /usr/bin/python3 ad
+pip install gmpy2 matplotlib pillow pi3d
+python3 setup.py sdist
+cd dist
+tar xzvf ad-blah.tar.gz
+cd ad
+python3 setup.py install
+cd ../..
+```
+All future developments will now be in Python3 with arbitrary precision, and the c version will be kept as a reference implementation.
+
+## Usage
 To find Python example invocations:
 ```
 grep Example *.py
 ```
-It is also worth looking for examples in the c file as below.
+It is also worth looking for examples in the c files as below.
 To test the root, extremum and inflection finding:
 ```
-./playground.py 2 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 50000 >/dev/null
+./models.py 2 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 10 >/dev/null
 ```
 
 Matplotlib progressive ODE plotting
@@ -95,7 +116,6 @@ Matplotlib progressive ODE plotting
 3D ODE plotting
 ```
 ./tsm-mp.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
-./tsm-mp.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotTrajectory.py 3 0 1 2
 ```
 
 ## c implementation
@@ -132,7 +152,7 @@ Matplotlib progressive ODE plotting
 3D ODE plotting
 ```
 ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
-./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotTrajectory.py 3 0 1 2
+#./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotTrajectory.py 3 0 1 2
 ```
 
 
