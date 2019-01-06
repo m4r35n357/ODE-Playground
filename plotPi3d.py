@@ -2,7 +2,7 @@
 
 from math import sin, cos, pi
 from sys import stdin, stderr, argv
-from pi3d import Sphere, Display, Camera, Shader, Keyboard, screenshot, Lines, Font, String
+from pi3d import Sphere, Display, Camera, Shader, Keyboard, screenshot, Lines, Font, String, Mouse
 
 
 class Body(Sphere):
@@ -48,7 +48,6 @@ def main():
     # Camera
     camera = Camera()
     rot = tilt = 0
-    rot_tilt = True
     cam_rad = 50.0
     hud_font = Font('/usr/share/fonts/truetype/liberation2/LiberationMono-Regular.ttf', color='green',
                     codepoints='-0123456789. txyz:=+', font_size=18)
@@ -65,8 +64,11 @@ def main():
                         track_max=int(argv[1]))
     else:
         particle = Body(Shader("mat_light"), (1.0, 0.0, 0.0), 0.05, track_shader=Shader("mat_flat"))
-    # Enable key presses
+    # Enable key presses and mouse
     keys = Keyboard()
+    mymouse = Mouse(restrict=False)
+    mymouse.start()
+    omx, omy = mymouse.position()
     # Display scene
     line = stdin.readline()
     while display.loop_running():
@@ -76,19 +78,22 @@ def main():
                                                                       float(data[2])))
         hud_string.draw()
         # camera control
-        if rot_tilt:
-            camera.reset()
-            camera.rotate(-tilt, rot, 0)
-            camera.position((cam_rad * sin(radians(rot)) * cos(radians(tilt)), cam_rad * sin(radians(tilt)),
-                             -cam_rad * cos(radians(rot)) * cos(radians(tilt))))
-            rot_tilt = False
+        camera.reset()
+        camera.rotate(-tilt, rot, 0)
+        camera.position((cam_rad * sin(radians(rot)) * cos(radians(tilt)), cam_rad * sin(radians(tilt)),
+                         -cam_rad * cos(radians(rot)) * cos(radians(tilt))))
         # plot the entities
         particle.pos = [float(data[0]), float(data[1]), float(data[2])]
         particle.position_and_draw(trace_material=(0.0, 0.25, 0.25))
-        # process keyboard input
+        # process mouse and keyboard input
+        mx, my = mymouse.position()
+        if mymouse.button_status() == mymouse.LEFT_BUTTON:
+            rot += (mx - omx) * 0.2
+            tilt += (my - omy) * 0.2
+        omx = mx
+        omy = my
         key = keys.read()
         if key > -1:
-            rot_tilt = True
             if key == 112:
                 screenshot("trajectory.jpg")
             elif key == 119:  # key W rotate camera up
@@ -105,6 +110,7 @@ def main():
                 cam_rad += 0.5
             elif key == 27:
                 keys.close()
+                mymouse.stop()
                 display.stop()
                 break
         # prepare for next iteration
