@@ -79,6 +79,8 @@ Dependencies of Python 3 programs:
 * matplotlib
 * pi3d
 
+All future development will now be in Python3 with arbitrary precision, and the c/MPFR version will be kept as a reference implementation.
+
 Build environment (Debian/Ubuntu)
 ```
 sudo apt install build-essential mesa-utils-extra python3-dev virtualenvwrapper
@@ -102,8 +104,6 @@ cd ad
 python3 setup.py install
 cd ../..
 ```
-All future developments will now be in Python3 with arbitrary precision, and the c/MPFR version will be kept as a reference implementation.
-
 To find Python ODE example invocations:
 ```
 grep Example *.py
