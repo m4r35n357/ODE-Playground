@@ -71,7 +71,7 @@ The dependencies are:
 * matplotlib for 2D graphs
 * pi3d for 3D trajectories (the visual python implementation is still distributed but is now considered legacy)
 
-## Python/gmpy2 implementation
+## Getting started with Python/gmpy2
 
 There is a Python 3 version of the ODE solver programs with built-in models.
 Dependencies of Python 3 programs:
@@ -81,24 +81,30 @@ Dependencies of Python 3 programs:
 
 Build environment (Debian/Ubuntu)
 ```
-sudo apt install build-essential mesa-utils-extra python3-dev
+sudo apt install build-essential mesa-utils-extra python3-dev virtualenvwrapper
 ```
-This is a typical virtual environment example
+This is a typical virtual environment setup:
 ```
-cd $project
 mkvirtualenv --python /usr/bin/python3 ad
 pip install gmpy2 matplotlib pillow pi3d
+```
+Download:
+```
+git clone https://github.com/m4r35n357/ODE-Playground
+cd ODE-Playground
+```
+Optionally, install ad to the virtual environment
+```
 python3 setup.py sdist
 cd dist
-tar xzvf ad-blah.tar.gz
+tar xzvf ad-1.0.tar.gz
 cd ad
 python3 setup.py install
 cd ../..
 ```
-All future developments will now be in Python3 with arbitrary precision, and the c version will be kept as a reference implementation.
+All future developments will now be in Python3 with arbitrary precision, and the c/MPFR version will be kept as a reference implementation.
 
-## Usage
-To find Python example invocations:
+To find Python ODE example invocations:
 ```
 grep Example *.py
 ```
@@ -118,7 +124,7 @@ Matplotlib progressive ODE plotting
 ./tsm-mp.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
 ```
 
-## c implementation
+## c usage
 Dependencies of c programs:
 * MPFR 4 or later! (otherwise stick to the Python version)
 
@@ -152,7 +158,6 @@ Matplotlib progressive ODE plotting
 3D ODE plotting
 ```
 ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
-#./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotTrajectory.py 3 0 1 2
 ```
 
 

@@ -66,9 +66,9 @@ def main():
         particle = Body(Shader("mat_light"), (1.0, 0.0, 0.0), 0.05, track_shader=Shader("mat_flat"))
     # Enable key presses and mouse
     keys = Keyboard()
-    mymouse = Mouse(restrict=False)
-    mymouse.start()
-    omx, omy = mymouse.position()
+    mouse = Mouse(restrict=False)
+    mouse.start()
+    omx, omy = mouse.position()
     # Display scene
     line = stdin.readline()
     while display.loop_running():
@@ -86,31 +86,31 @@ def main():
         particle.pos = [float(data[0]), float(data[1]), float(data[2])]
         particle.position_and_draw(trace_material=(0.0, 0.25, 0.25))
         # process mouse and keyboard input
-        mx, my = mymouse.position()
-        if mymouse.button_status() == mymouse.LEFT_BUTTON:
+        mx, my = mouse.position()
+        if mouse.button_status() == mouse.LEFT_BUTTON:
             rot += (mx - omx) * 0.2
             tilt += (my - omy) * 0.2
         omx = mx
         omy = my
         key = keys.read()
         if key > -1:
-            if key == 112:
+            if key == 112:  # 'p'
                 screenshot("trajectory.jpg")
-            elif key == 119:  # key W rotate camera up
+            elif key == 119:  # 'w' rotate camera up
                 tilt += 2.0
-            elif key == 115:  # kry S down
+            elif key == 115:  # 's' down
                 tilt -= 2.0
-            elif key == 97:  # key A left
-                rot -= 2
-            elif key == 100:  # key D right
-                rot += 2
-            elif key == 61:  # key += in
+            elif key == 97:  # 'a' left
+                rot -= 2.0
+            elif key == 100:  # 'd' right
+                rot += 2.0
+            elif key == 61:  # '-' zoom in
                 cam_rad -= 0.5
-            elif key == 45:  # key _- out
+            elif key == 45:  # '=' zoom out
                 cam_rad += 0.5
-            elif key == 27:
+            elif key == 27:  # 'ESC'
                 keys.close()
-                mymouse.stop()
+                mouse.stop()
                 display.stop()
                 break
         # prepare for next iteration
