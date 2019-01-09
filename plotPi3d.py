@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+#
+#  (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#
+
 from math import sin, cos, pi
 from sys import stdin, stderr, argv
 from pi3d import Sphere, Display, Camera, Shader, Keyboard, screenshot, Lines, Font, String, Mouse
