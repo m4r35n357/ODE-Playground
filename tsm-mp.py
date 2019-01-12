@@ -73,9 +73,7 @@ def main():
     elif model == "bouali":
         #  Example: ./tsm-mp.py bouali 80 40 0.02 50001 1 1 0 3 2.2 1 .01 | ./plotPi3d.py
         a, b, c, d = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11]), to_mpfr(argv[12])
-        w4 = t_jet(n)
-        w5 = t_jet(n)
-        jet1 = t_jet(n, 1)
+        jet1, w4, w5 = t_jet(n, 1), t_jet(n), t_jet(n)
         print_output(x0, y0, z0, d0)
         for step in range(1, steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
@@ -132,10 +130,7 @@ def main():
             print_output(x0, y0, z0, step * h)
     elif model == "rf":
         a, g = to_mpfr(argv[9]), to_mpfr(argv[10])
-        w_a = t_jet(n)
-        w_b = t_jet(n)
-        w_c = t_jet(n)
-        jet1 = t_jet(n, 1)
+        jet1, w_a, w_b, w_c = t_jet(n, 1), t_jet(n), t_jet(n), t_jet(n)
         print_output(x0, y0, z0, d0)
         for step in range(1, steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
@@ -146,12 +141,12 @@ def main():
                 w_c[k] = a + t_prod(x, y, k)
                 x[k + 1] = (t_prod(y, w_a, k) + g * x[k]) / (k + 1)
                 y[k + 1] = (t_prod(x, w_b, k) + g * y[k]) / (k + 1)
-                z[k + 1] = - 2.0 * t_prod(z, w_c, k) / (k + 1)
+                z[k + 1] = - 2 * t_prod(z, w_c, k) / (k + 1)
             x0, y0, z0 = t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h)
             print_output(x0, y0, z0, step * h)
     elif model == "sprott":
         #  Example: ./tsm-mp.py sprott 16 10 0.1 30001 1 0 0 | ./plotPi3d.py
-        w1 = t_jet(n, 1.0)
+        w1 = t_jet(n, 1)
         print_output(x0, y0, z0, d0)
         for step in range(1, steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
