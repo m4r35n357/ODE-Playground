@@ -225,7 +225,8 @@ def main():
             x0, y0 = t_horner(x, n, h), t_horner(y, n, h)
             print_output(x0, y0, d0, step * h)
     elif model == "volterra":
-        a, b, c, d = to_mpfr(argv[8]), to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11])
+        #  Example: ./tsm-mp.py volterra 16 10 .01 2001 10 10 0 1 .5 .05 .02 | ./plotAnimated.py 1 0 80
+        a, b, c, d = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11]), to_mpfr(argv[12])
         print_output(x0, y0, z0, d0)
         for step in range(1, steps + 1):
             x[0], y[0] = x0, y0
@@ -235,6 +236,29 @@ def main():
                 y[k + 1] = (d * wxy - b * y[k]) / (k + 1)
             x0, y0 = t_horner(x, n, h), t_horner(y, n, h)
             print_output(x0, y0, d0, step * h)
+    elif model == "logistic":
+        #  Example: ./tsm-mp.py logistic 16 10 0.1 10001 .6 0 0 .1 | ./plotXY.py 1 3 0
+        a = to_mpfr(argv[9])
+        w1, wa, wb = t_jet(n, 1), t_jet(n), t_jet(n)
+        print_output(x0, d0, d0, d0)
+        for step in range(1, steps + 1):
+            x[0] = x0
+            for k in range(n):
+                wa[k] = a * x[k]
+                wb[k] = w1[k] - x[k]
+                x[k + 1] = t_prod(wa, wb, k) / (k + 1)
+            x0 = t_horner(x, n, h)
+            print_output(x0, d0, d0, step * h)
+    elif model == "constant":
+        #  Example: ./tsm-mp.py constant 16 10 0.1 10001 10 0 0 -.05 | ./plotXY.py 1 3 0
+        a = to_mpfr(argv[9])
+        print_output(x0, d0, d0, d0)
+        for step in range(1, steps + 1):
+            x[0] = x0
+            for k in range(n):
+                x[k + 1] = a * x[k] / (k + 1)
+            x0 = t_horner(x, n, h)
+            print_output(x0, d0, d0, step * h)
 
 
 main()

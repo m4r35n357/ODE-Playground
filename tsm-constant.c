@@ -1,7 +1,7 @@
 /*
  * Proportional
  *
- * Example: ./tsm-constant-dbg 16 10 0.1 10001 10 -.05
+ * Example: ./tsm-constant-dbg 16 10 0.1 10001 10 0 0 -.05
  *
  * (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -14,12 +14,12 @@ long order, nsteps;
 mpfr_t t, x, a, h, _, *cx;
 
 int main (int argc, char **argv) {
-    assert(argc == 7);
+    assert(argc == 9);
     // initialize from command arguments
     t_stepper(argv, &order, &t, &h, &nsteps);
     mpfr_inits(_, NULL);
     mpfr_init_set_str(x, argv[5], BASE, RND);
-    mpfr_init_set_str(a, argv[6], BASE, RND);
+    mpfr_init_set_str(a, argv[8], BASE, RND);
 
     // initialize the derivative and temporary jets
     cx = t_jet(order + 1);
