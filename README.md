@@ -50,7 +50,7 @@ As well as adding operators for (negation and **), there are functions for:
 * ln
 * abs
 
-Using these higher level functions, Newton's method is implemented trivially, but I have also provided implementations of bisection and arbitrary degree Householder methods for comparison.
+Using these higher level functions, Newton's method is implemented trivially, but I have also provided implementations of bisection and arbitrary degree Householder (c only) methods for comparison.
 The playground.py script generates the first 12 derivatives of a "model" function along with the value itself, across a range of the input variable.
 Optionally it will analyse that range for roots, extrema and inflection points using the lower order derivatives.
 Here is a seventh-degree polynomial model by way of example, and a trigonometric identity as a check of the sin and sqr functions:
@@ -95,7 +95,7 @@ Download:
 git clone https://github.com/m4r35n357/ODE-Playground
 cd ODE-Playground
 ```
-Optionally, install ad to the virtual environment
+Now you can just use it "in place" in your virtual environment or, optionally, bukld and install an ad package to your venv
 ```
 python3 setup.py sdist
 cd dist

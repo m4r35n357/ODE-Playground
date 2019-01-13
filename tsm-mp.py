@@ -59,6 +59,7 @@ def main():
             x0, y0, z0 = t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h)
             print_output(x0, y0, z0, step * h)
     elif model == "rossler":
+        #  Example: ./tsm-mp.py rossler 16 10 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotPi3d.py
         a, b, c = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11])
         b_ = t_jet(n, b)
         print_output(x0, y0, z0, d0)
@@ -129,6 +130,7 @@ def main():
             x0, y0, z0 = t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h)
             print_output(x0, y0, z0, step * h)
     elif model == "rf":
+        #  Example: ./tsm-mp.py rf 16 10 .01 100001 .1 .1 .1 .2876 .1 | ./plotPi3d.py
         a, g = to_mpfr(argv[9]), to_mpfr(argv[10])
         jet1, w_a, w_b, w_c = t_jet(n, 1), t_jet(n), t_jet(n), t_jet(n)
         print_output(x0, y0, z0, d0)
@@ -192,6 +194,7 @@ def main():
             x0, y0, z0 = t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h)
             print_output(x0, y0, z0, step * h)
     elif model == "rucklidge":
+        #  Example: ./tsm-mp.py rucklidge 16 10 0.01 10001 1 0 0 6.7 2 | ./plotPi3d.py
         a, b = to_mpfr(argv[9]), to_mpfr(argv[10])
         print_output(x0, y0, z0, d0)
         for step in range(1, steps + 1):
@@ -204,7 +207,7 @@ def main():
             print_output(x0, y0, z0, step * h)
     elif model == "damped":
         c1, c2 = to_mpfr(argv[9]), to_mpfr(argv[10])
-        print_output(x0, y0, z0, d0)
+        print_output(x0, y0, d0, d0)
         for step in range(1, steps + 1):
             x[0], y[0] = x0, y0
             for k in range(n):
@@ -215,7 +218,7 @@ def main():
     elif model == "pendulum":
         w = sqrt(to_mpfr(argv[9]) / to_mpfr(argv[10]))
         sx, cx = t_jet(n), t_jet(n)
-        print_output(x0, y0, z0, d0)
+        print_output(x0, y0, d0, d0)
         for step in range(1, steps + 1):
             x[0], y[0] = x0, y0
             for k in range(n):

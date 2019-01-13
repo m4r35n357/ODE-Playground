@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 from json import loads
 from math import sqrt, sin, cos, fabs, pi, atan2, acos, log10
