@@ -124,6 +124,17 @@ Matplotlib progressive ODE plotting
 ./tsm-mp.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
 ```
 
+## Parameter reference
+For Python, the first parameter is a string identifying the ODE, so numbers here refer only to the numeric parameters.
+
+Parameter | Meaning
+----------|-----------
+1,2 | precision in decimal places, order
+3,4 | step size, number of steps
+5,6,7 | x0, y0, z0
+8+ | ODE parameters
+
+
 ## c usage
 Dependencies of c programs:
 * MPFR 4 or later! (otherwise stick to the Python version)
