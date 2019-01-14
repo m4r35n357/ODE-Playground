@@ -32,9 +32,11 @@ The recurrence relations used here are derived in http://aimsciences.org/journal
 There are also factories for derivative "jets", and an implementation of Horner's method for summing the Taylor Series.
 These "low-level" functions, properly called,  are all that is needed to "integrate" systems of ODEs.
 There is a fairly extensive collection of nonlinear ODEs already implemented, either in c or Python, or both in most cases.
+The list includes systems due to Lorenz, Rossler, Thomas, Bouali, Rabinovitch-Fabrikant, Sprott, and others.
 
-As part of the work verifying my implementation of these recurrence rules, I have added a demonstration of using Taylor series to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
-The demo can be used to find roots (and also extrema and inflection points by "extending" Newton to higher derivatives) in single variable nonlinear equations.
+As part of the work to verify my implementation of these recurrence rules, I have added a demonstration of using Taylor series to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
+The solver demo can be used to find roots (and also extrema and inflection points by "extending" Newton to higher derivatives) in single variable nonlinear equations.
+Additionally it is designed for finding inverse values (where real solutions exist) of complicated functions, not just their roots.
 
 
 The "higher-level" functions generate Taylor series "jets" in one go, so are only useful for univariate functions.
@@ -114,7 +116,7 @@ To test the root, extremum and inflection finding:
 ./models.py 2 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 10 >/dev/null
 ```
 
-Matplotlib progressive ODE plotting
+Matplotlib progressive graph plotting
 ```
 ./tsm-mp.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
 ```
@@ -156,12 +158,12 @@ To test the top level Taylor series operation:
 ./ad-test-dbg 7 2 1
 ```
 
-To test the root finding built on it:
+To test the root finding:
 ```
 ./ad-test-newton-dbg 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
 ```
 
-Matplotlib progressive ODE plotting
+Matplotlib progressive graph plotting
 ```
 ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
 ```
