@@ -3,7 +3,7 @@
 #
 
 from sys import stderr
-from taylor import t_jet, t_prod, t_quot, t_sqr, t_exp, t_sin_cos, t_tan_sec2, t_pwr, t_ln, t_sqrt, t_asin, t_acos, \
+from taylor import t_jet, t_prod, t_quot, t_exp, t_sin_cos, t_tan_sec2, t_pwr, t_ln, t_sqrt, t_asin, t_acos, \
     t_atan, to_mpfr
 
 
@@ -126,7 +126,7 @@ class Series:
 
     @property
     def sqr(self):
-        return Series([t_sqr(self.jet, k) for k in range(self.n)])
+        return self * self
 
     @property
     def sqrt(self):

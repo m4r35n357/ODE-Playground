@@ -55,12 +55,9 @@ print(~ cosine)
 print("tan(pi / {})".format(b))
 print(~ Series(t_jet(7, pi / 4.0), variable=True).tan)
 
-arc_sine = Series(t_jet(7, c), variable=True).asin
 print("asin(0.5)".format(c))
-print(arc_sine)
-arc_cosine = Series(t_jet(7, c), variable=True).acos
+print(Series(t_jet(7, c), variable=True).asin)
 print("acos(0.5)".format(c))
-print(arc_cosine)
-arc_tangent = Series(t_jet(7, c), variable=True).atan
+print(Series(t_jet(7, c), variable=True).acos)
 print("atan(0.5)".format(c))
-print(arc_tangent)
+print(Series(t_jet(7, c), variable=True).atan)

@@ -36,10 +36,6 @@ def _ddot(v, u, k):
     return sum(j * u[j] * v[k - j] for j in range(1, k)) / k
 
 
-def t_sqr(u, k):
-    return u[0]**2 if k == 0 else 2 * (u[0] * u[k] + _ddot(u, u, k))
-
-
 def t_sqrt(r, u, k):
     return sqrt(u[0]) if k == 0 else (u[k] / 2 - _ddot(r, r, k)) / r[0]
 

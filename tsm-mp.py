@@ -7,7 +7,7 @@
 from sys import argv
 from gmpy2 import get_context, log, sqrt
 get_context().precision = int(int(argv[2]) * log(10.0) / log(2.0))
-from taylor import t_jet, t_horner, t_prod, t_sin_cos, t_tan_sec2, t_sqr, to_mpfr
+from taylor import t_jet, t_horner, t_prod, t_sin_cos, t_tan_sec2, to_mpfr
 
 
 def print_output(x, y, z, t):
@@ -80,7 +80,7 @@ def main():
             x[0], y[0], z[0] = x0, y0, z0
             for k in range(n):
                 w4[k] = jet1[k] - y[k]
-                w5[k] = jet1[k] - t_sqr(x, k)
+                w5[k] = jet1[k] - t_prod(x, x, k)
                 x[k + 1] = (a * t_prod(x, w4, k) - b * z[k]) / (k + 1)
                 y[k + 1] = - c * t_prod(y, w5, k) / (k + 1)
                 z[k + 1] = d * x[k] / (k + 1)
@@ -137,7 +137,7 @@ def main():
         for step in range(1, steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
             for k in range(n):
-                w_x2_1 = t_sqr(x, k) - jet1[k]
+                w_x2_1 = t_prod(x, x, k) - jet1[k]
                 w_a[k] = z[k] + w_x2_1
                 w_b[k] = 3 * z[k] - w_x2_1
                 w_c[k] = a + t_prod(x, y, k)
@@ -154,8 +154,8 @@ def main():
             x[0], y[0], z[0] = x0, y0, z0
             for k in range(n):
                 x[k + 1] = (y[k] + 2 * t_prod(x, y, k) + t_prod(x, z, k)) / (k + 1)
-                y[k + 1] = (w1[k] - 2 * t_sqr(x, k) + t_prod(y, z, k)) / (k + 1)
-                z[k + 1] = (x[k] - t_sqr(x, k) - t_sqr(y, k)) / (k + 1)
+                y[k + 1] = (w1[k] - 2 * t_prod(x, x, k) + t_prod(y, z, k)) / (k + 1)
+                z[k + 1] = (x[k] - t_prod(x, x, k) - t_prod(y, y, k)) / (k + 1)
             x0, y0, z0 = t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h)
             print_output(x0, y0, z0, step * h)
     elif model == "sj":
@@ -167,7 +167,7 @@ def main():
             for k in range(n):
                 x[k + 1] = y[k] / (k + 1)
                 y[k + 1] = - x[k] + t_prod(y, z, k) / (k + 1)
-                z[k + 1] = (z[k] + a * t_sqr(x, k) - t_sqr(y, k) - w_b[k]) / (k + 1)
+                z[k + 1] = (z[k] + a * t_prod(x, x, k) - t_prod(y, y, k) - w_b[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h)
             print_output(x0, y0, z0, step * h)
     elif model == "halvorsen":
@@ -177,9 +177,9 @@ def main():
         for step in range(1, steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
             for k in range(n):
-                x[k + 1] = - (a * x[k] + 4 * y[k] + 4 * z[k] + t_sqr(y, k)) / (k + 1)
-                y[k + 1] = - (a * y[k] + 4 * z[k] + 4 * x[k] + t_sqr(z, k)) / (k + 1)
-                z[k + 1] = - (a * z[k] + 4 * x[k] + 4 * y[k] + t_sqr(x, k)) / (k + 1)
+                x[k + 1] = - (a * x[k] + 4 * y[k] + 4 * z[k] + t_prod(y, y, k)) / (k + 1)
+                y[k + 1] = - (a * y[k] + 4 * z[k] + 4 * x[k] + t_prod(z, z, k)) / (k + 1)
+                z[k + 1] = - (a * z[k] + 4 * x[k] + 4 * y[k] + t_prod(x, x, k)) / (k + 1)
             x0, y0, z0 = t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h)
             print_output(x0, y0, z0, step * h)
     elif model == "nh":
@@ -190,7 +190,7 @@ def main():
             for k in range(n):
                 x[k + 1] = y[k] / (k + 1)
                 y[k + 1] = (t_prod(y, z, k) - x[k]) / (k + 1)
-                z[k + 1] = (a_[k] - t_sqr(y, k)) / (k + 1)
+                z[k + 1] = (a_[k] - t_prod(y, y, k)) / (k + 1)
             x0, y0, z0 = t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h)
             print_output(x0, y0, z0, step * h)
     elif model == "rucklidge":
@@ -202,7 +202,7 @@ def main():
             for k in range(n):
                 x[k + 1] = (a * y[k] - b * x[k] - t_prod(y, z, k)) / (k + 1)
                 y[k + 1] = x[k] / (k + 1)
-                z[k + 1] = (t_sqr(y, k) - z[k]) / (k + 1)
+                z[k + 1] = (t_prod(y, y, k) - z[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h)
             print_output(x0, y0, z0, step * h)
     elif model == "damped":
