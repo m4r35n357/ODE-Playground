@@ -8,9 +8,7 @@ get_context().precision = 236  # Set this BEFORE importing any Taylor Series stu
 from series import Series
 from taylor import t_jet, to_mpfr
 
-# noinspection PyArgumentList
 a = to_mpfr("3.0")
-# noinspection PyArgumentList
 b = to_mpfr("4.0")
 sine, cosine = Series(t_jet(7, pi / a), variable=True).sin_cos
 print("sin(pi / {})".format(a))
@@ -19,6 +17,16 @@ print("cos(pi / {})".format(a))
 print(~ cosine)
 print("tan(pi / {})".format(b))
 print(~ Series(t_jet(7, pi / 4.0), variable=True).tan)
+c = to_mpfr("0.5")
+arc_sine = Series(t_jet(7, c), variable=True).asin
+print("asin(0.5)".format(c))
+print(arc_sine)
+arc_cosine = Series(t_jet(7, c), variable=True).acos
+print("acos(0.5)".format(c))
+print(arc_cosine)
+arc_tangent = Series(t_jet(7, c), variable=True).atan
+print("atan(0.5)".format(c))
+print(arc_tangent)
 
 # noinspection PyArgumentList
 a = to_mpfr(3)

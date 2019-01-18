@@ -102,7 +102,7 @@ Now you can just use it "in place" in your virtual environment or, optionally, b
 python3 setup.py sdist
 cd dist
 tar xzvf ad-1.0.tar.gz
-cd ad
+cd ad-1.0
 python3 setup.py install
 cd ../..
 ```
