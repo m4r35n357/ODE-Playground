@@ -75,7 +75,7 @@ def t_ln(l, u, k):
 
 
 def t_atan(h, v, u, k):
-    return atan(u[0]), 1 + u[0]**2 if k == 0 else (u[k] - _ddot(v, h, k)) / v[0], 2 * (u[0] * u[k] + _ddot(u, u, k))
+    return (atan(u[0]), 1 + u[0]**2) if k == 0 else ((u[k] - _ddot(v, h, k)) / v[0], 2 * (u[0] * u[k] + _ddot(u, u, k)))
 
 
 def _arc(h, v, u, k):
@@ -85,11 +85,11 @@ def _arc(h, v, u, k):
 
 
 def t_asin(h, v, u, k):
-    return asin(u[0]), cos(asin(u[0])) if k == 0 else _arc(h, v, u, k)
+    return (asin(u[0]), cos(asin(u[0]))) if k == 0 else _arc(h, v, u, k)
 
 
 def t_acos(h, v, u, k):
-    return acos(u[0]), - sin(acos(u[0])) if k == 0 else _arc(h, v, u, k)
+    return (acos(u[0]), - sin(acos(u[0]))) if k == 0 else _arc(h, v, u, k)
 
 
 print(__name__ + " module loaded", file=stderr)
