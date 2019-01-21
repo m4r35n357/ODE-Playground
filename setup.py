@@ -8,5 +8,5 @@ setup(name='ad',
       version='1.0',
       url='https://github.com/m4r35n357/ODE-Playground',
       requires=['gmpy2', 'matplotlib', 'pillow', 'pi3d'],
-      py_modules=['taylor', 'series', 'playground'],
+      py_modules=['taylor', 'series', 'dual', 'playground'],
       )
