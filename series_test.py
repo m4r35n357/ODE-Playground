@@ -2,12 +2,12 @@
 
 # Example: ./series_test.py
 
-from math import pi
-from gmpy2 import get_context
+from gmpy2 import get_context, acos
 get_context().precision = 236  # Set this BEFORE importing any Taylor Series stuff!
 from series import Series
 from taylor import t_jet, to_mpfr
 
+pi = acos(-1)
 a = to_mpfr("3.0")
 b = to_mpfr("4.0")
 c = to_mpfr("0.5")
