@@ -126,6 +126,11 @@ Matplotlib progressive graph plotting
 ./tsm-mp.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
 ```
 
+Double pendulum
+```
+./double.py 8 0.1 1000 1 1 1 1 .1 0 .1 0 | ./plotPi2d.py
+```
+
 ## Parameter reference
 For Python, the first parameter is a string identifying the ODE, so numbers here refer only to the numeric parameters.
 
