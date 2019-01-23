@@ -11,9 +11,6 @@ class Dual:
         self.val = jet[0]
         self.der = jet[1]
 
-    def __str__(self):
-        return "{:.6e} {:.6e}".format(self.val, self.der)
-
     def __pos__(self):
         return Dual([self.val, self.der])
 
@@ -61,7 +58,7 @@ class Dual:
 
     @property
     def var(self):
-        return Dual([self.val, 1.0])
+        return Dual([self.val, to_mpfr(1)])
 
     @property
     def sqr(self):
@@ -101,20 +98,19 @@ def main():
     pth2 = [to_mpfr(0) for _ in range(n + 1)]
     for step in range(1, steps + 1):
         th1[0], pth1[0], th2[0], pth2[0] = th1_0, pth1_0, th2_0, pth2_0
-        th1_dual = Dual([th1_0, 0.0])
-        pth1_dual = Dual([pth1_0, 0.0])
-        th2_dual = Dual([th2_0, 0.0])
-        pth2_dual = Dual([pth2_0, 0.0])
-        ham = hamiltonian(g, l1, m1, l2, m2, th1_dual, pth1_dual, th2_dual, pth2_dual).val
-        dh_dth1 = hamiltonian(g, l1, m1, l2, m2, th1_dual, pth1_dual.var, th2_dual, pth2_dual).der
-        dh_dpth1 = hamiltonian(g, l1, m1, l2, m2, th1_dual.var, pth1_dual, th2_dual, pth2_dual).der
-        dh_dth2 = hamiltonian(g, l1, m1, l2, m2, th1_dual, pth1_dual, th2_dual, pth2_dual.var).der
-        dh_dpth2 = hamiltonian(g, l1, m1, l2, m2, th1_dual, pth1_dual, th2_dual.var, pth2_dual).der
+        th1_dual = Dual([th1_0, to_mpfr(0)])
+        pth1_dual = Dual([pth1_0, to_mpfr(0)])
+        th2_dual = Dual([th2_0, to_mpfr(0)])
+        pth2_dual = Dual([pth2_0, to_mpfr(0)])
+        dh_dth1 = hamiltonian(g, l1, m1, l2, m2, th1_dual.var, pth1_dual, th2_dual, pth2_dual).der
+        dh_dpth1 = hamiltonian(g, l1, m1, l2, m2, th1_dual, pth1_dual.var, th2_dual, pth2_dual).der
+        dh_dth2 = hamiltonian(g, l1, m1, l2, m2, th1_dual, pth1_dual, th2_dual.var, pth2_dual).der
+        dh_dpth2 = hamiltonian(g, l1, m1, l2, m2, th1_dual, pth1_dual, th2_dual, pth2_dual.var).der
         for k in range(n):
-            th1[k + 1] = dh_dth1 / (k + 1)
-            pth1[k + 1] = - dh_dpth1 / (k + 1)
-            th2[k + 1] = dh_dth2 / (k + 1)
-            pth2[k + 1] = - dh_dpth2 / (k + 1)
+            th1[k + 1] = dh_dpth1 / (k + 1)
+            pth1[k + 1] = - dh_dth1 / (k + 1)
+            th2[k + 1] = dh_dpth2 / (k + 1)
+            pth2[k + 1] = - dh_dth2 / (k + 1)
         th1_0, pth1_0, th2_0, pth2_0 = th1[n], pth1[n], th2[n], pth2[n]
         for i in range(n - 1, -1, -1):
             th1_0 = th1_0 * h + th1[i]
@@ -125,7 +121,8 @@ def main():
         y1 = - l1 * cos(th1_0)
         x2 = x1 + l2 * sin(th2_0)
         y2 = y1 + - l2 * cos(th2_0)
-        print("{:.9e} {:.9e} {:.9e} {:.9e} {:.5e} {:.9e}".format(x1, y1, x2, y2, step * h, ham))
+        print("{:.9e} {:.9e} {:.9e} {:.9e} {:.5e} {:.9e}".format(
+            x1, y1, x2, y2, step * h, hamiltonian(g, l1, m1, l2, m2, th1_dual, pth1_dual, th2_dual, pth2_dual).val))
 
 
 main()
