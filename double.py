@@ -88,35 +88,40 @@ def main():
     n = int(argv[1])
     h = to_mpfr(argv[2])
     steps = int(argv[3])
-
-    g = to_mpfr(1)
     l1, m1, l2, m2 = to_mpfr(argv[4]), to_mpfr(argv[5]), to_mpfr(argv[6]), to_mpfr(argv[7])
     th1_0, pth1_0, th2_0, pth2_0 = to_mpfr(argv[8]), to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11])
+    g = to_mpfr(1)
+    #  the jets
     th1 = [to_mpfr(0) for _ in range(n + 1)]
     pth1 = [to_mpfr(0) for _ in range(n + 1)]
     th2 = [to_mpfr(0) for _ in range(n + 1)]
     pth2 = [to_mpfr(0) for _ in range(n + 1)]
     for step in range(1, steps + 1):
         th1[0], pth1[0], th2[0], pth2[0] = th1_0, pth1_0, th2_0, pth2_0
+        #  the dual numbers
         th1_dual = Dual([th1_0, to_mpfr(0)])
         pth1_dual = Dual([pth1_0, to_mpfr(0)])
         th2_dual = Dual([th2_0, to_mpfr(0)])
         pth2_dual = Dual([pth2_0, to_mpfr(0)])
+        #  generate derivatives for the Hamiltonian EOMs
         dh_dth1 = hamiltonian(g, l1, m1, l2, m2, th1_dual.var, pth1_dual, th2_dual, pth2_dual).der
         dh_dpth1 = hamiltonian(g, l1, m1, l2, m2, th1_dual, pth1_dual.var, th2_dual, pth2_dual).der
         dh_dth2 = hamiltonian(g, l1, m1, l2, m2, th1_dual, pth1_dual, th2_dual.var, pth2_dual).der
         dh_dpth2 = hamiltonian(g, l1, m1, l2, m2, th1_dual, pth1_dual, th2_dual, pth2_dual.var).der
+        #  Taylor Series method
         for k in range(n):
             th1[k + 1] = dh_dpth1 / (k + 1)
             pth1[k + 1] = - dh_dth1 / (k + 1)
             th2[k + 1] = dh_dpth2 / (k + 1)
             pth2[k + 1] = - dh_dth2 / (k + 1)
+        #  Horner's method
         th1_0, pth1_0, th2_0, pth2_0 = th1[n], pth1[n], th2[n], pth2[n]
         for i in range(n - 1, -1, -1):
             th1_0 = th1_0 * h + th1[i]
             pth1_0 = pth1_0 * h + pth1[i]
             th2_0 = th2_0 * h + th2[i]
             pth2_0 = pth2_0 * h + pth2[i]
+        #  convert angles to X-Y coordinates
         x1 = l1 * sin(th1_0)
         y1 = - l1 * cos(th1_0)
         x2 = x1 + l2 * sin(th2_0)
