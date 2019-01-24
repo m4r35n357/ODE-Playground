@@ -73,8 +73,8 @@ class Dual:
         return Dual([cos(self.val), - self.der * sin(self.val)])
 
 
-# noinspection PyArgumentList
 def to_mpfr(x):
+    # noinspection PyArgumentList
     return mpfr(str(x)) if isinstance(x, float) else mpfr(x) if isinstance(x, (int, str)) else x
 
 
@@ -91,7 +91,7 @@ def main():
     l1, m1, l2, m2 = to_mpfr(argv[4]), to_mpfr(argv[5]), to_mpfr(argv[6]), to_mpfr(argv[7])
     th1_0, pth1_0, th2_0, pth2_0 = to_mpfr(argv[8]), to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11])
     g = to_mpfr(1)
-    #  the jets
+    #  the derivative "jets"
     th1 = [to_mpfr(0) for _ in range(n + 1)]
     pth1 = [to_mpfr(0) for _ in range(n + 1)]
     th2 = [to_mpfr(0) for _ in range(n + 1)]
