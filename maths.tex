@@ -6,7 +6,7 @@
 \usepackage{graphicx}
 \title{\textbf{Taylor Series Method for Solving Ordinary Differential Equations}}
 \author{Ian Smith}
-\date{December 2018}
+\date{January 2019}
 \graphicspath{ {images/} }
 \begin{document}
 
@@ -174,4 +174,25 @@ for step in range(1, steps):
         y = y * h + cy[i]
         z = z * h + cz[i]
 \end{lstlisting}
+\subsection{Hamiltonian Equations of Motion}
+In the Time domain:
+\begin{equation}
+\begin{aligned}
+\dot{q} &= \frac {\partial H} {\partial p} = C_1 \\
+\dot{p} &= - \frac {\partial H} {\partial q} = - C_2 \\
+\end{aligned}
+\end{equation}
+where $C_1$ and $C_2$ are constants at a given time step.
+In this case the Taylor coefficients are trivial:
+\begin{equation}
+\begin{aligned}
+q_{k+1} &= \frac {C_1} {k + 1} \\
+p_{k+1} &= \frac {- C_2} {k + 1} \\
+\end{aligned}
+\end{equation}
+The key idea here is to generate the partial differentials of the Hamiltonian using Automatic Differentiation, in this case using the technique of Dual Numbers (forward mode AD).
+
+In this way we can simulate Hamiltonian systems without relying on numerical differences for differentiation by time or configuration variables.
+
+It also removes any need to perform symbolic differentiation with respect to configuration variables, so that it can readily be used with any Hamiltonian supported by the operations defined in the Dual Numbers code.
 \end{document}
