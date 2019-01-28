@@ -81,8 +81,7 @@ def main():
     while display.loop_running():
         data = line.split(' ')
         hud_string.quick_change(
-            " t {:-5.1f}  x {:-5.1f}  y {:-5.1f}  z {:-5.1f} ".format(float(data[3]), float(data[0]), float(data[1]),
-                                                                      float(data[2])))
+            " t {:-5.1f}".format(float(data[4])))
         hud_string.draw()
         # camera control
         camera.reset()
