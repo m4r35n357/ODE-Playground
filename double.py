@@ -62,7 +62,7 @@ class Dual:
 
     @property
     def sqr(self):
-        return self * self
+        return Dual([self.val**2, 2 * self.der * self.val])
 
     @property
     def sin(self):
@@ -79,7 +79,7 @@ def to_mpfr(x):
 
 
 def hamiltonian(g, l1, m1, l2, m2, th1, pth1, th2, pth2):
-    return (l2**2 * m2 * pth1**2 + l1**2 * (m1 + m2) * pth2**2 - 2 * m2 * l1 * l2 * pth1 * pth2 * (th1 - th2).cos)\
+    return (l2**2 * m2 * pth1.sqr + l1**2 * (m1 + m2) * pth2.sqr - 2 * m2 * l1 * l2 * pth1 * pth2 * (th1 - th2).cos)\
             / (2 * l1**2 * l2**2 * m2 * (m1 + m2 * (th1 - th2).sin.sqr))\
             - (m1 + m2) * g * l1 * th1.cos - m2 * g * l2 * th2.cos
 

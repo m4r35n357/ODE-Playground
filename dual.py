@@ -28,7 +28,7 @@ class Dual:
         return "{:.6e} {:.6e}".format(self.val, self.der)
 
     def __abs__(self):
-        return (self * self).sqrt
+        return self.sqr.sqrt
 
     def __pos__(self):
         return Dual([self.val, self.der])
@@ -77,7 +77,7 @@ class Dual:
 
     @property
     def sqr(self):
-        return self * self
+        return Dual([self.val**2, 2 * self.der * self.val])
 
     @property
     def sqrt(self):
