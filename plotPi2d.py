@@ -4,7 +4,7 @@
 #  (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
-from math import sin, cos, pi
+from math import sin, cos, pi, log
 from sys import stdin, stderr, argv
 from pi3d import Sphere, Display, Camera, Shader, Keyboard, screenshot, Lines, Font, String, Mouse
 
@@ -54,9 +54,10 @@ def main():
     rot = tilt = 0
     cam_rad = 50.0
     hud_font = Font('/usr/share/fonts/truetype/liberation2/LiberationMono-Regular.ttf', color='green',
-                    codepoints='-0123456789. txyz:=+', font_size=18)
+                    codepoints='-0123456789. ehtxyz:=+', font_size=18)
     hud_font.blend = True
-    hud_data = " t {:-5.1f}  x {:-5.1f}  y {:-5.1f}  z {:-5.1f} ".format(0.0, 0.0, 0.0, 0.0)
+    hud_headings = " t {:-5.1f}  h {:-10.3e} "
+    hud_data = hud_headings.format(0.0, 0.0)
     hud_string = String(camera=Camera(is_3d=False), font=hud_font, is_3d=False, string=hud_data)
     hud_string.set_shader(Shader("uv_flat"))
     (lt, bm, ft, rt, tp, bk) = hud_string.get_bounds()
@@ -80,8 +81,7 @@ def main():
     line = stdin.readline()
     while display.loop_running():
         data = line.split(' ')
-        hud_string.quick_change(
-            " t {:-5.1f}".format(float(data[4])))
+        hud_string.quick_change(hud_headings.format(float(data[4]), float(data[5])))
         hud_string.draw()
         # camera control
         camera.reset()

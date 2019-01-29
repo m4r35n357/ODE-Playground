@@ -125,7 +125,7 @@ def main():
         x1 = l1 * sin(th1_0)
         y1 = - l1 * cos(th1_0)
         x2 = x1 + l2 * sin(th2_0)
-        y2 = y1 + - l2 * cos(th2_0)
+        y2 = y1 - l2 * cos(th2_0)
         print("{:.9e} {:.9e} {:.9e} {:.9e} {:.5e} {:.9e}".format(
             x1, y1, x2, y2, step * h, hamiltonian(g, l1, m1, l2, m2, th1_dual, pth1_dual, th2_dual, pth2_dual).val))
 
