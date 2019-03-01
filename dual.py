@@ -13,12 +13,10 @@ def make_mpfr(x):
 
 class Dual:
 
-    def __init__(self, jet, variable=False):
+    def __init__(self, jet):
         self.n = 2
         self.val = jet[0]
         self.der = jet[1]
-        if variable:
-            self.der = make_mpfr(1)
 
     @classmethod
     def from_number(cls, value, variable=False):
