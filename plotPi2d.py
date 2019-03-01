@@ -56,7 +56,7 @@ def main():
     hud_font = Font('/usr/share/fonts/truetype/liberation2/LiberationMono-Regular.ttf', color='green',
                     codepoints='-0123456789. ehtxyz:=+', font_size=18)
     hud_font.blend = True
-    hud_headings = " t {:-5.1f}  h {:-10.3e} "
+    hud_headings = " t {:-5.1f}  h {:-5.1f} "
     hud_data = hud_headings.format(0.0, 0.0)
     hud_string = String(camera=Camera(is_3d=False), font=hud_font, is_3d=False, string=hud_data)
     hud_string.set_shader(Shader("uv_flat"))

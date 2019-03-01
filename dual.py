@@ -25,7 +25,7 @@ class Dual:
         return cls([make_mpfr(value), make_mpfr(1) if variable else make_mpfr(0)])
 
     def __str__(self):
-        return "{:.6e} {:.6e}".format(self.val, self.der)
+        return "{:+.6e} {:+.6e}".format(self.val, self.der)
 
     def __abs__(self):
         return self.sqr.sqrt
@@ -117,6 +117,10 @@ class Dual:
     @property
     def atan(self):
         return Dual([atan(self.val), self.der / (1 + self.val**2)])
+
+    @property
+    def var(self):
+        return Dual([self.val, make_mpfr(1)])
 
 
 print(__name__ + " module loaded", file=stderr)
