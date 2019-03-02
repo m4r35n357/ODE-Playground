@@ -74,6 +74,10 @@ class Dual:
         return Dual([self.val**a, a * self.val**(a - 1) * self.der])
 
     @property
+    def var(self):
+        return Dual([self.val, make_mpfr(1)])
+
+    @property
     def sqr(self):
         return Dual([self.val**2, 2 * self.der * self.val])
 
@@ -115,10 +119,6 @@ class Dual:
     @property
     def atan(self):
         return Dual([atan(self.val), self.der / (1 + self.val**2)])
-
-    @property
-    def var(self):
-        return Dual([self.val, make_mpfr(1)])
 
 
 print(__name__ + " module loaded", file=stderr)
