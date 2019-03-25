@@ -14,7 +14,6 @@ def make_mpfr(x):
 class Dual:
 
     def __init__(self, jet):
-        self.n = 2
         self.val = jet[0]
         self.der = jet[1]
 
