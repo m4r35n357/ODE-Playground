@@ -44,7 +44,8 @@ def playground(a, value):
     # return a.tanh - a.sinh / a.cosh - value
     # return a.sin.asin - value
     # return a.cos.acos - value
-    return a.tan.atan - value
+    # return a.tan.atan - value
+    return (a + 7) / (3.0 - a)
 
 
 mode = int(argv[1])
