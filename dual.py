@@ -3,7 +3,7 @@
 #
 
 from sys import stderr
-from gmpy2 import sqrt, sin, cos, mpfr, exp, tan, sec, atan, asin, acos
+from gmpy2 import sqrt, sin, cos, mpfr, exp, log, tan, sec, atan, asin, acos
 
 
 # noinspection PyArgumentList
@@ -92,8 +92,7 @@ class Dual:
 
     @property
     def ln(self):
-        ln_val = exp(self.val)
-        return Dual([ln_val, self.der / ln_val])
+        return Dual([log(self.val), self.der / self.val])
 
     @property
     def sin(self):
