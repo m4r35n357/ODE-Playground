@@ -121,32 +121,32 @@ print("", file=stderr)
 
 
 def lorentz(a, value):
-    # Example: ./models.py 0 .001 .999 1001 0 1e-12 1e-12 | ./plotMany.py 1 10 >/dev/null
+    # Example: ./series_test.py 0 .001 .999 1001 0 1e-12 1e-12 | ./plotMany.py 1 10 >/dev/null
     return 1 / (1 - a.sqr).sqrt - value
 
 
 def cosx_x3(a, value):
-    # Example: ./models.py 1 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
+    # Example: ./series_test.py 1 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     return a.cos - a * a.sqr - value
 
 
 def septic(a, value):
-    # Example: ./models.py 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
+    # Example: ./series_test.py 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
     return (a + 7) * (5 + a) * (a + 2.0) * a * (1 - a) * (3.0 - a) * (a - 6) - value
 
 
 def composite1(a, value):
-    # Example: ./models.py 1 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
+    # Example: ./series_test.py 1 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     return (a.exp + (a.sqr - 4.0).exp).ln - value
 
 
 def composite2(a, value):
-    # Example: ./models.py 1 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
+    # Example: ./series_test.py 1 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     return (a.sqr + (a.exp - 4).sqr).sqrt - value
 
 
 def playground(a, value):
-    # Example: ./models.py 1 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
+    # Example: ./series_test.py 1 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     # return (2 * a).sin - 2 * a.sin * a.cos - value
     # return (2 * a).cos - a.cos.sqr + a.sin.sqr - value
     # return (3 * a).sin - 3 * a.sin + 4 * a.sin * a.sin.sqr - value
@@ -159,6 +159,11 @@ def playground(a, value):
     # return a.cos.acos - value
     # return a.tan.atan - value
     return (a + 7) / (3.0 - a)
+
+
+def schwartzschild(r, e=to_mpfr(0.962250), p_r=to_mpfr(0), l_z=to_mpfr(4)):  # no t or phi!
+    # Example: ./series_test.py 1 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
+    return (e**2 / (1 - 2 / r) - p_r**2 * (1 - 2 / r) - (l_z / r).sqr) / 2
 
 
 def analyze(model, n, x0, x1, steps=1000, target=0, f_tol=to_mpfr(1e-12), x_tol=to_mpfr(1e-12), max_it=100, n_max=13):
