@@ -28,10 +28,10 @@ def main():
     th2 = [to_mpfr(0) for _ in range(n + 1)]
     pth2 = [to_mpfr(0) for _ in range(n + 1)]
     #  the dual numbers
-    th1_dual = Dual.from_number(th1_0)
-    pth1_dual = Dual.from_number(pth1_0)
-    th2_dual = Dual.from_number(th2_0)
-    pth2_dual = Dual.from_number(pth2_0)
+    th1_dual = Dual.get(th1_0)
+    pth1_dual = Dual.get(pth1_0)
+    th2_dual = Dual.get(th2_0)
+    pth2_dual = Dual.get(pth2_0)
     h0 = hamiltonian(g, l1, m1, l2, m2, th1_dual, pth1_dual, th2_dual, pth2_dual).val
     for step in range(1, steps + 1):
         th1[0], pth1[0], th2[0], pth2[0] = th1_0, pth1_0, th2_0, pth2_0
@@ -54,10 +54,10 @@ def main():
             th2_0 = th2_0 * h + th2[i]
             pth2_0 = pth2_0 * h + pth2[i]
         #  the dual numbers
-        th1_dual = Dual.from_number(th1_0)
-        pth1_dual = Dual.from_number(pth1_0)
-        th2_dual = Dual.from_number(th2_0)
-        pth2_dual = Dual.from_number(pth2_0)
+        th1_dual = Dual.get(th1_0)
+        pth1_dual = Dual.get(pth1_0)
+        th2_dual = Dual.get(th2_0)
+        pth2_dual = Dual.get(pth2_0)
         #  convert angles to X-Y coordinates
         x1 = l1 * sin(th1_0)
         y1 = - l1 * cos(th1_0)

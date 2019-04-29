@@ -68,7 +68,7 @@ print(Series(t_jet(7, c), variable=True).atan, file=stderr)
 print("", file=stderr)
 
 print("z = {}".format(a), file=stderr)
-z = Dual.from_number(a, variable=True)
+z = Dual.get(a, variable=True)
 
 print("+, -", file=stderr)
 print(+ z, file=stderr)
@@ -98,24 +98,24 @@ print("**b", file=stderr)
 print(z ** b, file=stderr)
 
 print("sqr", file=stderr)
-print(Dual.from_number(b, variable=True).sqr, file=stderr)
+print(Dual.get(b, variable=True).sqr, file=stderr)
 
 print("sqrt", file=stderr)
-print(Dual.from_number(b, variable=True).sqrt, file=stderr)
+print(Dual.get(b, variable=True).sqrt, file=stderr)
 
 print("sin(pi / {:.1f})".format(a), file=stderr)
-print(Dual.from_number(pi / a, variable=True).sin, file=stderr)
+print(Dual.get(pi / a, variable=True).sin, file=stderr)
 print("cos(pi / {:.1f})".format(a), file=stderr)
-print(Dual.from_number(pi / a, variable=True).cos, file=stderr)
+print(Dual.get(pi / a, variable=True).cos, file=stderr)
 print("tan(pi / {:.1f})".format(b), file=stderr)
-print(Dual.from_number(pi / 4.0, variable=True).tan, file=stderr)
+print(Dual.get(pi / 4.0, variable=True).tan, file=stderr)
 
 print("asin(0.5)".format(c), file=stderr)
-print(Dual.from_number(c, variable=True).asin, file=stderr)
+print(Dual.get(c, variable=True).asin, file=stderr)
 print("acos(0.5)".format(c), file=stderr)
-print(Dual.from_number(c, variable=True).acos, file=stderr)
+print(Dual.get(c, variable=True).acos, file=stderr)
 print("atan(0.5)".format(c), file=stderr)
-print(Dual.from_number(c, variable=True).atan, file=stderr)
+print(Dual.get(c, variable=True).atan, file=stderr)
 
 print("", file=stderr)
 
@@ -167,7 +167,7 @@ def schwartzschild(r, e=to_mpfr(0.962250), p_r=to_mpfr(0), l_z=to_mpfr(4)):  # n
 
 
 def analyze(model, n, x0, x1, steps=1000, target=0, f_tol=to_mpfr(1e-12), x_tol=to_mpfr(1e-12), max_it=100, n_max=13):
-    w_x = Dual.from_number(x0, variable=True)
+    w_x = Dual.get(x0, variable=True)
     for k in range(steps):
         w_x.val = x0 + k * (x1 - x0) / steps
         w_f = model(w_x, make_mpfr(target))

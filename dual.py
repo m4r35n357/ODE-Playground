@@ -18,7 +18,7 @@ class Dual:
         self.der = derivative
 
     @classmethod
-    def from_number(cls, value, variable=False):
+    def get(cls, value, variable=False):
         return cls(make_mpfr(value), make_mpfr(1) if variable else make_mpfr(0))
 
     def __str__(self):
