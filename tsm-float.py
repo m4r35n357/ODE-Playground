@@ -9,7 +9,7 @@ from math import sqrt, exp, sinh, cosh, sin, cos, tanh, tan, log, asin, acos, at
 
 
 def jet(n, value=0.0):
-    j = [0.0 for _ in range(n)]
+    j = [0.0] * n
     j[0] = value
     return j
 
@@ -34,7 +34,7 @@ def _dd(v, u, k):
 
 
 def t_sqrt(r, u, k):
-    return sqrt(u[0]) if k == 0 else (u[k] / 2 - _dd(r, r, k)) / r[0]
+    return sqrt(u[0]) if k == 0 else (u[k] / 2.0 - _dd(r, r, k)) / r[0]
 
 
 def t_exp(e, u, k):
@@ -52,10 +52,10 @@ def t_sin_cos(s, c, u, k, hyperbolic=False):
 
 def t_tan_sec2(t, s2, u, k, hyperbolic=False):
     if k == 0:
-        return (tanh(u[0]), 1 - tanh(u[0])**2) if hyperbolic else (tan(u[0]), tan(u[0]) ** 2 + 1)
+        return (tanh(u[0]), 1.0 - tanh(u[0])**2) if hyperbolic else (tan(u[0]), tan(u[0])**2 + 1.0)
     else:
         tn = s2[0] * u[k] + _dd(s2, u, k)
-        s2 = 2 * (t[0] * tn + _dd(t, t, k))
+        s2 = 2.0 * (t[0] * tn + _dd(t, t, k))
         return tn, - s2 if hyperbolic else s2
 
 
@@ -68,7 +68,7 @@ def t_ln(l, u, k):
 
 
 def t_atan(h, v, u, k):
-    return (atan(u[0]), 1 + u[0]**2) if k == 0 else ((u[k] - _dd(v, h, k)) / v[0], 2 * (u[0] * u[k] + _dd(u, u, k)))
+    return (atan(u[0]), 1.0 + u[0]**2) if k == 0 else ((u[k] - _dd(v, h, k)) / v[0], 2.0 * (u[0] * u[k] + _dd(u, u, k)))
 
 
 def _arc(h, v, u, k):
@@ -123,12 +123,13 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "chen":
         a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
+        d = c - a
         output(x0, y0, z0, 0.0)
         for step in range(1, n_steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
             for k in range(order):
                 x[k + 1] = a * (y[k] - x[k]) / (k + 1)
-                y[k + 1] = ((c - a) * x[k] + c * y[k] - mul(x, z, k)) / (k + 1)
+                y[k + 1] = (d * x[k] + c * y[k] - mul(x, z, k)) / (k + 1)
                 z[k + 1] = (mul(x, y, k) - b * z[k]) / (k + 1)
             x0, y0, z0 = Σ(x, order, δt), Σ(y, order, δt), Σ(z, order, δt)
             output(x0, y0, z0, step * δt)
