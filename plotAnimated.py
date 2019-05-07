@@ -1,81 +1,55 @@
 #!/usr/bin/env python3
-"""
-=====
-Decay
-=====
-
-This example showcases a sinusoidal decay animation.
-"""
 
 from sys import argv, stdin, stderr
-import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
 
-def data_gen(t=0):
-    cnt = 0
-    while cnt < 1000:
-        cnt += 1
-        t += 0.1
-        n = 0
-        data = stdin.readline()
-        while data:
-            p = data.split(' ')
-            # if n % interval == 0:
-            yield float(p[3]), float(p[0]), float(p[1]), float(p[2])
-            data = stdin.readline()
-            n += 1
+def data_gen():
+    line = stdin.readline()
+    while line:
+        p = line.split(' ')
+        yield float(p[3]), float(p[0]), float(p[1]), float(p[2])
+        line = stdin.readline()
+
+
+def line_data():
+    line_x.set_data(t_data, x_data)
+    line_y.set_data(t_data, y_data)
+    line_z.set_data(t_data, z_data)
+    return line_x, line_y, line_z,
 
 
 def init():
     ax.set_ylim(minimum, maximum)
     ax.set_xlim(0, 10)
-    # ax.set_autoscale_on(True)
-    line_x.set_data(tdata, xdata)
-    line_y.set_data(tdata, ydata)
-    line_z.set_data(tdata, zdata)
-    return line_x, line_y, line_z,
+    return line_data()
 
 
-interval = int(argv[1])
-minimum = int(argv[2])
-maximum = int(argv[3])
+def update(data):
+    t, x, y, z = data
+    t_data.append(t)
+    x_data.append(x)
+    y_data.append(y)
+    z_data.append(z)
+    x_min, x_max = ax.get_xlim()
+    if t >= 0.99 * x_max:
+        ax.set_xlim(x_min, 1.1 * x_max)
+        ax.figure.canvas.draw()
+    return line_data()
+
+
+interval, minimum, maximum = int(argv[1]), int(argv[2]), int(argv[3])
 fig, ax = plt.subplots()
 line_x, = ax.plot([], [], 'g', lw=1)
 line_y, = ax.plot([], [], 'y', lw=1)
 line_z, = ax.plot([], [], 'c', lw=1)
 ax.grid()
-tdata, xdata, ydata, zdata = [], [], [], []
-
-
-def run(data):
-    # update the data
-    t, x, y, z = data
-    tdata.append(t)
-    xdata.append(x)
-    ydata.append(y)
-    zdata.append(z)
-    xmin, xmax = ax.get_xlim()
-
-    if t >= 0.99 * xmax:
-        ax.set_xlim(xmin, 1.1 * xmax)
-        ax.figure.canvas.draw()
-    line_x.set_data(tdata, xdata)
-    line_y.set_data(tdata, ydata)
-    line_z.set_data(tdata, zdata)
-
-    return line_x, line_y, line_z,
-
-
-def main():
-    ani = animation.FuncAnimation(fig, run, data_gen, blit=False, interval=10, repeat=False, init_func=init)
-    # ax.relim()
-    # ax.autoscale_view(True, True, True)
-    plt.show()
+t_data, x_data, y_data, z_data = [], [], [], []
 
 
 if __name__ == "__main__":
-    main()
+    _ = animation.FuncAnimation(fig, update, data_gen, blit=False, interval=10, repeat=False, init_func=init)
+    plt.show()
 else:
     print(__name__ + " module loaded", file=stderr)

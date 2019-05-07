@@ -5,7 +5,7 @@
 #
 
 from sys import argv
-from math import sqrt, exp, sinh, cosh, sin, cos, tanh, tan, log
+from math import sqrt, exp, sinh, cosh, sin, cos, tanh, tan, log, pi
 
 
 def jet(n, value=0.0):
@@ -118,6 +118,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "rossler":
         #  Example: ./tsm-float.py rossler 16 10 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotPi3d.py
+        #  Example: ./tsm-float.py rossler 16 10 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotAnimated.py 1 -20 30
         a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
         b_ = jet(order, b)
         output(x0, y0, z0, 0.0)
@@ -146,6 +147,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "thomas":
         #  Example: ./tsm-float.py thomas 16 10 0.1 30000 1 0 0 .19 | ./plotPi3d.py
+        #  Example: ./tsm-float.py thomas 16 10 0.1 30000 1 0 0 .19 | ./plotAnimated.py 1 -5 5
         b = float(argv[9])
         sx, cx = jet(order), jet(order)
         sy, cy = jet(order), jet(order)
@@ -274,18 +276,19 @@ def main():
                 y[k + 1] = - (κ * x[k] + ζ * y[k]) / (k + 1)
             x0, y0 = Σ(x, order, δt), Σ(y, order, δt)
             output(x0, y0, 0.0, step * δt)
-    elif model == "pendulum":
-        #  Example: ./tsm-float.py pendulum 16 10 .1 1001 1 0 0 1 1 | ./plotAnimated.py 1 -1 1
-        w = sqrt(float(argv[9]) / float(argv[10]))
-        sx, cx = jet(order), jet(order)
+    elif model == "forced":
+        #  Example: ./tsm-float.py forced 16 10 .05 4001 0.0 0.0 0.0 1.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
+        g, m, length = 9.80665, float(argv[9]), float(argv[10])  # physical parameters
+        ζ, a, ω = float(argv[11]), float(argv[12]), 2.0 * pi * sqrt(length / g) * float(argv[13])  # damping/forcing
+        sinθ, cosθ = jet(order), jet(order)  # jets
         output(x0, y0, 0.0, 0.0)
         for step in range(1, n_steps + 1):
             x[0], y[0] = x0, y0
-            for k in range(order):
-                sx[k], cx[k] = t_sin_cos(sx, cx, x, k)
+            for k in range(order):  # build up jets using recurrences and the derivative rule
+                sinθ[k], cosθ[k] = t_sin_cos(sinθ, cosθ, x, k)
                 x[k + 1] = y[k] / (k + 1)
-                y[k + 1] = - w * sx[k] / (k + 1)
-            x0, y0 = Σ(x, order, δt), Σ(y, order, δt)
+                y[k + 1] = (a * cos(ω * step * δt) - ζ * length * y[k] - m * g * sinθ[k]) / (m * length) / (k + 1)
+            x0, y0 = Σ(x, order, δt), Σ(y, order, δt)  # Horner's method
             output(x0, y0, 0.0, step * δt)
     elif model == "volterra":
         #  Example: ./tsm-float.py volterra 16 10 .01 2001 10 10 0 1 .5 .05 .02 | ./plotAnimated.py 1 0 80

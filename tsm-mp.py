@@ -5,7 +5,9 @@
 #
 
 from sys import argv
-from gmpy2 import get_context, log, sqrt
+from gmpy2 import get_context, log, sqrt, cos
+from math import pi
+
 get_context().precision = int(int(argv[2]) * log(10.0) / log(2.0))
 from taylor import t_jet, t_horner, t_prod, t_sin_cos, t_tan_sec2, to_mpfr
 
@@ -217,19 +219,20 @@ def main():
                 y[k + 1] = - (κ * x[k] + ζ * y[k]) / (k + 1)
             x0, y0 = t_horner(x, order, δt), t_horner(y, order, δt)
             output(x0, y0, d0, step * δt)
-    elif model == "pendulum":
-        #  Example: ./tsm-mp.py pendulum 16 10 .1 1001 1 0 0 1 1 | ./plotAnimated.py 1 -1 1
-        w = sqrt(to_mpfr(argv[9]) / to_mpfr(argv[10]))
-        sx, cx = t_jet(order), t_jet(order)
-        output(x0, y0, d0, d0)
+    elif model == "forced":
+        #  Example: ./tsm-mp.py forced 16 10 .05 4001 0.0 0.0 0.0 1.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
+        g, m, length = 9.80665, float(argv[9]), float(argv[10])  # physical parameters
+        ζ, a, ω = float(argv[11]), float(argv[12]), 2.0 * pi * sqrt(length / g) * float(argv[13])  # damping/forcing
+        sinθ, cosθ = t_jet(order), t_jet(order)  # jets
+        output(x0, y0, 0.0, 0.0)
         for step in range(1, n_steps + 1):
             x[0], y[0] = x0, y0
-            for k in range(order):
-                sx[k], cx[k] = t_sin_cos(sx, cx, x, k)
+            for k in range(order):  # build up jets using recurrences and the derivative rule
+                sinθ[k], cosθ[k] = t_sin_cos(sinθ, cosθ, x, k)
                 x[k + 1] = y[k] / (k + 1)
-                y[k + 1] = - w * sx[k] / (k + 1)
-            x0, y0 = t_horner(x, order, δt), t_horner(y, order, δt)
-            output(x0, y0, d0, step * δt)
+                y[k + 1] = (a * cos(ω * step * δt) - ζ * length * y[k] - m * g * sinθ[k]) / (m * length) / (k + 1)
+            x0, y0 = t_horner(x, order, δt), t_horner(y, order, δt)  # Horner's method
+            output(x0, y0, 0.0, step * δt)
     elif model == "volterra":
         #  Example: ./tsm-mp.py volterra 16 10 .01 2001 10 10 0 1 .5 .05 .02 | ./plotAnimated.py 1 0 80
         a, b, c, d = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11]), to_mpfr(argv[12])
