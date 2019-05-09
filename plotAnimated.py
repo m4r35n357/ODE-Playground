@@ -49,7 +49,7 @@ t_data, x_data, y_data, z_data = [], [], [], []
 
 
 if __name__ == "__main__":
-    _ = animation.FuncAnimation(fig, update, data_gen, blit=False, interval=10, repeat=False, init_func=init)
+    _ = animation.FuncAnimation(fig, update, data_gen, blit=True, interval=10, repeat=False, init_func=init)
     plt.show()
 else:
     print(__name__ + " module loaded", file=stderr)
