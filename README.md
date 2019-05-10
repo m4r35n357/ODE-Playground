@@ -97,7 +97,7 @@ Download:
 git clone https://github.com/m4r35n357/ODE-Playground
 cd ODE-Playground
 ```
-Now you can just use it "in place" in your virtual environment or, optionally, bukld and install an ad package to your venv
+Now you can just use it "in place" in your virtual environment or, optionally, build and install an ad package to your venv
 ```
 python3 setup.py sdist
 cd dist
