@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-# Example: ./series_test.py
-
 from gmpy2 import get_context, acos
 from sys import stderr, argv
 
@@ -137,6 +135,7 @@ def septic(a, value):
 
 def composite1(a, value):
     # Example: ./series_test.py 1 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
+    # Example: ./models.py 1 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     return (a.exp + (a.sqr - 4.0).exp).ln - value
 
 
