@@ -7,7 +7,6 @@
 from sys import argv
 from gmpy2 import get_context, log, sqrt, cos
 from math import pi
-
 get_context().precision = int(int(argv[2]) * log(10.0) / log(2.0))
 from taylor import t_jet, t_horner, t_prod, t_sin_cos, t_tan_sec2, to_mpfr
 
@@ -28,14 +27,14 @@ def main():
 
     if model == "lorenz":
         #  Example: ./tsm-mp.py lorenz 16 10 .01 3000 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
-        sigma, rho, beta = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11]) / to_mpfr(argv[12])
+        σ, ρ, β = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11]) / to_mpfr(argv[12])
         output(x0, y0, z0, d0)
         for step in range(1, n_steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
             for k in range(order):
-                x[k + 1] = sigma * (y[k] - x[k]) / (k + 1)
-                y[k + 1] = (rho * x[k] - t_prod(x, z, k) - y[k]) / (k + 1)
-                z[k + 1] = (t_prod(x, y, k) - beta * z[k]) / (k + 1)
+                x[k + 1] = σ * (y[k] - x[k]) / (k + 1)
+                y[k + 1] = (ρ * x[k] - t_prod(x, z, k) - y[k]) / (k + 1)
+                z[k + 1] = (t_prod(x, y, k) - β * z[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "lu":
@@ -63,6 +62,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "rossler":
         #  Example: ./tsm-mp.py rossler 16 10 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotPi3d.py
+        #  Example: ./tsm-mp.py rossler 16 10 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotAnimated.py 1 -20 30
         a, b, c = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11])
         b_ = t_jet(order, b)
         output(x0, y0, z0, d0)
@@ -91,6 +91,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "thomas":
         #  Example: ./tsm-mp.py thomas 16 10 0.1 30000 1 0 0 .19 | ./plotPi3d.py
+        #  Example: ./tsm-mp.py thomas 16 10 0.1 30000 1 0 0 .19 | ./plotAnimated.py 1 -5 5
         b = to_mpfr(argv[9])
         sx, cx = t_jet(order), t_jet(order)
         sy, cy = t_jet(order), t_jet(order)
@@ -209,22 +210,22 @@ def main():
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "damped":
-        #  Example: ./tsm-mp.py damped 16 10 .1 1001 10 0 0 1 .5 | ./plotAnimated.py 1 -10 10
-        κ, ζ = to_mpfr(argv[9]), to_mpfr(argv[10])
+        #  Example: ./tsm-mp.py damped 16 10 .05 4001 0.0 0.0 0.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
+        κ, ζ, a, ω = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11]), to_mpfr(argv[12])
         output(x0, y0, d0, d0)
         for step in range(1, n_steps + 1):
             x[0], y[0] = x0, y0
             for k in range(order):
                 x[k + 1] = y[k] / (k + 1)
-                y[k + 1] = - (κ * x[k] + ζ * y[k]) / (k + 1)
+                y[k + 1] = (a * cos(ω * step * δt) - ζ * y[k] - κ * x[k]) / (k + 1)
             x0, y0 = t_horner(x, order, δt), t_horner(y, order, δt)
             output(x0, y0, d0, step * δt)
     elif model == "forced":
         #  Example: ./tsm-mp.py forced 16 10 .05 4001 0.0 0.0 0.0 1.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
-        g, m, length = 9.80665, float(argv[9]), float(argv[10])  # physical parameters
-        ζ, a, ω = float(argv[11]), float(argv[12]), 2.0 * pi * sqrt(length / g) * float(argv[13])  # damping/forcing
+        g, m, length = 9.80665, to_mpfr(argv[9]), to_mpfr(argv[10])  # physical parameters
+        ζ, a, ω = to_mpfr(argv[11]), to_mpfr(argv[12]), 2.0 * pi * sqrt(length / g) * to_mpfr(argv[13])  # damping/forcing
         sinθ, cosθ = t_jet(order), t_jet(order)  # jets
-        output(x0, y0, 0.0, 0.0)
+        output(x0, y0, d0, d0)
         for step in range(1, n_steps + 1):
             x[0], y[0] = x0, y0
             for k in range(order):  # build up jets using recurrences and the derivative rule
@@ -232,17 +233,17 @@ def main():
                 x[k + 1] = y[k] / (k + 1)
                 y[k + 1] = (a * cos(ω * step * δt) - ζ * length * y[k] - m * g * sinθ[k]) / (m * length) / (k + 1)
             x0, y0 = t_horner(x, order, δt), t_horner(y, order, δt)  # Horner's method
-            output(x0, y0, 0.0, step * δt)
+            output(x0, y0, d0, step * δt)
     elif model == "volterra":
         #  Example: ./tsm-mp.py volterra 16 10 .01 2001 10 10 0 1 .5 .05 .02 | ./plotAnimated.py 1 0 80
         a, b, c, d = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11]), to_mpfr(argv[12])
-        output(x0, y0, z0, d0)
+        output(x0, y0, d0, d0)
         for step in range(1, n_steps + 1):
             x[0], y[0] = x0, y0
             for k in range(order):
-                wxy = t_prod(x, y, k)
-                x[k + 1] = (a * x[k] - c * wxy) / (k + 1)
-                y[k + 1] = (d * wxy - b * y[k]) / (k + 1)
+                xy = t_prod(x, y, k)
+                x[k + 1] = (a * x[k] - c * xy) / (k + 1)
+                y[k + 1] = (d * xy - b * y[k]) / (k + 1)
             x0, y0 = t_horner(x, order, δt), t_horner(y, order, δt)
             output(x0, y0, d0, step * δt)
     elif model == "logistic":
