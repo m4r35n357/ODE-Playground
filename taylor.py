@@ -12,7 +12,7 @@ def to_mpfr(x):
 
 
 def t_jet(n, value=0):
-    jet = [to_mpfr(0) for _ in range(n)]
+    jet = [to_mpfr(0)] * n
     jet[0] = to_mpfr(value)
     return jet
 
