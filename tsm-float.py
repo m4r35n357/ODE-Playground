@@ -71,12 +71,8 @@ def output(x, y, z, t):
 
 
 def main():
-    model = argv[1]
-    order = int(argv[3])
-    δt = float(argv[4])
-    n_steps = int(argv[5])
     d0 = 0.0
-
+    model, order, δt, n_steps = argv[1], int(argv[3]), float(argv[4]), int(argv[5])  # integrator controls
     x0, y0, z0 = float(argv[6]), float(argv[7]), float(argv[8])
     x, y, z = t_jet(order + 1), t_jet(order + 1), t_jet(order + 1)
 
@@ -265,8 +261,8 @@ def main():
                 z[k + 1] = (t_prod(y, y, k) - z[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
-    elif model == "damped":
-        #  Example: ./tsm-float.py damped 16 10 .05 4001 0.0 0.0 0.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
+    elif model == "oscillator":
+        #  Example: ./tsm-float.py oscillator 16 10 .05 4001 0.0 0.0 0.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
         κ, ζ, a, ω = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
         output(x0, y0, d0, d0)
         for step in range(1, n_steps + 1):
@@ -275,9 +271,9 @@ def main():
                 x[k + 1] = y[k] / (k + 1)
                 y[k + 1] = (a * cos(ω * step * δt) - ζ * y[k] - κ * x[k]) / (k + 1)
             x0, y0 = t_horner(x, order, δt), t_horner(y, order, δt)
-            output(x0, y0, 0.0, step * δt)
-    elif model == "forced":
-        #  Example: ./tsm-float.py forced 16 10 .05 4001 0.0 0.0 0.0 1.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
+            output(x0, y0, d0, step * δt)
+    elif model == "pendulum":
+        #  Example: ./tsm-float.py pendulum 16 10 .05 4001 0.0 0.0 0.0 1.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
         g, m, length = 9.80665, float(argv[9]), float(argv[10])  # physical parameters
         ζ, a, ω = float(argv[11]), float(argv[12]), 2.0 * pi * sqrt(length / g) * float(argv[13])  # damping/forcing
         sinθ, cosθ = t_jet(order), t_jet(order)  # jets
