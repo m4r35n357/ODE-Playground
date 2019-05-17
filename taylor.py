@@ -8,7 +8,7 @@ from gmpy2 import mpfr, sqrt, exp, sinh, cosh, sin, cos, tanh, tan, log, asin, a
 
 # noinspection PyArgumentList
 def to_mpfr(x):
-    return mpfr(str(x)) if isinstance(x, float) else mpfr(x) if isinstance(x, (int, str)) else x
+    return mpfr(str(x)) if isinstance(x, (float, int)) else mpfr(x)
 
 
 def t_jet(n, value=0):

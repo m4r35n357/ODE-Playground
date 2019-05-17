@@ -8,7 +8,7 @@ from gmpy2 import sqrt, sin, cos, mpfr, exp, log, tan, sec, atan, asin, acos
 
 # noinspection PyArgumentList
 def make_mpfr(x):
-    return mpfr(str(x)) if isinstance(x, float) else mpfr(x) if isinstance(x, (int, str)) else x
+    return mpfr(str(x)) if isinstance(x, (float, int)) else mpfr(x)
 
 
 class Dual:
