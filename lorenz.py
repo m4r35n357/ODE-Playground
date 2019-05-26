@@ -19,7 +19,7 @@ jy = [0.0] * (order + 1)
 jz = [0.0] * (order + 1)
 
 for step in range(1, n_steps + 1):
-    print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * δt))
+    print(f'{x:.9e} {y:.9e} {z:.9e} {step * δt:.5e}')
 
     jx[0] = x
     jy[0] = y

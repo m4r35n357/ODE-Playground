@@ -13,7 +13,7 @@ g, m, l = 9.80665, float(argv[4]), float(argv[5])  # physical parameters
 θ0, θdot0 = 0.0, 0.0  # initial values
 θ, θdot, sinθ, cosθ = [0.0] * (order + 1), [0.0] * (order + 1), [0.0] * order, [0.0] * order  # jets
 for step in range(1, n_steps):
-    print("{:.9e} {:.9e} {:.9e} {:.5e}".format(θ0, θdot0, 0.0, step * δt))
+    print(f'{θ0:.9e} {θdot0:.9e} {0.0:.9e} {step * δt:.5e}')
 
     # build up jets using recurrences and the derivative rule
     θ[0], θdot[0] = θ0, θdot0

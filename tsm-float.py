@@ -67,7 +67,7 @@ def t_ln(l, u, k):
 
 
 def output(x, y, z, t):
-    print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, t))
+    print(f'{x:.9e} {y:.9e} {z:.9e} {t:.5e}')
 
 
 def main():
