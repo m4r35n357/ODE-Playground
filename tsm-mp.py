@@ -18,8 +18,8 @@ def output(x, y, z, t):
 def main():
     d0 = to_mpfr(0)
     model, order, δt, n_steps = argv[1], int(argv[3]), to_mpfr(argv[4]), int(argv[5])  # integrator controls
-    x0, y0, z0 = to_mpfr(argv[6]), to_mpfr(argv[7]), to_mpfr(argv[8])
-    x, y, z = t_jet(order + 1), t_jet(order + 1), t_jet(order + 1)
+    x0, y0, z0 = to_mpfr(argv[6]), to_mpfr(argv[7]), to_mpfr(argv[8])  # initial values
+    x, y, z = t_jet(order + 1), t_jet(order + 1), t_jet(order + 1)  # coordinate jets
 
     if model == "lorenz":
         #  Example: ./tsm-mp.py lorenz 16 10 .01 3000 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py

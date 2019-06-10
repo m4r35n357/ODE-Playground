@@ -2,16 +2,13 @@
 #
 #  (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-
 from sys import argv
 from math import sqrt, exp, sinh, cosh, sin, cos, tanh, tan, log, pi
-
 
 def t_jet(n, value=0.0):
     j = [0.0] * n
     j[0] = value
     return j
-
 
 def t_horner(j, n, δt):
     result = j[n]
@@ -19,62 +16,44 @@ def t_horner(j, n, δt):
         result = result * δt + j[i]
     return result
 
+t_prod = lambda u, v, k: sum(u[j] * v[k - j] for j in range(k + 1))
 
-def t_prod(u, v, k):
-    return sum(u[j] * v[k - j] for j in range(k + 1))
+t_quot = lambda q, u, v, k: (u[k] - sum(v[j] * q[k - j] for j in range(1, k + 1))) / v[0]
 
+ddot = lambda v, u, k: sum(j * u[j] * v[k - j] for j in range(1, k)) / k
 
-def t_quot(q, u, v, k):
-    return (u[k] - sum(v[j] * q[k - j] for j in range(1, k + 1))) / v[0]
+t_sqrt = lambda r, u, k: sqrt(u[0]) if k == 0 else (u[k] / 2.0 - ddot(r, r, k)) / r[0]
 
+t_exp = lambda e, u, k: exp(u[0]) if k == 0 else e[0] * u[k] + ddot(e, u, k)
 
-def _dd(v, u, k):
-    return sum(j * u[j] * v[k - j] for j in range(1, k)) / k
-
-
-def t_sqrt(r, u, k):
-    return sqrt(u[0]) if k == 0 else (u[k] / 2.0 - _dd(r, r, k)) / r[0]
-
-
-def t_exp(e, u, k):
-    return exp(u[0]) if k == 0 else e[0] * u[k] + _dd(e, u, k)
-
-
-def t_sin_cos(s, c, u, k, hyperbolic=False):
+def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
-        return (sinh(u[0]), cosh(u[0])) if hyperbolic else (sin(u[0]), cos(u[0]))
+        return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
     else:
-        sn = c[0] * u[k] + _dd(c, u, k)
-        cn = s[0] * u[k] + _dd(s, u, k)
-        return sn, cn if hyperbolic else - cn
+        sn = c[0] * u[k] + ddot(c, u, k)
+        cn = s[0] * u[k] + ddot(s, u, k)
+        return sn, cn if hyp else - cn
 
-
-def t_tan_sec2(t, s2, u, k, hyperbolic=False):
+def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
-        return (tanh(u[0]), 1.0 - tanh(u[0])**2) if hyperbolic else (tan(u[0]), tan(u[0])**2 + 1.0)
+        return (tanh(u[0]), 1 - tanh(u[0])**2) if hyp else (tan(u[0]), tan(u[0])**2 + 1)
     else:
-        tn = s2[0] * u[k] + _dd(s2, u, k)
-        s2 = 2.0 * (t[0] * tn + _dd(t, t, k))
-        return tn, - s2 if hyperbolic else s2
+        tn = s2[0] * u[k] + ddot(s2, u, k)
+        s2 = 2.0 * (t[0] * tn + ddot(t, t, k))
+        return tn, - s2 if hyp else s2
 
+t_pwr = lambda p, u, a, k: u[0]**a if k == 0 else (a * (p[0] * u[k] + ddot(p, u, k)) - ddot(u, p, k)) / u[0]
 
-def t_pwr(p, u, a, k):
-    return u[0] ** a if k == 0 else (a * (p[0] * u[k] + _dd(p, u, k)) - _dd(u, p, k)) / u[0]
-
-
-def t_ln(l, u, k):
-    return log(u[0]) if k == 0 else (u[k] - _dd(u, l, k)) / u[0]
-
+t_ln = lambda l, u, k: log(u[0]) if k == 0 else (u[k] - ddot(u, l, k)) / u[0]
 
 def output(x, y, z, t):
     print(f'{x:.9e} {y:.9e} {z:.9e} {t:.5e}')
 
-
 def main():
     d0 = 0.0
     model, order, δt, n_steps = argv[1], int(argv[3]), float(argv[4]), int(argv[5])  # integrator controls
-    x0, y0, z0 = float(argv[6]), float(argv[7]), float(argv[8])
-    x, y, z = t_jet(order + 1), t_jet(order + 1), t_jet(order + 1)
+    x0, y0, z0 = float(argv[6]), float(argv[7]), float(argv[8])  # initial values
+    x, y, z = t_jet(order + 1), t_jet(order + 1), t_jet(order + 1)  # coordinate jets
 
     if model == "lorenz":
         #  Example: ./tsm-float.py lorenz 16 10 .01 3000 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
@@ -321,6 +300,5 @@ def main():
                 x[k + 1] = a * x[k] / (k + 1)
             x0 = t_horner(x, order, δt)
             output(x0, d0, d0, step * δt)
-
 
 main()

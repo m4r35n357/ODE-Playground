@@ -3,8 +3,7 @@
 from sys import argv
 from math import pi, sqrt, sin, cos
 
-def dd(v, u, i):
-    return sum(j * u[j] * v[i - j] for j in range(1, i)) / i
+ddot = lambda v, u, i: sum(j * u[j] * v[i - j] for j in range(1, i)) / i
 
 order, δt, n_steps = int(argv[1]), float(argv[2]), int(argv[3])  # integrator controls
 g, m, l = 9.80665, float(argv[4]), float(argv[5])  # physical parameters
@@ -18,8 +17,8 @@ for step in range(1, n_steps):
     # build up jets using recurrences and the derivative rule
     θ[0], θdot[0] = θ0, θdot0
     for k in range(order):
-        sinθ[k], cosθ[k] = (sin(θ[0]), cos(θ[0])) if k == 0 else (cosθ[0] * θ[k] + dd(cosθ, θ, k),
-                                                                - sinθ[0] * θ[k] - dd(sinθ, θ, k))
+        sinθ[k], cosθ[k] = (sin(θ[0]), cos(θ[0])) if k == 0 else (cosθ[0] * θ[k] + ddot(cosθ, θ, k),
+                                                                - sinθ[0] * θ[k] - ddot(sinθ, θ, k))
         θ[k + 1] = θdot[k] / (k + 1)
         θdot[k + 1] = (a * cos(ω * step * δt) - ζ * l * θdot[k] - m * g * sinθ[k]) / (m * l) / (k + 1)
 
