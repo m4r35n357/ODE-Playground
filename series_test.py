@@ -2,9 +2,8 @@
 
 from sys import argv
 from gmpy2 import get_context, acos
-get_context().precision = 236  # Set this BEFORE importing any Taylor Series stuff!
-from dual import Dual, to_mpfr
-from series import Series
+get_context().precision = 236  # Set this BEFORE importing any AD stuff!
+from ad import Series, Dual, to_mpfr
 from taylor import t_jet, to_mpfr
 from functions import *
 

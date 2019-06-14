@@ -6,7 +6,7 @@ from sys import stderr
 from collections import namedtuple
 from enum import Enum
 from taylor import t_jet, to_mpfr
-from series import Series
+from ad import Series
 
 
 class Sense(Enum):

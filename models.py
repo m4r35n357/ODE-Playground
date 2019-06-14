@@ -2,9 +2,9 @@
 
 from sys import argv
 from gmpy2 import get_context
-get_context().precision = 236  # Set this BEFORE importing any Taylor Series stuff!
+get_context().precision = 236  # Set this BEFORE importing any AD stuff!
 from playground import analyze
-from taylor import to_mpfr
+from ad import to_mpfr
 from functions import *
 
 mode = int(argv[1])

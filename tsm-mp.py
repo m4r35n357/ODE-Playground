@@ -7,8 +7,8 @@
 from sys import argv
 from gmpy2 import get_context, log, sqrt, cos
 from math import pi
-get_context().precision = int(int(argv[2]) * log(10.0) / log(2.0))
-from taylor import t_jet, t_horner, t_prod, t_sin_cos, t_tan_sec2, to_mpfr
+get_context().precision = int(int(argv[2]) * log(10.0) / log(2.0))  # Set this BEFORE importing any AD stuff!
+from ad import t_jet, t_horner, t_prod, t_sin_cos, t_tan_sec2, to_mpfr
 
 
 def output(x, y, z, t):
@@ -206,17 +206,27 @@ def main():
                 z[k + 1] = (t_prod(y, y, k) - z[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
-    elif model == "oscillator":
-        #  Example: ./tsm-mp.py oscillator 16 10 .05 4001 0.0 0.0 0.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
-        κ, ζ, a, ω = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11]), to_mpfr(argv[12])
+    elif model == "newton":
+        κ, l, m = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11])
         output(x0, y0, d0, d0)
         for step in range(1, n_steps + 1):
             x[0], y[0] = x0, y0
             for k in range(order):
                 x[k + 1] = y[k] / (k + 1)
-                y[k + 1] = (a * cos(ω * step * δt) - ζ * y[k] - κ * x[k]) / (k + 1)
+                y[k + 1] = (- x[k] - κ * m / l**2) / (k + 1)
             x0, y0 = t_horner(x, order, δt), t_horner(y, order, δt)
             output(x0, y0, d0, step * δt)
+    elif model == "oscillator":
+            #  Example: ./tsm-mp.py oscillator 16 10 .05 4001 0.0 0.0 0.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
+            κ, ζ, a, ω = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11]), to_mpfr(argv[12])
+            output(x0, y0, d0, d0)
+            for step in range(1, n_steps + 1):
+                x[0], y[0] = x0, y0
+                for k in range(order):
+                    x[k + 1] = y[k] / (k + 1)
+                    y[k + 1] = (a * cos(ω * step * δt) - ζ * y[k] - κ * x[k]) / (k + 1)
+                x0, y0 = t_horner(x, order, δt), t_horner(y, order, δt)
+                output(x0, y0, d0, step * δt)
     elif model == "pendulum":
         #  Example: ./tsm-mp.py pendulum 16 10 .05 4001 0.0 0.0 0.0 1.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
         g, m, length = 9.80665, to_mpfr(argv[9]), to_mpfr(argv[10])  # physical parameters
