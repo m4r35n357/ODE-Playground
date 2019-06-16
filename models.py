@@ -18,5 +18,5 @@ target = to_mpfr(argv[5])
 f_tol = to_mpfr(argv[6])
 x_tol = to_mpfr(argv[7])
 
-for result in analyze(playground, mode, x0, x1, steps, target, f_tol, x_tol):
+for result in analyze(composite1, mode, x0, x1, steps, target, f_tol, x_tol):
     print(result, file=stderr)

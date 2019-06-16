@@ -5,8 +5,7 @@
 from sys import stderr
 from collections import namedtuple
 from enum import Enum
-from taylor import t_jet, to_mpfr
-from ad import Series
+from ad import to_mpfr, Series
 
 
 class Sense(Enum):
@@ -24,10 +23,10 @@ Result = namedtuple('ResultType', ['count', 'sense', 'mode', 'x', 'f', 'dx'])
 
 
 def bisect(model, ax, bx, f_tol, x_tol, max_it, sense, target=0, mode=Solver.ROOT):
-    a = Series(t_jet(3, ax), variable=True)
-    b = Series(t_jet(3, bx), variable=True)
-    c = Series(t_jet(3))
-    fc = Series(t_jet(3, 1))
+    a = Series.get(3, ax, variable=True)
+    b = Series.get(3, bx, variable=True)
+    c = Series.get(3)
+    fc = Series.get(3, 1)
     f_sign = ~ model(a, target)
     delta = 1
     counter = 1
@@ -46,8 +45,8 @@ def bisect(model, ax, bx, f_tol, x_tol, max_it, sense, target=0, mode=Solver.ROO
 
 
 def newton(model, initial, f_tol, x_tol, max_it, sense, target=0, mode=Solver.ROOT):
-    x = Series(t_jet(2 + mode.value, initial), variable=True)
-    f = Series(t_jet(2 + mode.value, 1))
+    x = Series.get(2 + mode.value, initial, variable=True)
+    f = Series.get(2 + mode.value, 1)
     delta = 1
     counter = 1
     while abs(f.jet[mode.value]) > f_tol or abs(delta) > x_tol:
@@ -62,7 +61,7 @@ def newton(model, initial, f_tol, x_tol, max_it, sense, target=0, mode=Solver.RO
 
 def analyze(model, n, x0, x1, steps=1000, target=0, f_tol=to_mpfr(1e-12), x_tol=to_mpfr(1e-12), max_it=100, n_max=13):
     x_prev = f_prev = f_dash_prev = f_dash_dash_prev = result = None
-    w_x = Series(t_jet(n_max, x0), variable=True)
+    w_x = Series.get(n_max, x0, variable=True)
     if n != 0:
         if n == 1:
             print("Bisection", file=stderr)

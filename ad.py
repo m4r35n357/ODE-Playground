@@ -70,15 +70,14 @@ class Series:
             self.jet[1] = to_mpfr(1)
 
     @classmethod
-    def from_console(cls, order, value, variable=False):
+    def get(cls, order, value=0, variable=False):
         assert isinstance(order, int)
-        assert isinstance(value, (int, float, str))
         return cls(t_jet(order, value), variable)
 
     def __str__(self):
         string = ""
         for i in range(0, self.n):
-            string += "{:+.6e} ".format(self.jet[i], end='')
+            string += f"{self.jet[i]:+.6e} "
         return string
 
     def __abs__(self):
@@ -254,11 +253,11 @@ class Dual:
         self.der = derivative
 
     @classmethod
-    def get(cls, value, variable=False):
+    def get(cls, value=0, variable=False):
         return cls(to_mpfr(value), to_mpfr(1) if variable else to_mpfr(0))
 
     def __str__(self):
-        return "{:+.6e} {:+.6e}".format(self.val, self.der)
+        return f"{self.val:+.6e} {self.der:+.6e}"
 
     def __abs__(self):
         return self.sqr.sqrt

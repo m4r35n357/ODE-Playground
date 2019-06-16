@@ -15,7 +15,7 @@ def septic(a, value):
 
 def composite1(a, value):
     # Example: ./models.py 1 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
-    # Example: ./series_test.py 1 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
+    # Example: ./series_test.py 7 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     return (a.exp + (a.sqr - 4.0).exp).ln - value
 
 def composite2(a, value):
