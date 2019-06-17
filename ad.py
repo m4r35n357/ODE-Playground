@@ -18,19 +18,38 @@ def t_horner(jet, n, h):
         result = result * h + jet[i]
     return result
 
-t_prod = lambda u, v, k: sum(u[j] * v[k - j] for j in range(k + 1))
+def t_prod(u, v, k):
+    return sum(u[j] * v[k - j] for j in range(k + 1))
 
-t_quot = lambda q, u, v, k: (u[k] - sum(v[j] * q[k - j] for j in range(1, k + 1))) / v[0]
+def t_quot(q, u, v, k):
+    return (u[k] - sum(v[j] * q[k - j] for j in range(1, k + 1))) / v[0]
 
-ddot = lambda v, u, k: sum(j * u[j] * v[k - j] for j in range(1, k)) / k
+def ddot(v, u, k):
+    return sum(j * u[j] * v[k - j] for j in range(1, k)) / k
 
-t_sqrt = lambda r, u, k: sqrt(u[0]) if k == 0 else (u[k] / 2 - ddot(r, r, k)) / r[0]
+def t_sqrt(r, u, k):
+    if k == 0:
+        return sqrt(u[0])
+    else:
+        return (u[k] / 2 - ddot(r, r, k)) / r[0]
 
-t_exp = lambda e, u, k: exp(u[0]) if k == 0 else e[0] * u[k] + ddot(e, u, k)
+def t_exp(e, u, k):
+    if k == 0:
+        return exp(u[0])
+    else:
+        return e[0] * u[k] + ddot(e, u, k)
 
-t_ln = lambda l, u, k: log(u[0]) if k == 0 else (u[k] - ddot(u, l, k)) / u[0]
+def t_ln(l, u, k):
+    if k == 0:
+        return log(u[0])
+    else:
+        return (u[k] - ddot(u, l, k)) / u[0]
 
-t_pwr = lambda p, u, a, k: u[0]**a if k == 0 else (a * (p[0] * u[k] + ddot(p, u, k)) - ddot(u, p, k)) / u[0]
+def t_pwr(p, u, a, k):
+    if k == 0:
+        return u[0]**a
+    else:
+        return (a * (p[0] * u[k] + ddot(p, u, k)) - ddot(u, p, k)) / u[0]
 
 def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
