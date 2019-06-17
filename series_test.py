@@ -122,22 +122,20 @@ def schwartzschild(r, e=to_mpfr(0.962250), p_r=to_mpfr(0), l_z=to_mpfr(4)):  # n
     # Example: ./series_test.py 1 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     return (e**2 / (1 - 2 / r) - p_r**2 * (1 - 2 / r) - (l_z / r).sqr) / 2
 
-def analyze(model, x0, x1, steps=1000, target=0, f_tol=to_mpfr(1e-12), x_tol=to_mpfr(1e-12), max_it=100, n_max=13):
+def analyze(model, x0, x1, steps):
     w_x = Dual.get(x0, variable=True)
+    target = to_mpfr(0.0)
     for k in range(steps):
         w_x.val = x0 + k * (x1 - x0) / steps
-        w_f = model(w_x, to_mpfr(target))
+        w_f = model(w_x, target)
         print(f"{w_x.val:.6e} {w_f}")
         yield w_x.val, w_f.val, w_f.der
 
-x0 = to_mpfr(argv[2])
-x1 = to_mpfr(argv[3])
-assert x1 > x0
-steps = int(argv[4])
-assert steps > 0
-target = to_mpfr(argv[5])
-f_tol = to_mpfr(argv[6])
-x_tol = to_mpfr(argv[7])
+lower = to_mpfr(argv[2])
+upper = to_mpfr(argv[3])
+assert upper > lower
+n_steps = int(argv[4])
+assert n_steps > 0
 
-for result in analyze(composite1, x0, x1, steps, target, f_tol, x_tol):
+for result in analyze(composite1, lower, upper, steps=n_steps):
     pass
