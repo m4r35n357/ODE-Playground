@@ -7,7 +7,6 @@ from gmpy2 import mpfr, sqrt, sin_cos, sin, cos, sinh_cosh, sinh, cosh, tan, sec
 # noinspection PyArgumentList
 to_mpfr = lambda x: mpfr(str(x)) if isinstance(x, (float, int)) else mpfr(x)
 
-
 def t_jet(n, value=0):
     jet = [to_mpfr(0)] * n
     jet[0] = to_mpfr(value)
@@ -29,6 +28,10 @@ t_sqrt = lambda r, u, k: sqrt(u[0]) if k == 0 else (u[k] / 2 - ddot(r, r, k)) / 
 
 t_exp = lambda e, u, k: exp(u[0]) if k == 0 else e[0] * u[k] + ddot(e, u, k)
 
+t_ln = lambda l, u, k: log(u[0]) if k == 0 else (u[k] - ddot(u, l, k)) / u[0]
+
+t_pwr = lambda p, u, a, k: u[0]**a if k == 0 else (a * (p[0] * u[k] + ddot(p, u, k)) - ddot(u, p, k)) / u[0]
+
 def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
         return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
@@ -42,23 +45,28 @@ def t_tan_sec2(t, s2, u, k, hyp=False):
         return (tanh(u[0]), 1 - tanh(u[0])**2) if hyp else (tan(u[0]), tan(u[0])**2 + 1)
     else:
         tn = s2[0] * u[k] + ddot(s2, u, k)
-        s2 = 2 * (t[0] * tn + ddot(t, t, k))
-        return tn, - s2 if hyp else s2
+        sec2 = 2 * (t[0] * tn + ddot(t, t, k))
+        return tn, - sec2 if hyp else sec2
 
-t_pwr = lambda p, u, a, k: u[0]**a if k == 0 else (a * (p[0] * u[k] + ddot(p, u, k)) - ddot(u, p, k)) / u[0]
+def t_atan(h, v, u, k):
+    if k == 0:
+        return atan(u[0]), 1 + u[0]**2
+    else:
+        return (u[k] - ddot(v, h, k)) / v[0], 2 * (u[0] * u[k] + ddot(u, u, k))
 
-t_ln = lambda l, u, k: log(u[0]) if k == 0 else (u[k] - ddot(u, l, k)) / u[0]
+def t_asin(h, v, u, k):
+    if k == 0:
+        return asin(u[0]), cos(asin(u[0]))
+    else:
+        hk = (u[k] - ddot(v, h, k)) / v[0]
+        return hk, - u[0] * hk - ddot(u, h, k)
 
-t_atan = lambda h, v, u, k: (atan(u[0]), 1 + u[0]**2) if k == 0 else ((u[k] - ddot(v, h, k)) / v[0], 2 * (u[0] * u[k] + ddot(u, u, k)))
-
-def _arc(h, v, u, k):
-    h_jet = (u[k] - ddot(v, h, k)) / v[0]
-    v_jet = u[0] * h_jet + ddot(u, h, k)
-    return h_jet, - v_jet
-
-t_asin = lambda h, v, u, k: (asin(u[0]), cos(asin(u[0]))) if k == 0 else _arc(h, v, u, k)
-
-t_acos = lambda h, v, u, k: (acos(u[0]), - sin(acos(u[0]))) if k == 0 else _arc(h, v, u, k)
+def t_acos(h, v, u, k):
+    if k == 0:
+        return acos(u[0]), - sin(acos(u[0]))
+    else:
+        hk = (u[k] + ddot(v, h, k)) / v[0]
+        return hk, u[0] * hk + ddot(u, h, k)
 
 
 class Series:
