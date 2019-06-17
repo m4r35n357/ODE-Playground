@@ -27,11 +27,11 @@ def bisect(model, ax, bx, f_tol, x_tol, max_it, sense, target, mode):
     b = Series.get(3, bx, variable=True)
     c = Series.get(3)
     fc = Series.get(3, 1)
-    f_sign = ~ model(a, target)
+    f_sign = ~ model(a) - target
     delta = counter = 1
     while abs(fc.jet[mode.value]) > f_tol or abs(delta) > x_tol:
         c = (a + b) / 2
-        fc = ~ model(c, target)
+        fc = ~ model(c) - target
         if f_sign.jet[mode.value] * fc.jet[mode.value] < 0.0:
             b = c
         else:
@@ -48,7 +48,7 @@ def newton(model, initial, f_tol, x_tol, max_it, sense, target, mode):
     f = Series.get(2 + mode.value, 1)
     delta = counter = 1
     while abs(f.jet[mode.value]) > f_tol or abs(delta) > x_tol:
-        f = ~ model(x, target)
+        f = ~ model(x) - target
         delta = - f.jet[mode.value] / f.jet[1 + mode.value]
         x.val += delta
         counter += 1
@@ -68,7 +68,7 @@ def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
             print("Newton's method", file=stderr)
     for k in range(steps):
         w_x.val = x0 + k * (x1 - x0) / steps
-        w_f = ~ model(w_x, target)
+        w_f = ~ model(w_x) - target
         print("{:.6e} {}".format(w_x.val, w_f))
         if mode != 0:
             if k > 0:
