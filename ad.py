@@ -64,10 +64,10 @@ t_acos = lambda h, v, u, k: (acos(u[0]), - sin(acos(u[0]))) if k == 0 else _arc(
 class Series:
 
     def __init__(self, jet, variable=False):
-        self.jet = jet
-        self.n = len(self.jet)
+        self._jet = jet
+        self._n = len(self.jet)
         if variable:
-            self.jet[1] = to_mpfr(1)
+            self._jet[1] = to_mpfr(1)
 
     @classmethod
     def get(cls, order, value=0, variable=False):
@@ -243,6 +243,14 @@ class Series:
     def val(self, value):
         self.jet[0] = value
 
+    @property
+    def n(self):
+        return self._n
+
+    @property
+    def jet(self):
+        return self._jet
+
 
 class Dual:
 
@@ -306,10 +314,6 @@ class Dual:
         return Dual(self.val**a, a * self.val**(a - 1) * self.der)
 
     @property
-    def var(self):
-        return Dual(self.val, to_mpfr(1))
-
-    @property
     def sqr(self):
         return Dual(self.val**2, 2 * self.der * self.val)
 
@@ -368,6 +372,10 @@ class Dual:
     @property
     def atan(self):
         return Dual(atan(self.val), self.der / (1 + self.val**2))
+
+    @property
+    def var(self):
+        return Dual(self.val, to_mpfr(1))
 
 
 print(__name__ + " module loaded", file=stderr)
