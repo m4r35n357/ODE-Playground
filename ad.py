@@ -2,7 +2,7 @@
 #  (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 from sys import stderr
-from gmpy2 import mpfr, sqrt, sin_cos, sin, cos, sinh_cosh, sinh, cosh, tan, sec, tanh, atan, asin, acos, exp, log
+from gmpy2 import mpfr, sqrt, sin_cos, sin, cos, sinh_cosh, sinh, cosh, tan, sec, tanh, sech, atan, asin, acos, exp, log
 
 # noinspection PyArgumentList
 to_mpfr = lambda x: mpfr(str(x)) if isinstance(x, (float, int)) else mpfr(x)
@@ -387,6 +387,10 @@ class Dual:
     @property
     def tan(self):
         return Dual(tan(self.val), self.der * sec(self.val)**2)
+
+    @property
+    def tanh(self):
+        return Dual(tanh(self.val), self.der * sech(self.val)**2)
 
     @property
     def asin(self):
