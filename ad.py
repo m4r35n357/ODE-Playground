@@ -5,7 +5,8 @@ from sys import stderr
 from gmpy2 import mpfr, sqrt, sin_cos, sin, cos, sinh_cosh, sinh, cosh, tan, sec, tanh, sech, atan, asin, acos, exp, log
 
 # noinspection PyArgumentList
-to_mpfr = lambda x: mpfr(str(x)) if isinstance(x, (float, int)) else mpfr(x)
+def to_mpfr(x):
+    return mpfr(str(x)) if isinstance(x, (float, int)) else mpfr(x)
 
 def t_jet(n, value=0):
     jet = [to_mpfr(0)] * n
@@ -53,7 +54,7 @@ def t_pwr(p, u, a, k):
 
 def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
-        return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
+        return sinh_cosh(u[0]) if hyp else sin_cos(u[0])
     else:
         sn = c[0] * u[k] + ddot(c, u, k)
         cn = s[0] * u[k] + ddot(s, u, k)
