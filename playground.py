@@ -9,6 +9,7 @@ from ad import Series, to_mpfr
 
 
 class Sense(Enum):
+    NONE = ''
     POSITIVE = '+'
     NEGATIVE = '-'
 
@@ -22,9 +23,9 @@ class Solver(Enum):
 Result = namedtuple('ResultType', ['count', 'sense', 'mode', 'x', 'f', 'dx'])
 
 
-def bisect(model, ax, bx, f_tol, x_tol, max_it, sense, target, mode):
-    a = Series.get(3, ax, variable=True)
-    b = Series.get(3, bx, variable=True)
+def bisect(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.NONE, target=to_mpfr(0.0), mode=Solver.ROOT):
+    a = Series.get(3, xa, variable=True)
+    b = Series.get(3, xb, variable=True)
     c = Series.get(3)
     fc = Series.get(3, 1)
     f_sign = ~ model(a) - target
@@ -43,8 +44,8 @@ def bisect(model, ax, bx, f_tol, x_tol, max_it, sense, target, mode):
     return Result(count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + target, dx=delta)
 
 
-def newton(model, initial, f_tol, x_tol, max_it, sense, target, mode):
-    x = Series.get(2 + mode.value, initial, variable=True)
+def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.NONE, target=to_mpfr(0.0), mode=Solver.ROOT):
+    x = Series.get(2 + mode.value, x0, variable=True)
     f = Series.get(2 + mode.value, 1)
     delta = counter = 1
     while abs(f.jet[mode.value]) > f_tol or abs(delta) > x_tol:
