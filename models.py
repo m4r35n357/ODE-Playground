@@ -19,5 +19,5 @@ assert order > 2
 f_tol = to_mpfr(argv[6])
 x_tol = to_mpfr(argv[7])
 
-for result in analyze(composite1, mode, x0, x1, steps, f_tol, x_tol, max_it=1000, order=order):
+for result in analyze(septic, mode, x0, x1, steps, f_tol, x_tol, max_it=1000, order=order):
     print(result, file=stderr)

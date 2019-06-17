@@ -28,8 +28,7 @@ def bisect(model, ax, bx, f_tol, x_tol, max_it, sense, target, mode):
     c = Series.get(3)
     fc = Series.get(3, 1)
     f_sign = ~ model(a, target)
-    delta = 1
-    counter = 1
+    delta = counter = 1
     while abs(fc.jet[mode.value]) > f_tol or abs(delta) > x_tol:
         c = (a + b) / 2
         fc = ~ model(c, target)
@@ -47,8 +46,7 @@ def bisect(model, ax, bx, f_tol, x_tol, max_it, sense, target, mode):
 def newton(model, initial, f_tol, x_tol, max_it, sense, target, mode):
     x = Series.get(2 + mode.value, initial, variable=True)
     f = Series.get(2 + mode.value, 1)
-    delta = 1
-    counter = 1
+    delta = counter = 1
     while abs(f.jet[mode.value]) > f_tol or abs(delta) > x_tol:
         f = ~ model(x, target)
         delta = - f.jet[mode.value] / f.jet[1 + mode.value]
