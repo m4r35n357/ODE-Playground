@@ -23,7 +23,7 @@ Starting with an ordinary differential equation (ODE), or system of such equatio
 \dot{x} = x' = f(x)
 \end{equation}
 We can represent the evolution of the solution $x$ as a Taylor Series in the time domain.
-Solving the equation in this context means that from the given initial condition(s), $x(t_0)$, we want to evolve the system state to a later time $t + h$.
+Solving the equation in this context means that from the given initial condition(s), $x(t_0)$, we want to evolve the system state to a later time $t_0 + h$.
 The interval between those initial condition(s) and that later time is called the time step, $h$.
 So, in the time domain we have:
 \begin{equation}
@@ -43,15 +43,20 @@ so that we now have the simpler (polynomial) form:
 x(t_0 + h) &= \sum_{k=0}^{\infty} x_kh^k
 \end{aligned}
 \end{equation}
-Differentiating this with respect to time ($h$) we can represent the LHS of the ODE:
+which is most efficiently evaluated in practice using Horner's method.
+The only remaining problem is to evaluate the values of each $x_k$.
+Direct application of the method is almost always considered "impractical", "difficult" or "messy" in much of the teaching material on ODE integration, because of the need to calculate higher derivatives.
+Usually at this point the RK4 method is offered as a more practical arrangement.
+
+Differentiating this with respect to time we can represent the LHS of the ODE:
 \begin{equation}
 \begin{aligned}
-\dot{x}(h) &= \sum_{k=1}^{\infty} k x_kh^{k-1} = \sum_{k=0}^{\infty} (k + 1) x_{k+1}h^k
+\dot{x}(t_0 + h) &= \sum_{k=1}^{\infty} k x_kh^{k-1} = \sum_{k=0}^{\infty} (k + 1) x_{k+1}h^k
 \end{aligned}
 \end{equation}
 but we can also say, as in (4), that:
 \begin{equation}
-\dot{x}(h) = \sum_{k=0}^{\infty} \dot{x}_kh^k
+\dot{x}(t_0 + h) = \sum_{k=0}^{\infty} \dot{x}_kh^k
 \end{equation}
 equating the polynomials (5) and (6) by powers of $h$ we get for the $k^{th}$ term:
 \begin{equation}
@@ -97,27 +102,7 @@ Addition and subtraction of TCs are similar in this regard.
 
 Where multiplication and division of TCs and functions with TC arguments are concerned, the situation is slightly more complex.
 \subsection{Code example}
-\begin{lstlisting}[
-    basicstyle=\small, %or \small or \footnotesize etc.
-]
-#!/usr/bin/env python3
-from sys import argv
-n = int(argv[3])  # integrator controls
-h = float(argv[4])
-steps = int(argv[5])
-x = float(argv[6])  # coordinate
-a = float(argv[7])  # parameter
-cx = [0.0 for _ in range(n + 1)]  # jets
-for step in range(1, steps):
-    print("{:.9e} {:.5e}".format(x, step * h))
-    cx[0] = x
-    for k in range(n):  # build up the jets using the recurrence relations and the derivative rule
-        cx[k + 1] = a * x / (k + 1)
-    x = cx[n]
-    for i in range(n - 1, -1, -1):  # Horner's method
-        x = x * h + cx[i]
-\end{lstlisting}
-
+TBA
 \subsection{Lorenz Equations}
 Time domain, $\dot{x} = f(x)$:
 \begin{equation}
@@ -141,40 +126,7 @@ In this case we need to use the recurrence formula for the two products $(x.z)_k
 \end{equation}
 In general, an $x_{k+1}$ depends on all the lower degree terms $x_0$ to $x_k$, which is why we need to store the jets for the duration of the time step.
 \subsection{Code example}
-\begin{lstlisting}[
-    basicstyle=\small, %or \small or \footnotesize etc.
-]
-#!/usr/bin/env python3
-from sys import argv
-n = int(argv[3])  # integrator controls
-h = float(argv[4])
-steps = int(argv[5])
-x = float(argv[6])  # coordinates
-y = float(argv[7])
-z = float(argv[8])
-s = float(argv[9])  # parameters
-r = float(argv[10])
-b = float(argv[11]) / float(argv[12])
-cx = [0.0 for _ in range(n + 1)]  # jets
-cy = [0.0 for _ in range(n + 1)]
-cz = [0.0 for _ in range(n + 1)]
-for step in range(1, steps):
-    print("{:.9e} {:.9e} {:.9e} {:.5e}".format(x, y, z, step * h))
-    cx[0] = x
-    cy[0] = y
-    cz[0] = z
-    for k in range(n):  # build up the jets using the recurrence relations and the derivative rule
-        cx[k + 1] = s * (cy[k] - cx[k]) / (k + 1)
-        cy[k + 1] = (r * cx[k] - sum(cx[j] * cz[k - j] for j in range(k + 1)) - cy[k]) / (k + 1)
-        cz[k + 1] = (sum(cx[j] * cy[k - j] for j in range(k + 1)) - b * cz[k]) / (k + 1)
-    x = cx[n]
-    y = cy[n]
-    z = cz[n]
-    for i in range(n - 1, -1, -1):  # Horner's method
-        x = x * h + cx[i]
-        y = y * h + cy[i]
-        z = z * h + cz[i]
-\end{lstlisting}
+TBA
 \subsection{Hamiltonian Equations of Motion}
 In the Time domain:
 \begin{equation}
@@ -191,9 +143,9 @@ q_{k+1} &= \frac {C_1} {k + 1} \\
 p_{k+1} &= \frac {- C_2} {k + 1} \\
 \end{aligned}
 \end{equation}
-The key idea here is to generate the partial differentials of the Hamiltonian using Automatic Differentiation, in this case using the technique of Dual Numbers (forward mode AD).
+The key idea here is to generate the partial differentials using Automatic Differentiation of the Hamiltonian, specifically the technique of Dual Numbers (forward mode AD).
 
-In this way we can simulate Hamiltonian systems without relying on numerical differences for differentiation by time or configuration variables.
+In this way we can simulate complicated Hamiltonian systems without relying on numerical differences (which become inaccurate as $h$ is reduced) for differentiation by time or configuration variables.
 
-It also removes any need to perform symbolic differentiation with respect to configuration variables, so that it can readily be used with any Hamiltonian supported by the operations defined in the Dual Numbers code.
+It also removes any need to perform manual or symbolic differentiation with respect to configuration variables, so that the method can readily be used with any Hamiltonian supported by the operations defined in the Dual Numbers code.
 \end{document}

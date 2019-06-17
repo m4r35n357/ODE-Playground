@@ -127,7 +127,7 @@ def analyze(model, x0, x1, steps):
     target = to_mpfr(0.0)
     for k in range(steps):
         w_x.val = x0 + k * (x1 - x0) / steps
-        w_f = model(w_x, target)
+        w_f = model(w_x) - target
         print(f"{w_x.val:.6e} {w_f}")
         yield w_x.val, w_f.val, w_f.der
 
@@ -137,5 +137,5 @@ assert upper > lower
 n_steps = int(argv[4])
 assert n_steps > 0
 
-for result in analyze(septic, lower, upper, steps=n_steps):
+for result in analyze(composite1, lower, upper, steps=n_steps):
     pass

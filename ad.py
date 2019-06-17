@@ -62,7 +62,7 @@ def t_sin_cos(s, c, u, k, hyp=False):
 
 def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
-        return (tanh(u[0]), 1 - tanh(u[0])**2) if hyp else (tan(u[0]), tan(u[0])**2 + 1)
+        return (tanh(u[0]), 1 - tanh(u[0])**2) if hyp else (tan(u[0]), 1 + tan(u[0])**2)
     else:
         tn = s2[0] * u[k] + ddot(s2, u, k)
         sec2 = 2 * (t[0] * tn + ddot(t, t, k))
