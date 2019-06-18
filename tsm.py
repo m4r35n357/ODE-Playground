@@ -1,64 +1,30 @@
 #!/usr/bin/env python3
+
 #
 #  (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
+
 from sys import argv
-from math import sqrt, exp, sinh, cosh, sin, cos, tanh, tan, log, pi
+from gmpy2 import get_context, log, sqrt, cos
+from math import pi
+get_context().precision = int(int(argv[2]) * log(10.0) / log(2.0))  # Set this BEFORE importing any AD stuff!
+from ad import t_jet, t_horner, t_prod, t_sin_cos, t_tan_sec2, to_mpfr
 
-def t_jet(n, value=0.0):
-    j = [0.0] * n
-    j[0] = value
-    return j
-
-def t_horner(j, n, δt):
-    result = j[n]
-    for i in range(n - 1, -1, -1):
-        result = result * δt + j[i]
-    return result
-
-t_prod = lambda u, v, k: sum(u[j] * v[k - j] for j in range(k + 1))
-
-t_quot = lambda q, u, v, k: (u[k] - sum(v[j] * q[k - j] for j in range(1, k + 1))) / v[0]
-
-ddot = lambda v, u, k: sum(j * u[j] * v[k - j] for j in range(1, k)) / k
-
-t_sqrt = lambda r, u, k: sqrt(u[0]) if k == 0 else (u[k] / 2.0 - ddot(r, r, k)) / r[0]
-
-t_exp = lambda e, u, k: exp(u[0]) if k == 0 else e[0] * u[k] + ddot(e, u, k)
-
-def t_sin_cos(s, c, u, k, hyp=False):
-    if k == 0:
-        return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
-    else:
-        sn = c[0] * u[k] + ddot(c, u, k)
-        cn = s[0] * u[k] + ddot(s, u, k)
-        return sn, cn if hyp else - cn
-
-def t_tan_sec2(t, s2, u, k, hyp=False):
-    if k == 0:
-        return (tanh(u[0]), 1 - tanh(u[0])**2) if hyp else (tan(u[0]), tan(u[0])**2 + 1)
-    else:
-        tn = s2[0] * u[k] + ddot(s2, u, k)
-        s2 = 2.0 * (t[0] * tn + ddot(t, t, k))
-        return tn, - s2 if hyp else s2
-
-t_pwr = lambda p, u, a, k: u[0]**a if k == 0 else (a * (p[0] * u[k] + ddot(p, u, k)) - ddot(u, p, k)) / u[0]
-
-t_ln = lambda l, u, k: log(u[0]) if k == 0 else (u[k] - ddot(u, l, k)) / u[0]
 
 def output(x, y, z, t):
     print(f'{x:.9e} {y:.9e} {z:.9e} {t:.5e}')
 
+
 def main():
-    d0 = 0.0
-    model, order, δt, n_steps = argv[1], int(argv[3]), float(argv[4]), int(argv[5])  # integrator controls
-    x0, y0, z0 = float(argv[6]), float(argv[7]), float(argv[8])  # initial values
+    d0 = to_mpfr(0)
+    model, order, δt, n_steps = argv[1], int(argv[3]), to_mpfr(argv[4]), int(argv[5])  # integrator controls
+    x0, y0, z0 = to_mpfr(argv[6]), to_mpfr(argv[7]), to_mpfr(argv[8])  # initial values
     x, y, z = t_jet(order + 1), t_jet(order + 1), t_jet(order + 1)  # coordinate jets
 
     if model == "lorenz":
-        #  Example: ./tsm-float.py lorenz 16 10 .01 3000 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
-        #  Example: ./tsm-float.py lorenz 16 10 .01 3000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -25 50
-        σ, ρ, β = float(argv[9]), float(argv[10]), float(argv[11]) / float(argv[12])
+        #  Example: ./tsm.py lorenz 16 10 .01 3000 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
+        #  Example: ./tsm.py lorenz 16 10 .01 3000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -25 50
+        σ, ρ, β = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11]) / to_mpfr(argv[12])
         output(x0, y0, z0, d0)
         for step in range(1, n_steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
@@ -69,7 +35,7 @@ def main():
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "lu":
-        a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
+        a, b, c = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11])
         output(x0, y0, z0, d0)
         for step in range(1, n_steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
@@ -80,7 +46,7 @@ def main():
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "chen":
-        a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
+        a, b, c = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11])
         d = c - a
         output(x0, y0, z0, d0)
         for step in range(1, n_steps + 1):
@@ -92,9 +58,9 @@ def main():
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "rossler":
-        #  Example: ./tsm-float.py rossler 16 10 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotPi3d.py
-        #  Example: ./tsm-float.py rossler 16 10 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotAnimated.py 1 -20 30
-        a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
+        #  Example: ./tsm.py rossler 16 10 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotPi3d.py
+        #  Example: ./tsm.py rossler 16 10 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotAnimated.py 1 -20 30
+        a, b, c = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11])
         b_ = t_jet(order, b)
         output(x0, y0, z0, d0)
         for step in range(1, n_steps + 1):
@@ -106,8 +72,8 @@ def main():
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "bouali":
-        #  Example: ./tsm-float.py bouali 80 40 0.02 50001 1 1 0 3 2.2 1 .01 | ./plotPi3d.py
-        a, b, c, d = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
+        #  Example: ./tsm.py bouali 80 40 0.02 50001 1 1 0 3 2.2 1 .01 | ./plotPi3d.py
+        a, b, c, d = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11]), to_mpfr(argv[12])
         jet1, w4, w5 = t_jet(order, 1), t_jet(order), t_jet(order)
         output(x0, y0, z0, d0)
         for step in range(1, n_steps + 1):
@@ -121,9 +87,9 @@ def main():
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "thomas":
-        #  Example: ./tsm-float.py thomas 16 10 0.1 30000 1 0 0 .19 | ./plotPi3d.py
-        #  Example: ./tsm-float.py thomas 16 10 0.1 30000 1 0 0 .19 | ./plotAnimated.py 1 -5 5
-        b = float(argv[9])
+        #  Example: ./tsm.py thomas 16 10 0.1 30000 1 0 0 .19 | ./plotPi3d.py
+        #  Example: ./tsm.py thomas 16 10 0.1 30000 1 0 0 .19 | ./plotAnimated.py 1 -5 5
+        b = to_mpfr(argv[9])
         sx, cx = t_jet(order), t_jet(order)
         sy, cy = t_jet(order), t_jet(order)
         sz, cz = t_jet(order), t_jet(order)
@@ -140,7 +106,7 @@ def main():
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "st":
-        a, b = float(argv[9]), float(argv[10])
+        a, b = to_mpfr(argv[9]), to_mpfr(argv[10])
         sx, cx = t_jet(order), t_jet(order)
         sy, cy = t_jet(order), t_jet(order)
         sz, cz = t_jet(order), t_jet(order)
@@ -165,8 +131,8 @@ def main():
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "rf":
-        #  Example: ./tsm-float.py rf 16 10 .01 100001 .1 .1 .1 .2876 .1 | ./plotPi3d.py
-        a, g = float(argv[9]), float(argv[10])
+        #  Example: ./tsm.py rf 16 10 .01 100001 .1 .1 .1 .2876 .1 | ./plotPi3d.py
+        a, g = to_mpfr(argv[9]), to_mpfr(argv[10])
         jet1, w_a, w_b, w_c = t_jet(order, 1), t_jet(order), t_jet(order), t_jet(order)
         output(x0, y0, z0, d0)
         for step in range(1, n_steps + 1):
@@ -182,7 +148,7 @@ def main():
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "sprott":
-        #  Example: ./tsm-float.py sprott 16 10 0.1 30001 1 0 0 | ./plotPi3d.py
+        #  Example: ./tsm.py sprott 16 10 0.1 30001 1 0 0 | ./plotPi3d.py
         w1 = t_jet(order, 1)
         output(x0, y0, z0, d0)
         for step in range(1, n_steps + 1):
@@ -194,7 +160,7 @@ def main():
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "sj":
-        a, b = float(argv[9]), float(argv[10])
+        a, b = to_mpfr(argv[9]), to_mpfr(argv[10])
         w_b = t_jet(order, b)
         output(x0, y0, z0, d0)
         for step in range(1, n_steps + 1):
@@ -206,8 +172,8 @@ def main():
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "halvorsen":
-        #  Example: ./tsm-float.py halvorsen 16 10 .01 100001 1 0 0 1.4 | ./plotPi3d.py
-        a = float(argv[9])
+        #  Example: ./tsm.py halvorsen 16 10 .01 100001 1 0 0 1.4 | ./plotPi3d.py
+        a = to_mpfr(argv[9])
         output(x0, y0, z0, d0)
         for step in range(1, n_steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
@@ -218,7 +184,7 @@ def main():
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "nh":
-        a_ = t_jet(order, int(argv[9]))
+        a_ = t_jet(order, to_mpfr(argv[9]))
         output(x0, y0, z0, d0)
         for step in range(1, n_steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
@@ -229,8 +195,8 @@ def main():
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "rucklidge":
-        #  Example: ./tsm-float.py rucklidge 16 10 0.01 10001 1 0 0 6.7 2 | ./plotPi3d.py
-        a, b = float(argv[9]), float(argv[10])
+        #  Example: ./tsm.py rucklidge 16 10 0.01 10001 1 0 0 6.7 2 | ./plotPi3d.py
+        a, b = to_mpfr(argv[9]), to_mpfr(argv[10])
         output(x0, y0, z0, d0)
         for step in range(1, n_steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
@@ -240,21 +206,31 @@ def main():
                 z[k + 1] = (t_prod(y, y, k) - z[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
-    elif model == "oscillator":
-        #  Example: ./tsm-float.py oscillator 16 10 .05 4001 0.0 0.0 0.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
-        κ, ζ, a, ω = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
+    elif model == "newton":
+        κ, l, m = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11])
         output(x0, y0, d0, d0)
         for step in range(1, n_steps + 1):
             x[0], y[0] = x0, y0
             for k in range(order):
                 x[k + 1] = y[k] / (k + 1)
-                y[k + 1] = (a * cos(ω * step * δt) - ζ * y[k] - κ * x[k]) / (k + 1)
+                y[k + 1] = (- x[k] - κ * m / l**2) / (k + 1)
             x0, y0 = t_horner(x, order, δt), t_horner(y, order, δt)
             output(x0, y0, d0, step * δt)
+    elif model == "oscillator":
+            #  Example: ./tsm.py oscillator 16 10 .05 4001 0.0 0.0 0.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
+            κ, ζ, a, ω = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11]), to_mpfr(argv[12])
+            output(x0, y0, d0, d0)
+            for step in range(1, n_steps + 1):
+                x[0], y[0] = x0, y0
+                for k in range(order):
+                    x[k + 1] = y[k] / (k + 1)
+                    y[k + 1] = (a * cos(ω * step * δt) - ζ * y[k] - κ * x[k]) / (k + 1)
+                x0, y0 = t_horner(x, order, δt), t_horner(y, order, δt)
+                output(x0, y0, d0, step * δt)
     elif model == "pendulum":
-        #  Example: ./tsm-float.py pendulum 16 10 .05 4001 0.0 0.0 0.0 1.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
-        g, m, length = 9.80665, float(argv[9]), float(argv[10])  # physical parameters
-        ζ, a, ω = float(argv[11]), float(argv[12]), 2.0 * pi * sqrt(length / g) * float(argv[13])  # damping/forcing
+        #  Example: ./tsm.py pendulum 16 10 .05 4001 0.0 0.0 0.0 1.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
+        g, m, length = 9.80665, to_mpfr(argv[9]), to_mpfr(argv[10])  # physical parameters
+        ζ, a, ω = to_mpfr(argv[11]), to_mpfr(argv[12]), 2.0 * pi * sqrt(length / g) * to_mpfr(argv[13])  # damping/forcing
         sinθ, cosθ = t_jet(order), t_jet(order)  # jets
         output(x0, y0, d0, d0)
         for step in range(1, n_steps + 1):
@@ -266,8 +242,8 @@ def main():
             x0, y0 = t_horner(x, order, δt), t_horner(y, order, δt)  # Horner's method
             output(x0, y0, d0, step * δt)
     elif model == "volterra":
-        #  Example: ./tsm-float.py volterra 16 10 .01 2001 10 10 0 1 .5 .05 .02 | ./plotAnimated.py 1 0 80
-        a, b, c, d = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
+        #  Example: ./tsm.py volterra 16 10 .01 2001 10 10 0 1 .5 .05 .02 | ./plotAnimated.py 1 0 80
+        a, b, c, d = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11]), to_mpfr(argv[12])
         output(x0, y0, d0, d0)
         for step in range(1, n_steps + 1):
             x[0], y[0] = x0, y0
@@ -278,8 +254,8 @@ def main():
             x0, y0 = t_horner(x, order, δt), t_horner(y, order, δt)
             output(x0, y0, d0, step * δt)
     elif model == "logistic":
-        #  Example: ./tsm-float.py logistic 16 10 0.1 10001 .6 0 0 .1 | ./plotXY.py 1 3 0
-        a = float(argv[9])
+        #  Example: ./tsm.py logistic 16 10 0.1 10001 .6 0 0 .1 | ./plotXY.py 1 3 0
+        a = to_mpfr(argv[9])
         w1, wa, wb = t_jet(order, 1), t_jet(order), t_jet(order)
         output(x0, d0, d0, d0)
         for step in range(1, n_steps + 1):
@@ -291,8 +267,8 @@ def main():
             x0 = t_horner(x, order, δt)
             output(x0, d0, d0, step * δt)
     elif model == "constant":
-        #  Example: ./tsm-float.py constant 16 10 0.1 10001 10 0 0 -.05 | ./plotXY.py 1 3 0
-        a = float(argv[9])
+        #  Example: ./tsm.py constant 16 10 0.1 10001 10 0 0 -.05 | ./plotXY.py 1 3 0
+        a = to_mpfr(argv[9])
         output(x0, d0, d0, d0)
         for step in range(1, n_steps + 1):
             x[0] = x0
@@ -300,5 +276,6 @@ def main():
                 x[k + 1] = a * x[k] / (k + 1)
             x0 = t_horner(x, order, δt)
             output(x0, d0, d0, step * δt)
+
 
 main()
