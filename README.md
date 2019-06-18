@@ -113,17 +113,17 @@ grep Example *.py
 It is also worth looking for examples in the c files as below.
 To test the root, extremum and inflection finding:
 ```
-./models.py 2 -8 8 1001 0 1e-9 1e-9 | ./plotMany.py 8 10 >/dev/null
+./models.py 2 -8 8 1001 7 1e-9 1e-9 | ./plotMany.py 8 10 >/dev/null
 ```
 
 Matplotlib progressive graph plotting
 ```
-./tsm-mp.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
+./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
 ```
 
 3D ODE plotting
 ```
-./tsm-mp.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
+./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
 ```
 
 Double pendulum (see code for parameters)

@@ -2,9 +2,8 @@
 
 from sys import argv
 from gmpy2 import get_context, sin, cos, log10
-
 get_context().precision = 236  # Set this BEFORE importing any Taylor Series stuff!
-from dual import Dual
+from ad import Dual
 from taylor import to_mpfr
 
 
@@ -64,8 +63,7 @@ def main():
         x2 = x1 + l2 * sin(th2_0)
         y2 = y1 - l2 * cos(th2_0)
         error = abs(hamiltonian(g, l1, m1, l2, m2, th1_dual, pth1_dual, th2_dual, pth2_dual).val - h0)
-        print("{:.9e} {:.9e} {:.9e} {:.9e} {:.5e} {:.9e}".format(
-            x1, y1, x2, y2, step * h, 10 * log10(error if error > 1.0e-18 else 1.0e-18)))
+        print(f"{x1:.9e} {y1:.9e} {x2:.9e} {y2:.9e} {step*h:.5e} {10*log10(error if error > 1.0e-18 else 1.0e-18):.9e}")
 
 
 main()

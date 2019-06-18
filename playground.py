@@ -70,7 +70,7 @@ def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
     for k in range(steps):
         w_x.val = x0 + k * (x1 - x0) / steps
         w_f = ~ model(w_x) - target
-        print("{:.6e} {}".format(w_x.val, w_f))
+        print(f"{w_x.val:.6e} {w_f}")
         if mode != 0:
             if k > 0:
                 if f_prev * w_f.val < 0.0:
