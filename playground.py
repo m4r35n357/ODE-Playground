@@ -24,8 +24,8 @@ Result = namedtuple('ResultType', ['count', 'sense', 'mode', 'x', 'f', 'dx'])
 
 
 def bisect(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.NONE, target=to_mpfr(0.0), mode=Solver.ROOT):
-    a = Series.get(3, xa, variable=True)
-    b = Series.get(3, xb, variable=True)
+    a = Series.get(3, xa)
+    b = Series.get(3, xb)
     c = Series.get(3)
     fc = Series.get(3, 1)
     f_sign = ~ model(a) - target
@@ -79,9 +79,9 @@ def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
                     else:
                         sense = Sense.POSITIVE
                     if mode == 1:
-                        result = bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense, target, Solver.ROOT)
+                        result = bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense, target)
                     elif mode == 2:
-                        result = newton(model, w_x.val, f_tol, x_tol, max_it, sense, target, Solver.ROOT)
+                        result = newton(model, w_x.val, f_tol, x_tol, max_it, sense, target)
                     yield result
                 if f_dash_prev * w_f.jet[1] < 0.0:
                     if f_dash_prev > w_f.jet[1]:

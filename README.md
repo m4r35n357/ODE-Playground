@@ -57,11 +57,11 @@ The playground.py script generates the first 12 derivatives of a "model" functio
 Optionally it will analyse that range for roots, extrema and inflection points using the lower order derivatives.
 Here is a seventh-degree polynomial model by way of example, and a trigonometric identity as a check of the sin and sqr functions:
 ```python
-def septic(a, value):
-    return (a + 7) * (5 + a) * (a + 2) * a * (a - 1) * (a - 3) * (a - 6) - value
+def septic(a):
+    return (a + 7) * (5 + a) * (a + 2) * a * (a - 1) * (a - 3) * (a - 6)
 
-def trig(a, value):
-    return (3 * a).sin - 3 * a.sin + 4 * a.sin * a.sin.sqr - value
+def trig(a):
+    return (3 * a).sin - 3 * a.sin + 4 * a.sin * a.sin.sqr
 ```
 Operators on or between jets and numbers are implemented by overloading, and the functions are implemented as properties of a jet.
 These two approaches produce a fairly readable format for coding the models.
