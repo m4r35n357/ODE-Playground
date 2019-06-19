@@ -92,10 +92,10 @@ def t_acos(h, v, u, k):
 class Series:
 
     def __init__(self, jet, variable=False):
-        self._jet = jet
-        self._n = len(self.jet)
+        self.jet = jet
+        self.n = len(self.jet)
         if variable:
-            self._jet[1] = to_mpfr(1)
+            self.jet[1] = to_mpfr(1)
 
     @classmethod
     def get(cls, order, value=0, variable=False):
@@ -266,18 +266,6 @@ class Series:
     @property
     def val(self):
         return self.jet[0]
-
-    @val.setter
-    def val(self, value):
-        self.jet[0] = value
-
-    @property
-    def n(self):
-        return self._n
-
-    @property
-    def jet(self):
-        return self._jet
 
 
 class Dual:

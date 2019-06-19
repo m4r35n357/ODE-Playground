@@ -51,7 +51,7 @@ def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=100
     while abs(f.jet[mode.value]) > f_tol or abs(delta) > x_tol:
         f = ~ model(x) - target
         delta = - f.jet[mode.value] / f.jet[1 + mode.value]
-        x.val += delta
+        x += delta
         counter += 1
         if counter == max_it:
             break
@@ -60,7 +60,6 @@ def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=100
 
 def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
     x_prev = f_prev = f_dash_prev = f_dash_dash_prev = result = None
-    w_x = Series.get(order, x0, variable=True)
     target = to_mpfr(0.0)
     if mode != 0:
         if mode == 1:
@@ -68,7 +67,7 @@ def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
         elif mode == 2:
             print("Newton's method", file=stderr)
     for k in range(steps):
-        w_x.val = x0 + k * (x1 - x0) / steps
+        w_x = Series.get(order, x0 + k * (x1 - x0) / steps, variable=True)
         w_f = ~ model(w_x) - target
         print(f"{w_x.val:.6e} {w_f}")
         if mode != 0:

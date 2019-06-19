@@ -10,7 +10,6 @@ from math import pi
 get_context().precision = int(int(argv[2]) * log(10.0) / log(2.0))  # Set this BEFORE importing any AD stuff!
 from ad import t_jet, t_horner, t_prod, t_sin_cos, t_tan_sec2, to_mpfr
 
-
 def output(x, y, z, t):
     print(f'{x:.9e} {y:.9e} {z:.9e} {t:.5e}')
 
