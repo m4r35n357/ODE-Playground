@@ -29,33 +29,33 @@ def bisect(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it
     c = Series.get(3)
     fc = Series.get(3, 1)
     f_sign = ~ model(a) - target
-    delta = counter = 1
-    while abs(fc.jet[mode.value]) > f_tol or abs(delta) > x_tol:
+    δx = counter = 1
+    while abs(fc.jet[mode.value]) > f_tol or abs(δx) > x_tol:
         c = (a + b) / 2
         fc = ~ model(c) - target
         if f_sign.jet[mode.value] * fc.jet[mode.value] < 0.0:
             b = c
         else:
             a = c
-        delta = b.jet[mode.value] - a.jet[mode.value]
+        δx = b.jet[mode.value] - a.jet[mode.value]
         counter += 1
         if counter == max_it:
             break
-    return Result(count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + target, dx=delta)
+    return Result(count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + target, dx=δx)
 
 
 def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.NONE, target=to_mpfr(0.0), mode=Solver.ROOT):
     x = Series.get(2 + mode.value, x0, variable=True)
     f = Series.get(2 + mode.value, 1)
-    delta = counter = 1
-    while abs(f.jet[mode.value]) > f_tol or abs(delta) > x_tol:
+    δx = counter = 1
+    while abs(f.jet[mode.value]) > f_tol or abs(δx) > x_tol:
         f = ~ model(x) - target
-        delta = - f.jet[mode.value] / f.jet[1 + mode.value]
-        x += delta
+        δx = - f.jet[mode.value] / f.jet[1 + mode.value]
+        x += δx
         counter += 1
         if counter == max_it:
             break
-    return Result(count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + target, dx=delta)
+    return Result(count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + target, dx=δx)
 
 
 def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
