@@ -105,7 +105,7 @@ class Series:
     def __str__(self):
         string = ""
         for i in range(0, self.n):
-            string += f"{self.jet[i]:+.6e} "
+            string += f"{self.jet[i]:+.9e} "
         return string
 
     def __abs__(self):
@@ -285,7 +285,7 @@ class Dual:
         return cls(to_mpfr(value), to_mpfr(1) if variable else to_mpfr(0))
 
     def __str__(self):
-        return f"{self.val:+.6e} {self.der:+.6e}"
+        return f"{self.val:+.9e} {self.der:+.9e}"
 
     def __abs__(self):
         return self.sqr.sqrt
