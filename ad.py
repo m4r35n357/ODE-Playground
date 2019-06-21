@@ -179,11 +179,17 @@ class Series:
             rdiv_jet[k] = t_quot(rdiv_jet, other_jet, self.jet, k)
         return Series(rdiv_jet)
 
-    def __pow__(self, a):
-        pow_jet = t_jet(self.n)
-        for k in range(self.n):
-            pow_jet[k] = t_pwr(pow_jet, self.jet, a, k)
-        return Series(pow_jet)
+    def __pow__(self, other):
+        if isinstance(other, Series):
+            return (self.ln * other).exp
+        else:
+            pow_jet = t_jet(self.n)
+            for k in range(self.n):
+                pow_jet[k] = t_pwr(pow_jet, self.jet, other, k)
+            return Series(pow_jet)
+
+    def __rpow__(self, other):
+        return (self * log(other)).exp
 
     def _trans(self, fun):
         jet = t_jet(self.n)
@@ -326,8 +332,14 @@ class Dual:
     def __rtruediv__(self, other):
         return Dual(other / self.val, - other * self.der / self.val**2)
 
-    def __pow__(self, a):
-        return Dual(self.val**a, a * self.val**(a - 1) * self.der)
+    def __pow__(self, other):
+        if isinstance(other, Dual):
+            return (self.ln * other).exp
+        else:
+            return Dual(self.val**other, other * self.val**(other - 1) * self.der)
+
+    def __rpow__(self, other):
+        return (self * log(other)).exp
 
     @property
     def sqr(self):

@@ -31,12 +31,15 @@ def playground(a):
     # return (3 * a).sin - 3 * a.sin + 4 * a.sin * a.sin.sqr
     # return (3 * a).cos + 3 * a.cos - 4 * a.cos * a.cos.sqr
     # return a.sqr.sqrt
+    # return (a**2).sqrt
+    # return a.sqr**0.5
+    return 4**a
     # return a.exp.ln
     # return a.tan - a.sin / a.cos
     # return a.tanh - a.sinh / a.cosh
     # return a.sin.asin
     # return a.cos.acos
-    return a.tan.atan
+    # return a.tan.atan
     # return (a + 7) / (3.0 - a)
 
 print(__name__ + " module loaded", file=stderr)
