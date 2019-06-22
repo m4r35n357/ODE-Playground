@@ -99,7 +99,6 @@ class Series:
 
     @classmethod
     def get(cls, order, value=0, variable=False):
-        assert isinstance(order, int)
         return cls(t_jet(order, value), variable)
 
     def __str__(self):
@@ -127,7 +126,6 @@ class Series:
 
     def __add__(self, other):
         if isinstance(other, Series):
-            assert len(other.jet) == self.n
             return Series([self.jet[k] + other.jet[k] for k in range(self.n)])
         else:
             add_jet = [self.jet[k] for k in range(self.n)]
@@ -139,7 +137,6 @@ class Series:
 
     def __sub__(self, other):
         if isinstance(other, Series):
-            assert len(other.jet) == self.n
             return Series([self.jet[k] - other.jet[k] for k in range(self.n)])
         else:
             sub_jet = [self.jet[k] for k in range(self.n)]
@@ -153,7 +150,6 @@ class Series:
 
     def __mul__(self, other):
         if isinstance(other, Series):
-            assert len(other.jet) == self.n
             return Series([t_prod(self.jet, other.jet, k) for k in range(self.n)])
         else:
             return Series([self.jet[k] * other for k in range(self.n)])
@@ -164,7 +160,6 @@ class Series:
     def __truediv__(self, other):
         div_jet = t_jet(self.n)
         if isinstance(other, Series):
-            assert len(other.jet) == self.n
             for k in range(self.n):
                 div_jet[k] = t_quot(div_jet, self.jet, other.jet, k)
         else:
