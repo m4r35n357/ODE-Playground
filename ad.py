@@ -56,17 +56,17 @@ def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
         return sinh_cosh(u[0]) if hyp else sin_cos(u[0])
     else:
-        sn = c[0] * u[k] + ddot(c, u, k)
-        cn = s[0] * u[k] + ddot(s, u, k)
-        return sn, cn if hyp else - cn
+        sk = c[0] * u[k] + ddot(c, u, k)
+        ck = s[0] * u[k] + ddot(s, u, k)
+        return sk, ck if hyp else - ck
 
 def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
         return (tanh(u[0]), 1 - tanh(u[0])**2) if hyp else (tan(u[0]), 1 + tan(u[0])**2)
     else:
-        tn = s2[0] * u[k] + ddot(s2, u, k)
-        sec2 = 2 * (t[0] * tn + ddot(t, t, k))
-        return tn, - sec2 if hyp else sec2
+        tk = s2[0] * u[k] + ddot(s2, u, k)
+        sk = 2 * (t[0] * tk + ddot(t, t, k))
+        return tk, - sk if hyp else sk
 
 def t_atan(h, v, u, k):
     if k == 0:
