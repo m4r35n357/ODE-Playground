@@ -58,7 +58,7 @@ def t_sin_cos(s, c, u, k, hyp=False):
     else:
         sk = c[0] * u[k] + ddot(c, u, k)
         ck = s[0] * u[k] + ddot(s, u, k)
-        return sk, ck if hyp else - ck
+        return (sk, ck) if hyp else (sk, - ck)
 
 def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
@@ -66,7 +66,7 @@ def t_tan_sec2(t, s2, u, k, hyp=False):
     else:
         tk = s2[0] * u[k] + ddot(s2, u, k)
         sk = 2 * (t[0] * tk + ddot(t, t, k))
-        return tk, - sk if hyp else sk
+        return (tk, - sk) if hyp else (tk, sk)
 
 def t_atan(h, v, u, k):
     if k == 0:
@@ -192,7 +192,7 @@ class Series:
             jet[k] = fun(jet, self.jet, k)
         return Series(jet)
 
-    def _geom(self, fun, hyp):
+    def _trig(self, fun, hyp):
         jet_a, jet_b = t_jet(self.n), t_jet(self.n)
         for k in range(self.n):
             jet_a[k], jet_b[k] = fun(jet_a, jet_b, self.jet, k, hyp)
@@ -222,35 +222,51 @@ class Series:
 
     @property
     def sin(self):
-        return self._geom(t_sin_cos, False)[0]
+        return self._trig(t_sin_cos, False)[0]
 
     @property
     def cos(self):
-        return self._geom(t_sin_cos, False)[1]
+        return self._trig(t_sin_cos, False)[1]
 
     @property
     def sin_cos(self):
-        return self._geom(t_sin_cos, False)
+        return self._trig(t_sin_cos, False)
 
     @property
     def sinh(self):
-        return self._geom(t_sin_cos, True)[0]
+        return self._trig(t_sin_cos, True)[0]
 
     @property
     def cosh(self):
-        return self._geom(t_sin_cos, True)[1]
+        return self._trig(t_sin_cos, True)[1]
 
     @property
     def sinh_cosh(self):
-        return self._geom(t_sin_cos, True)
+        return self._trig(t_sin_cos, True)
 
     @property
     def tan(self):
-        return self._geom(t_tan_sec2, False)[0]
+        return self._trig(t_tan_sec2, False)[0]
+
+    @property
+    def sec2(self):
+        return self._trig(t_tan_sec2, False)[1]
+
+    @property
+    def tan_sec2(self):
+        return self._trig(t_tan_sec2, False)
 
     @property
     def tanh(self):
-        return self._geom(t_tan_sec2, True)[0]
+        return self._trig(t_tan_sec2, True)[0]
+
+    @property
+    def sech2(self):
+        return self._trig(t_tan_sec2, True)[1]
+
+    @property
+    def tanh_sech2(self):
+        return self._trig(t_tan_sec2, True)
 
     @property
     def asin(self):

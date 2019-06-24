@@ -104,6 +104,9 @@ print(f" tan(pi / {b:.1})", file=stderr)
 print(Dual.get(pi / b, variable=True).tan, file=stderr)
 print(~ Series.get(order, pi / b, variable=True).tan, file=stderr)
 
+print(f" sec(pi / {b:.1})^2", file=stderr)
+print(~ Series.get(order, pi / b, variable=True).sec2, file=stderr)
+
 print(f" asin({c:.1})", file=stderr)
 print(Dual.get(c, variable=True).asin, file=stderr)
 print(~ Series.get(order, c, variable=True).asin, file=stderr)
