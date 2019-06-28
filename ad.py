@@ -162,17 +162,17 @@ class Series:
     def __truediv__(self, other):
         div_jet = t_jet(self.n)
         if isinstance(other, Series):
-            assert abs(other.val) != zero(+1)
+            assert abs(other.val) != zero(+1), f"other.val = {other.val}"
             for k in range(self.n):
                 div_jet[k] = t_quot(div_jet, self.jet, other.jet, k)
         else:
-            assert abs(other) != zero(+1)
+            assert abs(other) != zero(+1), f"other = {other}"
             for k in range(self.n):
                 div_jet[k] = self.jet[k] / other
         return Series(div_jet)
 
     def __rtruediv__(self, other):
-        assert abs(self.val) != zero(+1)
+        assert abs(self.val) != zero(+1), f"self.val = {self.val}"
         other_jet = t_jet(self.n, other)
         rdiv_jet = t_jet(self.n)
         for k in range(self.n):
@@ -181,7 +181,7 @@ class Series:
 
     def __pow__(self, other):
         if isinstance(other, Series):
-            assert self.val > zero(+1)
+            assert self.val > zero(+1), f"self.val = {self.val}"
             return (self.ln * other).exp
         else:
             pow_jet = t_jet(self.n)
@@ -190,7 +190,7 @@ class Series:
             return Series(pow_jet)
 
     def __rpow__(self, other):
-        assert other > zero(+1)
+        assert other > zero(+1), f"other = {other}"
         return (self * log(other)).exp
 
     def _trans(self, fun):
@@ -217,7 +217,7 @@ class Series:
 
     @property
     def sqrt(self):
-        assert self.val >= zero(+1)
+        assert self.val >= zero(+1), f"self.val = {self.val}"
         return self._trans(t_sqrt)
 
     @property
@@ -226,7 +226,7 @@ class Series:
 
     @property
     def ln(self):
-        assert self.val > zero(+1)
+        assert self.val > zero(+1), f"self.val = {self.val}"
         return self._trans(t_ln)
 
     @property
@@ -279,12 +279,12 @@ class Series:
 
     @property
     def asin(self):
-        assert abs(self.val) <= 1.0
+        assert abs(self.val) <= 1.0, f"self.val = {self.val}"
         return self._arc(t_asin)
 
     @property
     def acos(self):
-        assert abs(self.val) <= 1.0
+        assert abs(self.val) <= 1.0, f"self.val = {self.val}"
         return self._arc(t_acos)
 
     @property
@@ -347,25 +347,25 @@ class Dual:
 
     def __truediv__(self, other):
         if isinstance(other, Dual):
-            assert abs(other.val) != zero(+1)
+            assert abs(other.val) != zero(+1), f"other.val = {other.val}"
             return Dual(self.val / other.val, (self.der * other.val - self.val * other.der) / other.val**2)
         else:
-            assert abs(other) != zero(+1)
+            assert abs(other) != zero(+1), f"other = {other}"
             return Dual(self.val / other, self.der / other)
 
     def __rtruediv__(self, other):
-        assert abs(self.val) != zero(+1)
+        assert abs(self.val) != zero(+1), f"self.val = {self.val}"
         return Dual(other / self.val, - other * self.der / self.val**2)
 
     def __pow__(self, other):
         if isinstance(other, Dual):
-            assert self.val > zero(+1)
+            assert self.val > zero(+1), f"self.val = {self.val}"
             return (self.ln * other).exp
         else:
             return Dual(self.val**other, other * self.val**(other - 1) * self.der)
 
     def __rpow__(self, other):
-        assert other > zero(+1)
+        assert other > zero(+1), f"other = {other}"
         return (self * log(other)).exp
 
     @property
@@ -374,7 +374,7 @@ class Dual:
 
     @property
     def sqrt(self):
-        assert self.val >= zero(+1)
+        assert self.val >= zero(+1), f"self.val = {self.val}"
         sqrt_val = sqrt(self.val)
         return Dual(sqrt_val, self.der / (2 * sqrt_val))
 
@@ -385,7 +385,7 @@ class Dual:
 
     @property
     def ln(self):
-        assert self.val > zero(+1)
+        assert self.val > zero(+1), f"self.val = {self.val}"
         return Dual(log(self.val), self.der / self.val)
 
     @property
@@ -424,12 +424,12 @@ class Dual:
 
     @property
     def asin(self):
-        assert abs(self.val) <= 1.0
+        assert abs(self.val) <= 1.0, f"self.val = {self.val}"
         return Dual(asin(self.val), self.der / sqrt(1 - self.val**2))
 
     @property
     def acos(self):
-        assert abs(self.val) <= 1.0
+        assert abs(self.val) <= 1.0, f"self.val = {self.val}"
         return Dual(acos(self.val), - self.der / sqrt(1 - self.val**2))
 
     @property
