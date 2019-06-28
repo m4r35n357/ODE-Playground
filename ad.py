@@ -2,14 +2,16 @@
 #  (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 from sys import stderr
-from gmpy2 import mpfr, sqrt, sin_cos, sin, cos, sinh_cosh, sinh, cosh, tan, sec, tanh, sech, atan, asin, acos, exp, log
+from gmpy2 import mpfr, sqrt, sin_cos, sin, cos, sinh_cosh, sinh, cosh, tan, sec, tanh, sech, atan, asin, acos, exp, \
+    log, zero
+
 
 # noinspection PyArgumentList
 def to_mpfr(x):
     return mpfr(str(x)) if isinstance(x, (float, int)) else mpfr(x)
 
-def t_jet(n, value=0):
-    jet = [to_mpfr(0)] * n
+def t_jet(n, value=zero(+1)):
+    jet = [zero(+1)] * n
     jet[0] = to_mpfr(value)
     return jet
 
@@ -98,7 +100,7 @@ class Series:
             self.jet[1] = to_mpfr(1)
 
     @classmethod
-    def get(cls, order, value=0, variable=False):
+    def get(cls, order, value=zero(+1), variable=False):
         return cls(t_jet(order, value), variable)
 
     def __str__(self):
@@ -160,14 +162,17 @@ class Series:
     def __truediv__(self, other):
         div_jet = t_jet(self.n)
         if isinstance(other, Series):
+            assert abs(other.val) != zero(+1)
             for k in range(self.n):
                 div_jet[k] = t_quot(div_jet, self.jet, other.jet, k)
         else:
+            assert abs(other) != zero(+1)
             for k in range(self.n):
                 div_jet[k] = self.jet[k] / other
         return Series(div_jet)
 
     def __rtruediv__(self, other):
+        assert abs(self.val) != zero(+1)
         other_jet = t_jet(self.n, other)
         rdiv_jet = t_jet(self.n)
         for k in range(self.n):
@@ -176,6 +181,7 @@ class Series:
 
     def __pow__(self, other):
         if isinstance(other, Series):
+            assert self.val > zero(+1)
             return (self.ln * other).exp
         else:
             pow_jet = t_jet(self.n)
@@ -184,6 +190,7 @@ class Series:
             return Series(pow_jet)
 
     def __rpow__(self, other):
+        assert other > zero(+1)
         return (self * log(other)).exp
 
     def _trans(self, fun):
@@ -210,6 +217,7 @@ class Series:
 
     @property
     def sqrt(self):
+        assert self.val >= zero(+1)
         return self._trans(t_sqrt)
 
     @property
@@ -218,6 +226,7 @@ class Series:
 
     @property
     def ln(self):
+        assert self.val > zero(+1)
         return self._trans(t_ln)
 
     @property
@@ -270,10 +279,12 @@ class Series:
 
     @property
     def asin(self):
+        assert abs(self.val) <= 1.0
         return self._arc(t_asin)
 
     @property
     def acos(self):
+        assert abs(self.val) <= 1.0
         return self._arc(t_acos)
 
     @property
@@ -293,7 +304,7 @@ class Dual:
 
     @classmethod
     def get(cls, value=0, variable=False):
-        return cls(to_mpfr(value), to_mpfr(1) if variable else to_mpfr(0))
+        return cls(to_mpfr(value), to_mpfr(1) if variable else zero(+1))
 
     def __str__(self):
         return f"{self.val:+.9e} {self.der:+.9e}"
@@ -336,20 +347,25 @@ class Dual:
 
     def __truediv__(self, other):
         if isinstance(other, Dual):
+            assert abs(other.val) != zero(+1)
             return Dual(self.val / other.val, (self.der * other.val - self.val * other.der) / other.val**2)
         else:
+            assert abs(other) != zero(+1)
             return Dual(self.val / other, self.der / other)
 
     def __rtruediv__(self, other):
+        assert abs(self.val) != zero(+1)
         return Dual(other / self.val, - other * self.der / self.val**2)
 
     def __pow__(self, other):
         if isinstance(other, Dual):
+            assert self.val > zero(+1)
             return (self.ln * other).exp
         else:
             return Dual(self.val**other, other * self.val**(other - 1) * self.der)
 
     def __rpow__(self, other):
+        assert other > zero(+1)
         return (self * log(other)).exp
 
     @property
@@ -358,6 +374,7 @@ class Dual:
 
     @property
     def sqrt(self):
+        assert self.val >= zero(+1)
         sqrt_val = sqrt(self.val)
         return Dual(sqrt_val, self.der / (2 * sqrt_val))
 
@@ -368,6 +385,7 @@ class Dual:
 
     @property
     def ln(self):
+        assert self.val > zero(+1)
         return Dual(log(self.val), self.der / self.val)
 
     @property
@@ -406,10 +424,12 @@ class Dual:
 
     @property
     def asin(self):
+        assert abs(self.val) <= 1.0
         return Dual(asin(self.val), self.der / sqrt(1 - self.val**2))
 
     @property
     def acos(self):
+        assert abs(self.val) <= 1.0
         return Dual(acos(self.val), - self.der / sqrt(1 - self.val**2))
 
     @property
