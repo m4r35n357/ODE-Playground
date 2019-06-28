@@ -295,6 +295,10 @@ class Series:
     def val(self):
         return self.jet[0]
 
+    @property
+    def var(self):
+        return Series.get(self.n, self.val, variable=True)
+
 
 class Dual:
 
@@ -438,7 +442,7 @@ class Dual:
 
     @property
     def var(self):
-        return Dual(self.val, to_mpfr(1))
+        return Dual.get(self.val, variable=True)
 
 
 print(__name__ + " module loaded", file=stderr)
