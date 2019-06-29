@@ -93,15 +93,16 @@ def t_acos(h, v, u, k):
 
 class Series:
 
-    def __init__(self, jet, variable=False):
+    def __init__(self, jet):
         self.jet = jet
         self.n = len(self.jet)
-        if variable:
-            self.jet[1] = to_mpfr(1)
 
     @classmethod
     def get(cls, order, value=zero(+1), variable=False):
-        return cls(t_jet(order, value), variable)
+        jet = t_jet(order, value)
+        if variable:
+            jet[1] = to_mpfr(1)
+        return cls(jet)
 
     def __str__(self):
         string = ""
