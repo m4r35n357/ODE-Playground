@@ -98,11 +98,8 @@ class Series:
         self.n = len(self.jet)
 
     @classmethod
-    def get(cls, order, value=zero(+1), variable=False):
-        jet = t_jet(order, value)
-        if variable:
-            jet[1] = to_mpfr(1)
-        return cls(jet)
+    def get(cls, order, value=zero(+1)):
+        return cls(t_jet(order, value))
 
     def __str__(self):
         string = ""
@@ -298,7 +295,9 @@ class Series:
 
     @property
     def var(self):
-        return Series.get(self.n, self.val, variable=True)
+        jet = t_jet(self.n, self.val)
+        jet[1] = to_mpfr(1)
+        return Series(jet)
 
 
 class Dual:
@@ -308,8 +307,8 @@ class Dual:
         self.der = derivative
 
     @classmethod
-    def get(cls, value=0, variable=False):
-        return cls(to_mpfr(value), to_mpfr(1) if variable else zero(+1))
+    def get(cls, value=0.0):
+        return cls(to_mpfr(value), zero(+1))
 
     def __str__(self):
         return f"{self.val:+.9e} {self.der:+.9e}"
@@ -443,7 +442,7 @@ class Dual:
 
     @property
     def var(self):
-        return Dual.get(self.val, variable=True)
+        return Dual(self.val, to_mpfr(1))
 
 
 print(__name__ + " module loaded", file=stderr)

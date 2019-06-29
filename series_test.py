@@ -14,9 +14,9 @@ a = to_mpfr("3.0")
 b = to_mpfr("4.0")
 c = to_mpfr("0.5")
 
-y = Dual.get(a, variable=True)
+y = Dual.get(a).var
 print(f"y = {y}", file=stderr)
-z = Series.get(order, a, variable=True)
+z = Series.get(order, a).var
 print(f"z = {z}", file=stderr)
 
 print(" unary +", file=stderr)
@@ -63,23 +63,23 @@ print(y**b, file=stderr)
 print(z**b, file=stderr)
 
 print(" sqr", file=stderr)
-print(Dual.get(b, variable=True).sqr, file=stderr)
-print(~ Series.get(order, b, variable=True).sqr, file=stderr)
+print(Dual.get(b).var.sqr, file=stderr)
+print(~ Series.get(order, b).var.sqr, file=stderr)
 
 print(" sqrt", file=stderr)
-print(Dual.get(b, variable=True).sqrt, file=stderr)
-print(~ Series.get(order, b, variable=True).sqrt, file=stderr)
+print(Dual.get(b).var.sqrt, file=stderr)
+print(~ Series.get(order, b).var.sqrt, file=stderr)
 
 print(" exp", file=stderr)
-print(Dual.get(b, variable=True).exp, file=stderr)
-print(~ Series.get(order, b, variable=True).exp, file=stderr)
+print(Dual.get(b).var.exp, file=stderr)
+print(~ Series.get(order, b).var.exp, file=stderr)
 
 print(" ln", file=stderr)
-print(Dual.get(b, variable=True).ln, file=stderr)
-print(~ Series.get(order, b, variable=True).ln, file=stderr)
+print(Dual.get(b).var.ln, file=stderr)
+print(~ Series.get(order, b).var.ln, file=stderr)
 
-si, co = Dual.get(pi / a, variable=True).sin_cos
-sine, cosine = Series.get(order, pi / a, variable=True).sin_cos
+si, co = Dual.get(pi / a).var.sin_cos
+sine, cosine = Series.get(order, pi / a).var.sin_cos
 
 print(f" sin(pi / {a:.1})", file=stderr)
 print(si, file=stderr)
@@ -89,8 +89,8 @@ print(f" cos(pi / {a:.1})", file=stderr)
 print(co, file=stderr)
 print(~ cosine, file=stderr)
 
-si, co = Dual.get(pi / a, variable=True).sinh_cosh
-sine, cosine = Series.get(order, pi / a, variable=True).sinh_cosh
+si, co = Dual.get(pi / a).var.sinh_cosh
+sine, cosine = Series.get(order, pi / a).var.sinh_cosh
 
 print(f" sinh(pi / {a:.1})", file=stderr)
 print(si, file=stderr)
@@ -101,23 +101,23 @@ print(co, file=stderr)
 print(~ cosine, file=stderr)
 
 print(f" tan(pi / {b:.1})", file=stderr)
-print(Dual.get(pi / b, variable=True).tan, file=stderr)
-print(~ Series.get(order, pi / b, variable=True).tan, file=stderr)
+print(Dual.get(pi / b).var.tan, file=stderr)
+print(~ Series.get(order, pi / b).var.tan, file=stderr)
 
 print(f" sec(pi / {b:.1})^2", file=stderr)
-print(~ Series.get(order, pi / b, variable=True).sec2, file=stderr)
+print(~ Series.get(order, pi / b).var.sec2, file=stderr)
 
 print(f" asin({c:.1})", file=stderr)
-print(Dual.get(c, variable=True).asin, file=stderr)
-print(~ Series.get(order, c, variable=True).asin, file=stderr)
+print(Dual.get(c).var.asin, file=stderr)
+print(~ Series.get(order, c).var.asin, file=stderr)
 
 print(f" acos({c:.1})", file=stderr)
-print(Dual.get(c, variable=True).acos, file=stderr)
-print(~ Series.get(order, c, variable=True).acos, file=stderr)
+print(Dual.get(c).var.acos, file=stderr)
+print(~ Series.get(order, c).var.acos, file=stderr)
 
 print(f" atan({c:.1})", file=stderr)
-print(Dual.get(c, variable=True).atan, file=stderr)
-print(~ Series.get(order, c, variable=True).atan, file=stderr)
+print(Dual.get(c).var.atan, file=stderr)
+print(~ Series.get(order, c).var.atan, file=stderr)
 
 print("", file=stderr)
 
@@ -126,7 +126,7 @@ def schwartzschild(r, e=to_mpfr(0.962250), p_r=to_mpfr(0), l_z=to_mpfr(4)):  # n
     return (e**2 / (1 - 2 / r) - p_r**2 * (1 - 2 / r) - (l_z / r).sqr) / 2
 
 def analyze(model, x0, x1, steps):
-    w_x = Dual.get(x0, variable=True)
+    w_x = Dual.get(x0).var
     target = to_mpfr(0.0)
     for k in range(steps):
         w_x.val = x0 + k * (x1 - x0) / steps
