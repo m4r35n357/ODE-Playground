@@ -157,6 +157,59 @@ Out[3]: ResultType(count=7, sense='', mode='ROOT', x=1.414213562373095, f=2.0000
 In [4]: bisect(lambda x: (x**2), xa=1.4, xb=1.5, target=2.0)                    
 Out[4]: ResultType(count=38, sense='', mode='ROOT', x=1.4142135623733338, f=2.0000000000006755, dx=7.276401703393276e-13)
 ```
+Here we differentiate a simple function of three variables with respect to each one.
+This is done twice; first using the Dual class and then using the Series class.
+The latter provides derivatives of higher order than the first.
+```
+$ ipython3
+Python 3.6.8 (default, Jan 14 2019, 11:02:34) 
+Type "copyright", "credits" or "license" for more information.
+
+IPython 5.5.0 -- An enhanced Interactive Python.
+?         -> Introduction and overview of IPython's features.
+%quickref -> Quick reference.
+help      -> Python's own help system.
+object?   -> Details about 'object', use 'object??' for extra details.
+
+In [1]: from ad import *
+ad module loaded
+
+In [2]: a = Dual.get(3.0)
+
+In [3]: b = Dual.get(5.0)
+
+In [4]: c = Dual.get(7.0)
+
+In [5]: print(a * c**2 - b * c)
++1.120000e+02 +0.000000e+00
+
+In [6]: print(a.var * c**2 - b * c)
++1.120000e+02 +4.900000e+01
+
+In [7]: print(a * c**2 - b.var * c)
++1.120000e+02 -7.000000e+00
+
+In [8]: print(a * c.var**2 - b * c.var)
++1.120000e+02 +3.700000e+01
+
+In [9]: a = Series.get(3, 3.0)
+
+In [10]: b = Series.get(3, 5.0)
+
+In [11]: c = Series.get(3, 7.0)
+
+In [12]: print(a * c**2 - b * c)
++1.120000e+02 +0.000000e+00 +0.000000e+00 
+
+In [13]: print(a.var * c**2 - b * c)
++1.120000e+02 +4.900000e+01 +0.000000e+00 
+
+In [14]: print(a * c**2 - b.var * c)
++1.120000e+02 -7.000000e+00 +0.000000e+00 
+
+In [15]: print(a * c.var**2 - b * c.var)
++1.120000e+02 +3.700000e+01 +3.000000e+00 
+```
 
 ## TSM Parameter reference
 For Python, the first parameter is a string identifying the ODE, so numbers here refer only to the numeric parameters.
