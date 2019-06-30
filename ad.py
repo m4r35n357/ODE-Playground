@@ -94,8 +94,8 @@ def t_acos(h, v, u, k):
 class Series:
 
     def __init__(self, jet):
-        self.jet = jet
-        self.n = len(self.jet)
+        self.n = len(jet)
+        self.jet = [jet[k] for k in range(self.n)]
 
     @classmethod
     def get(cls, order, value=zero(+1)):
