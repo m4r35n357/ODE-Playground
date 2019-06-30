@@ -112,6 +112,10 @@ cd ad-1.0
 python3 setup.py install
 cd ../..
 ```
+
+## Solving ODEs
+This use case only involves the "t-*" functions in tsm.py.
+Refer to this file for _many_ examples.
 To find Python ODE example invocations:
 ```
 grep Example *.py
