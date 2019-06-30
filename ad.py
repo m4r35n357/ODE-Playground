@@ -27,68 +27,68 @@ def t_prod(u, v, k):
 def t_quot(q, u, v, k):
     return (u[k] - sum(v[j] * q[k - j] for j in range(1, k + 1))) / v[0]
 
-def ddot(v, u, k):
+def _ddot(v, u, k):
     return sum(j * u[j] * v[k - j] for j in range(1, k)) / k
 
 def t_sqrt(r, u, k):
     if k == 0:
         return sqrt(u[0])
     else:
-        return (u[k] / 2 - ddot(r, r, k)) / r[0]
+        return (u[k] / 2 - _ddot(r, r, k)) / r[0]
 
 def t_exp(e, u, k):
     if k == 0:
         return exp(u[0])
     else:
-        return e[0] * u[k] + ddot(e, u, k)
+        return e[0] * u[k] + _ddot(e, u, k)
 
 def t_ln(l, u, k):
     if k == 0:
         return log(u[0])
     else:
-        return (u[k] - ddot(u, l, k)) / u[0]
+        return (u[k] - _ddot(u, l, k)) / u[0]
 
 def t_pwr(p, u, a, k):
     if k == 0:
         return u[0]**a
     else:
-        return (a * (p[0] * u[k] + ddot(p, u, k)) - ddot(u, p, k)) / u[0]
+        return (a * (p[0] * u[k] + _ddot(p, u, k)) - _ddot(u, p, k)) / u[0]
 
 def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
         return sinh_cosh(u[0]) if hyp else sin_cos(u[0])
     else:
-        sk = c[0] * u[k] + ddot(c, u, k)
-        ck = s[0] * u[k] + ddot(s, u, k)
+        sk = c[0] * u[k] + _ddot(c, u, k)
+        ck = s[0] * u[k] + _ddot(s, u, k)
         return (sk, ck) if hyp else (sk, - ck)
 
 def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
         return (tanh(u[0]), 1 - tanh(u[0])**2) if hyp else (tan(u[0]), 1 + tan(u[0])**2)
     else:
-        tk = s2[0] * u[k] + ddot(s2, u, k)
-        sk = 2 * (t[0] * tk + ddot(t, t, k))
+        tk = s2[0] * u[k] + _ddot(s2, u, k)
+        sk = 2 * (t[0] * tk + _ddot(t, t, k))
         return (tk, - sk) if hyp else (tk, sk)
 
 def t_atan(h, v, u, k):
     if k == 0:
         return atan(u[0]), 1 + u[0]**2
     else:
-        return (u[k] - ddot(v, h, k)) / v[0], 2 * (u[0] * u[k] + ddot(u, u, k))
+        return (u[k] - _ddot(v, h, k)) / v[0], 2 * (u[0] * u[k] + _ddot(u, u, k))
 
 def t_asin(h, v, u, k):
     if k == 0:
         return asin(u[0]), cos(asin(u[0]))
     else:
-        hk = (u[k] - ddot(v, h, k)) / v[0]
-        return hk, - u[0] * hk - ddot(u, h, k)
+        hk = (u[k] - _ddot(v, h, k)) / v[0]
+        return hk, - u[0] * hk - _ddot(u, h, k)
 
 def t_acos(h, v, u, k):
     if k == 0:
         return acos(u[0]), - sin(acos(u[0]))
     else:
-        hk = (u[k] + ddot(v, h, k)) / v[0]
-        return hk, u[0] * hk + ddot(u, h, k)
+        hk = (u[k] + _ddot(v, h, k)) / v[0]
+        return hk, u[0] * hk + _ddot(u, h, k)
 
 
 class Series:
