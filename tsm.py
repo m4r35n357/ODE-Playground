@@ -183,6 +183,7 @@ def main():
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "nh":
+        #  Example: ./tsm.py nh 16 10 0.01 10001 1 0 0 6.0 | ./plotPi3d.py
         a_ = t_jet(order, to_mpfr(argv[9]))
         output(x0, y0, z0, d0)
         for step in range(1, n_steps + 1):

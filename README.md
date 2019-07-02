@@ -40,7 +40,8 @@ Additionally it is designed for finding inverse values (where real solutions exi
 
 
 The "higher-level" functions generate Taylor series "jets" in one go, so are only useful for univariate functions.
-As well as adding operators for (negation and **), there are functions for:
+There is an overloaded operator "~" which extracts the actual derivative values from the taylor series coefficents, as well as additional operators for (negation and **).
+There are functions for:
 * sqr
 * sqrt
 * exp
@@ -89,9 +90,9 @@ Dependencies of Python 3 programs:
 
 Main future development will now be in Python3 with arbitrary precision (although currently there is a float-only branch), and the c/MPFR version will be kept as a reference implementation.
 
-Build environment (Debian/Ubuntu)
+Build environment (Debian/Ubuntu/Raspbian)
 ```
-sudo apt install build-essential mesa-utils-extra python3-dev virtualenvwrapper
+sudo apt install build-essential mesa-utils-extra python3-dev libmpc-dev libatlas-base-dev virtualenvwrapper
 ```
 This is a typical virtual environment setup:
 ```
