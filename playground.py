@@ -5,6 +5,7 @@
 from sys import stderr
 from collections import namedtuple
 from enum import Enum
+from gmpy2 import zero
 from ad import Series, to_mpfr
 
 
@@ -23,7 +24,7 @@ class Solver(Enum):
 Result = namedtuple('ResultType', ['count', 'sense', 'mode', 'x', 'f', 'dx'])
 
 
-def bisect(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.NONE, target=to_mpfr(0.0), mode=Solver.ROOT):
+def bisect(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.NONE, target=zero(+1), mode=Solver.ROOT):
     a = Series.get(3, xa)
     b = Series.get(3, xb)
     c = Series.get(3)
@@ -44,7 +45,7 @@ def bisect(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it
     return Result(count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + target, dx=δx)
 
 
-def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.NONE, target=to_mpfr(0.0), mode=Solver.ROOT):
+def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.NONE, target=zero(+1), mode=Solver.ROOT):
     x = Series.get(2 + mode.value, x0).var
     f = Series.get(2 + mode.value, 1)
     δx = counter = 1
@@ -60,7 +61,7 @@ def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=100
 
 def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
     x_prev = f_prev = f_dash_prev = f_dash_dash_prev = result = None
-    target = to_mpfr(0.0)
+    target = zero(+1)
     if mode != 0:
         if mode == 1:
             print("Bisection", file=stderr)
