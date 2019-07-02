@@ -113,6 +113,18 @@ python3 setup.py install
 cd ../..
 ```
 
+## tsm.py Parameter reference
+tsm.py is a long "if" statement containing a "zoo" of pre-programmed ODE systems.
+For Python, the first parameter is a string identifying the ODE, so numbers here refer only to the numeric parameters.
+
+Parameter | Meaning
+----------|-----------
+1 | model (ODE) name
+2,3 | precision in decimal places, order
+4,5 | step size, number of steps
+6,7,8 | x0, y0, z0
+9+ | ODE parameters
+
 ## Solving ODEs
 This use case only involves the "t-*" functions in tsm.py.
 Refer to this file for _many_ examples.
@@ -166,15 +178,7 @@ This is done twice; first using the Dual class and then using the Series class.
 The latter provides derivatives of higher order than the first.
 ```
 $ ipython3
-Python 3.6.8 (default, Jan 14 2019, 11:02:34) 
-Type "copyright", "credits" or "license" for more information.
-
-IPython 5.5.0 -- An enhanced Interactive Python.
-?         -> Introduction and overview of IPython's features.
-%quickref -> Quick reference.
-help      -> Python's own help system.
-object?   -> Details about 'object', use 'object??' for extra details.
-
+...
 In [1]: from ad import *
 ad module loaded
 
@@ -214,17 +218,37 @@ In [14]: print(a * c**2 - b.var * c)
 In [15]: print(a * c.var**2 - b * c.var)
 +1.120000e+02 +3.700000e+01 +3.000000e+00 
 ```
+Here we calculate _all_ the derivatives of a simple cubic in x, followed by its sensitivities to each parameter a, b, c.
+```
+$ ipython3
+...
+In [3]: from ad import *
+ad module loaded
 
-## TSM Parameter reference
-For Python, the first parameter is a string identifying the ODE, so numbers here refer only to the numeric parameters.
+In [4]: a = Series.get(5, 3.0)
 
-Parameter | Meaning
-----------|-----------
-1,2 | precision in decimal places, order
-3,4 | step size, number of steps
-5,6,7 | x0, y0, z0
-8+ | ODE parameters
+In [5]: b = Series.get(5, 5.0)
 
+In [6]: c = Series.get(5, 7.0)
+
+In [7]: x = Series.get(5, 2.0)
+
+In [8]: print(a * x**3 - b * x**2 + c * x - 5)
++1.300000e+01 +0.000000e+00 +0.000000e+00 +0.000000e+00 +0.000000e+00 
+
+In [9]: print(a * x.var**3 - b * x.var**2 + c * x.var - 5)
++1.300000e+01 +2.300000e+01 +1.300000e+01 +3.000000e+00 +0.000000e+00 
+
+In [10]: print(a.var * x**3 - b * x**2 + c * x - 5)
++1.300000e+01 +8.000000e+00 +0.000000e+00 +0.000000e+00 +0.000000e+00 
+
+In [11]: print(a * x**3 - b.var * x**2 + c * x - 5)
++1.300000e+01 -4.000000e+00 +0.000000e+00 +0.000000e+00 +0.000000e+00 
+
+In [12]: print(a * x**3 - b * x**2 + c.var * x - 5)
++1.300000e+01 +2.000000e+00 +0.000000e+00 +0.000000e+00 +0.000000e+00 
+
+```
 
 ## c usage
 
@@ -237,8 +261,19 @@ Build them using the command:
 ./build
 ```
 
-The built c programs are all called tsm-[something].
+The built c programs are all called tsm-[model].
 Each source file should contain an example invocation near the top.
+
+## tsm-[model] Parameter reference
+For Python, the first parameter is a string identifying the ODE, so numbers here refer only to the numeric parameters.
+
+Parameter | Meaning
+----------|-----------
+1,2 | precision in decimal places, order
+3,4 | step size, number of steps
+5,6,7 | x0, y0, z0
+8+ | ODE parameters
+
 To see them all:
 
 ```
