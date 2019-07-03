@@ -129,7 +129,7 @@ def schwartzschild(r, e=to_mpfr(0.962250), p_r=zero(+1), l_z=to_mpfr(4)):  # no 
 def analyze(model, x0, x1, steps):
     target = zero(+1)
     for k in range(steps):
-        w_x = Dual.get(x0 + k * (x1 - x0) / steps).var
+        w_x = Dual.get(x0 + k * (x1 - x0) / (steps - 1)).var
         w_f = model(w_x) - target
         print(f"{w_x.val:.6e} {w_f}")
         yield w_x.val, w_f.val, w_f.der

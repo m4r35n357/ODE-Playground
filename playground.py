@@ -68,7 +68,7 @@ def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
         elif mode == 2:
             print("Newton's method", file=stderr)
     for k in range(steps):
-        w_x = Series.get(order, x0 + k * (x1 - x0) / steps).var
+        w_x = Series.get(order, x0 + k * (x1 - x0) / (steps - 1)).var
         w_f = ~ model(w_x) - target
         print(f"{w_x.val:.6e} {w_f}")
         if mode != 0:
