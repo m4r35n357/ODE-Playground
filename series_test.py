@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 from sys import argv
-from gmpy2 import get_context, acos, zero
-
+from gmpy2 import get_context, acos
 get_context().precision = 236  # Set this BEFORE importing any AD stuff!
 from ad import to_mpfr, Series, Dual
 from functions import *
@@ -122,15 +121,10 @@ print(~ Series.get(order, c).var.atan, file=stderr)
 
 print("", file=stderr)
 
-def schwartzschild(r, e=to_mpfr(0.962250), p_r=zero(+1), l_z=to_mpfr(4)):  # no t or phi!
-    # Example: ./series_test.py 1 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
-    return (e**2 / (1 - 2 / r) - p_r**2 * (1 - 2 / r) - (l_z / r).sqr) / 2
-
 def analyze(model, x0, x1, steps):
-    target = zero(+1)
     for k in range(steps):
-        w_x = Dual.get(x0 + k * (x1 - x0) / (steps - 1)).var
-        w_f = model(w_x) - target
+        w_x = Dual.get(x_step(x0, x1, steps, k)).var
+        w_f = model(w_x)
         print(f"{w_x.val:.6e} {w_f}")
         yield w_x.val, w_f.val, w_f.der
 

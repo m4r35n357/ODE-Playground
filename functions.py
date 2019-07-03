@@ -1,9 +1,19 @@
 
 from sys import stderr
+from gmpy2 import zero
+from ad import to_mpfr
+
+# this one is for graph plotting only!
+def x_step(start, end, n_steps, step):
+    return start + step * (end - start) / (n_steps - 1)
 
 def lorentz(a):
     # Example: ./models.py 0 .001 .999 1001 13 1e-12 1e-12 | ./plotMany.py 1 10 >/dev/null
     return 1 / (1 - a.sqr).sqrt
+
+def schwartzschild(r, e=0.962250, p_r=zero(+1), l_z=to_mpfr(4.0)):  # no t or phi!
+    # Example: ./series_test.py 1 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
+    return (e**2 / (1 - 2 / r) - p_r**2 * (1 - 2 / r) - (l_z / r).sqr) / 2
 
 def cosx_x3(a):
     # Example: ./models.py 1 -8 8 1001 13 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null

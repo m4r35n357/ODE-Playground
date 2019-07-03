@@ -7,6 +7,7 @@ from collections import namedtuple
 from enum import Enum
 from gmpy2 import zero
 from ad import Series, to_mpfr
+from functions import x_step
 
 
 class Sense(Enum):
@@ -61,15 +62,14 @@ def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=100
 
 def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
     x_prev = f_prev = f_dash_prev = f_dash_dash_prev = result = None
-    target = zero(+1)
     if mode != 0:
         if mode == 1:
             print("Bisection", file=stderr)
         elif mode == 2:
             print("Newton's method", file=stderr)
     for k in range(steps):
-        w_x = Series.get(order, x0 + k * (x1 - x0) / (steps - 1)).var
-        w_f = ~ model(w_x) - target
+        w_x = Series.get(order, x_step(x0, x1, steps, k)).var
+        w_f = ~ model(w_x)
         print(f"{w_x.val:.6e} {w_f}")
         if mode != 0:
             if k > 0:
@@ -79,9 +79,9 @@ def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
                     else:
                         sense = Sense.POSITIVE
                     if mode == 1:
-                        result = bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense, target)
+                        result = bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense)
                     elif mode == 2:
-                        result = newton(model, w_x.val, f_tol, x_tol, max_it, sense, target)
+                        result = newton(model, w_x.val, f_tol, x_tol, max_it, sense)
                     yield result
                 if f_dash_prev * w_f.jet[1] < 0.0:
                     if f_dash_prev > w_f.jet[1]:
@@ -89,9 +89,9 @@ def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
                     else:
                         sense = Sense.POSITIVE
                     if mode == 1:
-                        result = bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense, target, Solver.EXTREMUM)
+                        result = bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense, mode=Solver.EXTREMUM)
                     elif mode == 2:
-                        result = newton(model, w_x.val, f_tol, x_tol, max_it, sense, target, Solver.EXTREMUM)
+                        result = newton(model, w_x.val, f_tol, x_tol, max_it, sense, mode=Solver.EXTREMUM)
                     yield result
                 if f_dash_dash_prev * w_f.jet[2] < 0.0:
                     if f_dash_dash_prev > w_f.jet[2]:
@@ -99,9 +99,9 @@ def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
                     else:
                         sense = Sense.POSITIVE
                     if mode == 1:
-                        result = bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense, target, Solver.INFLECTION)
+                        result = bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION)
                     elif mode == 2:
-                        result = newton(model, w_x.val, f_tol, x_tol, max_it, sense, target, Solver.INFLECTION)
+                        result = newton(model, w_x.val, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION)
                     yield result
         else:
             yield w_x.val, w_f.jet
