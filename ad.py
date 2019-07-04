@@ -33,62 +33,53 @@ def _ddot(v, u, k):
 def t_sqrt(r, u, k):
     if k == 0:
         return sqrt(u[0])
-    else:
-        return (u[k] / 2 - _ddot(r, r, k)) / r[0]
+    return (u[k] / 2 - _ddot(r, r, k)) / r[0]
 
 def t_exp(e, u, k):
     if k == 0:
         return exp(u[0])
-    else:
-        return e[0] * u[k] + _ddot(e, u, k)
+    return e[0] * u[k] + _ddot(e, u, k)
 
 def t_ln(l, u, k):
     if k == 0:
         return log(u[0])
-    else:
-        return (u[k] - _ddot(u, l, k)) / u[0]
+    return (u[k] - _ddot(u, l, k)) / u[0]
 
 def t_pwr(p, u, a, k):
     if k == 0:
         return u[0]**a
-    else:
-        return (a * (p[0] * u[k] + _ddot(p, u, k)) - _ddot(u, p, k)) / u[0]
+    return (a * (p[0] * u[k] + _ddot(p, u, k)) - _ddot(u, p, k)) / u[0]
 
 def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
         return sinh_cosh(u[0]) if hyp else sin_cos(u[0])
-    else:
-        sk = c[0] * u[k] + _ddot(c, u, k)
-        ck = s[0] * u[k] + _ddot(s, u, k)
-        return (sk, ck) if hyp else (sk, - ck)
+    sk = c[0] * u[k] + _ddot(c, u, k)
+    ck = s[0] * u[k] + _ddot(s, u, k)
+    return (sk, ck) if hyp else (sk, - ck)
 
 def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
         return (tanh(u[0]), 1 - tanh(u[0])**2) if hyp else (tan(u[0]), 1 + tan(u[0])**2)
-    else:
-        tk = s2[0] * u[k] + _ddot(s2, u, k)
-        sk = 2 * (t[0] * tk + _ddot(t, t, k))
-        return (tk, - sk) if hyp else (tk, sk)
+    tk = s2[0] * u[k] + _ddot(s2, u, k)
+    sk = 2 * (t[0] * tk + _ddot(t, t, k))
+    return (tk, - sk) if hyp else (tk, sk)
 
 def t_atan(h, v, u, k):
     if k == 0:
         return atan(u[0]), 1 + u[0]**2
-    else:
-        return (u[k] - _ddot(v, h, k)) / v[0], 2 * (u[0] * u[k] + _ddot(u, u, k))
+    return (u[k] - _ddot(v, h, k)) / v[0], 2 * (u[0] * u[k] + _ddot(u, u, k))
 
 def t_asin(h, v, u, k):
     if k == 0:
         return asin(u[0]), cos(asin(u[0]))
-    else:
-        hk = (u[k] - _ddot(v, h, k)) / v[0]
-        return hk, - u[0] * hk - _ddot(u, h, k)
+    hk = (u[k] - _ddot(v, h, k)) / v[0]
+    return hk, - u[0] * hk - _ddot(u, h, k)
 
 def t_acos(h, v, u, k):
     if k == 0:
         return acos(u[0]), - sin(acos(u[0]))
-    else:
-        hk = (u[k] + _ddot(v, h, k)) / v[0]
-        return hk, u[0] * hk + _ddot(u, h, k)
+    hk = (u[k] + _ddot(v, h, k)) / v[0]
+    return hk, u[0] * hk + _ddot(u, h, k)
 
 
 class Series:
@@ -127,10 +118,9 @@ class Series:
     def __add__(self, other):
         if isinstance(other, Series):
             return Series([self.jet[k] + other.jet[k] for k in range(self.n)])
-        else:
-            add_jet = [self.jet[k] for k in range(self.n)]
-            add_jet[0] += other
-            return Series(add_jet)
+        add_jet = [self.jet[k] for k in range(self.n)]
+        add_jet[0] += other
+        return Series(add_jet)
 
     def __radd__(self, other):
         return self + other
@@ -138,10 +128,9 @@ class Series:
     def __sub__(self, other):
         if isinstance(other, Series):
             return Series([self.jet[k] - other.jet[k] for k in range(self.n)])
-        else:
-            sub_jet = [self.jet[k] for k in range(self.n)]
-            sub_jet[0] -= other
-            return Series(sub_jet)
+        sub_jet = [self.jet[k] for k in range(self.n)]
+        sub_jet[0] -= other
+        return Series(sub_jet)
 
     def __rsub__(self, other):
         sub_jet = [- self.jet[k] for k in range(self.n)]
@@ -151,8 +140,7 @@ class Series:
     def __mul__(self, other):
         if isinstance(other, Series):
             return Series([t_prod(self.jet, other.jet, k) for k in range(self.n)])
-        else:
-            return Series([self.jet[k] * other for k in range(self.n)])
+        return Series([self.jet[k] * other for k in range(self.n)])
 
     def __rmul__(self, other):
         return self * other
@@ -164,9 +152,8 @@ class Series:
             for k in range(self.n):
                 div_jet[k] = t_quot(div_jet, self.jet, other.jet, k)
             return Series(div_jet)
-        else:
-            assert abs(other) != zero(+1), f"other = {other}"
-            return Series([self.jet[k] / other for k in range(self.n)])
+        assert abs(other) != zero(+1), f"other = {other}"
+        return Series([self.jet[k] / other for k in range(self.n)])
 
     def __rtruediv__(self, other):
         assert abs(self.val) != zero(+1), f"self.val = {self.val}"
@@ -180,11 +167,10 @@ class Series:
         if isinstance(other, Series):
             assert self.val > zero(+1), f"self.val = {self.val}"
             return (self.ln * other).exp
-        else:
-            pow_jet = t_jet(self.n)
-            for k in range(self.n):
-                pow_jet[k] = t_pwr(pow_jet, self.jet, other, k)
-            return Series(pow_jet)
+        pow_jet = t_jet(self.n)
+        for k in range(self.n):
+            pow_jet[k] = t_pwr(pow_jet, self.jet, other, k)
+        return Series(pow_jet)
 
     def __rpow__(self, other):
         assert other > zero(+1), f"other = {other}"
@@ -324,8 +310,7 @@ class Dual:
     def __add__(self, other):
         if isinstance(other, Dual):
             return Dual(self.val + other.val, self.der + other.der)
-        else:
-            return Dual(self.val + other, self.der)
+        return Dual(self.val + other, self.der)
 
     def __radd__(self, other):
         return self + other
@@ -333,8 +318,7 @@ class Dual:
     def __sub__(self, other):
         if isinstance(other, Dual):
             return Dual(self.val - other.val, self.der - other.der)
-        else:
-            return Dual(self.val - other, self.der)
+        return Dual(self.val - other, self.der)
 
     def __rsub__(self, other):
         return Dual(- self.val + other, - self.der)
@@ -342,8 +326,7 @@ class Dual:
     def __mul__(self, other):
         if isinstance(other, Dual):
             return Dual(self.val * other.val, self.der * other.val + self.val * other.der)
-        else:
-            return Dual(self.val * other, self.der * other)
+        return Dual(self.val * other, self.der * other)
 
     def __rmul__(self, other):
         return self * other
@@ -352,9 +335,8 @@ class Dual:
         if isinstance(other, Dual):
             assert abs(other.val) != zero(+1), f"other.val = {other.val}"
             return Dual(self.val / other.val, (self.der * other.val - self.val * other.der) / other.val**2)
-        else:
-            assert abs(other) != zero(+1), f"other = {other}"
-            return Dual(self.val / other, self.der / other)
+        assert abs(other) != zero(+1), f"other = {other}"
+        return Dual(self.val / other, self.der / other)
 
     def __rtruediv__(self, other):
         assert abs(self.val) != zero(+1), f"self.val = {self.val}"
@@ -364,8 +346,7 @@ class Dual:
         if isinstance(other, Dual):
             assert self.val > zero(+1), f"self.val = {self.val}"
             return (self.ln * other).exp
-        else:
-            return Dual(self.val**other, other * self.val**(other - 1) * self.der)
+        return Dual(self.val**other, other * self.val**(other - 1) * self.der)
 
     def __rpow__(self, other):
         assert other > zero(+1), f"other = {other}"
