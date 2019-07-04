@@ -133,7 +133,7 @@ class Series:
             return Series(add_jet)
 
     def __radd__(self, other):
-        return self.__add__(other)
+        return self + other
 
     def __sub__(self, other):
         if isinstance(other, Series):
@@ -155,19 +155,18 @@ class Series:
             return Series([self.jet[k] * other for k in range(self.n)])
 
     def __rmul__(self, other):
-        return self.__mul__(other)
+        return self * other
 
     def __truediv__(self, other):
-        div_jet = t_jet(self.n)
         if isinstance(other, Series):
             assert abs(other.val) != zero(+1), f"other.val = {other.val}"
+            div_jet = t_jet(self.n)
             for k in range(self.n):
                 div_jet[k] = t_quot(div_jet, self.jet, other.jet, k)
+            return Series(div_jet)
         else:
             assert abs(other) != zero(+1), f"other = {other}"
-            for k in range(self.n):
-                div_jet[k] = self.jet[k] / other
-        return Series(div_jet)
+            return Series([self.jet[k] / other for k in range(self.n)])
 
     def __rtruediv__(self, other):
         assert abs(self.val) != zero(+1), f"self.val = {self.val}"
@@ -329,7 +328,7 @@ class Dual:
             return Dual(self.val + other, self.der)
 
     def __radd__(self, other):
-        return self.__add__(other)
+        return self + other
 
     def __sub__(self, other):
         if isinstance(other, Dual):
@@ -347,7 +346,7 @@ class Dual:
             return Dual(self.val * other, self.der * other)
 
     def __rmul__(self, other):
-        return self.__mul__(other)
+        return self * other
 
     def __truediv__(self, other):
         if isinstance(other, Dual):
