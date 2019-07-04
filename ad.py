@@ -189,7 +189,7 @@ class Series:
 
     def __rpow__(self, other):
         assert other > zero(+1), f"other = {other}"
-        return (self * log(other)).exp
+        return (log(other) * self).exp
 
     def _trans(self, fun):
         jet = t_jet(self.n)
@@ -370,7 +370,7 @@ class Dual:
 
     def __rpow__(self, other):
         assert other > zero(+1), f"other = {other}"
-        return (self * log(other)).exp
+        return (log(other) * self).exp
 
     @property
     def sqr(self):
