@@ -262,12 +262,12 @@ class Series:
 
     @property
     def asin(self):
-        assert abs(self.val) <= 1.0, f"self.val = {self.val}"
+        assert abs(self.val) <= to_mpfr(1), f"self.val = {self.val}"
         return self._arc(t_asin)
 
     @property
     def acos(self):
-        assert abs(self.val) <= 1.0, f"self.val = {self.val}"
+        assert abs(self.val) <= to_mpfr(1), f"self.val = {self.val}"
         return self._arc(t_acos)
 
     @property
@@ -292,7 +292,7 @@ class Dual:
         self.der = derivative
 
     @classmethod
-    def get(cls, value=0.0):
+    def get(cls, value=zero(+1)):
         return cls(to_mpfr(value), zero(+1))
 
     def __str__(self):
@@ -408,12 +408,12 @@ class Dual:
 
     @property
     def asin(self):
-        assert abs(self.val) <= 1.0, f"self.val = {self.val}"
+        assert abs(self.val) <= to_mpfr(1), f"self.val = {self.val}"
         return Dual(asin(self.val), self.der / sqrt(1 - self.val**2))
 
     @property
     def acos(self):
-        assert abs(self.val) <= 1.0, f"self.val = {self.val}"
+        assert abs(self.val) <= to_mpfr(1), f"self.val = {self.val}"
         return Dual(acos(self.val), - self.der / sqrt(1 - self.val**2))
 
     @property
