@@ -93,10 +93,7 @@ class Series:
         return cls(t_jet(order, value))
 
     def __str__(self):
-        string = ""
-        for i in range(0, self.n):
-            string += f"{self.jet[i]:+.9e} "
-        return string
+        return ''.join(f"{self.jet[i]:+.9e} " for i in range(0, self.n))
 
     def __abs__(self):
         return self.sqr.sqrt
