@@ -33,7 +33,7 @@ def _ddot(v, u, k):
 def t_sqrt(r, u, k):
     if k == 0:
         return sqrt(u[0])
-    return (u[k] / 2 - _ddot(r, r, k)) / r[0]
+    return (u[k] / to_mpfr(2) - _ddot(r, r, k)) / r[0]
 
 def t_exp(e, u, k):
     if k == 0:
@@ -59,15 +59,15 @@ def t_sin_cos(s, c, u, k, hyp=False):
 
 def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
-        return (tanh(u[0]), 1 - tanh(u[0])**2) if hyp else (tan(u[0]), 1 + tan(u[0])**2)
+        return (tanh(u[0]), to_mpfr(1) - tanh(u[0])**2) if hyp else (tan(u[0]), to_mpfr(1) + tan(u[0])**2)
     tk = s2[0] * u[k] + _ddot(s2, u, k)
-    sk = 2 * (t[0] * tk + _ddot(t, t, k))
+    sk = to_mpfr(2) * (t[0] * tk + _ddot(t, t, k))
     return (tk, - sk) if hyp else (tk, sk)
 
 def t_atan(h, v, u, k):
     if k == 0:
-        return atan(u[0]), 1 + u[0]**2
-    return (u[k] - _ddot(v, h, k)) / v[0], 2 * (u[0] * u[k] + _ddot(u, u, k))
+        return atan(u[0]), to_mpfr(1) + u[0]**2
+    return (u[k] - _ddot(v, h, k)) / v[0], to_mpfr(2) * (u[0] * u[k] + _ddot(u, u, k))
 
 def t_asin(h, v, u, k):
     if k == 0:
@@ -347,7 +347,7 @@ class Dual:
         if isinstance(other, Dual):
             assert self.val > zero(+1), f"self.val = {self.val}"
             return (self.ln * other).exp
-        return Dual(self.val**other, other * self.val**(other - 1) * self.der)
+        return Dual(self.val**other, other * self.val**(other - to_mpfr(1)) * self.der)
 
     def __rpow__(self, other):
         assert other > zero(+1), f"other = {other}"
@@ -355,13 +355,13 @@ class Dual:
 
     @property
     def sqr(self):
-        return Dual(self.val**2, 2 * self.der * self.val)
+        return Dual(self.val**2, (to_mpfr(2) * self.der * self.val))
 
     @property
     def sqrt(self):
         assert self.val >= zero(+1), f"self.val = {self.val}"
         sqrt_val = sqrt(self.val)
-        return Dual(sqrt_val, self.der / (2 * sqrt_val))
+        return Dual(sqrt_val, self.der / (to_mpfr(2) * sqrt_val))
 
     @property
     def exp(self):
@@ -410,16 +410,16 @@ class Dual:
     @property
     def asin(self):
         assert abs(self.val) <= to_mpfr(1), f"self.val = {self.val}"
-        return Dual(asin(self.val), self.der / sqrt(1 - self.val**2))
+        return Dual(asin(self.val), self.der / sqrt(to_mpfr(1) - self.val**2))
 
     @property
     def acos(self):
         assert abs(self.val) <= to_mpfr(1), f"self.val = {self.val}"
-        return Dual(acos(self.val), - self.der / sqrt(1 - self.val**2))
+        return Dual(acos(self.val), - self.der / sqrt(to_mpfr(1) - self.val**2))
 
     @property
     def atan(self):
-        return Dual(atan(self.val), self.der / (1 + self.val**2))
+        return Dual(atan(self.val), self.der / (to_mpfr(1) + self.val**2))
 
     @property
     def var(self):
