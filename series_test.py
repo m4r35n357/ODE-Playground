@@ -97,6 +97,10 @@ print(f" cos(pi / {a:.1})", file=stderr)
 print(co, file=stderr)
 print(~cosine, file=stderr)
 
+print(f" tan(pi / {b:.1})", file=stderr)
+print(Dual.get(pi / b).var.tan, file=stderr)
+print(~Series.get(order, pi / b).var.tan, file=stderr)
+
 si, co = Dual.get(pi / a).var.sinh_cosh
 sine, cosine = Series.get(order, pi / a).var.sinh_cosh
 
@@ -108,12 +112,12 @@ print(f" cosh(pi / {a:.1})", file=stderr)
 print(co, file=stderr)
 print(~cosine, file=stderr)
 
-print(f" tan(pi / {b:.1})", file=stderr)
-print(Dual.get(pi / b).var.tan, file=stderr)
-print(~Series.get(order, pi / b).var.tan, file=stderr)
+print(f" tanh(pi / {b:.1})", file=stderr)
+print(Dual.get(pi / b).var.tanh, file=stderr)
+print(~Series.get(order, pi / b).var.tanh, file=stderr)
 
-print(f" sec(pi / {b:.1})^2", file=stderr)
-print(~Series.get(order, pi / b).var.sec2, file=stderr)
+# print(f" sec(pi / {b:.1})^2", file=stderr)
+# print(~Series.get(order, pi / b).var.sec2, file=stderr)
 
 print(f" asin({c:.1})", file=stderr)
 print(Dual.get(c).var.asin, file=stderr)
@@ -126,6 +130,18 @@ print(~Series.get(order, c).var.acos, file=stderr)
 print(f" atan({c:.1})", file=stderr)
 print(Dual.get(c).var.atan, file=stderr)
 print(~Series.get(order, c).var.atan, file=stderr)
+
+print(f" asinh({c:.1})", file=stderr)
+print(Dual.get(c).var.asinh, file=stderr)
+print(~Series.get(order, c).var.asinh, file=stderr)
+
+print(f" acosh({a:.1})", file=stderr)
+print(Dual.get(a).var.acosh, file=stderr)
+print(~Series.get(order, a).var.acosh, file=stderr)
+
+print(f" atanh({c:.1})", file=stderr)
+print(Dual.get(c).var.atanh, file=stderr)
+print(~Series.get(order, c).var.atanh, file=stderr)
 
 print("", file=stderr)
 
@@ -142,5 +158,5 @@ assert upper > lower
 n_steps = int(argv[4])
 assert n_steps > 0
 
-for result in analyze(composite1, lower, upper, steps=n_steps):
+for result in analyze(playground, lower, upper, steps=n_steps):
     pass

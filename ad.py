@@ -3,7 +3,7 @@
 #
 from sys import stderr
 from gmpy2 import mpfr, sqrt, sin_cos, sin, cos, sinh_cosh, sinh, cosh, tan, sec, tanh, sech, atan, asin, acos, exp, \
-    log, zero
+    log, zero, atanh, asinh, acosh
 
 
 # noinspection PyArgumentList
@@ -59,27 +59,30 @@ def t_sin_cos(s, c, u, k, hyp=False):
 
 def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
-        return (tanh(u[0]), to_mpfr(1) - tanh(u[0])**2) if hyp else (tan(u[0]), to_mpfr(1) + tan(u[0])**2)
+        return (tanh(u[0]), sech(u[0])**2) if hyp else (tan(u[0]), sec(u[0])**2)
     tk = s2[0] * u[k] + _ddot(s2, u, k)
     sk = to_mpfr(2) * (t[0] * tk + _ddot(t, t, k))
     return (tk, - sk) if hyp else (tk, sk)
 
-def t_atan(h, v, u, k):
+def t_asin(h, v, u, k, hyp=False):
     if k == 0:
-        return atan(u[0]), to_mpfr(1) + u[0]**2
-    return (u[k] - _ddot(v, h, k)) / v[0], to_mpfr(2) * (u[0] * u[k] + _ddot(u, u, k))
+        return (asinh(u[0]), cosh(asinh(u[0]))) if hyp else (asin(u[0]), cos(asin(u[0])))
+    sk = (u[k] - _ddot(v, h, k)) / v[0]
+    ck = u[0] * sk + _ddot(u, h, k)
+    return (sk, ck) if hyp else (sk, - ck)
 
-def t_asin(h, v, u, k):
+def t_acos(h, v, u, k, hyp=False):
     if k == 0:
-        return asin(u[0]), cos(asin(u[0]))
-    hk = (u[k] - _ddot(v, h, k)) / v[0]
-    return hk, - u[0] * hk - _ddot(u, h, k)
+        return (acosh(u[0]), sinh(acosh(u[0]))) if hyp else (acos(u[0]), - sin(acos(u[0])))
+    sk = (u[k] + _ddot(v, h, k)) / v[0]
+    ck = - u[0] * sk - _ddot(u, h, k)
+    return (sk, ck) if hyp else (sk, - ck)
 
-def t_acos(h, v, u, k):
+def t_atan(h, v, u, k, hyp=False):
     if k == 0:
-        return acos(u[0]), - sin(acos(u[0]))
-    hk = (u[k] + _ddot(v, h, k)) / v[0]
-    return hk, u[0] * hk + _ddot(u, h, k)
+        return (atanh(u[0]), to_mpfr(1) - u[0]**2) if hyp else (atan(u[0]), to_mpfr(1) + u[0]**2)
+    tk, sk = (u[k] - _ddot(v, h, k)) / v[0], to_mpfr(2) * (u[0] * u[k] + _ddot(u, u, k))
+    return (tk, - sk) if hyp else (tk, sk)
 
 
 class Series:
@@ -179,16 +182,16 @@ class Series:
             jet[k] = fun(jet, self.jet, k)
         return Series(jet)
 
-    def _trig(self, fun, hyp):
+    def _trig(self, fun, hyp=False):
         jet_a, jet_b = t_jet(self.n), t_jet(self.n)
         for k in range(self.n):
             jet_a[k], jet_b[k] = fun(jet_a, jet_b, self.jet, k, hyp)
         return Series(jet_a), Series(jet_b)
 
-    def _arc(self, fun):
+    def _arc(self, fun, hyp=False):
         h_jet, v_jet = t_jet(self.n), t_jet(self.n)
         for k in range(self.n):
-            h_jet[k], v_jet[k] = fun(h_jet, v_jet, self.jet, k)
+            h_jet[k], v_jet[k] = fun(h_jet, v_jet, self.jet, k, hyp)
         return Series(h_jet)
 
     @property
@@ -211,51 +214,35 @@ class Series:
 
     @property
     def sin(self):
-        return self._trig(t_sin_cos, False)[0]
+        return self._trig(t_sin_cos)[0]
 
     @property
     def cos(self):
-        return self._trig(t_sin_cos, False)[1]
+        return self._trig(t_sin_cos)[1]
 
     @property
     def sin_cos(self):
-        return self._trig(t_sin_cos, False)
-
-    @property
-    def sinh(self):
-        return self._trig(t_sin_cos, True)[0]
-
-    @property
-    def cosh(self):
-        return self._trig(t_sin_cos, True)[1]
-
-    @property
-    def sinh_cosh(self):
-        return self._trig(t_sin_cos, True)
+        return self._trig(t_sin_cos)
 
     @property
     def tan(self):
-        return self._trig(t_tan_sec2, False)[0]
+        return self._trig(t_tan_sec2)[0]
 
     @property
-    def sec2(self):
-        return self._trig(t_tan_sec2, False)[1]
+    def sinh(self):
+        return self._trig(t_sin_cos, hyp=True)[0]
 
     @property
-    def tan_sec2(self):
-        return self._trig(t_tan_sec2, False)
+    def cosh(self):
+        return self._trig(t_sin_cos, hyp=True)[1]
+
+    @property
+    def sinh_cosh(self):
+        return self._trig(t_sin_cos, hyp=True)
 
     @property
     def tanh(self):
-        return self._trig(t_tan_sec2, True)[0]
-
-    @property
-    def sech2(self):
-        return self._trig(t_tan_sec2, True)[1]
-
-    @property
-    def tanh_sech2(self):
-        return self._trig(t_tan_sec2, True)
+        return self._trig(t_tan_sec2, hyp=True)[0]
 
     @property
     def asin(self):
@@ -270,6 +257,20 @@ class Series:
     @property
     def atan(self):
         return self._arc(t_atan)
+
+    @property
+    def asinh(self):
+        return self._arc(t_asin, hyp=True)
+
+    @property
+    def acosh(self):
+        assert self.val >= to_mpfr(1), f"self.val = {self.val}"
+        return self._arc(t_acos, hyp=True)
+
+    @property
+    def atanh(self):
+        assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
+        return self._arc(t_atan, hyp=True)
 
     @property
     def val(self):
@@ -387,6 +388,10 @@ class Dual:
         return Dual(s, self.der * c), Dual(c, - self.der * s)
 
     @property
+    def tan(self):
+        return Dual(tan(self.val), self.der * sec(self.val)**2)
+
+    @property
     def sinh(self):
         return Dual(sinh(self.val), self.der * cosh(self.val))
 
@@ -398,10 +403,6 @@ class Dual:
     def sinh_cosh(self):
         s, c = sinh_cosh(self.val)
         return Dual(s, self.der * c), Dual(c, self.der * s)
-
-    @property
-    def tan(self):
-        return Dual(tan(self.val), self.der * sec(self.val)**2)
 
     @property
     def tanh(self):
@@ -420,6 +421,20 @@ class Dual:
     @property
     def atan(self):
         return Dual(atan(self.val), self.der / (to_mpfr(1) + self.val**2))
+
+    @property
+    def asinh(self):
+        return Dual(asinh(self.val), self.der / sqrt(self.val**2 + to_mpfr(1)))
+
+    @property
+    def acosh(self):
+        assert self.val >= to_mpfr(1), f"self.val = {self.val}"
+        return Dual(acosh(self.val), self.der / sqrt(self.val**2 - to_mpfr(1)))
+
+    @property
+    def atanh(self):
+        assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
+        return Dual(atanh(self.val), self.der / (to_mpfr(1) - self.val**2))
 
     @property
     def var(self):

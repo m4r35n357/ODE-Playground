@@ -48,9 +48,12 @@ def playground(a):
     # return a.sin.asin
     # return a.cos.acos
     # return a.tan.atan
+    # return a.sinh.asinh
+    return a.cosh.acosh
+    # return a.tanh.atanh
     # return (a + 7) / (3.0 - a)
     # return a**4
-    return (-4)**a
+    # return (-4)**a
     # return (2 + 3 * a)**(2 * a - 5)
 
 print(__name__ + " module loaded", file=stderr)
