@@ -21,6 +21,13 @@ def t_horner(jet, n, h):
         result = result * h + jet[i]
     return result
 
+def t_abs(u, k):
+    if k == 0:
+        return abs(u[0])
+    elif k == 1:
+        return to_mpfr(1) if u[0] > zero(+1) else (to_mpfr(-1) if u[0] <zero(+1) else zero(+1))
+    return zero(+1)
+
 def t_prod(u, v, k):
     return sum(u[j] * v[k - j] for j in range(k + 1))
 
@@ -99,7 +106,7 @@ class Series:
         return ''.join(f"{self.jet[i]:+.9e} " for i in range(0, self.n))
 
     def __abs__(self):
-        return self.sqr.sqrt
+        return Series([t_abs(self.jet, k) for k in range(self.n)])
 
     def __pos__(self):
         return Series([self.jet[k] for k in range(self.n)])
@@ -301,7 +308,7 @@ class Dual:
         return f"{self.val:+.9e} {self.der:+.9e}"
 
     def __abs__(self):
-        return self.sqr.sqrt
+        return Dual(abs(self.val), to_mpfr(1) if self.val > zero(+1) else (to_mpfr(-1) if self.val <zero(+1) else zero(+1)))
 
     def __pos__(self):
         return Dual(self.val, self.der)

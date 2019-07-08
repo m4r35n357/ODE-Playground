@@ -17,6 +17,7 @@ There is a maths.tex file containing a technical note describing the majority of
 
 The Taylor recurrence rules (the global "t-functions") generate "jets" of Taylor Series coefficients iteratively, term by term, using previously calculated lower order calculations.
 The functions provided cover the basic algebraic operations (+ - * /), and also include several common functions:
+* abs
 * sqrt
 * exp
 * sin(h)_cos(h)
@@ -42,6 +43,7 @@ The "higher-level" functions (in the Series and Dual classes) generate Taylor se
 There is an overloaded operator "~" which extracts the actual derivative values from the taylor series coefficents, as well as additional operators for (negation and **).
 The \*\* (power) operator caters for f(x)^a, a^f(x) and f1(x)^f2(x), subject to domain limitations on f(x) and the scalar a.
 There are also functions for:
+* abs
 * sqr
 * sqrt
 * exp
@@ -53,7 +55,6 @@ There are also functions for:
 * acos(h) (Python only)
 * atan(h) (Python only)
 * ln
-* abs
 
 Using these higher level functions, Newton's method is implemented trivially, but I have also provided implementations of bisection and arbitrary degree Householder (c only) methods for comparison.
 There are three main areas of application for the code:
