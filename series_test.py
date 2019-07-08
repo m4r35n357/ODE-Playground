@@ -158,5 +158,5 @@ assert upper > lower
 n_steps = int(argv[4])
 assert n_steps > 0
 
-for result in analyze(playground, lower, upper, steps=n_steps):
+for result in analyze(composite1, lower, upper, steps=n_steps):
     pass

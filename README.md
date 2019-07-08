@@ -15,17 +15,17 @@ These programs are the result.
 The main objective was to solve coupled nonlinear equations and investigate chaotic systems.
 There is a maths.tex file containing a technical note describing the majority of the procedure (apart from the recurrence relations which are obtained from the source listed below).
 
-The Taylor recurrence rules generate "jets" of derivatives (the Taylor Series coefficients) term by term using previously calculated lower order derivatives.
+The Taylor recurrence rules (the global "t-functions") generate "jets" of Taylor Series coefficients iteratively, term by term, using previously calculated lower order calculations.
 The functions provided cover the basic algebraic operations (+ - * /), and also include several common functions:
 * sqr
 * sqrt
 * exp
 * sin(h)_cos(h)
 * tan(h)_sec(h)2
-* asin (Python only)
-* acos (Python only)
-* atan (Python only)
-* pwr
+* asin(h) (Python only)
+* acos(h) (Python only)
+* atan(h) (Python only)
+* pwr (f(x)^a, a is a scalar)
 * ln
 
 The recurrence relations used here are derived in http://aimsciences.org/journals/displayPaperPro.jsp?paperID=9241 (open access).
@@ -39,17 +39,18 @@ The solver demo can be used to find roots (and also extrema and inflection point
 Additionally it is designed for finding inverse values (where real solutions exist) of complicated functions, not just their roots.
 
 
-The "higher-level" functions generate Taylor series "jets" in one go, so are only useful for univariate functions.
+The "higher-level" functions (in the Series and Dual classes) generate Taylor series "jets" in one go, so are only useful for univariate functions.
 There is an overloaded operator "~" which extracts the actual derivative values from the taylor series coefficents, as well as additional operators for (negation and **).
+The \*\* (power) operator caters for f(x)^a, a^f(x) and f1(x)^f2(x), subject to domain limitations on f(x) and the scalar a.
 There are functions for:
 * sqr
 * sqrt
 * exp
 * sin(h)_cos(h)
 * tan(h)
-* asin (Python only)
-* acos (Python only)
-* atan (Python only)
+* asin(h) (Python only)
+* acos(h) (Python only)
+* atan(h) (Python only)
 * ln
 * abs
 
@@ -115,8 +116,7 @@ cd ../..
 ```
 
 ## tsm.py Parameter reference
-tsm.py is a long "if" statement containing a "zoo" of pre-programmed ODE systems.
-For Python, the first parameter is a string identifying the ODE, so numbers here refer only to the numeric parameters.
+tsm.py comprises a long "if" statement containing a "zoo" of pre-programmed ODE systems.
 
 Parameter | Meaning
 ----------|-----------
@@ -266,7 +266,6 @@ The built c programs are all called tsm-[model].
 Each source file should contain an example invocation near the top.
 
 ## tsm-[model] Parameter reference
-For Python, the first parameter is a string identifying the ODE, so numbers here refer only to the numeric parameters.
 
 Parameter | Meaning
 ----------|-----------
