@@ -2,17 +2,12 @@
 #  (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 from sys import stderr
-from gmpy2 import mpfr, sqrt, sin_cos, sin, cos, sinh_cosh, sinh, cosh, tan, sec, tanh, sech, atan, asin, acos, exp, \
-    log, zero, atanh, asinh, acosh
+from math import sqrt, sin, cos, sinh, cosh, tan, tanh, atan, asin, acos, exp, log, asinh, acosh, atanh
 
 
-# noinspection PyArgumentList
-def to_mpfr(x):
-    return mpfr(str(x)) if isinstance(x, (float, int)) else mpfr(x)
-
-def t_jet(n, value=zero(+1)):
-    jet = [zero(+1)] * n
-    jet[0] = to_mpfr(value)
+def t_jet(n, value=0.0):
+    jet = [0.0] * n
+    jet[0] = value
     return jet
 
 def t_horner(jet, n, h):
@@ -25,8 +20,8 @@ def t_abs(u, k):
     if k == 0:
         return abs(u[0])
     elif k == 1:
-        return u[1] if u[0] > zero(+1) else (- u[1] if u[0] < zero(+1) else zero(+1))
-    return zero(+1)
+        return u[1] if u[0] > 0.0 else (- u[1] if u[0] < 0.0 else 0.0)
+    return 0.0
 
 def t_prod(u, v, k):
     return sum(u[j] * v[k - j] for j in range(k + 1))
@@ -37,11 +32,11 @@ def t_quot(q, u, v, k):
 def t_sqrt(r, u, k):
     if k == 0:
         return sqrt(u[0])
-    return (u[k] - sum(r[j] * r[k - j] for j in range(1, k))) / (to_mpfr(2) * r[0])
+    return (u[k] - sum(r[j] * r[k - j] for j in range(1, k))) / (2.0 * r[0])
 
 def t_pwr(p, u, a, k):
-    if abs(u[0]) == zero(+1):
-        return zero(+1)
+    if abs(u[0]) == 0.0:
+        return 0.0
     if k == 0:
         return u[0]**a
     return sum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
@@ -61,16 +56,16 @@ def t_ln(l, u, k):
 
 def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
-        return sinh_cosh(u[0]) if hyp else sin_cos(u[0])
+        return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
     sk = c[0] * u[k] + _ddot(c, u, k)
     ck = s[0] * u[k] + _ddot(s, u, k)
     return (sk, ck) if hyp else (sk, - ck)
 
 def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
-        return (tanh(u[0]), sech(u[0])**2) if hyp else (tan(u[0]), sec(u[0])**2)
+        return (tanh(u[0]), 1.0 - tanh(u[0])**2) if hyp else (tan(u[0]), 1.0 + tan(u[0])**2)
     tk = s2[0] * u[k] + _ddot(s2, u, k)
-    sk = to_mpfr(2) * (t[0] * tk + _ddot(t, t, k))
+    sk = 2.0 * (t[0] * tk + _ddot(t, t, k))
     return (tk, - sk) if hyp else (tk, sk)
 
 def t_asin(h, v, u, k, hyp=False):
@@ -89,8 +84,8 @@ def t_acos(h, v, u, k, hyp=False):
 
 def t_atan(h, v, u, k, hyp=False):
     if k == 0:
-        return (atanh(u[0]), to_mpfr(1) - u[0]**2) if hyp else (atan(u[0]), to_mpfr(1) + u[0]**2)
-    tk, sk = (u[k] - _ddot(v, h, k)) / v[0], to_mpfr(2) * (u[0] * u[k] + _ddot(u, u, k))
+        return (atanh(u[0]), 1.0 - u[0]**2) if hyp else (atan(u[0]), 1.0 + u[0]**2)
+    tk, sk = (u[k] - _ddot(v, h, k)) / v[0], 2.0 * (u[0] * u[k] + _ddot(u, u, k))
     return (tk, - sk) if hyp else (tk, sk)
 
 
@@ -101,11 +96,11 @@ class Series:
         self.jet = [jet[k] for k in range(self.n)]
 
     @classmethod
-    def get(cls, order, value=zero(+1)):
+    def get(cls, order, value=0.0):
         return cls(t_jet(order, value))
 
     def __str__(self):
-        return ''.join(f"{self.jet[i]:+.9e} " for i in range(self.n))
+        return ''.join(f"{self.jet[i]:+.6e} " for i in range(self.n))
 
     def __abs__(self):
         return Series([t_abs(self.jet, k) for k in range(self.n)])
@@ -156,16 +151,16 @@ class Series:
 
     def __truediv__(self, other):
         if isinstance(other, Series):
-            assert abs(other.val) != zero(+1), f"other.val = {other.val}"
+            assert abs(other.val) != 0.0, f"other.val = {other.val}"
             div_jet = t_jet(self.n)
             for k in range(self.n):
                 div_jet[k] = t_quot(div_jet, self.jet, other.jet, k)
             return Series(div_jet)
-        assert abs(other) != zero(+1), f"other = {other}"
+        assert abs(other) != 0.0, f"other = {other}"
         return Series([self.jet[k] / other for k in range(self.n)])
 
     def __rtruediv__(self, other):
-        assert abs(self.val) != zero(+1), f"self.val = {self.val}"
+        assert abs(self.val) != 0.0, f"self.val = {self.val}"
         other_jet = t_jet(self.n, other)
         rdiv_jet = t_jet(self.n)
         for k in range(self.n):
@@ -173,7 +168,7 @@ class Series:
         return Series(rdiv_jet)
 
     def __pow__(self, other):
-        assert self.val > zero(+1), f"self.val = {self.val}"
+        assert self.val > 0.0, f"self.val = {self.val}"
         if isinstance(other, Series):
             return (self.ln * other).exp
         pow_jet = t_jet(self.n)
@@ -182,7 +177,7 @@ class Series:
         return Series(pow_jet)
 
     def __rpow__(self, other):
-        assert other > zero(+1), f"other = {other}"
+        assert other > 0.0, f"other = {other}"
         return (log(other) * self).exp
 
     def _single(self, fun):
@@ -199,7 +194,7 @@ class Series:
 
     @property
     def sqrt(self):
-        assert self.val > zero(+1), f"self.val = {self.val}"
+        assert self.val > 0.0, f"self.val = {self.val}"
         return self._single(t_sqrt)
 
     @property
@@ -208,7 +203,7 @@ class Series:
 
     @property
     def ln(self):
-        assert self.val > zero(+1), f"self.val = {self.val}"
+        assert self.val > 0.0, f"self.val = {self.val}"
         return self._single(t_ln)
 
     @property
@@ -245,12 +240,12 @@ class Series:
 
     @property
     def asin(self):
-        assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
+        assert abs(self.val) < 1.0, f"self.val = {self.val}"
         return self._double(t_asin)[0]
 
     @property
     def acos(self):
-        assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
+        assert abs(self.val) < 1.0, f"self.val = {self.val}"
         return self._double(t_acos)[0]
 
     @property
@@ -263,12 +258,12 @@ class Series:
 
     @property
     def acosh(self):
-        assert self.val > to_mpfr(1), f"self.val = {self.val}"
+        assert self.val > 1.0, f"self.val = {self.val}"
         return self._double(t_acos, hyp=True)[0]
 
     @property
     def atanh(self):
-        assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
+        assert abs(self.val) < 1.0, f"self.val = {self.val}"
         return self._double(t_atan, hyp=True)[0]
 
     @property
@@ -278,7 +273,7 @@ class Series:
     @property
     def var(self):
         jet = t_jet(self.n, self.val)
-        jet[1] = to_mpfr(1)
+        jet[1] = 1.0
         return Series(jet)
 
 
@@ -289,14 +284,14 @@ class Dual:
         self.der = derivative
 
     @classmethod
-    def get(cls, value=zero(+1)):
-        return cls(to_mpfr(value), zero(+1))
+    def get(cls, value=0.0):
+        return cls(value, 0.0)
 
     def __str__(self):
-        return f"{self.val:+.9e} {self.der:+.9e}"
+        return f"{self.val:+.6e} {self.der:+.6e}"
 
     def __abs__(self):
-        return Dual(abs(self.val), self.der if self.val > zero(+1) else (- self.der if self.val < zero(+1) else zero(+1)))
+        return Dual(abs(self.val), self.der if self.val > 0.0 else (- self.der if self.val < 0.0 else 0.0))
 
     def __pos__(self):
         return Dual(self.val, self.der)
@@ -330,30 +325,30 @@ class Dual:
 
     def __truediv__(self, other):
         if isinstance(other, Dual):
-            assert abs(other.val) != zero(+1), f"other.val = {other.val}"
+            assert abs(other.val) != 0.0, f"other.val = {other.val}"
             return Dual(self.val / other.val, (self.der * other.val - self.val * other.der) / other.val**2)
-        assert abs(other) != zero(+1), f"other = {other}"
+        assert abs(other) != 0.0, f"other = {other}"
         return Dual(self.val / other, self.der / other)
 
     def __rtruediv__(self, other):
-        assert abs(self.val) != zero(+1), f"self.val = {self.val}"
+        assert abs(self.val) != 0.0, f"self.val = {self.val}"
         return Dual(other / self.val, - other * self.der / self.val**2)
 
     def __pow__(self, other):
-        assert self.val > zero(+1), f"self.val = {self.val}"
+        assert self.val > 0.0, f"self.val = {self.val}"
         if isinstance(other, Dual):
             return (self.ln * other).exp
-        return Dual(self.val**other, other * self.val**(other - to_mpfr(1)) * self.der)
+        return Dual(self.val**other, other * self.val**(other - 1.0) * self.der)
 
     def __rpow__(self, other):
-        assert other > zero(+1), f"other = {other}"
+        assert other > 0.0, f"other = {other}"
         return (log(other) * self).exp
 
     @property
     def sqrt(self):
-        assert self.val > zero(+1), f"self.val = {self.val}"
+        assert self.val > 0.0, f"self.val = {self.val}"
         sqrt_val = sqrt(self.val)
-        return Dual(sqrt_val, self.der / (to_mpfr(2) * sqrt_val))
+        return Dual(sqrt_val, self.der / (2.0 * sqrt_val))
 
     @property
     def exp(self):
@@ -362,7 +357,7 @@ class Dual:
 
     @property
     def ln(self):
-        assert self.val > zero(+1), f"self.val = {self.val}"
+        assert self.val > 0.0, f"self.val = {self.val}"
         return Dual(log(self.val), self.der / self.val)
 
     @property
@@ -374,13 +369,8 @@ class Dual:
         return Dual(cos(self.val), - self.der * sin(self.val))
 
     @property
-    def sin_cos(self):
-        s, c = sin_cos(self.val)
-        return Dual(s, self.der * c), Dual(c, - self.der * s)
-
-    @property
     def tan(self):
-        return Dual(tan(self.val), self.der * sec(self.val)**2)
+        return Dual(tan(self.val), self.der * (1.0 + tan(self.val)**2))
 
     @property
     def sinh(self):
@@ -391,45 +381,40 @@ class Dual:
         return Dual(cosh(self.val), self.der * sinh(self.val))
 
     @property
-    def sinh_cosh(self):
-        s, c = sinh_cosh(self.val)
-        return Dual(s, self.der * c), Dual(c, self.der * s)
-
-    @property
     def tanh(self):
-        return Dual(tanh(self.val), self.der * sech(self.val)**2)
+        return Dual(tanh(self.val), self.der * (1.0 - tanh(self.val)**2))
 
     @property
     def asin(self):
-        assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
-        return Dual(asin(self.val), self.der / sqrt(to_mpfr(1) - self.val**2))
+        assert abs(self.val) < 1.0, f"self.val = {self.val}"
+        return Dual(asin(self.val), self.der / sqrt(1.0 - self.val**2))
 
     @property
     def acos(self):
-        assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
-        return Dual(acos(self.val), - self.der / sqrt(to_mpfr(1) - self.val**2))
+        assert abs(self.val) < 1.0, f"self.val = {self.val}"
+        return Dual(acos(self.val), - self.der / sqrt(1.0 - self.val**2))
 
     @property
     def atan(self):
-        return Dual(atan(self.val), self.der / (to_mpfr(1) + self.val**2))
+        return Dual(atan(self.val), self.der / (1.0 + self.val**2))
 
     @property
     def asinh(self):
-        return Dual(asinh(self.val), self.der / sqrt(self.val**2 + to_mpfr(1)))
+        return Dual(asinh(self.val), self.der / sqrt(self.val**2 + 1.0))
 
     @property
     def acosh(self):
-        assert self.val > to_mpfr(1), f"self.val = {self.val}"
-        return Dual(acosh(self.val), self.der / sqrt(self.val**2 - to_mpfr(1)))
+        assert self.val > 1.0, f"self.val = {self.val}"
+        return Dual(acosh(self.val), self.der / sqrt(self.val**2 - 1.0))
 
     @property
     def atanh(self):
-        assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
-        return Dual(atanh(self.val), self.der / (to_mpfr(1) - self.val**2))
+        assert abs(self.val) < 1.0, f"self.val = {self.val}"
+        return Dual(atanh(self.val), self.der / (1.0 - self.val**2))
 
     @property
     def var(self):
-        return Dual(self.val, to_mpfr(1))
+        return Dual(self.val, 1.0)
 
 
 print(__name__ + " module loaded", file=stderr)

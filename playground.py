@@ -5,9 +5,8 @@
 from sys import stderr
 from collections import namedtuple
 from enum import Enum
-from gmpy2 import zero
-from ad import Series, to_mpfr
 from functions import x_step
+from ad import Series
 
 
 class Sense(Enum):
@@ -25,15 +24,15 @@ class Solver(Enum):
 Result = namedtuple('ResultType', ['count', 'sense', 'mode', 'x', 'f', 'dx'])
 
 
-def bisect(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.NONE, target=zero(+1), mode=Solver.ROOT):
+def bisect(model, xa, xb, f_tol=1.0e-12, x_tol=1.0e-12, max_it=1001, sense=Sense.NONE, target=0.0, mode=Solver.ROOT):
     a = Series.get(3, xa)
     b = Series.get(3, xb)
     c = Series.get(3)
-    fc = Series.get(3, 1)
+    fc = Series.get(3, 1.0)
     f_sign = ~model(a) - target
     δx = counter = 1
     while abs(fc.jet[mode.value]) > f_tol or abs(δx) > x_tol:
-        c = (a + b) / 2
+        c = (a + b) / 2.0
         fc = ~model(c) - target
         if f_sign.jet[mode.value] * fc.jet[mode.value] < 0.0:
             b = c
@@ -46,9 +45,9 @@ def bisect(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it
     return Result(count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + target, dx=δx)
 
 
-def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.NONE, target=zero(+1), mode=Solver.ROOT):
+def newton(model, x0, f_tol=1.0e-12, x_tol=1.0e-12, max_it=1001, sense=Sense.NONE, target=0.0, mode=Solver.ROOT):
     x = Series.get(2 + mode.value, x0).var  # make x a variable to use derivatives!
-    f = Series.get(2 + mode.value, 1)
+    f = Series.get(2 + mode.value, 1.0)
     δx = counter = 1
     while abs(f.jet[mode.value]) > f_tol or abs(δx) > x_tol:
         f = ~model(x) - target
