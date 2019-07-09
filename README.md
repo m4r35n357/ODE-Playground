@@ -117,20 +117,10 @@ python3 setup.py install
 cd ../..
 ```
 
-## tsm.py Parameter reference
-tsm.py comprises a long "if" statement containing a "zoo" of pre-programmed ODE systems.
-
-Parameter | Meaning
-----------|-----------
-1 | model (ODE) name
-2,3 | precision in decimal places, order
-4,5 | step size, number of steps
-6,7,8 | x0, y0, z0
-9+ | ODE parameters
-
 ## Solving ODEs
-This use case only involves the "t-*" functions in tsm.py.
-Refer to this file for _many_ examples.
+This use case only involves calling the "t-functions" in tsm.py.
+No differentiation happens in these functions (they only implement the recurrence relations); it is the responsibility of the calling program to organize this properly.
+Refer to tsm.py for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors.
 To find Python ODE example invocations:
 ```
 grep Example *.py
@@ -155,6 +145,17 @@ Double pendulum (see code for parameters)
 ```
 ./double.py 8 0.1 1000 1 1 1 1 .1 0 .1 0 | ./plotPi2d.py
 ```
+## tsm.py Parameter reference
+tsm.py comprises a long "if" statement containing a "zoo" of pre-programmed ODE systems.
+
+Parameter | Meaning
+----------|-----------
+1 | model (ODE) name
+2,3 | precision in decimal places, order
+4,5 | step size, number of steps
+6,7,8 | x0, y0, z0
+9+ | ODE parameters
+
 
 ## Interactivity
 Here is a quick example of interactive use; function inversion.
@@ -267,15 +268,6 @@ Build them using the command:
 The built c programs are all called tsm-[model].
 Each source file should contain an example invocation near the top.
 
-## tsm-[model] Parameter reference
-
-Parameter | Meaning
-----------|-----------
-1,2 | precision in decimal places, order
-3,4 | step size, number of steps
-5,6,7 | x0, y0, z0
-8+ | ODE parameters
-
 To see them all:
 
 ```
@@ -300,5 +292,12 @@ Matplotlib progressive graph plotting
 ```
 ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
 ```
+## tsm-[model] Parameter reference
+Parameter | Meaning
+----------|-----------
+1,2 | precision in decimal places, order
+3,4 | step size, number of steps
+5,6,7 | x0, y0, z0
+8+ | ODE parameters
 
 
