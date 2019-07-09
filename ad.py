@@ -183,13 +183,13 @@ class Series:
         assert other > zero(+1), f"other = {other}"
         return (log(other) * self).exp
 
-    def _trans(self, fun):
+    def _single(self, fun):
         jet = t_jet(self.n)
         for k in range(self.n):
             jet[k] = fun(jet, self.jet, k)
         return Series(jet)
 
-    def _trig(self, fun, hyp=False):
+    def _double(self, fun, hyp=False):
         jet_a, jet_b = t_jet(self.n), t_jet(self.n)
         for k in range(self.n):
             jet_a[k], jet_b[k] = fun(jet_a, jet_b, self.jet, k, hyp)
@@ -202,76 +202,76 @@ class Series:
     @property
     def sqrt(self):
         assert self.val >= zero(+1), f"self.val = {self.val}"
-        return self._trans(t_sqrt)
+        return self._single(t_sqrt)
 
     @property
     def exp(self):
-        return self._trans(t_exp)
+        return self._single(t_exp)
 
     @property
     def ln(self):
         assert self.val > zero(+1), f"self.val = {self.val}"
-        return self._trans(t_ln)
+        return self._single(t_ln)
 
     @property
     def sin(self):
-        return self._trig(t_sin_cos)[0]
+        return self._double(t_sin_cos)[0]
 
     @property
     def cos(self):
-        return self._trig(t_sin_cos)[1]
+        return self._double(t_sin_cos)[1]
 
     @property
     def sin_cos(self):
-        return self._trig(t_sin_cos)
+        return self._double(t_sin_cos)
 
     @property
     def tan(self):
-        return self._trig(t_tan_sec2)[0]
+        return self._double(t_tan_sec2)[0]
 
     @property
     def sinh(self):
-        return self._trig(t_sin_cos, hyp=True)[0]
+        return self._double(t_sin_cos, hyp=True)[0]
 
     @property
     def cosh(self):
-        return self._trig(t_sin_cos, hyp=True)[1]
+        return self._double(t_sin_cos, hyp=True)[1]
 
     @property
     def sinh_cosh(self):
-        return self._trig(t_sin_cos, hyp=True)
+        return self._double(t_sin_cos, hyp=True)
 
     @property
     def tanh(self):
-        return self._trig(t_tan_sec2, hyp=True)[0]
+        return self._double(t_tan_sec2, hyp=True)[0]
 
     @property
     def asin(self):
         assert abs(self.val) <= to_mpfr(1), f"self.val = {self.val}"
-        return self._trig(t_asin)[0]
+        return self._double(t_asin)[0]
 
     @property
     def acos(self):
         assert abs(self.val) <= to_mpfr(1), f"self.val = {self.val}"
-        return self._trig(t_acos)[0]
+        return self._double(t_acos)[0]
 
     @property
     def atan(self):
-        return self._trig(t_atan)[0]
+        return self._double(t_atan)[0]
 
     @property
     def asinh(self):
-        return self._trig(t_asin, hyp=True)[0]
+        return self._double(t_asin, hyp=True)[0]
 
     @property
     def acosh(self):
         assert self.val >= to_mpfr(1), f"self.val = {self.val}"
-        return self._trig(t_acos, hyp=True)[0]
+        return self._double(t_acos, hyp=True)[0]
 
     @property
     def atanh(self):
         assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
-        return self._trig(t_atan, hyp=True)[0]
+        return self._double(t_atan, hyp=True)[0]
 
     @property
     def val(self):
