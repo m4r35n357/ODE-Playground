@@ -47,7 +47,7 @@ def bisect(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it
 
 
 def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.NONE, target=zero(+1), mode=Solver.ROOT):
-    x = Series.get(2 + mode.value, x0).var
+    x = Series.get(2 + mode.value, x0).var  # make x a variable to use derivatives!
     f = Series.get(2 + mode.value, 1)
     δx = counter = 1
     while abs(f.jet[mode.value]) > f_tol or abs(δx) > x_tol:
@@ -68,7 +68,7 @@ def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
         elif mode == 2:
             print("Newton's method", file=stderr)
     for k in range(steps):
-        w_x = Series.get(order, x_step(x0, x1, steps, k)).var
+        w_x = Series.get(order, x_step(x0, x1, steps, k)).var  # make x a variable to see derivatives!
         w_f = ~model(w_x)
         print(f"{w_x.val:.6e} {w_f}")
         if mode != 0:

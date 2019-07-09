@@ -195,12 +195,6 @@ class Series:
             jet_a[k], jet_b[k] = fun(jet_a, jet_b, self.jet, k, hyp)
         return Series(jet_a), Series(jet_b)
 
-    def _arc(self, fun, hyp=False):
-        h_jet, v_jet = t_jet(self.n), t_jet(self.n)
-        for k in range(self.n):
-            h_jet[k], v_jet[k] = fun(h_jet, v_jet, self.jet, k, hyp)
-        return Series(h_jet)
-
     @property
     def sqr(self):
         return self * self
@@ -254,30 +248,30 @@ class Series:
     @property
     def asin(self):
         assert abs(self.val) <= to_mpfr(1), f"self.val = {self.val}"
-        return self._arc(t_asin)
+        return self._trig(t_asin)[0]
 
     @property
     def acos(self):
         assert abs(self.val) <= to_mpfr(1), f"self.val = {self.val}"
-        return self._arc(t_acos)
+        return self._trig(t_acos)[0]
 
     @property
     def atan(self):
-        return self._arc(t_atan)
+        return self._trig(t_atan)[0]
 
     @property
     def asinh(self):
-        return self._arc(t_asin, hyp=True)
+        return self._trig(t_asin, hyp=True)[0]
 
     @property
     def acosh(self):
         assert self.val >= to_mpfr(1), f"self.val = {self.val}"
-        return self._arc(t_acos, hyp=True)
+        return self._trig(t_acos, hyp=True)[0]
 
     @property
     def atanh(self):
         assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
-        return self._arc(t_atan, hyp=True)
+        return self._trig(t_atan, hyp=True)[0]
 
     @property
     def val(self):
