@@ -8,7 +8,8 @@ from sys import argv
 from gmpy2 import get_context, log, sqrt, cos, zero
 from math import pi
 get_context().precision = int(int(argv[2]) * log(10.0) / log(2.0))  # Set this BEFORE importing any AD stuff!
-from ad import t_jet, t_horner, t_prod, t_sin_cos, t_tan_sec2, to_mpfr
+from ad import t_jet, t_horner, t_abs, t_prod, t_sin_cos, t_tan_sec2, to_mpfr
+
 
 def output(x, y, z, t):
     print(f'{x:.9e} {y:.9e} {z:.9e} {t:.5e}')
@@ -103,7 +104,7 @@ def main():
                 z[k + 1] = (sx[k] - b * z[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
-    elif model == "st":
+    elif model == "sprott-thomas":
         a, b = to_mpfr(argv[9]), to_mpfr(argv[10])
         sx, cx = t_jet(order), t_jet(order)
         sy, cy = t_jet(order), t_jet(order)
@@ -128,8 +129,8 @@ def main():
                 z[k + 1] = (sax[k] - b * sz[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
-    elif model == "rf":
-        #  Example: ./tsm.py rf 16 10 .01 100001 .1 .1 .1 .2876 .1 | ./plotPi3d.py
+    elif model == "rabinovich–fabrikant":
+        #  Example: ./tsm.py rabinovich–fabrikant 16 10 .01 100001 .1 .1 .1 .2876 .1 | ./plotPi3d.py
         a, g = to_mpfr(argv[9]), to_mpfr(argv[10])
         jet1, w_a, w_b, w_c = t_jet(order, 1), t_jet(order), t_jet(order), t_jet(order)
         output(x0, y0, z0, zero(+1))
@@ -157,7 +158,7 @@ def main():
                 z[k + 1] = (x[k] - t_prod(x, x, k) - t_prod(y, y, k)) / (k + 1)
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
-    elif model == "sj":
+    elif model == "sprott-jafari":
         a, b = to_mpfr(argv[9]), to_mpfr(argv[10])
         w_b = t_jet(order, b)
         output(x0, y0, z0, zero(+1))
@@ -181,8 +182,8 @@ def main():
                 z[k + 1] = - (a * z[k] + 4 * x[k] + 4 * y[k] + t_prod(x, x, k)) / (k + 1)
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
-    elif model == "nh":
-        #  Example: ./tsm.py nh 16 10 0.01 10001 1 0 0 6.0 | ./plotPi3d.py
+    elif model == "nose-hoover":
+        #  Example: ./tsm.py nose-hoover 16 10 0.01 10001 1 0 0 6.0 | ./plotPi3d.py
         a_ = t_jet(order, to_mpfr(argv[9]))
         output(x0, y0, z0, zero(+1))
         for step in range(1, n_steps + 1):
@@ -205,6 +206,20 @@ def main():
                 z[k + 1] = (t_prod(y, y, k) - z[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
+    elif model == "wimol-banlue":
+            #  Example: ./tsm.py wimol-banlue 16 10 0.1 10001 1 0 0 2.0 | ./plotPi3d.py
+            a_ = t_jet(order, to_mpfr(argv[9]))
+            tx, sx = t_jet(order), t_jet(order)
+            output(x0, y0, z0, zero(+1))
+            for step in range(1, n_steps + 1):
+                x[0], y[0], z[0] = x0, y0, z0
+                for k in range(order):
+                    tx[k], sx[k] = t_tan_sec2(tx, sx, x, k, hyp=True)
+                    x[k + 1] = (y[k] - x[k]) / (k + 1)
+                    y[k + 1] = - t_prod(z, tx, k) / (k + 1)
+                    z[k + 1] = (- a_[k] + t_prod(x, y, k) + t_abs(y, k)) / (k + 1)
+                x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
+                output(x0, y0, z0, step * δt)
     elif model == "newton":
         κ, l, m = to_mpfr(argv[9]), to_mpfr(argv[10]), to_mpfr(argv[11])
         output(x0, y0, zero(+1), zero(+1))
