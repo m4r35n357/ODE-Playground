@@ -25,7 +25,7 @@ def t_abs(u, k):
     if k == 0:
         return abs(u[0])
     elif k == 1:
-        return to_mpfr(1) if u[0] > zero(+1) else (to_mpfr(-1) if u[0] <zero(+1) else zero(+1))
+        return u[1] if u[0] > zero(+1) else (- u[1] if u[0] < zero(+1) else zero(+1))
     return zero(+1)
 
 def t_prod(u, v, k):
@@ -308,7 +308,7 @@ class Dual:
         return f"{self.val:+.9e} {self.der:+.9e}"
 
     def __abs__(self):
-        return Dual(abs(self.val), to_mpfr(1) if self.val > zero(+1) else (to_mpfr(-1) if self.val <zero(+1) else zero(+1)))
+        return Dual(abs(self.val), self.der if self.val > zero(+1) else (- self.der if self.val < zero(+1) else zero(+1)))
 
     def __pos__(self):
         return Dual(self.val, self.der)
