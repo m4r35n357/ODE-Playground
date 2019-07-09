@@ -126,10 +126,6 @@ To find Python ODE example invocations:
 grep Example *.py
 ```
 It is also worth looking for examples in the c files as below.
-To test the root, extremum and inflection finding:
-```
-./models.py 2 -8 8 1001 7 1e-9 1e-9 | ./plotMany.py 8 10 >/dev/null
-```
 
 Matplotlib progressive graph plotting
 ```
@@ -155,6 +151,23 @@ Parameter | Meaning
 4,5 | step size, number of steps
 6,7,8 | x0, y0, z0
 9+ | ODE parameters
+
+
+## Analysing functions
+To test the function and multi-derivative plotting (Dual and Series representations), together with root, extremum and inflection finding:
+```
+./series_test.py 7 -8 8 1001 | ./plotMany.py 8 10 >/dev/null
+```
+```
+$ ./models.py 1 -8 8 1001 13 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
+ad module loaded
+functions module loaded
+playground module loaded
+Bisection
+ResultType(count=36, sense='-', mode='ROOT', x=mpfr('-1.961750534675549715757369995117187499999999999999999999999999999999999987',236), f=mpfr('-5.805043894073777177930058241509277124986288774641499850942009520578458612e-13',236), dx=mpfr('-4.656612873077392578124999999999999999999999999999999999999997102182694775e-13',236))
+ResultType(count=2, sense='+', mode='EXTREMUM', x=mpfr('-1.320000000000000000000000000000000000000000000000000000000000000000000004',236), f=mpfr('-0.9895699319474545589789920831749399410839476209598406981422940090028371208',236), dx=mpfr('0.0',236))
+ResultType(count=35, sense='+', mode='ROOT', x=mpfr('-0.01849182777944952249526977539062499999999999999999999999999999999999997151',236), f=mpfr('-9.131427064507876845535703720933450904719073854466606849410430432029352248e-13',236), dx=mpfr('-9.313225746154785156249999999999999999999999999999999999999999864164813818e-13',236))
+```
 
 
 ## Interactivity
