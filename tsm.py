@@ -131,19 +131,19 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "rabinovich–fabrikant":
         #  Example: ./tsm.py rabinovich–fabrikant 16 10 .01 100001 .1 .1 .1 .2876 .1 | ./plotPi3d.py
-        a, g = to_mpfr(argv[9]), to_mpfr(argv[10])
-        jet1, w_a, w_b, w_c = t_jet(order, 1), t_jet(order), t_jet(order), t_jet(order)
+        α, γ = to_mpfr(argv[9]), to_mpfr(argv[10])
+        jet1, a, b, c = t_jet(order, 1), t_jet(order), t_jet(order), t_jet(order)
         output(x0, y0, z0, zero(+1))
         for step in range(1, n_steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
             for k in range(order):
-                w_x2_1 = t_prod(x, x, k) - jet1[k]
-                w_a[k] = z[k] + w_x2_1
-                w_b[k] = 3 * z[k] - w_x2_1
-                w_c[k] = a + t_prod(x, y, k)
-                x[k + 1] = (t_prod(y, w_a, k) + g * x[k]) / (k + 1)
-                y[k + 1] = (t_prod(x, w_b, k) + g * y[k]) / (k + 1)
-                z[k + 1] = - 2 * t_prod(z, w_c, k) / (k + 1)
+                x2_1 = t_prod(x, x, k) - jet1[k]
+                a[k] = z[k] + x2_1
+                b[k] = to_mpfr(3) * z[k] - x2_1
+                c[k] = α + t_prod(x, y, k)
+                x[k + 1] = (t_prod(y, a, k) + γ * x[k]) / (k + 1)
+                y[k + 1] = (t_prod(x, b, k) + γ * y[k]) / (k + 1)
+                z[k + 1] = - to_mpfr(2) * t_prod(z, c, k) / (k + 1)
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "sprott":
@@ -153,62 +153,62 @@ def main():
         for step in range(1, n_steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
             for k in range(order):
-                x[k + 1] = (y[k] + 2 * t_prod(x, y, k) + t_prod(x, z, k)) / (k + 1)
-                y[k + 1] = (w1[k] - 2 * t_prod(x, x, k) + t_prod(y, z, k)) / (k + 1)
+                x[k + 1] = (y[k] + to_mpfr(2) * t_prod(x, y, k) + t_prod(x, z, k)) / (k + 1)
+                y[k + 1] = (w1[k] - to_mpfr(2) * t_prod(x, x, k) + t_prod(y, z, k)) / (k + 1)
                 z[k + 1] = (x[k] - t_prod(x, x, k) - t_prod(y, y, k)) / (k + 1)
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "sprott-jafari":
         a, b = to_mpfr(argv[9]), to_mpfr(argv[10])
-        w_b = t_jet(order, b)
+        b = t_jet(order, b)
         output(x0, y0, z0, zero(+1))
         for step in range(1, n_steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
             for k in range(order):
                 x[k + 1] = y[k] / (k + 1)
                 y[k + 1] = - x[k] + t_prod(y, z, k) / (k + 1)
-                z[k + 1] = (z[k] + a * t_prod(x, x, k) - t_prod(y, y, k) - w_b[k]) / (k + 1)
+                z[k + 1] = (z[k] + a * t_prod(x, x, k) - t_prod(y, y, k) - b[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "halvorsen":
         #  Example: ./tsm.py halvorsen 16 10 .01 100001 1 0 0 1.4 | ./plotPi3d.py
-        a = to_mpfr(argv[9])
+        α = to_mpfr(argv[9])
         output(x0, y0, z0, zero(+1))
         for step in range(1, n_steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
             for k in range(order):
-                x[k + 1] = - (a * x[k] + 4 * y[k] + 4 * z[k] + t_prod(y, y, k)) / (k + 1)
-                y[k + 1] = - (a * y[k] + 4 * z[k] + 4 * x[k] + t_prod(z, z, k)) / (k + 1)
-                z[k + 1] = - (a * z[k] + 4 * x[k] + 4 * y[k] + t_prod(x, x, k)) / (k + 1)
+                x[k + 1] = - (α * x[k] + to_mpfr(4) * y[k] + to_mpfr(4) * z[k] + t_prod(y, y, k)) / (k + 1)
+                y[k + 1] = - (α * y[k] + to_mpfr(4) * z[k] + to_mpfr(4) * x[k] + t_prod(z, z, k)) / (k + 1)
+                z[k + 1] = - (α * z[k] + to_mpfr(4) * x[k] + to_mpfr(4) * y[k] + t_prod(x, x, k)) / (k + 1)
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "nose-hoover":
         #  Example: ./tsm.py nose-hoover 16 10 0.01 10001 1 0 0 6.0 | ./plotPi3d.py
-        a_ = t_jet(order, to_mpfr(argv[9]))
+        α = t_jet(order, to_mpfr(argv[9]))
         output(x0, y0, z0, zero(+1))
         for step in range(1, n_steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
             for k in range(order):
                 x[k + 1] = y[k] / (k + 1)
                 y[k + 1] = (t_prod(y, z, k) - x[k]) / (k + 1)
-                z[k + 1] = (a_[k] - t_prod(y, y, k)) / (k + 1)
+                z[k + 1] = (α[k] - t_prod(y, y, k)) / (k + 1)
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "rucklidge":
         #  Example: ./tsm.py rucklidge 16 10 0.01 10001 1 0 0 6.7 2 | ./plotPi3d.py
-        a, b = to_mpfr(argv[9]), to_mpfr(argv[10])
+        α, κ = to_mpfr(argv[9]), to_mpfr(argv[10])
         output(x0, y0, z0, zero(+1))
         for step in range(1, n_steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
             for k in range(order):
-                x[k + 1] = (a * y[k] - b * x[k] - t_prod(y, z, k)) / (k + 1)
+                x[k + 1] = (α * y[k] - κ * x[k] - t_prod(y, z, k)) / (k + 1)
                 y[k + 1] = x[k] / (k + 1)
                 z[k + 1] = (t_prod(y, y, k) - z[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
             output(x0, y0, z0, step * δt)
     elif model == "wimol-banlue":
             #  Example: ./tsm.py wimol-banlue 16 10 0.1 10001 1 0 0 2.0 | ./plotPi3d.py
-            a_ = t_jet(order, to_mpfr(argv[9]))
+            α = t_jet(order, to_mpfr(argv[9]))
             tx, sx = t_jet(order), t_jet(order)
             output(x0, y0, z0, zero(+1))
             for step in range(1, n_steps + 1):
@@ -217,7 +217,7 @@ def main():
                     tx[k], sx[k] = t_tan_sec2(tx, sx, x, k, hyp=True)
                     x[k + 1] = (y[k] - x[k]) / (k + 1)
                     y[k + 1] = - t_prod(z, tx, k) / (k + 1)
-                    z[k + 1] = (- a_[k] + t_prod(x, y, k) + t_abs(y, k)) / (k + 1)
+                    z[k + 1] = (- α[k] + t_prod(x, y, k) + t_abs(y, k)) / (k + 1)
                 x0, y0, z0 = t_horner(x, order, δt), t_horner(y, order, δt), t_horner(z, order, δt)
                 output(x0, y0, z0, step * δt)
     elif model == "newton":
