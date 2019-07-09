@@ -206,12 +206,12 @@ class Series:
 
     @property
     def sqrt(self):
-        assert self.val >= zero(+1), f"self.val = {self.val}"
+        assert self.val > zero(+1), f"self.val = {self.val}"
         return self._single(t_sqrt)
 
     @property
     def squrt(self):
-        assert self.val >= zero(+1), f"self.val = {self.val}"
+        assert self.val > zero(+1), f"self.val = {self.val}"
         return self._single(t_squrt)
 
     @property
@@ -257,12 +257,12 @@ class Series:
 
     @property
     def asin(self):
-        assert abs(self.val) <= to_mpfr(1), f"self.val = {self.val}"
+        assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
         return self._double(t_asin)[0]
 
     @property
     def acos(self):
-        assert abs(self.val) <= to_mpfr(1), f"self.val = {self.val}"
+        assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
         return self._double(t_acos)[0]
 
     @property
@@ -275,7 +275,7 @@ class Series:
 
     @property
     def acosh(self):
-        assert self.val >= to_mpfr(1), f"self.val = {self.val}"
+        assert self.val > to_mpfr(1), f"self.val = {self.val}"
         return self._double(t_acos, hyp=True)[0]
 
     @property
@@ -371,15 +371,13 @@ class Dual:
 
     @property
     def sqrt(self):
-        assert self.val >= zero(+1), f"self.val = {self.val}"
+        assert self.val > zero(+1), f"self.val = {self.val}"
         sqrt_val = sqrt(self.val)
         return Dual(sqrt_val, self.der / (to_mpfr(2) * sqrt_val))
 
     @property
     def squrt(self):
-        assert self.val >= zero(+1), f"self.val = {self.val}"
-        sqrt_val = sqrt(self.val)
-        return Dual(sqrt_val, self.der / (to_mpfr(2) * sqrt_val))
+        return self.sqrt
 
     @property
     def exp(self):
@@ -427,12 +425,12 @@ class Dual:
 
     @property
     def asin(self):
-        assert abs(self.val) <= to_mpfr(1), f"self.val = {self.val}"
+        assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
         return Dual(asin(self.val), self.der / sqrt(to_mpfr(1) - self.val**2))
 
     @property
     def acos(self):
-        assert abs(self.val) <= to_mpfr(1), f"self.val = {self.val}"
+        assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
         return Dual(acos(self.val), - self.der / sqrt(to_mpfr(1) - self.val**2))
 
     @property
@@ -445,7 +443,7 @@ class Dual:
 
     @property
     def acosh(self):
-        assert self.val >= to_mpfr(1), f"self.val = {self.val}"
+        assert self.val > to_mpfr(1), f"self.val = {self.val}"
         return Dual(acosh(self.val), self.der / sqrt(self.val**2 - to_mpfr(1)))
 
     @property
