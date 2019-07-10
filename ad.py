@@ -58,6 +58,8 @@ def t_ln(l, u, k):
     return (u[k] - _ddot(u, l, k)) / u[0]
 
 def t_pwr(p, u, a, k):
+    if abs(u[0]) == zero(+1):
+        return zero(+1)
     if k == 0:
         return u[0]**a
     return (a * (p[0] * u[k] + _ddot(p, u, k)) - _ddot(u, p, k)) / u[0]
