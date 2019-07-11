@@ -173,8 +173,8 @@ class Series:
         return Series(rdiv_jet)
 
     def __pow__(self, other):
+        assert self.val > zero(+1), f"self.val = {self.val}"
         if isinstance(other, Series):
-            assert self.val > zero(+1), f"self.val = {self.val}"
             return (self.ln * other).exp
         pow_jet = t_jet(self.n)
         for k in range(self.n):
@@ -340,8 +340,8 @@ class Dual:
         return Dual(other / self.val, - other * self.der / self.val**2)
 
     def __pow__(self, other):
+        assert self.val > zero(+1), f"self.val = {self.val}"
         if isinstance(other, Dual):
-            assert self.val > zero(+1), f"self.val = {self.val}"
             return (self.ln * other).exp
         return Dual(self.val**other, other * self.val**(other - to_mpfr(1)) * self.der)
 
