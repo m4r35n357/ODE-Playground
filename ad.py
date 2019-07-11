@@ -34,11 +34,6 @@ def t_prod(u, v, k):
 def t_quot(q, u, v, k):
     return (u[k] - sum(v[j] * q[k - j] for j in range(1, k + 1))) / v[0]
 
-def t_sqrt(r, u, k):
-    if k == 0:
-        return sqrt(u[0])
-    return (u[k] - sum(r[j] * r[k - j] for j in range(1, k))) / (to_mpfr(2) * r[0])
-
 def t_pwr(p, u, a, k):
     if abs(u[0]) == zero(+1):
         return zero(+1)
@@ -198,11 +193,6 @@ class Series:
         return Series(jet_a), Series(jet_b)
 
     @property
-    def sqrt(self):
-        assert self.val > zero(+1), f"self.val = {self.val}"
-        return self._single(t_sqrt)
-
-    @property
     def exp(self):
         return self._single(t_exp)
 
@@ -348,12 +338,6 @@ class Dual:
     def __rpow__(self, other):
         assert other > zero(+1), f"other = {other}"
         return (log(other) * self).exp
-
-    @property
-    def sqrt(self):
-        assert self.val > zero(+1), f"self.val = {self.val}"
-        sqrt_val = sqrt(self.val)
-        return Dual(sqrt_val, self.der / (to_mpfr(2) * sqrt_val))
 
     @property
     def exp(self):
