@@ -198,10 +198,6 @@ class Series:
         return Series(jet_a), Series(jet_b)
 
     @property
-    def sqr(self):
-        return self * self
-
-    @property
     def sqrt(self):
         assert self.val > zero(+1), f"self.val = {self.val}"
         return self._single(t_sqrt)
@@ -285,10 +281,6 @@ class Series:
         jet[1] = to_mpfr(1)
         return Series(jet)
 
-    @property
-    def dual(self):
-        return Dual(self.jet[0], self.jet[1])
-
 
 class Dual:
 
@@ -356,10 +348,6 @@ class Dual:
     def __rpow__(self, other):
         assert other > zero(+1), f"other = {other}"
         return (log(other) * self).exp
-
-    @property
-    def sqr(self):
-        return Dual(self.val**2, (to_mpfr(2) * self.der * self.val))
 
     @property
     def sqrt(self):
@@ -442,10 +430,6 @@ class Dual:
     @property
     def var(self):
         return Dual(self.val, to_mpfr(1))
-
-    @property
-    def series(self):
-        return Series([self.val, self.der])
 
 
 print(__name__ + " module loaded", file=stderr)

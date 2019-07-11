@@ -70,10 +70,6 @@ print(" (y + 1)**(y - 1), (z + 1)**(z - 1)", file=stderr)  # wolfram: d^k/dx^k (
 print((y + 1)**(y - 1), file=stderr)
 print(~((z + 1)**(z - 1)), file=stderr)
 
-print(" sqr", file=stderr)
-print(Dual.get(b).var.sqr, file=stderr)
-print(~Series.get(order, b).var.sqr, file=stderr)
-
 print(" sqrt", file=stderr)
 print(Dual.get(b).var.sqrt, file=stderr)
 print(~Series.get(order, b).var.sqrt, file=stderr)
