@@ -34,18 +34,13 @@ def t_prod(u, v, k):
 def t_quot(q, u, v, k):
     return (u[k] - sum(v[j] * q[k - j] for j in range(1, k + 1))) / v[0]
 
-def t_squrt(r, u, k):
+def t_sqrt(r, u, k):
     if k == 0:
         return sqrt(u[0])
     return (u[k] - sum(r[j] * r[k - j] for j in range(1, k))) / (to_mpfr(2) * r[0])
 
 def _ddot(v, u, k):
     return sum(j * u[j] * v[k - j] for j in range(1, k)) / k
-
-def t_sqrt(r, u, k):
-    if k == 0:
-        return sqrt(u[0])
-    return (u[k] / to_mpfr(2) - _ddot(r, r, k)) / r[0]
 
 def t_exp(e, u, k):
     if k == 0:
@@ -212,11 +207,6 @@ class Series:
         return self._single(t_sqrt)
 
     @property
-    def squrt(self):
-        assert self.val > zero(+1), f"self.val = {self.val}"
-        return self._single(t_squrt)
-
-    @property
     def exp(self):
         return self._single(t_exp)
 
@@ -376,10 +366,6 @@ class Dual:
         assert self.val > zero(+1), f"self.val = {self.val}"
         sqrt_val = sqrt(self.val)
         return Dual(sqrt_val, self.der / (to_mpfr(2) * sqrt_val))
-
-    @property
-    def squrt(self):
-        return self.sqrt
 
     @property
     def exp(self):
