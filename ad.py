@@ -39,6 +39,13 @@ def t_sqrt(r, u, k):
         return sqrt(u[0])
     return (u[k] - sum(r[j] * r[k - j] for j in range(1, k))) / (to_mpfr(2) * r[0])
 
+def t_pwr(p, u, a, k):
+    if abs(u[0]) == zero(+1):
+        return zero(+1)
+    if k == 0:
+        return u[0]**a
+    return sum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
+
 def _ddot(v, u, k):
     return sum(j * u[j] * v[k - j] for j in range(1, k)) / k
 
@@ -51,13 +58,6 @@ def t_ln(l, u, k):
     if k == 0:
         return log(u[0])
     return (u[k] - _ddot(u, l, k)) / u[0]
-
-def t_pwr(p, u, a, k):
-    if abs(u[0]) == zero(+1):
-        return zero(+1)
-    if k == 0:
-        return u[0]**a
-    return (a * (p[0] * u[k] + _ddot(p, u, k)) - _ddot(u, p, k)) / u[0]
 
 def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
