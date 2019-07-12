@@ -35,8 +35,6 @@ def t_quot(q, u, v, k):
     return (u[k] - sum(v[j] * q[k - j] for j in range(1, k + 1))) / v[0]
 
 def t_pwr(p, u, a, k):
-    if abs(u[0]) == zero(+1):
-        return zero(+1)
     if k == 0:
         return u[0]**a
     return sum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
