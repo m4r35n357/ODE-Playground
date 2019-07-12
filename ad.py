@@ -41,51 +41,28 @@ def t_pwr(p, u, a, k):
         return u[0]**a
     return sum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
 
-def _ddot(v, u, k):
-    return sum(j * u[j] * v[k - j] for j in range(1, k)) / k
-
 def t_exp(e, u, k):
     if k == 0:
         return exp(u[0])
-    return e[0] * u[k] + _ddot(e, u, k)
+    return sum((k - j) * e[j] * u[k - j] for j in range(k)) / k
 
 def t_ln(l, u, k):
     if k == 0:
         return log(u[0])
-    return (u[k] - _ddot(u, l, k)) / u[0]
+    return (u[k] - sum(j * l[j] * u[k - j] for j in range(1, k)) / k) / u[0]
 
 def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
-        return sinh_cosh(u[0]) if hyp else sin_cos(u[0])
-    sk = c[0] * u[k] + _ddot(c, u, k)
-    ck = s[0] * u[k] + _ddot(s, u, k)
+        return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
+    sk = sum((k - j) * c[j] * u[k - j] for j in range(k)) / k
+    ck = sum((k - j) * s[j] * u[k - j] for j in range(k)) / k
     return (sk, ck) if hyp else (sk, - ck)
 
 def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
-        return (tanh(u[0]), sech(u[0])**2) if hyp else (tan(u[0]), sec(u[0])**2)
-    tk = s2[0] * u[k] + _ddot(s2, u, k)
-    sk = 2 * (t[0] * tk + _ddot(t, t, k))
-    return (tk, - sk) if hyp else (tk, sk)
-
-def t_asin(h, v, u, k, hyp=False):
-    if k == 0:
-        return (asinh(u[0]), cosh(asinh(u[0]))) if hyp else (asin(u[0]), cos(asin(u[0])))
-    sk = (u[k] - _ddot(v, h, k)) / v[0]
-    ck = u[0] * sk + _ddot(u, h, k)
-    return (sk, ck) if hyp else (sk, - ck)
-
-def t_acos(h, v, u, k, hyp=False):
-    if k == 0:
-        return (acosh(u[0]), sinh(acosh(u[0]))) if hyp else (acos(u[0]), - sin(acos(u[0])))
-    sk = (u[k] + _ddot(v, h, k)) / v[0]
-    ck = - u[0] * sk - _ddot(u, h, k)
-    return (sk, ck) if hyp else (sk, - ck)
-
-def t_atan(h, v, u, k, hyp=False):
-    if k == 0:
-        return (atanh(u[0]), 1 - u[0]**2) if hyp else (atan(u[0]), 1 + u[0]**2)
-    tk, sk = (u[k] - _ddot(v, h, k)) / v[0], 2 * (u[0] * u[k] + _ddot(u, u, k))
+        return (tanh(u[0]), 1 - tanh(u[0])**2) if hyp else (tan(u[0]), 1 + tan(u[0])**2)
+    tk = sum((k - j) * s2[j] * u[k - j] for j in range(k)) / k
+    sk = 2 * (t[0] * tk + sum((k - j) * t[j] * t[k - j] for j in range(1, k)) / k)
     return (tk, - sk) if hyp else (tk, sk)
 
 
@@ -218,6 +195,10 @@ class Series:
         return self._double(t_tan_sec2)[0]
 
     @property
+    def tan_sec2(self):
+        return self._double(t_tan_sec2)
+
+    @property
     def sinh(self):
         return self._double(t_sin_cos, hyp=True)[0]
 
@@ -234,32 +215,8 @@ class Series:
         return self._double(t_tan_sec2, hyp=True)[0]
 
     @property
-    def asin(self):
-        assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
-        return self._double(t_asin)[0]
-
-    @property
-    def acos(self):
-        assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
-        return self._double(t_acos)[0]
-
-    @property
-    def atan(self):
-        return self._double(t_atan)[0]
-
-    @property
-    def asinh(self):
-        return self._double(t_asin, hyp=True)[0]
-
-    @property
-    def acosh(self):
-        assert self.val > to_mpfr(1), f"self.val = {self.val}"
-        return self._double(t_acos, hyp=True)[0]
-
-    @property
-    def atanh(self):
-        assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
-        return self._double(t_atan, hyp=True)[0]
+    def tanh_sech2(self):
+        return self._double(t_tan_sec2, hyp=True)
 
     @property
     def val(self):
@@ -382,34 +339,6 @@ class Dual:
     @property
     def tanh(self):
         return Dual(tanh(self.val), self.der * sech(self.val)**2)
-
-    @property
-    def asin(self):
-        assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
-        return Dual(asin(self.val), self.der / sqrt(1 - self.val**2))
-
-    @property
-    def acos(self):
-        assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
-        return Dual(acos(self.val), - self.der / sqrt(1 - self.val**2))
-
-    @property
-    def atan(self):
-        return Dual(atan(self.val), self.der / (1 + self.val**2))
-
-    @property
-    def asinh(self):
-        return Dual(asinh(self.val), self.der / sqrt(self.val**2 + 1))
-
-    @property
-    def acosh(self):
-        assert self.val > to_mpfr(1), f"self.val = {self.val}"
-        return Dual(acosh(self.val), self.der / sqrt(self.val**2 - 1))
-
-    @property
-    def atanh(self):
-        assert abs(self.val) < to_mpfr(1), f"self.val = {self.val}"
-        return Dual(atanh(self.val), self.der / (1 - self.val**2))
 
     @property
     def var(self):

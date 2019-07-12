@@ -70,10 +70,6 @@ print(" (y + 1)**(y - 1), (z + 1)**(z - 1)", file=stderr)  # wolfram: d^k/dx^k (
 print((y + 1)**(y - 1), file=stderr)
 print(~((z + 1)**(z - 1)), file=stderr)
 
-print(" sqrt", file=stderr)
-print(Dual.get(b).var.sqrt, file=stderr)
-print(~Series.get(order, b).var.sqrt, file=stderr)
-
 print(" exp", file=stderr)
 print(Dual.get(b).var.exp, file=stderr)
 print(~Series.get(order, b).var.exp, file=stderr)
@@ -97,6 +93,9 @@ print(f" tan(pi / {b:.1})", file=stderr)
 print(Dual.get(pi / b).var.tan, file=stderr)
 print(~Series.get(order, pi / b).var.tan, file=stderr)
 
+print(f" sec2(pi / {b:.1})^2", file=stderr)
+print(~Series.get(order, pi / b).var.tan_sec2[1], file=stderr)
+
 si, co = Dual.get(pi / a).var.sinh_cosh
 sine, cosine = Series.get(order, pi / a).var.sinh_cosh
 
@@ -112,32 +111,8 @@ print(f" tanh(pi / {b:.1})", file=stderr)
 print(Dual.get(pi / b).var.tanh, file=stderr)
 print(~Series.get(order, pi / b).var.tanh, file=stderr)
 
-# print(f" sec(pi / {b:.1})^2", file=stderr)
-# print(~Series.get(order, pi / b).var.sec2, file=stderr)
-
-print(f" asin({c:.1})", file=stderr)
-print(Dual.get(c).var.asin, file=stderr)
-print(~Series.get(order, c).var.asin, file=stderr)
-
-print(f" acos({c:.1})", file=stderr)
-print(Dual.get(c).var.acos, file=stderr)
-print(~Series.get(order, c).var.acos, file=stderr)
-
-print(f" atan({c:.1})", file=stderr)
-print(Dual.get(c).var.atan, file=stderr)
-print(~Series.get(order, c).var.atan, file=stderr)
-
-print(f" asinh({c:.1})", file=stderr)
-print(Dual.get(c).var.asinh, file=stderr)
-print(~Series.get(order, c).var.asinh, file=stderr)
-
-print(f" acosh({a:.1})", file=stderr)
-print(Dual.get(a).var.acosh, file=stderr)
-print(~Series.get(order, a).var.acosh, file=stderr)
-
-print(f" atanh({c:.1})", file=stderr)
-print(Dual.get(c).var.atanh, file=stderr)
-print(~Series.get(order, c).var.atanh, file=stderr)
+print(f" sech2(pi / {b:.1})^2", file=stderr)
+print(~Series.get(order, pi / b).var.tanh_sech2[1], file=stderr)
 
 print("", file=stderr)
 
@@ -154,5 +129,5 @@ assert upper > lower
 n_steps = int(argv[4])
 assert n_steps > 0
 
-for result in analyze(composite1, lower, upper, steps=n_steps):
+for result in analyze(playground, lower, upper, steps=n_steps):
     pass
