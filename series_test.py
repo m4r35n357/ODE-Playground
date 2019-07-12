@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
 
 from sys import argv
-from gmpy2 import get_context, acos
-get_context().precision = 236  # Set this BEFORE importing any AD stuff!
-from ad import to_mpfr, Series, Dual
+from math import acos
+from ad import Series, Dual
 from functions import *
 
 order = int(argv[1])
 assert order > 1
 
 pi = acos(-1)
-a = to_mpfr("3.0")
-b = to_mpfr("4.0")
-c = to_mpfr("0.5")
+a = 3.0
+b = 4.0
+c = 0.5
 
 y = Dual.get(a).var
 print(f"y = {y}", file=stderr)
@@ -127,8 +126,8 @@ def analyze(model, x0, x1, steps):
         print(f"{w_x.val:.6e} {w_f}")
         yield w_x.val, w_f.val, w_f.der
 
-lower = to_mpfr(argv[2])
-upper = to_mpfr(argv[3])
+lower = float(argv[2])
+upper = float(argv[3])
 assert upper > lower
 n_steps = int(argv[4])
 assert n_steps > 0
