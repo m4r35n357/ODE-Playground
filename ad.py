@@ -187,16 +187,8 @@ class Series:
         return self._double(t_sin_cos)[1]
 
     @property
-    def sin_cos(self):
-        return self._double(t_sin_cos)
-
-    @property
     def tan(self):
         return self._double(t_tan_sec2)[0]
-
-    @property
-    def tan_sec2(self):
-        return self._double(t_tan_sec2)
 
     @property
     def sinh(self):
@@ -207,16 +199,8 @@ class Series:
         return self._double(t_sin_cos, hyp=True)[1]
 
     @property
-    def sinh_cosh(self):
-        return self._double(t_sin_cos, hyp=True)
-
-    @property
     def tanh(self):
         return self._double(t_tan_sec2, hyp=True)[0]
-
-    @property
-    def tanh_sech2(self):
-        return self._double(t_tan_sec2, hyp=True)
 
     @property
     def val(self):
@@ -315,11 +299,6 @@ class Dual:
         return Dual(cos(self.val), - self.der * sin(self.val))
 
     @property
-    def sin_cos(self):
-        s, c = sin_cos(self.val)
-        return Dual(s, self.der * c), Dual(c, - self.der * s)
-
-    @property
     def tan(self):
         return Dual(tan(self.val), self.der * sec(self.val)**2)
 
@@ -330,11 +309,6 @@ class Dual:
     @property
     def cosh(self):
         return Dual(cosh(self.val), self.der * sinh(self.val))
-
-    @property
-    def sinh_cosh(self):
-        s, c = sinh_cosh(self.val)
-        return Dual(s, self.der * c), Dual(c, self.der * s)
 
     @property
     def tanh(self):

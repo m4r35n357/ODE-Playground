@@ -78,8 +78,10 @@ print(" ln", file=stderr)
 print(Dual.get(b).var.ln, file=stderr)
 print(~Series.get(order, b).var.ln, file=stderr)
 
-si, co = Dual.get(pi / a).var.sin_cos
-sine, cosine = Series.get(order, pi / a).var.sin_cos
+si = Dual.get(pi / a).var.sin
+co = Dual.get(pi / a).var.cos
+sine = Series.get(order, pi / a).var.sin
+cosine = Series.get(order, pi / a).var.cos
 
 print(f" sin(pi / {a:.1})", file=stderr)
 print(si, file=stderr)
@@ -93,11 +95,13 @@ print(f" tan(pi / {b:.1})", file=stderr)
 print(Dual.get(pi / b).var.tan, file=stderr)
 print(~Series.get(order, pi / b).var.tan, file=stderr)
 
-print(f" sec2(pi / {b:.1})^2", file=stderr)
-print(~Series.get(order, pi / b).var.tan_sec2[1], file=stderr)
+# print(f" sec2(pi / {b:.1})^2", file=stderr)
+# print(~Series.get(order, pi / b).var.tan_sec2[1], file=stderr)
 
-si, co = Dual.get(pi / a).var.sinh_cosh
-sine, cosine = Series.get(order, pi / a).var.sinh_cosh
+si = Dual.get(pi / a).var.sinh
+co = Dual.get(pi / a).var.cosh
+sine = Series.get(order, pi / a).var.sinh
+cosine = Series.get(order, pi / a).var.cosh
 
 print(f" sinh(pi / {a:.1})", file=stderr)
 print(si, file=stderr)
@@ -111,8 +115,8 @@ print(f" tanh(pi / {b:.1})", file=stderr)
 print(Dual.get(pi / b).var.tanh, file=stderr)
 print(~Series.get(order, pi / b).var.tanh, file=stderr)
 
-print(f" sech2(pi / {b:.1})^2", file=stderr)
-print(~Series.get(order, pi / b).var.tanh_sech2[1], file=stderr)
+# print(f" sech2(pi / {b:.1})^2", file=stderr)
+# print(~Series.get(order, pi / b).var.tanh_sech2[1], file=stderr)
 
 print("", file=stderr)
 
