@@ -51,9 +51,9 @@ def playground(a):
     # return (abs(a) + 1.0e-6)**-4
     # return 4**a
     # return abs(a)**(a+1)
-    # return (abs(a) + 1)**a
+    return (abs(a) + 1)**a
     # return (2 + 3 * a)**(2 * a - 5)
     # return (abs(a) + 1.0e-6)**-4
-    return (a * a + 1.0e-6)**2
+    # return (a * a + 1.0e-6)**2
 
 print(__name__ + " module loaded", file=stderr)
