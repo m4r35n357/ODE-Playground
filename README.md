@@ -27,7 +27,7 @@ The functions provided cover the basic algebraic operations (+ - * /), and also 
 The recurrence relations used here are derived in http://aimsciences.org/journals/displayPaperPro.jsp?paperID=9241 (open access).
 There are also factories for derivative "jets", and an implementation of Horner's method for summing the Taylor Series.
 These "low-level" functions, properly called,  are all that is needed to "integrate" systems of ODEs.
-There is a fairly extensive collection of nonlinear ODEs already implemented, either in c or Python, or both in most cases.
+There is a fairly extensive collection of nonlinear ODEs already implemented, in the file tsm.py.
 The list includes systems due to Lorenz, Rossler, Thomas, Bouali, Rabinovitch-Fabrikant, Sprott, and others.
 
 As part of the work to verify my implementation of these recurrence rules, I have added a demonstration of using Taylor series to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
@@ -41,13 +41,13 @@ The \*\* (power) operator caters for f(x)^a, a^f(x) and f1(x)^f2(x), subject to 
 There are also functions for:
 * abs
 * exp
-* sin(h)_cos(h) (Python gmpy2 or Series class only)
+* sin(h)_cos(h) (gmpy2 or Series class only)
 * sin(h)
 * cos(h)
 * tan(h)
 * ln
 
-Using these higher level functions, Newton's method is implemented trivially, but I have also provided implementations of bisection and arbitrary degree Householder (c only) methods for comparison.
+Using these higher level functions, Newton's method is implemented trivially, but I have also provided an implementations of the bisection method for comparison.
 There are three main areas of application for the code:
 * solving nonlinear ODEs
 * plotting functions and their (higher) derivatives, with solution, turning-point, and inflection analysis
@@ -257,51 +257,3 @@ In [12]: print(a * x**3 - b * x**2 + c.var * x - 5)
 +1.300000e+01 +2.000000e+00 +0.000000e+00 +0.000000e+00 +0.000000e+00 
 
 ```
-
-## c usage
-
-This documentation is becoming obsolete, but the programs themselves will be retained.
-Dependencies of c programs:
-* MPFR 4 or later! (otherwise stick to the Python version)
-
-Build them using the command:
-```
-./build
-```
-
-The built c programs are all called tsm-[model].
-Each source file should contain an example invocation near the top.
-
-To see them all:
-
-```
-grep Example *.c
-```
-To test the top level Taylor series operation:
-```
-./ad-test-dbg 7 2 1
-```
-
-To test the root finding:
-```
-./ad-test-newton-dbg 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
-```
-
-Matplotlib progressive graph plotting
-```
-./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
-```
-
-3D ODE plotting
-```
-./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
-```
-## tsm-[model] Parameter reference
-Parameter | Meaning
-----------|-----------
-1,2 | precision in decimal places, order
-3,4 | step size, number of steps
-5,6,7 | x0, y0, z0
-8+ | ODE parameters
-
-
