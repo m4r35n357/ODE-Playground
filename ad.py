@@ -2,9 +2,7 @@
 #  (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 from sys import stderr
-from gmpy2 import mpfr, sqrt, sin_cos, sin, cos, sinh_cosh, sinh, cosh, tan, sec, tanh, sech, atan, asin, acos, exp, \
-    log, zero, atanh, asinh, acosh
-
+from gmpy2 import mpfr, sin, cos, sin_cos, sinh, cosh, sinh_cosh, tan, sec, tanh, sech, exp, log, zero
 
 # noinspection PyArgumentList
 def to_mpfr(x):
@@ -51,14 +49,14 @@ def t_ln(l, u, k):
 
 def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
-        return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
+        return (sinh_cosh(u[0])) if hyp else (sin_cos(u[0]))
     sk = sum((k - j) * c[j] * u[k - j] for j in range(k)) / k
     ck = sum((k - j) * s[j] * u[k - j] for j in range(k)) / k
     return (sk, ck) if hyp else (sk, - ck)
 
 def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
-        return (tanh(u[0]), 1 - tanh(u[0])**2) if hyp else (tan(u[0]), 1 + tan(u[0])**2)
+        return (tanh(u[0]), sech(u[0])**2) if hyp else (tan(u[0]), sec(u[0])**2)
     tk = sum((k - j) * s2[j] * u[k - j] for j in range(k)) / k
     sk = 2 * (t[0] * tk + sum((k - j) * t[j] * t[k - j] for j in range(1, k)) / k)
     return (tk, - sk) if hyp else (tk, sk)
@@ -143,7 +141,16 @@ class Series:
         return Series(rdiv_jet)
 
     def __pow__(self, other):
-        assert self.val > zero(+1), f"self.val = {self.val}"
+        if isinstance(other, int):
+            i_pow = self
+            for _ in range(abs(other) - 1):
+                i_pow = i_pow * self
+            if other > 0:
+                return i_pow
+            elif other < 0:
+                return Series(t_jet(self.n, to_mpfr(1))) / i_pow
+            return Series(t_jet(self.n, to_mpfr(1)))
+        assert self.val > 0.0, f"self.val = {self.val}"
         if isinstance(other, Series):
             return (self.ln * other).exp
         pow_jet = t_jet(self.n)
@@ -269,7 +276,16 @@ class Dual:
         return Dual(other / self.val, - other * self.der / self.val**2)
 
     def __pow__(self, other):
-        assert self.val > zero(+1), f"self.val = {self.val}"
+        if isinstance(other, int):
+            i_pow = self
+            for _ in range(abs(other) - 1):
+                i_pow = i_pow * self
+            if other > 0:
+                return i_pow
+            elif other < 0:
+                return Dual(to_mpfr(1), zero(+1)) / i_pow
+            return Dual(to_mpfr(1), zero(+1))
+        assert self.val > 0.0, f"self.val = {self.val}"
         if isinstance(other, Dual):
             return (self.ln * other).exp
         return Dual(self.val**other, other * self.val**(other - 1) * self.der)

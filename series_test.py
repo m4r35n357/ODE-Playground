@@ -70,6 +70,22 @@ print(" (y + 1)**(y - 1), (z + 1)**(z - 1)", file=stderr)  # wolfram: d^k/dx^k (
 print((y + 1)**(y - 1), file=stderr)
 print(~((z + 1)**(z - 1)), file=stderr)
 
+print("b**2", file=stderr)
+print(Dual.get(b).var**2, file=stderr)
+print(~Series.get(order, b).var**2, file=stderr)
+
+print("b**-2", file=stderr)
+print(Dual.get(b).var**-2, file=stderr)
+print(~Series.get(order, b).var**-2, file=stderr)
+
+print("b**0.5", file=stderr)
+print(Dual.get(b).var**0.5, file=stderr)
+print(~Series.get(order, b).var**0.5, file=stderr)
+
+print("b**-0.5", file=stderr)
+print(Dual.get(b).var**-0.5, file=stderr)
+print(~Series.get(order, b).var**-0.5, file=stderr)
+
 print(" exp", file=stderr)
 print(Dual.get(b).var.exp, file=stderr)
 print(~Series.get(order, b).var.exp, file=stderr)
