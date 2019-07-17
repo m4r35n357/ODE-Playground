@@ -2,15 +2,11 @@
 #  (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 from sys import stderr
-from gmpy2 import mpfr, sin, cos, sin_cos, sinh, cosh, sinh_cosh, tan, sec, tanh, sech, exp, log, zero
+from math import sin, cos, sinh, cosh, tan, tanh, exp, log
 
-# noinspection PyArgumentList
-def to_mpfr(x):
-    return mpfr(str(x)) if isinstance(x, (float, int)) else mpfr(x)
-
-def t_jet(n, value=zero(+1)):
-    jet = [zero(+1)] * n
-    jet[0] = to_mpfr(value)
+def t_jet(n, value=0.0):
+    jet = [0.0] * n
+    jet[0] = float(value)
     return jet
 
 def t_horner(jet, n, h):
@@ -23,8 +19,8 @@ def t_abs(u, k):
     if k == 0:
         return abs(u[0])
     elif k == 1:
-        return u[1] if u[0] > zero(+1) else (- u[1] if u[0] < zero(+1) else zero(+1))
-    return zero(+1)
+        return u[1] if u[0] > 0.0 else (- u[1] if u[0] < 0.0 else 0.0)
+    return 0.0
 
 def t_prod(u, v, k):
     return sum(u[j] * v[k - j] for j in range(k + 1))
@@ -49,14 +45,14 @@ def t_ln(l, u, k):
 
 def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
-        return (sinh_cosh(u[0])) if hyp else (sin_cos(u[0]))
+        return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
     sk = sum((k - j) * c[j] * u[k - j] for j in range(k)) / k
     ck = sum((k - j) * s[j] * u[k - j] for j in range(k)) / k
     return (sk, ck) if hyp else (sk, - ck)
 
 def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
-        return (tanh(u[0]), sech(u[0])**2) if hyp else (tan(u[0]), sec(u[0])**2)
+        return (tanh(u[0]), 1 - tanh(u[0])**2) if hyp else (tan(u[0]), 1 + tan(u[0])**2)
     tk = sum((k - j) * s2[j] * u[k - j] for j in range(k)) / k
     sk = 2 * (t[0] * tk + sum((k - j) * t[j] * t[k - j] for j in range(1, k)) / k)
     return (tk, - sk) if hyp else (tk, sk)
@@ -69,11 +65,11 @@ class Series:
         self.jet = [jet[k] for k in range(self.n)]
 
     @classmethod
-    def get(cls, order, value=zero(+1)):
+    def get(cls, order, value=0.0):
         return cls(t_jet(order, value))
 
     def __str__(self):
-        return ''.join(f"{self.jet[i]:+.9e} " for i in range(self.n))
+        return ''.join(f"{self.jet[i]:+.6e} " for i in range(self.n))
 
     def __abs__(self):
         return Series([t_abs(self.jet, k) for k in range(self.n)])
@@ -141,20 +137,20 @@ class Series:
     def __truediv__(self, other):
         assert not isinstance(other, Dual)
         if isinstance(other, Series):
-            assert abs(other.val) != zero(+1), f"other.val = {other.val}"
+            assert abs(other.val) != 0.0, f"other.val = {other.val}"
             div_jet = t_jet(self.n)
             for k in range(self.n):
                 div_jet[k] = t_quot(div_jet, self.jet, other.jet, k)
             return Series(div_jet)
         elif isinstance(other, (int, type(self.val))):
-            assert abs(other) != zero(+1), f"other = {other}"
+            assert abs(other) != 0.0, f"other = {other}"
             return Series([self.jet[k] / other for k in range(self.n)])
         raise RuntimeError(f"Incompatible Type: {type(other)}")
 
     def __rtruediv__(self, other):
         assert not isinstance(other, Dual)
         if isinstance(other, (int, type(self.val))):
-            assert abs(self.val) != zero(+1), f"self.val = {self.val}"
+            assert abs(self.val) != 0.0, f"self.val = {self.val}"
             return Series(t_jet(self.n, other)) / self
         raise RuntimeError(f"Incompatible Type: {type(other)}")
 
@@ -167,8 +163,8 @@ class Series:
             if other > 0:
                 return i_pow
             elif other < 0:
-                return Series(t_jet(self.n, to_mpfr(1))) / i_pow
-            return Series(t_jet(self.n, to_mpfr(1)))
+                return Series(t_jet(self.n, 1.0)) / i_pow
+            return Series(t_jet(self.n, 1.0))
         else:
             assert self.val > 0.0, f"self.val = {self.val}"
             if isinstance(other, Series):
@@ -183,7 +179,7 @@ class Series:
     def __rpow__(self, other):
         assert not isinstance(other, Dual)
         if isinstance(other, (int, type(self.val))):
-            assert other > zero(+1), f"other = {other}"
+            assert other > 0.0, f"other = {other}"
             return (log(other) * self).exp
         raise RuntimeError(f"Incompatible Type: {type(other)}")
 
@@ -205,7 +201,7 @@ class Series:
 
     @property
     def ln(self):
-        assert self.val > zero(+1), f"self.val = {self.val}"
+        assert self.val > 0.0, f"self.val = {self.val}"
         return self._single(t_ln)
 
     @property
@@ -239,7 +235,7 @@ class Series:
     @property
     def var(self):
         jet = t_jet(self.n, self.val)
-        jet[1] = to_mpfr(1)
+        jet[1] = 1.0
         return Series(jet)
 
 
@@ -250,14 +246,14 @@ class Dual:
         self.der = derivative
 
     @classmethod
-    def get(cls, value=zero(+1)):
-        return cls(to_mpfr(value), zero(+1))
+    def get(cls, value=0.0):
+        return cls(float(value), 0.0)
 
     def __str__(self):
-        return f"{self.val:+.9e} {self.der:+.9e}"
+        return f"{self.val:+.6e} {self.der:+.6e}"
 
     def __abs__(self):
-        return Dual(abs(self.val), self.der if self.val > zero(+1) else (- self.der if self.val < zero(+1) else zero(+1)))
+        return Dual(abs(self.val), self.der if self.val > 0.0 else (- self.der if self.val < 0.0 else 0.0))
 
     def __pos__(self):
         return Dual(self.val, self.der)
@@ -310,17 +306,17 @@ class Dual:
     def __truediv__(self, other):
         assert not isinstance(other, Series)
         if isinstance(other, Dual):
-            assert abs(other.val) != zero(+1), f"other.val = {other.val}"
+            assert abs(other.val) != 0.0, f"other.val = {other.val}"
             return Dual(self.val / other.val, (self.der * other.val - self.val * other.der) / other.val**2)
         elif isinstance(other, (int, type(self.val))):
-            assert abs(other) != zero(+1), f"other = {other}"
+            assert abs(other) != 0.0, f"other = {other}"
             return Dual(self.val / other, self.der / other)
         raise RuntimeError(f"Incompatible Type: {type(other)}")
 
     def __rtruediv__(self, other):
         assert not isinstance(other, Series)
         if isinstance(other, (int, type(self.val))):
-            assert abs(self.val) != zero(+1), f"self.val = {self.val}"
+            assert abs(self.val) != 0.0, f"self.val = {self.val}"
             return Dual(other / self.val, - other * self.der / self.val**2)
         raise RuntimeError(f"Incompatible Type: {type(other)}")
 
@@ -333,8 +329,8 @@ class Dual:
             if other > 0:
                 return i_pow
             elif other < 0:
-                return Dual(to_mpfr(1), zero(+1)) / i_pow
-            return Dual(to_mpfr(1), zero(+1))
+                return Dual(1.0, 0.0) / i_pow
+            return Dual(1.0, 0.0)
         else:
             assert self.val > 0.0, f"self.val = {self.val}"
             if isinstance(other, Dual):
@@ -346,7 +342,7 @@ class Dual:
     def __rpow__(self, other):
         assert not isinstance(other, Series)
         if isinstance(other, (int, type(self.val))):
-            assert other > zero(+1), f"other = {other}"
+            assert other > 0.0, f"other = {other}"
             return (log(other) * self).exp
         raise RuntimeError(f"Incompatible Type: {type(other)}")
 
@@ -357,7 +353,7 @@ class Dual:
 
     @property
     def ln(self):
-        assert self.val > zero(+1), f"self.val = {self.val}"
+        assert self.val > 0.0, f"self.val = {self.val}"
         return Dual(log(self.val), self.der / self.val)
 
     @property
@@ -370,7 +366,7 @@ class Dual:
 
     @property
     def tan(self):
-        return Dual(tan(self.val), self.der * sec(self.val)**2)
+        return Dual(tan(self.val), self.der * (1 + tan(self.val)**2))
 
     @property
     def sinh(self):
@@ -382,11 +378,11 @@ class Dual:
 
     @property
     def tanh(self):
-        return Dual(tanh(self.val), self.der * sech(self.val)**2)
+        return Dual(tanh(self.val), self.der * (1 - tanh(self.val)**2))
 
     @property
     def var(self):
-        return Dual(self.val, to_mpfr(1))
+        return Dual(self.val, 1.0)
 
 
 print(__name__ + " module loaded", file=stderr)
