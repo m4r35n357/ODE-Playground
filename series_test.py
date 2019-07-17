@@ -79,12 +79,12 @@ print(Dual.get(b).var**-2, file=stderr)
 print(~Series.get(order, b).var**-2, file=stderr)
 
 print("b**0.5", file=stderr)
-print(Dual.get(b).var**0.5, file=stderr)
-print(~Series.get(order, b).var**0.5, file=stderr)
+print(Dual.get(b).var**c, file=stderr)
+print(~Series.get(order, b).var**c, file=stderr)
 
 print("b**-0.5", file=stderr)
-print(Dual.get(b).var**-0.5, file=stderr)
-print(~Series.get(order, b).var**-0.5, file=stderr)
+print(Dual.get(b).var**-c, file=stderr)
+print(~Series.get(order, b).var**-c, file=stderr)
 
 print(" exp", file=stderr)
 print(Dual.get(b).var.exp, file=stderr)
