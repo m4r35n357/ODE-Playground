@@ -61,7 +61,7 @@ def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=100
 
 
 def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
-    x_prev = f_prev = f_dash_prev = f_dash_dash_prev = result = None
+    x_prev = f0_prev = f1_prev = f2_prev = result = None
     if mode != 0:
         if mode == 1:
             print("Bisection", file=stderr)
@@ -73,8 +73,8 @@ def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
         print(f"{w_x.val:.6e} {w_f}")
         if mode != 0:
             if k > 0:
-                if f_prev * w_f.val < 0.0:
-                    if f_prev > w_f.val:
+                if f0_prev * w_f.val < 0.0:
+                    if f0_prev > w_f.val:
                         sense = Sense.NEGATIVE
                     else:
                         sense = Sense.POSITIVE
@@ -83,8 +83,8 @@ def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
                     elif mode == 2:
                         result = newton(model, w_x.val, f_tol, x_tol, max_it, sense)
                     yield result
-                if f_dash_prev * w_f.jet[1] < 0.0:
-                    if f_dash_prev > w_f.jet[1]:
+                if f1_prev * w_f.jet[1] < 0.0:
+                    if f1_prev > w_f.jet[1]:
                         sense = Sense.NEGATIVE
                     else:
                         sense = Sense.POSITIVE
@@ -93,8 +93,8 @@ def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
                     elif mode == 2:
                         result = newton(model, w_x.val, f_tol, x_tol, max_it, sense, mode=Solver.EXTREMUM)
                     yield result
-                if f_dash_dash_prev * w_f.jet[2] < 0.0:
-                    if f_dash_dash_prev > w_f.jet[2]:
+                if f2_prev * w_f.jet[2] < 0.0:
+                    if f2_prev > w_f.jet[2]:
                         sense = Sense.NEGATIVE
                     else:
                         sense = Sense.POSITIVE
@@ -106,9 +106,9 @@ def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
         else:
             yield w_x.val, w_f.jet
         x_prev = w_x.val
-        f_prev = w_f.val
-        f_dash_prev = w_f.jet[1]
-        f_dash_dash_prev = w_f.jet[2]
+        f0_prev = w_f.val
+        f1_prev = w_f.jet[1]
+        f2_prev = w_f.jet[2]
 
 
 print(__name__ + " module loaded", file=stderr)
