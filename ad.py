@@ -94,7 +94,7 @@ class Series:
 
     def __add__(self, other):
         assert not isinstance(other, Dual)
-        if isinstance(other, Series):
+        if isinstance(other, type(self)):
             return Series([self.jet[k] + other.jet[k] for k in range(self.n)])
         elif isinstance(other, (int, type(self.val))):
             add_jet = [self.jet[k] for k in range(self.n)]
@@ -110,7 +110,7 @@ class Series:
 
     def __sub__(self, other):
         assert not isinstance(other, Dual)
-        if isinstance(other, Series):
+        if isinstance(other, type(self)):
             return Series([self.jet[k] - other.jet[k] for k in range(self.n)])
         elif isinstance(other, (int, type(self.val))):
             sub_jet = [self.jet[k] for k in range(self.n)]
@@ -126,7 +126,7 @@ class Series:
 
     def __mul__(self, other):
         assert not isinstance(other, Dual)
-        if isinstance(other, Series):
+        if isinstance(other, type(self)):
             return Series([t_prod(self.jet, other.jet, k) for k in range(self.n)])
         elif isinstance(other, (int, type(self.val))):
             return Series([self.jet[k] * other for k in range(self.n)])
@@ -140,7 +140,7 @@ class Series:
 
     def __truediv__(self, other):
         assert not isinstance(other, Dual)
-        if isinstance(other, Series):
+        if isinstance(other, type(self)):
             assert abs(other.val) != zero(+1), f"other.val = {other.val}"
             div_jet = t_jet(self.n)
             for k in range(self.n):
@@ -171,7 +171,7 @@ class Series:
             return Series(t_jet(self.n, to_mpfr(1)))
         else:
             assert self.val > 0.0, f"self.val = {self.val}"
-            if isinstance(other, Series):
+            if isinstance(other, type(self)):
                 return (self.ln * other).exp
             elif isinstance(other, type(self.val)):
                 pow_jet = t_jet(self.n)
@@ -267,7 +267,7 @@ class Dual:
 
     def __add__(self, other):
         assert not isinstance(other, Series)
-        if isinstance(other, Dual):
+        if isinstance(other, type(self)):
             return Dual(self.val + other.val, self.der + other.der)
         elif isinstance(other, (int, type(self.val))):
             return Dual(self.val + other, self.der)
@@ -281,7 +281,7 @@ class Dual:
 
     def __sub__(self, other):
         assert not isinstance(other, Series)
-        if isinstance(other, Dual):
+        if isinstance(other, type(self)):
             return Dual(self.val - other.val, self.der - other.der)
         elif isinstance(other, (int, type(self.val))):
             return Dual(self.val - other, self.der)
@@ -295,7 +295,7 @@ class Dual:
 
     def __mul__(self, other):
         assert not isinstance(other, Series)
-        if isinstance(other, Dual):
+        if isinstance(other, type(self)):
             return Dual(self.val * other.val, self.der * other.val + self.val * other.der)
         elif isinstance(other, (int, type(self.val))):
             return Dual(self.val * other, self.der * other)
@@ -309,7 +309,7 @@ class Dual:
 
     def __truediv__(self, other):
         assert not isinstance(other, Series)
-        if isinstance(other, Dual):
+        if isinstance(other, type(self)):
             assert abs(other.val) != zero(+1), f"other.val = {other.val}"
             return Dual(self.val / other.val, (self.der * other.val - self.val * other.der) / other.val**2)
         elif isinstance(other, (int, type(self.val))):
@@ -337,7 +337,7 @@ class Dual:
             return Dual(to_mpfr(1), zero(+1))
         else:
             assert self.val > 0.0, f"self.val = {self.val}"
-            if isinstance(other, Dual):
+            if isinstance(other, type(self)):
                 return (self.ln * other).exp
             elif isinstance(other, type(self.val)):
                 return Dual(self.val**other, other * self.val**(other - 1) * self.der)

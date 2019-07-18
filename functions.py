@@ -4,15 +4,17 @@ from gmpy2 import zero
 from ad import to_mpfr
 
 # this one is for graph plotting only!
-from math import pi
-
-
 def x_step(start, end, n_steps, step):
     return start + step * (end - start) / (n_steps - 1)
 
+# this one is for graph plotting only!
+def x_range(start, end, n_steps):
+    for step in range(n_steps):
+        yield start + step * (end - start) / (n_steps - 1)
+
 def lorentz(a):
     # Example: ./models.py 0 .001 .999 1001 13 1e-12 1e-12 | ./plotMany.py 1 10 >/dev/null
-    return (1 - a * a)**-0.5
+    return (1 - a * a)**-to_mpfr(0.5)
 
 def schwartzschild(r, e=0.962250, p_r=zero(+1), l_z=to_mpfr(4.0)):  # no t or phi!
     # Example: ./series_test.py 1 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
@@ -25,16 +27,16 @@ def cosx_x3(a):
 def septic(a):
     # Example: ./models.py 2 -8 8 1001 13 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
     # Example: ./series_test.py 7 -8 8 1001 | ./plotMany.py 8 50000 >/dev/null
-    return (a + 7) * (5 + a) * (a + 2.0) * a * (1 - a) * (3.0 - a) * (a - 6)
+    return (a + 7) * (5 + a) * (a + to_mpfr(2.0)) * a * (1 - a) * (to_mpfr(3.0) - a) * (a - 6)
 
 def composite1(a):
     # Example: ./models.py 2 -8 8 1001 13 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     # Example: ./series_test.py 7 -8 8 1001 | ./plotMany.py 8 10 >/dev/null
-    return (a.exp + (a**2 - 4.0).exp).ln
+    return (a.exp + (a**2 - 4).exp).ln
 
 def composite2(a):
     # Example: ./models.py 1 -8 8 1001 7 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
-    return (a**2 + (a.exp - 4) * (a.exp - 4))**0.5
+    return (a**2 + (a.exp - 4) * (a.exp - 4))**to_mpfr(0.5)
 
 def playground(a):
     # Example: ./models.py 1 -8 8 1001 13 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
@@ -56,7 +58,7 @@ def playground(a):
     # return (2 + 3 * a)**(2 * a - 5)
     # return (abs(a) + 1.0e-6)**-4
     # return (a**2 + 1.0e-6)**2
-    # return a**2 / (a.cosh + 1).ln
-    return a**2
+    return a**2 / (a.cosh + 1).ln
+    # return 2.0**a
 
 print(__name__ + " module loaded", file=stderr)
