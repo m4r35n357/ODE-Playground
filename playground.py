@@ -63,7 +63,7 @@ def secant(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it
         if abs(fc.jet[mode.value]) == zero(+1):
             break
         if fp:
-            if fa * fc < zero(+1):
+            if fa.val * fc.val < zero(+1):
                 b, fb = c, fc
             else:
                 a, fa = c, fc
