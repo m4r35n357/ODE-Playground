@@ -11,9 +11,9 @@ from functions import x_step
 
 
 class Sense(Enum):
-    NONE = ''
-    POSITIVE = '+'
-    NEGATIVE = '-'
+    FLAT = ''
+    INCREASING = '+'
+    DECREASING = '-'
 
 
 class Solver(Enum):
@@ -22,10 +22,10 @@ class Solver(Enum):
     INFLECTION = 2
 
 
-Result = namedtuple('ResultType', ['count', 'sense', 'mode', 'x', 'f', 'dx'])
+Result = namedtuple('ResultType', ['count', 'sense', 'mode', 'x', 'f', 'δx'])
 
 
-def bisect(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.NONE, target=zero(+1), mode=Solver.ROOT):
+def bisect(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.FLAT, target=zero(+1), mode=Solver.ROOT):
     a = Series.get(3, xa)
     b = Series.get(3, xb)
     c = Series.get(3)
@@ -35,7 +35,9 @@ def bisect(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it
     while abs(fc.jet[mode.value]) > f_tol or abs(δx) > x_tol:
         c = (a + b) / 2
         fc = ~model(c) - target
-        if f_sign.jet[mode.value] * fc.jet[mode.value] < 0.0:
+        if abs(fc.jet[mode.value]) == zero(+1):
+            break
+        if f_sign.jet[mode.value] * fc.jet[mode.value] < zero(+1):
             b = c
         else:
             a = c
@@ -43,21 +45,23 @@ def bisect(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it
         counter += 1
         if counter == max_it:
             break
-    return Result(count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + target, dx=δx)
+    return Result(count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + target, δx=δx)
 
 
-def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.NONE, target=zero(+1), mode=Solver.ROOT):
+def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.FLAT, target=zero(+1), mode=Solver.ROOT):
     x = Series.get(2 + mode.value, x0).var  # make x a variable to use derivatives!
     f = Series.get(2 + mode.value, 1)
     δx = counter = 1
     while abs(f.jet[mode.value]) > f_tol or abs(δx) > x_tol:
         f = ~model(x) - target
+        if abs(f.jet[mode.value]) == zero(+1):
+            break
         δx = - f.jet[mode.value] / f.jet[1 + mode.value]
         x += δx
         counter += 1
         if counter == max_it:
             break
-    return Result(count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + target, dx=δx)
+    return Result(count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + target, δx=δx)
 
 
 def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
@@ -73,31 +77,31 @@ def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
         print(f"{w_x.val:.6e} {w_f}")
         if mode != 0:
             if k > 0:
-                if f0_prev * w_f.val < 0.0:
+                if f0_prev * w_f.val <= zero(+1):
                     if f0_prev > w_f.val:
-                        sense = Sense.NEGATIVE
+                        sense = Sense.DECREASING
                     else:
-                        sense = Sense.POSITIVE
+                        sense = Sense.INCREASING
                     if mode == 1:
                         result = bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense)
                     elif mode == 2:
                         result = newton(model, w_x.val, f_tol, x_tol, max_it, sense)
                     yield result
-                if f1_prev * w_f.jet[1] < 0.0:
+                if f1_prev * w_f.jet[1] <= zero(+1):
                     if f1_prev > w_f.jet[1]:
-                        sense = Sense.NEGATIVE
+                        sense = Sense.DECREASING
                     else:
-                        sense = Sense.POSITIVE
+                        sense = Sense.INCREASING
                     if mode == 1:
                         result = bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense, mode=Solver.EXTREMUM)
                     elif mode == 2:
                         result = newton(model, w_x.val, f_tol, x_tol, max_it, sense, mode=Solver.EXTREMUM)
                     yield result
-                if f2_prev * w_f.jet[2] < 0.0:
+                if f2_prev * w_f.jet[2] <= zero(+1):
                     if f2_prev > w_f.jet[2]:
-                        sense = Sense.NEGATIVE
+                        sense = Sense.DECREASING
                     else:
-                        sense = Sense.POSITIVE
+                        sense = Sense.INCREASING
                     if mode == 1:
                         result = bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION)
                     elif mode == 2:
