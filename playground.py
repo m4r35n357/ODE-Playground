@@ -4,11 +4,12 @@
 
 from sys import stderr
 from collections import namedtuple
-from enum import Enum
+from enum import Enum, unique
 from gmpy2 import zero
 from ad import Series, to_mpfr
 
 
+@unique
 class Analysis(Enum):
     NA = "No analysis"
     BI = "Bisection method"
@@ -17,12 +18,14 @@ class Analysis(Enum):
     NT = "Newton's method"
 
 
+@unique
 class Sense(Enum):
     FLAT = ''
     INCREASING = '+'
     DECREASING = '-'
 
 
+@unique
 class Solver(Enum):
     ROOT = 0
     MIN_MAX = 1
