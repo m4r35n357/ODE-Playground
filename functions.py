@@ -3,15 +3,6 @@ from sys import stderr
 from gmpy2 import zero
 from ad import to_mpfr
 
-# this one is for graph plotting only!
-def x_step(start, end, n_steps, step):
-    return start + step * (end - start) / (n_steps - 1)
-
-# this one is for graph plotting only!
-def x_range(start, end, n_steps):
-    for step in range(n_steps):
-        yield start + step * (end - start) / (n_steps - 1)
-
 def lorentz(a):
     # Example: ./models.py 0 .001 .999 1001 13 1e-12 1e-12 | ./plotMany.py 1 10 >/dev/null
     return (1 - a * a)**-to_mpfr(0.5)
@@ -58,7 +49,7 @@ def playground(a):
     # return (2 + 3 * a)**(2 * a - 5)
     # return (abs(a) + 1.0e-6)**-4
     # return (a**2 + 1.0e-6)**2
-    return a**2 / (a.cosh + 1).ln
-    # return 2.0**a
+    # return a**2 / (a.cosh + 1).ln
+    return (a - 1)**2
 
 print(__name__ + " module loaded", file=stderr)

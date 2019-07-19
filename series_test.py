@@ -111,9 +111,6 @@ print(f" tan(pi / {b:.1})", file=stderr)
 print(Dual.get(pi / b).var.tan, file=stderr)
 print(~Series.get(order, pi / b).var.tan, file=stderr)
 
-# print(f" sec2(pi / {b:.1})^2", file=stderr)
-# print(~Series.get(order, pi / b).var.tan_sec2[1], file=stderr)
-
 si = Dual.get(pi / a).var.sinh
 co = Dual.get(pi / a).var.cosh
 sine = Series.get(order, pi / a).var.sinh
@@ -131,14 +128,11 @@ print(f" tanh(pi / {b:.1})", file=stderr)
 print(Dual.get(pi / b).var.tanh, file=stderr)
 print(~Series.get(order, pi / b).var.tanh, file=stderr)
 
-# print(f" sech2(pi / {b:.1})^2", file=stderr)
-# print(~Series.get(order, pi / b).var.tanh_sech2[1], file=stderr)
-
 print("", file=stderr)
 
 def analyze(model, x0, x1, steps):
     for k in range(steps):
-        w_x = Dual.get(x_step(x0, x1, steps, k)).var
+        w_x = Dual.get(x0 + k * (x1 - x0) / (steps - 1)).var
         w_f = model(w_x)
         print(f"{w_x.val:.6e} {w_f}")
         yield w_x.val, w_f.val, w_f.der

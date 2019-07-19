@@ -3,12 +3,12 @@
 from sys import argv
 from gmpy2 import get_context
 get_context().precision = 236  # Set this BEFORE importing any AD stuff!
-from playground import analyze
 from ad import to_mpfr
+from playground import analyze, Analysis
 from functions import *
 
 mode = int(argv[1])
-assert mode == 0 or mode == 1 or mode == 2
+assert mode in [item.value for item in Analysis.__members__.values()]
 x0 = to_mpfr(argv[2])
 x1 = to_mpfr(argv[3])
 assert x1 > x0
