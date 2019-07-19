@@ -10,6 +10,12 @@ from ad import Series, to_mpfr
 from functions import x_step
 
 
+class Analysis(Enum):
+    SKIP = 0
+    BISECTION = 1
+    NEWTON = 2
+
+
 class Sense(Enum):
     FLAT = ''
     INCREASING = '+'
@@ -64,49 +70,37 @@ def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=100
     return Result(count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + target, δx=δx)
 
 
-def analyze(model, mode, x0, x1, steps, f_tol, x_tol, max_it, order):
-    x_prev = f0_prev = f1_prev = f2_prev = result = None
-    if mode != 0:
-        if mode == 1:
-            print("Bisection", file=stderr)
-        elif mode == 2:
+def analyze(model, method, x0, x1, steps, f_tol, x_tol, max_it, order):
+    x_prev = f0_prev = f1_prev = f2_prev = None
+    if method != Analysis.SKIP.value:
+        if method == Analysis.BISECTION.value:
+            print("Bisection method", file=stderr)
+        elif method == Analysis.NEWTON.value:
             print("Newton's method", file=stderr)
     for k in range(steps):
         w_x = Series.get(order, x_step(x0, x1, steps, k)).var  # make x a variable to see derivatives!
         w_f = ~model(w_x)
         print(f"{w_x.val:.6e} {w_f}")
-        if mode != 0:
+        if method != Analysis.SKIP.value:
             if k > 0:
                 if f0_prev * w_f.val <= zero(+1):
-                    if f0_prev > w_f.val:
-                        sense = Sense.DECREASING
-                    else:
-                        sense = Sense.INCREASING
-                    if mode == 1:
-                        result = bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense)
-                    elif mode == 2:
-                        result = newton(model, w_x.val, f_tol, x_tol, max_it, sense)
-                    yield result
+                    sense = Sense.DECREASING if f0_prev > w_f.val else Sense.INCREASING
+                    if method == Analysis.BISECTION.value:
+                        yield bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense)
+                    elif method == Analysis.NEWTON.value:
+                        yield newton(model, w_x.val, f_tol, x_tol, max_it, sense)
                 if f1_prev * w_f.jet[1] <= zero(+1):
-                    if f1_prev > w_f.jet[1]:
-                        sense = Sense.DECREASING
-                    else:
-                        sense = Sense.INCREASING
-                    if mode == 1:
-                        result = bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense, mode=Solver.EXTREMUM)
-                    elif mode == 2:
-                        result = newton(model, w_x.val, f_tol, x_tol, max_it, sense, mode=Solver.EXTREMUM)
-                    yield result
+                    sense = Sense.DECREASING if f1_prev > w_f.jet[1] else Sense.INCREASING
+                    if method == Analysis.BISECTION.value:
+                        yield bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense, mode=Solver.EXTREMUM)
+                    elif method == Analysis.NEWTON.value:
+                        yield newton(model, w_x.val, f_tol, x_tol, max_it, sense, mode=Solver.EXTREMUM)
                 if f2_prev * w_f.jet[2] <= zero(+1):
-                    if f2_prev > w_f.jet[2]:
-                        sense = Sense.DECREASING
-                    else:
-                        sense = Sense.INCREASING
-                    if mode == 1:
-                        result = bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION)
-                    elif mode == 2:
-                        result = newton(model, w_x.val, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION)
-                    yield result
+                    sense = Sense.DECREASING if f2_prev > w_f.jet[2] else Sense.INCREASING
+                    if method == Analysis.BISECTION.value:
+                        yield bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION)
+                    elif method == Analysis.NEWTON.value:
+                        yield newton(model, w_x.val, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION)
         else:
             yield w_x.val, w_f.jet
         x_prev = w_x.val
