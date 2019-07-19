@@ -1,13 +1,11 @@
 
 from sys import stderr
-from gmpy2 import zero
-from ad import to_mpfr
 
 def lorentz(a):
     # Example: ./models.py 0 .001 .999 1001 13 1e-12 1e-12 | ./plotMany.py 1 10 >/dev/null
-    return (1 - a * a)**-to_mpfr(0.5)
+    return (1 - a * a)**-0.5
 
-def schwartzschild(r, e=0.962250, p_r=zero(+1), l_z=to_mpfr(4.0)):  # no t or phi!
+def schwartzschild(r, e=0.962250, p_r=0.0, l_z=4.0):  # no t or phi!
     # Example: ./series_test.py 1 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     return (e**2 / (1 - 2 / r) - p_r**2 * (1 - 2 / r) - (l_z / r)**2) / 2
 
@@ -16,19 +14,18 @@ def cosx_x3(a):
     return a.cos - a**3
 
 def septic(a):
-    # Example: ./models.py 2 -8 8 1001 13 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
+    # Example: ./models.py 2 -8 8 1001 7 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
     # Example: ./series_test.py 7 -8 8 1001 | ./plotMany.py 8 50000 >/dev/null
-    return (a + 7) * (5 + a) * (a + to_mpfr(2.0)) * a * (1 - a) * (to_mpfr(3.0) - a) * (a - 6)
+    return (a + 7) * (5 + a) * (a + 2.0) * a * (1 - a) * (3.0 - a) * (a - 6)
 
 def composite1(a):
-    # Example: ./models.py 2 -8 8 1001 13 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
+    # Example: ./models.py 2 -8 8 1001 7 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     # Example: ./series_test.py 7 -8 8 1001 | ./plotMany.py 8 10 >/dev/null
     return (a.exp + (a**2 - 4).exp).ln
 
 def composite2(a):
     # Example: ./models.py 1 -8 8 1001 7 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
-    return (a**2 + (a.exp - 4) * (a.exp - 4))**to_mpfr(0.5)
-
+    return (a**2 + (a.exp - 4) * (a.exp - 4))**0.5
 def playground(a):
     # Example: ./models.py NA -8 8 1001 13 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     # Example: ./series_test.py 7 -8 8 1001 | ./plotMany.py 8 10 >/dev/null
