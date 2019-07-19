@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 
 from sys import argv, exit, stderr
-from gmpy2 import get_context
-get_context().precision = 236  # Set this BEFORE importing any AD stuff!
-from ad import to_mpfr
 from playground import Analysis, bisect, secant, newton, householder
 
 method = Analysis.NA
@@ -13,11 +10,11 @@ except KeyError:
     print('INVALID ANALYSIS', file=stderr)
     print(Analysis.__members__.keys(), file=stderr)
     exit()
-x0 = to_mpfr(argv[2])
-x1 = to_mpfr(argv[3])
-tol = to_mpfr(argv[4])
+x0 = float(argv[2])
+x1 = float(argv[3])
+tol = float(argv[4])
 max_it = int(argv[5])
-target = to_mpfr(argv[6])
+target = float(argv[6])
 
 model = lambda x: x**2
 
