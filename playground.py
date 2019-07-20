@@ -58,18 +58,18 @@ def bisect(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it
 
 def secant(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.FLAT, target=zero(+1), mode=Solver.ROOT, fp=False):
     a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
-    fa, fb, fc = ~model(a), ~model(b), Series.get(3, 1)
+    fa, fb, fc = ~model(a) - target, ~model(b) - target, Series.get(3, 1)
     δx = counter = 1
     while abs(fc.jet[mode.value]) > f_tol or abs(δx) > x_tol:
-        c = (b * fa - a * fb) / (fa - fb)
+        c = (a * fb - b * fa) / (fb - fa)
         fc = ~model(c) - target
         if abs(fc.jet[mode.value]) == zero(+1):
             break
         if fp:
-            if fa.val * fc.val < zero(+1):
-                b, fb = c, fc
-            else:
+            if fa.val * fc.val > zero(+1):
                 a, fa = c, fc
+            elif fb.val * fc.val > zero(+1):
+                b, fb = c, fc
         else:
             b, fb = a, fa
             a, fa = c, fc
