@@ -101,47 +101,47 @@ def analyze(model, method, x0, x1, steps, f_tol, x_tol, max_it, order):
     print(method.value, file=stderr)
     for k in range(steps):
         step = (x1 - x0) / (steps - 1)
-        w_x = Series.get(order, x0 + k * step).var  # make x a variable to see derivatives!
-        w_f = ~model(w_x)
-        print(f"{w_x.val:.6e} {w_f}")
+        x = Series.get(order, x0 + k * step).var  # make x a variable to see derivatives!
+        f = ~model(x)
+        print(f"{x.val:.6e} {f}")
         if method != Analysis.NA:
             if k > 0:
-                if f0_prev * w_f.val <= zero(+1):
-                    sense = Sense.DECREASING if f0_prev > w_f.val else Sense.INCREASING
+                if f0_prev * f.val <= zero(+1):
+                    sense = Sense.DECREASING if f0_prev > f.val else Sense.INCREASING
                     if method == Analysis.BI:
-                        yield bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense)
+                        yield bisect(model, x.val, x_prev, f_tol, x_tol, max_it, sense)
                     elif method == Analysis.FP:
-                        yield secant(model, w_x.val, w_x.val + step, f_tol, x_tol, max_it, sense, fp=True)
+                        yield secant(model, x.val, x.val + step, f_tol, x_tol, max_it, sense, fp=True)
                     elif method == Analysis.SC:
-                        yield secant(model, w_x.val, w_x.val + step, f_tol, x_tol, max_it, sense)
+                        yield secant(model, x.val, x.val + step, f_tol, x_tol, max_it, sense)
                     elif method == Analysis.NT:
-                        yield newton(model, w_x.val, f_tol, x_tol, max_it, sense)
-                if f1_prev * w_f.jet[1] <= zero(+1):
-                    sense = Sense.DECREASING if f1_prev > w_f.jet[1] else Sense.INCREASING
+                        yield newton(model, x.val, f_tol, x_tol, max_it, sense)
+                if f1_prev * f.jet[1] <= zero(+1):
+                    sense = Sense.DECREASING if f1_prev > f.jet[1] else Sense.INCREASING
                     if method == Analysis.BI:
-                        yield bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense, mode=Solver.MIN_MAX)
+                        yield bisect(model, x.val, x_prev, f_tol, x_tol, max_it, sense, mode=Solver.MIN_MAX)
                     elif method == Analysis.FP:
-                        yield secant(model, w_x.val, w_x.val + step, f_tol, x_tol, max_it, sense, mode=Solver.MIN_MAX, fp=True)
+                        yield secant(model, x.val, x.val + step, f_tol, x_tol, max_it, sense, mode=Solver.MIN_MAX, fp=True)
                     elif method == Analysis.SC:
-                        yield secant(model, w_x.val, w_x.val + step, f_tol, x_tol, max_it, sense, mode=Solver.MIN_MAX)
+                        yield secant(model, x.val, x.val + step, f_tol, x_tol, max_it, sense, mode=Solver.MIN_MAX)
                     elif method == Analysis.NT:
-                        yield newton(model, w_x.val, f_tol, x_tol, max_it, sense, mode=Solver.MIN_MAX)
-                if f2_prev * w_f.jet[2] <= zero(+1):
-                    sense = Sense.DECREASING if f2_prev > w_f.jet[2] else Sense.INCREASING
+                        yield newton(model, x.val, f_tol, x_tol, max_it, sense, mode=Solver.MIN_MAX)
+                if f2_prev * f.jet[2] <= zero(+1):
+                    sense = Sense.DECREASING if f2_prev > f.jet[2] else Sense.INCREASING
                     if method == Analysis.BI:
-                        yield bisect(model, w_x.val, x_prev, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION)
+                        yield bisect(model, x.val, x_prev, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION)
                     elif method == Analysis.FP:
-                        yield secant(model, w_x.val, w_x.val + step, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION, fp=True)
+                        yield secant(model, x.val, x.val + step, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION, fp=True)
                     elif method == Analysis.SC:
-                        yield secant(model, w_x.val, w_x.val + step, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION)
+                        yield secant(model, x.val, x.val + step, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION)
                     elif method == Analysis.NT:
-                        yield newton(model, w_x.val, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION)
+                        yield newton(model, x.val, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION)
         else:
-            yield w_x.val, w_f.jet
-        x_prev = w_x.val
-        f0_prev = w_f.val
-        f1_prev = w_f.jet[1]
-        f2_prev = w_f.jet[2]
+            yield x.val, f.jet
+        x_prev = x.val
+        f0_prev = f.val
+        f1_prev = f.jet[1]
+        f2_prev = f.jet[2]
 
 
 print(__name__ + " module loaded", file=stderr)
