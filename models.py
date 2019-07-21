@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-from sys import argv, exit
+from sys import argv, exit, stderr
 from gmpy2 import get_context
 get_context().precision = 236  # Set this BEFORE importing any AD stuff!
-# from ad import to_mpfr
+from ad import to_mpfr
 from playground import analyze, Analysis
-from functions import *
+from functions import playground
 
 mode = Analysis.NA
 try:

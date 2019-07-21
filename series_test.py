@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from sys import argv
+from sys import argv, stderr
 from gmpy2 import get_context, acos
 get_context().precision = 236  # Set this BEFORE importing any AD stuff!
 from ad import to_mpfr, Series, Dual
-from functions import *
+from functions import playground
 
 order = int(argv[1])
 assert order > 1
@@ -93,11 +93,6 @@ print(~Series.get(order, b).var.exp, file=stderr)
 print(f" ln({b:.1f})", file=stderr)
 print(Dual.get(b).var.ln, file=stderr)
 print(~Series.get(order, b).var.ln, file=stderr)
-
-si = Dual.get(pi / a).var.sin
-co = Dual.get(pi / a).var.cos
-sine = Series.get(order, pi / a).var.sin
-cosine = Series.get(order, pi / a).var.cos
 
 print(f" sin(π / {a:.0f})", file=stderr)
 print(Dual.get(pi / a).var.sin, file=stderr)
