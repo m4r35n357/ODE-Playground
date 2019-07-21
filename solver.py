@@ -26,6 +26,8 @@ if (method == Analysis.NA) or (method == Analysis.SC):
     print(secant(model, x0, x1, x_tol=tol, f_tol=tol, max_it=max, target=target))
 if (method == Analysis.NA) or (method == Analysis.NT):
     print(newton(model, x0, x_tol=tol, f_tol=tol, max_it=max, target=target))
+if (method == Analysis.NA) or (method == Analysis.H1):
+    print(householder(model, x0, 2, x_tol=tol, f_tol=tol, max_it=max, target=target))
 if (method == Analysis.NA) or (method == Analysis.H2):
     print(householder(model, x0, 3, x_tol=tol, f_tol=tol, max_it=max, target=target))
 if (method == Analysis.NA) or (method == Analysis.H3):

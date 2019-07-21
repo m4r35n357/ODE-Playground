@@ -30,7 +30,7 @@ def composite2(a):
     return (a**2 + (a.exp - 4) * (a.exp - 4))**to_mpfr(0.5)
 
 def playground(a):
-    # Example: ./models.py 1 -8 8 1001 13 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
+    # Example: ./models.py NA -8 8 1001 13 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     # Example: ./series_test.py 7 -8 8 1001 | ./plotMany.py 8 10 >/dev/null
     # return (2 * a).sin - 2 * a.sin * a.cos
     # return (2 * a).cos - a.cos**2 + a.sin**2
