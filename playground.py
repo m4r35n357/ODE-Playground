@@ -34,7 +34,7 @@ class Solver(Enum):
     INFLECTION = 2
 
 
-Result = namedtuple('ResultType', ['count', 'sense', 'mode', 'x', 'f', 'δx'])
+Result = namedtuple('ResultType', ['method', 'count', 'sense', 'mode', 'x', 'f', 'δx'])
 
 
 def bisect(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.FLAT, target=zero(+1), mode=Solver.ROOT):
@@ -55,7 +55,7 @@ def bisect(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it
         counter += 1
         if counter == max_it:
             break
-    return Result(count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + target, δx=δx)
+    return Result(method=Analysis.BI.name, count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + target, δx=δx)
 
 
 def secant(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.FLAT, target=zero(+1), mode=Solver.ROOT, fp=False):
@@ -79,7 +79,8 @@ def secant(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it
         counter += 1
         if counter == max_it:
             break
-    return Result(count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + target, δx=δx)
+    method = Analysis.FP if fp else Analysis.SC
+    return Result(method=method.name, count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + target, δx=δx)
 
 
 def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.FLAT, target=zero(+1), mode=Solver.ROOT):
@@ -95,7 +96,7 @@ def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=100
         counter += 1
         if counter == max_it:
             break
-    return Result(count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + target, δx=δx)
+    return Result(method=Analysis.NT.name, count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + target, δx=δx)
 
 
 def householder(model, initial, n, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=100, sense=Sense.FLAT, target=zero(+1), mode=Solver.ROOT):
@@ -110,8 +111,8 @@ def householder(model, initial, n, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12
         counter += 1
         if counter == max_it:
             break
-    # return counter, x.val, f.jet[mode.value] + target, delta
-    return Result(count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + target, δx=δx)
+    method = Analysis.H2 if n == 3 else (Analysis.H3 if n == 4 else Analysis.NA)
+    return Result(method=method.name, count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + target, δx=δx)
 
 
 def analyze(model, method, x0, x1, steps, f_tol, x_tol, max_it, order):
