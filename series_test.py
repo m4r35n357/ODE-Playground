@@ -86,11 +86,11 @@ print("b**-0.5", file=stderr)
 print(Dual.get(b).var**-c, file=stderr)
 print(~Series.get(order, b).var**-c, file=stderr)
 
-print(" exp", file=stderr)
+print(f" exp({b:.1f})", file=stderr)
 print(Dual.get(b).var.exp, file=stderr)
 print(~Series.get(order, b).var.exp, file=stderr)
 
-print(" ln", file=stderr)
+print(f" ln({b:.1f})", file=stderr)
 print(Dual.get(b).var.ln, file=stderr)
 print(~Series.get(order, b).var.ln, file=stderr)
 
@@ -99,32 +99,27 @@ co = Dual.get(pi / a).var.cos
 sine = Series.get(order, pi / a).var.sin
 cosine = Series.get(order, pi / a).var.cos
 
-print(f" sin(pi / {a:.1})", file=stderr)
-print(si, file=stderr)
-print(~sine, file=stderr)
+print(f" sin(π / {a:.0f})", file=stderr)
+print(Dual.get(pi / a).var.sin, file=stderr)
+print(~Series.get(order, pi / a).var.sin, file=stderr)
 
-print(f" cos(pi / {a:.1})", file=stderr)
-print(co, file=stderr)
-print(~cosine, file=stderr)
+print(f" cos(π / {a:.0f})", file=stderr)
+print(Dual.get(pi / a).var.cos, file=stderr)
+print(~Series.get(order, pi / a).var.cos, file=stderr)
 
-print(f" tan(pi / {b:.1})", file=stderr)
+print(f" tan(π / {b:.0f})", file=stderr)
 print(Dual.get(pi / b).var.tan, file=stderr)
 print(~Series.get(order, pi / b).var.tan, file=stderr)
 
-si = Dual.get(pi / a).var.sinh
-co = Dual.get(pi / a).var.cosh
-sine = Series.get(order, pi / a).var.sinh
-cosine = Series.get(order, pi / a).var.cosh
+print(f" sinh(π / {a:.0f})", file=stderr)
+print(Dual.get(pi / a).var.sinh, file=stderr)
+print(~Series.get(order, pi / a).var.sinh, file=stderr)
 
-print(f" sinh(pi / {a:.1})", file=stderr)
-print(si, file=stderr)
-print(~sine, file=stderr)
+print(f" cosh(π / {a:.0f})", file=stderr)
+print(Dual.get(pi / a).var.cosh, file=stderr)
+print(~Series.get(order, pi / a).var.cosh, file=stderr)
 
-print(f" cosh(pi / {a:.1})", file=stderr)
-print(co, file=stderr)
-print(~cosine, file=stderr)
-
-print(f" tanh(pi / {b:.1})", file=stderr)
+print(f" tanh(π / {b:.0f})", file=stderr)
 print(Dual.get(pi / b).var.tanh, file=stderr)
 print(~Series.get(order, pi / b).var.tanh, file=stderr)
 
