@@ -16,6 +16,8 @@ class Analysis(Enum):
     FP = "False Position method"
     SC = "Secant method"
     NT = "Newton's method"
+    H2 = "Householder's method (degree 2)"
+    H3 = "Householder's method (degree 3)"
 
 
 @unique
@@ -96,6 +98,22 @@ def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=100
     return Result(count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + target, δx=δx)
 
 
+def householder(model, initial, n, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=100, sense=Sense.FLAT, target=zero(+1), mode=Solver.ROOT):
+    x = Series.get(n + mode.value, initial).var
+    f = Series.get(n + mode.value, 1)
+    δx = counter = 1
+    while abs(f.jet[mode.value]) > f_tol or abs(δx) > x_tol:
+        f = model(x) - target
+        r = ~ (1 / f)
+        δx = r.jet[n - 2 + mode.value] / r.jet[n - 1 + mode.value]
+        x += δx * (n - 1 + mode.value)
+        counter += 1
+        if counter == max_it:
+            break
+    # return counter, x.val, f.jet[mode.value] + target, delta
+    return Result(count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + target, δx=δx)
+
+
 def analyze(model, method, x0, x1, steps, f_tol, x_tol, max_it, order):
     x_prev = f0_prev = f1_prev = f2_prev = None
     print(method.value, file=stderr)
@@ -116,6 +134,10 @@ def analyze(model, method, x0, x1, steps, f_tol, x_tol, max_it, order):
                         yield secant(model, x.val, x.val + step, f_tol, x_tol, max_it, sense)
                     elif method == Analysis.NT:
                         yield newton(model, x.val, f_tol, x_tol, max_it, sense)
+                    elif method == Analysis.H2:
+                        yield householder(model, x.val, 3, f_tol, x_tol, max_it, sense)
+                    elif method == Analysis.H3:
+                        yield householder(model, x.val, 4, f_tol, x_tol, max_it, sense)
                 if f1_prev * f.jet[1] <= zero(+1):
                     sense = Sense.DECREASING if f1_prev > f.jet[1] else Sense.INCREASING
                     if method == Analysis.BI:
@@ -126,6 +148,10 @@ def analyze(model, method, x0, x1, steps, f_tol, x_tol, max_it, order):
                         yield secant(model, x.val, x.val + step, f_tol, x_tol, max_it, sense, mode=Solver.MIN_MAX)
                     elif method == Analysis.NT:
                         yield newton(model, x.val, f_tol, x_tol, max_it, sense, mode=Solver.MIN_MAX)
+                    elif method == Analysis.H2:
+                        yield householder(model, x.val, 3, f_tol, x_tol, max_it, sense, mode=Solver.MIN_MAX)
+                    elif method == Analysis.H3:
+                        yield householder(model, x.val, 4, f_tol, x_tol, max_it, sense, mode=Solver.MIN_MAX)
                 if f2_prev * f.jet[2] <= zero(+1):
                     sense = Sense.DECREASING if f2_prev > f.jet[2] else Sense.INCREASING
                     if method == Analysis.BI:
@@ -136,6 +162,10 @@ def analyze(model, method, x0, x1, steps, f_tol, x_tol, max_it, order):
                         yield secant(model, x.val, x.val + step, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION)
                     elif method == Analysis.NT:
                         yield newton(model, x.val, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION)
+                    elif method == Analysis.H2:
+                        yield householder(model, x.val, 3, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION)
+                    elif method == Analysis.H3:
+                        yield householder(model, x.val, 4, f_tol, x_tol, max_it, sense, mode=Solver.INFLECTION)
         else:
             yield x.val, f.jet
         x_prev = x.val
