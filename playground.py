@@ -38,7 +38,7 @@ class Solver(Enum):
 Result = namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', 'sense', 'mode'])
 
 
-def bisect(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.FLAT, target=zero(+1), mode=Solver.ROOT):
+def bisect(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.FLAT, target=zero(+1), mode=Solver.ROOT, debug=False):
     a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
     fc = Series.get(3, 1)
     f_sign = ~model(a) - target
@@ -53,13 +53,16 @@ def bisect(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it
         else:
             a = c
         δx = b.jet[mode.value] - a.jet[mode.value]
+        if debug:
+            print(Result(method=Analysis.BI.name, count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + target, δx=δx))
         counter += 1
         if counter == max_it:
             break
     return Result(method=Analysis.BI.name, count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + target, δx=δx)
 
 
-def secant(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.FLAT, target=zero(+1), mode=Solver.ROOT, fp=False):
+def secant(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.FLAT, target=zero(+1), mode=Solver.ROOT, fp=False, debug=False):
+    method = Analysis.FP if fp else Analysis.SC
     a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
     fa, fb, fc = ~model(a) - target, ~model(b) - target, Series.get(3, 1)
     δx = counter = 1
@@ -77,14 +80,15 @@ def secant(model, xa, xb, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it
             b, fb = a, fa
             a, fa = c, fc
         δx = b.jet[mode.value] - a.jet[mode.value]
+        if debug:
+            print(Result(method=method.name, count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + target, δx=δx))
         counter += 1
         if counter == max_it:
             break
-    method = Analysis.FP if fp else Analysis.SC
     return Result(method=method.name, count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + target, δx=δx)
 
 
-def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.FLAT, target=zero(+1), mode=Solver.ROOT):
+def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=1001, sense=Sense.FLAT, target=zero(+1), mode=Solver.ROOT, debug=False):
     x = Series.get(2 + mode.value, x0).var  # make x a variable to use derivatives!
     f = Series.get(2 + mode.value, 1)
     δx = counter = 1
@@ -94,13 +98,16 @@ def newton(model, x0, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=100
             break
         δx = - f.jet[mode.value] / f.jet[1 + mode.value]
         x += δx
+        if debug:
+            print(Result(method=Analysis.NT.name, count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + target, δx=δx))
         counter += 1
         if counter == max_it:
             break
     return Result(method=Analysis.NT.name, count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + target, δx=δx)
 
 
-def householder(model, initial, n, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=100, sense=Sense.FLAT, target=zero(+1), mode=Solver.ROOT):
+def householder(model, initial, n, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12), max_it=100, sense=Sense.FLAT, target=zero(+1), mode=Solver.ROOT, debug=False):
+    method = Analysis.H1 if n == 2 else (Analysis.H2 if n == 3 else (Analysis.H3 if n == 4 else Analysis.NA))
     x = Series.get(n + mode.value, initial).var
     f = Series.get(n + mode.value, 1)
     δx = counter = 1
@@ -108,13 +115,14 @@ def householder(model, initial, n, f_tol=to_mpfr(1.0e-12), x_tol=to_mpfr(1.0e-12
         f = model(x) - target
         if abs(f.jet[mode.value]) == zero(+1):
             break
-        r = ~ (1 / f)
+        r = ~(1 / f)
         δx = r.jet[n - 2 + mode.value] / r.jet[n - 1 + mode.value]
         x += δx * (n - 1 + mode.value)
+        if debug:
+            print(Result(method=method.name, count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + target, δx=δx))
         counter += 1
         if counter == max_it:
             break
-    method = Analysis.H1 if n == 2 else (Analysis.H2 if n == 3 else (Analysis.H3 if n == 4 else Analysis.NA))
     return Result(method=method.name, count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + target, δx=δx)
 
 
