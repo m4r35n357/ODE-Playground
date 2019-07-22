@@ -18,12 +18,16 @@ tol = float(argv[4])
 max_it = int(argv[5])
 target = float(argv[6])
 
-model = lambda x: x**2 / (x.cosh + 1).ln - 1
+# model = lambda x: x**2 / (x.cosh + 1).ln - 1
+model = lambda x: x**2
 
 if (method == Solver.NA) or (method == Solver.BI):
     print(bisect(model, x0, x1, εx=tol, εf=tol, limit=max_it, y=target, debug=True))
     print("")
 if (method == Solver.NA) or (method == Solver.FP):
+    print(secant(model, x0, x1, εx=tol, εf=tol, limit=max_it, y=target, fp=True, ill=False, debug=True))
+    print("")
+if (method == Solver.NA) or (method == Solver.FI):
     print(secant(model, x0, x1, εx=tol, εf=tol, limit=max_it, y=target, fp=True, debug=True))
     print("")
 if (method == Solver.NA) or (method == Solver.SC):
@@ -58,6 +62,7 @@ x1 = 0.0
 y = 2.0
 
 bisect(model, x0, x1, y=y, debug=True)
+secant(model, x0, x1, y=y, fp=True, ill=False, debug=True)
 secant(model, x0, x1, y=y, fp=True, debug=True)
 secant(model, x0, x1, y=y, debug=True)
 newton(model, x0, y=y, debug=True)
@@ -67,6 +72,7 @@ householder(model, x0, 4, y=y, debug=True)
 householder(model, x0, 5, y=y, debug=True)
 
 timeit(bisect(model, x0, x1, y=y))
+timeit(secant(model, x0, x1, y=y, fp=True, ill=False))
 timeit(secant(model, x0, x1, y=y, fp=True))
 timeit(secant(model, x0, x1, y=y))
 timeit(newton(model, x0, y=y))

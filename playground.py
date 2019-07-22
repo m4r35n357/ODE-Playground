@@ -12,7 +12,8 @@ from ad import Series
 class Solver(Enum):
     NA = "No analysis, or all"
     BI = "Bisection method"
-    FP = "False Position method (Illinois Algorithm)"
+    FP = "False Position method"
+    FI = "False Position method (Illinois Algorithm)"
     SC = "Secant method"
     NT = "Newton-Raphson method"
     H1 = "Householder's method, degree 1 (Newton)"
@@ -62,7 +63,7 @@ def bisect(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=
 
 
 def secant(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, fp=False, ill=True, debug=False):
-    method = Solver.FP if fp else Solver.SC
+    method = Solver.SC if not fp else (Solver.FI if ill else Solver.FP)
     a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
     fa, fb, fc = ~model(a) - y, ~model(b) - y, Series.get(3, 1)
     δx = counter = 1
@@ -150,6 +151,8 @@ def analyze(model, method, x0, x1, steps, εf, εx, limit, order):
                     if method == Solver.BI:
                         yield bisect(model, x.val, x_prev, εf, εx, limit, sense)
                     elif method == Solver.FP:
+                        yield secant(model, x.val, x.val + step, εf, εx, limit, sense, fp=True, ill=False)
+                    elif method == Solver.FI:
                         yield secant(model, x.val, x.val + step, εf, εx, limit, sense, fp=True)
                     elif method == Solver.SC:
                         yield secant(model, x.val, x.val + step, εf, εx, limit, sense)
@@ -168,6 +171,8 @@ def analyze(model, method, x0, x1, steps, εf, εx, limit, order):
                     if method == Solver.BI:
                         yield bisect(model, x.val, x_prev, εf, εx, limit, sense, mode=Mode.MIN_MAX)
                     elif method == Solver.FP:
+                        yield secant(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.MIN_MAX, fp=True, ill=False)
+                    elif method == Solver.FI:
                         yield secant(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.MIN_MAX, fp=True)
                     elif method == Solver.SC:
                         yield secant(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.MIN_MAX)
@@ -186,6 +191,8 @@ def analyze(model, method, x0, x1, steps, εf, εx, limit, order):
                     if method == Solver.BI:
                         yield bisect(model, x.val, x_prev, εf, εx, limit, sense, mode=Mode.INFLECTION)
                     elif method == Solver.FP:
+                        yield secant(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.INFLECTION, fp=True, ill=False)
+                    elif method == Solver.FI:
                         yield secant(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.INFLECTION, fp=True)
                     elif method == Solver.SC:
                         yield secant(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.INFLECTION)
