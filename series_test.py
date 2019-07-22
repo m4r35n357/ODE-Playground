@@ -134,3 +134,28 @@ assert n_steps > 0
 
 for result in analyze(playground, lower, upper, steps=n_steps):
     pass
+
+# For Python console:
+'''
+from ad import *
+
+a = Series.get(5, 3.0)
+b = Series.get(5, 5.0)
+c = Series.get(5, 7.0)
+x = Series.get(5, 2.0)
+
+y = a * x**3 - b * x**2 + c * x - 5
+print(~y)
+
+y = a * x.var**3 - b * x.var**2 + c * x.var - 5
+print(~y)
+
+y = a.var * x**3 - b * x**2 + c * x - 5
+print(~y)
+
+y = a * x**3 - b.var * x**2 + c * x - 5
+print(~y)
+
+y = a * x**3 - b * x**2 + c.var * x - 5
+print(~y)
+'''

@@ -2,7 +2,7 @@
 from sys import stderr
 
 def lorentz(a):
-    # Example: ./models.py 0 .001 .999 1001 13 1e-12 1e-12 | ./plotMany.py 1 10 >/dev/null
+    # Example: ./models.py 0 .001 .999 1001 7 1e-12 1e-12 | ./plotMany.py 1 10 >/dev/null
     return (1 - a * a)**-0.5
 
 def schwartzschild(r, e=0.962250, p_r=0.0, l_z=4.0):  # no t or phi!
@@ -39,15 +39,12 @@ def playground(a):
     # return a.tan - a.sin / a.cos
     # return a.tanh - a.sinh / a.cosh
     # return (a + 7) / (3.0 - a)  # problem at a == 3.0
+    # return abs(a)**2
     # return (abs(a) + 1.0e-6)**-4
-    # return 4**a
-    # return abs(a)**(a+1)
-    # return (abs(a) + 1)**a
-    # return (2 + 3 * a)**(2 * a - 5)
-    # return (abs(a) + 1.0e-6)**-4
-    # return (a**2 + 1.0e-6)**2
-    # return a**2 / (a.cosh + 1).ln - 1
+    # return (a**2)**2
+    return a**2 / (a.cosh + 1).ln - 1
+    # return a / a.exp
     # return (a - 1)**2
-    return a**2
+    # return a**2
 
 print(__name__ + " module loaded", file=stderr)

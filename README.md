@@ -41,7 +41,6 @@ The \*\* (power) operator caters for f(x)^a, a^f(x) and f1(x)^f2(x), subject to 
 There are also functions for:
 * abs
 * exp
-* sin(h)_cos(h) (gmpy2 or Series class only)
 * sin(h)
 * cos(h)
 * tan(h)
@@ -138,10 +137,10 @@ tsm.py comprises a long "if" statement containing a "zoo" of pre-programmed ODE 
 Parameter | Meaning
 ----------|-----------
 1 | model (ODE) name
-2,3 | precision in decimal places, order
-4,5 | step size, number of steps
-6,7,8 | x0, y0, z0
-9+ | ODE parameters
+2 | order
+3,4 | step size, number of steps
+5,6,7 | x0, y0, z0
+8+ | ODE parameters
 
 
 ## Analysing functions
@@ -153,11 +152,14 @@ There is a choice of analysis (root finding) method:
 
 Code | Meaning
 ----------|-----------
-    NA | No analysis
-    BI | Bisection method
-    FP | False Position method
-    SC | Secant method
-    NT | Newton's method
+NA | No analysis
+BI | Bisection method
+FP | False Position method
+SC | Secant method
+NT | Newton's method
+H1 | Householder's method, degree 1 (Newton)
+H2 | Householder's method, degree 2
+H3 | Householder's method, degree 3
 
 Here is an invocation for the function (x - 1)^2
 ```

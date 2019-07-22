@@ -52,9 +52,9 @@ def t_sin_cos(s, c, u, k, hyp=False):
 
 def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
-        return (tanh(u[0]), 1 - tanh(u[0])**2) if hyp else (tan(u[0]), 1 + tan(u[0])**2)
+        return (tanh(u[0]), 1.0 - tanh(u[0])**2) if hyp else (tan(u[0]), 1.0 + tan(u[0])**2)
     tk = sum((k - j) * s2[j] * u[k - j] for j in range(k)) / k
-    sk = 2 * (t[0] * tk + sum((k - j) * t[j] * t[k - j] for j in range(1, k)) / k)
+    sk = 2.0 * (t[0] * tk + sum((k - j) * t[j] * t[k - j] for j in range(1, k)) / k)
     return (tk, - sk) if hyp else (tk, sk)
 
 
@@ -69,7 +69,7 @@ class Series:
         return cls(t_jet(order, value))
 
     def __str__(self):
-        return ''.join(f"{self.jet[i]:+.6e} " for i in range(self.n))
+        return ''.join(f"{self.jet[i]:+.9e} " for i in range(self.n))
 
     def __abs__(self):
         return Series([t_abs(self.jet, k) for k in range(self.n)])
@@ -250,7 +250,7 @@ class Dual:
         return cls(float(value), 0.0)
 
     def __str__(self):
-        return f"{self.val:+.6e} {self.der:+.6e}"
+        return f"{self.val:+.9e} {self.der:+.9e}"
 
     def __abs__(self):
         return Dual(abs(self.val), self.der if self.val > 0.0 else (- self.der if self.val < 0.0 else 0.0))
@@ -366,7 +366,7 @@ class Dual:
 
     @property
     def tan(self):
-        return Dual(tan(self.val), self.der * (1 + tan(self.val)**2))
+        return Dual(tan(self.val), self.der * (1.0 + tan(self.val)**2))
 
     @property
     def sinh(self):
@@ -378,7 +378,7 @@ class Dual:
 
     @property
     def tanh(self):
-        return Dual(tanh(self.val), self.der * (1 - tanh(self.val)**2))
+        return Dual(tanh(self.val), self.der * (1.0 - tanh(self.val)**2))
 
     @property
     def var(self):
