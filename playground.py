@@ -38,7 +38,7 @@ class Mode(Enum):
 Result = namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', 'sense', 'mode'])
 
 
-def bisect(model, xa, xb, εf=1e-12, εx=1e-12, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, debug=False):
+def bisect(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, debug=False):
     a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
     fc = Series.get(3, 1)
     f_sign = ~model(a) - y
@@ -61,7 +61,7 @@ def bisect(model, xa, xb, εf=1e-12, εx=1e-12, limit=1001, sense=Sense.FLAT, y=
     return Result(method=Solver.BI.name, count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + y, δx=δx)
 
 
-def secant(model, xa, xb, εf=1e-12, εx=1e-12, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, fp=False, ill=True, debug=False):
+def secant(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, fp=False, ill=True, debug=False):
     method = Solver.FP if fp else Solver.SC
     a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
     fa, fb, fc = ~model(a) - y, ~model(b) - y, Series.get(3, 1)
@@ -97,7 +97,7 @@ def secant(model, xa, xb, εf=1e-12, εx=1e-12, limit=1001, sense=Sense.FLAT, y=
     return Result(method=method.name, count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + y, δx=δx)
 
 
-def newton(model, x0, εf=1e-12, εx=1e-12, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, debug=False):
+def newton(model, x0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, debug=False):
     x = Series.get(2 + mode.value, x0).var  # make x variable for AD
     f = Series.get(2 + mode.value, 1)
     δx = counter = 1
@@ -115,7 +115,7 @@ def newton(model, x0, εf=1e-12, εx=1e-12, limit=1001, sense=Sense.FLAT, y=0.0,
     return Result(method=Solver.NT.name, count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + y, δx=δx)
 
 
-def householder(model, initial, n, εf=1e-12, εx=1e-12, limit=100, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, debug=False):
+def householder(model, initial, n, εf=1e-15, εx=1e-15, limit=100, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, debug=False):
     method = Solver.H1 if n == 2 else (Solver.H2 if n == 3 else (Solver.H3 if n == 4 else (Solver.H4 if n == 5 else Solver.NA)))
     x = Series.get(n + mode.value, initial).var  # make x variable for AD
     f = Series.get(n + mode.value, 1)
