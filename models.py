@@ -8,7 +8,7 @@ mode = Solver.NA
 try:
     mode = Solver[argv[1]]
 except KeyError:
-    print('INVALID ANALYSIS', file=stderr)
+    print(f"INVALID ANALYSIS: '{argv[1]}'", file=stderr)
     print(Solver.__members__.keys(), file=stderr)
     exit()
 x0 = float(argv[2])

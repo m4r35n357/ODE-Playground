@@ -9,7 +9,7 @@ method = Solver.NA
 try:
     method = Solver[argv[1]]
 except KeyError:
-    print('INVALID ANALYSIS', file=stderr)
+    print(f"INVALID ANALYSIS: '{argv[1]}'", file=stderr)
     print(Solver.__members__.keys(), file=stderr)
     exit()
 x0 = float(argv[2])
@@ -56,8 +56,9 @@ from ad import *
 from playground import *
 
 model = lambda x: x**2 / (x.cosh + 1).ln - 1
+model = lambda x: x**2
 
-x0 = 3.0
+x0 = 2.0
 x1 = 0.0
 y = 2.0
 
