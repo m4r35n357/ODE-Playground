@@ -21,5 +21,5 @@ assert order > 2
 f_tol = float(argv[6])
 x_tol = float(argv[7])
 
-for result in analyze(playground, mode, x0, x1, steps, f_tol, x_tol, max_it=1000, order=order):
+for result in analyze(playground, mode, x0, x1, steps, f_tol, x_tol, limit=1000, order=order):
     print(result, file=stderr)
