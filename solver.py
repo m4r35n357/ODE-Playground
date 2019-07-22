@@ -41,6 +41,9 @@ if (method == Analysis.NA) or (method == Analysis.H2):
 if (method == Analysis.NA) or (method == Analysis.H3):
     print(householder(model, x0, 4, εx=tol, εf=tol, limit=max, y=target, debug=True))
     print("")
+if (method == Analysis.NA) or (method == Analysis.H4):
+    print(householder(model, x0, 5, εx=tol, εf=tol, limit=max, y=target, debug=True))
+    print("")
 
 
 # For Python console:
@@ -61,6 +64,7 @@ newton(model, x0, y=y, debug=True)
 householder(model, x0, 2, y=y, debug=True)
 householder(model, x0, 3, y=y, debug=True)
 householder(model, x0, 4, y=y, debug=True)
+householder(model, x0, 5, y=y, debug=True)
 
 timeit(bisect(model, x0, x1, y=y))
 timeit(secant(model, x0, x1, y=y, fp=True))
@@ -69,5 +73,6 @@ timeit(newton(model, x0, y=y))
 timeit(householder(model, x0, 2, y=y))
 timeit(householder(model, x0, 3, y=y))
 timeit(householder(model, x0, 4, y=y))
+timeit(householder(model, x0, 5, y=y))
 
 '''
