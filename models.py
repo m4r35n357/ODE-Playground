@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 
 from sys import argv, exit, stderr
-from playground import analyze, Analysis
+from playground import analyze, Solver
 from functions import playground
 
-mode = Analysis.NA
+mode = Solver.NA
 try:
-    mode = Analysis[argv[1]]
+    mode = Solver[argv[1]]
 except KeyError:
     print('INVALID ANALYSIS', file=stderr)
-    print(Analysis.__members__.keys(), file=stderr)
+    print(Solver.__members__.keys(), file=stderr)
     exit()
 x0 = float(argv[2])
 x1 = float(argv[3])

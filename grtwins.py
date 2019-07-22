@@ -9,7 +9,7 @@ see https://www.mathpages.com/rr/s6-05/6-05.htm, equations (7) and (8)
 from sys import stderr, argv
 from gmpy2 import get_context, sqrt, sin, cos, acos
 get_context().precision = 236  # Set this BEFORE importing any Taylor Series stuff!
-from playground import Solver, analyze
+from playground import Mode, analyze
 from taylor import to_mpfr
 
 
@@ -47,7 +47,7 @@ f_tol = to_mpfr(argv[6])
 x_tol = to_mpfr(argv[7])
 
 for result in analyze(playground, mode, x0, x1, steps, target, f_tol, x_tol):
-    if result.mode == Solver.ROOT.name:
+    if result.mode == Mode.ROOT.name:
         print(result, file=stderr)
         answer = ratio(result.x)
         print(answer, file=stderr)
