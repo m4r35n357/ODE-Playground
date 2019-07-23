@@ -47,31 +47,31 @@ class Derivative(namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', '
 
 
 def bisect(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, debug=False):
+    method = Solver.BI
     a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
     fc = Series.get(3, 1)
     f_sign = ~model(a) - y
     δx = counter = 1
-    print(Solver.BI.value, file=stderr)
+    print(method.value, file=stderr)
     while abs(fc.jet[mode.value]) > εf or abs(δx) > εx:
         c = (a + b) / 2
         fc = ~model(c) - y
-        if abs(fc.jet[mode.value]) == 0.0:
-            break
         if f_sign.jet[mode.value] * fc.jet[mode.value] < 0.0:
             b = c
         else:
             a = c
         δx = b.jet[mode.value] - a.jet[mode.value]
         if debug:
-            print(Bracketed(method=Solver.BI.name, count=counter, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx), file=stderr)
+            print(Bracketed(method=method.name, count=counter, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx),
+                  file=stderr)
         counter += 1
         if counter == limit:
             break
-    return Bracketed(method=Solver.BI.name, count=counter - 1, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx)
+    return Bracketed(method=method.name, count=counter - 1, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx)
 
 
-def secant(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, fp=False, ill=True, debug=False):
-    method = Solver.SC if not fp else (Solver.FI if ill else Solver.FP)
+def falsi(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, ill=True, debug=False):
+    method = Solver.FI if ill else Solver.FP
     a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
     fa, fb, fc = ~model(a) - y, ~model(b) - y, Series.get(3, 1)
     δx = counter = 1
@@ -80,57 +80,66 @@ def secant(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=
     while abs(fc.jet[mode.value]) > εf or abs(δx) > εx:
         c = (a * fb - b * fa) / (fb - fa)
         fc = ~model(c) - y
-        if abs(fc.jet[mode.value]) == 0.0:
-            break
-        if fp:
-            if fa.val * fc.val > 0.0:
-                a, fa = c, fc
-                if ill:
-                    if side == -1:
-                        fb *= 0.5
-                    side = -1
-            elif fb.val * fc.val > 0.0:
-                b, fb = c, fc
-                if ill:
-                    if side == +1:
-                        fa *= 0.5
-                    side = +1
-        else:
-            b, fb = a, fa
+        if fa.val * fc.val > 0.0:
             a, fa = c, fc
+            if ill:
+                if side == -1:
+                    fb *= 0.5
+                side = -1
+        elif fb.val * fc.val > 0.0:
+            b, fb = c, fc
+            if ill:
+                if side == +1:
+                    fa *= 0.5
+                side = +1
         δx = b.jet[mode.value] - a.jet[mode.value]
         if debug:
-            if fp:
-                print(Bracketed(method=Solver.BI.name, count=counter, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx),
-                      file=stderr)
-            else:
-                print(Derivative(method=Solver.NT.name, count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val, δx=δx),
-                      file=stderr)
+            print(Bracketed(method=method.name, count=counter, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx),
+                  file=stderr)
         counter += 1
         if counter == limit:
             break
-    if fp:
-        return Bracketed(method=Solver.BI.name, count=counter - 1, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx)
-    else:
-        return Derivative(method=Solver.NT.name, count=counter - 1, sense=sense.value, mode=mode.name, x=c.val, f=fc.val, δx=δx)
+    return Bracketed(method=method.name, count=counter - 1, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx)
+
+
+def secant(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, debug=False):
+    method = Solver.SC
+    a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
+    fa, fb, fc = ~model(a) - y, ~model(b) - y, Series.get(3, 1)
+    δx = counter = 1
+    print(method.value, file=stderr)
+    while abs(fc.jet[mode.value]) > εf or abs(δx) > εx:
+        c = (a * fb - b * fa) / (fb - fa)
+        fc = ~model(c) - y
+        b, fb = a, fa
+        a, fa = c, fc
+        δx = b.jet[mode.value] - a.jet[mode.value]
+        if debug:
+            print(Derivative(method=method.name, count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val, δx=δx),
+                  file=stderr)
+        counter += 1
+        if counter == limit:
+            break
+    return Derivative(method=method.name, count=counter - 1, sense=sense.value, mode=mode.name, x=c.val, f=fc.val, δx=δx)
+
 
 def newton(model, x0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, debug=False):
+    method = Solver.NT
     x = Series.get(2 + mode.value, x0).var  # make x variable for AD
     f = Series.get(2 + mode.value, 1)
     δx = counter = 1
-    print(Solver.NT.value, file=stderr)
+    print(method.value, file=stderr)
     while abs(f.jet[mode.value]) > εf or abs(δx) > εx:
         f = ~model(x) - y
-        if abs(f.jet[mode.value]) == 0.0:
-            break
         δx = - f.jet[mode.value] / f.jet[1 + mode.value]
         x += δx
         if debug:
-            print(Derivative(method=Solver.NT.name, count=counter, sense=sense.value, mode=mode.name,x=x.val, f=f.val, δx=δx), file=stderr)
+            print(Derivative(method=method.name, count=counter, sense=sense.value, mode=mode.name,x=x.val, f=f.val, δx=δx),
+                  file=stderr)
         counter += 1
         if counter == limit:
             break
-    return Derivative(method=Solver.NT.name, count=counter - 1, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx)
+    return Derivative(method=method.name, count=counter - 1, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx)
 
 
 def householder(model, initial, n, εf=1e-15, εx=1e-15, limit=100, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, debug=False):
@@ -141,13 +150,12 @@ def householder(model, initial, n, εf=1e-15, εx=1e-15, limit=100, sense=Sense.
     print(method.value, file=stderr)
     while abs(f.jet[mode.value]) > εf or abs(δx) > εx:
         f = model(x) - y
-        if abs(f.jet[mode.value]) == 0.0:
-            break
         r = ~(1 / f)
         δx = r.jet[n - 2 + mode.value] / r.jet[n - 1 + mode.value]
         x += δx * (n - 1 + mode.value)
         if debug:
-            print(Derivative(method=method.name, count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx), file=stderr)
+            print(Derivative(method=method.name, count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx),
+                  file=stderr)
         counter += 1
         if counter == limit:
             break
@@ -168,9 +176,9 @@ def analyze(model, method, x0, x1, steps, εf, εx, limit, order):
                     if method == Solver.BI:
                         yield bisect(model, x.val, x_prev, εf, εx, limit, sense)
                     elif method == Solver.FP:
-                        yield secant(model, x.val, x.val + step, εf, εx, limit, sense, fp=True, ill=False)
+                        yield falsi(model, x.val, x.val + step, εf, εx, limit, sense, ill=False)
                     elif method == Solver.FI:
-                        yield secant(model, x.val, x.val + step, εf, εx, limit, sense, fp=True)
+                        yield falsi(model, x.val, x.val + step, εf, εx, limit, sense)
                     elif method == Solver.SC:
                         yield secant(model, x.val, x.val + step, εf, εx, limit, sense)
                     elif method == Solver.NT:
@@ -188,9 +196,9 @@ def analyze(model, method, x0, x1, steps, εf, εx, limit, order):
                     if method == Solver.BI:
                         yield bisect(model, x.val, x_prev, εf, εx, limit, sense, mode=Mode.MIN_MAX)
                     elif method == Solver.FP:
-                        yield secant(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.MIN_MAX, fp=True, ill=False)
+                        yield falsi(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.MIN_MAX, ill=False)
                     elif method == Solver.FI:
-                        yield secant(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.MIN_MAX, fp=True)
+                        yield falsi(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.MIN_MAX)
                     elif method == Solver.SC:
                         yield secant(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.MIN_MAX)
                     elif method == Solver.NT:
@@ -208,9 +216,9 @@ def analyze(model, method, x0, x1, steps, εf, εx, limit, order):
                     if method == Solver.BI:
                         yield bisect(model, x.val, x_prev, εf, εx, limit, sense, mode=Mode.INFLECTION)
                     elif method == Solver.FP:
-                        yield secant(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.INFLECTION, fp=True, ill=False)
+                        yield falsi(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.INFLECTION, ill=False)
                     elif method == Solver.FI:
-                        yield secant(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.INFLECTION, fp=True)
+                        yield falsi(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.INFLECTION)
                     elif method == Solver.SC:
                         yield secant(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.INFLECTION)
                     elif method == Solver.NT:

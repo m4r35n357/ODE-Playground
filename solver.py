@@ -3,7 +3,7 @@
 # Example:  ./solver.py NA 2.0 0.0 1e-12 1000 2.0
 
 from sys import argv, exit, stderr
-from playground import Solver, bisect, secant, newton, householder
+from playground import Solver, bisect, falsi, secant, newton, householder
 
 method = Solver.NA
 try:
@@ -25,10 +25,10 @@ if (method == Solver.NA) or (method == Solver.BI):
     print(bisect(model, x0, x1, εx=tol, εf=tol, limit=max_it, y=target, debug=True))
     print("")
 if (method == Solver.NA) or (method == Solver.FP):
-    print(secant(model, x0, x1, εx=tol, εf=tol, limit=max_it, y=target, fp=True, ill=False, debug=True))
+    print(falsi(model, x0, x1, εx=tol, εf=tol, limit=max_it, y=target, ill=False, debug=True))
     print("")
 if (method == Solver.NA) or (method == Solver.FI):
-    print(secant(model, x0, x1, εx=tol, εf=tol, limit=max_it, y=target, fp=True, debug=True))
+    print(secant(model, x0, x1, εx=tol, εf=tol, limit=max_it, y=target, debug=True))
     print("")
 if (method == Solver.NA) or (method == Solver.SC):
     print(secant(model, x0, x1, εx=tol, εf=tol, limit=max_it, y=target, debug=True))
