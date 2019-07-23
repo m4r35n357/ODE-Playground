@@ -24,9 +24,9 @@ class Solver(Enum):
 
 @unique
 class Sense(Enum):
-    FLAT = ''
-    INCREASING = '+'
-    DECREASING = '-'
+    FLAT = '_'
+    INCREASING = '/'
+    DECREASING = '\\'
 
 
 @unique
@@ -36,7 +36,14 @@ class Mode(Enum):
     INFLECTION = 2
 
 
-Result = namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', 'sense', 'mode'])
+class Bracketed(namedtuple('ResultType', ['method', 'a', 'b', 'f', 'δx', 'count', 'sense', 'mode'])):
+    def __str__(self):
+        return f"{self.method} a={self.a:+.15e} b={self.b:+.15e} f={self.f:+.15e} δx={self.δx:+.15e} {self.sense}{self.mode} count={self.count}"
+
+
+class Derivative(namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', 'sense', 'mode'])):
+    def __str__(self):
+        return f"{self.method} x={self.x:+.15e} f={self.f:+.15e} δx={self.δx:+.15e} {self.sense}{self.mode} count={self.count}"
 
 
 def bisect(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, debug=False):
@@ -44,6 +51,7 @@ def bisect(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=
     fc = Series.get(3, 1)
     f_sign = ~model(a) - y
     δx = counter = 1
+    print(Solver.BI.value, file=stderr)
     while abs(fc.jet[mode.value]) > εf or abs(δx) > εx:
         c = (a + b) / 2
         fc = ~model(c) - y
@@ -55,11 +63,11 @@ def bisect(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=
             a = c
         δx = b.jet[mode.value] - a.jet[mode.value]
         if debug:
-            print(Result(method=Solver.BI.name, count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + y, δx=δx))
+            print(Bracketed(method=Solver.BI.name, count=counter, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx), file=stderr)
         counter += 1
         if counter == limit:
             break
-    return Result(method=Solver.BI.name, count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + y, δx=δx)
+    return Bracketed(method=Solver.BI.name, count=counter - 1, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx)
 
 
 def secant(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, fp=False, ill=True, debug=False):
@@ -68,6 +76,7 @@ def secant(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=
     fa, fb, fc = ~model(a) - y, ~model(b) - y, Series.get(3, 1)
     δx = counter = 1
     side = 0
+    print(method.value, file=stderr)
     while abs(fc.jet[mode.value]) > εf or abs(δx) > εx:
         c = (a * fb - b * fa) / (fb - fa)
         fc = ~model(c) - y
@@ -91,17 +100,25 @@ def secant(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=
             a, fa = c, fc
         δx = b.jet[mode.value] - a.jet[mode.value]
         if debug:
-            print(Result(method=method.name, count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + y, δx=δx))
+            if fp:
+                print(Bracketed(method=Solver.BI.name, count=counter, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx),
+                      file=stderr)
+            else:
+                print(Derivative(method=Solver.NT.name, count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val, δx=δx),
+                      file=stderr)
         counter += 1
         if counter == limit:
             break
-    return Result(method=method.name, count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val + y, δx=δx)
-
+    if fp:
+        return Bracketed(method=Solver.BI.name, count=counter - 1, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx)
+    else:
+        return Derivative(method=Solver.NT.name, count=counter - 1, sense=sense.value, mode=mode.name, x=c.val, f=fc.val, δx=δx)
 
 def newton(model, x0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, debug=False):
     x = Series.get(2 + mode.value, x0).var  # make x variable for AD
     f = Series.get(2 + mode.value, 1)
     δx = counter = 1
+    print(Solver.NT.value, file=stderr)
     while abs(f.jet[mode.value]) > εf or abs(δx) > εx:
         f = ~model(x) - y
         if abs(f.jet[mode.value]) == 0.0:
@@ -109,11 +126,11 @@ def newton(model, x0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0,
         δx = - f.jet[mode.value] / f.jet[1 + mode.value]
         x += δx
         if debug:
-            print(Result(method=Solver.NT.name, count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + y, δx=δx))
+            print(Derivative(method=Solver.NT.name, count=counter, sense=sense.value, mode=mode.name,x=x.val, f=f.val, δx=δx), file=stderr)
         counter += 1
         if counter == limit:
             break
-    return Result(method=Solver.NT.name, count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + y, δx=δx)
+    return Derivative(method=Solver.NT.name, count=counter - 1, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx)
 
 
 def householder(model, initial, n, εf=1e-15, εx=1e-15, limit=100, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, debug=False):
@@ -121,6 +138,7 @@ def householder(model, initial, n, εf=1e-15, εx=1e-15, limit=100, sense=Sense.
     x = Series.get(n + mode.value, initial).var  # make x variable for AD
     f = Series.get(n + mode.value, 1)
     δx = counter = 1
+    print(method.value, file=stderr)
     while abs(f.jet[mode.value]) > εf or abs(δx) > εx:
         f = model(x) - y
         if abs(f.jet[mode.value]) == 0.0:
@@ -129,16 +147,15 @@ def householder(model, initial, n, εf=1e-15, εx=1e-15, limit=100, sense=Sense.
         δx = r.jet[n - 2 + mode.value] / r.jet[n - 1 + mode.value]
         x += δx * (n - 1 + mode.value)
         if debug:
-            print(Result(method=method.name, count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + y, δx=δx))
+            print(Derivative(method=method.name, count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx), file=stderr)
         counter += 1
         if counter == limit:
             break
-    return Result(method=method.name, count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val + y, δx=δx)
+    return Derivative(method=method.name, count=counter - 1, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx)
 
 
 def analyze(model, method, x0, x1, steps, εf, εx, limit, order):
     x_prev = f0_prev = f1_prev = f2_prev = None
-    print(method.value, file=stderr)
     for k in range(steps):
         step = (x1 - x0) / (steps - 1)
         x = Series.get(order, x0 + k * step).var  # make x a variable to see derivatives!
