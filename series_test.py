@@ -13,10 +13,8 @@ a = 3.0
 b = 4.0
 c = 0.5
 
-y = Dual.get(a).var
-print(f"y = {y}", file=stderr)
-z = Series.get(order, a).var
-print(f"z = {z}", file=stderr)
+w, x = Dual.get(b).var, Series.get(order, b).var
+y, z = Dual.get(a).var, Series.get(order, a).var
 
 print(" unary +", file=stderr)
 print(+ y, file=stderr)
@@ -70,52 +68,55 @@ print((y + 1)**(y - 1), file=stderr)
 print(~((z + 1)**(z - 1)), file=stderr)
 
 print("b**2", file=stderr)
-print(Dual.get(b).var**2, file=stderr)
-print(~Series.get(order, b).var**2, file=stderr)
+print(w**2, file=stderr)
+print(~(x**2), file=stderr)
 
 print("b**-2", file=stderr)
-print(Dual.get(b).var**-2, file=stderr)
-print(~Series.get(order, b).var**-2, file=stderr)
+print(w**-2, file=stderr)
+print(~(x**-2), file=stderr)
 
 print("b**0.5", file=stderr)
-print(Dual.get(b).var**c, file=stderr)
-print(~Series.get(order, b).var**c, file=stderr)
+print(w**c, file=stderr)
+print(~(x**c), file=stderr)
 
 print("b**-0.5", file=stderr)
-print(Dual.get(b).var**-c, file=stderr)
-print(~Series.get(order, b).var**-c, file=stderr)
+print(w**-c, file=stderr)
+print(~(x**-c), file=stderr)
 
 print(f" exp({b:.1f})", file=stderr)
-print(Dual.get(b).var.exp, file=stderr)
-print(~Series.get(order, b).var.exp, file=stderr)
+print(w.exp, file=stderr)
+print(~(x.exp), file=stderr)
 
 print(f" ln({b:.1f})", file=stderr)
-print(Dual.get(b).var.ln, file=stderr)
-print(~Series.get(order, b).var.ln, file=stderr)
+print(w.ln, file=stderr)
+print(~(x.ln), file=stderr)
 
-print(f" sin(π / {a:.0f})", file=stderr)
-print(Dual.get(pi / a).var.sin, file=stderr)
-print(~Series.get(order, pi / a).var.sin, file=stderr)
+w, x = Dual.get(pi / b).var, Series.get(order, pi / b).var
+y, z = Dual.get(pi / a).var, Series.get(order, pi / a).var
 
-print(f" cos(π / {a:.0f})", file=stderr)
-print(Dual.get(pi / a).var.cos, file=stderr)
-print(~Series.get(order, pi / a).var.cos, file=stderr)
+print(f" sin(π/{a:.0f})", file=stderr)
+print(y.sin, file=stderr)
+print(~(z.sin), file=stderr)
 
-print(f" tan(π / {b:.0f})", file=stderr)
-print(Dual.get(pi / b).var.tan, file=stderr)
-print(~Series.get(order, pi / b).var.tan, file=stderr)
+print(f" cos(π/{a:.0f})", file=stderr)
+print(y.cos, file=stderr)
+print(~(z.cos), file=stderr)
 
-print(f" sinh(π / {a:.0f})", file=stderr)
-print(Dual.get(pi / a).var.sinh, file=stderr)
-print(~Series.get(order, pi / a).var.sinh, file=stderr)
+print(f" tan(π/{b:.0f})", file=stderr)
+print(w.tan, file=stderr)
+print(~(x.tan), file=stderr)
 
-print(f" cosh(π / {a:.0f})", file=stderr)
-print(Dual.get(pi / a).var.cosh, file=stderr)
-print(~Series.get(order, pi / a).var.cosh, file=stderr)
+print(f" sinh(π/{a:.0f})", file=stderr)
+print(y.sinh, file=stderr)
+print(~(z.sinh), file=stderr)
 
-print(f" tanh(π / {b:.0f})", file=stderr)
-print(Dual.get(pi / b).var.tanh, file=stderr)
-print(~Series.get(order, pi / b).var.tanh, file=stderr)
+print(f" cosh(π/{a:.0f})", file=stderr)
+print(y.cosh, file=stderr)
+print(~(z.cosh), file=stderr)
+
+print(f" tanh(π/{b:.0f})", file=stderr)
+print(w.tanh, file=stderr)
+print(~(x.tanh), file=stderr)
 
 print("", file=stderr)
 
