@@ -33,7 +33,7 @@ class Sense(Enum):
 class Mode(Enum):
     ROOT = 0
     MIN_MAX = 1
-    INFLECTION = 2
+    INFLECT = 2
 
 
 class Bracketed(namedtuple('ResultType', ['method', 'a', 'b', 'f', 'δx', 'count', 'sense', 'mode'])):
@@ -142,7 +142,7 @@ def newton(model, x0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0,
     return Derivative(method=method.name, count=counter - 1, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx)
 
 
-def householder(model, initial, n, εf=1e-15, εx=1e-15, limit=100, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, debug=False):
+def householder(model, initial, n, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, debug=False):
     method = Solver.H1 if n == 2 else (Solver.H2 if n == 3 else (Solver.H3 if n == 4 else (Solver.H4 if n == 5 else Solver.NA)))
     x = Series.get(n + mode.value, initial).var  # make x variable for AD
     f = Series.get(n + mode.value, 1)
@@ -172,65 +172,65 @@ def analyze(model, method, x0, x1, steps, εf, εx, limit, order):
         if method != Solver.NA:
             if k > 0:
                 if f0_prev * f.val <= 0.0:
-                    sense = Sense.DECREASING if f0_prev > f.val else Sense.INCREASING
+                    s = Sense.DECREASING if f0_prev > f.val else Sense.INCREASING
                     if method == Solver.BI:
-                        yield bisect(model, x.val, x_prev, εf, εx, limit, sense)
+                        yield bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s)
                     elif method == Solver.FP:
-                        yield falsi(model, x.val, x.val + step, εf, εx, limit, sense, ill=False)
+                        yield falsi(model, x.val, x.val + step, εf=εf, εx=εx, limit=limit, sense=s, ill=False)
                     elif method == Solver.FI:
-                        yield falsi(model, x.val, x.val + step, εf, εx, limit, sense)
+                        yield falsi(model, x.val, x.val + step, εf=εf, εx=εx, limit=limit, sense=s)
                     elif method == Solver.SC:
-                        yield secant(model, x.val, x.val + step, εf, εx, limit, sense)
+                        yield secant(model, x.val, x.val + step, εf=εf, εx=εx, limit=limit, sense=s)
                     elif method == Solver.NT:
-                        yield newton(model, x.val, εf, εx, limit, sense)
+                        yield newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=s)
                     elif method == Solver.H1:
-                        yield householder(model, x.val, 2, εf, εx, limit, sense)
+                        yield householder(model, x.val, 2, εf=εf, εx=εx, limit=limit, sense=s)
                     elif method == Solver.H2:
-                        yield householder(model, x.val, 3, εf, εx, limit, sense)
+                        yield householder(model, x.val, 3, εf=εf, εx=εx, limit=limit, sense=s)
                     elif method == Solver.H3:
-                        yield householder(model, x.val, 4, εf, εx, limit, sense)
+                        yield householder(model, x.val, 4, εf=εf, εx=εx, limit=limit, sense=s)
                     elif method == Solver.H4:
-                        yield householder(model, x.val, 5, εf, εx, limit, sense)
+                        yield householder(model, x.val, 5, εf=εf, εx=εx, limit=limit, sense=s)
                 if f1_prev * f.jet[1] <= 0.0:
-                    sense = Sense.DECREASING if f1_prev > f.jet[1] else Sense.INCREASING
+                    s = Sense.DECREASING if f1_prev > f.jet[1] else Sense.INCREASING
                     if method == Solver.BI:
-                        yield bisect(model, x.val, x_prev, εf, εx, limit, sense, mode=Mode.MIN_MAX)
+                        yield bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
                     elif method == Solver.FP:
-                        yield falsi(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.MIN_MAX, ill=False)
+                        yield falsi(model, x.val, x.val + step, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX, ill=False)
                     elif method == Solver.FI:
-                        yield falsi(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.MIN_MAX)
+                        yield falsi(model, x.val, x.val + step, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
                     elif method == Solver.SC:
-                        yield secant(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.MIN_MAX)
+                        yield secant(model, x.val, x.val + step, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
                     elif method == Solver.NT:
-                        yield newton(model, x.val, εf, εx, limit, sense, mode=Mode.MIN_MAX)
+                        yield newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
                     elif method == Solver.H1:
-                        yield householder(model, x.val, 2, εf, εx, limit, sense, mode=Mode.MIN_MAX)
+                        yield householder(model, x.val, 2, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
                     elif method == Solver.H2:
-                        yield householder(model, x.val, 3, εf, εx, limit, sense, mode=Mode.MIN_MAX)
+                        yield householder(model, x.val, 3, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
                     elif method == Solver.H3:
-                        yield householder(model, x.val, 4, εf, εx, limit, sense, mode=Mode.MIN_MAX)
+                        yield householder(model, x.val, 4, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
                     elif method == Solver.H4:
-                        yield householder(model, x.val, 5, εf, εx, limit, sense, mode=Mode.MIN_MAX)
+                        yield householder(model, x.val, 5, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
                 if f2_prev * f.jet[2] <= 0.0:
-                    sense = Sense.DECREASING if f2_prev > f.jet[2] else Sense.INCREASING
+                    s = Sense.DECREASING if f2_prev > f.jet[2] else Sense.INCREASING
                     if method == Solver.BI:
-                        yield bisect(model, x.val, x_prev, εf, εx, limit, sense, mode=Mode.INFLECTION)
+                        yield bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT)
                     elif method == Solver.FP:
-                        yield falsi(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.INFLECTION, ill=False)
+                        yield falsi(model, x.val, x.val + step, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT, ill=False)
                     elif method == Solver.FI:
-                        yield falsi(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.INFLECTION)
+                        yield falsi(model, x.val, x.val + step, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT)
                     elif method == Solver.SC:
-                        yield secant(model, x.val, x.val + step, εf, εx, limit, sense, mode=Mode.INFLECTION)
+                        yield secant(model, x.val, x.val + step, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT)
                     elif method == Solver.NT:
-                        yield newton(model, x.val, εf, εx, limit, sense, mode=Mode.INFLECTION)
+                        yield newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT)
                     elif method == Solver.H1:
-                        yield householder(model, x.val, 2, εf, εx, limit, sense, mode=Mode.INFLECTION)
+                        yield householder(model, x.val, 2, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT)
                     elif method == Solver.H2:
-                        yield householder(model, x.val, 3, εf, εx, limit, sense, mode=Mode.INFLECTION)
+                        yield householder(model, x.val, 3, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT)
                     elif method == Solver.H3:
-                        yield householder(model, x.val, 4, εf, εx, limit, sense, mode=Mode.INFLECTION)
+                        yield householder(model, x.val, 4, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT)
                     elif method == Solver.H4:
-                        yield householder(model, x.val, 5, εf, εx, limit, sense, mode=Mode.INFLECTION)
+                        yield householder(model, x.val, 5, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT)
         x_prev = x.val
         f0_prev = f.val
         f1_prev = f.jet[1]
