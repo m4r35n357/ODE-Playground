@@ -36,12 +36,12 @@ class Mode(Enum):
     INFLECT = 2
 
 
-class Bracketed(namedtuple('ResultType', ['method', 'a', 'b', 'f', 'δx', 'count', 'sense', 'mode'])):
+class Bracketed(namedtuple('BracketedType', ['method', 'a', 'b', 'f', 'δx', 'count', 'sense', 'mode'])):
     def __str__(self):
         return f"{self.method} a={self.a:+.15e} b={self.b:+.15e} f={self.f:+.15e} δx={self.δx:+.15e} {self.sense}{self.mode} count={self.count}"
 
 
-class Derivative(namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', 'sense', 'mode'])):
+class Derivative(namedtuple('DerivativeType', ['method', 'x', 'f', 'δx', 'count', 'sense', 'mode'])):
     def __str__(self):
         return f"{self.method} x={self.x:+.15e} f={self.f:+.15e} δx={self.δx:+.15e} {self.sense}{self.mode} count={self.count}"
 
@@ -52,7 +52,6 @@ def bisect(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=
     fc = Series.get(3, 1)
     f_sign = ~model(a) - y
     δx = counter = 1
-    print(method.value, file=stderr)
     while abs(fc.jet[mode.value]) > εf or abs(δx) > εx:
         c = (a + b) / 2
         fc = ~model(c) - y
@@ -76,7 +75,6 @@ def falsi(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0
     fa, fb, fc = ~model(a) - y, ~model(b) - y, Series.get(3, 1)
     δx = counter = 1
     side = 0
-    print(method.value, file=stderr)
     while abs(fc.jet[mode.value]) > εf or abs(δx) > εx:
         c = (a * fb - b * fa) / (fb - fa)
         fc = ~model(c) - y
@@ -107,7 +105,6 @@ def secant(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=
     a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
     fa, fb, fc = ~model(a) - y, ~model(b) - y, Series.get(3, 1)
     δx = counter = 1
-    print(method.value, file=stderr)
     while abs(fc.jet[mode.value]) > εf or abs(δx) > εx:
         c = (a * fb - b * fa) / (fb - fa)
         fc = ~model(c) - y
@@ -128,7 +125,6 @@ def newton(model, x0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0,
     x = Series.get(2 + mode.value, x0).var  # make x variable for AD
     f = Series.get(2 + mode.value, 1)
     δx = counter = 1
-    print(method.value, file=stderr)
     while abs(f.jet[mode.value]) > εf or abs(δx) > εx:
         f = ~model(x) - y
         δx = - f.jet[mode.value] / f.jet[1 + mode.value]
@@ -147,7 +143,6 @@ def householder(model, initial, n, εf=1e-15, εx=1e-15, limit=1001, sense=Sense
     x = Series.get(n + mode.value, initial).var  # make x variable for AD
     f = Series.get(n + mode.value, 1)
     δx = counter = 1
-    print(method.value, file=stderr)
     while abs(f.jet[mode.value]) > εf or abs(δx) > εx:
         f = model(x) - y
         r = ~(1 / f)
