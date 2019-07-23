@@ -24,34 +24,34 @@ class Solver(Enum):
 
 @unique
 class Sense(Enum):
-    FLAT = '_'
     INCREASING = '/'
     DECREASING = '\\'
+    FLAT = '_'
 
 
 @unique
 class Mode(Enum):
-    ROOT = 0
+    ZEROVAL = 0
     MIN_MAX = 1
     INFLECT = 2
 
 
 class Bracketed(namedtuple('BracketedType', ['method', 'a', 'b', 'f', 'δx', 'count', 'sense', 'mode'])):
     def __str__(self):
-        return f"{self.method} a={self.a:+.15e} b={self.b:+.15e} f={self.f:+.15e} δx={self.δx:+.15e} {self.sense}{self.mode} count={self.count}"
+        return f"{self.method} a {self.a:+.15e} b {self.b:+.15e} f {self.f:+.15e} δx {self.δx:+.15e} {self.sense}{self.mode} {self.count}"
 
 
 class Derivative(namedtuple('DerivativeType', ['method', 'x', 'f', 'δx', 'count', 'sense', 'mode'])):
     def __str__(self):
-        return f"{self.method} x={self.x:+.15e} f={self.f:+.15e} δx={self.δx:+.15e} {self.sense}{self.mode} count={self.count}"
+        return f"{self.method} x {self.x:+.15e} f {self.f:+.15e} δx {self.δx:+.15e} {self.sense}{self.mode} {self.count}"
 
 
-def bisect(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, debug=False):
-    method = Solver.BI
+def bisect(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, mode=Mode.ZEROVAL, debug=False):
+    m = Solver.BI
     a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
     fc = Series.get(3, 1)
     f_sign = ~model(a) - y
-    δx = counter = 1
+    δx = count = 1
     while abs(fc.jet[mode.value]) > εf or abs(δx) > εx:
         c = (a + b) / 2
         fc = ~model(c) - y
@@ -61,19 +61,18 @@ def bisect(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=
             a = c
         δx = b.jet[mode.value] - a.jet[mode.value]
         if debug:
-            print(Bracketed(method=method.name, count=counter, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx),
-                  file=stderr)
-        counter += 1
-        if counter == limit:
+            print(Bracketed(method=m.name, count=count, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx))
+        count += 1
+        if count == limit:
             break
-    return Bracketed(method=method.name, count=counter - 1, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx)
+    return Bracketed(method=m.name, count=count-1, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx)
 
 
-def falsi(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, ill=True, debug=False):
-    method = Solver.FI if ill else Solver.FP
+def falsi(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, mode=Mode.ZEROVAL, ill=True, debug=False):
+    m = Solver.FI if ill else Solver.FP
     a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
     fa, fb, fc = ~model(a) - y, ~model(b) - y, Series.get(3, 1)
-    δx = counter = 1
+    δx = count = 1
     side = 0
     while abs(fc.jet[mode.value]) > εf or abs(δx) > εx:
         c = (a * fb - b * fa) / (fb - fa)
@@ -92,19 +91,18 @@ def falsi(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0
                 side = +1
         δx = b.jet[mode.value] - a.jet[mode.value]
         if debug:
-            print(Bracketed(method=method.name, count=counter, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx),
-                  file=stderr)
-        counter += 1
-        if counter == limit:
+            print(Bracketed(method=m.name, count=count, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx))
+        count += 1
+        if count == limit:
             break
-    return Bracketed(method=method.name, count=counter - 1, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx)
+    return Bracketed(method=m.name, count=count-1, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx)
 
 
-def secant(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, debug=False):
-    method = Solver.SC
+def secant(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, mode=Mode.ZEROVAL, debug=False):
+    m = Solver.SC
     a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
     fa, fb, fc = ~model(a) - y, ~model(b) - y, Series.get(3, 1)
-    δx = counter = 1
+    δx = count = 1
     while abs(fc.jet[mode.value]) > εf or abs(δx) > εx:
         c = (a * fb - b * fa) / (fb - fa)
         fc = ~model(c) - y
@@ -112,49 +110,46 @@ def secant(model, xa, xb, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=
         a, fa = c, fc
         δx = b.jet[mode.value] - a.jet[mode.value]
         if debug:
-            print(Derivative(method=method.name, count=counter, sense=sense.value, mode=mode.name, x=c.val, f=fc.val, δx=δx),
-                  file=stderr)
-        counter += 1
-        if counter == limit:
+            print(Derivative(method=m.name, count=count, sense=sense.value, mode=mode.name, x=c.val, f=fc.val, δx=δx))
+        count += 1
+        if count == limit:
             break
-    return Derivative(method=method.name, count=counter - 1, sense=sense.value, mode=mode.name, x=c.val, f=fc.val, δx=δx)
+    return Derivative(method=m.name, count=count-1, sense=sense.value, mode=mode.name, x=c.val, f=fc.val, δx=δx)
 
 
-def newton(model, x0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, debug=False):
-    method = Solver.NT
+def newton(model, x0, y=0.0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, mode=Mode.ZEROVAL, debug=False):
+    m = Solver.NT
     x = Series.get(2 + mode.value, x0).var  # make x variable for AD
     f = Series.get(2 + mode.value, 1)
-    δx = counter = 1
+    δx = count = 1
     while abs(f.jet[mode.value]) > εf or abs(δx) > εx:
         f = ~model(x) - y
         δx = - f.jet[mode.value] / f.jet[1 + mode.value]
         x += δx
         if debug:
-            print(Derivative(method=method.name, count=counter, sense=sense.value, mode=mode.name,x=x.val, f=f.val, δx=δx),
-                  file=stderr)
-        counter += 1
-        if counter == limit:
+            print(Derivative(method=m.name, count=count, sense=sense.value, mode=mode.name,x=x.val, f=f.val, δx=δx))
+        count += 1
+        if count == limit:
             break
-    return Derivative(method=method.name, count=counter - 1, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx)
+    return Derivative(method=m.name, count=count-1, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx)
 
 
-def householder(model, initial, n, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, y=0.0, mode=Mode.ROOT, debug=False):
-    method = Solver.H1 if n == 2 else (Solver.H2 if n == 3 else (Solver.H3 if n == 4 else (Solver.H4 if n == 5 else Solver.NA)))
-    x = Series.get(n + mode.value, initial).var  # make x variable for AD
+def householder(model, x0, n, y=0.0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, mode=Mode.ZEROVAL, debug=False):
+    m = Solver.H1 if n == 2 else (Solver.H2 if n == 3 else (Solver.H3 if n == 4 else (Solver.H4 if n == 5 else Solver.NA)))
+    x = Series.get(n + mode.value, x0).var  # make x variable for AD
     f = Series.get(n + mode.value, 1)
-    δx = counter = 1
+    δx = count = 1
     while abs(f.jet[mode.value]) > εf or abs(δx) > εx:
         f = model(x) - y
         r = ~(1 / f)
         δx = r.jet[n - 2 + mode.value] / r.jet[n - 1 + mode.value]
         x += δx * (n - 1 + mode.value)
         if debug:
-            print(Derivative(method=method.name, count=counter, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx),
-                  file=stderr)
-        counter += 1
-        if counter == limit:
+            print(Derivative(method=m.name, count=count, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx))
+        count += 1
+        if count == limit:
             break
-    return Derivative(method=method.name, count=counter - 1, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx)
+    return Derivative(method=m.name, count=count-1, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx)
 
 
 def analyze(model, method, x0, x1, steps, εf, εx, limit, order):
