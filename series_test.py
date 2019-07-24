@@ -55,6 +55,10 @@ print(~(b / z), file=stderr)
 print(y / y, file=stderr)
 print(~(z / z), file=stderr)
 
+print(" 1 / y, 1 / z", file=stderr)
+print((1 / y), file=stderr)
+print(~(1 / z), file=stderr)
+
 print(" y**b, z**b", file=stderr)
 print(y**b, file=stderr)
 print(~(z**b), file=stderr)
