@@ -154,8 +154,8 @@ def householder(model, x0, n, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sens
 
 def analyze(model, method, x0, x1, steps, εf, εx, limit, order):
     x_prev = f0_prev = f1_prev = f2_prev = None
+    step = (x1 - x0) / (steps - 1)
     for k in range(steps):
-        step = (x1 - x0) / (steps - 1)
         x = Series.get(order, x0 + k * step).var  # make x a variable to see derivatives!
         f = ~model(x)
         print(f"{x.val:.6e} {f}")
