@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-# Example:  ./solver.py NA -1.0  1.0 1e-15 1e-15 1000 2.0
-# Example:  ./solver.py NA  1.0  3.0 1e-15 1e-15 1000 2.0
+# Example:  ./solver.py NA -1.0  1.0 1e-15 1e-15 1000 0.0
+# Example:  ./solver.py NA  1.0  3.0 1e-15 1e-15 1000 0.0
 
 from sys import argv, exit, stderr
 from playground import Solver, bisect, falsi, secant, newton, householder
@@ -20,34 +20,34 @@ x_tol = float(argv[5])
 max_it = int(argv[6])
 target = float(argv[7])
 
-model = lambda x: (x - 1)**2 / (x.cosh + 1).ln - 1
-# model = lambda x: x**2
 xc = (xa + xb) / 2.0
-if (method == Solver.NA) or (method == Solver.BI):
+model = lambda x: (x - 1)**2 / (x.cosh + 1).ln - 1
+
+if method in [Solver.BI, Solver.NA]:
     bisect(model, xa, xb, y=target, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
     print("")
-if (method == Solver.NA) or (method == Solver.FP):
+if method in [Solver.FP, Solver.NA]:
     falsi(model, xa, xb, y=target, εf=f_tol, εx=x_tol, limit=max_it, ill=False, debug=True)
     print("")
-if (method == Solver.NA) or (method == Solver.FI):
+if method in [Solver.FI, Solver.NA]:
     falsi(model, xa, xb, y=target, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
     print("")
-if (method == Solver.NA) or (method == Solver.SC):
+if method in [Solver.SC, Solver.NA]:
     secant(model, xa, xb, y=target, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
     print("")
-if (method == Solver.NA) or (method == Solver.NT):
+if method in [Solver.NT, Solver.NA]:
     newton(model, xc, y=target, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
     print("")
-if (method == Solver.NA) or (method == Solver.H1):
+if method in [Solver.H1, Solver.NA]:
     householder(model, xc, 2, y=target, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
     print("")
-if (method == Solver.NA) or (method == Solver.H2):
+if method in [Solver.H2, Solver.NA]:
     householder(model, xc, 3, y=target, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
     print("")
-if (method == Solver.NA) or (method == Solver.H3):
+if method in [Solver.H3, Solver.NA]:
     householder(model, xc, 4, y=target, εf=f_tol, εx=x_tol, limit=max, debug=True)
     print("")
-if (method == Solver.NA) or (method == Solver.H4):
+if method in [Solver.H4, Solver.NA]:
     householder(model, xc, 5, y=target, εf=f_tol, εx=x_tol, limit=max, debug=True)
     print("")
 

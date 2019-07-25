@@ -155,11 +155,13 @@ Code | Meaning
 NA | No analysis
 BI | Bisection method
 FP | False Position method
+FI | False Position method (Illinois Algorithm)
 SC | Secant method
 NT | Newton's method
 H1 | Householder's method, degree 1 (Newton)
-H2 | Householder's method, degree 2
+H2 | Householder's method, degree 2 (Halley)
 H3 | Householder's method, degree 3
+H4 | Householder's method, degree 4
 
 Here is an invocation for the function (x - 1)^2
 ```
