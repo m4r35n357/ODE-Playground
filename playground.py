@@ -31,7 +31,7 @@ class Sense(Enum):
 
 @unique
 class Mode(Enum):
-    ZEROVAL = 0
+    ROOT___ = 0
     MIN_MAX = 1
     INFLECT = 2
 
@@ -46,7 +46,7 @@ class Derivative(namedtuple('DerivativeType', ['method', 'x', 'f', 'δx', 'count
         return f"{self.method} x {self.x:+.15e} f {self.f:+.15e} δx {self.δx:+.15e} {self.sense}{self.mode} {self.count}"
 
 
-def bisect(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, mode=Mode.ZEROVAL, debug=False):
+def bisect(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
     m = Solver.BI
     a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
     fc = Series.get(3, 1)
@@ -68,7 +68,7 @@ def bisect(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.F
     return Bracketed(method=m.name, count=count-1, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx)
 
 
-def falsi(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, mode=Mode.ZEROVAL, ill=True, debug=False):
+def falsi(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, ill=True, debug=False):
     m = Solver.FI if ill else Solver.FP
     a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
     fa, fb, fc = ~model(a) - y, ~model(b) - y, Series.get(3, 1)
@@ -98,7 +98,7 @@ def falsi(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FL
     return Bracketed(method=m.name, count=count-1, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx)
 
 
-def secant(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, mode=Mode.ZEROVAL, debug=False):
+def secant(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
     m = Solver.SC
     a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
     fa, fb, fc = ~model(a) - y, ~model(b) - y, Series.get(3, 1)
@@ -117,7 +117,7 @@ def secant(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.F
     return Derivative(method=m.name, count=count-1, sense=sense.value, mode=mode.name, x=c.val, f=fc.val, δx=δx)
 
 
-def newton(model, x0, y=0.0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, mode=Mode.ZEROVAL, debug=False):
+def newton(model, x0, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
     m = Solver.NT
     x = Series.get(2 + mode.value, x0).var  # make x variable for AD
     f = Series.get(2 + mode.value, 1)
@@ -134,7 +134,7 @@ def newton(model, x0, y=0.0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT,
     return Derivative(method=m.name, count=count-1, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx)
 
 
-def householder(model, x0, n, y=0.0, εf=1e-15, εx=1e-15, limit=1001, sense=Sense.FLAT, mode=Mode.ZEROVAL, debug=False):
+def householder(model, x0, n, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
     m = Solver.H1 if n == 2 else (Solver.H2 if n == 3 else (Solver.H3 if n == 4 else (Solver.H4 if n == 5 else Solver.NA)))
     x = Series.get(n + mode.value, x0).var  # make x variable for AD
     f = Series.get(n + mode.value, 1)

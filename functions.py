@@ -42,7 +42,7 @@ def playground(a):
     # return abs(a)**2
     # return (abs(a) + 1.0e-6)**-4
     # return (a**2)**2
-    return a**2 / (a.cosh + 1).ln - 1
+    return (a - 1)**2 / (a.cosh + 1).ln - 1
     # return a / a.exp
     # return (a - 1)**2
     # return a**2

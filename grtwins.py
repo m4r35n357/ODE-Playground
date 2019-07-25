@@ -47,7 +47,7 @@ f_tol = to_mpfr(argv[6])
 x_tol = to_mpfr(argv[7])
 
 for result in analyze(playground, mode, x0, x1, steps, target, f_tol, x_tol):
-    if result.mode == Mode.ZEROVAL.name:
+    if result.mode == Mode.ROOT___.name:
         print(result, file=stderr)
         answer = ratio(result.x)
         print(answer, file=stderr)
