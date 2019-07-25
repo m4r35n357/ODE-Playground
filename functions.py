@@ -26,13 +26,14 @@ def composite1(a):
 def composite2(a):
     # Example: ./models.py 1 -8 8 1001 7 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     return (a**2 + (a.exp - 4) * (a.exp - 4))**0.5
+
 def playground(a):
     # Example: ./models.py NA -8 8 1001 13 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     # Example: ./series_test.py 7 -8 8 1001 | ./plotMany.py 8 10 >/dev/null
     # return (2 * a).sin - 2 * a.sin * a.cos
     # return (2 * a).cos - a.cos**2 + a.sin**2
-    # return (3 * a).sin - 3 * a.sin + 4 * a.sin * a.sin**2
-    # return (3 * a).cos + 3 * a.cos - 4 * a.cos * a.cos**2
+    # return (3 * a).sin - 3 * a.sin + 4 * a.sin**3
+    # return (3 * a).cos + 3 * a.cos - 4 * a.cos**3
     # return (a**2 + 1.0e-15)**0.5  # problem at a == 0.0
     # return (a**2 + 1.0e-6)**-0.5   # problem at a == 0.0
     # return a.exp.ln - a
@@ -41,10 +42,7 @@ def playground(a):
     # return (a + 7) / (3.0 - a)  # problem at a == 3.0
     # return abs(a)**2
     # return (abs(a) + 1.0e-6)**-4
-    # return (a**2)**2
-    return (a - 1)**2 / (a.cosh + 1).ln - 1
     # return a / a.exp
-    # return (a - 1)**2
-    # return a**2
+    return (a - 1)**2 / (a.cosh + 1).ln - 1
 
 print(__name__ + " module loaded", file=stderr)
