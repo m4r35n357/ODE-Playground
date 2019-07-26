@@ -87,6 +87,14 @@ print("b**-0.5", file=stderr)
 print(w**-c, file=stderr)
 print(~(x**-c), file=stderr)
 
+print("b**0", file=stderr)
+print(w**0, file=stderr)
+print(~(x**0), file=stderr)
+
+print("b**0.0", file=stderr)
+print(w**0.0, file=stderr)
+print(~(x**0.0), file=stderr)
+
 print(f" exp({b:.1f})", file=stderr)
 print(w.exp, file=stderr)
 print(~(x.exp), file=stderr)
