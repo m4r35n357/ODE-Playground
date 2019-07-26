@@ -56,17 +56,19 @@ Differentiating this with respect to time we can represent the LHS of the ODE:
 \end{equation}
 but we can also say, as in (4), that:
 \begin{equation}
-\dot{x}(t_0 + h) = \sum_{k=0}^{\infty} \dot{x}_kh^k
+\dot{x}(t_0 + h) = \sum_{k=0}^{\infty} \dot{x}_kh^k = \sum_{k=0}^{\infty} f({x}_k)h^k
 \end{equation}
 equating the polynomials (5) and (6) by powers of $h$ we get for the $k^{th}$ term:
 \begin{equation}
-\dot{x}_k = (k + 1) x_{k+1}
+(k + 1) x_{k+1} = \dot{x}_k = f(x_k)
 \end{equation}
-or
+This is the key relationship between the "derivative" of the ODE, and the next coefficient in the taylor series.
+By writing it as:
 \begin{equation}
-x_{k+1} = \frac{\dot{x}_k} {k + 1} 
+x_{k+1} = \frac{\dot{x}_k} {k + 1} = \frac{f({x}_k)} {k + 1}
 \end{equation}
-This is a key relationship between the "derivative" of the ODE, and the next term in the taylor series.
+we see that we just need to express the original ODE ($f(x)$) equations in terms of their Taylor coefficients, and divide by $k + 1$!
+Evolution to the next value of $x$ is completed using Horner's method.
 \section{Procedure}
 We will use the letter $F$ to represent the ODE function in (1) when expressed in terms of the TCs.
 

@@ -60,7 +60,7 @@ def septic(a):
     return (a + 7) * (5 + a) * (a + 2) * a * (a - 1) * (a - 3) * (a - 6)
 
 def trig(a):
-    return (3 * a).sin - 3 * a.sin + 4 * a.sin * a.sin.sqr
+    return (3 * a).sin - 3 * a.sin + 4 * a.sin**3
 ```
 Operators on or between jets and numbers are implemented by overloading, and the functions are implemented as _properties_ of a jet.
 These two approaches produce a fairly readable format for coding the models.
@@ -77,7 +77,6 @@ The dependencies are:
 
 There is a Python 3 version of the ODE solver programs with built-in models.
 Dependencies of Python 3 programs:
-* gmpy2 (based on MPFR)
 * matplotlib
 * pi3d
 
@@ -90,7 +89,7 @@ sudo apt install build-essential mesa-utils-extra python3-dev libmpc-dev libatla
 This is a typical virtual environment setup:
 ```
 mkvirtualenv --python /usr/bin/python3 ad
-pip install gmpy2 matplotlib pillow pi3d
+pip install matplotlib pillow pi3d
 ```
 Download:
 ```
@@ -115,8 +114,6 @@ To find Python ODE example invocations:
 ```
 grep Example *.py
 ```
-It is also worth looking for examples in the c files as below.
-
 Matplotlib progressive graph plotting
 ```
 ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
