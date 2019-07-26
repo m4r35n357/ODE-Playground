@@ -6,7 +6,7 @@ from math import sin, cos, sinh, cosh, tan, tanh, exp, log
 
 def t_jet(n, value=0.0):
     jet = [0.0] * n
-    jet[0] = float(value)
+    jet[0] = value if isinstance(value, float) else float(value)
     return jet
 
 def t_horner(jet, n, h):
@@ -233,7 +233,7 @@ class Dual:
 
     @classmethod
     def get(cls, value=0.0):
-        return cls(float(value), 0.0)
+        return cls(value if isinstance(value, float) else float(value), 0.0)
 
     def __str__(self):
         return f"{self.val:+.9e} {self.der:+.9e}"
