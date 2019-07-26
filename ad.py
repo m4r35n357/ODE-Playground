@@ -16,11 +16,7 @@ def t_horner(jet, n, h):
     return result
 
 def t_abs(u, k):
-    if k == 0:
-        return abs(u[0])
-    elif k == 1:
-        return u[1] if u[0] > 0.0 else (- u[1] if u[0] < 0.0 else 0.0)
-    return 0.0
+    return abs(u[0]) if k == 0 else ((u[1] if u[0] > 0.0 else (- u[1] if u[0] < 0.0 else 0.0)) if k == 1 else 0.0)
 
 def t_prod(u, v, k):
     return sum(u[j] * v[k - j] for j in range(k + 1))
@@ -29,19 +25,13 @@ def t_quot(q, u, v, k):
     return (u[k] - sum(v[j] * q[k - j] for j in range(1, k + 1))) / v[0]
 
 def t_pwr(p, u, a, k):
-    if k == 0:
-        return u[0]**a
-    return sum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
+    return u[0]**a if k == 0 else sum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
 
 def t_exp(e, u, k):
-    if k == 0:
-        return exp(u[0])
-    return sum((k - j) * e[j] * u[k - j] for j in range(k)) / k
+    return exp(u[0]) if k == 0 else sum((k - j) * e[j] * u[k - j] for j in range(k)) / k
 
 def t_ln(l, u, k):
-    if k == 0:
-        return log(u[0])
-    return (u[k] - sum(j * l[j] * u[k - j] for j in range(1, k)) / k) / u[0]
+    return log(u[0]) if k == 0 else (u[k] - sum(j * l[j] * u[k - j] for j in range(1, k)) / k) / u[0]
 
 def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
