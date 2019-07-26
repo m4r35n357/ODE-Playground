@@ -150,11 +150,7 @@ class Series:
             i_pow = self
             for _ in range(abs(other) - 1):
                 i_pow = i_pow * self
-            if other > 0:
-                return i_pow
-            elif other < 0:
-                return Series(t_jet(self.n, 1.0)) / i_pow
-            return Series(t_jet(self.n, 1.0))
+            return i_pow if other > 0 else (Series(t_jet(self.n, 1.0)) / i_pow if other < 0 else Series(t_jet(self.n, 1.0)))
         else:
             assert self.val > 0.0, f"self.val = {self.val}"
             if isinstance(other, type(self)):
@@ -316,11 +312,7 @@ class Dual:
             i_pow = self
             for _ in range(abs(other) - 1):
                 i_pow = i_pow * self
-            if other > 0:
-                return i_pow
-            elif other < 0:
-                return Dual(1.0, 0.0) / i_pow
-            return Dual(1.0, 0.0)
+            return i_pow if other > 0 else (Dual(1.0, 0.0) / i_pow if other < 0 else Dual(1.0, 0.0))
         else:
             assert self.val > 0.0, f"self.val = {self.val}"
             if isinstance(other, type(self)):
