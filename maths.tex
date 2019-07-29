@@ -14,8 +14,11 @@
 
 \abstract
 The procedure described here is a simple and accurate numerical approach for evolving a system of nonlinear ordinary differential equations (ODEs).
-Time varying quantities are represented using arbitrary degree Taylor Series in the coordinates of interest, with the derivative terms in the series generated via recurrence relationships.
-Horner's method is then used to calculate the coordinate values at the next timestep. 
+Time varying quantities are represented using arbitrary degree Taylor Series, with high order derivative terms in the series generated from lower order terms via recurrence relationships.
+The procedure uses neither numerical differences (which are tied to a specified time step) nor symbolic differentiation.
+Horner's method is then used to calculate the coordinate values at the next timestep.
+The procedure can be interpreted as an extension of Euler's method to arbitrary order, and is a serious alternative to RK4 wherever recurrence relationships are available for all the terms in a function.
+The procedure is easily hand-coded and debugged, and can be written entirely using the Python built-in libraries.
 
 \section{Introduction}
 Starting with an ordinary differential equation (ODE), or system of such equations:
@@ -28,7 +31,7 @@ The interval between those initial condition(s) and that later time is called th
 So, in the time domain we have:
 \begin{equation}
 \begin{aligned}
-x(t_0 + h) &= x + \frac{x'h}{1!} + \frac{x''h^2}{2!} + \frac{x'''h^3}{3!} + ... + \frac{x^kh^k}{k!} + ...\\
+x(t_0+h) &= x + \frac{x'h}{1!} + \frac{x''h^2}{2!} + \frac{x'''h^3}{3!} + ... + \frac{x^kh^k}{k!} + ...\\
 &= \sum_{k=0}^{\infty} \frac{x^kh^k}{k!}\\
 \end{aligned}
 \end{equation}
@@ -40,35 +43,38 @@ x_k = \frac{x^k}{k!}
 so that we now have the simpler (polynomial) form:
 \begin{equation}
 \begin{aligned}
-x(t_0 + h) &= \sum_{k=0}^{\infty} x_kh^k
+x(t_0+h) &= \sum_{k=0}^{\infty} x_kh^k
 \end{aligned}
 \end{equation}
 which is most efficiently evaluated in practice using Horner's method.
 The only remaining problem is to evaluate the values of each $x_k$.
 Direct application of the method is almost always considered "impractical", "difficult" or "messy" in much of the teaching material on ODE integration, because of the need to calculate higher derivatives.
 Usually at this point the RK4 method is offered as a more practical arrangement.
+However, it turns out that in practice these derivatives can be calculated very cheaply using recurrence relationships[].
 
-Differentiating this with respect to time we can represent the LHS of the ODE:
+Differentiating (4) with respect to time we can represent the LHS of the ODE:
 \begin{equation}
 \begin{aligned}
-\dot{x}(t_0 + h) &= \sum_{k=1}^{\infty} k x_kh^{k-1} = \sum_{k=0}^{\infty} (k + 1) x_{k+1}h^k
+\dot{x}(t_0+h) = \sum_{k=0}^{\infty} \dot{x}_kh^k &= \sum_{k=1}^{\infty} k x_kh^{k-1} = \sum_{k=0}^{\infty} (k + 1) x_{k+1}h^k
 \end{aligned}
 \end{equation}
-but we can also say, as in (4), that:
+but we can also write the derivative series \textit{directly}, analogous to  (4), so that:
 \begin{equation}
-\dot{x}(t_0 + h) = \sum_{k=0}^{\infty} \dot{x}_kh^k = \sum_{k=0}^{\infty} f({x}_k)h^k
+\begin{aligned}
+\dot{x}(t_0+h) = \sum_{k=0}^{\infty} \dot{x}_kh^k &= \sum_{k=0}^{\infty} f({x}_k)h^k
+\end{aligned}
 \end{equation}
-equating the polynomials (5) and (6) by powers of $h$ we get for the $k^{th}$ term:
+equating the polynomials (5) and (6) by powers of $h$ eliminates $\dot{x}(t_0+h)$, and so we get for the $k^{th}$ term:
 \begin{equation}
 (k + 1) x_{k+1} = \dot{x}_k = f(x_k)
 \end{equation}
-This is the key relationship between the "derivative" of the ODE, and the next coefficient in the taylor series.
+This is the key relationship between the "derivative" of the ODE, and \textit{the next coefficient in the taylor series}.
 By writing it as:
 \begin{equation}
-x_{k+1} = \frac{\dot{x}_k} {k + 1} = \frac{f({x}_k)} {k + 1}
+x_{k+1} = \frac{f({x}_k)} {k + 1}
 \end{equation}
-we see that we just need to express the original ODE ($f(x)$) equations in terms of their Taylor coefficients, and divide by $k + 1$!
-Evolution to the next value of $x$ is completed using Horner's method.
+we see that we just need to express the original ODE ($f(x)$) equations (1) in terms of their Taylor coefficients, and divide by $k + 1$!
+Evolution to $x(t_0 + h)$, \textit{the next value of $x$}, is obtained by applying Horner's method to (4).
 \section{Procedure}
 We will use the letter $F$ to represent the ODE function in (1) when expressed in terms of the TCs.
 
