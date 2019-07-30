@@ -9,9 +9,9 @@ def t_jet(n, value=0.0):
     jet[0] = value if isinstance(value, float) else float(value)
     return jet
 
-def t_horner(jet, n, h):
-    result = jet[n]
-    for i in range(n - 1, -1, -1):
+def t_horner(jet, h):
+    result = jet[-1]
+    for i in range(len(jet) - 2, -1, -1):
         result = result * h + jet[i]
     return result
 
