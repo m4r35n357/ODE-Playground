@@ -29,6 +29,8 @@ def main():
             x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x0, y0, z0, step * δt)
     elif model == "lu":
+        #  Example: ./tsm.py lu 10 .01 3000 -3 2 20 36 3 20 | ./plotPi3d.py
+        #  Example: ./tsm.py lu 10 .01 3000 -3 2 20 36 3 20 | ./plotAnimated.py 1 -25 50
         a, b, c = float(argv[8]), float(argv[9]), float(argv[10])
         output(x0, y0, z0, 0.0)
         for step in range(1, n_steps + 1):
@@ -40,6 +42,8 @@ def main():
             x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x0, y0, z0, step * δt)
     elif model == "chen":
+        #  Example: ./tsm.py chen 10 .01 3000 -3 2 20 35 3 28 | ./plotPi3d.py
+        #  Example: ./tsm.py chen 10 .01 3000 -3 2 20 35 3 28 | ./plotAnimated.py 1 -25 50
         a, b, c = float(argv[8]), float(argv[9]), float(argv[10])
         d = c - a
         output(x0, y0, z0, 0.0)
@@ -54,8 +58,7 @@ def main():
     elif model == "rossler":
         #  Example: ./tsm.py rossler 10 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotPi3d.py
         #  Example: ./tsm.py rossler 10 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotAnimated.py 1 -20 30
-        a, b, c = float(argv[8]), float(argv[9]), float(argv[10])
-        b_ = t_jet(order, b)
+        a, b_, c = float(argv[8]), t_jet(order, float(argv[9])), float(argv[10])
         output(x0, y0, z0, 0.0)
         for step in range(1, n_steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
@@ -67,6 +70,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "bouali":
         #  Example: ./tsm.py bouali 10 0.02 50001 1 1 0 3 2.2 1 .01 | ./plotPi3d.py
+        #  Example: ./tsm.py bouali 10 0.02 50001 1 1 0 3 2.2 1 .01 | ./plotAnimated.py 1 -5 5
         a, b, c, d = float(argv[8]), float(argv[9]), float(argv[10]), float(argv[11])
         jet1, w4, w5 = t_jet(order, 1), t_jet(order), t_jet(order)
         output(x0, y0, z0, 0.0)
@@ -100,14 +104,12 @@ def main():
             x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x0, y0, z0, step * δt)
     elif model == "sprott-thomas":
+        #  Example: ./tsm.py sprott-thomas 10 0.02 30000 1 0 0 4.75 .7 | ./plotPi3d.py
+        #  Example: ./tsm.py sprott-thomas 10 0.02 30000 1 0 0 4.75 .7 | ./plotAnimated.py 1 -1 1
         a, b = float(argv[8]), float(argv[9])
-        sx, cx = t_jet(order), t_jet(order)
-        sy, cy = t_jet(order), t_jet(order)
-        sz, cz = t_jet(order), t_jet(order)
-        ax, ay, az = t_jet(order), t_jet(order), t_jet(order)
-        sax, cax = t_jet(order), t_jet(order)
-        say, cay = t_jet(order), t_jet(order)
-        saz, caz = t_jet(order), t_jet(order)
+        sx, cx, ax, sax, cax = t_jet(order), t_jet(order), t_jet(order), t_jet(order), t_jet(order)
+        sy, cy, ay, say, cay = t_jet(order), t_jet(order), t_jet(order), t_jet(order), t_jet(order)
+        sz, cz, az, saz, caz = t_jet(order), t_jet(order), t_jet(order), t_jet(order), t_jet(order)
         output(x0, y0, z0, 0.0)
         for step in range(1, n_steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
@@ -126,6 +128,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "rabinovich–fabrikant":
         #  Example: ./tsm.py rabinovich–fabrikant 10 .01 100001 .1 .1 .1 .2876 .1 | ./plotPi3d.py
+        #  Example: ./tsm.py rabinovich–fabrikant 10 .01 100001 .1 .1 .1 .2876 .1 | ./plotAnimated.py 1 -3 3
         α, γ = float(argv[8]), float(argv[9])
         jet1, a, b, c = t_jet(order, 1), t_jet(order), t_jet(order), t_jet(order)
         output(x0, y0, z0, 0.0)
@@ -154,19 +157,21 @@ def main():
             x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x0, y0, z0, step * δt)
     elif model == "sprott-jafari":
-        a, b = float(argv[8]), float(argv[9])
-        w_b = t_jet(order, b)
+        #  Example: ./tsm.py sprott-jafari 10 0.01 30001 0 3.9 .7 8.888 4 | ./plotPi3d.py
+        #  Example: ./tsm.py sprott-jafari 10 0.01 30001 0 3.9 .7 8.888 4 | ./plotAnimated.py 1 -20 20
+        a, b_ = float(argv[8]), t_jet(order, float(argv[9]))
         output(x0, y0, z0, 0.0)
         for step in range(1, n_steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
             for k in range(order):
                 x[k + 1] = y[k] / (k + 1)
                 y[k + 1] = - x[k] + t_prod(y, z, k) / (k + 1)
-                z[k + 1] = (z[k] + a * t_prod(x, x, k) - t_prod(y, y, k) - w_b[k]) / (k + 1)
+                z[k + 1] = (z[k] + a * t_prod(x, x, k) - t_prod(y, y, k) - b_[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x0, y0, z0, step * δt)
     elif model == "halvorsen":
         #  Example: ./tsm.py halvorsen 10 .01 100001 1 0 0 1.4 | ./plotPi3d.py
+        #  Example: ./tsm.py halvorsen 10 .01 100001 1 0 0 1.4 | ./plotAnimated.py 1 -15 10
         α = float(argv[8])
         output(x0, y0, z0, 0.0)
         for step in range(1, n_steps + 1):
@@ -179,6 +184,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "nose-hoover":
         #  Example: ./tsm.py nose-hoover 10 0.01 10001 1 0 0 6.0 | ./plotPi3d.py
+        #  Example: ./tsm.py nose-hoover 10 0.01 10001 1 0 0 6.0 | ./plotAnimated.py 1 -10 10
         α = t_jet(order, float(argv[8]))
         output(x0, y0, z0, 0.0)
         for step in range(1, n_steps + 1):
@@ -191,6 +197,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "rucklidge":
         #  Example: ./tsm.py rucklidge 10 0.01 10001 1 0 0 6.7 2 | ./plotPi3d.py
+        #  Example: ./tsm.py rucklidge 10 0.01 10001 1 0 0 6.7 2 | ./plotAnimated.py 1 -15 20
         α, κ = float(argv[8]), float(argv[9])
         output(x0, y0, z0, 0.0)
         for step in range(1, n_steps + 1):
@@ -203,6 +210,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "wimol-banlue":
         #  Example: ./tsm.py wimol-banlue 10 0.1 10001 1 0 0 2.0 | ./plotPi3d.py
+        #  Example: ./tsm.py wimol-banlue 10 0.1 10001 1 0 0 2.0 | ./plotAnimated.py 1 -5 5
         α = t_jet(order, float(argv[8]))
         tx, sx = t_jet(order), t_jet(order)
         output(x0, y0, z0, 0.0)
