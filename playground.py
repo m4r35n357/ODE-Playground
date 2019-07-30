@@ -38,7 +38,7 @@ class Mode(Enum):
 
 class Bracketed(namedtuple('BracketedType', ['method', 'a', 'b', 'f', 'δx', 'count', 'sense', 'mode'])):
     def __str__(self):
-        return f"{self.method} a {self.a:+.15e} b {self.b:+.15e} f {self.f:+.15e} δx {self.δx:+.15e} {self.sense}{self.mode} {self.count}"
+        return f"{self.method} a {self.a:+.15e} b {self.b:+.15e} f {self.f:+.15e} δx {self.δx:+.15e} {self.sense} {self.mode} {self.count}"
 
 
 class Derivative(namedtuple('DerivativeType', ['method', 'x', 'f', 'δx', 'count', 'sense', 'mode'])):
@@ -63,7 +63,7 @@ def bisect(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FL
         if debug:
             print(Bracketed(method=m.name, count=count, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx))
         count += 1
-        if count == limit:
+        if count == limit + 1:
             break
     return Bracketed(method=m.name, count=count-1, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx)
 
@@ -93,7 +93,7 @@ def falsi(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLA
         if debug:
             print(Bracketed(method=m.name, count=count, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx))
         count += 1
-        if count == limit:
+        if count == limit + 1:
             break
     return Bracketed(method=m.name, count=count-1, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx)
 
@@ -112,7 +112,7 @@ def secant(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FL
         if debug:
             print(Derivative(method=m.name, count=count, sense=sense.value, mode=mode.name, x=c.val, f=fc.val, δx=δx))
         count += 1
-        if count == limit:
+        if count == limit + 1:
             break
     return Derivative(method=m.name, count=count-1, sense=sense.value, mode=mode.name, x=c.val, f=fc.val, δx=δx)
 
@@ -129,7 +129,7 @@ def newton(model, x0, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLAT, 
         if debug:
             print(Derivative(method=m.name, count=count, sense=sense.value, mode=mode.name,x=x.val, f=f.val, δx=δx))
         count += 1
-        if count == limit:
+        if count == limit + 1:
             break
     return Derivative(method=m.name, count=count-1, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx)
 
@@ -147,7 +147,7 @@ def householder(model, x0, n, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sens
         if debug:
             print(Derivative(method=m.name, count=count, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx))
         count += 1
-        if count == limit:
+        if count == limit + 1:
             break
     return Derivative(method=m.name, count=count-1, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx)
 

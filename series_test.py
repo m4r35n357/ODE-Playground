@@ -3,7 +3,7 @@
 from sys import argv, stderr
 from math import acos
 from ad import Series, Dual
-from functions import playground
+from functions import playground, composite1, composite2, septic
 
 order = int(argv[1])
 assert order > 1

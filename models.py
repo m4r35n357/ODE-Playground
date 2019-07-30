@@ -2,7 +2,7 @@
 
 from sys import argv, exit, stderr
 from playground import analyze, Solver
-from functions import playground
+from functions import playground, composite1, composite2, septic
 
 mode = Solver.NA
 try:
@@ -21,5 +21,8 @@ assert order > 2
 f_tol = float(argv[6])
 x_tol = float(argv[7])
 
-for result in analyze(playground, mode, x0, x1, steps, f_tol, x_tol, limit=1000, order=order):
-    print(result, file=stderr)
+limit=101
+
+for result in analyze(playground, mode, x0, x1, steps, f_tol, x_tol, limit=limit, order=order):
+    if result.count < limit:
+        print(result, file=stderr)
