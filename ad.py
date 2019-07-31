@@ -78,86 +78,86 @@ class Series:
             d[i] = fac * self.jet[i]
         return Series(d)
 
-    def __add__(self, other):
-        if isinstance(other, type(self)):
-            return Series([self.jet[k] + other.jet[k] for k in range(self.n)])
-        elif isinstance(other, (int, type(self.val))):
-            add_jet = [self.jet[k] for k in range(self.n)]
-            add_jet[0] += other
-            return Series(add_jet)
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+    def __add__(self, o):
+        if isinstance(o, type(self)):
+            return Series([self.jet[k] + o.jet[k] for k in range(self.n)])
+        elif isinstance(o, (int, type(self.val))):
+            jet = [self.jet[k] for k in range(self.n)]
+            jet[0] += o
+            return Series(jet)
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
-    def __radd__(self, other):
-        if isinstance(other, (int, type(self.val))):
-            return self + other
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+    def __radd__(self, o):
+        if isinstance(o, (int, type(self.val))):
+            return self + o
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
-    def __sub__(self, other):
-        if isinstance(other, type(self)):
-            return Series([self.jet[k] - other.jet[k] for k in range(self.n)])
-        elif isinstance(other, (int, type(self.val))):
-            sub_jet = [self.jet[k] for k in range(self.n)]
-            sub_jet[0] -= other
-            return Series(sub_jet)
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+    def __sub__(self, o):
+        if isinstance(o, type(self)):
+            return Series([self.jet[k] - o.jet[k] for k in range(self.n)])
+        elif isinstance(o, (int, type(self.val))):
+            jet = [self.jet[k] for k in range(self.n)]
+            jet[0] -= o
+            return Series(jet)
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
-    def __rsub__(self, other):
-        if isinstance(other, (int, type(self.val))):
-            return - self + other
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+    def __rsub__(self, o):
+        if isinstance(o, (int, type(self.val))):
+            return - self + o
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
-    def __mul__(self, other):
-        if isinstance(other, type(self)):
-            return Series([t_prod(self.jet, other.jet, k) for k in range(self.n)])
-        elif isinstance(other, (int, type(self.val))):
-            return Series([self.jet[k] * other for k in range(self.n)])
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+    def __mul__(self, o):
+        if isinstance(o, type(self)):
+            return Series([t_prod(self.jet, o.jet, k) for k in range(self.n)])
+        elif isinstance(o, (int, type(self.val))):
+            return Series([self.jet[k] * o for k in range(self.n)])
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
-    def __rmul__(self, other):
-        if isinstance(other, (int, type(self.val))):
-            return self * other
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+    def __rmul__(self, o):
+        if isinstance(o, (int, type(self.val))):
+            return self * o
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
-    def __truediv__(self, other):
-        if isinstance(other, type(self)):
-            assert abs(other.val) != 0.0, f"other.val = {other.val}"
-            div_jet = t_jet(self.n)
+    def __truediv__(self, o):
+        if isinstance(o, type(self)):
+            assert abs(o.val) != 0.0, f"other.val = {o.val}"
+            jet = t_jet(self.n)
             for k in range(self.n):
-                div_jet[k] = t_quot(div_jet, self.jet, other.jet, k)
-            return Series(div_jet)
-        elif isinstance(other, (int, type(self.val))):
-            assert abs(other) != 0.0, f"other = {other}"
-            return Series([self.jet[k] / other for k in range(self.n)])
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+                jet[k] = t_quot(jet, self.jet, o.jet, k)
+            return Series(jet)
+        elif isinstance(o, (int, type(self.val))):
+            assert abs(o) != 0.0, f"other = {o}"
+            return Series([self.jet[k] / o for k in range(self.n)])
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
-    def __rtruediv__(self, other):
-        if isinstance(other, (int, type(self.val))):
+    def __rtruediv__(self, o):
+        if isinstance(o, (int, type(self.val))):
             assert abs(self.val) != 0.0, f"self.val = {self.val}"
-            return Series(t_jet(self.n, other)) / self
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+            return Series(t_jet(self.n, o)) / self
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
-    def __pow__(self, other):
-        if isinstance(other, int):
+    def __pow__(self, o):
+        if isinstance(o, int):
             i_pow = self
-            for _ in range(abs(other) - 1):
-                i_pow = i_pow * self
-            return i_pow if other > 0 else (Series(t_jet(self.n, 1.0)) / i_pow if other < 0 else Series(t_jet(self.n, 1.0)))
+            for _ in range(abs(o) - 1):
+                i_pow *= self
+            return i_pow if o > 0 else (Series(t_jet(self.n, 1.0)) / i_pow if o < 0 else Series(t_jet(self.n, 1.0)))
         else:
             assert self.val > 0.0, f"self.val = {self.val}"
-            if isinstance(other, type(self)):
-                return (self.ln * other).exp
-            elif isinstance(other, type(self.val)):
-                pow_jet = t_jet(self.n)
+            if isinstance(o, type(self)):
+                return (self.ln * o).exp
+            elif isinstance(o, type(self.val)):
+                jet = t_jet(self.n)
                 for k in range(self.n):
-                    pow_jet[k] = t_pwr(pow_jet, self.jet, other, k)
-                return Series(pow_jet)
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+                    jet[k] = t_pwr(jet, self.jet, o, k)
+                return Series(jet)
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
-    def __rpow__(self, other):
-        if isinstance(other, (int, type(self.val))):
-            assert other > 0.0, f"other = {other}"
-            return (log(other) * self).exp
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+    def __rpow__(self, o):
+        if isinstance(o, (int, type(self.val))):
+            assert o > 0.0, f"other = {o}"
+            return (log(o) * self).exp
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def _single(self, fun):
         jet = t_jet(self.n)
@@ -237,70 +237,70 @@ class Dual:
     def __neg__(self):
         return Dual(- self.val, - self.der)
 
-    def __add__(self, other):
-        if isinstance(other, type(self)):
-            return Dual(self.val + other.val, self.der + other.der)
-        elif isinstance(other, (int, type(self.val))):
-            return Dual(self.val + other, self.der)
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+    def __add__(self, o):
+        if isinstance(o, type(self)):
+            return Dual(self.val + o.val, self.der + o.der)
+        elif isinstance(o, (int, type(self.val))):
+            return Dual(self.val + o, self.der)
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
-    def __radd__(self, other):
-        if isinstance(other, (int, type(self.val))):
-            return self + other
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+    def __radd__(self, o):
+        if isinstance(o, (int, type(self.val))):
+            return self + o
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
-    def __sub__(self, other):
-        if isinstance(other, type(self)):
-            return Dual(self.val - other.val, self.der - other.der)
-        elif isinstance(other, (int, type(self.val))):
-            return Dual(self.val - other, self.der)
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+    def __sub__(self, o):
+        if isinstance(o, type(self)):
+            return Dual(self.val - o.val, self.der - o.der)
+        elif isinstance(o, (int, type(self.val))):
+            return Dual(self.val - o, self.der)
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
-    def __rsub__(self, other):
-        if isinstance(other, (int, type(self.val))):
-            return Dual(- self.val + other, - self.der)
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+    def __rsub__(self, o):
+        if isinstance(o, (int, type(self.val))):
+            return Dual(- self.val + o, - self.der)
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
-    def __mul__(self, other):
-        if isinstance(other, type(self)):
-            return Dual(self.val * other.val, self.der * other.val + self.val * other.der)
-        elif isinstance(other, (int, type(self.val))):
-            return Dual(self.val * other, self.der * other)
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+    def __mul__(self, o):
+        if isinstance(o, type(self)):
+            return Dual(self.val * o.val, self.der * o.val + self.val * o.der)
+        elif isinstance(o, (int, type(self.val))):
+            return Dual(self.val * o, self.der * o)
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
-    def __rmul__(self, other):
-        if isinstance(other, (int, type(self.val))):
-            return self * other
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+    def __rmul__(self, o):
+        if isinstance(o, (int, type(self.val))):
+            return self * o
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
-    def __truediv__(self, other):
-        if isinstance(other, type(self)):
-            assert abs(other.val) != 0.0, f"other.val = {other.val}"
-            return Dual(self.val / other.val, (self.der * other.val - self.val * other.der) / other.val**2)
-        elif isinstance(other, (int, type(self.val))):
-            assert abs(other) != 0.0, f"other = {other}"
-            return Dual(self.val / other, self.der / other)
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+    def __truediv__(self, o):
+        if isinstance(o, type(self)):
+            assert abs(o.val) != 0.0, f"other.val = {o.val}"
+            return Dual(self.val / o.val, (self.der * o.val - self.val * o.der) / o.val**2)
+        elif isinstance(o, (int, type(self.val))):
+            assert abs(o) != 0.0, f"other = {o}"
+            return Dual(self.val / o, self.der / o)
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
-    def __rtruediv__(self, other):
-        if isinstance(other, (int, type(self.val))):
+    def __rtruediv__(self, o):
+        if isinstance(o, (int, type(self.val))):
             assert abs(self.val) != 0.0, f"self.val = {self.val}"
-            return Dual(other / self.val, - other * self.der / self.val**2)
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+            return Dual(o / self.val, - o * self.der / self.val**2)
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
-    def __pow__(self, other):
-        if isinstance(other, int):
+    def __pow__(self, o):
+        if isinstance(o, int):
             i_pow = self
-            for _ in range(abs(other) - 1):
-                i_pow = i_pow * self
-            return i_pow if other > 0 else (Dual(1.0, 0.0) / i_pow if other < 0 else Dual(1.0, 0.0))
+            for _ in range(abs(o) - 1):
+                i_pow *= self
+            return i_pow if o > 0 else (Dual(1.0, 0.0) / i_pow if o < 0 else Dual(1.0, 0.0))
         else:
             assert self.val > 0.0, f"self.val = {self.val}"
-            if isinstance(other, type(self)):
-                return (self.ln * other).exp
-            elif isinstance(other, type(self.val)):
-                return Dual(self.val**other, other * self.val**(other - 1) * self.der)
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+            if isinstance(o, type(self)):
+                return (self.ln * o).exp
+            elif isinstance(o, type(self.val)):
+                return Dual(self.val**o, o * self.val**(o - 1) * self.der)
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __rpow__(self, other):
         if isinstance(other, (int, type(self.val))):
