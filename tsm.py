@@ -103,20 +103,26 @@ def main():
                 z[k + 1] = (sx[k] - b * z[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x0, y0, z0, step * δt)
-    elif model == "sprott-thomas":
-        #  Example: ./tsm.py sprott-thomas 10 0.02 30000 1 0 0 4.75 .7 | ./plotPi3d.py
-        #  Example: ./tsm.py sprott-thomas 10 0.02 30000 1 0 0 4.75 .7 | ./plotAnimated.py 1 -1 1
+    elif model == "sprott-thomas-1" or model == "sprott-thomas-2":
         a, b = float(argv[8]), float(argv[9])
         sx, cx, ax, sax, cax = t_jet(order), t_jet(order), t_jet(order), t_jet(order), t_jet(order)
         sy, cy, ay, say, cay = t_jet(order), t_jet(order), t_jet(order), t_jet(order), t_jet(order)
         sz, cz, az, saz, caz = t_jet(order), t_jet(order), t_jet(order), t_jet(order), t_jet(order)
+        if model == "sprott-thomas-1":
+            #  Example: ./tsm.py sprott-thomas-1 10 0.02 30000 1 0 0 4.75 1 | ./plotPi3d.py
+            #  Example: ./tsm.py sprott-thomas-1 10 0.02 30000 1 0 0 4.75 1 | ./plotAnimated.py 1 -1 1
+            fun = t_sin_cos
+        else:
+            #  Example: ./tsm.py sprott-thomas-2 10 0.02 30000 1 0 0 4.75 .7 | ./plotPi3d.py
+            #  Example: ./tsm.py sprott-thomas-2 10 0.02 30000 1 0 0 4.75 .7 | ./plotAnimated.py 1 -1 1
+            fun = t_tan_sec2
         output(x0, y0, z0, 0.0)
         for step in range(1, n_steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
             for k in range(order):
-                sx[k], cx[k] = t_tan_sec2(sx, cx, x, k)
-                sy[k], cy[k] = t_tan_sec2(sy, cy, y, k)
-                sz[k], cz[k] = t_tan_sec2(sz, cz, z, k)
+                sx[k], cx[k] = fun(sx, cx, x, k)
+                sy[k], cy[k] = fun(sy, cy, y, k)
+                sz[k], cz[k] = fun(sz, cz, z, k)
                 ax[k], ay[k], az[k] = a * x[k], a * y[k], a * z[k]
                 sax[k], cax[k] = t_sin_cos(sax, cax, ax, k)
                 say[k], cay[k] = t_sin_cos(say, cay, ay, k)
@@ -146,6 +152,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "sprott":
         #  Example: ./tsm.py sprott 10 0.1 30001 1 0 0 | ./plotPi3d.py
+        #  Example: ./tsm.py sprott 10 0.1 30001 1 0 0 | ./plotAnimated.py 1 -20 20
         w1 = t_jet(order, 1)
         output(x0, y0, z0, 0.0)
         for step in range(1, n_steps + 1):
