@@ -242,6 +242,9 @@ class Dual:
     def __neg__(self):
         return Dual(- self.val, - self.der)
 
+    def __invert__(self):  # override - returns an unaltered Dual
+        return + self
+
     def __add__(self, o):
         if isinstance(o, type(self)):
             return Dual(self.val + o.val, self.der + o.der)
@@ -307,11 +310,11 @@ class Dual:
                 return Dual(self.val**o, o * self.val**(o - 1) * self.der)
         raise RuntimeError(f"Incompatible Type: {type(self)} != {type(o)}")
 
-    def __rpow__(self, other):
-        if isinstance(other, (type(self.val), int)):
-            assert other > 0.0, f"other = {other}"
-            return (log(other) * self).exp
-        raise RuntimeError(f"Incompatible Type: {type(other)}")
+    def __rpow__(self, o):
+        if isinstance(o, (type(self.val), int)):
+            assert o > 0.0, f"other = {o}"
+            return (log(o) * self).exp
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     @property
     def exp(self):
