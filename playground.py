@@ -38,12 +38,12 @@ class Mode(Enum):
 
 class Bracketed(namedtuple('BracketedType', ['method', 'a', 'b', 'f', 'δx', 'count', 'sense', 'mode'])):
     def __str__(self):
-        return f"{self.method} a {self.a:+.15e} b {self.b:+.15e} f {self.f:+.15e} δx {self.δx:+.15e} {self.sense} {self.mode} {self.count}"
+        return f'{self.method} a {self.a:+.15e} b {self.b:+.15e} f {self.f:+.15e} δx {self.δx:+.15e} {self.sense} {self.mode} {self.count}'
 
 
 class Derivative(namedtuple('DerivativeType', ['method', 'x', 'f', 'δx', 'count', 'sense', 'mode'])):
     def __str__(self):
-        return f"{self.method} x {self.x:+.15e} f {self.f:+.15e} δx {self.δx:+.15e} {self.sense}{self.mode} {self.count}"
+        return f'{self.method} x {self.x:+.15e} f {self.f:+.15e} δx {self.δx:+.15e} {self.sense}{self.mode} {self.count}'
 
 
 def bisect(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
@@ -158,7 +158,7 @@ def analyze(model, method, x0, x1, steps, εf, εx, limit, order):
     for k in range(steps):
         x = Series.get(order, x0 + k * step).var  # make x a variable to see derivatives!
         f = ~model(x)
-        print(f"{x.val:.6e} {f}")
+        print(f'{x.val:.6e} {f}')
         if method != Solver.NA:
             if k > 0:
                 if f0_prev * f.val <= 0.0:
@@ -227,4 +227,4 @@ def analyze(model, method, x0, x1, steps, εf, εx, limit, order):
         f2_prev = f.jet[2]
 
 
-print(__name__ + " module loaded", file=stderr)
+print(__name__ + ' module loaded', file=stderr)
