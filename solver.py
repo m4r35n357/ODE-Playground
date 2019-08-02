@@ -45,10 +45,10 @@ if method in [Solver.H2, Solver.NA]:
     householder(model, xc, 3, y=target, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
     print("")
 if method in [Solver.H3, Solver.NA]:
-    householder(model, xc, 4, y=target, εf=f_tol, εx=x_tol, limit=max, debug=True)
+    householder(model, xc, 4, y=target, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
     print("")
 if method in [Solver.H4, Solver.NA]:
-    householder(model, xc, 5, y=target, εf=f_tol, εx=x_tol, limit=max, debug=True)
+    householder(model, xc, 5, y=target, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
     print("")
 
 
