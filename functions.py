@@ -1,9 +1,10 @@
 
 from sys import stderr
 
-def lorentz(a):
+def lorentz(v):
     # Example: ./models.py BI .001 .999 1001 7 1e-12 1e-12 | ./plotMany.py 1 10 >/dev/null
-    return (1 - a * a)**-0.5
+    # Example: ./series_test.py 7 .001 .999 1001 | ./plotMany.py 1 10 >/dev/null
+    return (1.0 - v**2)**-0.5
 
 def schwartzschild(r, e=0.962250, p_r=0.0, l_z=4.0):  # no t or phi!
     # Example: ./series_test.py 1 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null

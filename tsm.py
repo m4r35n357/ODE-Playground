@@ -301,5 +301,8 @@ def main():
                 x[k + 1] = a * x[k] / (k + 1)
             x0 = t_horner(x, δt)
             output(x0, 0.0, 0.0, step * δt)
+    else:
+        raise RuntimeError(f"Unknown model: {model}")
+
 
 main()
