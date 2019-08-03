@@ -5,9 +5,7 @@ from sys import stderr
 from math import sin, cos, sinh, cosh, tan, tanh, exp, log
 
 def t_jet(n, value=0.0):
-    jet = [0.0] * n
-    jet[0] = value if isinstance(value, float) else float(value)
-    return jet
+    return [value if isinstance(value, float) else float(value)] + [0.0] * (n - 1)
 
 def t_horner(jet, h):
     result = jet[-1]
