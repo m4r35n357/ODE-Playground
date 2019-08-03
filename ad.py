@@ -80,7 +80,7 @@ class Series:
 
     def __add__(self, o):
         if isinstance(o, Series):
-            assert len(o.jet) == len(self.jet), f"len(self.jet) = {len(self.jet)}, len(o.jet) = {len(o.jet)}"
+            assert o.n == self.n, f"Size mismatch - self: {self.n}, other: {o.n}"
             return Series([self.jet[k] + o.jet[k] for k in range(self.n)])
         elif isinstance(o, (float, int)):
             jet = [self.jet[k] for k in range(self.n)]
@@ -105,7 +105,7 @@ class Series:
 
     def __mul__(self, o):
         if isinstance(o, Series):
-            assert len(o.jet) == len(self.jet), f"len(self.jet) = {len(self.jet)}, len(o.jet) = {len(o.jet)}"
+            assert o.n == self.n, f"Size mismatch - self: {self.n}, other: {o.n}"
             return Series([t_prod(self.jet, o.jet, k) for k in range(self.n)])
         elif isinstance(o, (float, int)):
             return Series([self.jet[k] * o for k in range(self.n)])
@@ -118,7 +118,7 @@ class Series:
 
     def __truediv__(self, o):
         if isinstance(o, Series):
-            assert len(o.jet) == len(self.jet), f"len(self.jet) = {len(self.jet)}, len(o.jet) = {len(o.jet)}"
+            assert o.n == self.n, f"Size mismatch - self: {self.n}, other: {o.n}"
             assert abs(o.val) != 0.0, f"other.val = {o.val}"
             jet = t_jet(self.n)
             for k in range(self.n):
@@ -143,7 +143,7 @@ class Series:
         else:
             assert self.val > 0.0, f"self.val = {self.val}"
             if isinstance(o, Series):
-                assert len(o.jet) == len(self.jet), f"len(self.jet) = {len(self.jet)}, len(o.jet) = {len(o.jet)}"
+                assert o.n == self.n, f"Size mismatch - self: {self.n}, other: {o.n}"
                 return (self.ln.__mul__(o)).exp
             elif isinstance(o, float):
                 jet = t_jet(self.n)
