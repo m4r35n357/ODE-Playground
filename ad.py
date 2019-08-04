@@ -2,7 +2,7 @@
 #  (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 from sys import stderr
-from math import sin, cos, sinh, cosh, tan, tanh, exp, log
+from math import sin, cos, sinh, cosh, tan, tanh, exp, log, fsum
 
 def t_jet(n, value=0.0):
     return [value if isinstance(value, float) else float(value)] + [0.0] * (n - 1)
@@ -17,32 +17,32 @@ def t_abs(u, k):
     return abs(u[0]) if k == 0 else ((u[1] if u[0] > 0.0 else (- u[1] if u[0] < 0.0 else 0.0)) if k == 1 else 0.0)
 
 def t_prod(u, v, k):
-    return sum(u[j] * v[k - j] for j in range(k + 1))
+    return fsum(u[j] * v[k - j] for j in range(k + 1))
 
 def t_quot(q, u, v, k):
-    return (u[k] - sum(v[j] * q[k - j] for j in range(1, k + 1))) / v[0]
+    return (u[k] - fsum(v[j] * q[k - j] for j in range(1, k + 1))) / v[0]
 
 def t_pwr(p, u, a, k):
-    return u[0]**a if k == 0 else sum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
+    return u[0]**a if k == 0 else fsum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
 
 def t_exp(e, u, k):
-    return exp(u[0]) if k == 0 else sum((k - j) * e[j] * u[k - j] for j in range(k)) / k
+    return exp(u[0]) if k == 0 else fsum((k - j) * e[j] * u[k - j] for j in range(k)) / k
 
 def t_ln(l, u, k):
-    return log(u[0]) if k == 0 else (u[k] - sum(j * l[j] * u[k - j] for j in range(1, k)) / k) / u[0]
+    return log(u[0]) if k == 0 else (u[k] - fsum(j * l[j] * u[k - j] for j in range(1, k)) / k) / u[0]
 
 def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
         return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
-    sk = sum((k - j) * c[j] * u[k - j] for j in range(k)) / k
-    ck = sum((k - j) * s[j] * u[k - j] for j in range(k)) / k
+    sk = fsum((k - j) * c[j] * u[k - j] for j in range(k)) / k
+    ck = fsum((k - j) * s[j] * u[k - j] for j in range(k)) / k
     return (sk, ck) if hyp else (sk, - ck)
 
 def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
         return (tanh(u[0]), 1.0 - tanh(u[0])**2) if hyp else (tan(u[0]), 1.0 + tan(u[0])**2)
-    tk = sum((k - j) * s2[j] * u[k - j] for j in range(k)) / k
-    sk = 2.0 * (t[0] * tk + sum((k - j) * t[j] * t[k - j] for j in range(1, k)) / k)
+    tk = fsum((k - j) * s2[j] * u[k - j] for j in range(k)) / k
+    sk = 2.0 * (t[0] * tk + fsum((k - j) * t[j] * t[k - j] for j in range(1, k)) / k)
     return (tk, - sk) if hyp else (tk, sk)
 
 
