@@ -38,7 +38,7 @@ def playground(a):
     # return (a**2 + 1.0e-15)**0.5  # problem at a == 0.0
     # return (a**2 + 1.0e-6)**-0.5   # problem at a == 0.0
     # return a.exp.ln - a
-    # return a.tan - a.sin / a.cos
+    # return a.tan - a.sin / a.cos  #!
     # return a.tanh - a.sinh / a.cosh
     # return (a + 7) / (3.0 - a)  # problem at a == 3.0
     # return abs(a)**2

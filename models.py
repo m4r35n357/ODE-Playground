@@ -2,7 +2,7 @@
 
 from sys import argv, exit, stderr
 from playground import analyze, Solver
-from functions import playground, composite1, composite2, septic
+from functions import playground, composite1, composite2, septic, lorentz
 
 mode = Solver.NA
 try:
