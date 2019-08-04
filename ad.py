@@ -207,9 +207,7 @@ class Series:
 
     @property
     def var(self):
-        jet = t_jet(self.n, self.val)
-        jet[1] = 1.0
-        return Series(jet)
+        return Series([self.val] + [1.0] + [0.0] * (self.n - 2))
 
 
 class Dual:
