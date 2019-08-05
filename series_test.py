@@ -2,11 +2,17 @@
 
 from sys import argv, stderr
 from math import pi, e
-from ad import Series, Dual
+from ad import Series, Dual, Context
 from functions import playground, composite1, composite2, septic, lorentz
 
-order = int(argv[1])
+Context.places = int(argv[1])
+order = int(argv[2])
 assert order > 1
+lower = float(argv[3])
+upper = float(argv[4])
+assert upper > lower
+n_steps = int(argv[5])
+assert n_steps > 0
 
 a = 3.0
 b = 4.0
@@ -181,14 +187,8 @@ def analyze(model, x0, x1, steps):
     for k in range(steps):
         w_x = Dual.get(x0 + k * (x1 - x0) / (steps - 1)).var
         w_f = model(w_x)
-        print(f"{w_x.val:.6e} {w_f}")
+        print(f"{w_x.val:.{Context.places}e} {w_f}")
         yield w_x.val, w_f.val, w_f.der
-
-lower = float(argv[2])
-upper = float(argv[3])
-assert upper > lower
-n_steps = int(argv[4])
-assert n_steps > 0
 
 for result in analyze(playground, lower, upper, steps=n_steps):
     pass
