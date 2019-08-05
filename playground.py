@@ -36,14 +36,10 @@ class Mode(Enum):
     INFLECT = 2
 
 
-class Bracketed(namedtuple('BracketedType', ['method', 'a', 'b', 'f', 'δx', 'count', 'sense', 'mode'])):
+class Result(namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', 'sense', 'mode'])):
     def __str__(self):
-        return f'{self.method} a {self.a:+.15e} b {self.b:+.15e} f {self.f:+.15e} δx {self.δx:+.15e} {self.sense} {self.mode} {self.count}'
-
-
-class Derivative(namedtuple('DerivativeType', ['method', 'x', 'f', 'δx', 'count', 'sense', 'mode'])):
-    def __str__(self):
-        return f'{self.method} x {self.x:+.15e} f {self.f:+.15e} δx {self.δx:+.15e} {self.sense}{self.mode} {self.count}'
+        return f'{self.method}  x: {self.x:+.{Context.places}e}  δx: {self.δx:+.{Context.places}e}  ' \
+               f'f: {self.f:+.{Context.places}e}  {self.sense} {self.mode} {self.count}'
 
 
 def bisect(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
@@ -61,11 +57,11 @@ def bisect(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FL
             a = c
         δx = b.jet[mode.value] - a.jet[mode.value]
         if debug:
-            print(Bracketed(method=m.name, count=count, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx))
+            print(Result(method=m.name, count=count, sense=sense.value, mode=mode.name, x=c.val, f=fc.jet[mode.value], δx=δx))
         count += 1
         if count == limit + 1:
             break
-    return Bracketed(method=m.name, count=count-1, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx)
+    return Result(method=m.name, count=count - 1, sense=sense.value, mode=mode.name, x=c.val, f=fc.jet[mode.value], δx=δx)
 
 
 def falsi(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, ill=True, debug=False):
@@ -91,11 +87,11 @@ def falsi(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLA
                 side = +1
         δx = b.jet[mode.value] - a.jet[mode.value]
         if debug:
-            print(Bracketed(method=m.name, count=count, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx))
+            print(Result(method=m.name, count=count, sense=sense.value, mode=mode.name, x=c.val, f=fc.jet[mode.value], δx=δx))
         count += 1
         if count == limit + 1:
             break
-    return Bracketed(method=m.name, count=count-1, sense=sense.value, mode=mode.name, a=a.val, b=b.val, f=fc.val, δx=δx)
+    return Result(method=m.name, count=count - 1, sense=sense.value, mode=mode.name, x=c.val, f=fc.jet[mode.value], δx=δx)
 
 
 def secant(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
@@ -110,11 +106,11 @@ def secant(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FL
         a, fa = c, fc
         δx = b.jet[mode.value] - a.jet[mode.value]
         if debug:
-            print(Derivative(method=m.name, count=count, sense=sense.value, mode=mode.name, x=c.val, f=fc.val, δx=δx))
+            print(Result(method=m.name, count=count, sense=sense.value, mode=mode.name, x=c.val, f=fc.jet[mode.value], δx=δx))
         count += 1
         if count == limit + 1:
             break
-    return Derivative(method=m.name, count=count-1, sense=sense.value, mode=mode.name, x=c.val, f=fc.val, δx=δx)
+    return Result(method=m.name, count=count - 1, sense=sense.value, mode=mode.name, x=c.val, f=fc.jet[mode.value], δx=δx)
 
 
 def newton(model, x0, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
@@ -127,11 +123,11 @@ def newton(model, x0, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLAT, 
         δx = - f.jet[mode.value] / f.jet[1 + mode.value]
         x += δx
         if debug:
-            print(Derivative(method=m.name, count=count, sense=sense.value, mode=mode.name,x=x.val, f=f.val, δx=δx))
+            print(Result(method=m.name, count=count, sense=sense.value, mode=mode.name, x=x.val, f=f.jet[mode.value], δx=δx))
         count += 1
         if count == limit + 1:
             break
-    return Derivative(method=m.name, count=count-1, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx)
+    return Result(method=m.name, count=count - 1, sense=sense.value, mode=mode.name, x=x.val, f=f.jet[mode.value], δx=δx)
 
 
 def householder(model, x0, n, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
@@ -145,11 +141,11 @@ def householder(model, x0, n, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sens
         δx = r.jet[n - 2 + mode.value] / r.jet[n - 1 + mode.value]
         x += δx * (n - 1 + mode.value)
         if debug:
-            print(Derivative(method=m.name, count=count, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx))
+            print(Result(method=m.name, count=count, sense=sense.value, mode=mode.name, x=x.val, f=f.jet[mode.value], δx=δx))
         count += 1
         if count == limit + 1:
             break
-    return Derivative(method=m.name, count=count-1, sense=sense.value, mode=mode.name, x=x.val, f=f.val, δx=δx)
+    return Result(method=m.name, count=count - 1, sense=sense.value, mode=mode.name, x=x.val, f=f.jet[mode.value], δx=δx)
 
 
 def analyze(model, method, x0, x1, steps, εf, εx, limit, order):

@@ -4,6 +4,7 @@
 # Example:  ./solver.py NA  1.0  3.0 1e-15 1e-15 1000 0.0
 
 from sys import argv, exit, stderr
+from ad import Context
 from playground import Solver, bisect, falsi, secant, newton, householder
 
 method = Solver.NA
@@ -13,12 +14,13 @@ except KeyError:
     print(f"INVALID ANALYSIS: '{argv[1]}'", file=stderr)
     print(Solver.__members__.keys(), file=stderr)
     exit()
-xa = float(argv[2])
-xb = float(argv[3])
-f_tol = float(argv[4])
-x_tol = float(argv[5])
-max_it = int(argv[6])
-target = float(argv[7])
+Context.places = int(argv[2])
+xa = float(argv[3])
+xb = float(argv[4])
+f_tol = float(argv[5])
+x_tol = float(argv[6])
+max_it = int(argv[7])
+target = float(argv[8])
 
 xc = (xa + xb) / 2.0
 model = lambda x: (x - 1)**2 / (x.cosh + 1).ln - 1

@@ -11,7 +11,7 @@ def output(x, y, z, t):
     print(f'{x:+.{Context.places}e} {y:+.{Context.places}e} {z:+.{Context.places}e} {t:.5e}')
 
 def main():
-    model, Context.places, order, δt, n_steps = argv[1], int(argv[2]), int(argv[3]), float(argv[4]), int(argv[5])  # integrator controls
+    model, Context.places, order, δt, n_steps = argv[1], int(argv[2]), int(argv[3]), float(argv[4]), int(argv[5])  # controls
     x0, y0, z0 = float(argv[6]), float(argv[7]), float(argv[8])  # initial values
     x, y, z = t_jet(order + 1), t_jet(order + 1), t_jet(order + 1)  # coordinate jets
 
