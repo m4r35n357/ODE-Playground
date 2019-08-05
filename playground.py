@@ -5,7 +5,7 @@
 from sys import stderr
 from collections import namedtuple
 from enum import Enum, unique
-from ad import Series
+from ad import Context, Series
 
 
 @unique
@@ -158,7 +158,7 @@ def analyze(model, method, x0, x1, steps, εf, εx, limit, order):
     for k in range(steps):
         x = Series.get(order, x0 + k * step).var  # make x a variable to see derivatives!
         f = ~model(x)
-        print(f'{x.val:.6e} {f}')
+        print(f'{x.val:.{Context.places}e} {f}')
         if method != Solver.NA:
             if k > 0:
                 if f0_prev * f.val <= 0.0:

@@ -57,7 +57,7 @@ class Series:
         return cls(t_jet(order, value))
 
     def __str__(self):
-        return ''.join(f'{self.jet[i]:+.9e} ' for i in range(self.n))
+        return ''.join(f'{self.jet[i]:+.{Context.places}e} ' for i in range(self.n))
 
     def __abs__(self):
         return Series([t_abs(self.jet, k) for k in range(self.n)])
@@ -221,7 +221,7 @@ class Dual:
         return cls(value if isinstance(value, float) else float(value), 0.0)
 
     def __str__(self):
-        return f'{self.val:+.9e} {self.der:+.9e}'
+        return f'{self.val:+.{Context.places}e} {self.der:+.{Context.places}e}'
 
     def __abs__(self):
         return Dual(abs(self.val), self.der if self.val > 0.0 else (- self.der if self.val < 0.0 else 0.0))
@@ -340,6 +340,10 @@ class Dual:
     @property
     def var(self):
         return Dual(self.val, 1.0)
+
+
+class Context:
+    places = 3
 
 
 print(__name__ + ' module loaded', file=stderr)
