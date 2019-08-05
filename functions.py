@@ -46,4 +46,4 @@ def playground(a):
     # return a / a.exp
     return (a - 1)**2 / (a.cosh + 1).ln - 1
 
-print(__name__ + " module loaded", file=stderr)
+print(f'{__name__} module loaded', file=stderr)

@@ -346,4 +346,4 @@ class Context:
     places = 3
 
 
-print(__name__ + ' module loaded', file=stderr)
+print(f'{__name__} module loaded', file=stderr)

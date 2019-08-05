@@ -223,4 +223,4 @@ def analyze(model, method, x0, x1, steps, εf, εx, limit, order):
         f2_prev = f.jet[2]
 
 
-print(__name__ + ' module loaded', file=stderr)
+print(f'{__name__} module loaded', file=stderr)

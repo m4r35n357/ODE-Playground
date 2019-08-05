@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 
+# Example: ./compare.py /tmp/dataA /tmp/dataB 3
+
 from math import sqrt
 from sys import argv, stderr
-
 from matplotlib import pyplot
-
 
 def position_error(a, b):
     return sqrt((float(a[0]) - float(b[0]))**2 + (float(a[1]) - float(b[1]))**2 + (float(a[2]) - float(b[2]))**2)
 
-
 def main():
-    print("Compare: {}".format(argv))
+    print(f'Compare: {argv}')
     if len(argv) != 4:
-        raise Exception('>>> ERROR! Please supply two file names and a time coordinate <<<')
+        raise Exception(">>> ERROR! Please supply two file names and a time coordinate column <<<")
     time = int(argv[3])
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')
@@ -21,17 +20,10 @@ def main():
     ax1.set_ylabel('x, y', color='b')
     ax2 = ax1.twinx()
     ax2.set_ylabel('z, error', color='b')
-    with open(argv[1], 'r') as a, open(argv[2], 'r') as b:
+    with open(argv[1]) as a, open(argv[2]) as b:
         line_a = a.readline()
         line_b = b.readline()
-        s = []
-        t = []
-        u = []
-        v = []
-        w = []
-        x = []
-        y = []
-        z = []
+        s, t, u, v, w, x, y, z = [], [], [], [], [], [], [], []
         while line_a and line_b:
             if 'nan' in line_a or 'nan' in line_b:
                 break
@@ -60,4 +52,4 @@ def main():
 if __name__ == "__main__":
     main()
 else:
-    print(__name__ + " module loaded", file=stderr)
+    print(f'{__name__} module loaded', file=stderr)
