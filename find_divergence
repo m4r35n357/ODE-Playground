@@ -1,5 +1,5 @@
 #!/bin/sh
-
+#set -x
 ref=$1
 shift
 ode=$1
@@ -10,42 +10,21 @@ nsteps=$5
 shift 5
 parameters=$*
 
-fileA='/tmp/dataA'
-fileB='/tmp/dataB'
+file='/tmp/data'
 
-case $ref in
-	'tmp')	ref=$fileB
-		$ode $(expr $precision + 4) $(expr $order + 2) \
-			$(echo $step / 3 | bc -l) $(expr $nsteps \* 3) $parameters | sed -n '1~3p' >$ref &
-		sleep 1
-	;;
-esac
+$ode $precision $order $step $nsteps $parameters >$file
 
+./divergence.py $ref $file 3 0.000000000000000001 >/dev/null
+./divergence.py $ref $file 3 0.000000000001 >/dev/null
+./divergence.py $ref $file 3 0.000000001 >/dev/null
+./divergence.py $ref $file 3 0.000001 >/dev/null
+./divergence.py $ref $file 3 0.001 >/dev/null
+./divergence.py $ref $file 3 1.0 >/dev/null
 
-$ode $precision $order $step $nsteps $parameters >$fileA &
-
-wait
-
-./divergence.py $fileA $ref 3 0.000000000000000001 >/dev/null
-./divergence.py $fileA $ref 3 0.000000000001 >/dev/null
-./divergence.py $fileA $ref 3 0.000000001 >/dev/null
-./divergence.py $fileA $ref 3 0.000001 >/dev/null
-./divergence.py $fileA $ref 3 0.001 >/dev/null
-./divergence.py $fileA $ref 3 1.0 >/dev/null
-
-./compare.py $fileA $ref 3 >/dev/null &
+./compare.py $ref $file 3 >/dev/null &
 
 exit
 
 # Examples
 
-time -p ./find_divergence tmp ./tsm-thomas-static 16 10 0.1 30001 3.022102 2.888199 1.476461 .18
-
-time -p ./find_divergence tmp ./tsm-rossler-static 16 10 0.01 150001 0.0 -6.78 0.02 .2 .2 5.7
-
-time -p ./find_divergence tmp ./tsm-bouali-static 16 10 0.02 100001 1 1 0 3 2.2 1 .2
-
-time -p ./find_divergence tmp ./tsm-lorenz-static 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
-
-time -p ./find_divergence tmp ./tsm-sj-static 16 10 .01 50001 0 3.9 .7 8.888 4
-
+./find_divergence data-ref ./tsm.py lorenz 9 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3

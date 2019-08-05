@@ -48,8 +48,4 @@ def main():
     ax2.plot(s, z, 'ro-', markersize=0)
     pyplot.show()
 
-
-if __name__ == "__main__":
-    main()
-else:
-    print(f'{__name__} module loaded', file=stderr)
+main()

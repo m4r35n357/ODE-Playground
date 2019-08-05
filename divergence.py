@@ -20,9 +20,9 @@ def diverged(x, y, thresh):
 
 
 def main():
-    print("Divergence: {}".format(argv))
+    print(f'Divergence: {argv}')
     if len(argv) != 5:
-        raise Exception('>>> ERROR! Please supply two file names and a time column and a threshold <<<')
+        raise Exception(">>> ERROR! Please supply two file names, a time column, and a threshold <<<")
     time = int(argv[3])
     threshold = float(argv[4])
     if threshold <= 1.0e-18:
@@ -44,14 +44,10 @@ def main():
             data_a = line_a.split(' ')
             data_b = line_b.split(' ')
             if diverged(data_a, data_b, threshold):
-                print("{}Threshold: {}{:.1e}{}, Time: {}{:.3f}{}".format(GREY, colour, threshold, GREY, WHITE,
-                                                                         float(data_a[time]), NORMAL), file=stderr)
+                print(f"{GREY}Threshold: {colour}{threshold:.1e}{GREY}, t: {WHITE}{float(data_a[time]):.3f}{NORMAL}", file=stderr)
                 return
             line_a = a.readline()
             line_b = b.readline()
 
 
-if __name__ == "__main__":
-    main()
-else:
-    print(__name__ + " module loaded", file=stderr)
+main()
