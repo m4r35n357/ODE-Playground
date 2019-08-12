@@ -7,10 +7,9 @@ from math import sin, cos, sinh, cosh, tan, tanh, exp, log, fsum
 def t_jet(n, value=0.0):
     return [value if isinstance(value, float) else float(value)] + [0.0] * (n - 1)
 
-def t_horner(jet, h):
-    result = jet[-1]
-    for i in range(len(jet) - 2, -1, -1):
-        result = result * h + jet[i]
+def t_horner(jet, h, result=0.0):
+    for term in reversed(jet):
+        result = result * h + term
     return result
 
 def t_abs(u, k):
@@ -50,40 +49,38 @@ class Series:
 
     def __init__(self, jet):
         self.n = len(jet)
-        self.jet = [jet[k] for k in range(self.n)]
+        self.jet = jet[:]
 
     @classmethod
     def get(cls, order, value=0.0):
         return cls(t_jet(order, value))
 
     def __str__(self):
-        return ''.join(f'{self.jet[i]:+.{Context.places}e} ' for i in range(self.n))
+        return ''.join(f'{term:+.{Context.places}e} ' for term in self.jet)
 
     def __abs__(self):
         return Series([t_abs(self.jet, k) for k in range(self.n)])
 
     def __pos__(self):
-        return Series([self.jet[k] for k in range(self.n)])
+        return Series(self.jet[:])
 
     def __neg__(self):
-        return Series([- self.jet[k] for k in range(self.n)])
+        return Series([- term for term in self.jet])
 
     def __invert__(self):  # override - returns a derivative Series
-        d = t_jet(self.n, self.jet[0])
-        fac = 1
+        derivatives = t_jet(self.n, self.val)
+        factorial = 1
         for i in range(1, self.n):
-            fac *= i
-            d[i] = fac * self.jet[i]
-        return Series(d)
+            factorial *= i
+            derivatives[i] = factorial * self.jet[i]
+        return Series(derivatives)
 
     def __add__(self, o):
         if isinstance(o, Series):
             assert o.n == self.n, f"Size mismatch - self: {self.n}, other: {o.n}"
             return Series([self.jet[k] + o.jet[k] for k in range(self.n)])
         elif isinstance(o, (float, int)):
-            jet = [self.jet[k] for k in range(self.n)]
-            jet[0] += o
-            return Series(jet)
+            return Series([self.val + o] + self.jet[1:])
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __radd__(self, o):
@@ -106,7 +103,7 @@ class Series:
             assert o.n == self.n, f"Size mismatch - self: {self.n}, other: {o.n}"
             return Series([t_prod(self.jet, o.jet, k) for k in range(self.n)])
         elif isinstance(o, (float, int)):
-            return Series([self.jet[k] * o for k in range(self.n)])
+            return Series([term * o for term in self.jet])
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __rmul__(self, o):
