@@ -84,19 +84,13 @@ class Series:
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __radd__(self, o):
-        if isinstance(o, (float, int)):
-            return self.__add__(o)
-        raise RuntimeError(f"Incompatible Type: {type(o)}")
+        return self.__add__(o)
 
     def __sub__(self, o):
-        if isinstance(o, (Series, float, int)):
-            return self.__add__(- o)
-        raise RuntimeError(f"Incompatible Type: {type(o)}")
+        return self.__add__(- o)
 
     def __rsub__(self, o):
-        if isinstance(o, (float, int)):
-            return (- self).__add__(o)
-        raise RuntimeError(f"Incompatible Type: {type(o)}")
+        return (- self).__add__(o)
 
     def __mul__(self, o):
         if isinstance(o, Series):
@@ -107,9 +101,7 @@ class Series:
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __rmul__(self, o):
-        if isinstance(o, (float, int)):
-            return self.__mul__(o)
-        raise RuntimeError(f"Incompatible Type: {type(o)}")
+        return self.__mul__(o)
 
     def __truediv__(self, o):
         if isinstance(o, Series):
@@ -125,9 +117,7 @@ class Series:
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __rtruediv__(self, o):
-        if isinstance(o, (float, int)):
-            return Series(t_jet(self.n, o)).__truediv__(self)
-        raise RuntimeError(f"Incompatible Type: {type(o)}")
+        return Series(t_jet(self.n, o)).__truediv__(self)
 
     def __pow__(self, o):
         if isinstance(o, int):
@@ -148,10 +138,8 @@ class Series:
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __rpow__(self, o):
-        if isinstance(o, (float, int)):
-            assert o > 0.0, f"other = {o}"
-            return (self.__mul__(log(o))).exp
-        raise RuntimeError(f"Incompatible Type: {type(o)}")
+        assert o > 0.0, f"other = {o}"
+        return (self.__mul__(log(o))).exp
 
     def _single(self, fun):
         jet = t_jet(self.n)
@@ -240,19 +228,13 @@ class Dual:
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __radd__(self, o):
-        if isinstance(o, (float, int)):
-            return self.__add__(o)
-        raise RuntimeError(f"Incompatible Type: {type(o)}")
+        return self.__add__(o)
 
     def __sub__(self, o):
-        if isinstance(o, (Dual, float, int)):
-            return self.__add__(- o)
-        raise RuntimeError(f"Incompatible Type: {type(o)}")
+        return self.__add__(- o)
 
     def __rsub__(self, o):
-        if isinstance(o, (float, int)):
-            return (- self).__add__(o)
-        raise RuntimeError(f"Incompatible Type: {type(o)}")
+        return (- self).__add__(o)
 
     def __mul__(self, o):
         if isinstance(o, Dual):
@@ -262,9 +244,7 @@ class Dual:
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __rmul__(self, o):
-        if isinstance(o, (float, int)):
-            return self.__mul__(o)
-        raise RuntimeError(f"Incompatible Type: {type(o)}")
+        return self.__mul__(o)
 
     def __truediv__(self, o):
         if isinstance(o, Dual):
@@ -276,9 +256,7 @@ class Dual:
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __rtruediv__(self, o):
-        if isinstance(o, (float, int)):
-            return Dual(o, 0.0).__truediv__(self)
-        raise RuntimeError(f"Incompatible Type: {type(o)}")
+        return Dual(o, 0.0).__truediv__(self)
 
     def __pow__(self, o):
         if isinstance(o, int):
@@ -295,10 +273,8 @@ class Dual:
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __rpow__(self, o):
-        if isinstance(o, (float, int)):
-            assert o > 0.0, f"other = {o}"
-            return (self.__mul__(log(o))).exp
-        raise RuntimeError(f"Incompatible Type: {type(o)}")
+        assert o > 0.0, f"other = {o}"
+        return (self.__mul__(log(o))).exp
 
     @property
     def exp(self):
