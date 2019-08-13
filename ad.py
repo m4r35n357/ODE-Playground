@@ -217,9 +217,6 @@ class Dual:
     def __neg__(self):
         return Dual(- self.val, - self.der)
 
-    def __invert__(self):  # override - returns an unaltered Dual
-        return self.__pos__()
-
     def __add__(self, o):
         if isinstance(o, Dual):
             return Dual(self.val + o.val, self.der + o.der)
