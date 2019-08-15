@@ -121,7 +121,7 @@ class Series:
 
     def __pow__(self, o):
         if isinstance(o, int):
-            i_pow = self
+            i_pow = Series(self.jet)
             for _ in range(abs(o) - 1):
                 i_pow = i_pow.__mul__(self)
             return i_pow if o > 0 else (Series(t_jet(self.n, 1.0)).__truediv__(i_pow) if o < 0 else Series(t_jet(self.n, 1.0)))
@@ -257,7 +257,7 @@ class Dual:
 
     def __pow__(self, o):
         if isinstance(o, int):
-            i_pow = self
+            i_pow = Dual(self.val, self.der)
             for _ in range(abs(o) - 1):
                 i_pow = i_pow.__mul__(self)
             return i_pow if o > 0 else (Dual(1.0, 0.0).__truediv__(i_pow) if o < 0 else Dual(1.0, 0.0))
