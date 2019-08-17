@@ -78,7 +78,7 @@ class Series:
     def __add__(self, o):
         if isinstance(o, Series):
             assert o.n == self.n, f"Size mismatch - self: {self.n}, other: {o.n}"
-            return Series([self.jet[k] + o.jet[k] for k in range(self.n)])
+            return Series([s + o for s, o in zip(self.jet, o.jet)])
         elif isinstance(o, (float, int)):
             return Series([self.val + o] + self.jet[1:])
         raise RuntimeError(f"Incompatible Type: {type(o)}")
