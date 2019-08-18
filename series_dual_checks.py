@@ -72,6 +72,10 @@ print(" b**y, b**z", file=stderr)  # wolfram d^k/dx^k 4.0^x where x = 3.0
 print(b**y, file=stderr)
 print(~(b**z), file=stderr)
 
+print(" y**y, z**z", file=stderr)  # wolfram: d^k/dx^k (x + 1)^(x - 1) where x = 3.0
+print(y**y, file=stderr)
+print(~(z**z), file=stderr)
+
 print(" (y + 1)**(y - 1), (z + 1)**(z - 1)", file=stderr)  # wolfram: d^k/dx^k (x + 1)^(x - 1) where x = 3.0
 print((y + 1)**(y - 1), file=stderr)
 print(~((z + 1)**(z - 1)), file=stderr)
