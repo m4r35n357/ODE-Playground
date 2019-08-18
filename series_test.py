@@ -138,6 +138,7 @@ print(~(x.tanh), file=stderr)
 print("", file=stderr)
 
 #  Zero identities
+u, v = Dual.get(c).var, Series.get(order, c).var
 w, x = Dual.get(b).var, Series.get(order, b).var
 y, z = Dual.get(a).var, Series.get(order, a).var
 
@@ -151,11 +152,11 @@ print(~((x**2)**0.5) - abs(x), file=stderr)
 
 print("exp(b) - e**b", file=stderr)
 print((w.exp - e**w), file=stderr)
-print((x.exp - e**x), file=stderr)
+print(~(x.exp - e**x), file=stderr)
 
 print("ln(e**b) - b", file=stderr)
 print((w.exp.ln - w), file=stderr)
-print((x.exp.ln - x), file=stderr)
+print(~(x.exp.ln - x), file=stderr)
 
 print(f" (exp(b) - exp(-b)) / 2 - sinh(b)", file=stderr)
 print(0.5 * (y.exp - (-y).exp) - y.sinh, file=stderr)
@@ -169,17 +170,25 @@ print(f" tan(b) - sin(b) / cos(b)", file=stderr)
 print(w.tan - w.sin / w.cos, file=stderr)
 print(~(x.tan - x.sin / x.cos), file=stderr)
 
-print(f" tanh(b) - sinh(b) / cosh(b)", file=stderr)
-print(w.tanh - w.sinh / w.cosh, file=stderr)
-print(~(x.tanh - x.sinh / x.cosh), file=stderr)
+print(f" tanh(c) - sinh(c) / cosh(c)", file=stderr)
+print(u.tanh - u.sinh / u.cosh, file=stderr)
+print(~(v.tanh - v.sinh / v.cosh), file=stderr)
 
 print(f" sin(3.0 * a) - 3.0 * sin(a) + 4.0 * sin(a)**3", file=stderr)
 print((3 * y).sin - 3.0 * y.sin + 4.0 * y.sin**3, file=stderr)
 print(~((3 * z).sin - 3.0 * z.sin + 4.0 * z.sin**3), file=stderr)
 
+print(f" sinh(3.0 * c) - 3.0 * sinh(c) - 4.0 * sinh(c)**3", file=stderr)
+print((3 * u).sinh - 3.0 * u.sinh - 4.0 * u.sinh**3, file=stderr)
+print(~((3 * v).sinh - 3.0 * v.sinh - 4.0 * v.sinh**3), file=stderr)
+
 print(f" cos(3.0 * a) + 3.0 * cos(a) - 4.0 * cos(a)**3", file=stderr)
 print((3 * y).cos + 3.0 * y.cos - 4.0 * y.cos**3, file=stderr)
 print(~((3 * z).cos + 3.0 * z.cos - 4.0 * z.cos**3), file=stderr)
+
+print(f" cosh(3.0 * c) + 3.0 * cosh(c) - 4.0 * cosh(c)**3", file=stderr)
+print((3 * u).cosh + 3.0 * u.cosh - 4.0 * u.cosh**3, file=stderr)
+print(~((3 * v).cosh + 3.0 * v.cosh - 4.0 * v.cosh**3), file=stderr)
 
 print("", file=stderr)
 
