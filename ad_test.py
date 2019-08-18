@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-
+#  To test the tests: mut.py --runner pytest --target ad.py --unit-test ad_test -c -m --report-html mutation
+#  mut.py --runner pytest --target ad.py --unit-test ad_test -c --report-html mutation --disable-operator AOR CRP DDL CDI SDI SDL SVD -e
 from math import pi, e
 from ad import Series, Dual
 
@@ -31,6 +32,16 @@ def test_unary_minus():
     series = ~(- z)
     assert abs(dual.val + y.val) < ε
     assert abs(series.val + z.val) < ε
+    assert abs(dual.val - series.jet[0]) < ε
+    assert abs(dual.der - series.jet[1]) < ε
+
+def test_abs():
+    assert isinstance(y, Dual)
+    assert isinstance(z, Series)
+    dual = abs(- y)
+    series = ~(abs(- z))
+    assert abs(dual.val - y.val) < ε
+    assert abs(series.val - z.val) < ε
     assert abs(dual.val - series.jet[0]) < ε
     assert abs(dual.der - series.jet[1]) < ε
 
