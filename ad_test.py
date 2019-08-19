@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-#  Mutation tests:  mut.py --runner pytest --target ad.py --unit-test ad_test -c --disable-operator AOR CRP DDL CDI SDI SDL SVD -e
+#  Mutation Testing
+#  mut.py --runner pytest --target ad.py --unit-test ad_test -c --disable-operator AOR CRP DDL CDI SDI SDL SVD -e
+#  mutmut --paths-to-mutate ad.py run --runner 'pytest ad_test.py'; mutmut results
+#  cosmic-ray init config.toml my_session.sqlite
+#  cosmic-ray exec my_session.sqlite
+#  cr-html my_session.sqlite > my_session.html
 from math import pi, e, exp, log, sin, cos, tan, sinh, cosh, tanh
 from ad import t_horner, Series, Dual
 
@@ -8,7 +13,7 @@ order = 6
 a = 3.0
 b = 4.0
 c = 0.5
-d = 3
+d = 5
 
 u, v = Dual.get(c).var, Series.get(order, c).var
 w, x = Dual.get(b).var, Series.get(order, b).var
@@ -51,12 +56,12 @@ def test_abs():
 def test_add_object_object():
     assert isinstance(y, Dual)
     assert isinstance(z, Series)
-    dual = y + y
-    series = ~(z + z)
-    assert abs(dual.val - 2.0 * a) < ε
-    assert abs(series.val - 2.0 * a) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    dual = y + w
+    series = ~(z + x)
+    assert abs(dual.val - (a + b)) < ε
+    assert abs(dual.der - 2.0) < ε
+    assert abs(series.val - (a + b)) < ε
+    assert abs(series.jet[1] - 2.0) < ε
 
 def test_add_object_int():
     assert isinstance(y, Dual)
@@ -65,9 +70,9 @@ def test_add_object_int():
     dual = y + d
     series = ~(z + d)
     assert abs(dual.val - (a + d)) < ε
+    assert abs(dual.der - 1.0) < ε
     assert abs(series.val - (a + d)) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    assert abs(series.jet[1] - 1.0) < ε
 
 def test_add_int_object():
     assert isinstance(y, Dual)
@@ -76,9 +81,9 @@ def test_add_int_object():
     dual = d + y
     series = ~(d + z)
     assert abs(dual.val - (a + d)) < ε
+    assert abs(dual.der - 1.0) < ε
     assert abs(series.val - (a + d)) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    assert abs(series.jet[1] - 1.0) < ε
 
 def test_add_object_float():
     assert isinstance(y, Dual)
@@ -87,9 +92,9 @@ def test_add_object_float():
     dual = y + b
     series = ~(z + b)
     assert abs(dual.val - (a + b)) < ε
+    assert abs(dual.der - 1.0) < ε
     assert abs(series.val - (a + b)) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    assert abs(series.jet[1] - 1.0) < ε
 
 def test_add_float_object():
     assert isinstance(y, Dual)
@@ -98,19 +103,19 @@ def test_add_float_object():
     dual = b + y
     series = ~(b + z)
     assert abs(dual.val - (a + b)) < ε
+    assert abs(dual.der - 1.0) < ε
     assert abs(series.val - (a + b)) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    assert abs(series.jet[1] - 1.0) < ε
 
 def test_subtract_object_object():
     assert isinstance(y, Dual)
     assert isinstance(z, Series)
-    dual = y - y
-    series = ~(z - z)
-    assert abs(dual.val - 0.0) < ε
-    assert abs(series.val - 0.0) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    dual = y - w
+    series = ~(z - x)
+    assert abs(dual.val - (a - b)) < ε
+    assert abs(dual.der) < ε
+    assert abs(series.val - (a - b)) < ε
+    assert abs(series.jet[1]) < ε
 
 def test_subtract_object_int():
     assert isinstance(y, Dual)
@@ -119,9 +124,9 @@ def test_subtract_object_int():
     dual = y - d
     series = ~(z - d)
     assert abs(dual.val - (a - d)) < ε
+    assert abs(dual.der - 1.0) < ε
     assert abs(series.val - (a - d)) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    assert abs(series.jet[1] - 1.0) < ε
 
 def test_subtract_int_object():
     assert isinstance(y, Dual)
@@ -130,9 +135,9 @@ def test_subtract_int_object():
     dual = d - y
     series = ~(d - z)
     assert abs(dual.val - (d - a)) < ε
+    assert abs(dual.der + 1.0) < ε
     assert abs(series.val - (d - a)) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    assert abs(series.jet[1] + 1.0) < ε
 
 def test_subtract_object_float():
     assert isinstance(y, Dual)
@@ -141,9 +146,9 @@ def test_subtract_object_float():
     dual = y - b
     series = ~(z - b)
     assert abs(dual.val - (a - b)) < ε
+    assert abs(dual.der - 1.0) < ε
     assert abs(series.val - (a - b)) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    assert abs(series.jet[1] - 1.0) < ε
 
 def test_subtract_float_object():
     assert isinstance(y, Dual)
@@ -152,19 +157,19 @@ def test_subtract_float_object():
     dual = b - y
     series = ~(b - z)
     assert abs(dual.val - (b - a)) < ε
+    assert abs(dual.der + 1.0) < ε
     assert abs(series.val - (b - a)) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    assert abs(series.jet[1] + 1.0) < ε
 
 def test_multiply_object_object():
     assert isinstance(y, Dual)
     assert isinstance(z, Series)
-    dual = y * y
-    series = ~(z * z)
-    assert abs(dual.val - a**2) < ε
-    assert abs(series.val - a**2) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    dual = y * w
+    series = ~(z * x)
+    assert abs(dual.val - a * b) < ε
+    assert abs(dual.der - (a + b)) < ε
+    assert abs(series.val - a * b) < ε
+    assert abs(series.jet[1] - (a + b)) < ε
 
 def test_multiply_object_int():
     assert isinstance(y, Dual)
@@ -173,9 +178,9 @@ def test_multiply_object_int():
     dual = y * d
     series = ~(z * d)
     assert abs(dual.val - a * d) < ε
+    assert abs(dual.der - d) < ε
     assert abs(series.val - a * d) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    assert abs(series.jet[1] - d) < ε
 
 def test_multiply_int_object():
     assert isinstance(y, Dual)
@@ -184,9 +189,9 @@ def test_multiply_int_object():
     dual = d * y
     series = ~(d * z)
     assert abs(dual.val - d * a) < ε
+    assert abs(dual.der - d) < ε
     assert abs(series.val - d * a) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    assert abs(series.jet[1] - d) < ε
 
 def test_multiply_object_float():
     assert isinstance(y, Dual)
@@ -195,9 +200,9 @@ def test_multiply_object_float():
     dual = y * b
     series = ~(z * b)
     assert abs(dual.val - a * b) < ε
+    assert abs(dual.der - b) < ε
     assert abs(series.val - a * b) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    assert abs(series.jet[1] - b) < ε
 
 def test_multiply_float_object():
     assert isinstance(y, Dual)
@@ -206,19 +211,19 @@ def test_multiply_float_object():
     dual = b * y
     series = ~(b * z)
     assert abs(dual.val - b * a) < ε
+    assert abs(dual.der - b) < ε
     assert abs(series.val - b * a) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    assert abs(series.jet[1] - b) < ε
 
 def test_divide_object_object():
     assert isinstance(y, Dual)
     assert isinstance(z, Series)
-    dual = y / y
-    series = ~(z / z)
-    assert abs(dual.val - 1.0) < ε
-    assert abs(series.val - 1.0) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    dual = y / w
+    series = ~(z / x)
+    assert abs(dual.val - a / b) < ε
+    assert abs(dual.der - (b - a) / b**2) < ε
+    assert abs(series.val - a / b) < ε
+    assert abs(series.jet[1] - (b - a) / b**2) < ε
 
 def test_divide_object_int():
     assert isinstance(y, Dual)
@@ -227,9 +232,9 @@ def test_divide_object_int():
     dual = y / d
     series = ~(z / d)
     assert abs(dual.val - a / d) < ε
+    assert abs(dual.der - 1.0 / d) < ε
     assert abs(series.val - a / d) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    assert abs(series.jet[1] - 1.0 / d) < ε
 
 def test_divide_int_object():
     assert isinstance(y, Dual)
@@ -238,9 +243,9 @@ def test_divide_int_object():
     dual = d / y
     series = ~(d / z)
     assert abs(dual.val - d / a) < ε
+    assert abs(dual.der + d / a**2) < ε
     assert abs(series.val - d / a) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    assert abs(series.jet[1] + d / a**2) < ε
 
 def test_divide_object_float():
     assert isinstance(y, Dual)
@@ -249,9 +254,9 @@ def test_divide_object_float():
     dual = y / b
     series = ~(z / b)
     assert abs(dual.val - a / b) < ε
+    assert abs(dual.der - 1.0 / b) < ε
     assert abs(series.val - a / b) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    assert abs(series.jet[1] - 1.0 / b) < ε
 
 def test_divide_float_object():
     assert isinstance(y, Dual)
@@ -260,9 +265,9 @@ def test_divide_float_object():
     dual = b / y
     series = ~(b / z)
     assert abs(dual.val - b / a) < ε
+    assert abs(dual.der + b / a**2) < ε
     assert abs(series.val - b / a) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    assert abs(series.jet[1] + b / a**2) < ε
 
 def test_reciprocal():
     assert isinstance(y, Dual)
@@ -277,12 +282,10 @@ def test_reciprocal():
 def test_pow_object_object():
     assert isinstance(y, Dual)
     assert isinstance(z, Series)
-    dual = y**y
-    series = ~(z**z)
-    assert abs(dual.val - a**a) < ε
-    assert abs(series.val - a**a) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    dual = y**w
+    series = ~(z**x)
+    assert abs(dual.val - a**b) < ε
+    assert abs(series.val - a**b) < ε
 
 def test_pow_int_object():
     assert isinstance(y, Dual)
@@ -292,8 +295,6 @@ def test_pow_int_object():
     series = ~d**z
     assert abs(dual.val - d**a) < ε
     assert abs(series.val - d**a) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
 
 def test_pow_float_object():
     assert isinstance(y, Dual)
@@ -303,8 +304,6 @@ def test_pow_float_object():
     series = ~b**z
     assert abs(dual.val - b**a) < ε
     assert abs(series.val - b**a) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
 
 def test_pow_int():
     assert isinstance(w, Dual)
@@ -313,9 +312,9 @@ def test_pow_int():
     dual = w**d
     series = ~x**d
     assert abs(dual.val - b**d) < ε
+    assert abs(dual.der - d * b**(d - 1)) < ε
     assert abs(series.val - b**d) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    assert abs(series.jet[1] - d * b**(d - 1)) < ε
 
 def test_pow_int_neg():
     assert isinstance(w, Dual)
@@ -325,8 +324,6 @@ def test_pow_int_neg():
     series = ~x**-d
     assert abs(dual.val - 1.0 / b**d) < ε
     assert abs(series.val - 1.0 / b**d) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
 
 def test_pow_float():
     assert isinstance(w, Dual)
@@ -335,9 +332,9 @@ def test_pow_float():
     dual = w**a
     series = ~x**a
     assert abs(dual.val - b**a) < ε
+    assert abs(dual.der - a * b**(a - 1.0)) < ε
     assert abs(series.val - b**a) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
+    assert abs(series.jet[1] - a * b**(a - 1.0)) < ε
 
 def test_pow_float_neg():
     assert isinstance(w, Dual)
@@ -347,8 +344,6 @@ def test_pow_float_neg():
     series = ~x**-a
     assert abs(dual.val - 1.0 / b**a) < ε
     assert abs(series.val - 1.0 / b**a) < ε
-    assert abs(dual.val - series.jet[0]) < ε
-    assert abs(dual.der - series.jet[1]) < ε
 
 def test_pow_zero():
     assert isinstance(w, Dual)
