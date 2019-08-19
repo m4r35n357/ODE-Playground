@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+#  Unit Testing
+#  pytest -v --cov=ad --cov-report html:cov_html ad_test.py
 #  Mutation Testing
 #  mut.py --runner pytest --target ad.py --unit-test ad_test -c --disable-operator AOR CRP DDL CDI SDI SDL SVD -e
-#  mutmut --paths-to-mutate ad.py run --runner 'pytest ad_test.py'; mutmut results
+#  mutmut --paths-to-mutate ad.py run --use-coverage --runner 'pytest --cov=ad --cov-report html:cov_html ad_test.py'
 #  cosmic-ray init config.toml my_session.sqlite
 #  cosmic-ray exec my_session.sqlite
 #  cr-html my_session.sqlite > my_session.html
@@ -37,6 +39,72 @@ def test_t_jet():
 def test_horner():
     assert abs(t_horner([-19, 7, -4, 6], 3) - 128) < ε
     assert abs(t_horner([-19.0, 7.0, -4.0, 6.0], 3.0) - 128.0) < ε
+
+def test_exceptions_add():
+    try:
+        _ = y + z
+        assert False
+    except RuntimeError:
+        pass
+    try:
+        _ = z + y
+        assert False
+    except RuntimeError:
+        pass
+
+def test_exceptions_subtract():
+    try:
+        _ = y - z
+        assert False
+    except RuntimeError:
+        pass
+    try:
+        _ = z - y
+        assert False
+    except RuntimeError:
+        pass
+
+def test_exceptions_multiply():
+    try:
+        _ = y * z
+        assert False
+    except RuntimeError:
+        pass
+    try:
+        _ = z * y
+        assert False
+    except RuntimeError:
+        pass
+
+def test_exceptions_divide():
+    try:
+        _ = y / z
+        assert False
+    except RuntimeError:
+        pass
+    try:
+        _ = z / y
+        assert False
+    except RuntimeError:
+        pass
+
+def test_exceptions_power():
+    try:
+        _ = y**z
+        assert False
+    except RuntimeError:
+        pass
+    try:
+        _ = z**y
+        assert False
+    except RuntimeError:
+        pass
+
+def test_str_dual():
+    assert len(str.split(y.__str__())) == 2
+
+def test_str_series():
+    assert len(str.split(z.__str__())) == order
 
 def test_unary_plus():
     assert isinstance(y, Dual)
