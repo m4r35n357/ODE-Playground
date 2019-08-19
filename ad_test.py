@@ -282,12 +282,15 @@ def test_divide_object_int():
     assert abs(series.jet[1] - 1.0 / d) < ε
 
 def test_divide_int_object():
+    derivative = d / a
     dual = d / y
     series = ~(d / z)
-    assert abs(dual.val - d / a) < ε
-    assert abs(dual.der + d / a**2) < ε
-    assert abs(series.val - d / a) < ε
-    assert abs(series.jet[1] + d / a**2) < ε
+    assert abs(dual.val - derivative) < ε
+    assert abs(dual.der + derivative / a) < ε
+    assert abs(series.val - derivative) < ε
+    for k in range(1, series.n):
+        derivative *= - k / a
+        assert abs(series.jet[k] - derivative) < ε
 
 def test_divide_object_float():
     dual = y / b
@@ -298,20 +301,26 @@ def test_divide_object_float():
     assert abs(series.jet[1] - 1.0 / b) < ε
 
 def test_divide_float_object():
+    derivative = b / a
     dual = b / y
     series = ~(b / z)
-    assert abs(dual.val - b / a) < ε
-    assert abs(dual.der + b / a**2) < ε
-    assert abs(series.val - b / a) < ε
-    assert abs(series.jet[1] + b / a**2) < ε
+    assert abs(dual.val - derivative) < ε
+    assert abs(dual.der + derivative / a) < ε
+    assert abs(series.val - derivative) < ε
+    for k in range(1, series.n):
+        derivative *= - k / a
+        assert abs(series.jet[k] - derivative) < ε
 
 def test_reciprocal():
+    derivative = 1.0 / a
     dual = 1.0 / y
     series = ~(1.0 / z)
-    assert abs(dual.val - 1.0 / a) < ε
-    assert abs(dual.der + 1.0 / a**2) < ε
-    assert abs(series.val - 1.0 / a) < ε
-    assert abs(series.jet[1] + 1.0 / a**2) < ε
+    assert abs(dual.val - derivative) < ε
+    assert abs(dual.der + derivative / a) < ε
+    assert abs(series.val - derivative) < ε
+    for k in range(1, series.n):
+        derivative *= - k / a
+        assert abs(series.jet[k] - derivative) < ε
 
 def test_pow_object_object():
     dual = y**w
@@ -359,13 +368,14 @@ def test_pow_float_neg():
     assert abs(dual.val - 1.0 / b**a) < ε
     assert abs(series.val - 1.0 / b**a) < ε
 
-def test_pow_zero():
+def test_pow_zero_int():
     dual = w**0
     series = ~x**0
     assert abs(dual.val - 1.0) < ε
     assert abs(dual.der) < ε
     assert abs(series.val - 1.0) < ε
-    assert abs(series.jet[1]) < ε
+    for term in series.jet[1:]:
+        assert abs(term) < ε
 
 def test_pow_zero_float():
     dual = w**0.0
@@ -373,7 +383,30 @@ def test_pow_zero_float():
     assert abs(dual.val - 1.0) < ε
     assert abs(dual.der) < ε
     assert abs(series.val - 1.0) < ε
-    assert abs(series.jet[1]) < ε
+    for term in series.jet[1:]:
+        assert abs(term) < ε
+
+def test_pow_neg1_int():
+    derivative = 1.0 / b
+    dual = w**-1
+    series = ~x**-1
+    assert abs(dual.val - derivative) < ε
+    assert abs(dual.der + derivative / b) < ε
+    assert abs(series.val - derivative) < ε
+    for k in range(1, series.n):
+        derivative *= - k / b
+        assert abs(series.jet[k] - derivative) < ε
+
+def test_pow_neg1_float():
+    derivative = 1.0 / b
+    dual = w**-1.0
+    series = ~x**-1.0
+    assert abs(dual.val - derivative) < ε
+    assert abs(dual.der + derivative / b) < ε
+    assert abs(series.val - derivative) < ε
+    for k in range(1, series.n):
+        derivative *= - k / b
+        assert abs(series.jet[k] - derivative) < ε
 
 def test_exp():
     dual = y.exp
@@ -383,13 +416,28 @@ def test_exp():
     for term in series.jet:
         assert abs(term - exp(a)) < ε
 
+def test_minus_exp():
+    dual = (- y).exp
+    series = ~(- z).exp
+    assert abs(dual.val - 1.0 / exp(a)) < ε
+    assert abs(dual.der + 1.0 / exp(a)) < ε
+    for k in range(series.n):
+        if k % 2 == 0:
+            assert abs(series.jet[k] - 1.0 / exp(a)) < ε
+        elif k % 2 == 1:
+            assert abs(series.jet[k] + 1.0 / exp(a)) < ε
+
 def test_ln():
+    derivative = 1.0 / a
     dual = y.ln
-    series = z.ln
+    series = ~z.ln
     assert abs(dual.val - log(a)) < ε
-    assert abs(dual.der - 1.0 / a) < ε
+    assert abs(dual.der - derivative) < ε
     assert abs(series.val - log(a)) < ε
-    assert abs(series.jet[1] - 1.0 / a) < ε
+    assert abs(series.jet[1] - derivative) < ε
+    for k in range(2, series.n):
+        derivative *= - (k - 1) / a
+        assert abs(series.jet[k] - derivative) < ε
 
 def test_sin():
     dual = Dual.get(pi / a).var.sin
@@ -434,16 +482,22 @@ def test_sinh():
     series = ~Series.get(order, pi / a).var.sinh
     assert abs(dual.val - sinh(pi / a)) < ε
     assert abs(dual.der - cosh(pi / a)) < ε
-    assert abs(series.val - sinh(pi / a)) < ε
-    assert abs(series.jet[1] - cosh(pi / a)) < ε
+    for k in range(series.n):
+        if k % 2 == 0:
+            assert abs(series.jet[k] - sinh(pi / a)) < ε
+        elif k % 2 == 1:
+            assert abs(series.jet[k] - cosh(pi / a)) < ε
 
 def test_cosh():
     dual = Dual.get(pi / a).var.cosh
     series = ~Series.get(order, pi / a).var.cosh
     assert abs(dual.val - cosh(pi / a)) < ε
     assert abs(dual.der - sinh(pi / a)) < ε
-    assert abs(series.val - cosh(pi / a)) < ε
-    assert abs(series.jet[1] - sinh(pi / a)) < ε
+    for k in range(series.n):
+        if k % 2 == 0:
+            assert abs(series.jet[k] - cosh(pi / a)) < ε
+        elif k % 2 == 1:
+            assert abs(series.jet[k] - sinh(pi / a)) < ε
 
 def test_tanh():
     dual = Dual.get(pi / b).var.tanh
