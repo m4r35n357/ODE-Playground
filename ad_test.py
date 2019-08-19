@@ -6,18 +6,33 @@
 #  cosmic-ray exec my_session.sqlite
 #  cr-html my_session.sqlite > my_session.html
 from math import pi, e, exp, log, sin, cos, tan, sinh, cosh, tanh
-from ad import t_horner, Series, Dual
+from ad import t_jet, t_horner, Series, Dual
 
 order = 6
-ε=1e-12
+ε = 1e-12
+zero = 0.0
 a = 3.0
 b = 4.0
 c = 0.5
 d = 5
 
+zero_d, zero_s = Dual.get().var, Series.get(order).var
 u, v = Dual.get(c).var, Series.get(order, c).var
 w, x = Dual.get(b).var, Series.get(order, b).var
 y, z = Dual.get(a).var, Series.get(order, a).var
+
+def test_t_jet():
+    jet = t_jet(order)
+    for k in range(z.n):
+        assert abs(jet[k]) < ε
+    jet = t_jet(order, c)
+    assert abs(jet[0] - c) < ε
+    for k in range(1, z.n):
+        assert abs(jet[k]) < ε
+    jet = t_jet(order, - c)
+    assert abs(jet[0] + c) < ε
+    for k in range(1, z.n):
+        assert abs(jet[k]) < ε
 
 def test_horner():
     assert abs(t_horner([-19, 7, -4, 6], 3) - 128) < ε
@@ -44,14 +59,30 @@ def test_unary_minus():
     assert abs(series.jet[1] + 1.0) < ε
 
 def test_abs():
-    assert isinstance(y, Dual)
-    assert isinstance(z, Series)
-    dual = abs(- y)
-    series = ~(abs(- z))
-    assert abs(dual.val - a) < ε
-    assert abs(dual.der - (1.0 if a > 0.0 else (- 1.0 if a < 0.0 else 0.0))) < ε
-    assert abs(series.val - a) < ε
-    assert abs(series.jet[1] - (1.0 if a > 0.0 else (- 1.0 if a < 0.0 else 0.0))) < ε
+    assert isinstance(u, Dual)
+    assert isinstance(v, Series)
+    dual = abs(u)
+    series = ~(abs(v))
+    assert abs(dual.val - c) < ε
+    assert abs(dual.der - 1.0) < ε
+    assert abs(series.val - c) < ε
+    assert abs(series.jet[1] - 1.0) < ε
+    for k in range(2, z.n):
+        assert abs(series.jet[k]) < ε
+    dual = abs(- u)
+    series = ~(abs(- v))
+    assert abs(dual.val - c) < ε
+    assert abs(dual.der - 1.0) < ε
+    assert abs(series.val - c) < ε
+    assert abs(series.jet[1] - 1.0) < ε
+    for k in range(2, z.n):
+        assert abs(series.jet[k]) < ε
+    dual = abs(zero_d)
+    series = ~(abs(zero_s))
+    assert abs(dual.val) < ε
+    assert abs(dual.der) < ε
+    for k in range(z.n):
+        assert abs(series.jet[k]) < ε
 
 def test_add_object_object():
     assert isinstance(y, Dual)
@@ -455,9 +486,9 @@ def test_pow_neg_zero():
     dual = 1.0 / w**2 - w**-2.0
     series = ~(1.0 / x**2 - x**-2.0)
     assert abs(dual.val) < ε
-    assert abs(series.jet[0]) < ε
     assert abs(dual.der) < ε
-    assert abs(series.jet[1]) < ε
+    for k in range(z.n):
+        assert abs(series.jet[k]) < ε
 
 def test_pow_pos_frac_zero():
     assert isinstance(w, Dual)
@@ -465,9 +496,9 @@ def test_pow_pos_frac_zero():
     dual = (w**2)**0.5 - abs(w)
     series = ~((x**2)**0.5) - abs(x)
     assert abs(dual.val) < ε
-    assert abs(series.jet[0]) < ε
     assert abs(dual.der) < ε
-    assert abs(series.jet[1]) < ε
+    for k in range(z.n):
+        assert abs(series.jet[k]) < ε
 
 def test_exp_zero():
     assert isinstance(w, Dual)
@@ -475,9 +506,9 @@ def test_exp_zero():
     dual = w.exp - e**w
     series = ~(x.exp.ln - x)
     assert abs(dual.val) < ε
-    assert abs(series.jet[0]) < ε
     assert abs(dual.der) < ε
-    assert abs(series.jet[1]) < ε
+    for k in range(z.n):
+        assert abs(series.jet[k]) < ε
 
 def test_ln_zero():
     assert isinstance(w, Dual)
@@ -485,9 +516,9 @@ def test_ln_zero():
     dual = w.exp.ln - w
     series = ~(x.exp.ln - x)
     assert abs(dual.val) < ε
-    assert abs(series.jet[0]) < ε
     assert abs(dual.der) < ε
-    assert abs(series.jet[1]) < ε
+    for k in range(z.n):
+        assert abs(series.jet[k]) < ε
 
 def test_sinh_zero():
     assert isinstance(y, Dual)
@@ -495,9 +526,9 @@ def test_sinh_zero():
     dual = 0.5 * (y.exp - (-y).exp) - y.sinh
     series = ~(0.5 * (z.exp - (-z).exp) - z.sinh)
     assert abs(dual.val) < ε
-    assert abs(series.jet[0]) < ε
     assert abs(dual.der) < ε
-    assert abs(series.jet[1]) < ε
+    for k in range(z.n):
+        assert abs(series.jet[k]) < ε
 
 def test_cosh_zero():
     assert isinstance(y, Dual)
@@ -505,9 +536,9 @@ def test_cosh_zero():
     dual = 0.5 * (y.exp + (-y).exp) - y.cosh
     series = ~(0.5 * (z.exp + (-z).exp) - z.cosh)
     assert abs(dual.val) < ε
-    assert abs(series.jet[0]) < ε
     assert abs(dual.der) < ε
-    assert abs(series.jet[1]) < ε
+    for k in range(z.n):
+        assert abs(series.jet[k]) < ε
 
 def test_tan_zero():
     assert isinstance(w, Dual)
@@ -515,9 +546,9 @@ def test_tan_zero():
     dual = w.tan - w.sin / w.cos
     series = ~(x.tan - x.sin / x.cos)
     assert abs(dual.val) < ε
-    assert abs(series.jet[0]) < ε
     assert abs(dual.der) < ε
-    assert abs(series.jet[1]) < ε
+    for k in range(z.n):
+        assert abs(series.jet[k]) < ε
 
 def test_tanh_zero():
     assert isinstance(u, Dual)
@@ -525,9 +556,9 @@ def test_tanh_zero():
     dual = u.tanh - u.sinh / u.cosh
     series = ~(v.tanh - v.sinh / v.cosh)
     assert abs(dual.val) < ε
-    assert abs(series.jet[0]) < ε
     assert abs(dual.der) < ε
-    assert abs(series.jet[1]) < ε
+    for k in range(z.n):
+        assert abs(series.jet[k]) < ε
 
 def test_sin_3x_zero():
     assert isinstance(y, Dual)
@@ -535,9 +566,9 @@ def test_sin_3x_zero():
     dual = (3 * y).sin - 3.0 * y.sin + 4.0 * y.sin**3
     series = ~((3 * z).sin - 3.0 * z.sin + 4.0 * z.sin**3)
     assert abs(dual.val) < ε
-    assert abs(series.jet[0]) < ε
     assert abs(dual.der) < ε
-    assert abs(series.jet[1]) < ε
+    for k in range(z.n):
+        assert abs(series.jet[k]) < ε
 
 def test_cos_3x_zero():
     assert isinstance(y, Dual)
@@ -545,9 +576,9 @@ def test_cos_3x_zero():
     dual = (3 * y).cos + 3.0 * y.cos - 4.0 * y.cos**3
     series = ~((3 * z).cos + 3.0 * z.cos - 4.0 * z.cos**3)
     assert abs(dual.val) < ε
-    assert abs(series.jet[0]) < ε
     assert abs(dual.der) < ε
-    assert abs(series.jet[1]) < ε
+    for k in range(z.n):
+        assert abs(series.jet[k]) < ε
 
 def test_sinh_3x_zero():
     assert isinstance(u, Dual)
@@ -555,9 +586,9 @@ def test_sinh_3x_zero():
     dual = (3 * u).sinh - 3.0 * u.sinh - 4.0 * u.sinh**3
     series = ~((3 * v).sinh - 3.0 * v.sinh - 4.0 * v.sinh**3)
     assert abs(dual.val) < ε
-    assert abs(series.jet[0]) < ε
     assert abs(dual.der) < ε
-    assert abs(series.jet[1]) < ε
+    for k in range(z.n):
+        assert abs(series.jet[k]) < ε
 
 def test_cosh_3x_zero():
     assert isinstance(u, Dual)
@@ -565,7 +596,6 @@ def test_cosh_3x_zero():
     dual = (3 * u).cosh + 3.0 * u.cosh - 4.0 * u.cosh**3
     series = ~((3 * v).cosh + 3.0 * v.cosh - 4.0 * v.cosh**3)
     assert abs(dual.val) < ε
-    assert abs(series.jet[0]) < ε
     assert abs(dual.der) < ε
-    assert abs(series.jet[1]) < ε
-
+    for k in range(z.n):
+        assert abs(series.jet[k]) < ε
