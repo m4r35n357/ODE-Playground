@@ -43,61 +43,65 @@ def test_exceptions_add():
     try:
         _ = y + z
         assert False
-    except RuntimeError:
-        pass
+    except RuntimeError as error:
+        assert "Incompatible Type: <class 'ad.Series'>" in error.__str__()
     try:
         _ = z + y
         assert False
-    except RuntimeError:
-        pass
+    except RuntimeError as error:
+        assert "Incompatible Type: <class 'ad.Dual'>" in error.__str__()
 
 def test_exceptions_subtract():
     try:
         _ = y - z
         assert False
-    except RuntimeError:
-        pass
+    except RuntimeError as error:
+        assert "Incompatible Type: <class 'ad.Series'>" in error.__str__()
     try:
         _ = z - y
         assert False
-    except RuntimeError:
-        pass
+    except RuntimeError as error:
+        assert "Incompatible Type: <class 'ad.Dual'>" in error.__str__()
+
 
 def test_exceptions_multiply():
     try:
         _ = y * z
         assert False
-    except RuntimeError:
-        pass
+    except RuntimeError as error:
+        assert "Incompatible Type: <class 'ad.Series'>" in error.__str__()
     try:
         _ = z * y
         assert False
-    except RuntimeError:
-        pass
+    except RuntimeError as error:
+        assert "Incompatible Type: <class 'ad.Dual'>" in error.__str__()
+
 
 def test_exceptions_divide():
     try:
         _ = y / z
         assert False
-    except RuntimeError:
-        pass
+    except RuntimeError as error:
+        assert "Incompatible Type: <class 'ad.Series'>" in error.__str__()
     try:
         _ = z / y
         assert False
-    except RuntimeError:
-        pass
+    except RuntimeError as error:
+        assert "Incompatible Type: <class 'ad.Dual'>" in error.__str__()
+
 
 def test_exceptions_power():
     try:
         _ = y**z
         assert False
-    except RuntimeError:
-        pass
+    except RuntimeError as error:
+        assert "Incompatible Type: <class 'ad.Series'>" in error.__str__()
     try:
         _ = z**y
         assert False
-    except RuntimeError:
-        pass
+    except RuntimeError as error:
+        assert "Incompatible Type: <class 'ad.Dual'>" in error.__str__()
+
 
 def test_str_dual():
     assert len(str.split(y.__str__())) == 2
