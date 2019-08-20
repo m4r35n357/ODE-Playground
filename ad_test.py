@@ -49,24 +49,24 @@ def test_exceptions_add():
         _ = y + z
         assert False
     except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Series'>" in error.__str__()
+        assert "Incompatible Type: <class 'ad.Series'>" in str(error)
     try:
         _ = z + y
         assert False
     except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Dual'>" in error.__str__()
+        assert "Incompatible Type: <class 'ad.Dual'>" in str(error)
 
 def test_exceptions_subtract():
     try:
         _ = y - z
         assert False
     except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Series'>" in error.__str__()
+        assert "Incompatible Type: <class 'ad.Series'>" in str(error)
     try:
         _ = z - y
         assert False
     except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Dual'>" in error.__str__()
+        assert "Incompatible Type: <class 'ad.Dual'>" in str(error)
 
 
 def test_exceptions_multiply():
@@ -74,12 +74,12 @@ def test_exceptions_multiply():
         _ = y * z
         assert False
     except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Series'>" in error.__str__()
+        assert "Incompatible Type: <class 'ad.Series'>" in str(error)
     try:
         _ = z * y
         assert False
     except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Dual'>" in error.__str__()
+        assert "Incompatible Type: <class 'ad.Dual'>" in str(error)
 
 
 def test_exceptions_divide():
@@ -87,12 +87,12 @@ def test_exceptions_divide():
         _ = y / z
         assert False
     except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Series'>" in error.__str__()
+        assert "Incompatible Type: <class 'ad.Series'>" in str(error)
     try:
         _ = z / y
         assert False
     except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Dual'>" in error.__str__()
+        assert "Incompatible Type: <class 'ad.Dual'>" in str(error)
 
 
 def test_exceptions_power():
@@ -100,12 +100,12 @@ def test_exceptions_power():
         _ = y**z
         assert False
     except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Series'>" in error.__str__()
+        assert "Incompatible Type: <class 'ad.Series'>" in str(error)
     try:
         _ = z**y
         assert False
     except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Dual'>" in error.__str__()
+        assert "Incompatible Type: <class 'ad.Dual'>" in str(error)
 
 def test_get():
     dual = Dual.get()
@@ -125,10 +125,10 @@ def test_get():
         assert isinstance(term, float)
 
 def test_str_dual():
-    assert len(str.split(y.__str__())) == 2
+    assert len(str.split(str(y))) == 2
 
 def test_str_series():
-    assert len(str.split(z.__str__())) == order
+    assert len(str.split(str(z))) == order
 
 def test_unary_plus():
     dual = + y
