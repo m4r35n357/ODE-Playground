@@ -25,14 +25,19 @@ y, z = Dual.get(a).var, Series.get(order, a).var
 
 def test_t_jet():
     for term in t_jet(order):
+        assert isinstance(term, float)
         assert abs(term) < ε
     jet = t_jet(order, c)
+    assert isinstance(jet[0], float)
     assert abs(jet[0] - c) < ε
     for term in jet[1:]:
+        assert isinstance(term, float)
         assert abs(term) < ε
-    jet = t_jet(order, - c)
-    assert abs(jet[0] + c) < ε
+    jet = t_jet(order, d)
+    assert isinstance(jet[0], float)
+    assert abs(jet[0] - d) < ε
     for term in jet[1:]:
+        assert isinstance(term, float)
         assert abs(term) < ε
 
 def test_horner():
@@ -102,6 +107,22 @@ def test_exceptions_power():
     except RuntimeError as error:
         assert "Incompatible Type: <class 'ad.Dual'>" in error.__str__()
 
+def test_get():
+    dual = Dual.get()
+    assert isinstance(dual.val, float)
+    assert isinstance(dual.der, float)
+    for term in Series.get(order).jet:
+        assert isinstance(term, float)
+    dual = Dual.get(1)
+    assert isinstance(dual.val, float)
+    assert isinstance(dual.der, float)
+    for term in Series.get(order, 1).jet:
+        assert isinstance(term, float)
+    dual = Dual.get(1.0)
+    assert isinstance(dual.val, float)
+    assert isinstance(dual.der, float)
+    for term in Series.get(order, 1.0).jet:
+        assert isinstance(term, float)
 
 def test_str_dual():
     assert len(str.split(y.__str__())) == 2
