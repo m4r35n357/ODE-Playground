@@ -137,6 +137,8 @@ def test_unary_plus():
     assert abs(dual.der - 1.0) < ε
     assert abs(series.val - a) < ε
     assert abs(series.jet[1] - 1.0) < ε
+    for term in series.jet[2:]:
+        assert abs(term) < ε
 
 def test_unary_minus():
     dual = - y
@@ -145,6 +147,8 @@ def test_unary_minus():
     assert abs(dual.der + 1.0) < ε
     assert abs(series.val + a) < ε
     assert abs(series.jet[1] + 1.0) < ε
+    for term in series.jet[2:]:
+        assert abs(term) < ε
 
 def test_abs():
     dual = abs(u)
@@ -177,6 +181,8 @@ def test_add_object_object():
     assert abs(dual.der - 2.0) < ε
     assert abs(series.val - (a + b)) < ε
     assert abs(series.jet[1] - 2.0) < ε
+    for term in series.jet[2:]:
+        assert abs(term) < ε
 
 def test_add_object_int():
     dual = y + d
@@ -185,6 +191,8 @@ def test_add_object_int():
     assert abs(dual.der - 1.0) < ε
     assert abs(series.val - (a + d)) < ε
     assert abs(series.jet[1] - 1.0) < ε
+    for term in series.jet[2:]:
+        assert abs(term) < ε
 
 def test_add_int_object():
     dual = d + y
@@ -193,6 +201,8 @@ def test_add_int_object():
     assert abs(dual.der - 1.0) < ε
     assert abs(series.val - (a + d)) < ε
     assert abs(series.jet[1] - 1.0) < ε
+    for term in series.jet[2:]:
+        assert abs(term) < ε
 
 def test_add_object_float():
     dual = y + b
@@ -201,6 +211,8 @@ def test_add_object_float():
     assert abs(dual.der - 1.0) < ε
     assert abs(series.val - (a + b)) < ε
     assert abs(series.jet[1] - 1.0) < ε
+    for term in series.jet[2:]:
+        assert abs(term) < ε
 
 def test_add_float_object():
     dual = b + y
@@ -209,6 +221,8 @@ def test_add_float_object():
     assert abs(dual.der - 1.0) < ε
     assert abs(series.val - (a + b)) < ε
     assert abs(series.jet[1] - 1.0) < ε
+    for term in series.jet[2:]:
+        assert abs(term) < ε
 
 def test_subtract_object_object():
     dual = y - w
@@ -217,6 +231,8 @@ def test_subtract_object_object():
     assert abs(dual.der) < ε
     assert abs(series.val - (a - b)) < ε
     assert abs(series.jet[1]) < ε
+    for term in series.jet[2:]:
+        assert abs(term) < ε
 
 def test_subtract_object_int():
     dual = y - d
@@ -225,6 +241,8 @@ def test_subtract_object_int():
     assert abs(dual.der - 1.0) < ε
     assert abs(series.val - (a - d)) < ε
     assert abs(series.jet[1] - 1.0) < ε
+    for term in series.jet[2:]:
+        assert abs(term) < ε
 
 def test_subtract_int_object():
     dual = d - y
@@ -233,6 +251,8 @@ def test_subtract_int_object():
     assert abs(dual.der + 1.0) < ε
     assert abs(series.val - (d - a)) < ε
     assert abs(series.jet[1] + 1.0) < ε
+    for term in series.jet[2:]:
+        assert abs(term) < ε
 
 def test_subtract_object_float():
     dual = y - b
@@ -241,6 +261,8 @@ def test_subtract_object_float():
     assert abs(dual.der - 1.0) < ε
     assert abs(series.val - (a - b)) < ε
     assert abs(series.jet[1] - 1.0) < ε
+    for term in series.jet[2:]:
+        assert abs(term) < ε
 
 def test_subtract_float_object():
     dual = b - y
@@ -249,6 +271,8 @@ def test_subtract_float_object():
     assert abs(dual.der + 1.0) < ε
     assert abs(series.val - (b - a)) < ε
     assert abs(series.jet[1] + 1.0) < ε
+    for term in series.jet[2:]:
+        assert abs(term) < ε
 
 def test_multiply_object_object():
     dual = y * w
@@ -257,6 +281,9 @@ def test_multiply_object_object():
     assert abs(dual.der - (a + b)) < ε
     assert abs(series.val - a * b) < ε
     assert abs(series.jet[1] - (a + b)) < ε
+    assert abs(series.jet[2] - 2.0) < ε
+    for term in series.jet[3:]:
+        assert abs(term) < ε
 
 def test_multiply_object_int():
     dual = y * d
@@ -265,6 +292,8 @@ def test_multiply_object_int():
     assert abs(dual.der - d) < ε
     assert abs(series.val - a * d) < ε
     assert abs(series.jet[1] - d) < ε
+    for term in series.jet[2:]:
+        assert abs(term) < ε
 
 def test_multiply_int_object():
     dual = d * y
@@ -273,6 +302,8 @@ def test_multiply_int_object():
     assert abs(dual.der - d) < ε
     assert abs(series.val - d * a) < ε
     assert abs(series.jet[1] - d) < ε
+    for term in series.jet[2:]:
+        assert abs(term) < ε
 
 def test_multiply_object_float():
     dual = y * b
@@ -281,6 +312,8 @@ def test_multiply_object_float():
     assert abs(dual.der - b) < ε
     assert abs(series.val - a * b) < ε
     assert abs(series.jet[1] - b) < ε
+    for term in series.jet[2:]:
+        assert abs(term) < ε
 
 def test_multiply_float_object():
     dual = b * y
@@ -289,6 +322,8 @@ def test_multiply_float_object():
     assert abs(dual.der - b) < ε
     assert abs(series.val - b * a) < ε
     assert abs(series.jet[1] - b) < ε
+    for term in series.jet[2:]:
+        assert abs(term) < ε
 
 def test_divide_object_object():
     dual = y / w
@@ -305,6 +340,8 @@ def test_divide_object_int():
     assert abs(dual.der - 1.0 / d) < ε
     assert abs(series.val - a / d) < ε
     assert abs(series.jet[1] - 1.0 / d) < ε
+    for term in series.jet[2:]:
+        assert abs(term) < ε
 
 def test_divide_int_object():
     derivative = d / a
@@ -324,6 +361,8 @@ def test_divide_object_float():
     assert abs(dual.der - 1.0 / b) < ε
     assert abs(series.val - a / b) < ε
     assert abs(series.jet[1] - 1.0 / b) < ε
+    for term in series.jet[2:]:
+        assert abs(term) < ε
 
 def test_divide_float_object():
     derivative = b / a
