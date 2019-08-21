@@ -116,24 +116,38 @@ def test_get():
     for term in Series.get(order).jet:
         assert isinstance(term, float)
         assert abs(term) < ε
-    dual = Dual.get(1)
+    integer = 1
+    dual = Dual.get(integer)
+    series = Series.get(order, integer)
     assert isinstance(dual.val, float)
     assert isinstance(dual.der, float)
-    for term in Series.get(order, 1).jet:
+    for term in series.jet:
         assert isinstance(term, float)
-    dual = Dual.get(1.0)
+    assert abs(dual.val - float(integer)) < ε
+    assert abs(dual.der) < ε
+    assert abs(series.val - float(integer)) < ε
+    for term in series.jet[1:]:
+        assert isinstance(term, float)
+        assert abs(term) < ε
+    real = 1.0
+    dual = Dual.get(real)
+    series = Series.get(order, real)
     assert isinstance(dual.val, float)
     assert isinstance(dual.der, float)
-    for term in Series.get(order, 1.0).jet:
+    for term in series.jet:
         assert isinstance(term, float)
+    assert abs(dual.val - real) < ε
+    assert abs(dual.der) < ε
+    assert abs(series.val - real) < ε
+    for term in series.jet[1:]:
+        assert isinstance(term, float)
+        assert abs(term) < ε
 
-def test_str_dual():
+def test_to_str():
     entries = str.split(str(y))
     assert len(entries) == 2
     for entry in entries:
         assert len(entry) == 10
-
-def test_str_series():
     entries = str.split(str(z))
     assert len(entries) == order
     for entry in entries:
