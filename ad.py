@@ -30,14 +30,14 @@ def t_exp(e, u, k):
 def t_ln(l, u, k):
     return log(u[0]) if k == 0 else (u[k] - fsum(j * l[j] * u[k - j] for j in range(1, k)) / k) / u[0]
 
-def t_sin_cos(s, c, u, k, hyp=False):
+def t_sin_cos(s, c, u, k, hyp=False):  # pragma: no mutate
     if k == 0:
         return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
     sk = fsum((k - j) * c[j] * u[k - j] for j in range(k)) / k
     ck = fsum((k - j) * s[j] * u[k - j] for j in range(k)) / k
     return (sk, ck) if hyp else (sk, - ck)
 
-def t_tan_sec2(t, s2, u, k, hyp=False):
+def t_tan_sec2(t, s2, u, k, hyp=False):  # pragma: no mutate
     if k == 0:
         return (tanh(u[0]), 1.0 - tanh(u[0])**2) if hyp else (tan(u[0]), 1.0 + tan(u[0])**2)
     tk = fsum((k - j) * s2[j] * u[k - j] for j in range(k)) / k
@@ -262,7 +262,7 @@ class Dual:
                 i_pow = i_pow.__mul__(self)
             return i_pow if o > 0 else (Dual(1.0, 0.0).__truediv__(i_pow) if o < 0 else Dual(1.0, 0.0))
         else:
-            assert self.val > 0.0, f"self.val = {self.val}"
+            assert self.val > 0.0, f"self.val = {self.val}"  # pragma: no mutate
             if isinstance(o, Dual):
                 return (self.ln.__mul__(o)).exp
             elif isinstance(o, float):
