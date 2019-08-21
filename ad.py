@@ -126,11 +126,11 @@ class Series:
                 i_pow = i_pow.__mul__(self)
             return i_pow if o > 0 else (Series(t_jet(self.n, 1.0)).__truediv__(i_pow) if o < 0 else Series(t_jet(self.n, 1.0)))
         else:
-            assert self.val > 0.0, f"self.val = {self.val}"
             if isinstance(o, Series):
                 assert o.n == self.n, f"Size mismatch - self: {self.n}, other: {o.n}"
                 return (self.ln.__mul__(o)).exp
             elif isinstance(o, float):
+                assert self.val > 0.0, f"self.val = {self.val}"
                 jet = t_jet(self.n)
                 for k in range(self.n):
                     jet[k] = t_pwr(jet, self.jet, o, k)
@@ -262,10 +262,10 @@ class Dual:
                 i_pow = i_pow.__mul__(self)
             return i_pow if o > 0 else (Dual(1.0, 0.0).__truediv__(i_pow) if o < 0 else Dual(1.0, 0.0))
         else:
-            assert self.val > 0.0, f"self.val = {self.val}"  # pragma: no mutate
             if isinstance(o, Dual):
                 return (self.ln.__mul__(o)).exp
             elif isinstance(o, float):
+                assert self.val > 0.0, f"self.val = {self.val}"  # pragma: no mutate
                 return Dual(self.val**o, o * self.val**(o - 1) * self.der)
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
