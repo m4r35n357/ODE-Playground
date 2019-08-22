@@ -24,16 +24,20 @@ w, x = Dual.get(b).var, Series.get(order, b).var
 y, z = Dual.get(a).var, Series.get(order, a).var
 
 def test_t_jet():
-    for term in t_jet(order):
+    jet = t_jet(order)
+    assert len(jet) == order
+    for term in jet:
         assert isinstance(term, float)
         assert abs(term) < ε
     jet = t_jet(order, c)
+    assert len(jet) == order
     assert isinstance(jet[0], float)
     assert abs(jet[0] - c) < ε
     for term in jet[1:]:
         assert isinstance(term, float)
         assert abs(term) < ε
     jet = t_jet(order, d)
+    assert len(jet) == order
     assert isinstance(jet[0], float)
     assert abs(jet[0] - d) < ε
     for term in jet[1:]:
@@ -109,16 +113,19 @@ def test_exceptions_power():
 
 def test_get():
     dual = Dual.get()
+    series = Series.get(order)
+    assert len(series.jet) == order
     assert isinstance(dual.val, float)
     assert isinstance(dual.der, float)
     assert abs(dual.val) < ε
     assert abs(dual.der) < ε
-    for term in Series.get(order).jet:
+    for term in series.jet:
         assert isinstance(term, float)
         assert abs(term) < ε
     integer = 1
     dual = Dual.get(integer)
     series = Series.get(order, integer)
+    assert len(series.jet) == order
     assert isinstance(dual.val, float)
     assert isinstance(dual.der, float)
     for term in series.jet:
@@ -132,6 +139,7 @@ def test_get():
     real = 1.0
     dual = Dual.get(real)
     series = Series.get(order, real)
+    assert len(series.jet) == order
     assert isinstance(dual.val, float)
     assert isinstance(dual.der, float)
     for term in series.jet:
@@ -156,6 +164,7 @@ def test_to_str():
 def test_unary_plus():
     dual = + y
     series = ~(+ z)
+    assert len(series.jet) == order
     assert abs(dual.val - a) < ε
     assert abs(dual.der - 1.0) < ε
     assert abs(series.val - a) < ε
@@ -166,6 +175,7 @@ def test_unary_plus():
 def test_unary_minus():
     dual = - y
     series = ~(- z)
+    assert len(series.jet) == order
     assert abs(dual.val + a) < ε
     assert abs(dual.der + 1.0) < ε
     assert abs(series.val + a) < ε
@@ -176,6 +186,7 @@ def test_unary_minus():
 def test_abs():
     dual = abs(u)
     series = ~(abs(v))
+    assert len(series.jet) == order
     assert abs(dual.val - c) < ε
     assert abs(dual.der - 1.0) < ε
     assert abs(series.val - c) < ε
@@ -184,6 +195,7 @@ def test_abs():
         assert abs(term) < ε
     dual = abs(Dual.get(- c).var)
     series = ~(abs(Series.get(order, - c).var))
+    assert len(series.jet) == order
     assert abs(dual.val - c) < ε
     assert abs(dual.der + 1.0) < ε
     assert abs(series.val - c) < ε
@@ -192,6 +204,7 @@ def test_abs():
         assert abs(term) < ε
     dual = abs(zero_d)
     series = ~(abs(zero_s))
+    assert len(series.jet) == order
     assert abs(dual.val) < ε
     assert abs(dual.der) < ε
     for term in series.jet:
@@ -627,7 +640,7 @@ def test_pow_float_object():
     assert abs(dual.val - b**a) < ε
     assert abs(series.val - b**a) < ε
 
-def test_pow_int():
+def test_pow_object_int():
     dual = w**d
     series = ~x**d
     assert abs(dual.val - b**d) < ε
@@ -646,7 +659,7 @@ def test_pow_int():
     assert abs(dual.val - 1.0 / b**d) < ε
     assert abs(series.val - 1.0 / b**d) < ε
 
-def test_pow_float():
+def test_pow_object_float():
     dual = w**a
     series = ~x**a
     assert abs(dual.val - b**a) < ε
@@ -665,7 +678,7 @@ def test_pow_float():
     assert abs(dual.val - 1.0 / b**a) < ε
     assert abs(series.val - 1.0 / b**a) < ε
 
-def test_pow_neg1_int():
+def test_pow_object_neg1_int():
     dual = w**1
     series = ~x**1
     assert abs(dual.val - b) < ε
@@ -682,7 +695,7 @@ def test_pow_neg1_int():
         derivative *= - k / b
         assert abs(series.jet[k] - derivative) < ε
 
-def test_pow_neg1_float():
+def test_pow_object_neg1_float():
     dual = w**1.0
     series = ~x**1.0
     assert abs(dual.val - b) < ε
@@ -702,6 +715,7 @@ def test_pow_neg1_float():
 def test_exp():
     dual = y.exp
     series = ~z.exp
+    assert len(series.jet) == order
     assert abs(dual.val - exp(a)) < ε
     assert abs(dual.der - exp(a)) < ε
     for term in series.jet:
@@ -710,6 +724,7 @@ def test_exp():
 def test_minus_exp():
     dual = (- y).exp
     series = ~(- z).exp
+    assert len(series.jet) == order
     assert abs(dual.val - 1.0 / exp(a)) < ε
     assert abs(dual.der + 1.0 / exp(a)) < ε
     for k in range(series.n):
@@ -752,6 +767,7 @@ def test_ln():
     derivative = 1.0 / a
     dual = y.ln
     series = ~z.ln
+    assert len(series.jet) == order
     assert abs(dual.val - log(a)) < ε
     assert abs(dual.der - derivative) < ε
     assert abs(series.val - log(a)) < ε
@@ -763,6 +779,7 @@ def test_ln():
 def test_sin():
     dual = Dual.get(pi / a).var.sin
     series = ~Series.get(order, pi / a).var.sin
+    assert len(series.jet) == order
     assert abs(dual.val - sin(pi / a)) < ε
     assert abs(dual.der - cos(pi / a)) < ε
     for k in range(series.n):
@@ -778,6 +795,7 @@ def test_sin():
 def test_cos():
     dual = Dual.get(pi / a).var.cos
     series = ~Series.get(order, pi / a).var.cos
+    assert len(series.jet) == order
     assert abs(dual.val - cos(pi / a)) < ε
     assert abs(dual.der + sin(pi / a)) < ε
     for k in range(series.n):
@@ -793,6 +811,7 @@ def test_cos():
 def test_tan():
     dual = Dual.get(pi / b).var.tan
     series = ~Series.get(order, pi / b).var.tan
+    assert len(series.jet) == order
     assert abs(dual.val - tan(pi / b)) < ε
     assert abs(dual.der - (1.0 + tan(pi / b)**2)) < ε
     assert abs(series.val - tan(pi / b)) < ε
@@ -801,6 +820,7 @@ def test_tan():
 def test_sinh():
     dual = Dual.get(pi / a).var.sinh
     series = ~Series.get(order, pi / a).var.sinh
+    assert len(series.jet) == order
     assert abs(dual.val - sinh(pi / a)) < ε
     assert abs(dual.der - cosh(pi / a)) < ε
     for k in range(series.n):
@@ -812,6 +832,7 @@ def test_sinh():
 def test_cosh():
     dual = Dual.get(pi / a).var.cosh
     series = ~Series.get(order, pi / a).var.cosh
+    assert len(series.jet) == order
     assert abs(dual.val - cosh(pi / a)) < ε
     assert abs(dual.der - sinh(pi / a)) < ε
     for k in range(series.n):
@@ -823,10 +844,15 @@ def test_cosh():
 def test_tanh():
     dual = Dual.get(pi / b).var.tanh
     series = ~Series.get(order, pi / b).var.tanh
+    assert len(series.jet) == order
     assert abs(dual.val - tanh(pi / b)) < ε
     assert abs(dual.der - (1.0 - tanh(pi / b)**2)) < ε
     assert abs(series.val - tanh(pi / b)) < ε
     assert abs(series.jet[1] - (1.0 - tanh(pi / b)**2)) < ε
+
+def test_var():
+    series = Series.get(order).var
+    assert len(series.jet) == order
 
 #  Zero identities
 
