@@ -361,7 +361,15 @@ def test_multiply_float_object():
     for term in series.jet[2:]:
         assert abs(term) < ε
 
-def test_divide_domain():
+def test_divide_domain_object_object():
+    try:
+        _ = y / Dual.get(δ).var
+    except AssertionError:
+        assert False
+    try:
+        _ = z / Series.get(order, δ).var
+    except AssertionError:
+        assert False
     try:
         _ = y / Dual.get().var
         assert False
@@ -373,71 +381,11 @@ def test_divide_domain():
     except AssertionError:
         pass
     try:
-        _ = 1.0 / Dual.get().var
-        assert False
-    except AssertionError:
-        pass
-    try:
-        _ = 1.0 / Series.get(order).var
-        assert False
-    except AssertionError:
-        pass
-    try:
-        _ = x / 0.0
-        assert False
-    except AssertionError:
-        pass
-    try:
-        _ = y / 0.0
-        assert False
-    except AssertionError:
-        pass
-    try:
-        _ = y / Dual.get(δ).var
-    except AssertionError:
-        assert False
-    try:
-        _ = z / Series.get(order, δ).var
-    except AssertionError:
-        assert False
-    try:
         _ = y / Dual.get(- δ).var
     except AssertionError:
         assert False
     try:
         _ = z / Series.get(order, - δ).var
-    except AssertionError:
-        assert False
-    try:
-        _ = 1.0 / Dual.get(δ).var
-    except AssertionError:
-        assert False
-    try:
-        _ = 1.0 / Series.get(order, δ).var
-    except AssertionError:
-        assert False
-    try:
-        _ = 1.0 / Dual.get(- δ).var
-    except AssertionError:
-        assert False
-    try:
-        _ = 1.0 / Series.get(order, - δ).var
-    except AssertionError:
-        assert False
-    try:
-        _ = x / δ
-    except AssertionError:
-        assert False
-    try:
-        _ = y / δ
-    except AssertionError:
-        assert False
-    try:
-        _ = x / - δ
-    except AssertionError:
-        assert False
-    try:
-        _ = y / - δ
     except AssertionError:
         assert False
 
@@ -470,6 +418,34 @@ def test_divide_int_object():
         derivative *= - k / a
         assert abs(series.jet[k] - derivative) < ε
 
+def test_divide_domain_object_float():
+    try:
+        _ = x / (- δ)
+    except AssertionError:
+        assert False
+    try:
+        _ = y / (- δ)
+    except AssertionError:
+        assert False
+    try:
+        _ = x / 0.0
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = y / 0.0
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = x / δ
+    except AssertionError:
+        assert False
+    try:
+        _ = y / δ
+    except AssertionError:
+        assert False
+
 def test_divide_object_float():
     dual = y / b
     series = ~(z / b)
@@ -479,6 +455,34 @@ def test_divide_object_float():
     assert abs(series.jet[1] - 1.0 / b) < ε
     for term in series.jet[2:]:
         assert abs(term) < ε
+
+def test_divide_domain_float_object():
+    try:
+        _ = 1.0 / Dual.get(- δ).var
+    except AssertionError:
+        assert False
+    try:
+        _ = 1.0 / Series.get(order, - δ).var
+    except AssertionError:
+        assert False
+    try:
+        _ = 1.0 / Dual.get().var
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = 1.0 / Series.get(order).var
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = 1.0 / Dual.get(δ).var
+    except AssertionError:
+        assert False
+    try:
+        _ = 1.0 / Series.get(order, δ).var
+    except AssertionError:
+        assert False
 
 def test_divide_float_object():
     derivative = b / a
@@ -501,182 +505,6 @@ def test_reciprocal():
     for k in range(1, series.n):
         derivative *= - k / a
         assert abs(series.jet[k] - derivative) < ε
-
-def test_pow_domain():
-    try:
-        _ = Dual.get().var**y
-        assert False
-    except AssertionError:
-        pass
-    try:
-        _ = Series.get(order).var**z
-        assert False
-    except AssertionError:
-        pass
-    try:
-        _ = y**Dual.get().var
-        assert False
-    except AssertionError:
-        pass
-    try:
-        _ = z**Series.get(order).var
-        assert False
-    except AssertionError:
-        pass
-    try:
-        _ = y**Dual.get(- δ).var
-        assert False
-    except AssertionError:
-        pass
-    try:
-        _ = z**Series.get(order, - δ).var
-        assert False
-    except AssertionError:
-        pass
-    try:
-        _ = Dual.get().var**2.0
-        assert False
-    except AssertionError:
-        pass
-    try:
-        _ = Series.get(order).var**2.0
-        assert False
-    except AssertionError:
-        pass
-    try:
-        _ = Dual.get(- δ).var**2.0
-        assert False
-    except AssertionError:
-        pass
-    try:
-        _ = Series.get(order, - δ).var**2.0
-        assert False
-    except AssertionError:
-        pass
-    try:
-        _ = 0.0**y
-        assert False
-    except AssertionError:
-        pass
-    try:
-        _ = 0.0**z
-        assert False
-    except AssertionError:
-        pass
-    try:
-        _ = - δ**y
-        assert False
-    except AssertionError:
-        pass
-    try:
-        _ = - δ**z
-        assert False
-    except AssertionError:
-        pass
-    try:
-        _ = y**Dual.get(δ).var
-    except AssertionError:
-        assert False
-    try:
-        _ = z**Series.get(order, δ).var
-    except AssertionError:
-        assert False
-    try:
-        _ = Dual.get().var**2
-    except AssertionError:
-        assert False
-    try:
-        _ = Series.get(order).var**2
-    except AssertionError:
-        assert False
-    try:
-        _ = Dual.get(- δ).var**2
-    except AssertionError:
-        assert False
-    try:
-        _ = Series.get(order, - δ).var**2
-    except AssertionError:
-        assert False
-    try:
-        _ = Dual.get(δ).var**2
-    except AssertionError:
-        assert False
-    try:
-        _ = Dual.get(δ).var**2.0
-    except AssertionError:
-        assert False
-    try:
-        _ = Series.get(order, δ).var**2
-    except AssertionError:
-        assert False
-    try:
-        _ = Series.get(order, δ).var**2.0
-    except AssertionError:
-        assert False
-    try:
-        _ = δ**y
-    except AssertionError:
-        assert False
-    try:
-        _ = δ**z
-    except AssertionError:
-        assert False
-
-def test_pow_object_object():
-    dual = y**w
-    series = ~(z**x)
-    assert abs(dual.val - a**b) < ε
-    assert abs(series.val - a**b) < ε
-
-def test_pow_int_object():
-    dual = d**y
-    series = ~d**z
-    assert abs(dual.val - d**a) < ε
-    assert abs(series.val - d**a) < ε
-
-def test_pow_float_object():
-    dual = b**y
-    series = ~b**z
-    assert abs(dual.val - b**a) < ε
-    assert abs(series.val - b**a) < ε
-
-def test_pow_object_int():
-    dual = w**d
-    series = ~x**d
-    assert abs(dual.val - b**d) < ε
-    assert abs(dual.der - d * b**(d - 1)) < ε
-    assert abs(series.val - b**d) < ε
-    assert abs(series.jet[1] - d * b**(d - 1)) < ε
-    dual = w**0
-    series = ~x**0
-    assert abs(dual.val - 1.0) < ε
-    assert abs(dual.der) < ε
-    assert abs(series.val - 1.0) < ε
-    for term in series.jet[1:]:
-        assert abs(term) < ε
-    dual = w**-d
-    series = ~x**-d
-    assert abs(dual.val - 1.0 / b**d) < ε
-    assert abs(series.val - 1.0 / b**d) < ε
-
-def test_pow_object_float():
-    dual = w**a
-    series = ~x**a
-    assert abs(dual.val - b**a) < ε
-    assert abs(dual.der - a * b**(a - 1.0)) < ε
-    assert abs(series.val - b**a) < ε
-    assert abs(series.jet[1] - a * b**(a - 1.0)) < ε
-    dual = w**0.0
-    series = ~x**0.0
-    assert abs(dual.val - 1.0) < ε
-    assert abs(dual.der) < ε
-    assert abs(series.val - 1.0) < ε
-    for term in series.jet[1:]:
-        assert abs(term) < ε
-    dual = w**-a
-    series = ~x**-a
-    assert abs(dual.val - 1.0 / b**a) < ε
-    assert abs(series.val - 1.0 / b**a) < ε
 
 def test_pow_object_neg1_int():
     dual = w**1
@@ -712,6 +540,188 @@ def test_pow_object_neg1_float():
         derivative *= - k / b
         assert abs(series.jet[k] - derivative) < ε
 
+def test_pow_domain_object_object():
+    try:
+        _ = Dual.get().var**y
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = Series.get(order).var**z
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = y**Dual.get(- δ).var
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = z**Series.get(order, - δ).var
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = y**Dual.get().var
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = z**Series.get(order).var
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = y**Dual.get(δ).var
+    except AssertionError:
+        assert False
+    try:
+        _ = z**Series.get(order, δ).var
+    except AssertionError:
+        assert False
+
+def test_pow_object_object():
+    dual = y**w
+    series = ~(z**x)
+    assert abs(dual.val - a**b) < ε
+    assert abs(series.val - a**b) < ε
+
+def test_pow_int_object():
+    dual = d**y
+    series = ~d**z
+    assert abs(dual.val - d**a) < ε
+    assert abs(series.val - d**a) < ε
+
+def test_pow_domain_float_object():
+    try:
+        _ = (- δ)**y
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = (- δ)**z
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = 0.0**y
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = 0.0**z
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = δ**y
+    except AssertionError:
+        assert False
+    try:
+        _ = δ**z
+    except AssertionError:
+        assert False
+
+def test_pow_float_object():
+    dual = b**y
+    series = ~b**z
+    assert abs(dual.val - b**a) < ε
+    assert abs(series.val - b**a) < ε
+
+def test_pow_domain_object_int():
+    try:
+        _ = Dual.get(- δ).var**2
+    except AssertionError:
+        assert False
+    try:
+        _ = Series.get(order, - δ).var**2
+    except AssertionError:
+        assert False
+    try:
+        _ = Dual.get().var**2
+    except AssertionError:
+        assert False
+    try:
+        _ = Series.get(order).var**2
+    except AssertionError:
+        assert False
+    try:
+        _ = Dual.get(δ).var**2
+    except AssertionError:
+        assert False
+    try:
+        _ = Series.get(order, δ).var**2
+    except AssertionError:
+        assert False
+
+def test_pow_object_int():
+    dual = w**d
+    series = ~x**d
+    assert abs(dual.val - b**d) < ε
+    assert abs(dual.der - d * b**(d - 1)) < ε
+    assert abs(series.val - b**d) < ε
+    assert abs(series.jet[1] - d * b**(d - 1)) < ε
+    dual = w**0
+    series = ~x**0
+    assert abs(dual.val - 1.0) < ε
+    assert abs(dual.der) < ε
+    assert abs(series.val - 1.0) < ε
+    for term in series.jet[1:]:
+        assert abs(term) < ε
+    dual = w**-d
+    series = ~x**-d
+    assert abs(dual.val - 1.0 / b**d) < ε
+    assert abs(series.val - 1.0 / b**d) < ε
+
+def test_pow_domain_object_float():
+    try:
+        _ = Dual.get(- δ).var**2.0
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = Series.get(order, - δ).var**2.0
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = Dual.get().var**2.0
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = Series.get(order).var**2.0
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = Dual.get(δ).var**2.0
+    except AssertionError:
+        assert False
+    try:
+        _ = Series.get(order, δ).var**2.0
+    except AssertionError:
+        assert False
+
+def test_pow_object_float():
+    dual = w**a
+    series = ~x**a
+    assert abs(dual.val - b**a) < ε
+    assert abs(dual.der - a * b**(a - 1.0)) < ε
+    assert abs(series.val - b**a) < ε
+    assert abs(series.jet[1] - a * b**(a - 1.0)) < ε
+    dual = w**0.0
+    series = ~x**0.0
+    assert abs(dual.val - 1.0) < ε
+    assert abs(dual.der) < ε
+    assert abs(series.val - 1.0) < ε
+    for term in series.jet[1:]:
+        assert abs(term) < ε
+    dual = w**-a
+    series = ~x**-a
+    assert abs(dual.val - 1.0 / b**a) < ε
+    assert abs(series.val - 1.0 / b**a) < ε
+
 def test_exp():
     dual = y.exp
     series = ~z.exp
@@ -735,22 +745,22 @@ def test_minus_exp():
 
 def test_ln_domain():
     try:
-        _ = Dual.get().var.ln
-        assert False
-    except AssertionError:
-        pass
-    try:
-        _ = Series.get(order).var.ln
-        assert False
-    except AssertionError:
-        pass
-    try:
         _ = Dual.get(-δ).var.ln
         assert False
     except AssertionError:
         pass
     try:
         _ = Series.get(order, -δ).var.ln
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = Dual.get().var.ln
+        assert False
+    except AssertionError:
+        pass
+    try:
+        _ = Series.get(order).var.ln
         assert False
     except AssertionError:
         pass
