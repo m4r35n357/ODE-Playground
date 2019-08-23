@@ -46,16 +46,16 @@ def bisect(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FL
     m = Solver.BI
     a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
     fc = Series.get(3, 1)
-    f_sign = ~model(a) - y
+    f_sign = ~ model(a) - y
     δx = count = 1
     while abs(fc.jet[mode.value]) > εf or abs(δx) > εx:
         c = (a + b) / 2
-        fc = ~model(c) - y
+        fc = ~ model(c) - y
         if f_sign.jet[mode.value] * fc.jet[mode.value] < 0.0:
             b = c
         else:
             a = c
-        δx = b.jet[mode.value] - a.jet[mode.value]
+        δx = b.val - a.val
         if debug:
             print(Result(method=m.name, count=count, sense=sense.value, mode=mode.name, x=c.val, f=fc.jet[mode.value], δx=δx))
         count += 1
@@ -64,28 +64,28 @@ def bisect(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FL
     return Result(method=m.name, count=count - 1, sense=sense.value, mode=mode.name, x=c.val, f=fc.jet[mode.value], δx=δx)
 
 
-def falsi(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, ill=True, debug=False):
-    m = Solver.FI if ill else Solver.FP
+def falsi(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, illinois=True, debug=False):
+    m = Solver.FI if illinois else Solver.FP
     a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
-    fa, fb, fc = ~model(a) - y, ~model(b) - y, Series.get(3, 1)
+    fa, fb, fc = ~ model(a) - y, ~ model(b) - y, Series.get(3, 1)
     δx = count = 1
     side = 0
     while abs(fc.jet[mode.value]) > εf or abs(δx) > εx:
         c = (a * fb - b * fa) / (fb - fa)
-        fc = ~model(c) - y
-        if fa.val * fc.val > 0.0:
+        fc = ~ model(c) - y
+        if fa.jet[mode.value] * fc.jet[mode.value] > 0.0:
             a, fa = c, fc
-            if ill:
+            if illinois:
                 if side == -1:
                     fb *= 0.5
                 side = -1
-        elif fb.val * fc.val > 0.0:
+        elif fb.jet[mode.value] * fc.jet[mode.value] > 0.0:
             b, fb = c, fc
-            if ill:
+            if illinois:
                 if side == +1:
                     fa *= 0.5
                 side = +1
-        δx = b.jet[mode.value] - a.jet[mode.value]
+        δx = b.val - a.val
         if debug:
             print(Result(method=m.name, count=count, sense=sense.value, mode=mode.name, x=c.val, f=fc.jet[mode.value], δx=δx))
         count += 1
@@ -97,14 +97,14 @@ def falsi(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLA
 def secant(model, xa, xb, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
     m = Solver.SC
     a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
-    fa, fb, fc = ~model(a) - y, ~model(b) - y, Series.get(3, 1)
+    fa, fb, fc = ~ model(a) - y, ~ model(b) - y, Series.get(3, 1)
     δx = count = 1
     while abs(fc.jet[mode.value]) > εf or abs(δx) > εx:
         c = (a * fb - b * fa) / (fb - fa)
-        fc = ~model(c) - y
+        fc = ~ model(c) - y
         b, fb = a, fa
         a, fa = c, fc
-        δx = b.jet[mode.value] - a.jet[mode.value]
+        δx = b.val - a.val
         if debug:
             print(Result(method=m.name, count=count, sense=sense.value, mode=mode.name, x=c.val, f=fc.jet[mode.value], δx=δx))
         count += 1
@@ -119,7 +119,7 @@ def newton(model, x0, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sense.FLAT, 
     f = Series.get(2 + mode.value, 1)
     δx = count = 1
     while abs(f.jet[mode.value]) > εf or abs(δx) > εx:
-        f = ~model(x) - y
+        f = ~ model(x) - y
         δx = - f.jet[mode.value] / f.jet[1 + mode.value]
         x += δx
         if debug:
@@ -137,7 +137,7 @@ def householder(model, x0, n, y=0.0, εf=1e-15, εx=1e-15, limit=101, sense=Sens
     δx = count = 1
     while abs(f.jet[mode.value]) > εf or abs(δx) > εx:
         f = model(x) - y
-        r = ~(1 / f)
+        r = ~ (1 / f)
         δx = r.jet[n - 2 + mode.value] / r.jet[n - 1 + mode.value]
         x += δx * (n - 1 + mode.value)
         if debug:
@@ -153,20 +153,20 @@ def analyze(model, method, x0, x1, steps, εf, εx, limit, order):
     step = (x1 - x0) / (steps - 1)
     for k in range(steps):
         x = Series.get(order, x0 + k * step).var  # make x a variable to see derivatives!
-        f = ~model(x)
+        f = ~ model(x)
         print(f'{x.val:.{Context.places}e} {f}')
         if method != Solver.NA:
             if k > 0:
-                if f0_prev * f.val <= 0.0:
+                if f0_prev * f.val < 0.0:
                     s = Sense.DECREASING if f0_prev > f.val else Sense.INCREASING
                     if method == Solver.BI:
                         yield bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s)
                     elif method == Solver.FP:
-                        yield falsi(model, x.val, x.val + step, εf=εf, εx=εx, limit=limit, sense=s, ill=False)
+                        yield falsi(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s, illinois=False)
                     elif method == Solver.FI:
-                        yield falsi(model, x.val, x.val + step, εf=εf, εx=εx, limit=limit, sense=s)
+                        yield falsi(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s)
                     elif method == Solver.SC:
-                        yield secant(model, x.val, x.val + step, εf=εf, εx=εx, limit=limit, sense=s)
+                        yield secant(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s)
                     elif method == Solver.NT:
                         yield newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=s)
                     elif method == Solver.H1:
@@ -177,16 +177,16 @@ def analyze(model, method, x0, x1, steps, εf, εx, limit, order):
                         yield householder(model, x.val, 4, εf=εf, εx=εx, limit=limit, sense=s)
                     elif method == Solver.H4:
                         yield householder(model, x.val, 5, εf=εf, εx=εx, limit=limit, sense=s)
-                if f1_prev * f.jet[1] <= 0.0:
-                    s = Sense.DECREASING if f1_prev > f.jet[1] else Sense.INCREASING
+                if f1_prev * f.jet[Mode.MIN_MAX.value] < 0.0:
+                    s = Sense.DECREASING if f1_prev > f.jet[Mode.MIN_MAX.value] else Sense.INCREASING
                     if method == Solver.BI:
                         yield bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
                     elif method == Solver.FP:
-                        yield falsi(model, x.val, x.val + step, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX, ill=False)
+                        yield falsi(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX, illinois=False)
                     elif method == Solver.FI:
-                        yield falsi(model, x.val, x.val + step, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
+                        yield falsi(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
                     elif method == Solver.SC:
-                        yield secant(model, x.val, x.val + step, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
+                        yield secant(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
                     elif method == Solver.NT:
                         yield newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
                     elif method == Solver.H1:
@@ -197,16 +197,16 @@ def analyze(model, method, x0, x1, steps, εf, εx, limit, order):
                         yield householder(model, x.val, 4, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
                     elif method == Solver.H4:
                         yield householder(model, x.val, 5, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
-                if f2_prev * f.jet[2] <= 0.0:
-                    s = Sense.DECREASING if f2_prev > f.jet[2] else Sense.INCREASING
+                if f2_prev * f.jet[Mode.INFLECT.value] < 0.0:
+                    s = Sense.DECREASING if f2_prev > f.jet[Mode.INFLECT.value] else Sense.INCREASING
                     if method == Solver.BI:
                         yield bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT)
                     elif method == Solver.FP:
-                        yield falsi(model, x.val, x.val + step, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT, ill=False)
+                        yield falsi(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT, illinois=False)
                     elif method == Solver.FI:
-                        yield falsi(model, x.val, x.val + step, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT)
+                        yield falsi(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT)
                     elif method == Solver.SC:
-                        yield secant(model, x.val, x.val + step, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT)
+                        yield secant(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT)
                     elif method == Solver.NT:
                         yield newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT)
                     elif method == Solver.H1:

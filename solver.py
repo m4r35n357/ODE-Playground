@@ -29,7 +29,7 @@ if method in [Solver.BI, Solver.NA]:
     bisect(model, xa, xb, y=target, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
     print("")
 if method in [Solver.FP, Solver.NA]:
-    falsi(model, xa, xb, y=target, εf=f_tol, εx=x_tol, limit=max_it, ill=False, debug=True)
+    falsi(model, xa, xb, y=target, εf=f_tol, εx=x_tol, limit=max_it, illinois=False, debug=True)
     print("")
 if method in [Solver.FI, Solver.NA]:
     falsi(model, xa, xb, y=target, εf=f_tol, εx=x_tol, limit=max_it, debug=True)

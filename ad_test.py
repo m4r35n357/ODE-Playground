@@ -3,7 +3,7 @@
 #  pytest -v --cov=ad --cov-report html:cov_html ad_test.py
 #  Mutation Testing
 #  mut.py --runner pytest --target ad.py --unit-test ad_test -c --disable-operator AOR CRP DDL CDI SDI SDL SVD -e
-#  rm -f .mutmut-cache; mutmut --paths-to-mutate ad.py run --use-coverage --runner 'pytest --cov=ad --cov-report html:cov_html ad_test.py'
+#  rm -f .mutmut-cache; mutmut --test-time-base 4.0 --paths-to-mutate ad.py run --runner 'pytest ad_test.py'
 #  cosmic-ray init config.toml my_session.sqlite; cosmic-ray exec my_session.sqlite
 #  cr-html my_session.sqlite > my_session.html
 from math import pi, e, exp, log, sin, cos, tan, sinh, cosh, tanh
@@ -712,11 +712,11 @@ def test_pow_domain_object_float():
         assert False
 
 def test_pow_object_float():
-    jet = t_jet(order)
+    power = t_jet(order)
     t_series = x**a
     for k in range(order):
-        jet[k] = t_pwr(jet, x.jet, a, k)
-        assert jet[k] == t_series.jet[k]
+        power[k] = t_pwr(power, x.jet, a, k)
+        assert power[k] == t_series.jet[k]
     dual = w**a
     series = ~x**a
     assert abs(dual.val - b**a) < ε
