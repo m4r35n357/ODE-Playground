@@ -30,14 +30,14 @@ def t_exp(e, u, k):
 def t_ln(l, u, k):
     return log(u[0]) if k == 0 else (u[k] - fsum(j * l[j] * u[k - j] for j in range(1, k)) / k) / u[0]
 
-def t_sin_cos(s, c, u, k, hyp=False):  # pragma: no mutate
+def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
         return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
     sk = fsum((k - j) * c[j] * u[k - j] for j in range(k)) / k
     ck = fsum((k - j) * s[j] * u[k - j] for j in range(k)) / k
     return (sk, ck) if hyp else (sk, - ck)
 
-def t_tan_sec2(t, s2, u, k, hyp=False):  # pragma: no mutate
+def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
         return (tanh(u[0]), 1.0 - tanh(u[0])**2) if hyp else (tan(u[0]), 1.0 + tan(u[0])**2)
     tk = fsum((k - j) * s2[j] * u[k - j] for j in range(k)) / k
@@ -175,6 +175,10 @@ class Series:
         return self._double(t_tan_sec2)[0]
 
     @property
+    def sec2(self):
+        return self._double(t_tan_sec2)[1]
+
+    @property
     def sinh(self):
         return self._double(t_sin_cos, hyp=True)[0]
 
@@ -185,6 +189,10 @@ class Series:
     @property
     def tanh(self):
         return self._double(t_tan_sec2, hyp=True)[0]
+
+    @property
+    def sech2(self):
+        return self._double(t_tan_sec2, hyp=True)[1]
 
     @property
     def val(self):

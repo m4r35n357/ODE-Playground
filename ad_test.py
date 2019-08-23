@@ -7,7 +7,7 @@
 #  cosmic-ray init config.toml my_session.sqlite; cosmic-ray exec my_session.sqlite
 #  cr-html my_session.sqlite > my_session.html
 from math import pi, e, exp, log, sin, cos, tan, sinh, cosh, tanh
-from ad import t_jet, t_horner, Series, Dual, Context
+from ad import t_jet, t_horner, t_prod, t_quot, t_pwr, t_exp, t_ln, t_sin_cos, t_tan_sec2, Series, Dual
 
 order = 6
 ε = 1.0e-12  # small error
@@ -311,6 +311,9 @@ def test_subtract_float_object():
         assert abs(term) < ε
 
 def test_multiply_object_object():
+    t_series = z * x
+    for k in range(order):
+        assert t_prod(z.jet, x.jet, k) == t_series.jet[k]
     dual = y * w
     series = ~(z * x)
     assert abs(dual.val - a * b) < ε
@@ -390,6 +393,11 @@ def test_divide_domain_object_object():
         assert False
 
 def test_divide_object_object():
+    quotient = t_jet(order)
+    t_series = z / x
+    for k in range(order):
+        quotient[k] = t_quot(quotient, z.jet, x.jet, k)
+        assert quotient[k] == t_series.jet[k]
     dual = y / w
     series = ~(z / x)
     assert abs(dual.val - a / b) < ε
@@ -704,6 +712,11 @@ def test_pow_domain_object_float():
         assert False
 
 def test_pow_object_float():
+    jet = t_jet(order)
+    t_series = x**a
+    for k in range(order):
+        jet[k] = t_pwr(jet, x.jet, a, k)
+        assert jet[k] == t_series.jet[k]
     dual = w**a
     series = ~x**a
     assert abs(dual.val - b**a) < ε
@@ -723,6 +736,11 @@ def test_pow_object_float():
     assert abs(series.val - 1.0 / b**a) < ε
 
 def test_exp():
+    exponent = t_jet(order)
+    t_series = x.exp
+    for k in range(order):
+        exponent[k] = t_exp(exponent, x.jet, k)
+        assert exponent[k] == t_series.jet[k]
     dual = y.exp
     series = ~z.exp
     assert len(series.jet) == order
@@ -774,6 +792,11 @@ def test_ln_domain():
         assert False
 
 def test_ln():
+    logarithm = t_jet(order)
+    t_series = z.ln
+    for k in range(order):
+        logarithm[k] = t_ln(logarithm, z.jet, k)
+        assert logarithm[k] == t_series.jet[k]
     derivative = 1.0 / a
     dual = y.ln
     series = ~z.ln
@@ -787,6 +810,13 @@ def test_ln():
         assert abs(series.jet[k] - derivative) < ε
 
 def test_sin():
+    sine, cosine = t_jet(order), t_jet(order)
+    t_series_sin = z.sin
+    t_series_cos = z.cos
+    for k in range(order):
+        sine[k], cosine[k] = t_sin_cos(sine, cosine, z.jet, k)
+        assert sine[k] == t_series_sin.jet[k]
+        assert cosine[k] == t_series_cos.jet[k]
     dual = Dual.get(pi / a).var.sin
     series = ~Series.get(order, pi / a).var.sin
     assert len(series.jet) == order
@@ -819,6 +849,13 @@ def test_cos():
             assert abs(series.jet[k] - sin(pi / a)) < ε
 
 def test_tan():
+    tangent, secant2 = t_jet(order), t_jet(order)
+    t_series_tan = z.tan
+    t_series_sec2 = z.sec2
+    for k in range(order):
+        tangent[k], secant2[k] = t_tan_sec2(tangent, secant2, z.jet, k)
+        assert tangent[k] == t_series_tan.jet[k]
+        assert secant2[k] == t_series_sec2.jet[k]
     dual = Dual.get(pi / b).var.tan
     series = ~Series.get(order, pi / b).var.tan
     assert len(series.jet) == order
@@ -828,6 +865,13 @@ def test_tan():
     assert abs(series.jet[1] - (1.0 + tan(pi / b)**2)) < ε
 
 def test_sinh():
+    h_sine, h_cosine = t_jet(order), t_jet(order)
+    t_series_sinh = z.sinh
+    t_series_cosh = z.cosh
+    for k in range(order):
+        h_sine[k], h_cosine[k] = t_sin_cos(h_sine, h_cosine, z.jet, k, hyp=True)
+        assert h_sine[k] == t_series_sinh.jet[k]
+        assert h_cosine[k] == t_series_cosh.jet[k]
     dual = Dual.get(pi / a).var.sinh
     series = ~Series.get(order, pi / a).var.sinh
     assert len(series.jet) == order
@@ -852,6 +896,13 @@ def test_cosh():
             assert abs(series.jet[k] - sinh(pi / a)) < ε
 
 def test_tanh():
+    h_tangent, h_secant2 = t_jet(order), t_jet(order)
+    t_series_tanh = z.tanh
+    t_series_sech2 = z.sech2
+    for k in range(order):
+        h_tangent[k], h_secant2[k] = t_tan_sec2(h_tangent, h_secant2, z.jet, k, hyp=True)
+        assert h_tangent[k] == t_series_tanh.jet[k]
+        assert h_secant2[k] == t_series_sech2.jet[k]
     dual = Dual.get(pi / b).var.tanh
     series = ~Series.get(order, pi / b).var.tanh
     assert len(series.jet) == order
