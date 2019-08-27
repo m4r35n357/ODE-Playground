@@ -1,5 +1,5 @@
 
-#  pytest -v --cov=ad --cov=playground --cov-report html:cov_html ad_test.py solver_test.py
+#  pytest --cov=ad --cov=playground --cov-report html:cov_html ad_test.py solver_test.py -v
 from ad import Dual
 from playground import bisect, falsi, secant, newton, householder, analyze, Solver
 import pytest

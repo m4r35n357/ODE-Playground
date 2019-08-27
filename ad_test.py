@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 #  Unit Testing
-#  pytest -v --cov=ad --cov-report html:cov_html ad_test.py
+#  pytest --cov=ad --cov-report html:cov_html ad_test.py -v
 #  Mutation Testing
 #  mut.py --runner pytest --target ad.py --unit-test ad_test -c --disable-operator AOR CRP DDL CDI SDI SDL SVD -e
-#  rm -f .mutmut-cache; mutmut --test-time-base 5.0 --paths-to-mutate ad.py run --runner 'pytest ad_test.py'
+#  rm -f .mutmut-cache; mutmut --test-time-base 6.0 --paths-to-mutate ad.py run --runner 'pytest ad_test.py'
 #  cosmic-ray init config.toml my_session.sqlite; cosmic-ray exec my_session.sqlite
 #  cr-html my_session.sqlite > my_session.html
 from math import pi, e, exp, log, sin, cos, tan, sinh, cosh, tanh
@@ -25,7 +25,7 @@ d_4, s_4 = Dual.get(f4).var, Series.get(order, f4).var
 d_3, s_3 = Dual.get(f3).var, Series.get(order, f3).var
 
 data1_d = Dual(3.1, -6.6)
-data2_d = Dual(-0.5, 7.0)
+data2_d = Dual(0.5, 7.0)
 data1_s = Series([1.0] * order)
 for i in range(1, order):
     data1_s.jet[i] = 0.5 * i * data1_s.jet[i - 1]
@@ -40,7 +40,7 @@ def test_t_jet_no_value():
         assert isinstance(term, float)
         assert abs(term) < ε
 
-@pytest.mark.parametrize("number", [zero, f05, -f05, i5, -i5])
+@pytest.mark.parametrize("number", [zero, -zero, f05, -f05, i5, -i5])
 def test_t_jet(number):
     jet = t_jet(order, number)
     assert len(jet) == order
@@ -117,7 +117,7 @@ def test_exceptions_power():
     except RuntimeError as error:
         assert "Incompatible Type: <class 'ad.Dual'>" in str(error)
 
-@pytest.mark.parametrize("number", [zero, f05, -f05, i5, -i5])
+@pytest.mark.parametrize("number", [zero, -zero, f05, -f05, i5, -i5])
 def test_get(number):
     dual = Dual.get(number)
     series = Series.get(order, number)
@@ -292,6 +292,7 @@ def test_multiply_number_object(number):
     for term in series.jet[2:]:
         assert abs(term) < ε
 
+@pytest.mark.domain
 @pytest.mark.parametrize("number", [i5, δ, - δ, - i5])
 def test_divide_domain_object_good(number):
     result = False
@@ -308,6 +309,7 @@ def test_divide_domain_object_good(number):
         result = False
     assert result
 
+@pytest.mark.domain
 @pytest.mark.parametrize("number", [zero, -zero])
 def test_divide_domain_object_bad(number):
     result = False
@@ -337,6 +339,7 @@ def test_divide_object_object():
     assert abs(series.val - f3 / f4) < ε
     assert abs(series.jet[1] - (f4 - f3) / f4 ** 2) < ε
 
+@pytest.mark.domain
 @pytest.mark.parametrize("number", [1, δ, -δ, -1])
 def test_divide_domain_object_number_good(number):
     result = False
@@ -353,6 +356,7 @@ def test_divide_domain_object_number_good(number):
         result = False
     assert result
 
+@pytest.mark.domain
 @pytest.mark.parametrize("number", [zero, - zero, 0])
 def test_divide_domain_object_number_bad(number):
     result = False
@@ -380,6 +384,7 @@ def test_divide_object_number(number):
     for term in series.jet[2:]:
         assert abs(term) < ε
 
+@pytest.mark.domain
 @pytest.mark.parametrize("number", [1, δ, -δ, -1])
 def test_divide_domain_number_object_good(number):
     result = False
@@ -396,6 +401,7 @@ def test_divide_domain_number_object_good(number):
         result = False
     assert result
 
+@pytest.mark.domain
 @pytest.mark.parametrize("number", [zero, - zero])
 def test_divide_domain_number_object_bad(number):
     result = False
@@ -453,6 +459,7 @@ def test_pow_object_neg1_number(number):
         derivative *= - k / s_4.val
         assert abs(series.jet[k] - derivative) < ε
 
+@pytest.mark.domain
 @pytest.mark.parametrize("number", [1, δ, 0, zero, - zero, - δ, - 1])
 def test_pow_domain_object_int_good(number):
     try:
@@ -468,6 +475,7 @@ def test_pow_domain_object_int_good(number):
         result = False
     assert result
 
+@pytest.mark.domain
 @pytest.mark.parametrize("number", [1, δ, - δ, - 1])
 def test_pow_domain_object_int_neg_good(number):
     try:
@@ -483,6 +491,7 @@ def test_pow_domain_object_int_neg_good(number):
         result = False
     assert result
 
+@pytest.mark.domain
 @pytest.mark.parametrize("number", [0, zero, - zero])
 def test_pow_domain_object_int_neg_bad(number):
     try:
@@ -498,6 +507,7 @@ def test_pow_domain_object_int_neg_bad(number):
         result = True
     assert result
 
+@pytest.mark.domain
 @pytest.mark.parametrize("number", [1, δ])
 def test_pow_domain_object_anything_good(number):
     result = False
@@ -538,6 +548,7 @@ def test_pow_domain_object_anything_good(number):
         result = False
     assert result
 
+@pytest.mark.domain
 @pytest.mark.parametrize("number", [0, zero, - zero, - δ, -1])
 def test_pow_domain_object_anything_bad(number):
     result = False
@@ -585,7 +596,7 @@ def test_pow_object_object():
     assert len(series.jet) == order
     assert abs(series.val - f3 ** f4) < ε
 
-@pytest.mark.parametrize("number", [0, zero])
+@pytest.mark.parametrize("number", [0, zero, -zero])
 def test_pow_object_zero(number):
     power = t_jet(order)
     t_series = s_4 ** number
@@ -616,6 +627,7 @@ def test_pow_object_number(number):
     assert len(series.jet) == order
     assert abs(series.val - 1.0 / f4 ** number) < ε
 
+@pytest.mark.domain
 @pytest.mark.parametrize("number", [1, δ])
 def test_pow_domain_number_object_good(number):
     result = False
@@ -632,7 +644,8 @@ def test_pow_domain_number_object_good(number):
         result = False
     assert result
 
-@pytest.mark.parametrize("number", [- δ, zero])
+@pytest.mark.domain
+@pytest.mark.parametrize("number", [- δ, zero, -zero])
 def test_pow_domain_number_object_bad(number):
     result = False
     try:
@@ -682,6 +695,7 @@ def test_minus_exp():
         elif k % 2 == 1:
             assert abs(series.jet[k] + 1.0 / exp(f3)) < ε
 
+@pytest.mark.domain
 @pytest.mark.parametrize("number", [1, δ])
 def test_ln_domain_good(number):
     result = False
@@ -698,6 +712,7 @@ def test_ln_domain_good(number):
         result = False
     assert result
 
+@pytest.mark.domain
 @pytest.mark.parametrize("number", [zero, - zero, - δ, - 1])
 def test_ln_domain_bad(number):
     result = False
@@ -846,98 +861,142 @@ def test_var():
         assert abs(term) < ε
 
 #  Zero identities
+@pytest.mark.toplevel
+def test_diff_squares():
+    dual = data1_d**2 - data2_d**2 - (data1_d - data2_d) * (data1_d + data2_d)
+    series = data1_s**2 - data2_s**2 - (data1_s - data2_s) * (data1_s + data2_s)
+    assert abs(dual.val) < ε
+    assert abs(dual.der) < ε
+    for term in series.jet:
+        assert abs(term) < ε
+    dual = data1_d**2.0 - data2_d**2.0 - (data1_d - data2_d) * (data1_d + data2_d)
+    series = data1_s**2.0 - data2_s**2.0 - (data1_s - data2_s) * (data1_s + data2_s)
+    assert abs(dual.val) < ε
+    assert abs(dual.der) < ε
+    for term in series.jet:
+        assert abs(term) < ε
 
+@pytest.mark.toplevel
 def test_pow_neg_zero():
-    dual = 1.0 / d_4 ** 2 - d_4 ** -2.0
-    series = ~(1.0 / s_4 ** 2 - s_4 ** -2.0)
+    dual = 1.0 / data1_d**2 - data1_d**-2.0
+    series = 1.0 / data1_s**2 - data1_s**-2.0
     assert abs(dual.val) < ε
     assert abs(dual.der) < ε
     for term in series.jet:
         assert abs(term) < ε
 
-def test_pow_pos_frac_zero():
-    dual = (d_4 ** 2) ** 0.5 - abs(d_4)
-    series = ~((s_4 ** 2) ** 0.5) - abs(s_4)
+@pytest.mark.toplevel
+def test_pow_frac_zero():
+    dual = (d_4**2)**0.5 - abs(d_4)
+    series = (s_4**2)**0.5 - abs(s_4)
+    assert abs(dual.val) < ε
+    assert abs(dual.der) < ε
+    for term in series.jet:
+        assert abs(term) < ε
+    dual = (d_4**2)**-0.5 - 1.0 / abs(d_4)
+    series = (s_4**2)**-0.5 - 1.0 / abs(s_4)
     assert abs(dual.val) < ε
     assert abs(dual.der) < ε
     for term in series.jet:
         assert abs(term) < ε
 
+@pytest.mark.toplevel
 def test_exp_zero():
-    dual = d_4.exp - e ** d_4
-    series = ~(s_4.exp.ln - s_4)
+    dual = data1_d.exp.ln - data1_d
+    series = data1_s.exp.ln - data1_s
+    assert abs(dual.val) < ε
+    assert abs(dual.der) < ε
+    for term in series.jet:
+        assert abs(term) < ε
+    dual = (data1_d + data2_d).exp - data1_d.exp * data2_d.exp
+    series = (data1_s + data2_s).exp - data1_s.exp * data2_s.exp
     assert abs(dual.val) < ε
     assert abs(dual.der) < ε
     for term in series.jet:
         assert abs(term) < ε
 
+@pytest.mark.toplevel
 def test_ln_zero():
-    dual = d_4.exp.ln - d_4
-    series = ~(s_4.exp.ln - s_4)
+    dual = data1_d.ln.exp - data1_d
+    series = data1_s.ln.exp - data1_s
+    assert abs(dual.val) < ε
+    assert abs(dual.der) < ε
+    for term in series.jet:
+        assert abs(term) < ε
+    dual = (data1_d * data2_d).ln - (data1_d.ln + data2_d.ln)
+    series = (data1_s * data2_s).ln - (data1_s.ln + data2_s.ln)
     assert abs(dual.val) < ε
     assert abs(dual.der) < ε
     for term in series.jet:
         assert abs(term) < ε
 
+@pytest.mark.toplevel
 def test_sinh_zero():
-    dual = 0.5 * (d_3.exp - (-d_3).exp) - d_3.sinh
-    series = ~(0.5 * (s_3.exp - (-s_3).exp) - s_3.sinh)
+    dual = 0.5 * (data1_d.exp - (-data1_d).exp) - data1_d.sinh
+    series = 0.5 * (data1_s.exp - (-data1_s).exp) - data1_s.sinh
     assert abs(dual.val) < ε
     assert abs(dual.der) < ε
     for term in series.jet:
         assert abs(term) < ε
 
+@pytest.mark.toplevel
 def test_cosh_zero():
-    dual = 0.5 * (d_3.exp + (-d_3).exp) - d_3.cosh
-    series = ~(0.5 * (s_3.exp + (-s_3).exp) - s_3.cosh)
+    dual = 0.5 * (data1_d.exp + (-data1_d).exp) - data1_d.cosh
+    series = 0.5 * (data1_s.exp + (-data1_s).exp) - data1_s.cosh
     assert abs(dual.val) < ε
     assert abs(dual.der) < ε
     for term in series.jet:
         assert abs(term) < ε
 
+@pytest.mark.toplevel
 def test_tan_zero():
-    dual = d_4.tan - d_4.sin / d_4.cos
-    series = ~(s_4.tan - s_4.sin / s_4.cos)
+    dual = data1_d.tan - data1_d.sin / data1_d.cos
+    series = data1_s.tan - data1_s.sin / data1_s.cos
     assert abs(dual.val) < ε
     assert abs(dual.der) < ε
     for term in series.jet:
         assert abs(term) < ε
 
+@pytest.mark.toplevel
 def test_tanh_zero():
     dual = d_05.tanh - d_05.sinh / d_05.cosh
-    series = ~(s_05.tanh - s_05.sinh / s_05.cosh)
+    series = s_05.tanh - s_05.sinh / s_05.cosh
     assert abs(dual.val) < ε
     assert abs(dual.der) < ε
     for term in series.jet:
         assert abs(term) < ε
 
+@pytest.mark.toplevel
 def test_sin_3x_zero():
-    dual = (3 * d_3).sin - 3.0 * d_3.sin + 4.0 * d_3.sin ** 3
-    series = ~((3 * s_3).sin - 3.0 * s_3.sin + 4.0 * s_3.sin ** 3)
+    dual = (3 * data1_d).sin - 3.0 * data1_d.sin + 4.0 * data1_d.sin**3
+    series = (3 * data1_s).sin - 3.0 * data1_s.sin + 4.0 * data1_s.sin**3
     assert abs(dual.val) < ε
     assert abs(dual.der) < ε
     for term in series.jet:
         assert abs(term) < ε
 
+@pytest.mark.toplevel
 def test_cos_3x_zero():
-    dual = (3 * d_3).cos + 3.0 * d_3.cos - 4.0 * d_3.cos ** 3
-    series = ~((3 * s_3).cos + 3.0 * s_3.cos - 4.0 * s_3.cos ** 3)
+    dual = (3 * data1_d).cos + 3.0 * data1_d.cos - 4.0 * data1_d.cos**3
+    series = (3 * data1_s).cos + 3.0 * data1_s.cos - 4.0 * data1_s.cos**3
     assert abs(dual.val) < ε
     assert abs(dual.der) < ε
     for term in series.jet:
         assert abs(term) < ε
 
+@pytest.mark.toplevel
 def test_sinh_3x_zero():
-    dual = (3 * d_05).sinh - 3.0 * d_05.sinh - 4.0 * d_05.sinh ** 3
-    series = ~((3 * s_05).sinh - 3.0 * s_05.sinh - 4.0 * s_05.sinh ** 3)
+    dual = (3 * d_05).sinh - 3.0 * d_05.sinh - 4.0 * d_05.sinh**3
+    series = (3 * s_05).sinh - 3.0 * s_05.sinh - 4.0 * s_05.sinh**3
     assert abs(dual.val) < ε
     assert abs(dual.der) < ε
     for term in series.jet:
         assert abs(term) < ε
 
+@pytest.mark.toplevel
 def test_cosh_3x_zero():
-    dual = (3 * d_05).cosh + 3.0 * d_05.cosh - 4.0 * d_05.cosh ** 3
-    series = ~((3 * s_05).cosh + 3.0 * s_05.cosh - 4.0 * s_05.cosh ** 3)
+    dual = (3 * d_05).cosh + 3.0 * d_05.cosh - 4.0 * d_05.cosh**3
+    series = (3 * s_05).cosh + 3.0 * s_05.cosh - 4.0 * s_05.cosh**3
     assert abs(dual.val) < ε
     assert abs(dual.der) < ε
     for term in series.jet:
