@@ -5,7 +5,7 @@
 from sys import stderr
 from collections import namedtuple
 from enum import Enum, unique
-from ad import Context, Series
+from ad import Context, Series, Dual
 
 
 @unique
