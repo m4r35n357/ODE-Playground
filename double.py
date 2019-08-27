@@ -5,7 +5,7 @@ from math import sin, cos, log10
 from ad import Dual
 
 # def h(self, qr, pr, pφ):  # NOTE: qφ is absent from Hamiltonian -> conserved quantity pφ
-#     return (pr ** 2 + pφ ** 2 / qr ** 2) / (2.0 * self.m) - self.gm / qr
+#     return (pr**2 + pφ**2 / qr**2) / (2.0 * self.m) - self.gm / qr
 
 def h(g, l1, m1, l2, m2, qθ1, pθ1, qθ2, pθ2):  # the Hamiltonian
     return (l2**2 * m2 * pθ1**2 + l1**2 * (m1 + m2) * pθ2**2 - 2.0 * m2 * l1 * l2 * pθ1 * pθ2 * (qθ1 - qθ2).cos) \

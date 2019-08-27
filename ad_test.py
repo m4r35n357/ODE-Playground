@@ -107,12 +107,12 @@ def test_exceptions_divide():
 
 def test_exceptions_power():
     try:
-        _ = d_3 ** s_3
+        _ = d_3**s_3
         assert False
     except RuntimeError as error:
         assert "Incompatible Type: <class 'ad.Series'>" in str(error)
     try:
-        _ = s_3 ** d_3
+        _ = s_3**d_3
         assert False
     except RuntimeError as error:
         assert "Incompatible Type: <class 'ad.Dual'>" in str(error)
@@ -335,9 +335,9 @@ def test_divide_object_object():
     dual = d_3 / d_4
     series = ~(s_3 / s_4)
     assert abs(dual.val - f3 / f4) < ε
-    assert abs(dual.der - (f4 - f3) / f4 ** 2) < ε
+    assert abs(dual.der - (f4 - f3) / f4**2) < ε
     assert abs(series.val - f3 / f4) < ε
-    assert abs(series.jet[1] - (f4 - f3) / f4 ** 2) < ε
+    assert abs(series.jet[1] - (f4 - f3) / f4**2) < ε
 
 @pytest.mark.domain
 @pytest.mark.parametrize("number", [1, δ, -δ, -1])
@@ -443,15 +443,15 @@ def test_reciprocal():
 
 @pytest.mark.parametrize("number", [1, 1.0])
 def test_pow_object_neg1_number(number):
-    dual = d_4 ** number
-    series = ~s_4 ** number
+    dual = d_4**number
+    series = ~s_4**number
     assert abs(dual.val - d_4.val) < ε
     assert abs(dual.der - 1.0) < ε
     assert abs(series.val - s_4.val) < ε
     assert abs(series.jet[1] - 1.0) < ε
     derivative = 1.0 / d_4.val
-    dual = d_4 ** -number
-    series = ~s_4 ** -number
+    dual = d_4**-number
+    series = ~s_4**-number
     assert abs(dual.val - derivative) < ε
     assert abs(dual.der + derivative / d_4.val) < ε
     assert abs(series.val - derivative) < ε
@@ -590,21 +590,21 @@ def test_pow_domain_object_anything_bad(number):
     assert result
 
 def test_pow_object_object():
-    dual = d_3 ** d_4
-    assert abs(dual.val - f3 ** f4) < ε
-    series = ~(s_3 ** s_4)
+    dual = d_3**d_4
+    assert abs(dual.val - f3**f4) < ε
+    series = ~(s_3**s_4)
     assert len(series.jet) == order
-    assert abs(series.val - f3 ** f4) < ε
+    assert abs(series.val - f3**f4) < ε
 
 @pytest.mark.parametrize("number", [0, zero, -zero])
 def test_pow_object_zero(number):
     power = t_jet(order)
-    t_series = s_4 ** number
+    t_series = s_4**number
     for k in range(order):
         power[k] = t_pwr(power, s_4.jet, number, k)
         assert power[k] == t_series.jet[k]
-    dual = d_4 ** number
-    series = ~s_4 ** number
+    dual = d_4**number
+    series = ~s_4**number
     assert len(series.jet) == order
     assert abs(dual.val - 1.0) < ε
     assert abs(dual.der) < ε
@@ -614,18 +614,18 @@ def test_pow_object_zero(number):
 
 @pytest.mark.parametrize("number", [i5, - i5, f3, - f3])
 def test_pow_object_number(number):
-    dual = d_4 ** number
-    assert abs(dual.val - f4 ** number) < ε
-    assert abs(dual.der - number * f4 ** (number - 1.0)) < ε
-    series = ~s_4 ** number
+    dual = d_4**number
+    assert abs(dual.val - f4**number) < ε
+    assert abs(dual.der - number * f4**(number - 1.0)) < ε
+    series = ~s_4**number
     assert len(series.jet) == order
-    assert abs(series.val - f4 ** number) < ε
-    assert abs(series.jet[1] - number * f4 ** (number - 1.0)) < ε
-    dual = d_4 ** -number
-    assert abs(dual.val - 1.0 / f4 ** number) < ε
-    series = ~s_4 ** -number
+    assert abs(series.val - f4**number) < ε
+    assert abs(series.jet[1] - number * f4**(number - 1.0)) < ε
+    dual = d_4**-number
+    assert abs(dual.val - 1.0 / f4**number) < ε
+    series = ~s_4**-number
     assert len(series.jet) == order
-    assert abs(series.val - 1.0 / f4 ** number) < ε
+    assert abs(series.val - 1.0 / f4**number) < ε
 
 @pytest.mark.domain
 @pytest.mark.parametrize("number", [1, δ])
@@ -796,11 +796,11 @@ def test_tan():
         assert secant2[k] == t_series_sec2.jet[k]
     dual = Dual.get(pi / f4).var.tan
     assert abs(dual.val - tan(pi / f4)) < ε
-    assert abs(dual.der - (1.0 + tan(pi / f4) ** 2)) < ε
+    assert abs(dual.der - (1.0 + tan(pi / f4)**2)) < ε
     series = ~Series.get(order, pi / f4).var.tan
     assert len(series.jet) == order
     assert abs(series.val - tan(pi / f4)) < ε
-    assert abs(series.jet[1] - (1.0 + tan(pi / f4) ** 2)) < ε
+    assert abs(series.jet[1] - (1.0 + tan(pi / f4)**2)) < ε
 
 def test_sinh():
     h_sine, h_cosine = t_jet(order), t_jet(order)
@@ -843,11 +843,11 @@ def test_tanh():
         assert h_secant2[k] == t_series_sech2.jet[k]
     dual = Dual.get(pi / f4).var.tanh
     assert abs(dual.val - tanh(pi / f4)) < ε
-    assert abs(dual.der - (1.0 - tanh(pi / f4) ** 2)) < ε
+    assert abs(dual.der - (1.0 - tanh(pi / f4)**2)) < ε
     series = ~Series.get(order, pi / f4).var.tanh
     assert len(series.jet) == order
     assert abs(series.val - tanh(pi / f4)) < ε
-    assert abs(series.jet[1] - (1.0 - tanh(pi / f4) ** 2)) < ε
+    assert abs(series.jet[1] - (1.0 - tanh(pi / f4)**2)) < ε
 
 def test_var():
     dual = Dual.get(f3).var

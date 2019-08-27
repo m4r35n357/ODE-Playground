@@ -5,7 +5,7 @@ def square(a):
     return a**2.0
 
 def messy(a):
-    return (a - 1) ** 2 / (a.cosh + 1).ln - 1
+    return (a - 1)**2 / (a.cosh + 1).ln - 1
 
 def lorentz(v):
     # Example: ./models.py BI 9 .001 .999 1001 7 1e-12 1e-12 | ./plotMany.py 1 10 >/dev/null

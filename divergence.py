@@ -16,7 +16,7 @@ NORMAL = '\x1B[0m'
 
 def diverged(x, y, thresh):
     return sqrt(
-        (float(x[0]) - float(y[0])) ** 2 + (float(x[1]) - float(y[1])) ** 2 + (float(x[2]) - float(y[2])) ** 2) > thresh
+        (float(x[0]) - float(y[0]))**2 + (float(x[1]) - float(y[1]))**2 + (float(x[2]) - float(y[2]))**2) > thresh
 
 
 def main():
