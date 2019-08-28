@@ -320,7 +320,7 @@ class Dual:
         return Dual(self.val, 1.0)
 
     @staticmethod
-    def solve(model, x0, εf=1e-15, εx=1e-15, limit=101, debug=False):  # Dual-based Newton solver for Python consoles
+    def solve(model, x0, εf=1e-12, εx=1e-12, limit=101, debug=False):  # Dual-based Newton solver for Python consoles
         x, f = Dual.get(x0).var, Dual.get(1)
         δx = count = 1
         while abs(f.val) > εf or abs(δx) > εx:
@@ -328,7 +328,7 @@ class Dual:
             δx = - f.val / f.der
             x += δx
             if debug:
-                print(f"x {x.val:+.3e}  f {f.val:+.3e}  δx {δx:+.3e}  count {count - 1}")
+                print(f"x {x.val:+.3e}  δx {δx:+.3e}  f {f.val:+.3e}  count {count}")
             count += 1
             if count == limit + 1:
                 break

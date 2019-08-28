@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 
-# Example:  ./solver.py NA -1.0  1.0 1e-15 1e-15 1000 0.0
-# Example:  ./solver.py NA  1.0  3.0 1e-15 1e-15 1000 0.0
+# Example:  ./solver.py NA 6 4.0 3.0 1e-12 1e-12 101 ROOT___
 
 from sys import argv, exit, stderr
 from ad import Context
-from playground import Solver, bisect, falsi, secant, newton, householder
+from playground import Solver, Mode, bisect, falsi, secant, newton, householder
 
 method = Solver.NA
 try:
@@ -20,37 +19,43 @@ xb = float(argv[4])
 f_tol = float(argv[5])
 x_tol = float(argv[6])
 max_it = int(argv[7])
-target = float(argv[8])
+mode = Mode.ROOT___
+try:
+    mode = Mode[argv[8]]
+except KeyError:
+    print(f"INVALID ANALYSIS MODE: '{argv[8]}'", file=stderr)
+    print(Mode.__members__.keys(), file=stderr)
+    exit()
 
 xc = (xa + xb) / 2.0
-model = lambda x: (x - 1)**2 / (x.cosh + 1).ln - 1
+model = lambda x: x**3 - 4 * x**2 + 3 * x - 2
 
 if method in [Solver.BI, Solver.NA]:
-    bisect(model, xa, xb, y=target, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
+    bisect(model, xa, xb, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
     print("")
 if method in [Solver.FP, Solver.NA]:
-    falsi(model, xa, xb, y=target, εf=f_tol, εx=x_tol, limit=max_it, illinois=False, debug=True)
+    falsi(model, xa, xb, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, illinois=False, debug=True)
     print("")
 if method in [Solver.FI, Solver.NA]:
-    falsi(model, xa, xb, y=target, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
+    falsi(model, xa, xb, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
     print("")
 if method in [Solver.SC, Solver.NA]:
-    secant(model, xa, xb, y=target, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
+    secant(model, xa, xb, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
     print("")
 if method in [Solver.NT, Solver.NA]:
-    newton(model, xc, y=target, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
+    newton(model, xc, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
     print("")
 if method in [Solver.H1, Solver.NA]:
-    householder(model, xc, 2, y=target, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
+    householder(model, xc, 2, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
     print("")
 if method in [Solver.H2, Solver.NA]:
-    householder(model, xc, 3, y=target, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
+    householder(model, xc, 3, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
     print("")
 if method in [Solver.H3, Solver.NA]:
-    householder(model, xc, 4, y=target, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
+    householder(model, xc, 4, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
     print("")
 if method in [Solver.H4, Solver.NA]:
-    householder(model, xc, 5, y=target, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
+    householder(model, xc, 5, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
     print("")
 
 
@@ -59,9 +64,9 @@ if method in [Solver.H4, Solver.NA]:
 from ad import *
 from playground import *
 
-model = lambda x: (x - 1)**2 / (x.cosh + 1).ln - 1
+model = lambda x: x**3 - 4 * x**2 + 3 * x - 2
 
-x0 = 1.0
+x0 = 4.0
 x1 = 3.0
 x2 = (x0 + x1) / 2.0
 y = 0.0
