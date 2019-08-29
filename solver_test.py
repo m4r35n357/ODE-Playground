@@ -1,6 +1,6 @@
 
 #  pytest --cov=ad --cov=playground --cov-report html:cov_html ad_test.py solver_test.py -v
-from playground import bisect, falsi, secant, newton, householder, analyze, Solver, Mode
+from playground import bisect, newton, analyze, Solver, Mode
 import pytest
 
 order = 6
@@ -32,45 +32,6 @@ def test_bisect(a, b, mode, target_f):
     assert abs(result.f) < ε
     assert abs(target_f - result.x) < δ
 
-@pytest.mark.skip
-@pytest.mark.parametrize("a, b, mode, target_f",
-                         [(a_max, b_max, Mode.MIN_MAX, x_max),
-                          (a_infl, b_infl, Mode.INFLECT, x_infl),
-                          (a_min, b_min, Mode.MIN_MAX, x_min),
-                          (a_root, b_root, Mode.ROOT___, x_root)])
-def test_false_position(a, b, mode, target_f):
-    result = falsi(model, a, b, εf=f_tol, εx=x_tol, limit=max_it, illinois=False, mode=mode, debug=True)
-    assert result.count < max_it
-    assert abs(result.δx) < δ
-    assert abs(result.f) < ε
-    assert abs(target_f - result.x) < δ
-
-@pytest.mark.skip
-@pytest.mark.parametrize("a, b, mode, target_f",
-                         [(a_max, b_max, Mode.MIN_MAX, x_max),
-                          (a_infl, b_infl, Mode.INFLECT, x_infl),
-                          (a_min, b_min, Mode.MIN_MAX, x_min),
-                          (a_root, b_root, Mode.ROOT___, x_root)])
-def test_false_position_illinois(a, b, mode, target_f):
-    result = falsi(model, a, b, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
-    assert result.count < max_it
-    assert abs(result.δx) < δ
-    assert abs(result.f) < ε
-    assert abs(target_f - result.x) < δ
-
-@pytest.mark.skip
-@pytest.mark.parametrize("a, b, mode, target_f",
-                         [(a_max, b_max, Mode.MIN_MAX, x_max),
-                          (a_infl, b_infl, Mode.INFLECT, x_infl),
-                          (a_min, b_min, Mode.MIN_MAX, x_min),
-                          (a_root, b_root, Mode.ROOT___, x_root)])
-def test_secant(a, b, mode, target_f):
-    result = secant(model, a, b, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
-    assert result.count < max_it
-    assert abs(result.δx) < δ
-    assert abs(result.f) < ε
-    assert abs(target_f - result.x) < δ
-
 @pytest.mark.parametrize("a, b, mode, target_f",
                          [(a_max, b_max, Mode.MIN_MAX, x_max),
                           (a_infl, b_infl, Mode.INFLECT, x_infl),
@@ -83,88 +44,20 @@ def test_newton(a, b, mode, target_f):
     assert abs(result.f) < ε
     assert abs(target_f - result.x) < δ
 
-@pytest.mark.skip
-@pytest.mark.parametrize("a, b, mode, target_f",
-                         [(a_max, b_max, Mode.MIN_MAX, x_max),
-                          (a_infl, b_infl, Mode.INFLECT, x_infl),
-                          (a_min, b_min, Mode.MIN_MAX, x_min),
-                          (a_root, b_root, Mode.ROOT___, x_root)])
-def test_householder_1(a, b, mode, target_f):
-    result = householder(model, (a + b) / 2.0, 2, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
-    assert result.count < max_it
-    assert abs(result.δx) < δ
-    assert abs(result.f) < ε
-    assert abs(target_f - result.x) < δ
-
-@pytest.mark.skip
-@pytest.mark.parametrize("a, b, mode, target_f",
-                         [(a_max, b_max, Mode.MIN_MAX, x_max),
-                          (a_infl, b_infl, Mode.INFLECT, x_infl),
-                          (a_min, b_min, Mode.MIN_MAX, x_min),
-                          (a_root, b_root, Mode.ROOT___, x_root)])
-def test_householder_2(a, b, mode, target_f):
-    result = householder(model, (a + b) / 2.0, 3, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
-    assert result.count < max_it
-    assert abs(result.δx) < δ
-    assert abs(result.f) < ε
-    assert abs(target_f - result.x) < δ
-
-@pytest.mark.skip
-@pytest.mark.parametrize("a, b, mode, target_f",
-                         [(a_max, b_max, Mode.MIN_MAX, x_max),
-                          (a_infl, b_infl, Mode.INFLECT, x_infl),
-                          (a_min, b_min, Mode.MIN_MAX, x_min),
-                          (a_root, b_root, Mode.ROOT___, x_root)])
-def test_householder_3(a, b, mode, target_f):
-    result = householder(model, (a + b) / 2.0, 4, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
-    assert result.count < max_it
-    assert abs(result.δx) < δ
-    assert abs(result.f) < ε
-    assert abs(target_f - result.x) < δ
-
-@pytest.mark.skip
-@pytest.mark.parametrize("a, b, mode, target_f",
-                         [(a_max, b_max, Mode.MIN_MAX, x_max),
-                          (a_infl, b_infl, Mode.INFLECT, x_infl),
-                          (a_min, b_min, Mode.MIN_MAX, x_min),
-                          (a_root, b_root, Mode.ROOT___, x_root)])
-def test_householder_4(a, b, mode, target_f):
-    result = householder(model, (a + b) / 2.0, 5, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
-    assert result.count < max_it
-    assert abs(result.δx) < δ
-    assert abs(result.f) < ε
-    assert abs(target_f - result.x) < δ
-
 def test_analysis_bisection():
     results = []
     for result in analyze(model, Solver.BI, -8.0, 8.0, points, f_tol, x_tol, limit=max_it, order=order):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 4
-
-@pytest.mark.skip
-def test_analysis_false_position():
-    results = []
-    for result in analyze(model, Solver.FP, -8.0, 8.0, points, f_tol, x_tol, limit=max_it, order=order):
-        if result.count < max_it:
-            results.append(result)
-    assert len(results) == 4
-
-@pytest.mark.skip
-def test_analysis_false_position_illinois():
-    results = []
-    for result in analyze(model, Solver.FI, -8.0, 8.0, points, f_tol, x_tol, limit=max_it, order=order):
-        if result.count < max_it:
-            results.append(result)
-    assert len(results) == 4
-
-@pytest.mark.skip
-def test_analysis_secant():
-    results = []
-    for result in analyze(model, Solver.SC, -8.0, 8.0, points, f_tol, x_tol, limit=max_it, order=order):
-        if result.count < max_it:
-            results.append(result)
-    assert len(results) == 4
+    assert results[0].mode == Mode.MIN_MAX.name
+    assert abs(results[0].x - x_max) < δ
+    assert results[1].mode == Mode.INFLECT.name
+    assert abs(results[1].x - x_infl) < δ
+    assert results[2].mode == Mode.MIN_MAX.name
+    assert abs(results[2].x - x_min) < δ
+    assert results[3].mode == Mode.ROOT___.name
+    assert abs(results[3].x - x_root) < δ
 
 def test_analysis_newton():
     results = []
@@ -172,35 +65,11 @@ def test_analysis_newton():
         if result.count < max_it:
             results.append(result)
     assert len(results) == 4
-
-@pytest.mark.skip
-def test_analysis_householder_newton():
-    results = []
-    for result in analyze(model, Solver.H1, -8.0, 8.0, points, f_tol, x_tol, limit=max_it, order=order):
-        if result.count < max_it:
-            results.append(result)
-    assert len(results) == 4
-
-@pytest.mark.skip
-def test_analysis_householder_halley():
-    results = []
-    for result in analyze(model, Solver.H2, -8.0, 8.0, points, f_tol, x_tol, limit=max_it, order=order):
-        if result.count < max_it:
-            results.append(result)
-    assert len(results) == 4
-
-@pytest.mark.skip
-def test_analysis_householder_3():
-    results = []
-    for result in analyze(model, Solver.H3, -8.0, 8.0, points, f_tol, x_tol, limit=max_it, order=order):
-        if result.count < max_it:
-            results.append(result)
-    assert len(results) == 4
-
-@pytest.mark.skip
-def test_analysis_householder_4():
-    results = []
-    for result in analyze(model, Solver.H4, -8.0, 8.0, points, f_tol, x_tol, limit=max_it, order=order):
-        if result.count < max_it:
-            results.append(result)
-    assert len(results) == 4
+    assert results[0].mode == Mode.MIN_MAX.name
+    assert abs(results[0].x - x_max) < δ
+    assert results[1].mode == Mode.INFLECT.name
+    assert abs(results[1].x - x_infl) < δ
+    assert results[2].mode == Mode.MIN_MAX.name
+    assert abs(results[2].x - x_min) < δ
+    assert results[3].mode == Mode.ROOT___.name
+    assert abs(results[3].x - x_root) < δ
