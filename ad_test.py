@@ -6,7 +6,7 @@
 #  rm -f .mutmut-cache; mutmut --test-time-base 6.0 --paths-to-mutate ad.py run --runner 'pytest ad_test.py'
 #  cosmic-ray init config.toml my_session.sqlite; cosmic-ray exec my_session.sqlite
 #  cr-html my_session.sqlite > my_session.html
-from math import pi, e, exp, log, sin, cos, tan, sinh, cosh, tanh
+from math import pi, e, exp, log, sin, cos, tan, sinh, cosh, tanh, sqrt
 from ad import t_jet, t_horner, t_prod, t_quot, t_pwr, t_exp, t_ln, t_sin_cos, t_tan_sec2, Series, Dual
 import pytest
 
@@ -859,6 +859,13 @@ def test_var():
     assert abs(series.jet[1] - 1.0) < ε
     for term in series.jet[2:]:
         assert abs(term) < ε
+
+def test_solve():
+    model = lambda x: x**2 - a
+    a = 2.0
+    max_iterations = 1
+    assert abs(Dual.solve(model, x0=1.0)['x'] - sqrt(a)) < ε
+    assert Dual.solve(model, x0=1.0, limit=max_iterations, debug=True)['count'] == max_iterations
 
 #  Zero identities
 @pytest.mark.toplevel

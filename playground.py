@@ -87,19 +87,19 @@ def analyze(model, method, x0, x1, steps, εf, εx, limit, order):
                     s = Sense.DECREASING if f0_prev > f.val else Sense.INCREASING
                     if method == Solver.BI:
                         yield bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s)
-                    elif method == Solver.NT:
+                    if method == Solver.NT:
                         yield newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=s)
                 if f1_prev * f.jet[Mode.MIN_MAX.value] < 0.0:
                     s = Sense.DECREASING if f1_prev > f.jet[Mode.MIN_MAX.value] else Sense.INCREASING
                     if method == Solver.BI:
                         yield bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
-                    elif method == Solver.NT:
+                    if method == Solver.NT:
                         yield newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
                 if f2_prev * f.jet[Mode.INFLECT.value] < 0.0:
                     s = Sense.DECREASING if f2_prev > f.jet[Mode.INFLECT.value] else Sense.INCREASING
                     if method == Solver.BI:
                         yield bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT)
-                    elif method == Solver.NT:
+                    if method == Solver.NT:
                         yield newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT)
         x_prev = x.val
         f0_prev = f.val

@@ -20,6 +20,11 @@ a_infl, b_infl, x_infl = 1.0, 2.0, +1.333333333e+00
 a_min, b_min, x_min = 2.0, 3.0, +2.215250437e+00
 a_root, b_root, x_root = 3.0, 4.0, +3.269530842e+00
 
+def test_bail():
+    max_iterations = 1
+    assert bisect(model, a_root, b_root, εf=f_tol, εx=x_tol, limit=max_iterations).count == max_iterations
+    assert newton(model, (a_root + b_root) / 2.0, εf=f_tol, εx=x_tol, limit=max_iterations).count == max_iterations
+
 @pytest.mark.parametrize("a, b, mode, target_f",
                          [(a_max, b_max, Mode.MIN_MAX, x_max),
                           (a_infl, b_infl, Mode.INFLECT, x_infl),
@@ -43,6 +48,13 @@ def test_newton(a, b, mode, target_f):
     assert abs(result.δx) < δ
     assert abs(result.f) < ε
     assert abs(target_f - result.x) < δ
+
+def test_analysis_na():
+    results = []
+    for result in analyze(model, Solver.NA, -8.0, 8.0, points, f_tol, x_tol, limit=max_it, order=order):
+        if result.count < max_it:
+            results.append(result)
+    assert len(results) == 0
 
 def test_analysis_bisection():
     results = []
