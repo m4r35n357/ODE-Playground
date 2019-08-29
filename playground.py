@@ -44,7 +44,7 @@ class Result(namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', 'sens
 
 def bisect(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
     m = Solver.BI
-    a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
+    a, b, c = Series.get(3, xa).var, Series.get(3, xb).var, Series.get(3)
     fc = Series.get(3, 1)
     f_sign = ~ model(a)
     δx = count = 1
@@ -66,20 +66,20 @@ def bisect(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mod
 
 def falsi(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, illinois=True, debug=False):
     m = Solver.FI if illinois else Solver.FP
-    a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
+    a, b, c = Series.get(3, xa).var, Series.get(3, xb).var, Series.get(3)
     fa, fb, fc = ~ model(a), ~ model(b), Series.get(3, 1)
     δx = count = 1
     side = 0
     while abs(fc.jet[mode.value]) > εf or abs(δx) > εx:
         c = (a * fb - b * fa) / (fb - fa)
         fc = ~ model(c)
-        if fa.jet[mode.value] * fc.jet[mode.value] > 0.0:
+        if fb.jet[mode.value] * fc.jet[mode.value] < 0.0:
             a, fa = c, fc
             if illinois:
                 if side == -1:
                     fb *= 0.5
                 side = -1
-        elif fb.jet[mode.value] * fc.jet[mode.value] > 0.0:
+        elif fa.jet[mode.value] * fc.jet[mode.value] < 0.0:
             b, fb = c, fc
             if illinois:
                 if side == +1:
@@ -96,7 +96,7 @@ def falsi(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode
 
 def secant(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
     m = Solver.SC
-    a, b, c = Series.get(3, xa), Series.get(3, xb), Series.get(3)
+    a, b, c = Series.get(3, xa).var, Series.get(3, xb).var, Series.get(3)
     fa, fb, fc = ~ model(a), ~ model(b), Series.get(3, 1)
     δx = count = 1
     while abs(fc.jet[mode.value]) > εf or abs(δx) > εx:

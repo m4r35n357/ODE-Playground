@@ -1,7 +1,6 @@
 
 #  pytest --cov=ad --cov=playground --cov-report html:cov_html ad_test.py solver_test.py -v
-from ad import Dual
-from playground import bisect, falsi, secant, newton, householder, analyze, Solver
+from playground import bisect, falsi, secant, newton, householder, analyze, Solver, Mode
 import pytest
 
 order = 6
@@ -13,73 +12,128 @@ xc = (xa + xb) / 2.0
 f_tol = ε
 x_tol = ε
 max_it = 101
-target_f = 0.0
 model = lambda x: x**3 - 4 * x**2 + 3 * x - 2
 points = 101
 
-def test_bisect():
-    result = bisect(model, xa, xb, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
+a_max, b_max, x_max = 0.0, 1.0, +4.514162296e-01
+a_infl, b_infl, x_infl = 1.0, 2.0, +1.333333333e+00
+a_min, b_min, x_min = 2.0, 3.0, +2.215250437e+00
+a_root, b_root, x_root = 3.0, 4.0, +3.269530842e+00
+
+@pytest.mark.parametrize("a, b, mode, target_f",
+                         [(a_max, b_max, Mode.MIN_MAX, x_max),
+                          (a_infl, b_infl, Mode.INFLECT, x_infl),
+                          (a_min, b_min, Mode.MIN_MAX, x_min),
+                          (a_root, b_root, Mode.ROOT___, x_root)])
+def test_bisect(a, b, mode, target_f):
+    result = bisect(model, a, b, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
     assert result.count < max_it
     assert abs(result.δx) < δ
     assert abs(result.f) < ε
-    assert abs(target_f - model(Dual.get(result.x)).val) < ε
+    assert abs(target_f - result.x) < δ
 
 @pytest.mark.skip
-def test_false_position():
-    result = falsi(model, xa, xb, εf=f_tol, εx=x_tol, limit=max_it, illinois=False, debug=True)
+@pytest.mark.parametrize("a, b, mode, target_f",
+                         [(a_max, b_max, Mode.MIN_MAX, x_max),
+                          (a_infl, b_infl, Mode.INFLECT, x_infl),
+                          (a_min, b_min, Mode.MIN_MAX, x_min),
+                          (a_root, b_root, Mode.ROOT___, x_root)])
+def test_false_position(a, b, mode, target_f):
+    result = falsi(model, a, b, εf=f_tol, εx=x_tol, limit=max_it, illinois=False, mode=mode, debug=True)
     assert result.count < max_it
     assert abs(result.δx) < δ
     assert abs(result.f) < ε
-    assert abs(target_f - model(Dual.get(result.x)).val) < ε
+    assert abs(target_f - result.x) < δ
 
-def test_false_position_illinois():
-    result = falsi(model, xa, xb, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
+@pytest.mark.skip
+@pytest.mark.parametrize("a, b, mode, target_f",
+                         [(a_max, b_max, Mode.MIN_MAX, x_max),
+                          (a_infl, b_infl, Mode.INFLECT, x_infl),
+                          (a_min, b_min, Mode.MIN_MAX, x_min),
+                          (a_root, b_root, Mode.ROOT___, x_root)])
+def test_false_position_illinois(a, b, mode, target_f):
+    result = falsi(model, a, b, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
     assert result.count < max_it
     assert abs(result.δx) < δ
     assert abs(result.f) < ε
-    assert abs(target_f - model(Dual.get(result.x)).val) < ε
+    assert abs(target_f - result.x) < δ
 
-def test_secant():
-    result = secant(model, xa, xb, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
+@pytest.mark.skip
+@pytest.mark.parametrize("a, b, mode, target_f",
+                         [(a_max, b_max, Mode.MIN_MAX, x_max),
+                          (a_infl, b_infl, Mode.INFLECT, x_infl),
+                          (a_min, b_min, Mode.MIN_MAX, x_min),
+                          (a_root, b_root, Mode.ROOT___, x_root)])
+def test_secant(a, b, mode, target_f):
+    result = secant(model, a, b, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
     assert result.count < max_it
     assert abs(result.δx) < δ
     assert abs(result.f) < ε
-    assert abs(target_f - model(Dual.get(result.x)).val) < ε
+    assert abs(target_f - result.x) < δ
 
-def test_newton():
-    result = newton(model, xc, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
+@pytest.mark.parametrize("a, b, mode, target_f",
+                         [(a_max, b_max, Mode.MIN_MAX, x_max),
+                          (a_infl, b_infl, Mode.INFLECT, x_infl),
+                          (a_min, b_min, Mode.MIN_MAX, x_min),
+                          (a_root, b_root, Mode.ROOT___, x_root)])
+def test_newton(a, b, mode, target_f):
+    result = newton(model, (a + b) / 2.0, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
     assert result.count < max_it
     assert abs(result.δx) < δ
     assert abs(result.f) < ε
-    assert abs(target_f - model(Dual.get(result.x)).val) < ε
+    assert abs(target_f - result.x) < δ
 
-def test_householder_1():
-    result = householder(model, xc, 2, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
+@pytest.mark.skip
+@pytest.mark.parametrize("a, b, mode, target_f",
+                         [(a_max, b_max, Mode.MIN_MAX, x_max),
+                          (a_infl, b_infl, Mode.INFLECT, x_infl),
+                          (a_min, b_min, Mode.MIN_MAX, x_min),
+                          (a_root, b_root, Mode.ROOT___, x_root)])
+def test_householder_1(a, b, mode, target_f):
+    result = householder(model, (a + b) / 2.0, 2, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
     assert result.count < max_it
     assert abs(result.δx) < δ
     assert abs(result.f) < ε
-    assert abs(target_f - model(Dual.get(result.x)).val) < ε
+    assert abs(target_f - result.x) < δ
 
-def test_householder_2():
-    result = householder(model, xc, 3, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
+@pytest.mark.skip
+@pytest.mark.parametrize("a, b, mode, target_f",
+                         [(a_max, b_max, Mode.MIN_MAX, x_max),
+                          (a_infl, b_infl, Mode.INFLECT, x_infl),
+                          (a_min, b_min, Mode.MIN_MAX, x_min),
+                          (a_root, b_root, Mode.ROOT___, x_root)])
+def test_householder_2(a, b, mode, target_f):
+    result = householder(model, (a + b) / 2.0, 3, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
     assert result.count < max_it
     assert abs(result.δx) < δ
     assert abs(result.f) < ε
-    assert abs(target_f - model(Dual.get(result.x)).val) < ε
+    assert abs(target_f - result.x) < δ
 
-def test_householder_3():
-    result = householder(model, xc, 4, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
+@pytest.mark.skip
+@pytest.mark.parametrize("a, b, mode, target_f",
+                         [(a_max, b_max, Mode.MIN_MAX, x_max),
+                          (a_infl, b_infl, Mode.INFLECT, x_infl),
+                          (a_min, b_min, Mode.MIN_MAX, x_min),
+                          (a_root, b_root, Mode.ROOT___, x_root)])
+def test_householder_3(a, b, mode, target_f):
+    result = householder(model, (a + b) / 2.0, 4, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
     assert result.count < max_it
     assert abs(result.δx) < δ
     assert abs(result.f) < ε
-    assert abs(target_f - model(Dual.get(result.x)).val) < ε
+    assert abs(target_f - result.x) < δ
 
-def test_householder_4():
-    result = householder(model, xc, 5, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
+@pytest.mark.skip
+@pytest.mark.parametrize("a, b, mode, target_f",
+                         [(a_max, b_max, Mode.MIN_MAX, x_max),
+                          (a_infl, b_infl, Mode.INFLECT, x_infl),
+                          (a_min, b_min, Mode.MIN_MAX, x_min),
+                          (a_root, b_root, Mode.ROOT___, x_root)])
+def test_householder_4(a, b, mode, target_f):
+    result = householder(model, (a + b) / 2.0, 5, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
     assert result.count < max_it
     assert abs(result.δx) < δ
     assert abs(result.f) < ε
-    assert abs(target_f - model(Dual.get(result.x)).val) < ε
+    assert abs(target_f - result.x) < δ
 
 def test_analysis_bisection():
     results = []
@@ -104,6 +158,7 @@ def test_analysis_false_position_illinois():
             results.append(result)
     assert len(results) == 4
 
+@pytest.mark.skip
 def test_analysis_secant():
     results = []
     for result in analyze(model, Solver.SC, -8.0, 8.0, points, f_tol, x_tol, limit=max_it, order=order):
