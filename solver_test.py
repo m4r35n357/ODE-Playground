@@ -1,4 +1,7 @@
 
+#  Plotting
+#  ./models.py BI 9 -5 5 1001 13 1e-12 1e-12 | ./plotMany.py 5 10 >/dev/null
+#  Unit Testing
 #  pytest --cov=ad --cov=playground --cov-report html:cov_html ad_test.py solver_test.py -v
 from playground import bisect, newton, analyze, Solver, Mode
 import pytest

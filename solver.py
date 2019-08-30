@@ -33,6 +33,7 @@ model = lambda x: x**3 - 4 * x**2 + 3 * x - 2
 if method in [Solver.BI, Solver.NA]:
     bisect(model, xa, xb, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
     print("")
+
 if method in [Solver.NT, Solver.NA]:
     newton(model, xc, εf=f_tol, εx=x_tol, limit=max_it, mode=mode, debug=True)
     print("")

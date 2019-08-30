@@ -1,11 +1,8 @@
-#!/usr/bin/env python3
+
 #  Unit Testing
 #  pytest --cov=ad --cov-report html:cov_html ad_test.py -v
 #  Mutation Testing
-#  mut.py --runner pytest --target ad.py --unit-test ad_test -c --disable-operator AOR CRP DDL CDI SDI SDL SVD -e
-#  rm -f .mutmut-cache; mutmut --test-time-base 6.0 --paths-to-mutate ad.py run --runner 'pytest ad_test.py'
-#  cosmic-ray init config.toml my_session.sqlite; cosmic-ray exec my_session.sqlite
-#  cr-html my_session.sqlite > my_session.html
+#  rm -f .mutmut-cache; mutmut --test-time-base 8.0 --paths-to-mutate ad.py run --runner 'pytest ad_test.py'
 from math import pi, e, exp, log, sin, cos, tan, sinh, cosh, tanh, sqrt
 from ad import t_jet, t_horner, t_prod, t_quot, t_pwr, t_exp, t_ln, t_sin_cos, t_tan_sec2, Series, Dual
 import pytest
