@@ -73,7 +73,7 @@ The dependencies are:
 * matplotlib for 2D graphs
 * pi3d for 3D trajectories (the visual python implementation is still distributed but is now considered legacy)
 
-## Getting started with Python/gmpy2
+## Getting started
 
 There is a Python 3 version of the ODE solver programs with built-in models.
 Dependencies of Python 3 programs:
@@ -151,14 +151,7 @@ Code | Meaning
 ----------|-----------
 NA | No analysis
 BI | Bisection method
-FP | False Position method
-FI | False Position method (Illinois Algorithm)
-SC | Secant method
 NT | Newton's method
-H1 | Householder's method, degree 1 (Newton)
-H2 | Householder's method, degree 2 (Halley)
-H3 | Householder's method, degree 3
-H4 | Householder's method, degree 4
 
 Here is an invocation for the function (x - 1)^2
 ```
@@ -174,22 +167,21 @@ ResultType(count=1, sense='+', mode='MIN_MAX', x=1.0000000000000009, f=7.8886090
 ## Interactivity
 Here is a quick example of interactive use; function inversion.
 ```
-$ ipython3 
+$ ipython3
 Python 3.7.1 (default, Oct 22 2018, 11:21:55) 
 Type 'copyright', 'credits' or 'license' for more information
 IPython 7.2.0 -- An enhanced Interactive Python. Type '?' for help.
 
-In [1]: from ad import *                                                        
+In [1]: from ad import * 
+   ...: from playground import *                                               
 ad module loaded
-
-In [2]: from playground import *                                                
 playground module loaded
 
-In [3]: newton(lambda x: (x**2), x0=1.0, target=2.0)                            
-Out[3]: ResultType(count=7, sense='', mode='ROOT', x=1.414213562373095, f=2.0000000000000004, dx=-1.5700924586837747e-16)
+In [2]: bisect(lambda x: x**2 - 2, xa=0.0, xb=2.0)                             
+Out[2]: Result(method='BI', x=1.414213562372879, f=-6.108447081487611e-13, δx=4.547473508864641e-13, count=42, sense='_', mode='ROOT___')
 
-In [4]: bisect(lambda x: (x**2), xa=1.4, xb=1.5, target=2.0)                    
-Out[4]: ResultType(count=38, sense='', mode='ROOT', x=1.4142135623733338, f=2.0000000000006755, dx=7.276401703393276e-13)
+In [3]: newton(lambda x: x**2 - 2, x0=1.0)                                     
+Out[3]: Result(method='NT', x=1.414213562373095, f=4.440892098500626e-16, δx=-1.570092458683775e-16, count=6, sense='_', mode='ROOT___')
 ```
 Here we differentiate a simple function of three variables with respect to each one.
 This is done twice; first using the Dual class and then using the Series class.
