@@ -860,13 +860,6 @@ def test_var():
     for term in series.jet[2:]:
         assert abs(term) < ε
 
-def test_solve():
-    model = lambda x: x**2 - a
-    a = 2.0
-    max_iterations = 1
-    assert abs(Dual.solve(model, x0=1.0)['x'] - sqrt(a)) < ε
-    assert Dual.solve(model, x0=1.0, limit=max_iterations, debug=True)['count'] == max_iterations
-
 #  Zero identities
 @pytest.mark.toplevel
 def test_diff_squares():

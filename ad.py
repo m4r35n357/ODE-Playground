@@ -319,21 +319,6 @@ class Dual:
     def var(self):
         return Dual(self.val, 1.0)
 
-    @classmethod
-    def solve(cls, model, x0, εf=1e-12, εx=1e-12, limit=101, debug=False):  # Dual-based Newton solver for Python consoles
-        x, f = cls.get(x0).var, cls.get(1)
-        δx = count = 1
-        while abs(f.val) > εf or abs(δx) > εx:
-            f = model(x)
-            δx = - f.val / f.der
-            x += δx
-            if debug:
-                print(f"x {x.val:+.3e}  δx {δx:+.3e}  f {f.val:+.3e}  count {count}")
-            count += 1
-            if count == limit + 1:
-                break
-        return {'x': x.val, 'f': f.val, 'δx': δx, 'count': count - 1}  # Dual.solve(lambda x: x**6 - 64, x0=1.0)
-
 
 class Context:
     places = 3
