@@ -856,6 +856,14 @@ def test_var():
     assert abs(series.jet[1] - 1.0) < ε
     for term in series.jet[2:]:
         assert abs(term) < ε
+    length = - 1
+    try:
+        length = len(Series.get(1).var.jet)
+        assert False
+    except AssertionError:
+        assert length == -1
+    assert len(Series.get(2).var.jet) == 2
+
 
 #  Zero identities
 @pytest.mark.toplevel

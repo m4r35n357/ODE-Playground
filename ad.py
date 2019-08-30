@@ -200,6 +200,7 @@ class Series:
 
     @property
     def var(self):
+        assert self.n > 1, f"Order-1 series {self.val} cannot be a variable"
         return Series([self.val] + [1.0] + [0.0] * (self.n - 2))
 
 

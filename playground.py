@@ -37,8 +37,8 @@ class Result(namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', 'sens
 
 def bisect(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
     m = Solver.BI
-    a, b, c = Series.get(1 + mode.value, xa).var, Series.get(1 + mode.value, xb).var, Series.get(1 + mode.value)
-    fc = Series.get(1 + mode.value, 1)
+    a, b, c = Series.get(3, xa).var, Series.get(3, xb).var, Series.get(3)
+    fc = Series.get(3, 1)
     f_sign = ~ model(a)
     δx = count = 1
     while abs(fc.jet[mode.value]) > εf or abs(δx) > εx:
