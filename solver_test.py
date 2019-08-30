@@ -16,7 +16,8 @@ f_tol = ε
 x_tol = ε
 max_it = 101
 model = lambda x: x**3 - 4 * x**2 + 3 * x - 2
-points = 101
+n_points = 101
+plot_max = 8
 
 a_max, b_max, x_max = 0.0, 1.0, +4.514162296e-01
 a_infl, b_infl, x_infl = 1.0, 2.0, +1.333333333e+00
@@ -54,14 +55,14 @@ def test_newton(a, b, mode, target_f):
 
 def test_analysis_na():
     results = []
-    for result in analyze(model, Solver.NA, -8.0, 8.0, points, f_tol, x_tol, limit=max_it, order=order):
+    for result in analyze(model, Solver.NA, - plot_max, plot_max, n_points, f_tol, x_tol, limit=max_it, order=order):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 0
 
 def test_analysis_bisection():
     results = []
-    for result in analyze(model, Solver.BI, -8.0, 8.0, points, f_tol, x_tol, limit=max_it, order=order):
+    for result in analyze(model, Solver.BI, - plot_max, plot_max, n_points, f_tol, x_tol, limit=max_it, order=order):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 4
@@ -76,7 +77,7 @@ def test_analysis_bisection():
 
 def test_analysis_newton():
     results = []
-    for result in analyze(model, Solver.NT, -8.0, 8.0, points, f_tol, x_tol, limit=max_it, order=order):
+    for result in analyze(model, Solver.NT, - plot_max, plot_max, n_points, f_tol, x_tol, limit=max_it, order=order):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 4

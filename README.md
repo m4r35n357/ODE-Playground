@@ -182,6 +182,12 @@ Out[2]: Result(method='BI', x=1.414213562372879, f=-6.108447081487611e-13, δx=4
 
 In [3]: newton(lambda x: x**2 - 2, x0=1.0)                                     
 Out[3]: Result(method='NT', x=1.414213562373095, f=4.440892098500626e-16, δx=-1.570092458683775e-16, count=6, sense='_', mode='ROOT___')
+
+In [4]: timeit(bisect(lambda x: x**2 - 2, xa=0.0, xb=2.0))                     
+600 µs ± 10.4 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+
+In [5]: timeit(newton(lambda x: x**2 - 2, x0=1.0))                             
+76 µs ± 1.63 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 ```
 Here we differentiate a simple function of three variables with respect to each one.
 This is done twice; first using the Dual class and then using the Series class.

@@ -44,16 +44,14 @@ from ad import *
 from playground import *
 
 model = lambda x: x**3 - 4 * x**2 + 3 * x - 2
+xa = 4.0
+xb = 3.0
+x0 = (x0 + x1) / 2.0
 
-x0 = 4.0
-x1 = 3.0
-x2 = (x0 + x1) / 2.0
-y = 0.0
+bisect(model, xa, xb, debug=True)
+newton(model, x0, debug=True)
 
-bisect(model, x0, x1, y=y, debug=True)
-newton(model, x0, y=y, debug=True)
-
-timeit(bisect(model, x0, x1, y=y))
-timeit(newton(model, x2, y=y))
+timeit(bisect(model, xa, xb))
+timeit(newton(model, x0))
 
 '''
