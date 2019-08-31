@@ -25,6 +25,6 @@ x_tol = float(argv[8])
 
 limit=101
 
-for result in analyze(playground, mode, x0, x1, steps, f_tol, x_tol, limit=limit, order=order):
+for result in analyze(playground, mode, x0, x1, steps, f_tol, x_tol, limit=limit, order=order, console=False):
     if result.count < limit:
         print(result, file=stderr)
