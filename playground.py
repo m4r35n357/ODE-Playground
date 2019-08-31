@@ -1,10 +1,10 @@
 #
 #  (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-
 from sys import stderr
 from collections import namedtuple
 from enum import Enum, unique
+from math import copysign
 from ad import Context, Series
 
 
@@ -39,12 +39,12 @@ def bisect(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mod
     m = Solver.BI
     a, b, c = Series.get(3, xa).var, Series.get(3, xb).var, Series.get(3)
     fc = Series.get(3, 1)
-    f_sign = ~ model(a)
+    f_sign = copysign(1, (~ model(a)).jet[mode.value])
     δx = count = 1
     while abs(fc.jet[mode.value]) > εf or abs(δx) > εx:
         c = (a + b) / 2
         fc = ~ model(c)
-        if f_sign.jet[mode.value] * fc.jet[mode.value] < 0.0:
+        if f_sign * fc.jet[mode.value] < 0.0:
             b = c
         else:
             a = c
