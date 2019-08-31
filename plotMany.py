@@ -5,12 +5,12 @@ from matplotlib import pyplot
 from ad import Series
 from playground import analyze, Solver
 
-
-def plotter(model, order, x_min, x_max, steps, y_min, y_max, newton=False):
+def mplot(model, order, x_min, x_max, steps, y_min, y_max, newton=False):
+    #  Example: mplot(lambda x: x**3 + 3 * x**2 - 3, 5, -8, 8, 100, -10, 10)
     solver = Solver.NT if newton else Solver.BI
     for result in analyze(model, solver, x_min, x_max, steps, 1e-12, 1e-12, limit=101, order=order):
         if result.count < 101:
-            print(result, file=stderr)
+            print(result)
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')
     ax1.set_xlabel('x', color='.2')
@@ -31,7 +31,6 @@ def plotter(model, order, x_min, x_max, steps, y_min, y_max, newton=False):
         ax1.plot(data[0], data[c], f'{colour[c - 1]}', linewidth=2 if c == 1 else 1, markersize=0, label=c-1)
     ax1.legend(loc='lower right')
     pyplot.show()
-
 
 def main():
     print("Function and Derivative Plotter: {}".format(argv))
@@ -63,7 +62,6 @@ def main():
         ax1.plot(data[0], data[c], '{}'.format(colour[c - 1]), linewidth=2 if c == 1 else 1, markersize=0, label=c-1)
     ax1.legend(loc='lower right')
     pyplot.show()
-
 
 if __name__ == "__main__":
     main()
