@@ -1,4 +1,6 @@
-
+#
+#  (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#
 #  Plotting
 #  ./models.py BI 9 -5 5 1001 13 1e-12 1e-12 | ./plotMany.py 5 10 >/dev/null
 #  Unit Testing

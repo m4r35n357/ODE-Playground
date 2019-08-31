@@ -1,4 +1,6 @@
-
+#
+#  (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#
 from sys import stderr
 from matplotlib import pyplot
 from ad import Series
