@@ -60,24 +60,10 @@ def test_analysis_na():
             results.append(result)
     assert len(results) == 0
 
-def test_analysis_bisection():
+@pytest.mark.parametrize("solver", [Solver.BI, Solver.NT])
+def test_analysis(solver):
     results = []
-    for result in analyze(model, Solver.BI, - plot_max, plot_max, n_points, f_tol, x_tol, limit=max_it, order=order):
-        if result.count < max_it:
-            results.append(result)
-    assert len(results) == 4
-    assert results[0].mode == Mode.MIN_MAX.name
-    assert abs(results[0].x - x_max) < δ
-    assert results[1].mode == Mode.INFLECT.name
-    assert abs(results[1].x - x_infl) < δ
-    assert results[2].mode == Mode.MIN_MAX.name
-    assert abs(results[2].x - x_min) < δ
-    assert results[3].mode == Mode.ROOT___.name
-    assert abs(results[3].x - x_root) < δ
-
-def test_analysis_newton():
-    results = []
-    for result in analyze(model, Solver.NT, - plot_max, plot_max, n_points, f_tol, x_tol, limit=max_it, order=order):
+    for result in analyze(model, solver, - plot_max, plot_max, n_points, f_tol, x_tol, limit=max_it, order=order):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 4
