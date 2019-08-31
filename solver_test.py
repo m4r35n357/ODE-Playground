@@ -5,6 +5,8 @@
 #  ./models.py BI 9 -5 5 1001 13 1e-12 1e-12 | ./plotMany.py 5 10 >/dev/null
 #  Unit Testing
 #  pytest --cov=ad --cov=playground --cov-report html:cov_html ad_test.py solver_test.py -v
+from math import sqrt
+
 from playground import bisect, newton, analyze, Solver, Mode
 import pytest
 
@@ -28,6 +30,14 @@ def test_bail():
     max_iterations = 1
     assert bisect(model, a_root, b_root, εf=f_tol, εx=x_tol, limit=max_iterations).count == max_iterations
     assert newton(model, (a_root + b_root) / 2.0, εf=f_tol, εx=x_tol, limit=max_iterations).count == max_iterations
+
+def test_basic_solve():
+    m = lambda x: x**2 - a
+    a = 2.0
+    result = bisect(m, 1.0, 2.0, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
+    assert abs(result.x - sqrt(a)) < ε
+    result = newton(m, 1.0, εf=f_tol, εx=x_tol, limit=max_it, debug=True)
+    assert abs(result.x - sqrt(a)) < ε
 
 @pytest.mark.parametrize("a, b, mode, target_f",
                          [(a_max, b_max, Mode.MIN_MAX, x_max),
