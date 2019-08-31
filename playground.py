@@ -27,6 +27,7 @@ class Mode(Enum):
     ROOT___ = 0
     MIN_MAX = 1
     INFLECT = 2
+    ALL = 3
 
 
 class Result(namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', 'sense', 'mode'])):
@@ -74,7 +75,7 @@ def newton(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mo
     return Result(method=m.name, count=count - 1, sense=sense.value, mode=mode.name, x=x.val, f=f.jet[mode.value], δx=δx)
 
 
-def analyze(model, method, x0, x1, steps, εf, εx, limit, order, console=True):
+def analyze(model, method, x0, x1, steps, εf, εx, limit, order, mode=Mode.ALL, console=True):
     x_prev = f0_prev = f1_prev = f2_prev = None
     step = (x1 - x0) / (steps - 1)
     for k in range(steps):
@@ -84,19 +85,19 @@ def analyze(model, method, x0, x1, steps, εf, εx, limit, order, console=True):
             print(f'{x.val:.{Context.places}e} {f}')
         if method != Solver.NA:
             if k > 0:
-                if f0_prev * f.val < 0.0:
+                if (mode == Mode.ROOT___ or mode == Mode.ALL) and f0_prev * f.val < 0.0:
                     s = Sense.DECREASING if f0_prev > f.val else Sense.INCREASING
                     if method == Solver.BI:
                         yield bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s)
                     if method == Solver.NT:
                         yield newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=s)
-                if f1_prev * f.jet[Mode.MIN_MAX.value] < 0.0:
+                if (mode == Mode.MIN_MAX or mode == Mode.ALL) and f1_prev * f.jet[Mode.MIN_MAX.value] < 0.0:
                     s = Sense.DECREASING if f1_prev > f.jet[Mode.MIN_MAX.value] else Sense.INCREASING
                     if method == Solver.BI:
                         yield bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
                     if method == Solver.NT:
                         yield newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.MIN_MAX)
-                if f2_prev * f.jet[Mode.INFLECT.value] < 0.0:
+                if (mode == Mode.INFLECT or mode == Mode.ALL) and f2_prev * f.jet[Mode.INFLECT.value] < 0.0:
                     s = Sense.DECREASING if f2_prev > f.jet[Mode.INFLECT.value] else Sense.INCREASING
                     if method == Solver.BI:
                         yield bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT)
