@@ -11,15 +11,13 @@ import pytest
 order = 6
 ε = 1.0e-12  # small error
 δ = 1.0e-6  # small amount
-xa = 3.0
-xb = 4.0
+xa, xb = 3.0, 4.0
 xc = (xa + xb) / 2.0
-f_tol = ε
-x_tol = ε
+f_tol = x_tol = ε
 max_it = 101
 model = lambda x: x**3 - 4 * x**2 + 3 * x - 2
 n_points = 101
-plot_max = 8
+plot_min, plot_max = - 8.0, 8.0
 
 a_max, b_max, x_max = 0.0, 1.0, +4.514162296e-01
 a_infl, b_infl, x_infl = 1.0, 2.0, +1.333333333e+00
@@ -57,7 +55,7 @@ def test_newton(a, b, mode, target_f):
 
 def test_analysis_na():
     results = []
-    for result in analyze(model, Solver.NA, - plot_max, plot_max, n_points, f_tol, x_tol, limit=max_it, order=order):
+    for result in analyze(model, Solver.NA, plot_min, plot_max, n_points, f_tol, x_tol, limit=max_it, order=order):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 0
@@ -65,7 +63,7 @@ def test_analysis_na():
 @pytest.mark.parametrize("solver", [Solver.BI, Solver.NT])
 def test_analysis(solver):
     results = []
-    for result in analyze(model, solver, - plot_max, plot_max, n_points, f_tol, x_tol, limit=max_it, order=order):
+    for result in analyze(model, solver, plot_min, plot_max, n_points, f_tol, x_tol, limit=max_it, order=order):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 4
