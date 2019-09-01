@@ -105,8 +105,8 @@ def analyze(model, method, x0, x1, steps, εf, εx, limit, order, mode=Mode.ALL,
                         yield newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=s, mode=Mode.INFLECT)
         x_prev = x.val
         f0_prev = f.val
-        f1_prev = f.jet[1]
-        f2_prev = f.jet[2]
+        f1_prev = f.jet[Mode.MIN_MAX.value]
+        f2_prev = f.jet[Mode.INFLECT.value]
 
 
 print(f'{__name__} module loaded', file=stderr)
