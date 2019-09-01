@@ -6,8 +6,8 @@ from matplotlib import pyplot
 from ad import Series
 from playground import analyze, Solver, Mode
 
-def mplot(model, order, x_min, x_max, steps, y_min, y_max, newton=False, mode=Mode.ALL):
-    #  Example: mplot(lambda x: x**3 + 3 * x**2 - 3, 5, -8, 8, 100, -10, 10)
+def mplot(model, order=13, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0, newton=False, mode=Mode.ALL):
+    #  Example: mplot(lambda x: x**3 + 3 * x**2 - 3)
     solver = Solver.NT if newton else Solver.BI
     for result in analyze(model, solver, x_min, x_max, steps, 1e-9, 1e-9, limit=101, order=order, mode=mode):
         if result.count < 101:

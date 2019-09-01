@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
+#
+#  (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#
 # Example: ./double.py 8 0.01 10001 1 1 1 1 1 0 1 0 | ./plotPi2d.py
 from sys import argv
 from math import sin, cos, log10
 from ad import Dual
-
-# def h(self, qr, pr, pφ):  # NOTE: qφ is absent from Hamiltonian -> conserved quantity pφ
-#     return (pr**2 + pφ**2 / qr**2) / (2.0 * self.m) - self.gm / qr
 
 def h(g, l1, m1, l2, m2, qθ1, pθ1, qθ2, pθ2):  # the Hamiltonian
     return (l2**2 * m2 * pθ1**2 + l1**2 * (m1 + m2) * pθ2**2 - 2.0 * m2 * l1 * l2 * pθ1 * pθ2 * (qθ1 - qθ2).cos) \

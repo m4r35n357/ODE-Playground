@@ -7,20 +7,17 @@ from enum import Enum, unique
 from math import copysign
 from ad import Context, Series
 
-
 @unique
 class Solver(Enum):
     NA = "No analysis, or all"
     BI = "Bisection method"
     NT = "Newton-Raphson method"
 
-
 @unique
 class Sense(Enum):
     INCREASING = '/'
     DECREASING = '\\'
     FLAT = '_'
-
 
 @unique
 class Mode(Enum):
@@ -29,12 +26,10 @@ class Mode(Enum):
     INFLECT = 2
     ALL = 3
 
-
 class Result(namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', 'sense', 'mode'])):
     def __str__(self):
         return f'{self.method}  x: {self.x:+.{Context.places}e}  δx: {self.δx:+.{Context.places}e}  ' \
                f'f: {self.f:+.{Context.places}e}  {self.sense} {self.mode} {self.count}'
-
 
 def bisect(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
     m = Solver.BI
@@ -57,7 +52,6 @@ def bisect(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mod
             break
     return Result(method=m.name, count=count - 1, sense=sense.value, mode=mode.name, x=c.val, f=fc.jet[mode.value], δx=δx)
 
-
 def newton(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
     m = Solver.NT
     x = Series.get(2 + mode.value, x0).var  # make x variable for AD
@@ -73,7 +67,6 @@ def newton(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mo
         if count == limit + 1:
             break
     return Result(method=m.name, count=count - 1, sense=sense.value, mode=mode.name, x=x.val, f=f.jet[mode.value], δx=δx)
-
 
 def analyze(model, method, x0, x1, steps, εf, εx, limit, order, mode=Mode.ALL, console=True):
     x_prev = f0_prev = f1_prev = f2_prev = None
@@ -107,6 +100,5 @@ def analyze(model, method, x0, x1, steps, εf, εx, limit, order, mode=Mode.ALL,
         f0_prev = f.val
         f1_prev = f.jet[Mode.MIN_MAX.value]
         f2_prev = f.jet[Mode.INFLECT.value]
-
 
 print(f'{__name__} module loaded', file=stderr)
