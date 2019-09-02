@@ -5,7 +5,7 @@
 #  pytest --cov=ad --cov-report html:cov_html ad_test.py -v
 #  Mutation Testing
 #  rm -f .mutmut-cache; mutmut --test-time-base 10.0 --paths-to-mutate ad.py run --runner 'pytest ad_test.py'
-from math import pi, e, exp, log, sin, cos, tan, sinh, cosh, tanh, sqrt
+from math import pi, exp, log, sin, cos, tan, sinh, cosh, tanh
 from ad import t_jet, t_horner, t_prod, t_quot, t_pwr, t_exp, t_ln, t_sin_cos, t_tan_sec2, Series, Dual
 import pytest
 
@@ -54,67 +54,44 @@ def test_horner():
     assert abs(t_horner([-19.0, 7.0, -4.0, 6.0], 3.0) - 128.0) < ε
 
 def test_exceptions_add():
-    try:
+    with pytest.raises(RuntimeError) as excinfo:
         _ = d_3 + s_3
-        assert False
-    except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Series'>" in str(error)
-    try:
+    assert "Incompatible Type: <class 'ad.Series'>" in str(excinfo.value)
+    with pytest.raises(RuntimeError) as excinfo:
         _ = s_3 + d_3
-        assert False
-    except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Dual'>" in str(error)
+    assert "Incompatible Type: <class 'ad.Dual'>" in str(excinfo.value)
 
 def test_exceptions_subtract():
-    try:
+    with pytest.raises(RuntimeError) as excinfo:
         _ = d_3 - s_3
-        assert False
-    except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Series'>" in str(error)
-    try:
+    assert "Incompatible Type: <class 'ad.Series'>" in str(excinfo.value)
+    with pytest.raises(RuntimeError) as excinfo:
         _ = s_3 - d_3
-        assert False
-    except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Dual'>" in str(error)
-
+    assert "Incompatible Type: <class 'ad.Dual'>" in str(excinfo.value)
 
 def test_exceptions_multiply():
-    try:
+    with pytest.raises(RuntimeError) as excinfo:
         _ = d_3 * s_3
-        assert False
-    except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Series'>" in str(error)
-    try:
+    assert "Incompatible Type: <class 'ad.Series'>" in str(excinfo.value)
+    with pytest.raises(RuntimeError) as excinfo:
         _ = s_3 * d_3
-        assert False
-    except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Dual'>" in str(error)
-
+    assert "Incompatible Type: <class 'ad.Dual'>" in str(excinfo.value)
 
 def test_exceptions_divide():
-    try:
+    with pytest.raises(RuntimeError) as excinfo:
         _ = d_3 / s_3
-        assert False
-    except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Series'>" in str(error)
-    try:
+    assert "Incompatible Type: <class 'ad.Series'>" in str(excinfo.value)
+    with pytest.raises(RuntimeError) as excinfo:
         _ = s_3 / d_3
-        assert False
-    except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Dual'>" in str(error)
-
+    assert "Incompatible Type: <class 'ad.Dual'>" in str(excinfo.value)
 
 def test_exceptions_power():
-    try:
+    with pytest.raises(RuntimeError) as excinfo:
         _ = d_3**s_3
-        assert False
-    except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Series'>" in str(error)
-    try:
+    assert "Incompatible Type: <class 'ad.Series'>" in str(excinfo.value)
+    with pytest.raises(RuntimeError) as excinfo:
         _ = s_3**d_3
-        assert False
-    except RuntimeError as error:
-        assert "Incompatible Type: <class 'ad.Dual'>" in str(error)
+    assert "Incompatible Type: <class 'ad.Dual'>" in str(excinfo.value)
 
 @pytest.mark.parametrize("number", [zero, -zero, f05, -f05, i5, -i5])
 def test_get(number):
@@ -294,36 +271,16 @@ def test_multiply_number_object(number):
 @pytest.mark.domain
 @pytest.mark.parametrize("number", [i5, δ, - δ, - i5])
 def test_divide_domain_object_good(number):
-    result = False
-    try:
-        _ = data1_d / Dual.get(number).var
-        result = True
-    except AssertionError:
-        result = False
-    assert result
-    try:
-        _ = data1_s / Series.get(order, number).var
-        result = True
-    except AssertionError:
-        result = False
-    assert result
+    _ = data1_d / Dual.get(number).var
+    _ = data1_s / Series.get(order, number).var
 
 @pytest.mark.domain
 @pytest.mark.parametrize("number", [zero, -zero])
 def test_divide_domain_object_bad(number):
-    result = False
-    try:
+    with pytest.raises(AssertionError):
         _ = data1_d / Dual.get(number).var
-        result = False
-    except AssertionError:
-        result = True
-    assert result
-    try:
+    with pytest.raises(AssertionError):
         _ = data1_s / Series.get(order, number).var
-        result = False
-    except AssertionError:
-        result = True
-    assert result
 
 def test_divide_object_object():
     quotient = t_jet(order)
@@ -341,36 +298,16 @@ def test_divide_object_object():
 @pytest.mark.domain
 @pytest.mark.parametrize("number", [1, δ, -δ, -1])
 def test_divide_domain_object_number_good(number):
-    result = False
-    try:
-        _ = s_4 / number
-        result = True
-    except AssertionError:
-        result = False
-    assert result
-    try:
-        _ = d_3 / number
-        result = True
-    except AssertionError:
-        result = False
-    assert result
+    _ = s_4 / number
+    _ = d_3 / number
 
 @pytest.mark.domain
 @pytest.mark.parametrize("number", [zero, - zero, 0])
 def test_divide_domain_object_number_bad(number):
-    result = False
-    try:
+    with pytest.raises(AssertionError):
         _ = s_4 / number
-        result = False
-    except AssertionError:
-        result = True
-    assert result
-    try:
+    with pytest.raises(AssertionError):
         _ = d_3 / number
-        result = False
-    except AssertionError:
-        result = True
-    assert result
 
 @pytest.mark.parametrize("number", [i5, f4])
 def test_divide_object_number(number):
@@ -386,36 +323,16 @@ def test_divide_object_number(number):
 @pytest.mark.domain
 @pytest.mark.parametrize("number", [1, δ, -δ, -1])
 def test_divide_domain_number_object_good(number):
-    result = False
-    try:
-        _ = 1.0 / Dual.get(number).var
-        result = True
-    except AssertionError:
-        result = False
-    assert result
-    try:
-        _ = 1.0 / Series.get(order, number).var
-        result = True
-    except AssertionError:
-        result = False
-    assert result
+    _ = 1.0 / Dual.get(number).var
+    _ = 1.0 / Series.get(order, number).var
 
 @pytest.mark.domain
 @pytest.mark.parametrize("number", [zero, - zero])
 def test_divide_domain_number_object_bad(number):
-    result = False
-    try:
+    with pytest.raises(AssertionError):
         _ = 1.0 / Dual.get(number).var
-        result = False
-    except AssertionError:
-        result = True
-    assert result
-    try:
+    with pytest.raises(AssertionError):
         _ = 1.0 / Series.get(order, number).var
-        result = False
-    except AssertionError:
-        result = True
-    assert result
 
 @pytest.mark.parametrize("number", [i5, f4])
 def test_divide_number_object(number):
@@ -461,132 +378,48 @@ def test_pow_object_neg1_number(number):
 @pytest.mark.domain
 @pytest.mark.parametrize("number", [1, δ, 0, zero, - zero, - δ, - 1])
 def test_pow_domain_object_int_good(number):
-    try:
-        _ = Dual.get(number).var**2
-        result = True
-    except AssertionError:
-        result = False
-    assert result
-    try:
-        _ = Series.get(order, number).var**2
-        result = True
-    except AssertionError:
-        result = False
-    assert result
+    _ = Dual.get(number).var**2
+    _ = Series.get(order, number).var**2
 
 @pytest.mark.domain
 @pytest.mark.parametrize("number", [1, δ, - δ, - 1])
 def test_pow_domain_object_int_neg_good(number):
-    try:
-        _ = Dual.get(number).var**-2
-        result = True
-    except AssertionError:
-        result = False
-    assert result
-    try:
-        _ = Series.get(order, number).var**-2
-        result = True
-    except AssertionError:
-        result = False
-    assert result
+    _ = Dual.get(number).var**-2
+    _ = Series.get(order, number).var**-2
 
 @pytest.mark.domain
 @pytest.mark.parametrize("number", [0, zero, - zero])
 def test_pow_domain_object_int_neg_bad(number):
-    try:
+    with pytest.raises(AssertionError):
         _ = Dual.get(number).var**-2
-        result = False
-    except AssertionError:
-        result = True
-    assert result
-    try:
+    with pytest.raises(AssertionError):
         _ = Series.get(order, number).var**-2
-        result = False
-    except AssertionError:
-        result = True
-    assert result
 
 @pytest.mark.domain
 @pytest.mark.parametrize("number", [1, δ])
 def test_pow_domain_object_anything_good(number):
-    result = False
-    try:
-        _ = Dual.get(number).var**data1_d
-        result = True
-    except AssertionError:
-        result = False
-    assert result
-    try:
-        _ = Series.get(order, number).var**data1_s
-        result = True
-    except AssertionError:
-        result = False
-    assert result
-    try:
-        _ = Dual.get(number).var**2.0
-        result = True
-    except AssertionError:
-        result = False
-    assert result
-    try:
-        _ = Series.get(order, number).var**2.0
-        result = True
-    except AssertionError:
-        result = False
-    assert result
-    try:
-        _ = Dual.get(number).var**-2.0
-        result = True
-    except AssertionError:
-        result = False
-    assert result
-    try:
-        _ = Series.get(order, number).var**-2.0
-        result = True
-    except AssertionError:
-        result = False
-    assert result
+    _ = Dual.get(number).var**data1_d
+    _ = Series.get(order, number).var**data1_s
+    _ = Dual.get(number).var**2.0
+    _ = Series.get(order, number).var**2.0
+    _ = Dual.get(number).var**-2.0
+    _ = Series.get(order, number).var**-2.0
 
 @pytest.mark.domain
 @pytest.mark.parametrize("number", [0, zero, - zero, - δ, -1])
 def test_pow_domain_object_anything_bad(number):
-    result = False
-    try:
+    with pytest.raises(AssertionError):
         _ = Dual.get(number).var**data1_d
-        result = False
-    except AssertionError:
-        result = True
-    assert result
-    try:
+    with pytest.raises(AssertionError):
         _ = Series.get(order, number).var**data1_s
-        result = False
-    except AssertionError:
-        result = True
-    assert result
-    try:
+    with pytest.raises(AssertionError):
         _ = Dual.get(number).var**2.0
-        result = False
-    except AssertionError:
-        result = True
-    assert result
-    try:
+    with pytest.raises(AssertionError):
         _ = Series.get(order, number).var**2.0
-        result = False
-    except AssertionError:
-        result = True
-    assert result
-    try:
+    with pytest.raises(AssertionError):
         _ = Dual.get(number).var**-2.0
-        result = False
-    except AssertionError:
-        result = True
-    assert result
-    try:
+    with pytest.raises(AssertionError):
         _ = Series.get(order, number).var**-2.0
-        result = False
-    except AssertionError:
-        result = True
-    assert result
 
 def test_pow_object_object():
     dual = d_3**d_4
@@ -629,36 +462,16 @@ def test_pow_object_number(number):
 @pytest.mark.domain
 @pytest.mark.parametrize("number", [1, δ])
 def test_pow_domain_number_object_good(number):
-    result = False
-    try:
-        _ = number**data1_d
-        result = True
-    except AssertionError:
-        result = False
-    assert result
-    try:
-        _ = number**data1_s
-        result = True
-    except AssertionError:
-        result = False
-    assert result
+    _ = number**data1_d
+    _ = number**data1_s
 
 @pytest.mark.domain
 @pytest.mark.parametrize("number", [- δ, zero, -zero])
 def test_pow_domain_number_object_bad(number):
-    result = False
-    try:
+    with pytest.raises(AssertionError):
         _ = number**data1_d
-        result = False
-    except AssertionError:
-        result = True
-    assert result
-    try:
+    with pytest.raises(AssertionError):
         _ = number**data1_s
-        result = False
-    except AssertionError:
-        result = True
-    assert result
 
 @pytest.mark.parametrize("number", [i5, f3])
 def test_pow_number_object(number):
@@ -697,36 +510,16 @@ def test_minus_exp():
 @pytest.mark.domain
 @pytest.mark.parametrize("number", [1, δ])
 def test_ln_domain_good(number):
-    result = False
-    try:
-        _ = Dual.get(number).var.ln
-        result = True
-    except AssertionError:
-        result = False
-    assert result
-    try:
-        _ = Series.get(order, number).var.ln
-        result = True
-    except AssertionError:
-        result = False
-    assert result
+    _ = Dual.get(number).var.ln
+    _ = Series.get(order, number).var.ln
 
 @pytest.mark.domain
 @pytest.mark.parametrize("number", [zero, - zero, - δ, - 1])
 def test_ln_domain_bad(number):
-    result = False
-    try:
+    with pytest.raises(AssertionError):
         _ = Dual.get(number).var.ln
-        result = False
-    except AssertionError:
-        result = True
-    assert result
-    try:
+    with pytest.raises(AssertionError):
         _ = Series.get(order, number).var.ln
-        result = False
-    except AssertionError:
-        result = True
-    assert result
 
 def test_ln():
     logarithm = t_jet(order)
