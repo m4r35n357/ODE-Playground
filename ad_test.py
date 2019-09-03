@@ -120,7 +120,7 @@ def test_unary_plus():
     dual = + data1_d
     assert dual.val == approx(data1_d.val)
     assert dual.der == approx(data1_d.der)
-    series = ~ (+ data1_s)
+    series = ~(+ data1_s)
     assert len(series.jet) == order
     for result, original in zip(series.jet, (~ data1_s).jet):
         assert result == approx(original)
@@ -129,7 +129,7 @@ def test_unary_minus():
     dual = - data1_d
     assert dual.val == approx(- data1_d.val)
     assert dual.der == approx(- data1_d.der)
-    series = ~ (- data1_s)
+    series = ~(- data1_s)
     assert len(series.jet) == order
     for result, original in zip(series.jet, (~ data1_s).jet):
         assert result == approx(- original)
@@ -147,7 +147,7 @@ def test_abs():
     dual = abs(Dual.get(- f05).var)
     assert dual.val == approx(f05)
     assert dual.der == approx(- 1.0)
-    series = ~ (abs(Series.get(order, - f05).var))
+    series = ~(abs(Series.get(order, - f05).var))
     assert len(series.jet) == order
     assert series.val == approx(f05)
     assert series.jet[1] == approx(- 1.0)
@@ -424,7 +424,7 @@ def test_pow_domain_object_anything_bad(number):
 def test_pow_object_object():
     dual = d_3**d_4
     assert dual.val == approx(f3**f4)
-    series = ~ (s_3**s_4)
+    series = ~(s_3**s_4)
     assert len(series.jet) == order
     assert series.val == approx(f3**f4)
 

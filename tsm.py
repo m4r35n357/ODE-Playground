@@ -18,6 +18,7 @@ def main():
     if model == "lorenz":
         #  Example: ./tsm.py lorenz 9 10 .01 3000 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
         #  Example: ./tsm.py lorenz 9 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -25 50
+        #  Profile: py-spy --function -- python tsm.py lorenz 9 10 .01 10000000 -15.8 -17.48 35.64 10 28 8 3
         σ, ρ, β = float(argv[9]), float(argv[10]), float(argv[11]) / float(argv[12])
         output(x0, y0, z0, 0.0)
         for step in range(1, n_steps + 1):
@@ -205,7 +206,7 @@ def main():
     elif model == "rucklidge":
         #  Example: ./tsm.py rucklidge 9 10 0.01 10001 1 0 0 6.7 2 | ./plotPi3d.py
         #  Example: ./tsm.py rucklidge 9 10 0.01 10001 1 0 0 6.7 2 | ./plotAnimated.py 1 -15 20
-        α, κ = float(argv[8]), float(argv[9])
+        α, κ = float(argv[9]), float(argv[10])
         output(x0, y0, z0, 0.0)
         for step in range(1, n_steps + 1):
             x[0], y[0], z[0] = x0, y0, z0
@@ -293,7 +294,7 @@ def main():
     elif model == "constant":
         #  Example: ./tsm.py constant 9 10 0.1 10001 10 0 0 -.05 | ./plotXY.py 1 3 0
         #  Example: ./tsm.py constant 9 10 0.1 10001 10 0 0 -.05 | ./plotAnimated.py 1 0 10
-        a = float(argv[8])
+        a = float(argv[9])
         output(x0, 0.0, 0.0, 0.0)
         for step in range(1, n_steps + 1):
             x[0] = x0
