@@ -44,14 +44,14 @@ def test_t_jet(number):
     jet = t_jet(order, number)
     assert len(jet) == order
     assert isinstance(jet[0], float)
-    assert jet[0] - number == approx(0.0)
+    assert jet[0] == approx(number)
     for term in jet[1:]:
         assert isinstance(term, float)
         assert term == approx(0.0)
 
 def test_horner():
-    assert t_horner([-19, 7, -4, 6], 3) - 128 == 0
-    assert t_horner([-19.0, 7.0, -4.0, 6.0], 3.0) - 128.0 == approx(0.0)
+    assert t_horner([-19, 7, -4, 6], 3) == 128
+    assert t_horner([-19.0, 7.0, -4.0, 6.0], 3.0) == approx(128.0)
 
 def test_exceptions_add():
     with raises(RuntimeError) as excinfo:
@@ -102,9 +102,9 @@ def test_get(number):
     assert isinstance(dual.der, float)
     for term in series.jet:
         assert isinstance(term, float)
-    assert dual.val - number == approx(0.0)
+    assert dual.val == approx(number)
     assert dual.der == approx(0.0)
-    assert series.val - number == approx(0.0)
+    assert series.val == approx(number)
     for term in series.jet[1:]:
         assert isinstance(term, float)
         assert term == approx(0.0)
@@ -118,48 +118,48 @@ def test_to_str(number, length):
 
 def test_unary_plus():
     dual = + data1_d
-    assert dual.val - data1_d.val == approx(0.0)
-    assert dual.der - data1_d.der == approx(0.0)
-    series = ~(+ data1_s)
+    assert dual.val == approx(data1_d.val)
+    assert dual.der == approx(data1_d.der)
+    series = ~ (+ data1_s)
     assert len(series.jet) == order
     for result, original in zip(series.jet, (~ data1_s).jet):
-        assert result - original == approx(0.0)
+        assert result == approx(original)
 
 def test_unary_minus():
     dual = - data1_d
-    assert dual.val + data1_d.val == approx(0.0)
-    assert dual.der + data1_d.der == approx(0.0)
-    series = ~(- data1_s)
+    assert dual.val == approx(- data1_d.val)
+    assert dual.der == approx(- data1_d.der)
+    series = ~ (- data1_s)
     assert len(series.jet) == order
     for result, original in zip(series.jet, (~ data1_s).jet):
-        assert result + original == approx(0.0)
+        assert result == approx(- original)
 
 def test_abs():
     dual = abs(d_05)
-    assert dual.val - f05 == approx(0.0)
-    assert dual.der - 1.0 == approx(0.0)
+    assert dual.val == approx(f05)
+    assert dual.der == approx(1.0)
     series = ~ abs(s_05)
     assert len(series.jet) == order
-    assert series.val - f05 == approx(0.0)
-    assert series.jet[1] - 1.0 == approx(0.0)
+    assert series.val == approx(f05)
+    assert series.jet[1] == approx(1.0)
     for term in series.jet[2:]:
         assert term == approx(0.0)
     dual = abs(Dual.get(- f05).var)
-    assert dual.val - f05 == approx(0.0)
-    assert dual.der + 1.0 == approx(0.0)
+    assert dual.val == approx(f05)
+    assert dual.der == approx(- 1.0)
     series = ~ (abs(Series.get(order, - f05).var))
     assert len(series.jet) == order
-    assert series.val - f05 == approx(0.0)
-    assert series.jet[1] + 1.0 == approx(0.0)
+    assert series.val == approx(f05)
+    assert series.jet[1] == approx(- 1.0)
     for term in series.jet[2:]:
         assert term == approx(0.0)
     dual = abs(- d_05)
-    assert dual.val - f05 == approx(0.0)
-    assert dual.der - 1.0 == approx(0.0)
+    assert dual.val == approx(f05)
+    assert dual.der == approx(1.0)
     series = ~ abs(- s_05)
     assert len(series.jet) == order
-    assert series.val - f05 == approx(0.0)
-    assert series.jet[1] - 1.0 == approx(0.0)
+    assert series.val == approx(f05)
+    assert series.jet[1] == approx(1.0)
     for term in series.jet[2:]:
         assert term == approx(0.0)
     dual = abs(d_0)
@@ -172,77 +172,77 @@ def test_abs():
 
 def test_add_object_object():
     dual = data1_d + data2_d
-    assert dual.val - (data1_d.val + data2_d.val) == approx(0.0)
-    assert dual.der - (data1_d.der + data2_d.der) == approx(0.0)
+    assert dual.val == approx(data1_d.val + data2_d.val)
+    assert dual.der == approx(data1_d.der + data2_d.der)
     series = data1_s + data2_s
     assert len(series.jet) == order
     for result, s1, s2 in zip(series.jet, data1_s.jet, data2_s.jet):
-        assert result - (s1 + s2) == approx(0.0)
+        assert result == approx(s1 + s2)
 
 @mark.parametrize("number", [i5, f3])
 def test_add_object_number(number):
     dual = data1_d + number
-    assert dual.val - (data1_d.val + number) == approx(0.0)
-    assert dual.der - data1_d.der == approx(0.0)
+    assert dual.val == approx(data1_d.val + number)
+    assert dual.der == approx(data1_d.der)
     series = data1_s + number
     assert len(series.jet) == order
-    assert series.val - (data1_s.val + number) == approx(0.0)
+    assert series.val == approx(data1_s.val + number)
     for result, original in zip(series.jet[1:], data1_s.jet[1:]):
-        assert result - original == approx(0.0)
+        assert result == approx(original)
 
 @mark.parametrize("number", [i5, f3])
 def test_add_number_object(number):
     dual = number + data1_d
-    assert dual.val - (number + data1_d.val) == approx(0.0)
-    assert dual.der - data1_d.der == approx(0.0)
+    assert dual.val == approx(number + data1_d.val)
+    assert dual.der == approx(data1_d.der)
     series = number + data1_s
     assert len(series.jet) == order
-    assert series.val - (number + data1_s.val) == approx(0.0)
+    assert series.val == approx(number + data1_s.val)
     for result, original in zip(series.jet[1:], data1_s.jet[1:]):
-        assert result - original == approx(0.0)
+        assert result == approx(original)
 
 def test_subtract_object_object():
-    dual = data1_d + data2_d
-    assert dual.val - (data1_d.val + data2_d.val) == approx(0.0)
-    assert dual.der - (data1_d.der + data2_d.der) == approx(0.0)
-    series = data1_s + data2_s
+    dual = data1_d - data2_d
+    assert dual.val == approx(data1_d.val - data2_d.val)
+    assert dual.der == approx(data1_d.der - data2_d.der)
+    series = data1_s - data2_s
     assert len(series.jet) == order
     for result, s1, s2 in zip(series.jet, data1_s.jet, data2_s.jet):
-        assert result - (s1 + s2) == approx(0.0)
+        assert result == approx(s1 - s2)
 
 @mark.parametrize("number", [i5, f3])
 def test_subtract_object_number(number):
     dual = data1_d - number
-    assert dual.val - (data1_d.val - number) == approx(0.0)
-    assert dual.der - data1_d.der == approx(0.0)
+    assert dual.val == approx(data1_d.val - number)
+    assert dual.der == approx(data1_d.der)
     series = data1_s - number
     assert len(series.jet) == order
-    assert series.val - (data1_s.val - number) == approx(0.0)
+    assert series.val == approx(data1_s.val - number)
     for result, original in zip(series.jet[1:], data1_s.jet[1:]):
-        assert result - original == approx(0.0)
+        assert result == approx(original)
 
 @mark.parametrize("number", [i5, f3])
 def test_subtract_number_object(number):
     dual = number - data1_d
-    assert dual.val - (number - data1_d.val) == approx(0.0)
-    assert dual.der + data1_d.der == approx(0.0)
+    assert dual.val == approx(number - data1_d.val)
+    assert dual.der == approx(- data1_d.der)
     series = number - data1_s
     assert len(series.jet) == order
-    assert series.val - (number - data1_s.val) == approx(0.0)
+    assert series.val == approx(number - data1_s.val)
     for result, original in zip(series.jet[1:], data1_s.jet[1:]):
-        assert result + original == approx(0.0)
+        assert result == approx(- original)
 
 def test_multiply_object_object():
     t_series = s_3 * s_4
     for k in range(order):
-        assert t_prod(s_3.jet, s_4.jet, k) == t_series.jet[k]
+        assert t_prod(s_3.jet, s_4.jet, k) == approx(t_series.jet[k])
     dual = d_3 * d_4
     series = ~(s_3 * s_4)
-    assert dual.val - f3 * f4 == approx(0.0)
-    assert dual.der - (f3 + f4) == approx(0.0)
-    assert series.val - f3 * f4 == approx(0.0)
-    assert series.jet[1] - (f3 + f4) == approx(0.0)
-    assert series.jet[2] - 2.0 == approx(0.0)
+    assert dual.val == approx(f3 * f4)
+    assert dual.der == approx(f3 + f4)
+    assert series.val == approx(f3 * f4)
+    assert series.jet[1] == approx(f3 + f4)
+    assert series.jet[2] == approx(2.0)
     for term in series.jet[3:]:
         assert term == approx(0.0)
 
@@ -250,10 +250,10 @@ def test_multiply_object_object():
 def test_multiply_object_number(number):
     dual = d_3 * number
     series = ~(s_3 * number)
-    assert dual.val - f3 * number == approx(0.0)
-    assert dual.der - number == approx(0.0)
-    assert series.val - f3 * number == approx(0.0)
-    assert series.jet[1] - number == approx(0.0)
+    assert dual.val == approx(f3 * number)
+    assert dual.der == approx(number)
+    assert series.val == approx(f3 * number)
+    assert series.jet[1] == approx(number)
     for term in series.jet[2:]:
         assert term == approx(0.0)
 
@@ -261,10 +261,10 @@ def test_multiply_object_number(number):
 def test_multiply_number_object(number):
     dual = number * d_3
     series = ~(number * s_3)
-    assert dual.val - number * f3 == approx(0.0)
-    assert dual.der - number == approx(0.0)
-    assert series.val - number * f3 == approx(0.0)
-    assert series.jet[1] - number == approx(0.0)
+    assert dual.val == approx(number * f3)
+    assert dual.der == approx(number)
+    assert series.val == approx(number * f3)
+    assert series.jet[1] == approx(number)
     for term in series.jet[2:]:
         assert term== approx(0.0)
 
@@ -287,13 +287,13 @@ def test_divide_object_object():
     t_series = s_3 / s_4
     for k in range(order):
         quotient[k] = t_quot(quotient, s_3.jet, s_4.jet, k)
-        assert quotient[k] == t_series.jet[k]
+        assert quotient[k] == approx(t_series.jet[k])
     dual = d_3 / d_4
     series = ~(s_3 / s_4)
     assert dual.val - f3 / f4 == approx(0.0)
-    assert dual.der - (f4 - f3) / f4**2 == approx(0.0)
-    assert series.val - f3 / f4 == approx(0.0)
-    assert series.jet[1] - (f4 - f3) / f4**2 == approx(0.0)
+    assert dual.der == approx((f4 - f3) / f4**2)
+    assert series.val == approx(f3 / f4)
+    assert series.jet[1] == approx((f4 - f3) / f4**2)
 
 @mark.domain
 @mark.parametrize("number", [1, δ, -δ, -1])
@@ -313,10 +313,10 @@ def test_divide_domain_object_number_bad(number):
 def test_divide_object_number(number):
     dual = d_3 / number
     series = ~(s_3 / number)
-    assert dual.val - f3 / number == approx(0.0)
-    assert dual.der - 1.0 / number == approx(0.0)
-    assert series.val - f3 / number == approx(0.0)
-    assert series.jet[1] - 1.0 / number == approx(0.0)
+    assert dual.val == approx(f3 / number)
+    assert dual.der == approx(1.0 / number)
+    assert series.val == approx(f3 / number)
+    assert series.jet[1] == approx(1.0 / number)
     for term in series.jet[2:]:
         assert term == approx(0.0)
 
@@ -339,41 +339,41 @@ def test_divide_number_object(number):
     derivative = number / f3
     dual = number / d_3
     series = ~(number / s_3)
-    assert dual.val - derivative == approx(0.0)
-    assert dual.der + derivative / f3 == approx(0.0)
-    assert series.val - derivative == approx(0.0)
+    assert dual.val == approx(derivative)
+    assert dual.der == approx(- derivative / f3)
+    assert series.val == approx(derivative)
     for k in range(1, order):
         derivative *= - k / f3
-        assert series.jet[k] - derivative == approx(0.0)
+        assert series.jet[k] == approx(derivative)
 
 def test_reciprocal():
     derivative = 1.0 / f3
     dual = 1.0 / d_3
     series = ~(1.0 / s_3)
-    assert dual.val - derivative == approx(0.0)
-    assert dual.der + derivative / f3 == approx(0.0)
-    assert series.val - derivative == approx(0.0)
+    assert dual.val == approx(derivative)
+    assert dual.der == approx(- derivative / f3)
+    assert series.val == approx(derivative)
     for k in range(1, order):
         derivative *= - k / f3
-        assert series.jet[k] - derivative == approx(0.0)
+        assert series.jet[k] == approx(derivative)
 
 @mark.parametrize("number", [1, 1.0])
 def test_pow_object_neg1_number(number):
     dual = d_4**number
     series = ~s_4**number
-    assert dual.val - d_4.val == approx(0.0)
-    assert dual.der - 1.0 == approx(0.0)
-    assert series.val - s_4.val == approx(0.0)
-    assert series.jet[1] - 1.0 == approx(0.0)
+    assert dual.val == approx(d_4.val)
+    assert dual.der == approx(1.0)
+    assert series.val == approx(s_4.val)
+    assert series.jet[1] == approx(1.0)
     derivative = 1.0 / d_4.val
     dual = d_4**-number
     series = ~s_4**-number
-    assert dual.val - derivative == approx(0.0)
-    assert dual.der + derivative / d_4.val == approx(0.0)
-    assert series.val - derivative == approx(0.0)
+    assert dual.val == approx(derivative)
+    assert dual.der == approx(- derivative / d_4.val)
+    assert series.val == approx(derivative)
     for k in range(1, order):
         derivative *= - k / s_4.val
-        assert series.jet[k] - derivative == approx(0.0)
+        assert series.jet[k] == approx(derivative)
 
 @mark.domain
 @mark.parametrize("number", [1, δ, 0, zero, - zero, - δ, - 1])
@@ -423,10 +423,10 @@ def test_pow_domain_object_anything_bad(number):
 
 def test_pow_object_object():
     dual = d_3**d_4
-    assert dual.val - f3**f4 == approx(0.0)
-    series = ~(s_3**s_4)
+    assert dual.val == approx(f3**f4)
+    series = ~ (s_3**s_4)
     assert len(series.jet) == order
-    assert series.val - f3**f4 == approx(0.0)
+    assert series.val == approx(f3**f4)
 
 @mark.parametrize("number", [0, zero, -zero])
 def test_pow_object_zero(number):
@@ -434,30 +434,30 @@ def test_pow_object_zero(number):
     t_series = s_4**number
     for k in range(order):
         power[k] = t_pwr(power, s_4.jet, number, k)
-        assert power[k] == t_series.jet[k]
+        assert power[k] == approx(t_series.jet[k])
     dual = d_4**number
-    series = ~s_4**number
+    series = ~ s_4**number
     assert len(series.jet) == order
-    assert dual.val - 1.0 == approx(0.0)
+    assert dual.val == approx(1.0)
     assert dual.der == approx(0.0)
-    assert series.val - 1.0 == approx(0.0)
+    assert series.val == approx(1.0)
     for term in series.jet[1:]:
         assert term == approx(0.0)
 
 @mark.parametrize("number", [i5, - i5, f3, - f3])
 def test_pow_object_number(number):
     dual = d_4**number
-    assert dual.val - f4**number == approx(0.0)
-    assert dual.der - number * f4**(number - 1.0) == approx(0.0)
-    series = ~s_4**number
+    assert dual.val == approx(f4**number)
+    assert dual.der == approx(number * f4**(number - 1.0))
+    series = ~ s_4**number
     assert len(series.jet) == order
-    assert series.val - f4**number == approx(0.0)
-    assert series.jet[1] - number * f4**(number - 1.0) == approx(0.0)
+    assert series.val == approx(f4**number)
+    assert series.jet[1] == approx(number * f4**(number - 1.0))
     dual = d_4**-number
-    assert dual.val - 1.0 / f4**number == approx(0.0)
-    series = ~s_4**-number
+    assert dual.val == approx(1.0 / f4**number)
+    series = ~ s_4**-number
     assert len(series.jet) == order
-    assert series.val - 1.0 / f4**number == approx(0.0)
+    assert series.val == approx(1.0 / f4**number)
 
 @mark.domain
 @mark.parametrize("number", [1, δ])
@@ -476,36 +476,38 @@ def test_pow_domain_number_object_bad(number):
 @mark.parametrize("number", [i5, f3])
 def test_pow_number_object(number):
     dual = number**data1_d
-    assert dual.val - number**data1_d.val == approx(0.0)
+    assert dual.val == approx(number**data1_d.val)
     series = ~number**data1_s
     assert len(series.jet) == order
-    assert series.val - number**data1_s.val == approx(0.0)
+    assert series.val == approx(number**data1_s.val)
 
 def test_exp():
     exponent = t_jet(order)
     t_series = s_4.exp
     for k in range(order):
         exponent[k] = t_exp(exponent, s_4.jet, k)
-        assert exponent[k] == t_series.jet[k]
+        assert exponent[k] == approx(t_series.jet[k])
+    derivative = exp(f3)
     dual = d_3.exp
-    assert dual.val - exp(f3) == approx(0.0)
-    assert dual.der - exp(f3) == approx(0.0)
+    assert dual.val == approx(derivative)
+    assert dual.der == approx(derivative)
     series = ~s_3.exp
     assert len(series.jet) == order
     for term in series.jet:
-        assert term - exp(f3) == approx(0.0)
+        assert term == approx(derivative)
 
 def test_minus_exp():
+    derivative = 1.0 / exp(f3)
     dual = (- d_3).exp
     series = ~(- s_3).exp
     assert len(series.jet) == order
-    assert dual.val - 1.0 / exp(f3) == approx(0.0)
-    assert dual.der + 1.0 / exp(f3) == approx(0.0)
+    assert dual.val == approx(derivative)
+    assert dual.der == approx(- derivative)
     for k in range(order):
         if k % 2 == 0:
-            assert series.jet[k] - 1.0 / exp(f3) == approx(0.0)
+            assert series.jet[k] == approx(derivative)
         elif k % 2 == 1:
-            assert series.jet[k] + 1.0 / exp(f3) == approx(0.0)
+            assert series.jet[k] == approx(- derivative)
 
 @mark.domain
 @mark.parametrize("number", [1, δ])
@@ -526,18 +528,18 @@ def test_ln():
     t_series = s_3.ln
     for k in range(order):
         logarithm[k] = t_ln(logarithm, s_3.jet, k)
-        assert logarithm[k] - t_series.jet[k] == approx(0.0)
+        assert logarithm[k] == approx(t_series.jet[k])
     derivative = 1.0 / f3
     dual = d_3.ln
-    assert dual.val - log(f3) == approx(0.0)
-    assert dual.der - derivative == approx(0.0)
+    assert dual.val == approx(log(f3))
+    assert dual.der == approx(derivative)
     series = ~s_3.ln
     assert len(series.jet) == order
-    assert series.val - log(f3) == approx(0.0)
-    assert series.jet[1] - derivative == approx(0.0)
+    assert series.val == approx(log(f3))
+    assert series.jet[1] == approx(derivative)
     for k in range(2, order):
         derivative *= - (k - 1) / f3
-        assert series.jet[k] - derivative == approx(0.0)
+        assert series.jet[k] == approx(derivative)
 
 def test_sin():
     sine, cosine = t_jet(order), t_jet(order)
@@ -545,38 +547,38 @@ def test_sin():
     t_series_cos = s_3.cos
     for k in range(order):
         sine[k], cosine[k] = t_sin_cos(sine, cosine, s_3.jet, k)
-        assert sine[k] - t_series_sin.jet[k] == approx(0.0)
-        assert cosine[k] - t_series_cos.jet[k] == approx(0.0)
+        assert sine[k] == approx(t_series_sin.jet[k])
+        assert cosine[k] == approx(t_series_cos.jet[k])
     dual = Dual.get(pi / f3).var.sin
-    assert dual.val - sin(pi / f3) == approx(0.0)
-    assert dual.der - cos(pi / f3) == approx(0.0)
+    assert dual.val == approx(sin(pi / f3))
+    assert dual.der == approx(cos(pi / f3))
     series = ~Series.get(order, pi / f3).var.sin
     assert len(series.jet) == order
     for k in range(order):
         if k % 4 == 0:
-            assert series.jet[k] - sin(pi / f3) == approx(0.0)
+            assert series.jet[k] == approx(sin(pi / f3))
         elif k % 4 == 1:
-            assert series.jet[k] - cos(pi / f3) == approx(0.0)
+            assert series.jet[k] == approx(cos(pi / f3))
         elif k % 4 == 2:
-            assert series.jet[k] + sin(pi / f3) == approx(0.0)
+            assert series.jet[k] == approx(- sin(pi / f3))
         elif k % 4 == 3:
-            assert series.jet[k] + cos(pi / f3) == approx(0.0)
+            assert series.jet[k] == approx(- cos(pi / f3))
 
 def test_cos():
     dual = Dual.get(pi / f3).var.cos
-    assert dual.val - cos(pi / f3) == approx(0.0)
-    assert dual.der + sin(pi / f3) == approx(0.0)
+    assert dual.val == approx(cos(pi / f3))
+    assert dual.der == approx(- sin(pi / f3))
     series = ~Series.get(order, pi / f3).var.cos
     assert len(series.jet) == order
     for k in range(order):
         if k % 4 == 0:
-            assert series.jet[k] - cos(pi / f3) == approx(0.0)
+            assert series.jet[k] == approx(cos(pi / f3))
         elif k % 4 == 1:
-            assert series.jet[k] + sin(pi / f3) == approx(0.0)
+            assert series.jet[k] == approx(- sin(pi / f3))
         elif k % 4 == 2:
-            assert series.jet[k] + cos(pi / f3) == approx(0.0)
+            assert series.jet[k] == approx(- cos(pi / f3))
         elif k % 4 == 3:
-            assert series.jet[k] - sin(pi / f3) == approx(0.0)
+            assert series.jet[k] == approx(sin(pi / f3))
 
 def test_tan():
     tangent, secant2 = t_jet(order), t_jet(order)
@@ -584,15 +586,15 @@ def test_tan():
     t_series_sec2 = s_3.sec2
     for k in range(order):
         tangent[k], secant2[k] = t_tan_sec2(tangent, secant2, s_3.jet, k)
-        assert tangent[k] - t_series_tan.jet[k] == approx(0.0)
-        assert secant2[k] - t_series_sec2.jet[k] == approx(0.0)
+        assert tangent[k] == approx(t_series_tan.jet[k])
+        assert secant2[k] == approx(t_series_sec2.jet[k])
     dual = Dual.get(pi / f4).var.tan
-    assert dual.val - tan(pi / f4) == approx(0.0)
-    assert dual.der - (1.0 + tan(pi / f4)**2) == approx(0.0)
+    assert dual.val == approx(tan(pi / f4))
+    assert dual.der == approx((1.0 + tan(pi / f4)**2))
     series = ~Series.get(order, pi / f4).var.tan
     assert len(series.jet) == order
-    assert series.val - tan(pi / f4) == approx(0.0)
-    assert series.jet[1] - (1.0 + tan(pi / f4)**2) == approx(0.0)
+    assert series.val == approx(tan(pi / f4))
+    assert series.jet[1] == approx((1.0 + tan(pi / f4)**2))
 
 def test_sinh():
     h_sine, h_cosine = t_jet(order), t_jet(order)
@@ -600,30 +602,30 @@ def test_sinh():
     t_series_cosh = s_3.cosh
     for k in range(order):
         h_sine[k], h_cosine[k] = t_sin_cos(h_sine, h_cosine, s_3.jet, k, hyp=True)
-        assert h_sine[k] - t_series_sinh.jet[k] == approx(0.0)
-        assert h_cosine[k] - t_series_cosh.jet[k] == approx(0.0)
+        assert h_sine[k] == approx(t_series_sinh.jet[k])
+        assert h_cosine[k] == approx(t_series_cosh.jet[k])
     dual = Dual.get(pi / f3).var.sinh
-    assert dual.val - sinh(pi / f3) == approx(0.0)
-    assert dual.der - cosh(pi / f3) == approx(0.0)
+    assert dual.val == approx(sinh(pi / f3))
+    assert dual.der == approx(cosh(pi / f3))
     series = ~Series.get(order, pi / f3).var.sinh
     assert len(series.jet) == order
     for k in range(order):
         if k % 2 == 0:
-            assert series.jet[k] - sinh(pi / f3) == approx(0.0)
+            assert series.jet[k] == approx(sinh(pi / f3))
         elif k % 2 == 1:
-            assert series.jet[k] - cosh(pi / f3) == approx(0.0)
+            assert series.jet[k] == approx(cosh(pi / f3))
 
 def test_cosh():
     dual = Dual.get(pi / f3).var.cosh
-    assert dual.val - cosh(pi / f3) == approx(0.0)
-    assert dual.der - sinh(pi / f3) == approx(0.0)
+    assert dual.val == approx(cosh(pi / f3))
+    assert dual.der == approx(sinh(pi / f3))
     series = ~Series.get(order, pi / f3).var.cosh
     assert len(series.jet) == order
     for k in range(order):
         if k % 2 == 0:
-            assert series.jet[k] - cosh(pi / f3) == approx(0.0)
+            assert series.jet[k] == approx(cosh(pi / f3))
         elif k % 2 == 1:
-            assert series.jet[k] - sinh(pi / f3) == approx(0.0)
+            assert series.jet[k] == approx(sinh(pi / f3))
 
 def test_tanh():
     h_tangent, h_secant2 = t_jet(order), t_jet(order)
@@ -631,24 +633,24 @@ def test_tanh():
     t_series_sech2 = s_3.sech2
     for k in range(order):
         h_tangent[k], h_secant2[k] = t_tan_sec2(h_tangent, h_secant2, s_3.jet, k, hyp=True)
-        assert h_tangent[k] - t_series_tanh.jet[k] == approx(0.0)
-        assert h_secant2[k] - t_series_sech2.jet[k] == approx(0.0)
+        assert h_tangent[k] == approx(t_series_tanh.jet[k])
+        assert h_secant2[k] == approx(t_series_sech2.jet[k])
     dual = Dual.get(pi / f4).var.tanh
-    assert dual.val - tanh(pi / f4) == approx(0.0)
-    assert dual.der - (1.0 - tanh(pi / f4)**2) == approx(0.0)
+    assert dual.val == approx(tanh(pi / f4))
+    assert dual.der == approx((1.0 - tanh(pi / f4)**2))
     series = ~Series.get(order, pi / f4).var.tanh
     assert len(series.jet) == order
-    assert series.val - tanh(pi / f4) == approx(0.0)
-    assert series.jet[1] - (1.0 - tanh(pi / f4)**2) == approx(0.0)
+    assert series.val == approx(tanh(pi / f4))
+    assert series.jet[1] == approx((1.0 - tanh(pi / f4)**2))
 
 def test_var():
     dual = Dual.get(f3).var
-    assert dual.val - f3 == approx(0.0)
-    assert dual.der - 1.0 == approx(0.0)
+    assert dual.val == approx(f3)
+    assert dual.der == approx(1.0)
     series = Series.get(order, f3).var
     assert len(series.jet) == order
-    assert series.val - f3 == approx(0.0)
-    assert series.jet[1] - 1.0 == approx(0.0)
+    assert series.val == approx(f3)
+    assert series.jet[1] == approx(1.0)
     for term in series.jet[2:]:
         assert term == approx(0.0)
     length = - 1
