@@ -22,16 +22,17 @@ a_root, b_root, x_root = 3.0, 4.0, +3.269530842e+00
 
 def test_bail():
     max_iterations = 1
-    assert bisect(model, a_root, b_root, εf=εf, εx=εx, limit=max_iterations).count == max_iterations
-    assert newton(model, (a_root + b_root) / 2.0, εf=εf, εx=εx, limit=max_iterations).count == max_iterations
+    assert bisect(lambda a: a**2 - 2, 1.0, 2.0, εf=εf, εx=εx, limit=max_iterations).count == max_iterations
+    assert newton(lambda a: a**2 - 2, 1.5, εf=εf, εx=εx, limit=max_iterations).count == max_iterations
 
 def test_basic_solve():
-    square = lambda x: x**2 - a
-    a = 2.0
-    result = bisect(square, 1.0, 2.0, εf=εf, εx=εx, limit=max_it, debug=True)
-    assert abs(result.x - sqrt(a)) < εx
-    result = newton(square, 1.0, εf=εf, εx=εx, limit=max_it, debug=True)
-    assert abs(result.x - sqrt(a)) < εx
+    target = 2.0
+    result = bisect(lambda a: a**2 - target, 1.0, 2.0, εf=εf, εx=εx, limit=max_it, debug=True)
+    assert result.count < max_it
+    assert abs(result.x - sqrt(target)) < εx
+    result = newton(lambda a: a**2 - target, 1.0, εf=εf, εx=εx, limit=max_it, debug=True)
+    assert result.count < max_it
+    assert abs(result.x - sqrt(target)) < εx
 
 @pytest.mark.parametrize("a, b, mode, target_x",
                          [(a_max, b_max, Mode.MIN_MAX, x_max),

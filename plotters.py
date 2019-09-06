@@ -10,7 +10,7 @@ from playground import analyze, Solver, Mode
 def mplot(model, order=13, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0, newton=False, mode=Mode.ALL):
     #  Find roots, turning points and inflections of the model function
     solver = Solver.NT if newton else Solver.BI
-    for result in analyze(model, solver, x_min, x_max, steps, 1e-9, 1e-9, limit=101, order=order, mode=mode):
+    for result in analyze(model, solver, x_min, x_max, steps, εf=1e-9, εx=1e-9, limit=101, order=order, mode=mode):
         if result.count < 101:
             print(result, file=stderr)
     #  Plot the function and its derivatives

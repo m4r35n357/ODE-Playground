@@ -48,7 +48,8 @@ def bisect(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mod
             break
         δx = b.val - a.val
         if debug:
-            print(Result(method=m.name, count=count, sense=sense.value, mode=mode.name, x=c.val, f=fc.jet[mode.value], δx=δx), file=stderr)
+            print(Result(method=m.name, count=count, sense=sense.value, mode=mode.name, x=c.val, f=fc.jet[mode.value], δx=δx),
+                  file=stderr)
         count += 1
         if count == limit + 1:
             break
@@ -64,7 +65,8 @@ def newton(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mo
         δx = - f.jet[mode.value] / f.jet[1 + mode.value]
         x += δx
         if debug:
-            print(Result(method=m.name, count=count, sense=sense.value, mode=mode.name, x=x.val, f=f.jet[mode.value], δx=δx), file=stderr)
+            print(Result(method=m.name, count=count, sense=sense.value, mode=mode.name, x=x.val, f=f.jet[mode.value], δx=δx),
+                  file=stderr)
         count += 1
         if count == limit + 1:
             break

@@ -54,44 +54,44 @@ def test_horner():
     assert t_horner([-19.0, 7.0, -4.0, 6.0], 3.0) == approx(128.0)
 
 def test_exceptions_add():
-    with raises(RuntimeError) as excinfo:
+    with raises(RuntimeError) as e:
         _ = d_3 + s_3
-    assert "Incompatible Type: <class 'ad.Series'>" in str(excinfo.value)
-    with raises(RuntimeError) as excinfo:
+    assert "Incompatible Type: <class 'ad.Series'>" in str(e.value)
+    with raises(RuntimeError) as e:
         _ = s_3 + d_3
-    assert "Incompatible Type: <class 'ad.Dual'>" in str(excinfo.value)
+    assert "Incompatible Type: <class 'ad.Dual'>" in str(e.value)
 
 def test_exceptions_subtract():
-    with raises(RuntimeError) as excinfo:
+    with raises(RuntimeError) as e:
         _ = d_3 - s_3
-    assert "Incompatible Type: <class 'ad.Series'>" in str(excinfo.value)
-    with raises(RuntimeError) as excinfo:
+    assert "Incompatible Type: <class 'ad.Series'>" in str(e.value)
+    with raises(RuntimeError) as e:
         _ = s_3 - d_3
-    assert "Incompatible Type: <class 'ad.Dual'>" in str(excinfo.value)
+    assert "Incompatible Type: <class 'ad.Dual'>" in str(e.value)
 
 def test_exceptions_multiply():
-    with raises(RuntimeError) as excinfo:
+    with raises(RuntimeError) as e:
         _ = d_3 * s_3
-    assert "Incompatible Type: <class 'ad.Series'>" in str(excinfo.value)
-    with raises(RuntimeError) as excinfo:
+    assert "Incompatible Type: <class 'ad.Series'>" in str(e.value)
+    with raises(RuntimeError) as e:
         _ = s_3 * d_3
-    assert "Incompatible Type: <class 'ad.Dual'>" in str(excinfo.value)
+    assert "Incompatible Type: <class 'ad.Dual'>" in str(e.value)
 
 def test_exceptions_divide():
-    with raises(RuntimeError) as excinfo:
+    with raises(RuntimeError) as e:
         _ = d_3 / s_3
-    assert "Incompatible Type: <class 'ad.Series'>" in str(excinfo.value)
-    with raises(RuntimeError) as excinfo:
+    assert "Incompatible Type: <class 'ad.Series'>" in str(e.value)
+    with raises(RuntimeError) as e:
         _ = s_3 / d_3
-    assert "Incompatible Type: <class 'ad.Dual'>" in str(excinfo.value)
+    assert "Incompatible Type: <class 'ad.Dual'>" in str(e.value)
 
 def test_exceptions_power():
-    with raises(RuntimeError) as excinfo:
+    with raises(RuntimeError) as e:
         _ = d_3**s_3
-    assert "Incompatible Type: <class 'ad.Series'>" in str(excinfo.value)
-    with raises(RuntimeError) as excinfo:
+    assert "Incompatible Type: <class 'ad.Series'>" in str(e.value)
+    with raises(RuntimeError) as e:
         _ = s_3**d_3
-    assert "Incompatible Type: <class 'ad.Dual'>" in str(excinfo.value)
+    assert "Incompatible Type: <class 'ad.Dual'>" in str(e.value)
 
 @mark.parametrize("number", [zero, -zero, f05, -f05, i5, -i5])
 def test_get(number):
