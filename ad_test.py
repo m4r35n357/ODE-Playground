@@ -361,15 +361,15 @@ def test_reciprocal():
 def test_pow_object_neg1_number(number):
     dual = d_4**number
     series = ~s_4**number
-    assert dual.val == approx(d_4.val)
+    assert dual.val == approx(f4)
     assert dual.der == approx(1.0)
-    assert series.val == approx(s_4.val)
+    assert series.val == approx(f4)
     assert series.jet[1] == approx(1.0)
     derivative = 1.0 / d_4.val
     dual = d_4**-number
     series = ~s_4**-number
     assert dual.val == approx(derivative)
-    assert dual.der == approx(- derivative / d_4.val)
+    assert dual.der == approx(- derivative / f4)
     assert series.val == approx(derivative)
     for k in range(1, order):
         derivative *= - k / s_4.val
