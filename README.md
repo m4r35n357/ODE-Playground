@@ -35,7 +35,7 @@ The solver demo can be used to find roots (and also extrema and inflection point
 Additionally it is designed for finding inverse values (where real solutions exist) of complicated functions, not just their roots.
 
 
-The "higher-level" functions (in the Series and Dual classes) generate Taylor series "jets" in one go, so are only useful for univariate functions.
+The "higher-level" functions (in the Series class) generate Taylor series "jets" in one go, so are only useful for univariate functions.
 There is an overloaded operator "~" which extracts the actual derivative values from the taylor series coefficents, as well as additional operators for (negation and **).
 The \*\* (power) operator caters for f(x)^a, a^f(x) and f1(x)^f2(x), subject to domain limitations on f(x) and the scalar a.
 There are also functions for:
@@ -67,6 +67,7 @@ These two approaches produce a fairly readable format for coding the models.
 The value parameter allows simple calculation of function inverse values, as well as roots.
 
 ## Graph Plotting
+
 There are some plotting and graphing utilities written in Python 3, (the data itself can come from either c or Python executables, which share output "formats").
 In the example invocations given below, communication between the executable and plotting script uses a Unix pipe.
 The dependencies are:
@@ -80,9 +81,12 @@ Dependencies of Python 3 programs:
 * matplotlib
 * pi3d
 
-Main future development will now be in Python3 with arbitrary precision (although currently there is a float-only branch), and the c/MPFR version will be kept as a reference implementation.
+## Testing Requirements
+* pytest
+* pytest_cov
+* mutmut
 
-Build environment (Debian/Ubuntu/Raspbian)
+## Build environment (Debian/Ubuntu/Raspbian)
 ```
 sudo apt install build-essential mesa-utils-extra python3-dev libmpc-dev libatlas-base-dev virtualenvwrapper
 ```
