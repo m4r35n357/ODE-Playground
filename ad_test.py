@@ -5,7 +5,7 @@
 #  pytest --cov=ad --cov-report html:cov_html ad_test.py -v
 #  Mutation Testing
 #  rm -f .mutmut-cache; mutmut --test-time-base 10.0 --paths-to-mutate ad.py run --runner 'pytest ad_test.py'
-from math import pi, exp, log, sin, cos, tan, sinh, cosh, tanh
+from math import pi, exp, log, sin, cos, tan, sinh, cosh, tanh, factorial
 from ad import t_jet, t_horner, t_prod, t_quot, t_pwr, t_exp, t_ln, t_sin_cos, t_tan_sec2, Series
 from pytest import mark, raises, approx
 
@@ -95,14 +95,20 @@ def test_to_str(number, length):
     for entry in entries:
         assert len(entry) == 10
 
+def test_to_derivatives():
+    coefficients = data1_s
+    derivatives = ~ data1_s
+    for k in range(order):
+        assert derivatives.jet[k] == approx(factorial(k) * coefficients.jet[k])
+
 def test_unary_plus():
-    series = ~(+ data1_s)
+    series = ~ (+ data1_s)
     assert len(series.jet) == order
     for result, original in zip(series.jet, (~ data1_s).jet):
         assert result == approx(original)
 
 def test_unary_minus():
-    series = ~(- data1_s)
+    series = ~ (- data1_s)
     assert len(series.jet) == order
     for result, original in zip(series.jet, (~ data1_s).jet):
         assert result == approx(- original)
@@ -114,7 +120,7 @@ def test_abs():
     assert series.jet[1] == approx(1.0)
     for term in series.jet[2:]:
         assert term == approx(0.0)
-    series = ~(abs(Series.get(order, - f05).var))
+    series = ~ (abs(Series.get(order, - f05).var))
     assert len(series.jet) == order
     assert series.val == approx(f05)
     assert series.jet[1] == approx(- 1.0)
@@ -126,7 +132,7 @@ def test_abs():
     assert series.jet[1] == approx(1.0)
     for term in series.jet[2:]:
         assert term == approx(0.0)
-    series = ~(abs(s_0))
+    series = ~ (abs(s_0))
     assert len(series.jet) == order
     for term in series.jet:
         assert term == approx(0.0)
@@ -179,7 +185,7 @@ def test_multiply_object_object():
     t_series = s_3 * s_4
     for k in range(order):
         assert t_prod(s_3.jet, s_4.jet, k) == approx(t_series.jet[k])
-    series = ~(s_3 * s_4)
+    series = ~ (s_3 * s_4)
     assert series.val == approx(f3 * f4)
     assert series.jet[1] == approx(f3 + f4)
     assert series.jet[2] == approx(2.0)
@@ -188,7 +194,7 @@ def test_multiply_object_object():
 
 @mark.parametrize("number", [i5, f3])
 def test_multiply_object_number(number):
-    series = ~(s_3 * number)
+    series = ~ (s_3 * number)
     assert series.val == approx(f3 * number)
     assert series.jet[1] == approx(number)
     for term in series.jet[2:]:
@@ -196,7 +202,7 @@ def test_multiply_object_number(number):
 
 @mark.parametrize("number", [i5, f3])
 def test_multiply_number_object(number):
-    series = ~(number * s_3)
+    series = ~ (number * s_3)
     assert series.val == approx(number * f3)
     assert series.jet[1] == approx(number)
     for term in series.jet[2:]:
@@ -219,7 +225,7 @@ def test_divide_object_object():
     for k in range(order):
         quotient[k] = t_quot(quotient, s_3.jet, s_4.jet, k)
         assert quotient[k] == approx(t_series.jet[k])
-    series = ~(s_3 / s_4)
+    series = ~ (s_3 / s_4)
     assert series.val == approx(f3 / f4)
     assert series.jet[1] == approx((f4 - f3) / f4**2)
 
@@ -236,7 +242,7 @@ def test_divide_domain_object_number_bad(number):
 
 @mark.parametrize("number", [i5, f4])
 def test_divide_object_number(number):
-    series = ~(s_3 / number)
+    series = ~ (s_3 / number)
     assert series.val == approx(f3 / number)
     assert series.jet[1] == approx(1.0 / number)
     for term in series.jet[2:]:
@@ -256,7 +262,7 @@ def test_divide_domain_number_object_bad(number):
 @mark.parametrize("number", [i5, f4])
 def test_divide_number_object(number):
     derivative = number / f3
-    series = ~(number / s_3)
+    series = ~ (number / s_3)
     assert series.val == approx(derivative)
     for k in range(1, order):
         derivative *= - k / f3
@@ -264,7 +270,7 @@ def test_divide_number_object(number):
 
 def test_reciprocal():
     derivative = 1.0 / f3
-    series = ~(1.0 / s_3)
+    series = ~ (1.0 / s_3)
     assert series.val == approx(derivative)
     for k in range(1, order):
         derivative *= - k / f3
@@ -272,11 +278,11 @@ def test_reciprocal():
 
 @mark.parametrize("number", [1, 1.0])
 def test_pow_object_neg1_number(number):
-    series = ~s_4**number
+    series = ~ s_4**number
     assert series.val == approx(f4)
     assert series.jet[1] == approx(1.0)
     derivative = 1.0 / f4
-    series = ~s_4**-number
+    series = ~ s_4**-number
     assert series.val == approx(derivative)
     for k in range(1, order):
         derivative *= - k / s_4.val
@@ -316,7 +322,7 @@ def test_pow_domain_object_anything_bad(number):
         _ = Series.get(order, number).var**-2.0
 
 def test_pow_object_object():
-    series = ~(s_3**s_4)
+    series = ~ (s_3**s_4)
     assert len(series.jet) == order
     assert series.val == approx(f3**f4)
 
@@ -356,7 +362,7 @@ def test_pow_domain_number_object_bad(number):
 
 @mark.parametrize("number", [i5, f3])
 def test_pow_number_object(number):
-    series = ~number**data1_s
+    series = ~ number**data1_s
     assert len(series.jet) == order
     assert series.val == approx(number**data1_s.val)
 
@@ -367,14 +373,14 @@ def test_exp():
         exponent[k] = t_exp(exponent, s_4.jet, k)
         assert exponent[k] == approx(t_series.jet[k])
     derivative = exp(f3)
-    series = ~s_3.exp
+    series = ~ s_3.exp
     assert len(series.jet) == order
     for term in series.jet:
         assert term == approx(derivative)
 
 def test_minus_exp():
     derivative = 1.0 / exp(f3)
-    series = ~(- s_3).exp
+    series = ~ (- s_3).exp
     assert len(series.jet) == order
     for k in range(order):
         if k % 2 == 0:
@@ -400,7 +406,7 @@ def test_ln():
         logarithm[k] = t_ln(logarithm, s_3.jet, k)
         assert logarithm[k] == approx(t_series.jet[k])
     derivative = 1.0 / f3
-    series = ~s_3.ln
+    series = ~ s_3.ln
     assert len(series.jet) == order
     assert series.val == approx(log(f3))
     assert series.jet[1] == approx(derivative)
@@ -416,7 +422,7 @@ def test_sin():
         sine[k], cosine[k] = t_sin_cos(sine, cosine, s_3.jet, k)
         assert sine[k] == approx(t_series_sin.jet[k])
         assert cosine[k] == approx(t_series_cos.jet[k])
-    series = ~Series.get(order, pi / f3).var.sin
+    series = ~ Series.get(order, pi / f3).var.sin
     assert len(series.jet) == order
     for k in range(order):
         if k % 4 == 0:
@@ -429,7 +435,7 @@ def test_sin():
             assert series.jet[k] == approx(- cos(pi / f3))
 
 def test_cos():
-    series = ~Series.get(order, pi / f3).var.cos
+    series = ~ Series.get(order, pi / f3).var.cos
     assert len(series.jet) == order
     for k in range(order):
         if k % 4 == 0:
@@ -449,7 +455,7 @@ def test_tan():
         tangent[k], secant2[k] = t_tan_sec2(tangent, secant2, s_3.jet, k)
         assert tangent[k] == approx(t_series_tan.jet[k])
         assert secant2[k] == approx(t_series_sec2.jet[k])
-    series = ~Series.get(order, pi / f4).var.tan
+    series = ~ Series.get(order, pi / f4).var.tan
     assert len(series.jet) == order
     assert series.val == approx(tan(pi / f4))
     assert series.jet[1] == approx((1.0 + tan(pi / f4)**2))
@@ -462,7 +468,7 @@ def test_sinh():
         h_sine[k], h_cosine[k] = t_sin_cos(h_sine, h_cosine, s_3.jet, k, hyp=True)
         assert h_sine[k] == approx(t_series_sinh.jet[k])
         assert h_cosine[k] == approx(t_series_cosh.jet[k])
-    series = ~Series.get(order, pi / f3).var.sinh
+    series = ~ Series.get(order, pi / f3).var.sinh
     assert len(series.jet) == order
     for k in range(order):
         if k % 2 == 0:
@@ -471,7 +477,7 @@ def test_sinh():
             assert series.jet[k] == approx(cosh(pi / f3))
 
 def test_cosh():
-    series = ~Series.get(order, pi / f3).var.cosh
+    series = ~ Series.get(order, pi / f3).var.cosh
     assert len(series.jet) == order
     for k in range(order):
         if k % 2 == 0:
@@ -487,7 +493,7 @@ def test_tanh():
         h_tangent[k], h_secant2[k] = t_tan_sec2(h_tangent, h_secant2, s_3.jet, k, hyp=True)
         assert h_tangent[k] == approx(t_series_tanh.jet[k])
         assert h_secant2[k] == approx(t_series_sech2.jet[k])
-    series = ~Series.get(order, pi / f4).var.tanh
+    series = ~ Series.get(order, pi / f4).var.tanh
     assert len(series.jet) == order
     assert series.val == approx(tanh(pi / f4))
     assert series.jet[1] == approx((1.0 - tanh(pi / f4)**2))

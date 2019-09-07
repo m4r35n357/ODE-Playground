@@ -33,6 +33,6 @@ def mplot(model, order=13, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max
     pyplot.show()
 
 if __name__ == "__main__":
-    mplot(lambda a: (a - 1)**2 / (a.cosh + 1).ln - 1, order=4)
+    mplot(lambda a: (a - 1)**2 / (a.cosh + 1).ln - 1)
 else:
     print(__name__ + " module loaded", file=stderr)
