@@ -576,7 +576,7 @@ def test_tan_zero():
 
 @mark.toplevel
 def test_tanh_zero():
-    series = s_05.tanh - s_05.sinh / s_05.cosh
+    series = data1_s.tanh - data1_s.sinh / data1_s.cosh
     for term in series.jet:
         assert term == approx(0.0)
 
@@ -594,12 +594,12 @@ def test_cos_3x_zero():
 
 @mark.toplevel
 def test_sinh_3x_zero():
-    series = (3 * s_05).sinh - 3.0 * s_05.sinh - 4.0 * s_05.sinh**3
+    series = (3 * data1_s).sinh - 3.0 * data1_s.sinh - 4.0 * data1_s.sinh**3
     for term in series.jet:
         assert term == approx(0.0)
 
 @mark.toplevel
 def test_cosh_3x_zero():
-    series = (3 * s_05).cosh + 3.0 * s_05.cosh - 4.0 * s_05.cosh**3
+    series = (3 * data1_s).cosh + 3.0 * data1_s.cosh - 4.0 * data1_s.cosh**3
     for term in series.jet:
         assert term == approx(0.0)
