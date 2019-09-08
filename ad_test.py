@@ -43,7 +43,7 @@ def test_t_jet_no_value():
         assert isinstance(term, float)
         assert term == approx(0.0)
 
-@mark.parametrize("number", [zero, -zero, f05, -f05, i5, -i5])
+@mark.parametrize('number', [zero, -zero, f05, -f05, i5, -i5])
 def test_t_jet(number):
     jet = t_jet(order, number)
     assert len(jet) == order
@@ -82,7 +82,7 @@ def test_exceptions_power():
         _ = s_3**d_3
     assert "Incompatible Type: <class 'complex'>" in str(e.value)
 
-@mark.parametrize("number", [zero, -zero, f05, -f05, i5, -i5])
+@mark.parametrize('number', [zero, -zero, f05, -f05, i5, -i5])
 def test_get(number):
     series = Series.get(order, number)
     assert len(series.jet) == order
@@ -93,7 +93,7 @@ def test_get(number):
         assert isinstance(term, float)
         assert term == approx(0.0)
 
-@mark.parametrize("number, length", [(data1_s, order)])
+@mark.parametrize('number, length', [(data1_s, order)])
 def test_to_str(number, length):
     entries = str.split(str(number))
     assert len(entries) == length
@@ -148,7 +148,7 @@ def test_add_object_object():
     for result, s1, s2 in zip(series.jet, data1_s.jet, data2_s.jet):
         assert result == approx(s1 + s2)
 
-@mark.parametrize("number", [i5, f3])
+@mark.parametrize('number', [i5, f3])
 def test_add_object_number(number):
     series = data1_s + number
     assert len(series.jet) == order
@@ -156,7 +156,7 @@ def test_add_object_number(number):
     for result, original in zip(series.jet[1:], data1_s.jet[1:]):
         assert result == approx(original)
 
-@mark.parametrize("number", [i5, f3])
+@mark.parametrize('number', [i5, f3])
 def test_add_number_object(number):
     series = number + data1_s
     assert len(series.jet) == order
@@ -170,7 +170,7 @@ def test_subtract_object_object():
     for result, s1, s2 in zip(series.jet, data1_s.jet, data2_s.jet):
         assert result == approx(s1 - s2)
 
-@mark.parametrize("number", [i5, f3])
+@mark.parametrize('number', [i5, f3])
 def test_subtract_object_number(number):
     series = data1_s - number
     assert len(series.jet) == order
@@ -178,7 +178,7 @@ def test_subtract_object_number(number):
     for result, original in zip(series.jet[1:], data1_s.jet[1:]):
         assert result == approx(original)
 
-@mark.parametrize("number", [i5, f3])
+@mark.parametrize('number', [i5, f3])
 def test_subtract_number_object(number):
     series = number - data1_s
     assert len(series.jet) == order
@@ -197,7 +197,7 @@ def test_multiply_object_object():
     for term in series.jet[3:]:
         assert term == approx(0.0)
 
-@mark.parametrize("number", [i5, f3])
+@mark.parametrize('number', [i5, f3])
 def test_multiply_object_number(number):
     series = ~ (s_3 * number)
     assert series.val == approx(f3 * number)
@@ -205,7 +205,7 @@ def test_multiply_object_number(number):
     for term in series.jet[2:]:
         assert term == approx(0.0)
 
-@mark.parametrize("number", [i5, f3])
+@mark.parametrize('number', [i5, f3])
 def test_multiply_number_object(number):
     series = ~ (number * s_3)
     assert series.val == approx(number * f3)
@@ -214,12 +214,12 @@ def test_multiply_number_object(number):
         assert term== approx(0.0)
 
 @mark.domain
-@mark.parametrize("number", [i5, δ, - δ, - i5])
+@mark.parametrize('number', [i5, δ, - δ, - i5])
 def test_divide_domain_object_good(number):
     _ = data1_s / Series.get(order, number).var
 
 @mark.domain
-@mark.parametrize("number", [zero, -zero])
+@mark.parametrize('number', [zero, -zero])
 def test_divide_domain_object_bad(number):
     with raises(AssertionError):
         _ = data1_s / Series.get(order, number).var
@@ -235,17 +235,17 @@ def test_divide_object_object():
     assert series.jet[1] == approx((f4 - f3) / f4**2)
 
 @mark.domain
-@mark.parametrize("number", [1, δ, -δ, -1])
+@mark.parametrize('number', [1, δ, -δ, -1])
 def test_divide_domain_object_number_good(number):
     _ = s_4 / number
 
 @mark.domain
-@mark.parametrize("number", [zero, - zero, 0])
+@mark.parametrize('number', [zero, - zero, 0])
 def test_divide_domain_object_number_bad(number):
     with raises(AssertionError):
         _ = s_4 / number
 
-@mark.parametrize("number", [i5, f4])
+@mark.parametrize('number', [i5, f4])
 def test_divide_object_number(number):
     series = ~ (s_3 / number)
     assert series.val == approx(f3 / number)
@@ -254,17 +254,17 @@ def test_divide_object_number(number):
         assert term == approx(0.0)
 
 @mark.domain
-@mark.parametrize("number", [1, δ, -δ, -1])
+@mark.parametrize('number', [1, δ, -δ, -1])
 def test_divide_domain_number_object_good(number):
     _ = 1.0 / Series.get(order, number).var
 
 @mark.domain
-@mark.parametrize("number", [zero, - zero])
+@mark.parametrize('number', [zero, - zero])
 def test_divide_domain_number_object_bad(number):
     with raises(AssertionError):
         _ = 1.0 / Series.get(order, number).var
 
-@mark.parametrize("number", [i5, f4])
+@mark.parametrize('number', [i5, f4])
 def test_divide_number_object(number):
     derivative = number / f3
     series = ~ (number / s_3)
@@ -281,7 +281,7 @@ def test_reciprocal():
         derivative *= - k / f3
         assert series.jet[k] == approx(derivative)
 
-@mark.parametrize("number", [1, 1.0])
+@mark.parametrize('number', [1, 1.0])
 def test_pow_object_neg1_number(number):
     series = ~ s_4**number
     assert series.val == approx(f4)
@@ -294,30 +294,30 @@ def test_pow_object_neg1_number(number):
         assert series.jet[k] == approx(derivative)
 
 @mark.domain
-@mark.parametrize("number", [1, δ, 0, zero, - zero, - δ, - 1])
+@mark.parametrize('number', [1, δ, 0, zero, - zero, - δ, - 1])
 def test_pow_domain_object_int_good(number):
     _ = Series.get(order, number).var**2
 
 @mark.domain
-@mark.parametrize("number", [1, δ, - δ, - 1])
+@mark.parametrize('number', [1, δ, - δ, - 1])
 def test_pow_domain_object_int_neg_good(number):
     _ = Series.get(order, number).var**-2
 
 @mark.domain
-@mark.parametrize("number", [0, zero, - zero])
+@mark.parametrize('number', [0, zero, - zero])
 def test_pow_domain_object_int_neg_bad(number):
     with raises(AssertionError):
         _ = Series.get(order, number).var**-2
 
 @mark.domain
-@mark.parametrize("number", [1, δ])
+@mark.parametrize('number', [1, δ])
 def test_pow_domain_object_anything_good(number):
     _ = Series.get(order, number).var**data1_s
     _ = Series.get(order, number).var**2.0
     _ = Series.get(order, number).var**-2.0
 
 @mark.domain
-@mark.parametrize("number", [0, zero, - zero, - δ, -1])
+@mark.parametrize('number', [0, zero, - zero, - δ, -1])
 def test_pow_domain_object_anything_bad(number):
     with raises(AssertionError):
         _ = Series.get(order, number).var**data1_s
@@ -331,7 +331,7 @@ def test_pow_object_object():
     assert len(series.jet) == order
     assert series.val == approx(f3**f4)
 
-@mark.parametrize("number", [0, zero, -zero])
+@mark.parametrize('number', [0, zero, -zero])
 def test_pow_object_zero(number):
     power = t_jet(order)
     t_series = s_4**number
@@ -344,7 +344,7 @@ def test_pow_object_zero(number):
     for term in series.jet[1:]:
         assert term == approx(0.0)
 
-@mark.parametrize("number", [i5, - i5, f3, - f3])
+@mark.parametrize('number', [i5, - i5, f3, - f3])
 def test_pow_object_number(number):
     series = ~ s_4**number
     assert len(series.jet) == order
@@ -355,17 +355,17 @@ def test_pow_object_number(number):
     assert series.val == approx(1.0 / f4**number)
 
 @mark.domain
-@mark.parametrize("number", [1, δ])
+@mark.parametrize('number', [1, δ])
 def test_pow_domain_number_object_good(number):
     _ = number**data1_s
 
 @mark.domain
-@mark.parametrize("number", [- δ, zero, -zero])
+@mark.parametrize('number', [- δ, zero, -zero])
 def test_pow_domain_number_object_bad(number):
     with raises(AssertionError):
         _ = number**data1_s
 
-@mark.parametrize("number", [i5, f3])
+@mark.parametrize('number', [i5, f3])
 def test_pow_number_object(number):
     series = ~ number**data1_s
     assert len(series.jet) == order
@@ -394,12 +394,12 @@ def test_minus_exp():
             assert series.jet[k] == approx(- derivative)
 
 @mark.domain
-@mark.parametrize("number", [1, δ])
+@mark.parametrize('number', [1, δ])
 def test_ln_domain_good(number):
     _ = Series.get(order, number).var.ln
 
 @mark.domain
-@mark.parametrize("number", [zero, - zero, - δ, - 1])
+@mark.parametrize('number', [zero, - zero, - δ, - 1])
 def test_ln_domain_bad(number):
     with raises(AssertionError):
         _ = Series.get(order, number).var.ln
@@ -504,12 +504,12 @@ def test_tanh():
     assert series.jet[1] == approx((1.0 - tanh(pi / f4)**2))
 
 @mark.domain
-@mark.parametrize("number", [1.0 - δ, -1.0 + δ])
+@mark.parametrize('number', [1.0 - δ, -1.0 + δ])
 def test_asin_domain_good(number):
     _ = Series.get(order, number).var.asin
 
 @mark.domain
-@mark.parametrize("number", [3.0, 1.0, -1.0, -3.0, 3, 1, -1, -3])
+@mark.parametrize('number', [3.0, 1.0, -1.0, -3.0, 3, 1, -1, -3])
 def test_asin_domain_bad(number):
     with raises(AssertionError):
         _ = Series.get(order, number).var.asin
@@ -524,12 +524,12 @@ def test_asin():
     assert len(series.jet) == order
 
 @mark.domain
-@mark.parametrize("number", [1.0 - δ, -1.0 + δ])
+@mark.parametrize('number', [1.0 - δ, -1.0 + δ])
 def test_acos_domain_good(number):
     _ = Series.get(order, number).var.acos
 
 @mark.domain
-@mark.parametrize("number", [3.0, 1.0, -1.0, -3.0, 3, 1, -1, -3])
+@mark.parametrize('number', [3.0, 1.0, -1.0, -3.0, 3, 1, -1, -3])
 def test_acos_domain_bad(number):
     with raises(AssertionError):
         _ = Series.get(order, number).var.acos
@@ -563,12 +563,12 @@ def test_asinh():
         assert term == approx(0.0)
 
 @mark.domain
-@mark.parametrize("number", [1.0 + δ])
+@mark.parametrize('number', [1.0 + δ])
 def test_acosh_domain_good(number):
     _ = Series.get(order, number).var.acosh
 
 @mark.domain
-@mark.parametrize("number", [zero, - zero, 1.0 - δ, 1.0])
+@mark.parametrize('number', [zero, - zero, 1.0 - δ, 1.0])
 def test_acosh_domain_bad(number):
     with raises(AssertionError):
         _ = Series.get(order, number).var.acosh
@@ -584,12 +584,12 @@ def test_acosh():
         assert term == approx(0.0)
 
 @mark.domain
-@mark.parametrize("number", [1.0 - δ, -1.0 + δ])
+@mark.parametrize('number', [1.0 - δ, -1.0 + δ])
 def test_atanh_domain_good(number):
     _ = Series.get(order, number).var.atanh
 
 @mark.domain
-@mark.parametrize("number", [1.0, -1.0, 1, -1])
+@mark.parametrize('number', [1.0, -1.0, 1, -1])
 def test_atanh_domain_bad(number):
     with raises(AssertionError):
         _ = Series.get(order, number).var.atanh

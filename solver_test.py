@@ -34,7 +34,7 @@ def test_basic_solve():
     assert result.count < max_it
     assert abs(result.x - sqrt(target)) < εx
 
-@pytest.mark.parametrize("a, b, mode, target_x",
+@pytest.mark.parametrize('a, b, mode, target_x',
                          [(a_max, b_max, Mode.MIN_MAX, x_max),
                           (a_infl, b_infl, Mode.INFLECT, x_infl),
                           (a_min, b_min, Mode.MIN_MAX, x_min),
@@ -46,7 +46,7 @@ def test_bisect(a, b, mode, target_x):
     assert abs(result.f) < εf
     assert abs(target_x - result.x) < εx
 
-@pytest.mark.parametrize("a, b, mode, target_x",
+@pytest.mark.parametrize('a, b, mode, target_x',
                          [(a_max, b_max, Mode.MIN_MAX, x_max),
                           (a_infl, b_infl, Mode.INFLECT, x_infl),
                           (a_min, b_min, Mode.MIN_MAX, x_min),
@@ -67,7 +67,7 @@ def test_analysis_na(capsys):
     assert len(results) == 0
     assert len(captured.out) == 0
 
-@pytest.mark.parametrize("solver", [Solver.BI, Solver.NT])
+@pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cubic(solver):
     results = []
     for result in analyze(lambda a: a**3 + 3 * a**2 - 3,
@@ -82,7 +82,7 @@ def test_analysis_cubic(solver):
     assert (results[4].mode == Mode.MIN_MAX.name) and (results[4].sense == Sense.INCREASING.value)
     assert (results[5].mode == Mode.ROOT___.name) and (results[5].sense == Sense.INCREASING.value)
 
-@pytest.mark.parametrize("solver", [Solver.BI, Solver.NT])
+@pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cos_cubic(solver):
     results = []
     for result in analyze(lambda a: a.cos - a**3,
@@ -95,7 +95,7 @@ def test_analysis_cos_cubic(solver):
     assert (results[2].mode == Mode.MIN_MAX.name) and (results[2].sense == Sense.DECREASING.value)
     assert (results[3].mode == Mode.ROOT___.name) and (results[3].sense == Sense.DECREASING.value)
 
-@pytest.mark.parametrize("solver", [Solver.BI, Solver.NT])
+@pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_messy(solver):
     results = []
     for result in analyze(lambda a: (a - 1)**2 / (a.cosh + 1).ln - 1,
@@ -110,7 +110,7 @@ def test_analysis_messy(solver):
     assert (results[4].mode == Mode.ROOT___.name) and (results[4].sense == Sense.INCREASING.value)
     assert (results[5].mode == Mode.INFLECT.name) and (results[5].sense == Sense.DECREASING.value)
 
-@pytest.mark.parametrize("solver", [Solver.BI, Solver.NT])
+@pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_septic(solver):
     results = []
     for result in analyze(lambda a: (a + 7) * (5 + a) * (a + 2.0) * a * (1 - a) * (3.0 - a) * (a - 6),
