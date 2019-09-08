@@ -6,13 +6,15 @@
 #  Mutation Testing
 #  rm -f .mutmut-cache; mutmut --test-time-base 10.0 --paths-to-mutate ad.py run --runner 'pytest ad_test.py'
 from math import pi, exp, log, sin, cos, tan, sinh, cosh, tanh, factorial
-from ad import t_jet, t_horner, t_prod, t_quot, t_pwr, t_exp, t_ln, t_sin_cos, t_tan_sec2, Series
+from ad import t_jet, t_horner, t_prod, t_quot, t_pwr, t_exp, t_ln, t_sin_cos, t_tan_sec2, Series, t_asin, t_acos, t_atan
 from pytest import mark, raises, approx
 
 order = 6
 ε = 1.0e-12  # small error
 δ = 1.0e-6  # small amount
 zero = 0.0
+f1 = 1.0
+f2 = 2.0
 f3 = 3.0
 f4 = 4.0
 f05 = 0.5
@@ -20,8 +22,11 @@ i5 = 5
 
 s_0 = Series.get(order).var
 s_05 = Series.get(order, f05).var
-s_4 = Series.get(order, f4).var
+s_1 = Series.get(order, f1).var
+s_2 = Series.get(order, f2).var
 s_3 = Series.get(order, f3).var
+s_4 = Series.get(order, f4).var
+
 d_3 = complex(f3)
 
 data1_s = Series([1.0] * order)
@@ -498,6 +503,107 @@ def test_tanh():
     assert series.val == approx(tanh(pi / f4))
     assert series.jet[1] == approx((1.0 - tanh(pi / f4)**2))
 
+@mark.domain
+@mark.parametrize("number", [1.0 - δ, -1.0 + δ])
+def test_asin_domain_good(number):
+    _ = Series.get(order, number).var.asin
+
+@mark.domain
+@mark.parametrize("number", [3.0, 1.0, -1.0, -3.0, 3, 1, -1, -3])
+def test_asin_domain_bad(number):
+    with raises(AssertionError):
+        _ = Series.get(order, number).var.asin
+
+def test_asin():
+    series = s_05.asin
+    asin, _ = t_jet(order), t_jet(order)
+    for k in range(order):
+        asin[k], _[k] = t_asin(asin, _, s_05.jet, k)
+        assert asin[k] == approx(series.jet[k])
+    assert series.jet[0] == approx(pi / 6.0)
+    assert len(series.jet) == order
+
+@mark.domain
+@mark.parametrize("number", [1.0 - δ, -1.0 + δ])
+def test_acos_domain_good(number):
+    _ = Series.get(order, number).var.acos
+
+@mark.domain
+@mark.parametrize("number", [3.0, 1.0, -1.0, -3.0, 3, 1, -1, -3])
+def test_acos_domain_bad(number):
+    with raises(AssertionError):
+        _ = Series.get(order, number).var.acos
+
+def test_acos():
+    series = s_05.acos
+    acos, _ = t_jet(order), t_jet(order)
+    for k in range(order):
+        acos[k], _[k] = t_acos(acos, _, s_05.jet, k)
+        assert acos[k] == approx(series.jet[k])
+    assert series.jet[0] == approx(pi / 3.0)
+    assert len(series.jet) == order
+
+def test_atan():
+    series = s_1.atan
+    atan, _ = t_jet(order), t_jet(order)
+    for k in range(order):
+        atan[k], _[k] = t_atan(atan, _, s_1.jet, k)
+        assert atan[k] == approx(series.jet[k])
+    assert series.jet[0] == approx(pi / 4.0)
+    assert len(series.jet) == order
+
+def test_asinh():
+    x = s_05
+    series = x.asinh
+    asinh, _ = t_jet(order), t_jet(order)
+    for k in range(order):
+        asinh[k], _[k] = t_asin(asinh, _, s_05.jet, k, hyp=True)
+        assert asinh[k] == approx(series.jet[k])
+    for term in (series - (x + (x**2 + 1)**0.5).ln).jet:
+        assert term == approx(0.0)
+
+@mark.domain
+@mark.parametrize("number", [1.0 + δ])
+def test_acosh_domain_good(number):
+    _ = Series.get(order, number).var.acosh
+
+@mark.domain
+@mark.parametrize("number", [zero, - zero, 1.0 - δ, 1.0])
+def test_acosh_domain_bad(number):
+    with raises(AssertionError):
+        _ = Series.get(order, number).var.acosh
+
+def test_acosh():
+    x = s_2
+    series = x.acosh
+    acosh, _ = t_jet(order), t_jet(order)
+    for k in range(order):
+        acosh[k], _[k] = t_acos(acosh, _, s_2.jet, k, hyp=True)
+        assert acosh[k] == approx(series.jet[k])
+    for term in (series - (x + (x**2 - 1)**0.5).ln).jet:
+        assert term == approx(0.0)
+
+@mark.domain
+@mark.parametrize("number", [1.0 - δ, -1.0 + δ])
+def test_atanh_domain_good(number):
+    _ = Series.get(order, number).var.atanh
+
+@mark.domain
+@mark.parametrize("number", [1.0, -1.0, 1, -1])
+def test_atanh_domain_bad(number):
+    with raises(AssertionError):
+        _ = Series.get(order, number).var.atanh
+
+def test_atanh():
+    x = s_05
+    series = x.atanh
+    atanh, _ = t_jet(order), t_jet(order)
+    for k in range(order):
+        atanh[k], _[k] = t_atan(atanh, _, s_05.jet, k, hyp=True)
+        assert atanh[k] == approx(series.jet[k])
+    for term in (series - 0.5 * ((1 + x) / (1 - x)).ln).jet:
+        assert term == approx(0.0)
+
 def test_var():
     series = Series.get(order, f3).var
     assert len(series.jet) == order
@@ -581,6 +687,18 @@ def test_tanh_zero():
         assert term == approx(0.0)
 
 @mark.toplevel
+def test_pythagoras_trig():
+    series = data1_s.cos**2 + data1_s.sin**2 - 1.0
+    for term in series.jet:
+        assert term == approx(0.0)
+
+@mark.toplevel
+def test_pythagoras_hyp():
+    series = data1_s.cosh**2 - data1_s.sinh**2 - 1.0
+    for term in series.jet:
+        assert term == approx(0.0)
+
+@mark.toplevel
 def test_sin_3x_zero():
     series = (3 * data1_s).sin - 3.0 * data1_s.sin + 4.0 * data1_s.sin**3
     for term in series.jet:
@@ -601,5 +719,41 @@ def test_sinh_3x_zero():
 @mark.toplevel
 def test_cosh_3x_zero():
     series = (3 * data1_s).cosh + 3.0 * data1_s.cosh - 4.0 * data1_s.cosh**3
+    for term in series.jet:
+        assert term == approx(0.0)
+
+@mark.toplevel
+def test_sin_asin_zero():
+    series = data1_s.sin.asin - data1_s
+    for term in series.jet:
+        assert term == approx(0.0)
+
+@mark.toplevel
+def test_cos_acos_zero():
+    series = data1_s.cos.acos - data1_s
+    for term in series.jet:
+        assert term == approx(0.0)
+
+@mark.toplevel
+def test_tan_atan_zero():
+    series = data1_s.tan.atan - data1_s
+    for term in series.jet:
+        assert term == approx(0.0)
+
+@mark.toplevel
+def test_sinh_asinh_zero():
+    series = data1_s.sinh.asinh - data1_s
+    for term in series.jet:
+        assert term == approx(0.0)
+
+@mark.toplevel
+def test_cosh_acosh_zero():
+    series = data1_s.cosh.acosh - data1_s
+    for term in series.jet:
+        assert term == approx(0.0)
+
+@mark.toplevel
+def test_tanh_atanh_zero():
+    series = data1_s.tanh.atanh - data1_s
     for term in series.jet:
         assert term == approx(0.0)

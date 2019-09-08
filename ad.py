@@ -2,7 +2,8 @@
 #  (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 from sys import stderr
-from math import sin, cos, sinh, cosh, tan, tanh, exp, log, fsum
+from math import sin, cos, sinh, cosh, tan, tanh, exp, log, fsum, asinh, asin, acosh, acos, atanh, atan
+
 
 def t_jet(n, value=0.0):
     return [value if isinstance(value, float) else float(value)] + [0.0] * (n - 1)
@@ -42,6 +43,27 @@ def t_tan_sec2(t, s2, u, k, hyp=False):
         return (tanh(u[0]), 1.0 - tanh(u[0])**2) if hyp else (tan(u[0]), 1.0 + tan(u[0])**2)
     tk = fsum((k - j) * s2[j] * u[k - j] for j in range(k)) / k
     sk = 2.0 * (t[0] * tk + fsum((k - j) * t[j] * t[k - j] for j in range(1, k)) / k)
+    return (tk, - sk) if hyp else (tk, sk)
+
+def t_asin(h, v, u, k, hyp=False):
+    if k == 0:
+        return (asinh(u[0]), cosh(asinh(u[0]))) if hyp else (asin(u[0]), cos(asin(u[0])))
+    sk = (u[k] - fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
+    ck = u[0] * sk + fsum(j * h[j] * u[k - j] for j in range(1, k)) / k
+    return (sk, ck) if hyp else (sk, - ck)
+
+def t_acos(h, v, u, k, hyp=False):
+    if k == 0:
+        return (acosh(u[0]), sinh(acosh(u[0]))) if hyp else (acos(u[0]), - sin(acos(u[0])))
+    sk = (u[k] + fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
+    ck = - u[0] * sk - fsum(j * h[j] * u[k - j] for j in range(1, k)) / k
+    return (sk, ck) if hyp else (sk, - ck)
+
+def t_atan(h, v, u, k, hyp=False):
+    if k == 0:
+        return (atanh(u[0]), 1.0 - u[0]**2) if hyp else (atan(u[0]), 1.0 + u[0]**2)
+    tk = (u[k] - fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
+    sk = 2.0 * (u[0] * u[k] + fsum(j * u[j] * u[k - j] for j in range(1, k)) / k)
     return (tk, - sk) if hyp else (tk, sk)
 
 
@@ -193,6 +215,34 @@ class Series:
     @property
     def sech2(self):
         return self._double(t_tan_sec2, hyp=True)[1]
+
+    @property
+    def asin(self):
+        assert abs(self.val) < 1.0, f"self.val = {self.val}"
+        return self._double(t_asin)[0]
+
+    @property
+    def acos(self):
+        assert abs(self.val) < 1.0, f"self.val = {self.val}"
+        return self._double(t_acos)[0]
+
+    @property
+    def atan(self):
+        return self._double(t_atan)[0]
+
+    @property
+    def asinh(self):
+        return self._double(t_asin, hyp=True)[0]
+
+    @property
+    def acosh(self):
+        assert self.val > 1.0, f"self.val = {self.val}"
+        return self._double(t_acos, hyp=True)[0]
+
+    @property
+    def atanh(self):
+        assert abs(self.val) < 1.0, f"self.val = {self.val}"
+        return self._double(t_atan, hyp=True)[0]
 
     @property
     def val(self):
