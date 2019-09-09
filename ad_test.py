@@ -119,27 +119,27 @@ def test_unary_minus():
         assert result == approx(- original)
 
 def test_abs():
-    series = ~ abs(s_05)
+    series = abs(s_05)
     assert len(series.jet) == order
     assert series.val == approx(f05)
     assert series.jet[1] == approx(1.0)
     for term in series.jet[2:]:
         assert term == approx(0.0)
-    series = ~ (abs(Series.get(order, - f05).var))
+    series = abs(s_0)
+    assert len(series.jet) == order
+    for term in series.jet:
+        assert term == approx(0.0)
+    series = abs(- s_05)
+    assert len(series.jet) == order
+    assert series.val == approx(f05)
+    assert series.jet[1] == approx(1.0)
+    for term in series.jet[2:]:
+        assert term == approx(0.0)
+    series = abs(Series.get(order, - f05).var)
     assert len(series.jet) == order
     assert series.val == approx(f05)
     assert series.jet[1] == approx(- 1.0)
     for term in series.jet[2:]:
-        assert term == approx(0.0)
-    series = ~ abs(- s_05)
-    assert len(series.jet) == order
-    assert series.val == approx(f05)
-    assert series.jet[1] == approx(1.0)
-    for term in series.jet[2:]:
-        assert term == approx(0.0)
-    series = ~ (abs(s_0))
-    assert len(series.jet) == order
-    for term in series.jet:
         assert term == approx(0.0)
 
 def test_add_object_object():
