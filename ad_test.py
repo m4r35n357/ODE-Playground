@@ -6,7 +6,7 @@
 #  Mutation Testing
 #  rm -f .mutmut-cache; mutmut --test-time-base 10.0 --paths-to-mutate ad.py run --runner 'pytest ad_test.py'
 from math import pi, exp, log, sin, cos, tan, sinh, cosh, tanh, factorial
-from ad import t_jet, t_horner, t_prod, t_quot, t_pwr, t_exp, t_ln, t_sin_cos, t_tan_sec2, Series, t_asin, t_acos, t_atan
+from ad import t_jet, t_horner, t_abs, t_prod, t_quot, t_pwr, t_exp, t_ln, t_sin_cos, t_tan_sec2, Series, t_asin, t_acos, t_atan
 from pytest import mark, raises, approx
 
 order = 6
@@ -55,6 +55,24 @@ def test_t_jet(number):
 def test_horner():
     assert t_horner([-19, 7, -4, 6], 3) == 128
     assert t_horner([-19.0, 7.0, -4.0, 6.0], 3.0) == approx(128.0)
+
+@mark.parametrize('number', [1.0, δ])
+def test_t_abs_positive(number):
+    delta = [number] * order
+    for k in range(order):
+        assert t_abs(delta, k) * number > 0.0
+
+@mark.parametrize('number', [zero, -zero])
+def test_t_abs_zero(number):
+    delta = [number] * order
+    for k in range(order):
+        assert t_abs(delta, k) * number == 0.0
+
+@mark.parametrize('number', [-1.0, -δ])
+def test_t_abs_negative(number):
+    delta = [number] * order
+    for k in range(order):
+        assert t_abs(delta, k) * number < 0.0
 
 def test_exceptions_add():
     with raises(RuntimeError) as e:
@@ -126,13 +144,10 @@ def test_unary_minus():
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_abs(series):
-    plus = abs(series)
-    minus = abs(- series)
-    for k in range(order):
-        if k % 2 == 0:
-            assert plus.jet[k] == approx(minus.jet[k])
-        elif k % 2 == 1:
-            assert plus.jet[k] == approx(- minus.jet[k])
+    for a, b in zip(abs(series).jet, series.jet):
+        assert a == approx(b)
+    for a, b in zip(abs(- series).jet, series.jet):
+        assert a == approx(b)
 
 def test_add_object_object():
     series = data1_s + data2_s
