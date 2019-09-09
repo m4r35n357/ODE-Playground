@@ -20,7 +20,6 @@ f4 = 4.0
 f05 = 0.5
 i5 = 5
 
-s_0 = Series.get(order).var
 s_05 = Series.get(order, f05).var
 s_1 = Series.get(order, f1).var
 s_2 = Series.get(order, f2).var
@@ -36,7 +35,7 @@ data2_s = Series([1.0] * order)
 for i in range(1, order):
     data2_s.jet[i] = - i * data2_s.jet[i - 1]
 
-def test_t_jet_no_value():
+def test_t_jet_default():
     jet = t_jet(order)
     assert len(jet) == order
     for term in jet:
@@ -82,6 +81,13 @@ def test_exceptions_power():
         _ = s_3**d_3
     assert "Incompatible Type: <class 'complex'>" in str(e.value)
 
+def test_get_default():
+    series = Series.get(order)
+    assert len(series.jet) == order
+    for term in series.jet:
+        assert isinstance(term, float)
+        assert term == approx(0.0)
+
 @mark.parametrize('number', [zero, -zero, f05, -f05, i5, -i5])
 def test_get(number):
     series = Series.get(order, number)
@@ -118,29 +124,15 @@ def test_unary_minus():
     for result, original in zip(series.jet, (~ data1_s).jet):
         assert result == approx(- original)
 
-def test_abs():
-    series = abs(s_05)
-    assert len(series.jet) == order
-    assert series.val == approx(f05)
-    assert series.jet[1] == approx(1.0)
-    for term in series.jet[2:]:
-        assert term == approx(0.0)
-    series = abs(s_0)
-    assert len(series.jet) == order
-    for term in series.jet:
-        assert term == approx(0.0)
-    series = abs(- s_05)
-    assert len(series.jet) == order
-    assert series.val == approx(f05)
-    assert series.jet[1] == approx(1.0)
-    for term in series.jet[2:]:
-        assert term == approx(0.0)
-    series = abs(Series.get(order, - f05).var)
-    assert len(series.jet) == order
-    assert series.val == approx(f05)
-    assert series.jet[1] == approx(- 1.0)
-    for term in series.jet[2:]:
-        assert term == approx(0.0)
+@mark.parametrize('series', [data1_s, data2_s])
+def test_abs(series):
+    plus = abs(series)
+    minus = abs(- series)
+    for k in range(order):
+        if k % 2 == 0:
+            assert plus.jet[k] == approx(minus.jet[k])
+        elif k % 2 == 1:
+            assert plus.jet[k] == approx(- minus.jet[k])
 
 def test_add_object_object():
     series = data1_s + data2_s
@@ -622,138 +614,131 @@ def test_var():
 #  Zero identities
 @mark.toplevel
 def test_diff_squares():
-    series = data1_s**2 - data2_s**2 - (data1_s - data2_s) * (data1_s + data2_s)
-    for term in series.jet:
+    for term in (data1_s**2 - data2_s**2 - (data1_s - data2_s) * (data1_s + data2_s)).jet:
         assert term == approx(0.0)
-    series = data1_s**2.0 - data2_s**2.0 - (data1_s - data2_s) * (data1_s + data2_s)
-    for term in series.jet:
+    for term in (data1_s**2.0 - data2_s**2.0 - (data1_s - data2_s) * (data1_s + data2_s)).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
-def test_pow_neg_zero():
-    series = 1.0 / data1_s**2 - data1_s**-2.0
-    for term in series.jet:
+@mark.parametrize('series', [data1_s, data2_s])
+def test_pow_neg_zero(series):
+    for term in (1.0 / series**2 - series**-2.0).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
-def test_pow_frac_zero():
-    series = (s_4**2)**0.5 - abs(s_4)
-    for term in series.jet:
+@mark.parametrize('series', [data1_s, data2_s])
+def test_pow_frac_zero(series):
+    for term in ((series**2)**0.5 - abs(series)).jet:
         assert term == approx(0.0)
-    series = (s_4**2)**-0.5 - 1.0 / abs(s_4)
-    for term in series.jet:
+    for term in ((series**2)**-0.5 - 1.0 / abs(series)).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
 def test_exp_zero():
-    series = data1_s.exp.ln - data1_s
-    for term in series.jet:
+    for term in (data1_s.exp.ln - data1_s).jet:
         assert term == approx(0.0)
-    series = (data1_s + data2_s).exp - data1_s.exp * data2_s.exp
-    for term in series.jet:
+    for term in ((data1_s + data2_s).exp - data1_s.exp * data2_s.exp).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
 def test_ln_zero():
-    series = data1_s.ln.exp - data1_s
-    for term in series.jet:
+    for term in (data1_s.ln.exp - data1_s).jet:
         assert term == approx(0.0)
-    series = (data1_s * data2_s).ln - (data1_s.ln + data2_s.ln)
-    for term in series.jet:
+    for term in ((data1_s * data2_s).ln - (data1_s.ln + data2_s.ln)).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
-def test_sinh_zero():
-    series = 0.5 * (data1_s.exp - (-data1_s).exp) - data1_s.sinh
-    for term in series.jet:
+@mark.parametrize('series', [data1_s, data2_s])
+def test_sinh_zero(series):
+    for term in (0.5 * (series.exp - (- series).exp) - series.sinh).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
-def test_cosh_zero():
-    series = 0.5 * (data1_s.exp + (-data1_s).exp) - data1_s.cosh
-    for term in series.jet:
+@mark.parametrize('series', [data1_s, data2_s])
+def test_cosh_zero(series):
+    for term in (0.5 * (series.exp + (- series).exp) - series.cosh).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
-def test_tan_zero():
-    series = data1_s.tan - data1_s.sin / data1_s.cos
-    for term in series.jet:
+@mark.parametrize('series', [data1_s, data2_s])
+def test_tan_zero(series):
+    for term in (series.tan - series.sin / series.cos).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
-def test_tanh_zero():
-    series = data1_s.tanh - data1_s.sinh / data1_s.cosh
-    for term in series.jet:
+@mark.parametrize('series', [data1_s, data2_s])
+def test_tanh_zero(series):
+    for term in (series.tanh - series.sinh / series.cosh).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
-def test_pythagoras_trig():
-    series = data1_s.cos**2 + data1_s.sin**2 - 1.0
-    for term in series.jet:
+@mark.parametrize('series', [data1_s, data2_s])
+def test_pythagoras_trig(series):
+    for term in (series.cos**2 + series.sin**2 - 1.0).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
-def test_pythagoras_hyp():
-    series = data1_s.cosh**2 - data1_s.sinh**2 - 1.0
-    for term in series.jet:
+@mark.parametrize('series', [data1_s, data2_s])
+def test_pythagoras_hyp(series):
+    for term in (series.cosh**2 - series.sinh**2 - 1.0).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
-def test_sin_3x_zero():
-    series = (3 * data1_s).sin - 3.0 * data1_s.sin + 4.0 * data1_s.sin**3
-    for term in series.jet:
-        assert term == approx(0.0)
+@mark.parametrize('series', [data1_s, data2_s])
+def test_sin_3x_zero(series):
+    for a, b in zip((3 * series).sin.jet, (3.0 * series.sin - 4.0 * series.sin**3).jet):
+        assert a == approx(b)
 
 @mark.toplevel
-def test_cos_3x_zero():
-    series = (3 * data1_s).cos + 3.0 * data1_s.cos - 4.0 * data1_s.cos**3
-    for term in series.jet:
-        assert term == approx(0.0)
+@mark.parametrize('series', [data1_s, data2_s])
+def test_cos_3x_zero(series):
+    for a, b in zip((3 * series).cos.jet, (- 3.0 * series.cos + 4.0 * series.cos**3).jet):
+        assert a == approx(b)
 
 @mark.toplevel
-def test_sinh_3x_zero():
-    series = (3 * data1_s).sinh - 3.0 * data1_s.sinh - 4.0 * data1_s.sinh**3
-    for term in series.jet:
-        assert term == approx(0.0)
+@mark.parametrize('series', [data1_s, data2_s])
+def test_sinh_3x_zero(series):
+    for a, b in zip((3 * series).sinh.jet, (3.0 * series.sinh + 4.0 * series.sinh**3).jet):
+        assert a == approx(b)
 
 @mark.toplevel
-def test_cosh_3x_zero():
-    series = (3 * data1_s).cosh + 3.0 * data1_s.cosh - 4.0 * data1_s.cosh**3
-    for term in series.jet:
-        assert term == approx(0.0)
+@mark.parametrize('series', [data1_s, data2_s])
+def test_cosh_3x_zero(series):
+    for a, b in zip((3 * series).cosh.jet, (- 3.0 * series.cosh + 4.0 * series.cosh**3).jet):
+        assert a == approx(b)
 
 @mark.toplevel
-def test_sin_asin_zero():
-    series = data1_s.sin.asin - data1_s
-    for term in series.jet:
-        assert term == approx(0.0)
+@mark.parametrize('series', [data1_s, data2_s])
+def test_sin_asin_zero(series):
+    for a, b in zip(series.sin.asin.jet, series.jet):
+        assert a == approx(b)
 
 @mark.toplevel
-def test_cos_acos_zero():
-    series = data1_s.cos.acos - data1_s
-    for term in series.jet:
-        assert term == approx(0.0)
+@mark.parametrize('series', [data1_s, data2_s])
+def test_cos_acos_zero(series):
+    for a, b in zip(series.cos.acos.jet, series.jet):
+        assert a == approx(b)
 
 @mark.toplevel
-def test_tan_atan_zero():
-    series = data1_s.tan.atan - data1_s
-    for term in series.jet:
-        assert term == approx(0.0)
+@mark.parametrize('series', [data1_s, data2_s])
+def test_tan_atan_zero(series):
+    for a, b in zip(series.tan.atan.jet, series.jet):
+        assert a == approx(b)
 
 @mark.toplevel
-def test_sinh_asinh_zero():
-    series = data1_s.sinh.asinh - data1_s
-    for term in series.jet:
-        assert term == approx(0.0)
+@mark.parametrize('series', [data1_s, data2_s])
+def test_sinh_asinh_zero(series):
+    for a, b in zip(series.sinh.asinh.jet, series.jet):
+        assert a == approx(b)
 
 @mark.toplevel
-def test_cosh_acosh_zero():
-    series = data1_s.cosh.acosh - data1_s
-    for term in series.jet:
-        assert term == approx(0.0)
+@mark.parametrize('series', [data1_s, data2_s])
+def test_cosh_acosh_zero(series):
+    for a, b in zip(series.cosh.acosh.jet, series.jet):
+        assert a == approx(b)
 
 @mark.toplevel
-def test_tanh_atanh_zero():
-    series = data1_s.tanh.atanh - data1_s
-    for term in series.jet:
-        assert term == approx(0.0)
+@mark.parametrize('series', [data1_s, data2_s])
+def test_tanh_atanh_zero(series):
+    for a, b in zip(series.tanh.atanh.jet, series.jet):
+        assert a == approx(b)
