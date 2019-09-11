@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
-
 #
 #  (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-
-from math import sin, cos, pi
+from math import sin, cos, pi, radians
 from sys import stdin, stderr, argv
 from pi3d import Sphere, Display, Camera, Shader, Keyboard, screenshot, Lines, Font, String, Mouse
-
 
 class Body(Sphere):
     def __init__(self, shader, colour, radius, position=(0.0, 0.0, 0.0), track_shader=None, track_max=5000):
@@ -40,11 +37,6 @@ class Body(Sphere):
             if self.track:
                 self.track.draw()
 
-
-def radians(degrees):
-    return pi * degrees / 180.0
-
-
 def main():
     # Setup display and initialise pi3d
     display = Display.create(x=0, y=0, frames_per_second=60)
@@ -56,18 +48,18 @@ def main():
     hud_font = Font('/usr/share/fonts/truetype/liberation2/LiberationMono-Regular.ttf', color='green',
                     codepoints='-0123456789. txyz:=+', font_size=18)
     hud_font.blend = True
-    hud_data = " t {:-5.1f}  x {:-5.1f}  y {:-5.1f}  z {:-5.1f} ".format(0.0, 0.0, 0.0, 0.0)
+    hud_data = f' t {0.0:-5.1f}  x {0.0:-5.1f}  y {0.0:-5.1f}  z {0.0:-5.1f} '
     hud_string = String(camera=Camera(is_3d=False), font=hud_font, is_3d=False, string=hud_data)
-    hud_string.set_shader(Shader("uv_flat"))
+    hud_string.set_shader(Shader('uv_flat'))
     (lt, bm, ft, rt, tp, bk) = hud_string.get_bounds()
     hud_string.position((-display.width + rt - lt) / 2.0, (0.9 * display.height - tp + bm) / 2.0, 1.0)
     hud_string.draw()  # NB has to be drawn before quick_change() is called as buffer needs to exist
 
     if len(argv) > 1:
-        particle = Body(Shader("mat_light"), (1.0, 0.0, 0.0), 0.05, track_shader=Shader("mat_flat"),
+        particle = Body(Shader('mat_light'), (1.0, 0.0, 0.0), 0.05, track_shader=Shader('mat_flat'),
                         track_max=int(argv[1]))
     else:
-        particle = Body(Shader("mat_light"), (1.0, 0.0, 0.0), 0.05, track_shader=Shader("mat_flat"))
+        particle = Body(Shader('mat_light'), (1.0, 0.0, 0.0), 0.05, track_shader=Shader('mat_flat'))
     # Enable key presses and mouse
     keys = Keyboard()
     mouse = Mouse(restrict=False)
@@ -78,8 +70,7 @@ def main():
     while display.loop_running():
         data = line.split(' ')
         hud_string.quick_change(
-            " t {:-5.1f}  x {:-5.1f}  y {:-5.1f}  z {:-5.1f} ".format(float(data[3]), float(data[0]), float(data[1]),
-                                                                      float(data[2])))
+            f' t {float(data[3]):-5.1f}  x {float(data[0]):-5.1f}  y {float(data[1]):-5.1f}  z {float(data[2]):-5.1f} ')
         hud_string.draw()
         # camera control
         camera.reset()
@@ -99,7 +90,7 @@ def main():
         key = keys.read()
         if key > -1:
             if key == 112:  # 'p'
-                screenshot("trajectory.jpg")
+                screenshot('trajectory.jpg')
             elif key == 119:  # 'w' rotate camera up
                 tilt += 2.0
             elif key == 115:  # 's' down
@@ -121,7 +112,6 @@ def main():
         line = stdin.readline()
         if not line:
             display.stop()
-
 
 if __name__ == "__main__":
     main()
