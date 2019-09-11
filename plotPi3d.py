@@ -75,8 +75,8 @@ def main():
         # camera control
         camera.reset()
         camera.rotate(-tilt, rot, 0)
-        camera.position((cam_rad * sin(radians(rot)) * cos(radians(tilt)), cam_rad * sin(radians(tilt)),
-                         -cam_rad * cos(radians(rot)) * cos(radians(tilt))))
+        r_rot, r_tilt = radians(rot), radians(tilt)
+        camera.position((cam_rad * sin(r_rot) * cos(r_tilt), cam_rad * sin(r_tilt), - cam_rad * cos(r_rot) * cos(r_tilt)))
         # plot the entities
         particle.pos = [float(data[0]), float(data[1]), float(data[2])]
         particle.position_and_draw(trace_material=(0.0, 0.25, 0.25))
@@ -85,8 +85,7 @@ def main():
         if mouse.button_status() == mouse.LEFT_BUTTON:
             rot += (mx - omx) * 0.2
             tilt += (my - omy) * 0.2
-        omx = mx
-        omy = my
+        omx, omy = mx, my
         key = keys.read()
         if key > -1:
             if key == 112:  # 'p'
