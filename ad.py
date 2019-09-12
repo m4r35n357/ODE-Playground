@@ -143,10 +143,13 @@ class Series:
 
     def __pow__(self, o):
         if isinstance(o, int):
-            i_pow = Series(self.jet)
+            if o == 0:
+                return Series(t_jet(self.n, 1.0))
+            i_pow = Series(self.jet) if o > 0 else Series(self.jet).__rtruediv__(1.0)  # pragma: no mutate
+            multiplier = Series(i_pow.jet)
             for _ in range(abs(o) - 1):
-                i_pow = i_pow.__mul__(self)
-            return i_pow if o > 0 else (Series(t_jet(self.n, 1.0)).__truediv__(i_pow) if o < 0 else Series(t_jet(self.n, 1.0)))
+                i_pow = i_pow.__mul__(multiplier)
+            return i_pow
         else:
             if isinstance(o, Series):
                 assert o.n == self.n, f"Size mismatch - self: {self.n}, other: {o.n}"

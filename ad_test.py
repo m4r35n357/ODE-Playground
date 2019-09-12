@@ -351,7 +351,7 @@ def test_pow_object_zero(number):
     for term in series.jet[1:]:
         assert term == approx(0.0)
 
-@mark.parametrize('number', [i5, - i5, f3, - f3])
+@mark.parametrize('number', [100, -100, 100.0, -100.0, 0, -0, i5, - i5, f3, - f3])
 def test_pow_object_number(number):
     series = ~ s_4**number
     assert len(series.jet) == order
