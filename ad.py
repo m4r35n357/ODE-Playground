@@ -20,7 +20,7 @@ def t_prod(u, v, k):
     return fsum(u[j] * v[k - j] for j in range(k + 1))
 
 def t_quot(q, u, v, k):
-    return (u[k] - fsum(v[j] * q[k - j] for j in range(1, k + 1))) / v[0]
+    return (u[k] - fsum(q[j] * v[k - j] for j in range(k))) / v[0]
 
 def t_pwr(p, u, a, k):
     return u[0]**a if k == 0 else fsum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
