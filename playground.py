@@ -72,7 +72,7 @@ def newton(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mo
             break
     return Result(method=m.name, count=count - 1, sense=sense.value, mode=mode.name, x=x.val, f=f.jet[mode.value], δx=δx)
 
-def analyze(model, method, x0, x1, steps, εf, εx, limit, order, mode=Mode.ALL, console=True):
+def analyze(model, method, x0, x1, steps, εf, εx, limit, order, mode=Mode.ALL, console=True, debug=False):
     x_prev = f0_prev = f1_prev = f2_prev = None
     step = (x1 - x0) / (steps - 1)
     for k in range(steps):
@@ -85,21 +85,21 @@ def analyze(model, method, x0, x1, steps, εf, εx, limit, order, mode=Mode.ALL,
                 if (mode == Mode.ROOT___ or mode == Mode.ALL) and f0_prev * f.val < 0.0:
                     sense = Sense.DECREASING if f0_prev > f.val else Sense.INCREASING
                     if method == Solver.BI:
-                        yield bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=sense)
+                        yield bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=sense, debug=debug)
                     if method == Solver.NT:
-                        yield newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=sense)
+                        yield newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=sense, debug=debug)
                 if (mode == Mode.MIN_MAX or mode == Mode.ALL) and f1_prev * f.jet[Mode.MIN_MAX.value] < 0.0:
                     sense = Sense.DECREASING if f1_prev > f.jet[Mode.MIN_MAX.value] else Sense.INCREASING
                     if method == Solver.BI:
-                        yield bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=sense, mode=Mode.MIN_MAX)
+                        yield bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=sense, mode=Mode.MIN_MAX, debug=debug)
                     if method == Solver.NT:
-                        yield newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=sense, mode=Mode.MIN_MAX)
+                        yield newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=sense, mode=Mode.MIN_MAX, debug=debug)
                 if (mode == Mode.INFLECT or mode == Mode.ALL) and f2_prev * f.jet[Mode.INFLECT.value] < 0.0:
                     sense = Sense.DECREASING if f2_prev > f.jet[Mode.INFLECT.value] else Sense.INCREASING
                     if method == Solver.BI:
-                        yield bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=sense, mode=Mode.INFLECT)
+                        yield bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=sense, mode=Mode.INFLECT, debug=debug)
                     if method == Solver.NT:
-                        yield newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=sense, mode=Mode.INFLECT)
+                        yield newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=sense, mode=Mode.INFLECT, debug=debug)
         x_prev = x.val
         f0_prev = f.val
         f1_prev = f.jet[Mode.MIN_MAX.value]

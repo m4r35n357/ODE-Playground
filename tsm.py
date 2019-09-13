@@ -111,7 +111,7 @@ def main():
         sz, cz, az, saz, caz = t_jet(order), t_jet(order), t_jet(order), t_jet(order), t_jet(order)
         if model == "sprott-thomas-1":
             #  Example: ./tsm.py sprott-thomas-1 9 10 0.02 30000 1 0 0 4.75 1 | ./plotPi3d.py
-            #  Example: ./tsm.py sprott-thomas-1 10 0.02 30000 1 0 0 4.75 1 | ./plotAnimated.py 1 -1 1
+            #  Example: ./tsm.py sprott-thomas-1 9 10 0.02 30000 1 0 0 4.75 1 | ./plotAnimated.py 1 -1 1
             fun = t_sin_cos
         else:
             #  Example: ./tsm.py sprott-thomas-2 9 10 0.02 30000 1 0 0 4.75 .7 | ./plotPi3d.py
@@ -280,6 +280,7 @@ def main():
             output(x0, y0, 0.0, step * δt)
     elif model == "logistic":
         #  Example: ./tsm.py logistic 9 10 0.1 10001 .6 0 0 .1 | ./plotXY.py 1 3 0
+        #  Example: ./tsm.py logistic 9 10 0.1 10001 .6 0 0 .1 | ./plotAnimated.py 1 0 1.5
         a = float(argv[9])
         w1, wa, wb = t_jet(order, 1), t_jet(order), t_jet(order)
         output(x0, 0.0, 0.0, 0.0)

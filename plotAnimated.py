@@ -39,7 +39,7 @@ def update(data):
     return line_data()
 
 
-interval, minimum, maximum = int(argv[1]), int(argv[2]), int(argv[3])
+interval, minimum, maximum = int(argv[1]), float(argv[2]), float(argv[3])
 fig, ax = plt.subplots()
 line_x, = ax.plot([], [], 'g', lw=1)
 line_y, = ax.plot([], [], 'y', lw=1)
