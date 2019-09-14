@@ -48,21 +48,18 @@ if __name__ == "__main__":
 else:
     print(__name__ + " module loaded", file=stderr)
 
+'''
+for i in range(-50, 51):
+    print(i * 0.1)
+    f = lambda a: (a**2 + 1)**(i*0.1)
+    #scan(f)
+    #mplot(f)
+    msave(f'test_{i+50:03d}.png', f)
 
-# IPython:
+for i in range(19):
+    f = lambda a: (a**2 + 1.0 / (10.0)**i)**0.5
+    msave(f'test_{i:03d}.png', f)
 
-# for i in range(-50, 51):
-#     print(i * 0.1)
-#     f = lambda a: (a**2 + 1)**(i*0.1)
-#     #scan(f)
-#     #mplot(f)
-#     msave(f'test_{i+50:03d}.png', f)
-
-# Shell:
-
-# ffmpeg -y -i test_%03d.png taylor.mp4
-# mplayer -fps 2 taylor.mp4
-
-# for i in range(19):
-#     f = lambda a: (a**2 + 1.0 / (10.0)**i)**0.5
-#     msave(f'test_{i:03d}.png', f)
+ffmpeg -y -i test_%03d.png taylor.mp4
+mplayer -fps 2 taylor.mp4
+'''
