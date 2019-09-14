@@ -2,13 +2,14 @@
 #  (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 from sys import stderr
-from math import sin, cos, sinh, cosh, tan, tanh, exp, log, fsum, asinh, asin, acosh, acos, atanh, atan
+from math import sin, cos, sinh, cosh, tan, tanh, exp, log, fsum, asinh, asin, acosh, acos, atanh, atan, sqrt
 
 
 def t_jet(n, value=0.0):
     return [value if isinstance(value, float) else float(value)] + [0.0] * (n - 1)
 
-def t_horner(jet, h, result=0.0):
+def t_horner(jet, h):
+    result = 0.0
     for term in reversed(jet):
         result = result * h + term
     return result
@@ -47,14 +48,14 @@ def t_tan_sec2(t, s2, u, k, hyp=False):
 
 def t_asin(h, v, u, k, hyp=False):
     if k == 0:
-        return (asinh(u[0]), cosh(asinh(u[0]))) if hyp else (asin(u[0]), cos(asin(u[0])))
+        return (asinh(u[0]), sqrt(u[0]**2 + 1.0)) if hyp else (asin(u[0]), sqrt(1.0 - u[0]**2))
     sk = (u[k] - fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
     ck = u[0] * sk + fsum(j * h[j] * u[k - j] for j in range(1, k)) / k
     return (sk, ck) if hyp else (sk, - ck)
 
 def t_acos(h, v, u, k, hyp=False):
     if k == 0:
-        return (acosh(u[0]), sinh(acosh(u[0]))) if hyp else (acos(u[0]), - sin(acos(u[0])))
+        return (acosh(u[0]), sqrt(u[0]**2 - 1.0)) if hyp else (acos(u[0]), - sqrt(1.0 - u[0]**2))
     sk = (u[k] + fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
     ck = - u[0] * sk - fsum(j * h[j] * u[k - j] for j in range(1, k)) / k
     return (sk, ck) if hyp else (sk, - ck)
