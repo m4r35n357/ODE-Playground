@@ -151,16 +151,15 @@ class Series:
             for _ in range(abs(o) - 1):
                 i_pow = i_pow.__mul__(multiplier)
             return i_pow
-        else:
-            if isinstance(o, Series):
-                assert o.n == self.n, f"Size mismatch - self: {self.n}, other: {o.n}"
-                return (self.ln.__mul__(o)).exp
-            elif isinstance(o, float):
-                assert self.val > 0.0, f"self.val = {self.val}"
-                jet = t_jet(self.n)
-                for k in range(self.n):
-                    jet[k] = t_pwr(jet, self.jet, o, k)
-                return Series(jet)
+        elif isinstance(o, Series):
+            assert o.n == self.n, f"Size mismatch - self: {self.n}, other: {o.n}"
+            return (self.ln.__mul__(o)).exp
+        elif isinstance(o, float):
+            assert self.val > 0.0, f"self.val = {self.val}"
+            jet = t_jet(self.n)
+            for k in range(self.n):
+                jet[k] = t_pwr(jet, self.jet, o, k)
+            return Series(jet)
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __rpow__(self, o):
