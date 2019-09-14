@@ -62,3 +62,7 @@ else:
 
 # ffmpeg -y -i test_%03d.png taylor.mp4
 # mplayer -fps 2 taylor.mp4
+
+# for i in range(19):
+#     f = lambda a: (a**2 + 1.0 / (10.0)**i)**0.5
+#     msave(f'test_{i:03d}.png', f)

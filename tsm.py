@@ -35,6 +35,7 @@ def main():
         a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
         output(x0, y0, z0, 0.0)
         for step in range(1, n_steps + 1):
+            x, y, z = t_jet(order + 1), t_jet(order + 1), t_jet(order + 1)  # coordinate jets
             x[0], y[0], z[0] = x0, y0, z0
             for k in range(order):
                 x[k + 1] = a * (y[k] - x[k]) / (k + 1)
@@ -249,7 +250,7 @@ def main():
             x[0], y[0] = x0, y0
             for k in range(order):
                 x[k + 1] = y[k] / (k + 1)
-                y[k + 1] = (a * cos(ω * step * δt) - ζ * y[k] - κ * x[k]) / (k + 1)
+                y[k + 1] = (a * cos(ω * step * δt) - ζ * (2.0 * sqrt(κ)) * y[k] - κ * x[k]) / (k + 1)
             x0, y0 = t_horner(x, δt), t_horner(y, δt)
             output(x0, y0, 0.0, step * δt)
     elif model == "pendulum":
@@ -292,12 +293,26 @@ def main():
                 x[k + 1] = t_prod(wa, wb, k) / (k + 1)
             x0 = t_horner(x, δt)
             output(x0, 0.0, 0.0, step * δt)
+    elif model == "damped":
+        #  Example: ./tsm.py damped 9 10 .1 1001 10 0 0 1 .5 | ./plotXY.py 1 3 0
+        #  Example: ./tsm.py damped 9 10 .1 1001 10 0 0 1 .5 | ./plotAnimated.py 1 -100 100
+        κ, ζ = float(argv[9]), float(argv[10])
+        output(x0, y0, 0.0, 0.0)
+        for step in range(1, n_steps + 1):
+            x, y = t_jet(order + 1), t_jet(order + 1)
+            x[0], y[0] = x0, y0
+            for k in range(order):
+                x[k + 1] = y[k] / (k + 1)
+                y[k + 1] = - (κ * x[k] + ζ * (2.0 * sqrt(κ)) * y[k]) / (k + 1)
+            x0, y0 = t_horner(x, δt), t_horner(y, δt)
+            output(x0, y0, 0.0, step * δt)
     elif model == "constant":
         #  Example: ./tsm.py constant 9 10 0.1 10001 10 0 0 -.05 | ./plotXY.py 1 3 0
         #  Example: ./tsm.py constant 9 10 0.1 10001 10 0 0 -.05 | ./plotAnimated.py 1 0 10
         a = float(argv[9])
         output(x0, 0.0, 0.0, 0.0)
         for step in range(1, n_steps + 1):
+            x, y = t_jet(order + 1), t_jet(order + 1)
             x[0] = x0
             for k in range(order):
                 x[k + 1] = a * x[k] / (k + 1)
