@@ -58,21 +58,20 @@ def test_horner():
 
 @mark.parametrize('number', [1.0, δ])
 def test_t_abs_positive(number):
-    delta = [number] * order
-    for k in range(order):
-        assert t_abs(delta, k) * number > 0.0
+    delta = [number] + [0.0] * (order - 1)
+    assert t_abs(delta, 0) > 0.0
+    assert t_abs(delta, 0) == number
 
 @mark.parametrize('number', [zero, -zero])
 def test_t_abs_zero(number):
-    delta = [number] * order
-    for k in range(order):
-        assert t_abs(delta, k) * number == 0.0
+    delta = [number] + [0.0] * (order - 1)
+    assert t_abs(delta, 0) == 0.0
 
 @mark.parametrize('number', [-1.0, -δ])
 def test_t_abs_negative(number):
-    delta = [number] * order
-    for k in range(order):
-        assert t_abs(delta, k) * number < 0.0
+    delta = [number] + [0.0] * (order - 1)
+    assert t_abs(delta, 0) > 0.0
+    assert t_abs(delta, 0) == - number
 
 def test_exceptions_add():
     with raises(RuntimeError) as e:
@@ -143,11 +142,23 @@ def test_unary_minus():
         assert result == approx(- original)
 
 @mark.parametrize('series', [data1_s, data2_s])
-def test_abs(series):
-    for a, b in zip(abs(series).jet, series.jet):
+def test_abs_reflect(series):
+    for a, b in zip(abs(- series).jet, abs(series).jet):
         assert a == approx(b)
-    for a, b in zip(abs(- series).jet, series.jet):
+    for a, b in zip(abs(abs(series)).jet, abs(series).jet):
         assert a == approx(b)
+
+def test_abs():
+    positive = Series.get(order, 1.0).var.asinh
+    negative = Series.get(order, -1.0).var.asinh
+    abs_negative = abs(negative)
+    for k in range(order):
+        if k % 2 == 0:
+            assert t_abs(negative.jet, k) == approx(positive.jet[k])
+            assert abs_negative.jet[k] == approx(positive.jet[k])
+        elif k % 2 == 1:
+            assert t_abs(negative.jet, k) == approx(- positive.jet[k])
+            assert abs_negative.jet[k] == approx(- positive.jet[k])
 
 def test_add_object_object():
     series = data1_s + data2_s
@@ -633,6 +644,18 @@ def test_diff_squares():
         assert term == approx(0.0)
     for term in (data1_s**2.0 - data2_s**2.0 - (data1_s - data2_s) * (data1_s + data2_s)).jet:
         assert term == approx(0.0)
+
+@mark.toplevel
+def test_abs_identities():
+    data = data1_s * data2_s
+    for a, b in zip(abs(data).jet, (abs(data1_s) * abs(data2_s)).jet):
+        assert a == approx(b)
+    data = data1_s / data2_s
+    for a, b in zip(abs(data).jet, (abs(data1_s) / abs(data2_s)).jet):
+        assert a == approx(b)
+    data = data2_s / data1_s
+    for a, b in zip(abs(data).jet, (abs(data2_s) / abs(data1_s)).jet):
+        assert a == approx(b)
 
 @mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
