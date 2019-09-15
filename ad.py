@@ -72,6 +72,7 @@ class Series:
 
     def __init__(self, jet):
         self.n = len(jet)
+        self.index = range(self.n)
         self.jet = jet[:]
 
     @classmethod
@@ -82,7 +83,7 @@ class Series:
         return ''.join(f'{term:+.{Context.places}e} ' for term in self.jet)
 
     def __abs__(self):
-        return Series([t_abs(self.jet, k) for k in range(self.n)])
+        return Series([t_abs(self.jet, k) for k in self.index])
 
     def __pos__(self):
         return Series(self.jet[:])
@@ -118,7 +119,7 @@ class Series:
     def __mul__(self, o):
         if isinstance(o, Series):
             assert o.n == self.n, f"Size mismatch - self: {self.n}, other: {o.n}"
-            return Series([t_prod(self.jet, o.jet, k) for k in range(self.n)])
+            return Series([t_prod(self.jet, o.jet, k) for k in self.index])
         elif isinstance(o, (float, int)):
             return Series([term * o for term in self.jet])
         raise RuntimeError(f"Incompatible Type: {type(o)}")
@@ -131,7 +132,7 @@ class Series:
             assert o.n == self.n, f"Size mismatch - self: {self.n}, other: {o.n}"
             assert abs(o.val) != 0.0, f"other.val = {o.val}"
             jet = t_jet(self.n)
-            for k in range(self.n):
+            for k in self.index:
                 jet[k] = t_quot(jet, self.jet, o.jet, k)
             return Series(jet)
         elif isinstance(o, (float, int)):
@@ -157,7 +158,7 @@ class Series:
         elif isinstance(o, float):
             assert self.val > 0.0, f"self.val = {self.val}"
             jet = t_jet(self.n)
-            for k in range(self.n):
+            for k in self.index:
                 jet[k] = t_pwr(jet, self.jet, o, k)
             return Series(jet)
         raise RuntimeError(f"Incompatible Type: {type(o)}")
@@ -168,13 +169,13 @@ class Series:
 
     def _single(self, fun):
         jet = t_jet(self.n)
-        for k in range(self.n):
+        for k in self.index:
             jet[k] = fun(jet, self.jet, k)
         return Series(jet)
 
     def _double(self, fun, hyp=False):
         jet_a, jet_b = t_jet(self.n), t_jet(self.n)
-        for k in range(self.n):
+        for k in self.index:
             jet_a[k], jet_b[k] = fun(jet_a, jet_b, self.jet, k, hyp)
         return Series(jet_a), Series(jet_b)
 
