@@ -232,16 +232,6 @@ def main():
                 z[k + 1] = (- α[k] + t_prod(x, y, k) + t_abs(y, k)) / (k + 1)
             x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x0, y0, z0, step * δt)
-    elif model == "newton":
-        κ, l, m = float(argv[9]), float(argv[10]), float(argv[11])
-        output(x0, y0, 0.0, 0.0)
-        for step in range(1, n_steps + 1):
-            x[0], y[0] = x0, y0
-            for k in range(order):
-                x[k + 1] = y[k] / (k + 1)
-                y[k + 1] = (- x[k] - κ * m / l**2) / (k + 1)
-            x0, y0 = t_horner(x, δt), t_horner(y, δt)
-            output(x0, y0, 0.0, step * δt)
     elif model == "oscillator":
         #  Example: ./tsm.py oscillator 9 10 .05 4001 0.0 0.0 0.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
         κ, ζ, a, ω = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
@@ -295,7 +285,7 @@ def main():
             output(x0, 0.0, 0.0, step * δt)
     elif model == "damped":
         #  Example: ./tsm.py damped 9 10 .1 1001 10 0 0 1 .5 | ./plotXY.py 1 3 0
-        #  Example: ./tsm.py damped 9 10 .1 1001 10 0 0 1 .5 | ./plotAnimated.py 1 -100 100
+        #  Example: ./tsm.py damped 9 10 .1 1001 10 0 0 1 .5 | ./plotAnimated.py 1 -10 10
         κ, ζ = float(argv[9]), float(argv[10])
         output(x0, y0, 0.0, 0.0)
         for step in range(1, n_steps + 1):

@@ -49,6 +49,8 @@ else:
     print(__name__ + " module loaded", file=stderr)
 
 '''
+from plotters import *
+
 for i in range(-50, 51):
     print(i * 0.1)
     f = lambda a: (a**2 + 1)**(i*0.1)
