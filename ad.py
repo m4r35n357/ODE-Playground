@@ -49,23 +49,23 @@ def t_tan_sec2(t, s2, u, k, hyp=False):
 def t_asin(h, v, u, k, hyp=False):
     if k == 0:
         return (asinh(u[0]), sqrt(u[0]**2 + 1.0)) if hyp else (asin(u[0]), sqrt(1.0 - u[0]**2))
-    sk = (u[k] - fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
-    ck = u[0] * sk + fsum(j * h[j] * u[k - j] for j in range(1, k)) / k
-    return (sk, ck) if hyp else (sk, - ck)
+    hk = (u[k] - fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
+    vk = u[0] * hk + fsum(j * h[j] * u[k - j] for j in range(1, k)) / k
+    return (hk, vk) if hyp else (hk, - vk)
 
 def t_acos(h, v, u, k, hyp=False):
     if k == 0:
         return (acosh(u[0]), sqrt(u[0]**2 - 1.0)) if hyp else (acos(u[0]), - sqrt(1.0 - u[0]**2))
-    sk = (u[k] + fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
-    ck = - u[0] * sk - fsum(j * h[j] * u[k - j] for j in range(1, k)) / k
-    return (sk, ck) if hyp else (sk, - ck)
+    hk = (u[k] + fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
+    vk = u[0] * hk + fsum(j * h[j] * u[k - j] for j in range(1, k)) / k
+    return (hk, - vk) if hyp else (hk, vk)
 
 def t_atan(h, v, u, k, hyp=False):
     if k == 0:
         return (atanh(u[0]), 1.0 - u[0]**2) if hyp else (atan(u[0]), 1.0 + u[0]**2)
-    tk = (u[k] - fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
-    sk = 2.0 * (u[0] * u[k] + fsum(j * u[j] * u[k - j] for j in range(1, k)) / k)
-    return (tk, - sk) if hyp else (tk, sk)
+    hk = (u[k] - fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
+    vk = 2.0 * (u[0] * u[k] + fsum(j * u[j] * u[k - j] for j in range(1, k)) / k)
+    return (hk, - vk) if hyp else (hk, vk)
 
 
 class Series:
