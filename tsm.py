@@ -14,6 +14,8 @@ def main():
     model, Context.places, order, δt, n_steps = argv[1], int(argv[2]), int(argv[3]), float(argv[4]), int(argv[5])  # controls
     x0, y0, z0 = float(argv[6]), float(argv[7]), float(argv[8])  # initial values
     x, y, z = t_jet(order + 1), t_jet(order + 1), t_jet(order + 1)  # coordinate jets
+    steps = range(1, n_steps + 1)
+    index = range(order)
 
     if model == "lorenz":
         #  Example: ./tsm.py lorenz 9 10 .01 3000 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
@@ -21,9 +23,9 @@ def main():
         #  Profile: py-spy --function -- python tsm.py lorenz 9 10 .01 10000000 -15.8 -17.48 35.64 10 28 8 3
         σ, ρ, β = float(argv[9]), float(argv[10]), float(argv[11]) / float(argv[12])
         output(x0, y0, z0, 0.0)
-        for step in range(1, n_steps + 1):
+        for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
-            for k in range(order):
+            for k in index:
                 x[k + 1] = σ * (y[k] - x[k]) / (k + 1)
                 y[k + 1] = (ρ * x[k] - t_prod(x, z, k) - y[k]) / (k + 1)
                 z[k + 1] = (t_prod(x, y, k) - β * z[k]) / (k + 1)
@@ -34,10 +36,10 @@ def main():
         #  Example: ./tsm.py lu 9 10 .01 3000 -3 2 20 36 3 20 | ./plotAnimated.py 1 -25 50
         a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
         output(x0, y0, z0, 0.0)
-        for step in range(1, n_steps + 1):
-            x, y, z = t_jet(order + 1), t_jet(order + 1), t_jet(order + 1)  # coordinate jets
+        for step in steps:
+            x, y, z = t_jet(order + 1), t_jet(order + 1), t_jet(order + 1)  # reset coordinate jets (for more visual debugging)
             x[0], y[0], z[0] = x0, y0, z0
-            for k in range(order):
+            for k in index:
                 x[k + 1] = a * (y[k] - x[k]) / (k + 1)
                 y[k + 1] = (c * y[k] - t_prod(x, z, k)) / (k + 1)
                 z[k + 1] = (t_prod(x, y, k) - b * z[k]) / (k + 1)
@@ -49,9 +51,9 @@ def main():
         a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
         d = c - a
         output(x0, y0, z0, 0.0)
-        for step in range(1, n_steps + 1):
+        for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
-            for k in range(order):
+            for k in index:
                 x[k + 1] = a * (y[k] - x[k]) / (k + 1)
                 y[k + 1] = (d * x[k] + c * y[k] - t_prod(x, z, k)) / (k + 1)
                 z[k + 1] = (t_prod(x, y, k) - b * z[k]) / (k + 1)
@@ -62,9 +64,9 @@ def main():
         #  Example: ./tsm.py rossler 9 10 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotAnimated.py 1 -20 30
         a, b_, c = float(argv[9]), t_jet(order, float(argv[10])), float(argv[11])
         output(x0, y0, z0, 0.0)
-        for step in range(1, n_steps + 1):
+        for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
-            for k in range(order):
+            for k in index:
                 x[k + 1] = - (y[k] + z[k]) / (k + 1)
                 y[k + 1] = (x[k] + a * y[k]) / (k + 1)
                 z[k + 1] = (b_[k] + t_prod(x, z, k) - c * z[k]) / (k + 1)
@@ -76,9 +78,9 @@ def main():
         a, b, c, d = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
         jet1, w4, w5 = t_jet(order, 1), t_jet(order), t_jet(order)
         output(x0, y0, z0, 0.0)
-        for step in range(1, n_steps + 1):
+        for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
-            for k in range(order):
+            for k in index:
                 w4[k] = jet1[k] - y[k]
                 w5[k] = jet1[k] - t_prod(x, x, k)
                 x[k + 1] = (a * t_prod(x, w4, k) - b * z[k]) / (k + 1)
@@ -94,9 +96,9 @@ def main():
         sy, cy = t_jet(order), t_jet(order)
         sz, cz = t_jet(order), t_jet(order)
         output(x0, y0, z0, 0.0)
-        for step in range(1, n_steps + 1):
+        for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
-            for k in range(order):
+            for k in index:
                 sx[k], cx[k] = t_sin_cos(sx, cx, x, k)
                 sy[k], cy[k] = t_sin_cos(sy, cy, y, k)
                 sz[k], cz[k] = t_sin_cos(sz, cz, z, k)
@@ -119,9 +121,9 @@ def main():
             #  Example: ./tsm.py sprott-thomas-2 9 10 0.02 30000 1 0 0 4.75 .7 | ./plotAnimated.py 1 -1 1
             fun = t_tan_sec2
         output(x0, y0, z0, 0.0)
-        for step in range(1, n_steps + 1):
+        for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
-            for k in range(order):
+            for k in index:
                 sx[k], cx[k] = fun(sx, cx, x, k)
                 sy[k], cy[k] = fun(sy, cy, y, k)
                 sz[k], cz[k] = fun(sz, cz, z, k)
@@ -140,9 +142,9 @@ def main():
         α, γ = float(argv[9]), float(argv[10])
         jet1, a, b, c = t_jet(order, 1), t_jet(order), t_jet(order), t_jet(order)
         output(x0, y0, z0, 0.0)
-        for step in range(1, n_steps + 1):
+        for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
-            for k in range(order):
+            for k in index:
                 x2_1 = t_prod(x, x, k) - jet1[k]
                 a[k] = z[k] + x2_1
                 b[k] = 3.0 * z[k] - x2_1
@@ -157,9 +159,9 @@ def main():
         #  Example: ./tsm.py sprott 9 10 0.1 30001 1 0 0 | ./plotAnimated.py 1 -20 20
         w1 = t_jet(order, 1)
         output(x0, y0, z0, 0.0)
-        for step in range(1, n_steps + 1):
+        for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
-            for k in range(order):
+            for k in index:
                 x[k + 1] = (y[k] + 2.0 * t_prod(x, y, k) + t_prod(x, z, k)) / (k + 1)
                 y[k + 1] = (w1[k] - 2.0 * t_prod(x, x, k) + t_prod(y, z, k)) / (k + 1)
                 z[k + 1] = (x[k] - t_prod(x, x, k) - t_prod(y, y, k)) / (k + 1)
@@ -170,9 +172,9 @@ def main():
         #  Example: ./tsm.py sprott-jafari 9 10 0.01 30001 0 3.9 .7 8.888 4 | ./plotAnimated.py 1 -20 20
         a, b_ = float(argv[9]), t_jet(order, float(argv[10]))
         output(x0, y0, z0, 0.0)
-        for step in range(1, n_steps + 1):
+        for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
-            for k in range(order):
+            for k in index:
                 x[k + 1] = y[k] / (k + 1)
                 y[k + 1] = - x[k] + t_prod(y, z, k) / (k + 1)
                 z[k + 1] = (z[k] + a * t_prod(x, x, k) - t_prod(y, y, k) - b_[k]) / (k + 1)
@@ -183,9 +185,9 @@ def main():
         #  Example: ./tsm.py halvorsen 9 10 .01 100001 1 0 0 1.4 | ./plotAnimated.py 1 -15 10
         α = float(argv[9])
         output(x0, y0, z0, 0.0)
-        for step in range(1, n_steps + 1):
+        for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
-            for k in range(order):
+            for k in index:
                 x[k + 1] = - (α * x[k] + 4.0 * y[k] + 4.0 * z[k] + t_prod(y, y, k)) / (k + 1)
                 y[k + 1] = - (α * y[k] + 4.0 * z[k] + 4.0 * x[k] + t_prod(z, z, k)) / (k + 1)
                 z[k + 1] = - (α * z[k] + 4.0 * x[k] + 4.0 * y[k] + t_prod(x, x, k)) / (k + 1)
@@ -196,9 +198,9 @@ def main():
         #  Example: ./tsm.py nose-hoover 9 10 0.01 10001 1 0 0 6.0 | ./plotAnimated.py 1 -10 10
         α = t_jet(order, float(argv[9]))
         output(x0, y0, z0, 0.0)
-        for step in range(1, n_steps + 1):
+        for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
-            for k in range(order):
+            for k in index:
                 x[k + 1] = y[k] / (k + 1)
                 y[k + 1] = (t_prod(y, z, k) - x[k]) / (k + 1)
                 z[k + 1] = (α[k] - t_prod(y, y, k)) / (k + 1)
@@ -209,9 +211,9 @@ def main():
         #  Example: ./tsm.py rucklidge 9 10 0.01 10001 1 0 0 6.7 2 | ./plotAnimated.py 1 -15 20
         α, κ = float(argv[9]), float(argv[10])
         output(x0, y0, z0, 0.0)
-        for step in range(1, n_steps + 1):
+        for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
-            for k in range(order):
+            for k in index:
                 x[k + 1] = (α * y[k] - κ * x[k] - t_prod(y, z, k)) / (k + 1)
                 y[k + 1] = x[k] / (k + 1)
                 z[k + 1] = (t_prod(y, y, k) - z[k]) / (k + 1)
@@ -223,9 +225,9 @@ def main():
         α = t_jet(order, float(argv[9]))
         tx, sx = t_jet(order), t_jet(order)
         output(x0, y0, z0, 0.0)
-        for step in range(1, n_steps + 1):
+        for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
-            for k in range(order):
+            for k in index:
                 tx[k], sx[k] = t_tan_sec2(tx, sx, x, k, hyp=True)
                 x[k + 1] = (y[k] - x[k]) / (k + 1)
                 y[k + 1] = - t_prod(z, tx, k) / (k + 1)
@@ -236,9 +238,9 @@ def main():
         #  Example: ./tsm.py oscillator 9 10 .05 4001 0.0 0.0 0.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
         κ, ζ, a, ω = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
         output(x0, y0, 0.0, 0.0)
-        for step in range(1, n_steps + 1):
+        for step in steps:
             x[0], y[0] = x0, y0
-            for k in range(order):
+            for k in index:
                 x[k + 1] = y[k] / (k + 1)
                 y[k + 1] = (a * cos(ω * step * δt) - ζ * (2.0 * sqrt(κ)) * y[k] - κ * x[k]) / (k + 1)
             x0, y0 = t_horner(x, δt), t_horner(y, δt)
@@ -249,9 +251,9 @@ def main():
         ζ, a, ω = float(argv[11]), float(argv[12]), 2.0 * pi * sqrt(length / g) * float(argv[12])  # damping/forcing
         sinθ, cosθ = t_jet(order), t_jet(order)  # jets
         output(x0, y0, 0.0, 0.0)
-        for step in range(1, n_steps + 1):
+        for step in steps:
             x[0], y[0] = x0, y0
-            for k in range(order):  # build up jets using recurrences and the derivative rule
+            for k in index:  # build up jets using recurrences and the derivative rule
                 sinθ[k], cosθ[k] = t_sin_cos(sinθ, cosθ, x, k)
                 x[k + 1] = y[k] / (k + 1)
                 y[k + 1] = (a * cos(ω * step * δt) - ζ * length * y[k] - m * g * sinθ[k]) / (m * length) / (k + 1)
@@ -261,9 +263,9 @@ def main():
         #  Example: ./tsm.py volterra 9 10 .01 2001 10 10 0 1 .5 .05 .02 | ./plotAnimated.py 1 0 80
         a, b, c, d = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
         output(x0, y0, 0.0, 0.0)
-        for step in range(1, n_steps + 1):
+        for step in steps:
             x[0], y[0] = x0, y0
-            for k in range(order):
+            for k in index:
                 xy = t_prod(x, y, k)
                 x[k + 1] = (a * x[k] - c * xy) / (k + 1)
                 y[k + 1] = (d * xy - b * y[k]) / (k + 1)
@@ -275,9 +277,9 @@ def main():
         a = float(argv[9])
         w1, wa, wb = t_jet(order, 1), t_jet(order), t_jet(order)
         output(x0, 0.0, 0.0, 0.0)
-        for step in range(1, n_steps + 1):
+        for step in steps:
             x[0] = x0
-            for k in range(order):
+            for k in index:
                 wa[k] = a * x[k]
                 wb[k] = w1[k] - x[k]
                 x[k + 1] = t_prod(wa, wb, k) / (k + 1)
@@ -288,10 +290,9 @@ def main():
         #  Example: ./tsm.py damped 9 10 .1 1001 10 0 0 1 .5 | ./plotAnimated.py 1 -10 10
         κ, ζ = float(argv[9]), float(argv[10])
         output(x0, y0, 0.0, 0.0)
-        for step in range(1, n_steps + 1):
-            x, y = t_jet(order + 1), t_jet(order + 1)
+        for step in steps:
             x[0], y[0] = x0, y0
-            for k in range(order):
+            for k in index:
                 x[k + 1] = y[k] / (k + 1)
                 y[k + 1] = - (κ * x[k] + ζ * (2.0 * sqrt(κ)) * y[k]) / (k + 1)
             x0, y0 = t_horner(x, δt), t_horner(y, δt)
@@ -301,10 +302,9 @@ def main():
         #  Example: ./tsm.py constant 9 10 0.1 10001 10 0 0 -.05 | ./plotAnimated.py 1 0 10
         a = float(argv[9])
         output(x0, 0.0, 0.0, 0.0)
-        for step in range(1, n_steps + 1):
-            x, y = t_jet(order + 1), t_jet(order + 1)
+        for step in steps:
             x[0] = x0
-            for k in range(order):
+            for k in index:
                 x[k + 1] = a * x[k] / (k + 1)
             x0 = t_horner(x, δt)
             output(x0, 0.0, 0.0, step * δt)
