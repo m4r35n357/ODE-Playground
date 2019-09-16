@@ -32,51 +32,41 @@ class Result(namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', 'sens
                f'f: {self.f:+.{Context.places}e}  {self.sense} {self.mode} {self.count}'
 
 def bisect(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
-    m = Solver.BI
     a, b, c = Series.get(3, xa).var, Series.get(3, xb).var, Series.get(3)
-    fc = Series.get(3, 1)
     f_sign = copysign(1, (~ model(a)).jet[mode.value])
-    δx = count = 1
-    while abs(fc.jet[mode.value]) > εf or abs(δx) > εx:
-        c = (a + b) / 2
-        fc = ~ model(c)
-        if f_sign * fc.jet[mode.value] < 0.0:
+    fc = δx = i = 1
+    while i <= limit and (abs(fc) > εf or abs(δx) > εx):
+        c = 0.5 * (a + b)
+        fc = (~ model(c)).jet[mode.value]
+        if f_sign * fc < 0.0:
             b = c
-        elif f_sign * fc.jet[mode.value] > 0.0:
+        elif f_sign * fc > 0.0:
             a = c
         else:
             break
         δx = b.val - a.val
         if debug:
-            print(Result(method=m.name, count=count, sense=sense.value, mode=mode.name, x=c.val, f=fc.jet[mode.value], δx=δx),
-                  file=stderr)
-        count += 1
-        if count == limit + 1:
-            break
-    return Result(method=m.name, count=count - 1, sense=sense.value, mode=mode.name, x=c.val, f=fc.jet[mode.value], δx=δx)
+            print(Result(method=Solver.BI.name, count=i, sense=sense.value, mode=mode.name, x=c.val, f=fc, δx=δx), file=stderr)
+        i += 1
+    return Result(method=Solver.BI.name, count=i-1, sense=sense.value, mode=mode.name, x=c.val, f=fc, δx=δx)
 
 def newton(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
-    m = Solver.NT
-    x = Series.get(2 + mode.value, x0).var  # make x variable for AD
-    f = Series.get(2 + mode.value, 1)
-    δx = count = 1
-    while abs(f.jet[mode.value]) > εf or abs(δx) > εx:
-        f = ~ model(x)
-        δx = - f.jet[mode.value] / f.jet[1 + mode.value]
+    x, f = Series.get(2 + mode.value, x0).var, [1.0, 0.0]
+    δx = i = 1
+    while i <= limit and (abs(f[0]) > εf or abs(δx) > εx):
+        f = (~ model(x)).jet[mode.value : 2 + mode.value]
+        δx = - f[0] / f[1]
         x += δx
         if debug:
-            print(Result(method=m.name, count=count, sense=sense.value, mode=mode.name, x=x.val, f=f.jet[mode.value], δx=δx),
-                  file=stderr)
-        count += 1
-        if count == limit + 1:
-            break
-    return Result(method=m.name, count=count - 1, sense=sense.value, mode=mode.name, x=x.val, f=f.jet[mode.value], δx=δx)
+            print(Result(method=Solver.NT.name, count=i, sense=sense.value, mode=mode.name, x=x.val, f=f[0], δx=δx), file=stderr)
+        i += 1
+    return Result(method=Solver.NT.name, count=i-1, sense=sense.value, mode=mode.name, x=x.val, f=f[0], δx=δx)
 
 def analyze(model, method, x0, x1, steps, εf, εx, limit, mode=Mode.ALL, console=True, debug=False):
     x_prev = f0_prev = f1_prev = f2_prev = None
     step = (x1 - x0) / (steps - 1)
     for k in range(steps):
-        x = Series.get(3, x0 + k * step).var  # make x a variable to see derivatives!
+        x = Series.get(3, x0 + k * step).var
         f = ~ model(x)
         if not console:
             print(f'{x.val:.{Context.places}e} {f}')
