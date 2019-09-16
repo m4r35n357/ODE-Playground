@@ -7,7 +7,6 @@ from math import sqrt
 from playground import bisect, newton, analyze, Solver, Mode, Sense
 import pytest
 
-order = 6
 εf = 1.0e-9
 εx = 1.0e-9
 max_it = 101
@@ -50,7 +49,7 @@ def test_cubic_solve(a, b, mode, target_x):
 def test_analysis_na(capsys):
     captured = capsys.readouterr()
     results = []
-    for result in analyze(model, Solver.NA, plot_min, plot_max, n_points, εf, εx, limit=max_it, order=order, console=False):
+    for result in analyze(model, Solver.NA, plot_min, plot_max, n_points, εf, εx, limit=max_it, console=False):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 0
@@ -60,7 +59,7 @@ def test_analysis_na(capsys):
 def test_analysis_cubic(solver):
     results = []
     for result in analyze(lambda a: a**3 + 3 * a**2 - 3,
-                          solver, plot_min, plot_max, n_points, εf, εx, limit=max_it, order=order):
+                          solver, plot_min, plot_max, n_points, εf, εx, limit=max_it):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 6  # 3 roots, 1 maximum, 1 minimum, 1 inflection
@@ -75,7 +74,7 @@ def test_analysis_cubic(solver):
 def test_analysis_cos_cubic(solver):
     results = []
     for result in analyze(lambda a: a.cos - a**3,
-                          solver, plot_min, plot_max, n_points, εf, εx, limit=max_it, order=order):
+                          solver, plot_min, plot_max, n_points, εf, εx, limit=max_it):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 4
@@ -88,7 +87,7 @@ def test_analysis_cos_cubic(solver):
 def test_analysis_messy(solver):
     results = []
     for result in analyze(lambda a: (a - 1)**2 / (a.cosh + 1).ln - 1,
-                          solver, plot_min, plot_max, n_points, εf, εx, limit=max_it, order=order):
+                          solver, plot_min, plot_max, n_points, εf, εx, limit=max_it):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 6
@@ -103,7 +102,7 @@ def test_analysis_messy(solver):
 def test_analysis_septic(solver):
     results = []
     for result in analyze(lambda a: (a + 7) * (5 + a) * (a + 2.0) * a * (1 - a) * (3.0 - a) * (a - 6),
-                          solver, plot_min, plot_max, n_points, εf, εx, limit=max_it, order=order):
+                          solver, plot_min, plot_max, n_points, εf, εx, limit=max_it):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 18  # 7 roots, 3 maxima, 3 minima, 5 inflections

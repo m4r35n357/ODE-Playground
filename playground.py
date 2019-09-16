@@ -72,11 +72,11 @@ def newton(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mo
             break
     return Result(method=m.name, count=count - 1, sense=sense.value, mode=mode.name, x=x.val, f=f.jet[mode.value], δx=δx)
 
-def analyze(model, method, x0, x1, steps, εf, εx, limit, order, mode=Mode.ALL, console=True, debug=False):
+def analyze(model, method, x0, x1, steps, εf, εx, limit, mode=Mode.ALL, console=True, debug=False):
     x_prev = f0_prev = f1_prev = f2_prev = None
     step = (x1 - x0) / (steps - 1)
     for k in range(steps):
-        x = Series.get(order, x0 + k * step).var  # make x a variable to see derivatives!
+        x = Series.get(3, x0 + k * step).var  # make x a variable to see derivatives!
         f = ~ model(x)
         if not console:
             print(f'{x.val:.{Context.places}e} {f}')

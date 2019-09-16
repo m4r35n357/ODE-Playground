@@ -26,10 +26,10 @@ def _plot(model, order=13, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max
         ax1.plot(data[0], data[c], f'{colour[c - 1]}', linewidth=2 if c == 1 else 1, markersize=0, label=c-1)
     ax1.legend(loc='lower right')
 
-def scan(model, order=13, x_min=-8.0, x_max=8.0, steps=1000, ef=1e-9, ex=1e-9, limit=101, newton=False, mode=Mode.ALL, debug=False):
+def scan(model, x_min=-8.0, x_max=8.0, steps=1000, ef=1e-9, ex=1e-9, limit=101, newton=False, mode=Mode.ALL, debug=False):
     #  Find roots, turning points and inflections of the model function
     solver = Solver.NT if newton else Solver.BI
-    for result in analyze(model, solver, x_min, x_max, steps, εf=ef, εx=ex, limit=limit, order=order, mode=mode, debug=debug):
+    for result in analyze(model, solver, x_min, x_max, steps, εf=ef, εx=ex, limit=limit, mode=mode, debug=debug):
         if result.count < 101:
             print(result, file=stderr)
 
