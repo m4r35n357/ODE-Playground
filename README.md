@@ -128,17 +128,13 @@ Matplotlib progressive graph plotting
 ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
 ```
 
-Double pendulum (see code for parameters)
-```
-./double.py 8 0.1 1000 1 1 1 1 .1 0 .1 0 | ./plotPi2d.py
-```
 ## tsm.py Parameter reference
 tsm.py comprises a long "if" statement containing a "zoo" of pre-programmed ODE systems.
 
 Parameter | Meaning
 ----------|-----------
 1 | model (ODE) name
-2 | order
+2 | significant figures for display
 3,4 | step size, number of steps
 5,6,7 | x0, y0, z0
 8+ | ODE parameters
