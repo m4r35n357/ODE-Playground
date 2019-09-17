@@ -45,9 +45,9 @@ def bisect(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mod
         else:
             break
         δx = b.val - a.val
-        if debug:
-            print(Result(method=Solver.BI.name, count=i, sense=sense.value, mode=mode.name, x=c.val, f=fc, δx=δx), file=stderr)
         i += 1
+        if debug:
+            print(Result(method=Solver.BI.name, count=i-1, sense=sense.value, mode=mode.name, x=c.val, f=fc, δx=δx), file=stderr)
     return Result(method=Solver.BI.name, count=i-1, sense=sense.value, mode=mode.name, x=c.val, f=fc, δx=δx)
 
 def newton(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
@@ -57,9 +57,9 @@ def newton(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mo
         f = (~ model(x)).jet[mode.value : 2 + mode.value]
         δx = - f[0] / f[1]
         x += δx
-        if debug:
-            print(Result(method=Solver.NT.name, count=i, sense=sense.value, mode=mode.name, x=x.val, f=f[0], δx=δx), file=stderr)
         i += 1
+        if debug:
+            print(Result(method=Solver.NT.name, count=i-1, sense=sense.value, mode=mode.name, x=x.val, f=f[0], δx=δx), file=stderr)
     return Result(method=Solver.NT.name, count=i-1, sense=sense.value, mode=mode.name, x=x.val, f=f[0], δx=δx)
 
 def analyze(model, method, x0, x1, steps, εf, εx, limit, mode=Mode.ALL, console=True, debug=False):
