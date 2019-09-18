@@ -11,8 +11,8 @@ def _plot(model, order=13, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max
     #  Plot the function and its derivatives
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')
-    ax1.set_xlabel('Variable', color='.2')
-    ax1.set_ylabel(f'Function value and first {order - 1} derivatives', color='.2')
+    ax1.set_xlabel('x.val', color='.2')
+    ax1.set_ylabel(f'f(x) and the first {order - 1} derivatives', color='.2')
     ax1.set_xlim(x_min, x_max)
     ax1.set_ylim(y_min, y_max)
     colour = ['k-', 'r-', 'g-', 'b-', 'y-', 'c-', 'm-', 'r:', 'g:', 'b:', 'y:', 'c:', 'm:']
@@ -61,6 +61,9 @@ for i in range(-50, 51):
 for i in range(19):
     f = lambda a: (a**2 + 1.0 / (10.0)**i)**0.5
     msave(f'test_{i:03d}.png', f)
+
+f = lambda a: abs(- (a - 1.5)**3 + 4 * (a - 1.5) - 2)
+f = lambda a: - (abs(a) - 1.5)**3 + 4 * (abs(a) - 1.5) - 2
 
 ffmpeg -y -i test_%03d.png taylor.mp4
 mplayer -fps 2 taylor.mp4
