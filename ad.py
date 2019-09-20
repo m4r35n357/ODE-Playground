@@ -67,6 +67,19 @@ def t_atan(h, v, u, k, hyp=False):
     vk = 2.0 * (u[0] * u[k] + fsum(j * u[j] * u[k - j] for j in range(1, k)) / k)
     return (hk, - vk) if hyp else (hk, vk)
 
+def t_sqr(u, k):
+    if k % 2 == 1:
+        return 2.0 * fsum(u[j] * u[k - j] for j in range((k - 1) // 2 + 1))
+    else:
+        return 2.0 * fsum(u[j] * u[k - j] for j in range((k - 2) // 2 + 1)) + u[k // 2]**2
+
+def t_sqrt(r, u, k):
+    if k == 0:
+        return sqrt(u[0])
+    if k % 2 == 1:
+        return (u[k] - 2.0 * fsum(r[j] * r[k - j] for j in range(1, (k - 1) // 2 + 1))) / (2.0 * r[0])
+    else:
+        return (u[k] - 2.0 * fsum(r[j] * r[k - j] for j in range(1, (k - 2) // 2 + 1)) - r[k // 2]**2) / (2.0 * r[0])
 
 class Series:
 
@@ -167,7 +180,7 @@ class Series:
         assert o > 0.0, f"other = {o}"
         return (self.__mul__(log(o))).exp
 
-    def _exp_log(self, f):
+    def _exp_log_sqrt(self, f):
         a = t_jet(self.n)
         for k in self.index:
             a[k] = f(a, self.jet, k)
@@ -181,12 +194,12 @@ class Series:
 
     @property
     def exp(self):
-        return self._exp_log(t_exp)
+        return self._exp_log_sqrt(t_exp)
 
     @property
     def ln(self):
         assert self.val > 0.0, f"self.val = {self.val}"
-        return self._exp_log(t_ln)
+        return self._exp_log_sqrt(t_ln)
 
     @property
     def sin(self):
@@ -247,6 +260,15 @@ class Series:
     def atanh(self):
         assert abs(self.val) < 1.0, f"self.val = {self.val}"
         return self._trig_hyp(t_atan, hyp=True)[0]
+
+    @property
+    def sqr(self):
+        return Series([t_sqr(self.jet, k) for k in self.index])
+
+    @property
+    def sqrt(self):
+        assert abs(self.val) > 0.0, f"self.val = {self.val}"
+        return self._exp_log_sqrt(t_sqrt)
 
     @property
     def val(self):
