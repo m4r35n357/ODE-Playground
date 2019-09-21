@@ -67,6 +67,19 @@ def t_atan(h, v, u, k, hyp=False):
     vk = 2.0 * (u[0] * u[k] + fsum(j * u[j] * u[k - j] for j in range(1, k)) / k)
     return (hk, - vk) if hyp else (hk, vk)
 
+def t_sqr(u, k):
+    if k % 2 == 1:
+        return 2.0 * fsum(u[j] * u[k - j] for j in range((k - 1) // 2 + 1))
+    else:
+        return 2.0 * fsum(u[j] * u[k - j] for j in range((k - 2) // 2 + 1)) + u[k // 2]**2
+
+def t_sqrt(r, u, k):
+    if k == 0:
+        return sqrt(u[0])
+    if k % 2 == 1:
+        return (u[k] - 2.0 * fsum(r[j] * r[k - j] for j in range(1, (k - 1) // 2 + 1))) / (2.0 * r[0])
+    else:
+        return (u[k] - 2.0 * fsum(r[j] * r[k - j] for j in range(1, (k - 2) // 2 + 1)) - r[k // 2]**2) / (2.0 * r[0])
 
 class Series:
 
@@ -167,86 +180,95 @@ class Series:
         assert o > 0.0, f"other = {o}"
         return (self.__mul__(log(o))).exp
 
-    def _single(self, fun):
-        jet = t_jet(self.n)
+    def _exp_log_sqrt(self, f):
+        a = t_jet(self.n)
         for k in self.index:
-            jet[k] = fun(jet, self.jet, k)
-        return Series(jet)
+            a[k] = f(a, self.jet, k)
+        return Series(a)
 
-    def _double(self, fun, hyp=False):
-        jet_a, jet_b = t_jet(self.n), t_jet(self.n)
+    def _trig_hyp(self, f, hyp=False):
+        a, b = t_jet(self.n), t_jet(self.n)
         for k in self.index:
-            jet_a[k], jet_b[k] = fun(jet_a, jet_b, self.jet, k, hyp)
-        return Series(jet_a), Series(jet_b)
+            a[k], b[k] = f(a, b, self.jet, k, hyp)
+        return Series(a), Series(b)
 
     @property
     def exp(self):
-        return self._single(t_exp)
+        return self._exp_log_sqrt(t_exp)
 
     @property
     def ln(self):
         assert self.val > 0.0, f"self.val = {self.val}"
-        return self._single(t_ln)
+        return self._exp_log_sqrt(t_ln)
 
     @property
     def sin(self):
-        return self._double(t_sin_cos)[0]
+        return self._trig_hyp(t_sin_cos)[0]
 
     @property
     def cos(self):
-        return self._double(t_sin_cos)[1]
+        return self._trig_hyp(t_sin_cos)[1]
 
     @property
     def tan(self):
-        return self._double(t_tan_sec2)[0]
+        return self._trig_hyp(t_tan_sec2)[0]
 
     @property
     def sec2(self):
-        return self._double(t_tan_sec2)[1]
+        return self._trig_hyp(t_tan_sec2)[1]
 
     @property
     def sinh(self):
-        return self._double(t_sin_cos, hyp=True)[0]
+        return self._trig_hyp(t_sin_cos, hyp=True)[0]
 
     @property
     def cosh(self):
-        return self._double(t_sin_cos, hyp=True)[1]
+        return self._trig_hyp(t_sin_cos, hyp=True)[1]
 
     @property
     def tanh(self):
-        return self._double(t_tan_sec2, hyp=True)[0]
+        return self._trig_hyp(t_tan_sec2, hyp=True)[0]
 
     @property
     def sech2(self):
-        return self._double(t_tan_sec2, hyp=True)[1]
+        return self._trig_hyp(t_tan_sec2, hyp=True)[1]
 
     @property
     def asin(self):
         assert abs(self.val) < 1.0, f"self.val = {self.val}"
-        return self._double(t_asin)[0]
+        return self._trig_hyp(t_asin)[0]
 
     @property
     def acos(self):
         assert abs(self.val) < 1.0, f"self.val = {self.val}"
-        return self._double(t_acos)[0]
+        return self._trig_hyp(t_acos)[0]
 
     @property
     def atan(self):
-        return self._double(t_atan)[0]
+        return self._trig_hyp(t_atan)[0]
 
     @property
     def asinh(self):
-        return self._double(t_asin, hyp=True)[0]
+        return self._trig_hyp(t_asin, hyp=True)[0]
 
     @property
     def acosh(self):
         assert self.val > 1.0, f"self.val = {self.val}"
-        return self._double(t_acos, hyp=True)[0]
+        return self._trig_hyp(t_acos, hyp=True)[0]
 
     @property
     def atanh(self):
         assert abs(self.val) < 1.0, f"self.val = {self.val}"
-        return self._double(t_atan, hyp=True)[0]
+        return self._trig_hyp(t_atan, hyp=True)[0]
+
+    @property
+    def sqr(self):
+        return Series([t_sqr(self.jet, k) for k in self.index])
+
+    @property
+    def sqrt(self):
+        assert abs(self.val) > 0.0, f"self.val = {self.val}"
+        return self._exp_log_sqrt(t_sqrt)
 
     @property
     def val(self):

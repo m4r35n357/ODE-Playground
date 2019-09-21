@@ -4,7 +4,7 @@
 #
 from sys import argv
 from math import sqrt, cos, pi
-from ad import Context, t_jet, t_horner, t_abs, t_prod, t_sin_cos, t_tan_sec2
+from ad import Context, t_jet, t_horner, t_abs, t_prod, t_sin_cos, t_tan_sec2, t_sqr
 
 
 def output(x, y, z, t):
@@ -82,7 +82,7 @@ def main():
             x[0], y[0], z[0] = x0, y0, z0
             for k in index:
                 w4[k] = jet1[k] - y[k]
-                w5[k] = jet1[k] - t_prod(x, x, k)
+                w5[k] = jet1[k] - t_sqr(x, k)
                 x[k + 1] = (a * t_prod(x, w4, k) - b * z[k]) / (k + 1)
                 y[k + 1] = - c * t_prod(y, w5, k) / (k + 1)
                 z[k + 1] = d * x[k] / (k + 1)
@@ -145,7 +145,7 @@ def main():
         for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
             for k in index:
-                x2_1 = t_prod(x, x, k) - jet1[k]
+                x2_1 = t_sqr(x, k) - jet1[k]
                 a[k] = z[k] + x2_1
                 b[k] = 3.0 * z[k] - x2_1
                 c[k] = α + t_prod(x, y, k)
@@ -162,9 +162,10 @@ def main():
         for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
             for k in index:
+                x2 = t_sqr(x, k)
                 x[k + 1] = (y[k] + 2.0 * t_prod(x, y, k) + t_prod(x, z, k)) / (k + 1)
-                y[k + 1] = (w1[k] - 2.0 * t_prod(x, x, k) + t_prod(y, z, k)) / (k + 1)
-                z[k + 1] = (x[k] - t_prod(x, x, k) - t_prod(y, y, k)) / (k + 1)
+                y[k + 1] = (w1[k] - 2.0 * x2 + t_prod(y, z, k)) / (k + 1)
+                z[k + 1] = (x[k] - x2 - t_sqr(y, k)) / (k + 1)
             x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x0, y0, z0, step * δt)
     elif model == "sprott-jafari":
@@ -177,7 +178,7 @@ def main():
             for k in index:
                 x[k + 1] = y[k] / (k + 1)
                 y[k + 1] = - x[k] + t_prod(y, z, k) / (k + 1)
-                z[k + 1] = (z[k] + a * t_prod(x, x, k) - t_prod(y, y, k) - b_[k]) / (k + 1)
+                z[k + 1] = (z[k] + a * t_sqr(x, k) - t_sqr(y, k) - b_[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x0, y0, z0, step * δt)
     elif model == "halvorsen":
@@ -188,9 +189,9 @@ def main():
         for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
             for k in index:
-                x[k + 1] = - (α * x[k] + 4.0 * y[k] + 4.0 * z[k] + t_prod(y, y, k)) / (k + 1)
-                y[k + 1] = - (α * y[k] + 4.0 * z[k] + 4.0 * x[k] + t_prod(z, z, k)) / (k + 1)
-                z[k + 1] = - (α * z[k] + 4.0 * x[k] + 4.0 * y[k] + t_prod(x, x, k)) / (k + 1)
+                x[k + 1] = - (α * x[k] + 4.0 * y[k] + 4.0 * z[k] + t_sqr(y, k)) / (k + 1)
+                y[k + 1] = - (α * y[k] + 4.0 * z[k] + 4.0 * x[k] + t_sqr(z, k)) / (k + 1)
+                z[k + 1] = - (α * z[k] + 4.0 * x[k] + 4.0 * y[k] + t_sqr(x, k)) / (k + 1)
             x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x0, y0, z0, step * δt)
     elif model == "nose-hoover":
@@ -203,7 +204,7 @@ def main():
             for k in index:
                 x[k + 1] = y[k] / (k + 1)
                 y[k + 1] = (t_prod(y, z, k) - x[k]) / (k + 1)
-                z[k + 1] = (α[k] - t_prod(y, y, k)) / (k + 1)
+                z[k + 1] = (α[k] - t_sqr(y, k)) / (k + 1)
             x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x0, y0, z0, step * δt)
     elif model == "rucklidge":
@@ -216,7 +217,7 @@ def main():
             for k in index:
                 x[k + 1] = (α * y[k] - κ * x[k] - t_prod(y, z, k)) / (k + 1)
                 y[k + 1] = x[k] / (k + 1)
-                z[k + 1] = (t_prod(y, y, k) - z[k]) / (k + 1)
+                z[k + 1] = (t_sqr(y, k) - z[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x0, y0, z0, step * δt)
     elif model == "wimol-banlue":

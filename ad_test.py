@@ -28,12 +28,12 @@ s_4 = Series.get(order, f4).var
 
 d_3 = complex(f3)
 
-data1_s = Series([1.0] * order)
+data1_s = Series([0.5] * order)
 for i in range(1, order):
-    data1_s.jet[i] = 0.5 * i * data1_s.jet[i - 1]
-data2_s = Series([1.0] * order)
+    data1_s.jet[i] = 0.7 * i * data1_s.jet[i - 1]
+data2_s = Series([0.9] * order)
 for i in range(1, order):
-    data2_s.jet[i] = - i * data2_s.jet[i - 1]
+    data2_s.jet[i] = - 0.5 * i * data2_s.jet[i - 1]
 
 def test_t_jet_default():
     jet = t_jet(order)
@@ -622,6 +622,23 @@ def test_atanh():
     for term in (series - 0.5 * ((1 + x) / (1 - x)).ln).jet:
         assert term == approx(0.0)
 
+@mark.domain
+@mark.parametrize('number', [1, δ])
+def test_sqrt_domain_good(number):
+    _ = Series.get(order, number).var.sqrt
+
+@mark.domain
+@mark.parametrize('number', [0, zero, - zero])
+def test_sqrt_domain_bad_assert(number):
+    with raises(AssertionError):
+        _ = Series.get(order, number).var.sqrt
+
+@mark.domain
+@mark.parametrize('number', [- δ, -1])
+def test_sqrt_domain_bad_value(number):
+    with raises(ValueError):
+        _ = Series.get(order, number).var.sqrt
+
 def test_var():
     series = Series.get(order, f3).var
     assert len(series.jet) == order
@@ -669,6 +686,14 @@ def test_pow_frac_zero(series):
     for term in ((series**2)**0.5 - abs(series)).jet:
         assert term == approx(0.0)
     for term in ((series**2)**-0.5 - 1.0 / abs(series)).jet:
+        assert term == approx(0.0)
+
+@mark.toplevel
+@mark.parametrize('series', [data1_s, data2_s])
+def test_sqr_sqrt_zero(series):
+    for term in (series.sqr.sqrt - abs(series)).jet:
+        assert term == approx(0.0)
+    for term in ((1.0 / series.sqr).sqrt - 1.0 / abs(series)).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
@@ -779,4 +804,16 @@ def test_cosh_acosh_zero(series):
 @mark.parametrize('series', [data1_s, data2_s])
 def test_tanh_atanh_zero(series):
     for a, b in zip(series.tanh.atanh.jet, series.jet):
+        assert a == approx(b)
+
+@mark.toplevel
+@mark.parametrize('series', [data1_s, data2_s])
+def test_sqr(series):
+    for a, b in zip(series.sqr.jet, (series**2).jet):
+        assert a == approx(b)
+
+@mark.toplevel
+@mark.parametrize('series', [data1_s, data2_s])
+def test_sqrt(series):
+    for a, b in zip(series.sqrt.jet, (series**0.5).jet):
         assert a == approx(b)

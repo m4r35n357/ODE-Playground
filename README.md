@@ -93,7 +93,7 @@ sudo apt install build-essential mesa-utils-extra python3-dev libmpc-dev libatla
 This is a typical virtual environment setup:
 ```
 mkvirtualenv --python /usr/bin/python3 ad
-pip install matplotlib pillow pi3d pytest pytest-cov mutmut, ipython
+pip install matplotlib pillow pi3d pytest pytest-cov mutmut ipython
 ```
 Download:
 ```
