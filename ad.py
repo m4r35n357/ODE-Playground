@@ -23,6 +23,16 @@ def t_prod(u, v, k):
 def t_quot(q, u, v, k):
     return (u[k] - fsum(q[j] * v[k - j] for j in range(k))) / v[0]
 
+def t_sqr(u, k):
+    f_sum = 2.0 * fsum(u[j] * u[k - j] for j in (range((k - 1) // 2 + 1) if k % 2 == 1 else range((k - 2) // 2 + 1)))
+    return f_sum if k % 2 == 1 else f_sum + u[k // 2]**2
+
+def t_sqrt(r, u, k):
+    if k == 0:
+        return sqrt(u[0])
+    f_sum = 2.0 * fsum(r[j] * r[k - j] for j in (range((k - 1) // 2 + 1) if k % 2 == 1 else range((k - 2) // 2 + 1)))
+    return 0.5 * (u[k] - f_sum if k % 2 == 1 else u[k] - f_sum - r[k // 2]**2) / r[0]
+
 def t_pwr(p, u, a, k):
     return u[0]**a if k == 0 else fsum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
 
@@ -67,19 +77,6 @@ def t_atan(h, v, u, k, hyp=False):
     vk = 2.0 * (u[0] * u[k] + fsum(j * u[j] * u[k - j] for j in range(1, k)) / k)
     return (hk, - vk) if hyp else (hk, vk)
 
-def t_sqr(u, k):
-    if k % 2 == 1:
-        return 2.0 * fsum(u[j] * u[k - j] for j in range((k - 1) // 2 + 1))
-    else:
-        return 2.0 * fsum(u[j] * u[k - j] for j in range((k - 2) // 2 + 1)) + u[k // 2]**2
-
-def t_sqrt(r, u, k):
-    if k == 0:
-        return sqrt(u[0])
-    if k % 2 == 1:
-        return (u[k] - 2.0 * fsum(r[j] * r[k - j] for j in range(1, (k - 1) // 2 + 1))) / (2.0 * r[0])
-    else:
-        return (u[k] - 2.0 * fsum(r[j] * r[k - j] for j in range(1, (k - 2) // 2 + 1)) - r[k // 2]**2) / (2.0 * r[0])
 
 class Series:
 

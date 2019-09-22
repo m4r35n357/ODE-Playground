@@ -62,14 +62,14 @@ def main():
     elif model == "rossler":
         #  Example: ./tsm.py rossler 9 10 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotPi3d.py
         #  Example: ./tsm.py rossler 9 10 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotAnimated.py 1 -20 30
-        a, b_, c = float(argv[9]), t_jet(order, float(argv[10])), float(argv[11])
+        a, b, c = float(argv[9]), t_jet(order, float(argv[10])), float(argv[11])
         output(x0, y0, z0, 0.0)
         for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
             for k in index:
                 x[k + 1] = - (y[k] + z[k]) / (k + 1)
                 y[k + 1] = (x[k] + a * y[k]) / (k + 1)
-                z[k + 1] = (b_[k] + t_prod(x, z, k) - c * z[k]) / (k + 1)
+                z[k + 1] = (b[k] + t_prod(x, z, k) - c * z[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x0, y0, z0, step * δt)
     elif model == "bouali":
@@ -171,14 +171,14 @@ def main():
     elif model == "sprott-jafari":
         #  Example: ./tsm.py sprott-jafari 9 10 0.01 30001 0 3.9 .7 8.888 4 | ./plotPi3d.py
         #  Example: ./tsm.py sprott-jafari 9 10 0.01 30001 0 3.9 .7 8.888 4 | ./plotAnimated.py 1 -20 20
-        a, b_ = float(argv[9]), t_jet(order, float(argv[10]))
+        a, b = float(argv[9]), t_jet(order, float(argv[10]))
         output(x0, y0, z0, 0.0)
         for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
             for k in index:
                 x[k + 1] = y[k] / (k + 1)
                 y[k + 1] = - x[k] + t_prod(y, z, k) / (k + 1)
-                z[k + 1] = (z[k] + a * t_sqr(x, k) - t_sqr(y, k) - b_[k]) / (k + 1)
+                z[k + 1] = (z[k] + a * t_sqr(x, k) - t_sqr(y, k) - b[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x0, y0, z0, step * δt)
     elif model == "halvorsen":
