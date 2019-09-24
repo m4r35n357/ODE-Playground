@@ -135,9 +135,10 @@ Parameter | Meaning
 ----------|-----------
 1 | model (ODE) name
 2 | significant figures for display
-3,4 | step size, number of steps
-5,6,7 | x0, y0, z0
-8+ | ODE parameters
+3 | 1 + order
+4,5 | step size, number of steps
+6,7,8 | x0, y0, z0
+9+ | ODE parameters
 
 
 ## Analysing functions
