@@ -65,6 +65,8 @@ for i in range(19):
 f = lambda a: abs(- (a - 1.5)**3 + 4 * (a - 1.5) - 2)
 f = lambda a: - (abs(a) - 1.5)**3 + 4 * (abs(a) - 1.5) - 2
 
+f = lambda a: a.sin / pi + (3 * a).sin / (3 * pi) + (5 * a).sin / (5 * pi) + (7 * a).sin / (7 * pi)
+
 ffmpeg -y -i test_%03d.png taylor.mp4
 mplayer -fps 2 taylor.mp4
 '''
