@@ -2,7 +2,7 @@
 #  (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 from sys import stderr
-from math import sin, cos, sinh, cosh, tan, tanh, exp, log, fsum, asinh, asin, acosh, acos, atanh, atan, sqrt
+from math import copysign, fsum, sin, cos, sinh, cosh, tan, tanh, exp, log, asinh, asin, acosh, acos, atanh, atan, sqrt
 
 
 def t_jet(n, value=0.0):
@@ -15,7 +15,7 @@ def t_horner(jet, h):
     return result
 
 def t_abs(u, k):
-    return u[k] if u[0] > 0.0 else (- u[k] if u[0] < 0.0 else 0.0)  # pragma: no mutate
+    return copysign(1.0, u[0]) * u[k]
 
 def t_prod(u, v, k):
     return fsum(u[j] * v[k - j] for j in range(k + 1))
