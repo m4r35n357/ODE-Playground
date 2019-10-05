@@ -84,7 +84,7 @@ void t_tan_sec2 (mpfr_t *T, mpfr_t *S2, const mpfr_t *U, int k, mpfr_t *tmp, geo
 /*
  * Calculates kth element of U^a, results stored in jet P
  */
-void t_power (mpfr_t *P, const mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp1, mpfr_t *tmp2);
+void t_power (mpfr_t *P, const mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp1);
 
 /*
  * Calculates kth element of the natural logarithm of U, result stored in jet L

@@ -190,12 +190,12 @@ void ad_tanh_sech2 (mpfr_t *t, mpfr_t *s2, const mpfr_t *u, int n) {
 }
 
 void ad_power (mpfr_t *p, const mpfr_t *u, mpfr_t a, int n) {
-    mpfr_t _1, _2;
-    mpfr_inits(_1, _2, NULL);
+    mpfr_t _;
+    mpfr_init(_);
     for (int k = 0; k < n; k++) {
-        t_power(p, u, a, k, &_1, &_2);
+        t_power(p, u, a, k, &_);
     }
-    mpfr_clears(_1, _2, NULL);
+    mpfr_clear(_);
 }
 
 void ad_ln (mpfr_t *l, const mpfr_t *u, int n) {

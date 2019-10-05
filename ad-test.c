@@ -166,6 +166,10 @@ int main (int argc, char **argv) {
     ad_power(wpwr, cx, D_05, n);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
+    ad_sqrt(wsqrt, cx, n);
+    ad_quotient(wquot, c1, wsqrt, n);
+    jet_output(wquot, n, KNRM, KGRY);
+    derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = e^x", KNRM);
