@@ -30,7 +30,7 @@ def t_sqr(u, k):
 def t_sqrt(r, u, k):
     if k == 0:
         return sqrt(u[0])
-    f_sum = 2.0 * fsum(r[j] * r[k - j] for j in (range((k - 1) // 2 + 1) if k % 2 == 1 else range((k - 2) // 2 + 1)))
+    f_sum = 2.0 * fsum(r[j] * r[k - j] for j in (range(1, (k - 1) // 2 + 1) if k % 2 == 1 else range(1, (k - 2) // 2 + 1)))
     return 0.5 * (u[k] - f_sum if k % 2 == 1 else u[k] - f_sum - r[k // 2]**2) / r[0]
 
 def t_pwr(p, u, a, k):
