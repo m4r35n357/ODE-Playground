@@ -27,6 +27,11 @@ typedef enum {TRIG, HYP} geometry;
 void t_line_output (mpfr_t t, int item_count, ...);
 
 /*
+ * Prints an index column, and x, y, z columns, into a single line
+ */
+void t_xyz_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t t);
+
+/*
  * Sets the order, step size, and number of steps for the integration
  */
 void t_stepper (char **argv, long *n, mpfr_t *t, mpfr_t *h, long *nsteps);
@@ -44,7 +49,12 @@ mpfr_t *t_jet_c (int size, mpfr_t value);
 /*
  * Sums a Taylor series safely and efficiently
  */
-void t_horner (mpfr_t *sum, const mpfr_t *jet, long n, mpfr_t h);
+void t_horner (mpfr_t *sum, const mpfr_t *jet, int n, mpfr_t h);
+
+/*
+ * Calculates kth element of the absolute value of U, result stored in variable A
+ */
+void t_abs (mpfr_t *a, const mpfr_t *u, int k);
 
 /*
  * Calculates kth element of the square of U, result stored in variable S

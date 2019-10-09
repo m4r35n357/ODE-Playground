@@ -102,6 +102,11 @@ int main (int argc, char **argv) {
 
     printf("\n%sx = %s, y = %s, order = %ld%s\n\n", KBLD, argv[2], argv[3], n - 1, KNRM);
 
+//    printf("%s%s%s\n", KCYN, "Horner", KNRM);
+//    t_horner(&x, (int[]){-19, 7, -4, 6}, n, D3);
+//    t_horner(&x, (float[]){-19.0, 7.0, -4.0, 6.0}, n, D3);
+//    mpfr_printf("int: %9.6RNf, float: %9.6RNf\n", *x, *y);
+
     printf("%s%s%s\n", KCYN, "f(x) = x^2", KNRM);
     ad_square(wsqr, cx, n);
     jet_output(wsqr, n, KNRM, KGRY);

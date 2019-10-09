@@ -25,10 +25,8 @@ int main (int argc, char **argv) {
     cx = t_jet(order + 1);
 
     // main loop
+    t_xyz_output(x, x, x, t);
     for (long step = 1; step < nsteps + 1; step++) {
-        // print a line of output
-        t_line_output(t, 1, x);
-
         // compute the taylor coefficients
         mpfr_set(cx[0], x, RND);
         for (int k = 0; k < order; k++) {
@@ -40,6 +38,7 @@ int main (int argc, char **argv) {
         // sum the series using Horner's method and advance one step
         t_horner(&x, cx, order, h);
         mpfr_mul_ui(t, h, step, RND);
+        t_xyz_output(x, x, x, t);
     }
     return 0;
 }

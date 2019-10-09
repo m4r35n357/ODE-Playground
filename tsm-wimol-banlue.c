@@ -1,7 +1,7 @@
 /*
- * Bouali Attractor
+ * Wimol-Banlue System
  *
- * Example: ./tsm-bouali-dbg 80 40 0.02 50001 1 1 0 3 2.2 1 .01
+ * Example: ./tsm-wimol-banlue-dbg 16 8 0.1 10001 1 0 0 2.0
  *
  * (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -11,28 +11,25 @@
 #include "taylor-ode.h"
 
 long order, nsteps;
-mpfr_t t, x, y, z, a, b, g, m, h, _, *wa, *wb, *w1, *cx, *cy, *cz;
+mpfr_t t, x, y, z, a, b, c, h, _, __, *wtx, *w__, *w_a, *cx, *cy, *cz;
 
 int main (int argc, char **argv) {
-    assert(argc == 12);
+    assert(argc == 9);
     // initialize from command arguments
     t_stepper(argv, &order, &t, &h, &nsteps);
+    mpfr_inits(_, __, NULL);
     mpfr_init_set_str(x, argv[5], BASE, RND);
     mpfr_init_set_str(y, argv[6], BASE, RND);
     mpfr_init_set_str(z, argv[7], BASE, RND);
     mpfr_init_set_str(a, argv[8], BASE, RND);
-    mpfr_init_set_str(b, argv[9], BASE, RND);
-    mpfr_init_set_str(g, argv[10], BASE, RND);
-    mpfr_init_set_str(m, argv[11], BASE, RND);
 
     // initialize the derivative and temporary jets
     cx = t_jet(order + 1);
     cy = t_jet(order + 1);
     cz = t_jet(order + 1);
-    wa = t_jet(order);
-    wb = t_jet(order);
-    mpfr_init_set_ui(_, 1, RND);
-    w1 = t_jet_c(order, _);
+    wtx = t_jet(order);
+    w__ = t_jet(order);
+    w_a = t_jet_c(order, a);
 
     // main loop
     t_xyz_output(x, y, z, t);
@@ -42,19 +39,18 @@ int main (int argc, char **argv) {
         mpfr_set(cy[0], y, RND);
         mpfr_set(cz[0], z, RND);
         for (int k = 0; k < order; k++) {
-            //  x' = Ax(1 - y) - Bz
-            mpfr_sub(wa[k], w1[k], cy[k], RND);
-            t_product(&_, cx, wa, k);
-            mpfr_fmms(_, a, _, b, cz[k], RND);
+            t_tan_sec2(wtx, w__, cx, k, &_, HYP);
+            //  x' = y - x
+            mpfr_sub(_, cy[k], cx[k], RND);
             mpfr_div_ui(cx[k + 1], _, k + 1, RND);
-            //  y' = - Gy(1 - x^2)
-            t_square(&_, cx, k);
-            mpfr_sub(wb[k], w1[k], _, RND);
-            t_product(&_, cy, wb, k);
-            mpfr_mul(_, _, g, RND);
+            //  y' = - z * tan(x)
+            t_product(&_, cz, wtx, k);
             mpfr_div_si(cy[k + 1], _, - (k + 1), RND);
-            //  z' = Mx
-            mpfr_mul(_, m, cx[k], RND);
+            //  z' = - A + x * y + |y|
+            t_product(&_, cx, cy, k);
+            t_abs(&__, cy, k);
+            mpfr_add(_, _, __, RND);
+            mpfr_sub(_, _, w_a[k], RND);
             mpfr_div_ui(cz[k + 1], _, k + 1, RND);
         }
 

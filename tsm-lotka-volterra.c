@@ -30,10 +30,8 @@ int main (int argc, char **argv) {
     cy = t_jet(order + 1);
 
     // main loop
+    t_xyz_output(x, y, x, t);
     for (long step = 1; step < nsteps + 1; step++) {
-        // print a line of output
-        t_line_output(t, 3, x, y, x);
-
         // compute the taylor coefficients
         mpfr_set(cx[0], x, RND);
         mpfr_set(cy[0], y, RND);
@@ -51,6 +49,7 @@ int main (int argc, char **argv) {
         t_horner(&x, cx, order, h);
         t_horner(&y, cy, order, h);
         mpfr_mul_ui(t, h, step, RND);
+        t_xyz_output(x, y, x, t);
     }
     return 0;
 }
