@@ -48,7 +48,7 @@ int main (int argc, char **argv) {
             mpfr_fmms(_, a, _, b, cz[k], RND);
             mpfr_div_ui(cx[k + 1], _, k + 1, RND);
             //  y' = - Gy(1 - x^2)
-            t_square(&_, cx, k);
+            t_sqr(&_, cx, k);
             mpfr_sub(wb[k], w1[k], _, RND);
             t_product(&_, cy, wb, k);
             mpfr_mul(_, _, g, RND);

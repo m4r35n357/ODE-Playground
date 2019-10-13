@@ -59,7 +59,7 @@ void t_abs (mpfr_t *a, const mpfr_t *u, int k);
 /*
  * Calculates kth element of the square of U, result stored in variable S
  */
-void t_square (mpfr_t *S, const mpfr_t *U, int k);
+void t_sqr (mpfr_t *S, const mpfr_t *U, int k);
 
 /*
  * Calculates kth element of the product of U and V, result stored in variable P

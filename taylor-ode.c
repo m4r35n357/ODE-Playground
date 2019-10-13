@@ -55,24 +55,16 @@ void t_abs (mpfr_t *a, const mpfr_t *u, int k) {
     mpfr_mul_si(*a, u[k], mpfr_sgn(u[0]), RND);
 }
 
-void t_square (mpfr_t *s, const mpfr_t *u, int k) {
+void t_sqr (mpfr_t *s, const mpfr_t *u, int k) {
     assert(k >= 0);
-    if (k == 0) {
-        mpfr_sqr(*s, u[0], RND);
-    } else {
-        mpfr_set_zero(*s, 1);
-        if (k % 2 == 1) {
-            for (int j = 0; j < (k - 1) / 2 + 1; j++) {
-                mpfr_fma(*s, u[j], u[k - j], *s, RND);
-            }
-            mpfr_mul_2ui(*s, *s, 1, RND);
-        } else {
-            for (int j = 0; j < (k - 2) / 2 + 1; j++) {
-                mpfr_fma(*s, u[j], u[k - j], *s, RND);
-            }
-            mpfr_mul_2ui(*s, *s, 1, RND);
-            mpfr_fma(*s, u[k / 2], u[k / 2], *s, RND);
-        }
+    int upper = (k - (k % 2 == 0 ? 2 : 1)) / 2 + 1;
+    mpfr_set_zero(*s, 1);
+    for (int j = 0; j < upper; j++) {
+        mpfr_fma(*s, u[j], u[k - j], *s, RND);
+    }
+    mpfr_mul_2ui(*s, *s, 1, RND);
+    if (k % 2 == 0) {
+        mpfr_fma(*s, u[k / 2], u[k / 2], *s, RND);
     }
 }
 
@@ -103,17 +95,13 @@ void t_sqrt (mpfr_t *r, const mpfr_t *u, int k) {
     if (k == 0) {
         mpfr_sqrt(r[0], u[0], RND);
     } else {
+        int upper = (k - (k % 2 == 0 ? 2 : 1)) / 2 + 1;
         mpfr_set_zero(r[k], RND);
-        if (k % 2 == 1) {
-            for (int j = 1; j < (k - 1) / 2 + 1; j++) {
-                mpfr_fma(r[k], r[j], r[k - j], r[k], RND);
-            }
-            mpfr_mul_2ui(r[k], r[k], 1, RND);
-        } else {
-            for (int j = 1; j < (k - 2) / 2 + 1; j++) {
-                mpfr_fma(r[k], r[j], r[k - j], r[k], RND);
-            }
-            mpfr_mul_2ui(r[k], r[k], 1, RND);
+        for (int j = 1; j < upper; j++) {
+            mpfr_fma(r[k], r[j], r[k - j], r[k], RND);
+        }
+        mpfr_mul_2ui(r[k], r[k], 1, RND);
+        if (k % 2 == 0) {
             mpfr_fma(r[k], r[k / 2], r[k / 2], r[k], RND);
         }
         mpfr_sub(r[k], u[k], r[k], RND);

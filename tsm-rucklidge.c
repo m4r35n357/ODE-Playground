@@ -45,7 +45,7 @@ int main (int argc, char **argv) {
             //  y' = x
             mpfr_div_ui(cy[k + 1], cx[k], k + 1, RND);
             //  z' = y^2 - z
-            t_square(&_, cy, k);
+            t_sqr(&_, cy, k);
             mpfr_sub(_, _, cz[k], RND);
             mpfr_div_ui(cz[k + 1], _, k + 1, RND);
         }

@@ -40,19 +40,19 @@ int main (int argc, char **argv) {
             mpfr_mul_2ui(w4y, cy[k], 2, RND);
             mpfr_mul_2ui(w4z, cz[k], 2, RND);
             //  x' = - Ax - 4y - 4z - y^2
-            t_square(&_, cy, k);
+            t_sqr(&_, cy, k);
             mpfr_add(_, w4y, _, RND);
             mpfr_add(_, w4z, _, RND);
             mpfr_fma(_, a, cx[k], _, RND);
             mpfr_div_si(cx[k + 1], _, - (k + 1), RND);
             //  y' = - Ay - 4z - 4x - z^2
-            t_square(&_, cz, k);
+            t_sqr(&_, cz, k);
             mpfr_add(_, w4z, _, RND);
             mpfr_add(_, w4x, _, RND);
             mpfr_fma(_, a, cy[k], _, RND);
             mpfr_div_si(cy[k + 1], _, - (k + 1), RND);
             //  z' = - Az - 4x - 4y - x^2
-            t_square(&_, cx, k);
+            t_sqr(&_, cx, k);
             mpfr_add(_, w4x, _, RND);
             mpfr_add(_, w4y, _, RND);
             mpfr_fma(_, a, cz[k], _, RND);

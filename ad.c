@@ -120,7 +120,7 @@ void ad_square (mpfr_t *s, const mpfr_t *u, int n) {
     assert(s != u);
     assert(sizeof *s == sizeof *u);
     for (int k = 0; k < n; k++) {
-        t_square(&s[k], u, k);
+        t_sqr(&s[k], u, k);
     }
 }
 

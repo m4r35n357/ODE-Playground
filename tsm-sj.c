@@ -47,10 +47,10 @@ int main (int argc, char **argv) {
             mpfr_sub(_, _, cx[k], RND);
             mpfr_div_ui(cy[k + 1], _, k + 1, RND);
             //  z' = z - ax^2 - y^2 - b
-            t_square(&_, cy, k);
+            t_sqr(&_, cy, k);
             mpfr_sub(__, cz[k], w_b[k], RND);
             mpfr_sub(__, __, _, RND);
-            t_square(&_, cx, k);
+            t_sqr(&_, cx, k);
             mpfr_fma(_, _, a, __, RND);
             mpfr_div_ui(cz[k + 1], _, k + 1, RND);
         }

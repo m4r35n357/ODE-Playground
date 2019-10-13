@@ -44,7 +44,7 @@ int main (int argc, char **argv) {
         mpfr_set(cy[0], y, RND);
         mpfr_set(cz[0], z, RND);
         for (int k = 0; k < order; k++) {
-            t_square(&_, cx, k);
+            t_sqr(&_, cx, k);
             mpfr_sub(wx2_1, _, w1[k], RND);
             //  x' = y(z - 1 + x^2) + Gx
             mpfr_add(wa[k], cz[k], wx2_1, RND);
