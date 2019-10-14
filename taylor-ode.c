@@ -68,7 +68,7 @@ void t_sqr (mpfr_t *s, const mpfr_t *u, int k) {
     }
 }
 
-void t_product (mpfr_t *p, const mpfr_t *u, const mpfr_t *v, int k) {
+void t_prod (mpfr_t *p, const mpfr_t *u, const mpfr_t *v, int k) {
     assert(k >= 0);
     mpfr_set_zero(*p, 1);
     for (int j = 0; j < k + 1; j++) {
@@ -76,7 +76,7 @@ void t_product (mpfr_t *p, const mpfr_t *u, const mpfr_t *v, int k) {
     }
 }
 
-void t_quotient (mpfr_t *q, const mpfr_t *u, const mpfr_t *v, int k) {
+void t_quot (mpfr_t *q, const mpfr_t *u, const mpfr_t *v, int k) {
     assert(mpfr_sgn(v[0]) != 0);
     assert(q != u && q != v && u != v);
     assert(k >= 0);
@@ -110,7 +110,7 @@ void t_sqrt (mpfr_t *r, const mpfr_t *u, int k) {
     }
 }
 
-void t_power (mpfr_t *p, const mpfr_t *u, mpfr_t a, int k, mpfr_t *_) {
+void t_pwr (mpfr_t *p, const mpfr_t *u, mpfr_t a, int k, mpfr_t *_) {
     assert(mpfr_sgn(u[0]) != 0);
     assert(p != u);
     assert(k >= 0);

@@ -46,7 +46,7 @@ int main (int argc, char **argv) {
             mpfr_fma(_, a, cy[k], cx[k], RND);
             mpfr_div_ui(cy[k + 1], _, k + 1, RND);
             //  z' = B + z(x - C)
-            t_product(&_, cz, cx, k);
+            t_prod(&_, cz, cx, k);
             mpfr_add(_, w_b[k], _, RND);
             mpfr_fms(_, c, cz[k], _, RND);
             mpfr_div_si(cz[k + 1], _, - (k + 1), RND);

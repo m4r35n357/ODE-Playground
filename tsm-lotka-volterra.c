@@ -36,7 +36,7 @@ int main (int argc, char **argv) {
         mpfr_set(cx[0], x, RND);
         mpfr_set(cy[0], y, RND);
         for (int k = 0; k < order; k++) {
-            t_product(&wxy, cx, cy, k);
+            t_prod(&wxy, cx, cy, k);
             //  x' = Ax - Cxy
             mpfr_fmms(_, a, cx[k], c, wxy, RND);
             mpfr_div_ui(cx[k + 1], _, k + 1, RND);

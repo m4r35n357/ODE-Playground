@@ -48,18 +48,18 @@ int main (int argc, char **argv) {
             mpfr_sub(wx2_1, _, w1[k], RND);
             //  x' = y(z - 1 + x^2) + Gx
             mpfr_add(wa[k], cz[k], wx2_1, RND);
-            t_product(&_, cy, wa, k);
+            t_prod(&_, cy, wa, k);
             mpfr_fma(_, g, cx[k], _, RND);
             mpfr_div_ui(cx[k + 1], _, k + 1, RND);
             //  y' = x(3z + 1 - x^2) + Gy
             mpfr_fms(wb[k], D3, cz[k], wx2_1, RND);
-            t_product(&_, cx, wb, k);
+            t_prod(&_, cx, wb, k);
             mpfr_fma(_, g, cy[k], _, RND);
             mpfr_div_ui(cy[k + 1], _, k + 1, RND);
             //  z' = -2z(A + xy)
-            t_product(&_, cx, cy, k);
+            t_prod(&_, cx, cy, k);
             mpfr_add(wc[k], _, a, RND);
-            t_product(&_, cz, wc, k);
+            t_prod(&_, cz, wc, k);
             mpfr_mul_2ui(_, _, 1, RND);
             mpfr_div_si(cz[k + 1], _, - (k + 1), RND);
         }

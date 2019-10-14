@@ -128,13 +128,13 @@ void ad_product (mpfr_t *p, const mpfr_t *u, const mpfr_t *v, int n) {
     assert(p != u && p != v);
     assert(sizeof *p == sizeof *u && sizeof *p == sizeof *v);
     for (int k = 0; k < n; k++) {
-        t_product(&p[k], u, v, k);
+        t_prod(&p[k], u, v, k);
     }
 }
 
 void ad_quotient (mpfr_t *q, const mpfr_t *u, const mpfr_t *v, int n) {
     for (int k = 0; k < n; k++) {
-        t_quotient(q, u, v, k);
+        t_quot(q, u, v, k);
     }
 }
 
@@ -193,7 +193,7 @@ void ad_power (mpfr_t *p, const mpfr_t *u, mpfr_t a, int n) {
     mpfr_t _;
     mpfr_init(_);
     for (int k = 0; k < n; k++) {
-        t_power(p, u, a, k, &_);
+        t_pwr(p, u, a, k, &_);
     }
     mpfr_clear(_);
 }

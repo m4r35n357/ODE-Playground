@@ -64,12 +64,12 @@ void t_sqr (mpfr_t *S, const mpfr_t *U, int k);
 /*
  * Calculates kth element of the product of U and V, result stored in variable P
  */
-void t_product (mpfr_t *P, const mpfr_t *U, const mpfr_t *V, int k);
+void t_prod (mpfr_t *P, const mpfr_t *U, const mpfr_t *V, int k);
 
 /*
  * Calculates kth element of U / V, results stored in jet Q
  */
-void t_quotient (mpfr_t *Q, const mpfr_t *U, const mpfr_t *V, int k);
+void t_quot (mpfr_t *Q, const mpfr_t *U, const mpfr_t *V, int k);
 
 /*
  * Calculates kth element of the square root of U, results stored in jet R
@@ -94,7 +94,7 @@ void t_tan_sec2 (mpfr_t *T, mpfr_t *S2, const mpfr_t *U, int k, mpfr_t *tmp, geo
 /*
  * Calculates kth element of U^a, results stored in jet P
  */
-void t_power (mpfr_t *P, const mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp1);
+void t_pwr (mpfr_t *P, const mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp1);
 
 /*
  * Calculates kth element of the natural logarithm of U, result stored in jet L

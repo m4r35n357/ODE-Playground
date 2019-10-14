@@ -44,13 +44,13 @@ int main (int argc, char **argv) {
         for (int k = 0; k < order; k++) {
             //  x' = Ax(1 - y) - Bz
             mpfr_sub(wa[k], w1[k], cy[k], RND);
-            t_product(&_, cx, wa, k);
+            t_prod(&_, cx, wa, k);
             mpfr_fmms(_, a, _, b, cz[k], RND);
             mpfr_div_ui(cx[k + 1], _, k + 1, RND);
             //  y' = - Gy(1 - x^2)
             t_sqr(&_, cx, k);
             mpfr_sub(wb[k], w1[k], _, RND);
-            t_product(&_, cy, wb, k);
+            t_prod(&_, cy, wb, k);
             mpfr_mul(_, _, g, RND);
             mpfr_div_si(cy[k + 1], _, - (k + 1), RND);
             //  z' = Mx

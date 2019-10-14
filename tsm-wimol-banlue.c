@@ -44,10 +44,10 @@ int main (int argc, char **argv) {
             mpfr_sub(_, cy[k], cx[k], RND);
             mpfr_div_ui(cx[k + 1], _, k + 1, RND);
             //  y' = - z * tan(x)
-            t_product(&_, cz, wtx, k);
+            t_prod(&_, cz, wtx, k);
             mpfr_div_si(cy[k + 1], _, - (k + 1), RND);
             //  z' = - A + x * y + |y|
-            t_product(&_, cx, cy, k);
+            t_prod(&_, cx, cy, k);
             t_abs(&__, cy, k);
             mpfr_add(_, _, __, RND);
             mpfr_sub(_, _, w_a[k], RND);
