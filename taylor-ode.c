@@ -191,12 +191,12 @@ void t_tan_sec2 (mpfr_t *t, mpfr_t *s2, const mpfr_t *u, int k, mpfr_t *_, geome
     if (k == 0) {
         if (g == TRIG) {
             mpfr_tan(t[0], u[0], RND);
-            mpfr_sqr(*_, t[0], RND);
-            mpfr_add_ui(s2[0], *_, 1, RND);
+            mpfr_sec(s2[0], u[0], RND);
+            mpfr_sqr(s2[0], s2[0], RND);
         } else {
             mpfr_tanh(t[0], u[0], RND);
-            mpfr_sqr(*_, t[0], RND);
-            mpfr_ui_sub(s2[0], 1, *_, RND);
+            mpfr_sech(s2[0], u[0], RND);
+            mpfr_sqr(s2[0], s2[0], RND);
         }
     } else {
         mpfr_set_zero(t[k], 1);
