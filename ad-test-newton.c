@@ -11,9 +11,11 @@
 #include "taylor-ode.h"
 #include "ad.h"
 
-long n_max = 13, n, steps;
+long n_max = 13, steps;
 
 mpfr_t x0, x1, x_step, x_prev, f_prev, f_value, tmp, tmp1, D_1, D_05, D0, D1, D2, D3, D4, D5, D6, D7, *w1, *w2, *w3, *w4, *w5, *w6, *w7, *w_value, *_1, *_2, *_3, *wx, *wf, f_tol, x_tol, int_tol;
+
+solver method;
 
 model m;
 
@@ -91,8 +93,7 @@ int main (int argc, char **argv) {
     mpfr_set_default_prec(236);
     mpfr_inits(x_step, x_prev, f_prev, tmp, tmp1, NULL);
 
-    n = strtol(argv[1], NULL, BASE);
-    assert(n > -1 && n <= n_max);
+    method = strtol(argv[1], NULL, BASE);
     mpfr_init_set_str(x0, argv[2], BASE, RND);
     mpfr_init_set_str(x1, argv[3], BASE, RND);
     steps = strtol(argv[4], NULL, BASE);
@@ -127,7 +128,7 @@ int main (int argc, char **argv) {
     set_ad_status(wx, VARIABLE);
     wf = t_jet(n_max);
 
-    m = composite1;
+    m = septic;
 
     mpfr_sub(tmp, x1, x0, RND);
     mpfr_div_ui(x_step, tmp, steps, RND);
@@ -141,20 +142,20 @@ int main (int argc, char **argv) {
             mpfr_printf("%.6RNe ", wf[i]);
         }
         printf("\n");
-        if (n != 0) {
+        if (method != NONE) {
             if(k > 0) {
                 mpfr_mul(tmp, f_prev, wf[0], RND);
                 if (mpfr_sgn(tmp) < 0) {
                     fprintf(stderr, "Bracketed root, solving ");
-                    if (n == 1) {
+                    if (method == BISECT) {
                         fprintf(stderr, "using bisection\n");
-                        ad_bisect(m, t_jet_c(n, x_prev), wx, 100, f_tol, x_tol, t_jet(n), t_jet(n), t_jet(n));
-                    } else if (n == 2) {
+                        ad_bisect(m, t_jet_c(3, x_prev), wx, 100, f_tol, x_tol, t_jet(3), t_jet(3), t_jet(3));
+                    } else if (method == NEWTON) {
                         fprintf(stderr, "using Newton's method\n");
-                        ad_newton(m, t_jet_c(n, D1), wx, 100, f_tol, x_tol);
+                        ad_newton(m, t_jet_c(method + 2L, D1), wx, 100, f_tol, x_tol);
                     } else {
-                        fprintf(stderr, "using Householder's method of degree %lu\n", n - 1);
-                        ad_householder(m, t_jet_c(n, D1), wx, n, 100, f_tol, x_tol, t_jet(n), t_jet_c(n, D1));
+                        fprintf(stderr, "using Householder's method of degree %lu\n", method - 1L);
+                        ad_householder(m, t_jet_c(method + 2L, D1), wx, method, 100, f_tol, x_tol, t_jet(method + 2L), t_jet_c(method + 2L, D1));
                     }
                     fprintf(stderr, "\n");
                 }

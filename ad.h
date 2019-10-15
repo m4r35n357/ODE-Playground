@@ -12,6 +12,11 @@
 typedef enum {VARIABLE, CONSTANT} ad_status;
 
 /*
+ * Solver method
+ */
+typedef enum {NONE, BISECT, NEWTON, H2, H3, H4} solver;
+
+/*
  * Signature for solver model functions
  */
 typedef void (*model)(mpfr_t *, const mpfr_t *, int);

@@ -20,7 +20,7 @@
 #define KBLD "\x1B[1;37m"
 
 long order, n;
-mpfr_t x, y, _, D_1, D_05, D0, D05, D1, D2, D3, D5, D6, D7, *cx, *cy, *cx0, *c1, *c2, *c3, *c5, *c6, *c7, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2, *wsqr, *wsqrt, *wsum, *wprod, *wquot, *wpwr, *__, *_1, *_2, *_3;
+mpfr_t x, y, _, D_1, D_05, D0, D05, D1, D2, D3, D4, D5, D6, D7, *cx, *cy, *cx0, *c1, *c2, *c3, *c5, *c6, *c7, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2, *wsqr, *wsqrt, *wsum, *wprod, *wquot, *wpwr, *__, *_1, *_2, *_3;
 
 void septic (mpfr_t *f, const mpfr_t *x, int n) {
     ad_minus(_2, x, c1, n);
@@ -49,12 +49,13 @@ int main (int argc, char **argv) {
     mpfr_init_set_str(y, argv[3], BASE, RND);
 
     mpfr_init_set_si(D_1, -1, RND);
-    mpfr_init_set_d(D_05, -0.5, RND);
+    mpfr_init_set_str(D_05, "-0.5", BASE, RND);
     mpfr_init_set_ui(D0, 0, RND);
-    mpfr_init_set_d(D05, 0.5, RND);
+    mpfr_init_set_str(D05, "0.5", BASE, RND);
     mpfr_init_set_ui(D1, 1, RND);
     mpfr_init_set_ui(D2, 2, RND);
     mpfr_init_set_ui(D3, 3, RND);
+    mpfr_init_set_ui(D4, 4, RND);
     mpfr_init_set_ui(D5, 5, RND);
     mpfr_init_set_ui(D6, 6, RND);
     mpfr_init_set_ui(D7, 7, RND);
@@ -107,72 +108,82 @@ int main (int argc, char **argv) {
 //    t_horner(&x, (float[]){-19.0, 7.0, -4.0, 6.0}, n, D3);
 //    mpfr_printf("int: %9.6RNf, float: %9.6RNf\n", *x, *y);
 
-    printf("%s%s%s\n", KCYN, "f(x) = x^2", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = x^2.0", KNRM);
+    ad_power(wpwr, cx, D2, n);
+    jet_output(wpwr, n, KNRM, KGRY);
+    derivative_output(wpwr, n, KBLD, KGRY);
+    printf("%s", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = sqr(x)", KNRM);
     ad_square(wsqr, cx, n);
     jet_output(wsqr, n, KNRM, KGRY);
+    derivative_output(wsqr, n, KBLD, KGRY);
+    printf("%s", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = x * x", KNRM);
     ad_product(wprod, cx, cx, n);
     jet_output(wprod, n, KNRM, KGRY);
-    derivative_output(wsqr, n, KBLD, KGRY);
+    derivative_output(wprod, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = x^4", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = x^4.0", KNRM);
+    ad_power(wpwr, cx, D4, n);
+    jet_output(wpwr, n, KNRM, KGRY);
+    derivative_output(wpwr, n, KBLD, KGRY);
+    printf("%s", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = sqr(sqr(x))", KNRM);
     ad_square(__, cx, n);
     ad_square(wsqr, __, n);
     jet_output(wsqr, n, KNRM, KGRY);
+    derivative_output(wsqr, n, KBLD, KGRY);
+    printf("%s", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = x * x * x * x", KNRM);
     ad_product(__, cx, cx, n);
     ad_product(wprod, __, __, n);
     jet_output(wprod, n, KNRM, KGRY);
-    derivative_output(wsqr, n, KBLD, KGRY);
+    derivative_output(wprod, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = sqrt(x)", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = x^0.5", KNRM);
     ad_power(wpwr, cx, D05, n);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
+    printf("%s", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = sqrt(x)", KNRM);
     ad_sqrt(wsqrt, cx, n);
     jet_output(wsqrt, n, KNRM, KGRY);
     derivative_output(wsqrt, n, KBLD, KGRY);
-    printf("%s\n", KNRM);
-
-    printf("%s%s%s\n", KCYN, "f(x) = sqrt(x^2)", KNRM);
-    ad_square(wsqr, cx, n);
-    ad_sqrt(wsqrt, wsqr, n);
-    jet_output(wsqrt, n, KNRM, KGRY);
-    derivative_output(wsqrt, n, KBLD, KGRY);
-    printf("%s\n", KNRM);
-
-    printf("%s%s%s\n", KCYN, "f(x) = 1 / x", KNRM);
-    ad_power(wpwr, cx, D_1, n);
-    jet_output(wpwr, n, KNRM, KGRY);
-    derivative_output(wpwr, n, KBLD, KGRY);
-    ad_quotient(wquot, c1, cx, n);
-    jet_output(wquot, n, KNRM, KGRY);
-    derivative_output(wquot, n, KBLD, KGRY);
-    printf("%s\n", KNRM);
-
-    printf("%s%s%s\n", KCYN, "f(x) = x / x", KNRM);
-    ad_scale(__, cx, D1, n);
-    ad_quotient(wquot, cx, __, n);
-    jet_output(wquot, n, KNRM, KGRY);
-    derivative_output(wquot, n, KBLD, KGRY);
-    printf("%s\n", KNRM);
-
-    printf("%s%s%s\n", KCYN, "f(x) = 1 / septic(x)", KNRM);
-    septic(__, cx, n);
-    ad_power(wpwr, __, D_1, n);
-    jet_output(wpwr, n, KNRM, KGRY);
-    derivative_output(wpwr, n, KBLD, KGRY);
-    ad_quotient(wquot, c1, __, n);
-    jet_output(wquot, n, KNRM, KGRY);
-    derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^-0.5", KNRM);
     ad_power(wpwr, cx, D_05, n);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
+    printf("%s", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = 1 / sqrt(x)", KNRM);
     ad_sqrt(wsqrt, cx, n);
     ad_quotient(wquot, c1, wsqrt, n);
+    jet_output(wquot, n, KNRM, KGRY);
+    derivative_output(wquot, n, KBLD, KGRY);
+    printf("%s\n", KNRM);
+
+    printf("%s%s%s\n", KCYN, "f(x) = x^-1", KNRM);
+    ad_power(wpwr, cx, D_1, n);
+    jet_output(wpwr, n, KNRM, KGRY);
+    derivative_output(wpwr, n, KBLD, KGRY);
+    printf("%s", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = 1 / x", KNRM);
+    ad_quotient(wquot, c1, cx, n);
+    jet_output(wquot, n, KNRM, KGRY);
+    derivative_output(wquot, n, KBLD, KGRY);
+    printf("%s\n", KNRM);
+
+    printf("%s%s%s\n", KCYN, "f(x) = x^0", KNRM);
+    ad_power(wpwr, cx, D0, n);
+    jet_output(wpwr, n, KNRM, KGRY);
+    derivative_output(wpwr, n, KBLD, KGRY);
+    printf("%s", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = x / x", KNRM);
+    ad_scale(__, cx, D1, n);
+    ad_quotient(wquot, cx, __, n);
     jet_output(wquot, n, KNRM, KGRY);
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
@@ -189,6 +200,12 @@ int main (int argc, char **argv) {
     derivative_output(wl, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
+    printf("%s%s%s\n", KCYN, "f(x) = sqrt(x^2)", KNRM);
+    ad_square(wsqr, cx, n);
+    ad_sqrt(wsqrt, wsqr, n);
+    jet_output(wsqrt, n, KNRM, KGRY);
+    derivative_output(wsqrt, n, KBLD, KGRY);
+    printf("%s", KNRM);
     printf("%s%s%s\n", KCYN, "f(x) = log(e^x)", KNRM);
     ad_exp(we, cx, n);
     ad_ln(wl, we, n);
@@ -196,47 +213,52 @@ int main (int argc, char **argv) {
     derivative_output(wl, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = sin(0), f(x) = cos(0)", KNRM);
     ad_sin_cos(ws, wc, cx0, n);
+    printf("%s%s%s\n", KCYN, "f(x) = sin(0)", KNRM);
     jet_output(ws, n, KNRM, KGRY);
     derivative_output(ws, n, KBLD, KGRY);
     printf("%s", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = cos(0)", KNRM);
     jet_output(wc, n, KNRM, KGRY);
     derivative_output(wc, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = sin(pi/3), f(x) = cos(pi/3)", KNRM);
     ad_sin_cos(ws, wc, PI_3, n);
+    printf("%s%s%s\n", KCYN, "f(x) = sin(pi/3)", KNRM);
     jet_output(ws, n, KNRM, KGRY);
     derivative_output(ws, n, KBLD, KGRY);
     printf("%s", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = cos(pi/3)", KNRM);
     jet_output(wc, n, KNRM, KGRY);
     derivative_output(wc, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = sinh(pi/3), f(x) = cosh(pi/3)", KNRM);
     ad_sinh_cosh(ws, wc, PI_3, n);
+    printf("%s%s%s\n", KCYN, "f(x) = sinh(pi/3)", KNRM);
     jet_output(ws, n, KNRM, KGRY);
     derivative_output(ws, n, KBLD, KGRY);
     printf("%s", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = cosh(pi/3)", KNRM);
     jet_output(wc, n, KNRM, KGRY);
     derivative_output(wc, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = tan(pi/4), f(x) = sec(pi/4)^2", KNRM);
     ad_tan_sec2(wt, ws2, PI_4, n);
+    printf("%s%s%s\n", KCYN, "f(x) = tan(pi/4)", KNRM);
     jet_output(wt, n, KNRM, KGRY);
     derivative_output(wt, n, KBLD, KGRY);
     printf("%s", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = sec(pi/4)^2", KNRM);
     jet_output(ws2, n, KNRM, KGRY);
     derivative_output(ws2, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = tanh(pi/4), f(x) = sech(pi/4)^2", KNRM);
     ad_tanh_sech2(wt, ws2, PI_4, n);
+    printf("%s%s%s\n", KCYN, "f(x) = tanh(pi/4)", KNRM);
     jet_output(wt, n, KNRM, KGRY);
     derivative_output(wt, n, KBLD, KGRY);
     printf("%s", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = sech(pi/4)^2", KNRM);
     jet_output(ws2, n, KNRM, KGRY);
     derivative_output(ws2, n, KBLD, KGRY);
     printf("%s\n", KNRM);
@@ -254,6 +276,18 @@ int main (int argc, char **argv) {
     ad_minus(wsum, cx, wprod, n);
     ad_exp(we, cx, n);
     ad_quotient(wquot, we, wsum, n);
+    jet_output(wquot, n, KNRM, KGRY);
+    derivative_output(wquot, n, KBLD, KGRY);
+    printf("%s\n", KNRM);
+
+    printf("%s%s%s\n", KCYN, "f(x) = septic(x)^-1", KNRM);
+    septic(__, cx, n);
+    ad_power(wpwr, __, D_1, n);
+    jet_output(wpwr, n, KNRM, KGRY);
+    derivative_output(wpwr, n, KBLD, KGRY);
+    printf("%s", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = 1 / septic(x)", KNRM);
+    ad_quotient(wquot, c1, __, n);
     jet_output(wquot, n, KNRM, KGRY);
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
