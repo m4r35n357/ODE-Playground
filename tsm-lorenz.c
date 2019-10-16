@@ -3,6 +3,11 @@
  *
  * Example: ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
  *
+ *          ./tsm-lorenz-static 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/dataA
+ *          ./tsm-lorenz-static 16 10 .005 20000 -15.8 -17.48 35.64 10 28 8 3 | sed -n '1~2p' >/tmp/dataB
+ *          ./compare.py /tmp/dataA /tmp/dataB 3
+ *          ./divergence.py /tmp/dataA /tmp/dataB 3 1.0
+ *
  * (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
