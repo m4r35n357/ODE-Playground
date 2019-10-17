@@ -11,7 +11,7 @@
 #include "taylor-ode.h"
 
 long order, nsteps;
-mpfr_t t, x, y, z, a, b, c, h, _, *w_b, *cx, *cy, *cz;
+mpfr_t t, x, y, z, a, b, c, h, _, *wb, *cx, *cy, *cz;
 
 int main (int argc, char **argv) {
     assert(argc == 11);
@@ -29,7 +29,7 @@ int main (int argc, char **argv) {
     cx = t_jet(order + 1);
     cy = t_jet(order + 1);
     cz = t_jet(order + 1);
-    w_b = t_jet_c(order, b);
+    wb = t_jet_c(order, b);
 
     // main loop
     t_xyz_output(x, y, z, t);
@@ -47,7 +47,7 @@ int main (int argc, char **argv) {
             mpfr_div_ui(cy[k + 1], _, k + 1, RND);
             //  z' = B + z(x - C)
             t_prod(&_, cz, cx, k);
-            mpfr_add(_, w_b[k], _, RND);
+            mpfr_add(_, wb[k], _, RND);
             mpfr_fms(_, c, cz[k], _, RND);
             mpfr_div_si(cz[k + 1], _, - (k + 1), RND);
         }

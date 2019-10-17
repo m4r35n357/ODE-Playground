@@ -96,17 +96,26 @@ int main (int argc, char **argv) {
     wc = t_jet(n);
     wt = t_jet(n);
     ws2 = t_jet(n);
-    __ = t_jet(n);
+    __ = t_jet_c(n + 1, D0);
     _1 = t_jet(n);
     _2 = t_jet(n);
     _3 = t_jet(n);
 
-    printf("\n%sx = %s, y = %s, order = %ld%s\n\n", KBLD, argv[2], argv[3], n - 1, KNRM);
+    printf("%s%s%s\n", KCYN, "Horner", KNRM);
+    mpfr_set_str(__[0], "-19", BASE, RND);
+    mpfr_set_str(__[1], "7", BASE, RND);
+    mpfr_set_str(__[2], "-4", BASE, RND);
+    mpfr_set_str(__[3], "6", BASE, RND);
+    t_horner(&_, __, n, D3);
+    mpfr_printf(" %7.3RNf\n", _);
+    printf("%s\n", KNRM);
 
-//    printf("%s%s%s\n", KCYN, "Horner", KNRM);
-//    t_horner(&x, (int[]){-19, 7, -4, 6}, n, D3);
-//    t_horner(&x, (float[]){-19.0, 7.0, -4.0, 6.0}, n, D3);
-//    mpfr_printf("int: %9.6RNf, float: %9.6RNf\n", *x, *y);
+    printf("%s%s%s\n", KCYN, "x", KNRM);
+    derivative_output(cx, n, KBLD, KGRY);
+    printf("%s", KNRM);
+    printf("%s%s%s\n", KCYN, "y", KNRM);
+    derivative_output(cy, n, KBLD, KGRY);
+    printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^2.0", KNRM);
     ad_power(wpwr, cx, D2, n);
@@ -269,6 +278,14 @@ int main (int argc, char **argv) {
     derivative_output(wprod, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
+    printf("%s%s%s\n", KCYN, "f(x, y) = sqr(x^2 - y), d/dx", KNRM);
+    ad_square(wsqr, cx, n);
+    ad_minus(wsum, wsqr, cy, n);
+    ad_square(wsqr, wsum, n);
+    jet_output(wsqr, n, KNRM, KGRY);
+    derivative_output(wsqr, n, KBLD, KGRY);
+    printf("%s\n", KNRM);
+
     printf("%s%s%s\n", KCYN, "f(x, y) = e^x / (x - y * sin(x^2), d/dx", KNRM);
     ad_square(wsqr, cx, n);
     ad_sin_cos(ws, wc, wsqr, n);
@@ -299,6 +316,14 @@ int main (int argc, char **argv) {
     ad_product(wprod, cx, cy, n);
     jet_output(wprod, n, KNRM, KGRY);
     derivative_output(wprod, n, KBLD, KGRY);
+    printf("%s\n", KNRM);
+
+    printf("%s%s%s\n", KCYN, "f(x, y) = sqr(x^2 - y), d/dy", KNRM);
+    ad_square(wsqr, cx, n);
+    ad_minus(wsum, wsqr, cy, n);
+    ad_square(wsqr, wsum, n);
+    jet_output(wsqr, n, KNRM, KGRY);
+    derivative_output(wsqr, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x, y) = e^x / (x - y * sin(x^2), d/dy", KNRM);
