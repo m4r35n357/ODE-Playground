@@ -45,37 +45,37 @@ def t_ln(l, u, k):
 def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
         return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
-    sk = fsum((k - j) * c[j] * u[k - j] for j in range(k)) / k
-    ck = fsum((k - j) * s[j] * u[k - j] for j in range(k)) / k
-    return (sk, ck) if hyp else (sk, - ck)
+    s[k] = fsum((k - j) * c[j] * u[k - j] for j in range(k)) / k
+    c[k] = fsum((k - j) * s[j] * u[k - j] for j in range(k)) / k
+    return (s[k], c[k]) if hyp else (s[k], - c[k])
 
 def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
         return (tanh(u[0]), 1.0 - tanh(u[0])**2) if hyp else (tan(u[0]), 1.0 + tan(u[0])**2)
-    tk = fsum((k - j) * s2[j] * u[k - j] for j in range(k)) / k
-    sk = 2.0 * (t[0] * tk + fsum((k - j) * t[j] * t[k - j] for j in range(1, k)) / k)
-    return (tk, - sk) if hyp else (tk, sk)
+    t[k] = fsum((k - j) * s2[j] * u[k - j] for j in range(k)) / k
+    s2[k] = 2.0 * (t[0] * t[k] + fsum((k - j) * t[j] * t[k - j] for j in range(1, k)) / k)
+    return (t[k], - s2[k]) if hyp else (t[k], s2[k])
 
 def t_asin(h, v, u, k, hyp=False):
     if k == 0:
         return (asinh(u[0]), sqrt(u[0]**2 + 1.0)) if hyp else (asin(u[0]), sqrt(1.0 - u[0]**2))
-    hk = (u[k] - fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
-    vk = u[0] * hk + fsum(j * h[j] * u[k - j] for j in range(1, k)) / k
-    return (hk, vk) if hyp else (hk, - vk)
+    h[k] = (u[k] - fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
+    v[k] = u[0] * h[k] + fsum(j * h[j] * u[k - j] for j in range(1, k)) / k
+    return (h[k], v[k]) if hyp else (h[k], - v[k])
 
 def t_acos(h, v, u, k, hyp=False):
     if k == 0:
         return (acosh(u[0]), sqrt(u[0]**2 - 1.0)) if hyp else (acos(u[0]), - sqrt(1.0 - u[0]**2))
-    hk = (u[k] + fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
-    vk = u[0] * hk + fsum(j * h[j] * u[k - j] for j in range(1, k)) / k
-    return (hk, - vk) if hyp else (hk, vk)
+    h[k] = (u[k] + fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
+    v[k] = u[0] * h[k] + fsum(j * h[j] * u[k - j] for j in range(1, k)) / k
+    return (h[k], - v[k]) if hyp else (h[k], v[k])
 
 def t_atan(h, v, u, k, hyp=False):
     if k == 0:
         return (atanh(u[0]), 1.0 - u[0]**2) if hyp else (atan(u[0]), 1.0 + u[0]**2)
-    hk = (u[k] - fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
-    vk = 2.0 * (u[0] * u[k] + fsum(j * u[j] * u[k - j] for j in range(1, k)) / k)
-    return (hk, - vk) if hyp else (hk, vk)
+    h[k] = (u[k] - fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
+    v[k] = 2.0 * (u[0] * u[k] + fsum(j * u[j] * u[k - j] for j in range(1, k)) / k)
+    return (h[k], - v[k]) if hyp else (h[k], v[k])
 
 
 class Series:
