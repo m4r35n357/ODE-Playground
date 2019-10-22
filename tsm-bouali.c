@@ -17,13 +17,13 @@ int main (int argc, char **argv) {
     assert(argc == 12);
     // initialize from command arguments
     t_stepper(argv, &order, &t, &h, &nsteps);
-    mpfr_init_set_str(x, argv[5], BASE, RND);
-    mpfr_init_set_str(y, argv[6], BASE, RND);
-    mpfr_init_set_str(z, argv[7], BASE, RND);
-    mpfr_init_set_str(a, argv[8], BASE, RND);
-    mpfr_init_set_str(b, argv[9], BASE, RND);
-    mpfr_init_set_str(g, argv[10], BASE, RND);
-    mpfr_init_set_str(m, argv[11], BASE, RND);
+    t_arg(argv, 5, &x);
+    t_arg(argv, 6, &y);
+    t_arg(argv, 7, &z);
+    t_arg(argv, 8, &a);
+    t_arg(argv, 9, &b);
+    t_arg(argv, 10, &g);
+    t_arg(argv, 11, &m);
 
     // initialize the derivative and temporary jets
     cx = t_jet(order + 1);
@@ -44,14 +44,11 @@ int main (int argc, char **argv) {
         for (int k = 0; k < order; k++) {
             //  x' = Ax(1 - y) - Bz
             mpfr_sub(wa[k], w1[k], cy[k], RND);
-            t_prod(&_, cx, wa, k);
-            mpfr_fmms(_, a, _, b, cz[k], RND);
+            mpfr_fmms(_, a, *t_prod(&_, cx, wa, k), b, cz[k], RND);
             mpfr_div_ui(cx[k + 1], _, k + 1, RND);
             //  y' = - Gy(1 - x^2)
-            t_sqr(&_, cx, k);
-            mpfr_sub(wb[k], w1[k], _, RND);
-            t_prod(&_, cy, wb, k);
-            mpfr_mul(_, _, g, RND);
+            mpfr_sub(wb[k], w1[k], *t_sqr(&_, cx, k), RND);
+            mpfr_mul(_, *t_prod(&_, cy, wb, k), g, RND);
             mpfr_div_si(cy[k + 1], _, - (k + 1), RND);
             //  z' = Mx
             mpfr_mul(_, m, cx[k], RND);

@@ -53,13 +53,14 @@ void t_horner (mpfr_t *sum, const mpfr_t *jet, int n, mpfr_t h) {
     }
 }
 
-void t_abs (mpfr_t *a, const mpfr_t *u, int k) {
+mpfr_t *t_abs (mpfr_t *a, const mpfr_t *u, int k) {
     assert(a != u);
     assert(k >= 0);
     mpfr_mul_si(*a, u[k], mpfr_sgn(u[0]), RND);
+    return a;
 }
 
-void t_sqr (mpfr_t *s, const mpfr_t *u, int k) {
+mpfr_t *t_sqr (mpfr_t *s, const mpfr_t *u, int k) {
     assert(s != u);
     assert(k >= 0);
     int upper = (k - (k % 2 == 0 ? 2 : 1)) / 2 + 1;
@@ -71,15 +72,17 @@ void t_sqr (mpfr_t *s, const mpfr_t *u, int k) {
     if (k % 2 == 0) {
         mpfr_fma(*s, u[k / 2], u[k / 2], *s, RND);
     }
+    return s;
 }
 
-void t_prod (mpfr_t *p, const mpfr_t *u, const mpfr_t *v, int k) {
+mpfr_t *t_prod (mpfr_t *p, const mpfr_t *u, const mpfr_t *v, int k) {
     assert(p != u && p != v);
     assert(k >= 0);
     mpfr_set_zero(*p, 1);
     for (int j = 0; j < k + 1; j++) {
         mpfr_fma(*p, u[j], v[k - j], *p, RND);
     }
+    return p;
 }
 
 void t_quot (mpfr_t *q, const mpfr_t *u, const mpfr_t *v, int k) {

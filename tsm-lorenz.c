@@ -48,13 +48,11 @@ int main (int argc, char **argv) {
             mpfr_fmms(_, s, cy[k], s, cx[k], RND);
             mpfr_div_ui(cx[k + 1], _, k + 1, RND);
             //  y' = x(R - z) - y
-            t_prod(&_, cx, cz, k);
-            mpfr_fms(_, cx[k], r, _, RND);
+            mpfr_fms(_, cx[k], r, *t_prod(&_, cx, cz, k), RND);
             mpfr_sub(_, _, cy[k], RND);
             mpfr_div_ui(cy[k + 1], _, k + 1, RND);
             //  z' = xy - Bz
-            t_prod(&_, cx, cy, k);
-            mpfr_fms(_, b, cz[k], _, RND);
+            mpfr_fms(_, b, cz[k], *t_prod(&_, cx, cy, k), RND);
             mpfr_div_si(cz[k + 1], _, - (k + 1), RND);
         }
 

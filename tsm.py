@@ -136,8 +136,8 @@ def main():
     elif model == "rabinovich–fabrikant":
         #  Example: ./tsm.py rabinovich–fabrikant 9 8 .01 100001 .1 .1 .1 .2876 .1 | ./plotPi3d.py
         #  Example: ./tsm.py rabinovich–fabrikant 9 8 .01 100001 .1 .1 .1 .2876 .1 | ./plotAnimated.py 1 -3 3
-        α, γ = float(argv[9]), float(argv[10])
-        jet1, a, b, c = t_jet(order, 1), t_jet(order), t_jet(order), t_jet(order)
+        α, γ = t_jet(order, float(argv[9])), float(argv[10])
+        jet1, a, b, c = t_jet(order, 1.0), t_jet(order), t_jet(order), t_jet(order)
         output(x0, y0, z0, 0.0)
         for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
@@ -145,7 +145,7 @@ def main():
                 x2_1 = t_sqr(x, k) - jet1[k]
                 a[k] = z[k] + x2_1
                 b[k] = 3.0 * z[k] - x2_1
-                c[k] = α + t_prod(x, y, k)
+                c[k] = α[k] + t_prod(x, y, k)
                 x[k + 1] = (t_prod(y, a, k) + γ * x[k]) / (k + 1)
                 y[k + 1] = (t_prod(x, b, k) + γ * y[k]) / (k + 1)
                 z[k + 1] = - 2.0 * t_prod(z, c, k) / (k + 1)

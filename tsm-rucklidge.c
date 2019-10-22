@@ -17,12 +17,12 @@ int main (int argc, char **argv) {
     assert(argc == 10);
     // initialize from command arguments
     t_stepper(argv, &order, &t, &h, &nsteps);
+    t_arg(argv, 5, &x);
+    t_arg(argv, 6, &y);
+    t_arg(argv, 7, &z);
+    t_arg(argv, 8, &alpha);
+    t_arg(argv, 9, &kappa);
     mpfr_inits(_, __, NULL);
-    mpfr_init_set_str(x, argv[5], BASE, RND);
-    mpfr_init_set_str(y, argv[6], BASE, RND);
-    mpfr_init_set_str(z, argv[7], BASE, RND);
-    mpfr_init_set_str(alpha, argv[8], BASE, RND);
-    mpfr_init_set_str(kappa, argv[9], BASE, RND);
 
     // initialize the derivative and temporary jets
     cx = t_jet(order + 1);
@@ -38,15 +38,13 @@ int main (int argc, char **argv) {
         mpfr_set(cz[0], z, RND);
         for (int k = 0; k < order; k++) {
             //  x' = ay - kx - yz
-            t_prod(&_, cy, cz, k);
             mpfr_fmms(__, alpha, cy[k], kappa, cx[k], RND);
-            mpfr_sub(_, __, _, RND);
+            mpfr_sub(_, __, *t_prod(&_, cy, cz, k), RND);
             mpfr_div_ui(cx[k + 1], _, k + 1, RND);
             //  y' = x
             mpfr_div_ui(cy[k + 1], cx[k], k + 1, RND);
             //  z' = y^2 - z
-            t_sqr(&_, cy, k);
-            mpfr_sub(_, _, cz[k], RND);
+            mpfr_sub(_, *t_sqr(&_, cy, k), cz[k], RND);
             mpfr_div_ui(cz[k + 1], _, k + 1, RND);
         }
 

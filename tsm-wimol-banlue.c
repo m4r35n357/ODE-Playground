@@ -39,17 +39,14 @@ int main (int argc, char **argv) {
         mpfr_set(cy[0], y, RND);
         mpfr_set(cz[0], z, RND);
         for (int k = 0; k < order; k++) {
-            t_tan_sec2(wtx, w__, cx, k, &_, HYP);
             //  x' = y - x
             mpfr_sub(_, cy[k], cx[k], RND);
             mpfr_div_ui(cx[k + 1], _, k + 1, RND);
             //  y' = - z * tan(x)
-            t_prod(&_, cz, wtx, k);
-            mpfr_div_si(cy[k + 1], _, - (k + 1), RND);
+            t_tan_sec2(wtx, w__, cx, k, &_, HYP);
+            mpfr_div_si(cy[k + 1], *t_prod(&_, cz, wtx, k), - (k + 1), RND);
             //  z' = - A + x * y + |y|
-            t_prod(&_, cx, cy, k);
-            t_abs(&__, cy, k);
-            mpfr_add(_, _, __, RND);
+            mpfr_add(_, *t_prod(&_, cx, cy, k), *t_abs(&__, cy, k), RND);
             mpfr_sub(_, _, w_a[k], RND);
             mpfr_div_ui(cz[k + 1], _, k + 1, RND);
         }

@@ -59,17 +59,17 @@ void t_horner (mpfr_t *sum, const mpfr_t *jet, int n, mpfr_t h);
 /*
  * Calculates kth element of the absolute value of U, result stored in variable A
  */
-void t_abs (mpfr_t *a, const mpfr_t *u, int k);
+mpfr_t *t_abs (mpfr_t *a, const mpfr_t *u, int k);
 
 /*
  * Calculates kth element of the square of U, result stored in variable S
  */
-void t_sqr (mpfr_t *S, const mpfr_t *U, int k);
+mpfr_t *t_sqr (mpfr_t *S, const mpfr_t *U, int k);
 
 /*
  * Calculates kth element of the product of U and V, result stored in variable P
  */
-void t_prod (mpfr_t *P, const mpfr_t *U, const mpfr_t *V, int k);
+mpfr_t *t_prod (mpfr_t *P, const mpfr_t *U, const mpfr_t *V, int k);
 
 /*
  * Calculates kth element of U / V, results stored in jet Q
