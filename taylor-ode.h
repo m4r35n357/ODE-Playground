@@ -1,6 +1,6 @@
 
 /*
- * Interface for solving systems of Ordinary Differentrial Equations
+ * Interface for solving systems of Ordinary Differential Equations
  * using the Taylor Series Method (TSM)
  *
  * (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
@@ -20,6 +20,11 @@ const mpfr_rnd_t RND;
  * Selects either a trigonometric or hyperbolic version of the function
  */
 typedef enum {TRIG, HYP} geometry;
+
+/*
+ * Set an MPFR variable from a numbered string argument
+ */
+void t_arg (char **argv, int arg_no, mpfr_t *variable);
 
 /*
  * Prints an index column, and any number of data columns, into a single line

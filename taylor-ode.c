@@ -11,6 +11,10 @@ const int BASE = 10;
 
 const mpfr_rnd_t RND = MPFR_RNDN;
 
+void t_arg (char **argv, int arg, mpfr_t *dest) {
+    mpfr_init_set_str(*dest, argv[arg], BASE, RND);
+}
+
 void t_xyz_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t t) {
     mpfr_printf("%.9RNe %.9RNe %.9RNe %.5RNe\n", x, y, z, t);
 }

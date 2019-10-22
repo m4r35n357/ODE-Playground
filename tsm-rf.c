@@ -18,12 +18,12 @@ int main (int argc, char **argv) {
     assert(argc == 10);
     // initialize from command arguments
     t_stepper(argv, &order, &t, &h, &nsteps);
+    t_arg(argv, 5, &x);
+    t_arg(argv, 6, &y);
+    t_arg(argv, 7, &z);
+    t_arg(argv, 8, &a);
+    t_arg(argv, 9, &g);
     mpfr_inits(_, wx2_1, NULL);
-    mpfr_init_set_str(x, argv[5], BASE, RND);
-    mpfr_init_set_str(y, argv[6], BASE, RND);
-    mpfr_init_set_str(z, argv[7], BASE, RND);
-    mpfr_init_set_str(a, argv[8], BASE, RND);
-    mpfr_init_set_str(g, argv[9], BASE, RND);
 
     // initialize the derivative and temporary jets
     cx = t_jet(order + 1);

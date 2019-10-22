@@ -22,13 +22,13 @@ int main (int argc, char **argv) {
     assert(argc == 12);
     // initialize from command arguments
     t_stepper(argv, &order, &t, &h, &nsteps);
-    mpfr_init_set_str(x, argv[5], BASE, RND);
-    mpfr_init_set_str(y, argv[6], BASE, RND);
-    mpfr_init_set_str(z, argv[7], BASE, RND);
-    mpfr_init_set_str(s, argv[8], BASE, RND);
-    mpfr_init_set_str(r, argv[9], BASE, RND);
-    mpfr_init_set_str(b, argv[10], BASE, RND);
-    mpfr_init_set_str(_, argv[11], BASE, RND);
+    t_arg(argv, 5, &x);
+    t_arg(argv, 6, &y);
+    t_arg(argv, 7, &z);
+    t_arg(argv, 8, &s);
+    t_arg(argv, 9, &r);
+    t_arg(argv, 10, &b);
+    t_arg(argv, 11, &_);
     mpfr_div(b, b, _, RND);
 
     // initialize the derivative and temporary jets
