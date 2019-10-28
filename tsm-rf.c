@@ -1,7 +1,8 @@
 /*
  * Rabinovich–Fabrikant System
  *
- * Example: ./tsm-rf-dbg 16 10 .01 50000 .1 .1 .1 .2876 .1
+ * Example: ./tsm-rf-dbg 16 10 .01 50000 .05 .-05 .3 .2715 .1
+ *          ./tsm-rf-dbg 16 10 .01 50000 .05 -.05 .3 .2876 .1
  *          ./tsm-rf-dbg 16 10 .01 50000 -1 0 .75 .25 .2
  *
  * (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
