@@ -17,9 +17,9 @@ int main (int argc, char **argv) {
     assert(argc == 9);
     // initialize from command arguments
     t_stepper(argv, &order, &t, &h, &nsteps);
-    mpfr_inits(_, NULL);
-    mpfr_init_set_str(x, argv[5], BASE, RND);
-    mpfr_init_set_str(a, argv[8], BASE, RND);
+    t_arg(argv, 5, &x);
+    t_arg(argv, 8, &a);
+    mpfr_init(_);
 
     // initialize the derivative and temporary jets
     cx = t_jet(order + 1);

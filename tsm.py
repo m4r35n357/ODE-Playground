@@ -271,7 +271,7 @@ def main():
             output(x0, y0, 0.0, step * δt)
     elif model == "logistic":
         #  Example: ./tsm.py logistic 9 8 0.1 10001 .6 0 0 .1 | ./plotXY.py 1 3 0
-        #  Example: ./tsm.py logistic 9 8 0.1 10001 .6 0 0 .1 | ./plotAnimated.py 1 0 1.5
+        #  Example: ./tsm.py logistic 9 8 0.1 10001 .6 0 0 .1 | ./plotAnimated.py 1 0 2
         a = float(argv[9])
         w1, wa, wb = t_jet(order, 1), t_jet(order), t_jet(order)
         output(x0, 0.0, 0.0, 0.0)

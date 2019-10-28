@@ -17,12 +17,12 @@ int main (int argc, char **argv) {
     assert(argc == 10);
     // initialize from command arguments
     t_stepper(argv, &order, &t, &h, &nsteps);
+    t_arg(argv, 5, &x);
+    t_arg(argv, 6, &y);
+    t_arg(argv, 7, &z);
+    t_arg(argv, 8, &a);
+    t_arg(argv, 9, &b);
     mpfr_inits(_, __, NULL);
-    mpfr_init_set_str(x, argv[5], BASE, RND);
-    mpfr_init_set_str(y, argv[6], BASE, RND);
-    mpfr_init_set_str(z, argv[7], BASE, RND);
-    mpfr_init_set_str(a, argv[8], BASE, RND);
-    mpfr_init_set_str(b, argv[9], BASE, RND);
 
     // initialize the derivative and temporary jets
     cx = t_jet(order + 1);
@@ -31,10 +31,8 @@ int main (int argc, char **argv) {
     w_b = t_jet_c(order, b);
 
     // main loop
+    t_xyz_output(x, y, z, t);
     for (long step = 1; step < nsteps + 1; step++) {
-        // print a line of output
-        t_line_output(t, 3, x, y, z);
-
         // compute the taylor coefficients
         mpfr_set(cx[0], x, RND);
         mpfr_set(cy[0], y, RND);
@@ -43,15 +41,12 @@ int main (int argc, char **argv) {
             //  x' = y
             mpfr_div_ui(cx[k + 1], cy[k], k + 1, RND);
             //  y' = yz - x
-            t_product(&_, cy, cz, k);
-            mpfr_sub(_, _, cx[k], RND);
+            mpfr_sub(_, *t_prod(&_, cy, cz, k), cx[k], RND);
             mpfr_div_ui(cy[k + 1], _, k + 1, RND);
             //  z' = z - ax^2 - y^2 - b
-            t_sqr(&_, cy, k);
             mpfr_sub(__, cz[k], w_b[k], RND);
-            mpfr_sub(__, __, _, RND);
-            t_sqr(&_, cx, k);
-            mpfr_fma(_, _, a, __, RND);
+            mpfr_sub(__, __, *t_sqr(&_, cy, k), RND);
+            mpfr_fma(_, *t_sqr(&_, cx, k), a, __, RND);
             mpfr_div_ui(cz[k + 1], _, k + 1, RND);
         }
 
@@ -60,6 +55,7 @@ int main (int argc, char **argv) {
         t_horner(&y, cy, order, h);
         t_horner(&z, cz, order, h);
         mpfr_mul_ui(t, h, step, RND);
+        t_xyz_output(x, y, z, t);
     }
     return 0;
 }

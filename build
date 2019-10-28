@@ -42,10 +42,10 @@ tsm-rf \
 tsm-wimol-banlue \
 tsm-thomas \
 tsm-sprott-thomas \
+tsm-sj \
 tsm-lotka-volterra \
+tsm-logistic \
 tsm-constant
-#tsm-sj \
-#tsm-logistic \
 do
 	build ${model}
 	echo ""

@@ -17,13 +17,13 @@ int main (int argc, char **argv) {
     assert(argc == 12);
     // initialize from command arguments
     t_stepper(argv, &order, &t, &h, &nsteps);
+    t_arg(argv, 5, &x);
+    t_arg(argv, 6, &y);
+    t_arg(argv, 8, &a);
+    t_arg(argv, 9, &b);
+    t_arg(argv, 10, &c);
+    t_arg(argv, 11, &d);
     mpfr_inits(_, wxy, NULL);
-    mpfr_init_set_str(x, argv[5], BASE, RND);
-    mpfr_init_set_str(y, argv[6], BASE, RND);
-    mpfr_init_set_str(a, argv[8], BASE, RND);
-    mpfr_init_set_str(b, argv[9], BASE, RND);
-    mpfr_init_set_str(c, argv[10], BASE, RND);
-    mpfr_init_set_str(d, argv[11], BASE, RND);
 
     // initialize the derivative and temporary jets
     cx = t_jet(order + 1);
