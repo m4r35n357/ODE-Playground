@@ -15,53 +15,53 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-long order, nsteps;
-mpfr_t t, x, y, z, s, r, b, h, _, *cx, *cy, *cz;
+long n, nsteps;
+mpfr_t t, x0, y0, z0, sigma, rho, beta, h, _, *x, *y, *z;
 
 int main (int argc, char **argv) {
     assert(argc == 12);
     // initialize from command arguments
-    t_stepper(argv, &order, &t, &h, &nsteps);
-    t_arg(argv, 5, &x);
-    t_arg(argv, 6, &y);
-    t_arg(argv, 7, &z);
-    t_arg(argv, 8, &s);
-    t_arg(argv, 9, &r);
-    t_arg(argv, 10, &b);
+    t_stepper(argv, &n, &t, &h, &nsteps);
+    t_arg(argv, 5, &x0);
+    t_arg(argv, 6, &y0);
+    t_arg(argv, 7, &z0);
+    t_arg(argv, 8, &sigma);
+    t_arg(argv, 9, &rho);
+    t_arg(argv, 10, &beta);
     t_arg(argv, 11, &_);
-    mpfr_div(b, b, _, RND);
+    mpfr_div(beta, beta, _, RND);
 
     // initialize the derivative and temporary jets
-    cx = t_jet(order + 1);
-    cy = t_jet(order + 1);
-    cz = t_jet(order + 1);
+    x = t_jet(n + 1);
+    y = t_jet(n + 1);
+    z = t_jet(n + 1);
 
     // main loop
-    t_xyz_output(x, y, z, t);
+    t_xyz_output(x0, y0, z0, t);
     for (long step = 1; step < nsteps + 1; step++) {
         // compute the taylor coefficients
-        mpfr_set(cx[0], x, RND);
-        mpfr_set(cy[0], y, RND);
-        mpfr_set(cz[0], z, RND);
-        for (int k = 0; k < order; k++) {
+        mpfr_set(x[0], x0, RND);
+        mpfr_set(y[0], y0, RND);
+        mpfr_set(z[0], z0, RND);
+        for (int k = 0; k < n; k++) {
             //  x' = S(y - x)
-            mpfr_fmms(_, s, cy[k], s, cx[k], RND);
-            mpfr_div_ui(cx[k + 1], _, k + 1, RND);
+            mpfr_fmms(_, sigma, y[k], sigma, x[k], RND);
+            mpfr_div_ui(x[k + 1], _, k + 1, RND);
             //  y' = x(R - z) - y
-            mpfr_fms(_, cx[k], r, *t_prod(&_, cx, cz, k), RND);
-            mpfr_sub(_, _, cy[k], RND);
-            mpfr_div_ui(cy[k + 1], _, k + 1, RND);
+            mpfr_fms(_, x[k], rho, *t_prod(&_, x, z, k), RND);
+            mpfr_sub(_, _, y[k], RND);
+            mpfr_div_ui(y[k + 1], _, k + 1, RND);
             //  z' = xy - Bz
-            mpfr_fms(_, b, cz[k], *t_prod(&_, cx, cy, k), RND);
-            mpfr_div_si(cz[k + 1], _, - (k + 1), RND);
+            mpfr_fms(_, beta, z[k], *t_prod(&_, x, y, k), RND);
+            mpfr_div_si(z[k + 1], _, - (k + 1), RND);
         }
 
         // sum the series using Horner's method and advance one step
-        t_horner(&x, cx, order, h);
-        t_horner(&y, cy, order, h);
-        t_horner(&z, cz, order, h);
+        t_horner(&x0, x, n, h);
+        t_horner(&y0, y, n, h);
+        t_horner(&z0, z, n, h);
         mpfr_mul_ui(t, h, step, RND);
-        t_xyz_output(x, y, z, t);
+        t_xyz_output(x0, y0, z0, t);
     }
     return 0;
 }
