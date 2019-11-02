@@ -72,6 +72,19 @@ def main():
                 z[k + 1] = (b[k] + t_prod(x, z, k) - c * z[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x0, y0, z0, step * δt)
+    elif model == "genesio-tesi":
+        #  Example: ./tsm.py genesio-tesi 9 8 0.01 150000 .1 .1 .1 .44 1.1 1 | ./plotPi3d.py
+        #  Example: ./tsm.py genesio-tesi 9 8 0.01 150000 0.0 -6.78 0.02 .44 1.1 1 | ./plotAnimated.py 1 -20 30
+        a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
+        output(x0, y0, z0, 0.0)
+        for step in steps:
+            x[0], y[0], z[0] = x0, y0, z0
+            for k in index:
+                x[k + 1] = y[k] / (k + 1)
+                y[k + 1] = z[k] / (k + 1)
+                z[k + 1] = (t_sqr(x, k) - c * x[k] - b * y[k] - a * z[k]) / (k + 1)
+            x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
+            output(x0, y0, z0, step * δt)
     elif model == "bouali":
         #  Example: ./tsm.py bouali 9 8 0.02 50001 1 1 0 3 2.2 1 .01 | ./plotPi3d.py
         #  Example: ./tsm.py bouali 9 8 0.02 50001 1 1 0 3 2.2 1 .01 | ./plotAnimated.py 1 -5 5

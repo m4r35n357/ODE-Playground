@@ -35,6 +35,7 @@ echo ""
 for model in \
 tsm-lorenz \
 tsm-rossler \
+tsm-genesio-tesi \
 tsm-rucklidge \
 tsm-halvorsen \
 tsm-bouali \
