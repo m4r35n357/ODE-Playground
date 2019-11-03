@@ -4,7 +4,7 @@
 #
 from sys import argv
 from math import sqrt, cos, pi
-from ad import Context, t_jet, t_horner, t_abs, t_prod, t_sin_cos, t_tan_sec2, t_sqr
+from ad import Context, t_jet, t_horner, t_abs, t_prod, t_sin_cos, t_tan_sec2, t_sqr, t_exp
 
 
 def output(x, y, z, t):
@@ -27,31 +27,18 @@ def main():
             x[0], y[0], z[0] = x0, y0, z0
             for k in index:
                 x[k + 1] = σ * (y[k] - x[k]) / (k + 1)
-                y[k + 1] = (ρ * x[k] - t_prod(x, z, k) - y[k]) / (k + 1)
+                y[k + 1] = (ρ * x[k] - y[k] - t_prod(x, z, k)) / (k + 1)
                 z[k + 1] = (t_prod(x, y, k) - β * z[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x0, y0, z0, step * δt)
-    elif model == "lu":
+    elif model == "lu" or model == "chen":
         #  Example: ./tsm.py lu 9 8 .01 3000 -3 2 20 36 3 20 | ./plotPi3d.py
-        #  Example: ./tsm.py lu 9 8 .01 3000 -3 2 20 36 3 20 | ./plotAnimated.py 1 -25 50
+        #  Example: ./tsm.py chen 9 8 .01 3000 -3 2 20 35 3 28 | ./plotAnimated.py 1 -25 50
         a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
+        d = c - a if model == "chen" else 0.0
         output(x0, y0, z0, 0.0)
         for step in steps:
             x, y, z = t_jet(order + 1), t_jet(order + 1), t_jet(order + 1)  # reset coordinate jets (for more visual debugging)
-            x[0], y[0], z[0] = x0, y0, z0
-            for k in index:
-                x[k + 1] = a * (y[k] - x[k]) / (k + 1)
-                y[k + 1] = (c * y[k] - t_prod(x, z, k)) / (k + 1)
-                z[k + 1] = (t_prod(x, y, k) - b * z[k]) / (k + 1)
-            x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
-            output(x0, y0, z0, step * δt)
-    elif model == "chen":
-        #  Example: ./tsm.py chen 9 8 .01 3000 -3 2 20 35 3 28 | ./plotPi3d.py
-        #  Example: ./tsm.py chen 9 8 .01 3000 -3 2 20 35 3 28 | ./plotAnimated.py 1 -25 50
-        a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
-        d = c - a
-        output(x0, y0, z0, 0.0)
-        for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
             for k in index:
                 x[k + 1] = a * (y[k] - x[k]) / (k + 1)
@@ -243,6 +230,22 @@ def main():
                 x[k + 1] = (y[k] - x[k]) / (k + 1)
                 y[k + 1] = - t_prod(z, tx, k) / (k + 1)
                 z[k + 1] = (- α[k] + t_prod(x, y, k) + t_abs(y, k)) / (k + 1)
+            x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
+            output(x0, y0, z0, step * δt)
+    elif model == "yu-wang":
+        #  Example: ./tsm.py yu-wang 9 8 .001 50000 1 0 0 10 40 2 2.5 | ./plotPi3d.py
+        #  Example: ./tsm.py yu-wang 9 8 .001 50000 1 0 0 10 40 2 2.5 | ./plotAnimated.py 1 -25 50
+        a, b, c, d = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
+        xy, e_xy = t_jet(order), t_jet(order)
+        output(x0, y0, z0, 0.0)
+        for step in steps:
+            x[0], y[0], z[0] = x0, y0, z0
+            for k in index:
+                xy[k] = t_prod(x, y, k)
+                e_xy[k] = t_exp(e_xy, xy, k)
+                x[k + 1] = a * (y[k] - x[k]) / (k + 1)
+                y[k + 1] = (b * x[k] - c * t_prod(x, z, k)) / (k + 1)
+                z[k + 1] = (e_xy[k] - d * z[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x0, y0, z0, step * δt)
     elif model == "oscillator":
