@@ -42,17 +42,14 @@ int main (int argc, char **argv) {
         mpfr_set(y[0], y0, RND);
         mpfr_set(z[0], z0, RND);
         for (int k = 0; k < order; k++) {
-            t_sin_cos(sx, cx, x, k, &_, TRIG);
-            t_sin_cos(sy, cy, y, k, &_, TRIG);
-            t_sin_cos(sz, cz, z, k, &_, TRIG);
             //  x' = sin(y) - Bx
-            mpfr_fms(_, x[k], b, sy[k], RND);
+            mpfr_fms(_, x[k], b, t_sin_cos(sy, cy, y, k, &_, TRIG).a[k], RND);
             mpfr_div_si(x[k + 1], _, - (k + 1), RND);
             //  y' = sin(z) - By
-            mpfr_fms(_, y[k], b, sz[k], RND);
+            mpfr_fms(_, y[k], b, t_sin_cos(sz, cz, z, k, &_, TRIG).a[k], RND);
             mpfr_div_si(y[k + 1], _, - (k + 1), RND);
             //  z' = sin(x) - Bz
-            mpfr_fms(_, z[k], b, sx[k], RND);
+            mpfr_fms(_, z[k], b, t_sin_cos(sx, cx, x, k, &_, TRIG).a[k], RND);
             mpfr_div_si(z[k + 1], _, - (k + 1), RND);
         }
 

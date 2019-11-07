@@ -172,7 +172,7 @@ void t_ln (mpfr_t *l, const mpfr_t *u, int k, mpfr_t *_) {
     }
 }
 
-void t_sin_cos (mpfr_t *s, mpfr_t *c, const mpfr_t *u, int k, mpfr_t *_, geometry g) {
+struct Tuple t_sin_cos (mpfr_t *s, mpfr_t *c, const mpfr_t *u, int k, mpfr_t *_, geometry g) {
     assert(s != c && s != u && c != u);
     assert(_ != s && _ != c && _ != u);
     assert(k >= 0);
@@ -195,9 +195,10 @@ void t_sin_cos (mpfr_t *s, mpfr_t *c, const mpfr_t *u, int k, mpfr_t *_, geometr
             mpfr_neg(c[k], c[k], RND);
         }
     }
+    return (struct Tuple){ s, c };
 }
 
-void t_tan_sec2 (mpfr_t *t, mpfr_t *s2, const mpfr_t *u, int k, mpfr_t *_, geometry g) {
+struct Tuple t_tan_sec2 (mpfr_t *t, mpfr_t *s2, const mpfr_t *u, int k, mpfr_t *_, geometry g) {
     assert(t != s2 && t != u && s2 != u);
     assert(_ != t && _ != s2 && _ != u);
     assert(k >= 0);
@@ -226,5 +227,6 @@ void t_tan_sec2 (mpfr_t *t, mpfr_t *s2, const mpfr_t *u, int k, mpfr_t *_, geome
             mpfr_neg(s2[k], s2[k], RND);
         }
     }
+    return (struct Tuple){ t, s2 };
 }
 
