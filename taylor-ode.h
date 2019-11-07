@@ -17,6 +17,14 @@ const int BASE;
 const mpfr_rnd_t RND;
 
 /*
+ * For returning combined recurrence values
+ */
+struct Tuple {
+    mpfr_t *a;
+    mpfr_t *b;
+};
+
+/*
  * Selects either a trigonometric or hyperbolic version of the function
  */
 typedef enum {TRIG, HYP} geometry;
@@ -89,12 +97,12 @@ void t_exp (mpfr_t *E, const mpfr_t *U, int k, mpfr_t *tmp);
 /*
  * Calculates kth elements of the sine and cosine of U, results stored in jets S and C
  */
-void t_sin_cos(mpfr_t *S, mpfr_t *C, const mpfr_t *U, int k, mpfr_t *tmp, geometry g);
+struct Tuple t_sin_cos(mpfr_t *S, mpfr_t *C, const mpfr_t *U, int k, mpfr_t *tmp, geometry g);
 
 /*
  * Calculates Taylor Series for the tangent and squared secant of U, results stored in jets T and S2
  */
-void t_tan_sec2 (mpfr_t *T, mpfr_t *S2, const mpfr_t *U, int k, mpfr_t *tmp, geometry g);
+struct Tuple t_tan_sec2 (mpfr_t *T, mpfr_t *S2, const mpfr_t *U, int k, mpfr_t *tmp, geometry g);
 
 /*
  * Calculates kth element of U^a, results stored in jet P
