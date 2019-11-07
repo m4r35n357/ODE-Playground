@@ -85,7 +85,7 @@ mpfr_t *t_prod (mpfr_t *p, const mpfr_t *u, const mpfr_t *v, int k) {
     return p;
 }
 
-void t_quot (mpfr_t *q, const mpfr_t *u, const mpfr_t *v, int k) {
+mpfr_t *t_quot (mpfr_t *q, const mpfr_t *u, const mpfr_t *v, int k) {
     assert(mpfr_sgn(v[0]) != 0);
     assert(q != u && q != v && u != v);
     assert(k >= 0);
@@ -95,9 +95,10 @@ void t_quot (mpfr_t *q, const mpfr_t *u, const mpfr_t *v, int k) {
     }
     mpfr_sub(q[k], u[k], q[k], RND);
     mpfr_div(q[k], q[k], v[0], RND);
+    return q;
 }
 
-void t_sqrt (mpfr_t *r, const mpfr_t *u, int k) {
+mpfr_t *t_sqrt (mpfr_t *r, const mpfr_t *u, int k) {
     assert(mpfr_sgn(u[0]) > 0);
     assert(r != u);
     assert(k >= 0);
@@ -117,9 +118,10 @@ void t_sqrt (mpfr_t *r, const mpfr_t *u, int k) {
         mpfr_div_2ui(r[k], r[k], 1, RND);
         mpfr_div(r[k], r[k], r[0], RND);
     }
+    return r;
 }
 
-void t_pwr (mpfr_t *p, const mpfr_t *u, mpfr_t a, int k, mpfr_t *_) {
+mpfr_t *t_pwr (mpfr_t *p, const mpfr_t *u, mpfr_t a, int k, mpfr_t *_) {
     assert(mpfr_sgn(u[0]) > 0);
     assert(p != u);
     assert(_ != p && _ != u);
@@ -137,9 +139,10 @@ void t_pwr (mpfr_t *p, const mpfr_t *u, mpfr_t a, int k, mpfr_t *_) {
         mpfr_div_ui(p[k], p[k], k, RND);
         mpfr_div(p[k], p[k], u[0], RND);
     }
+    return p;
 }
 
-void t_exp (mpfr_t *e, const mpfr_t *u, int k, mpfr_t *_) {
+mpfr_t *t_exp (mpfr_t *e, const mpfr_t *u, int k, mpfr_t *_) {
     assert(e != u);
     assert(_ != e && _ != u);
     assert(k >= 0);
@@ -152,9 +155,10 @@ void t_exp (mpfr_t *e, const mpfr_t *u, int k, mpfr_t *_) {
             mpfr_fma(e[k], *_, u[k - j], e[k], RND);
         }
     }
+    return e;
 }
 
-void t_ln (mpfr_t *l, const mpfr_t *u, int k, mpfr_t *_) {
+mpfr_t *t_ln (mpfr_t *l, const mpfr_t *u, int k, mpfr_t *_) {
     assert(mpfr_sgn(u[0]) > 0);
     assert(l != u);
     assert(_ != l && _ != u);
@@ -170,6 +174,7 @@ void t_ln (mpfr_t *l, const mpfr_t *u, int k, mpfr_t *_) {
         mpfr_sub(l[k], u[k], l[k], RND);
         mpfr_div(l[k], l[k], u[0], RND);
     }
+    return l;
 }
 
 struct Tuple t_sin_cos (mpfr_t *s, mpfr_t *c, const mpfr_t *u, int k, mpfr_t *_, geometry g) {

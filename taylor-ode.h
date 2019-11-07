@@ -82,17 +82,17 @@ mpfr_t *t_prod (mpfr_t *P, const mpfr_t *U, const mpfr_t *V, int k);
 /*
  * Calculates kth element of U / V, results stored in jet Q
  */
-void t_quot (mpfr_t *Q, const mpfr_t *U, const mpfr_t *V, int k);
+mpfr_t *t_quot (mpfr_t *Q, const mpfr_t *U, const mpfr_t *V, int k);
 
 /*
  * Calculates kth element of the square root of U, results stored in jet R
  */
-void t_sqrt (mpfr_t *R, const mpfr_t *U, int k);
+mpfr_t *t_sqrt (mpfr_t *R, const mpfr_t *U, int k);
 
 /*
  * Calculates kth element of the exponential of U, results stored in jet E
  */
-void t_exp (mpfr_t *E, const mpfr_t *U, int k, mpfr_t *tmp);
+mpfr_t *t_exp (mpfr_t *E, const mpfr_t *U, int k, mpfr_t *tmp);
 
 /*
  * Calculates kth elements of the sine and cosine of U, results stored in jets S and C
@@ -107,10 +107,10 @@ struct Tuple t_tan_sec2 (mpfr_t *T, mpfr_t *S2, const mpfr_t *U, int k, mpfr_t *
 /*
  * Calculates kth element of U^a, results stored in jet P
  */
-void t_pwr (mpfr_t *P, const mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp1);
+mpfr_t *t_pwr (mpfr_t *P, const mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp1);
 
 /*
  * Calculates kth element of the natural logarithm of U, result stored in jet L
  */
-void t_ln (mpfr_t *L, const mpfr_t *U, int k, mpfr_t *tmp);
+mpfr_t *t_ln (mpfr_t *L, const mpfr_t *U, int k, mpfr_t *tmp);
 
