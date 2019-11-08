@@ -200,7 +200,7 @@ struct Tuple t_sin_cos (mpfr_t *s, mpfr_t *c, const mpfr_t *u, int k, mpfr_t *_,
             mpfr_neg(c[k], c[k], RND);
         }
     }
-    return (struct Tuple){ s, c };
+    return (struct Tuple){ &s[k], &c[k] };
 }
 
 struct Tuple t_tan_sec2 (mpfr_t *t, mpfr_t *s2, const mpfr_t *u, int k, mpfr_t *_, geometry g) {
@@ -232,6 +232,6 @@ struct Tuple t_tan_sec2 (mpfr_t *t, mpfr_t *s2, const mpfr_t *u, int k, mpfr_t *
             mpfr_neg(s2[k], s2[k], RND);
         }
     }
-    return (struct Tuple){ t, s2 };
+    return (struct Tuple){ &t[k], &s2[k] };
 }
 

@@ -43,13 +43,13 @@ int main (int argc, char **argv) {
         mpfr_set(z[0], z0, RND);
         for (int k = 0; k < order; k++) {
             //  x' = sin(y) - Bx
-            mpfr_fms(_, x[k], b, t_sin_cos(sy, cy, y, k, &_, TRIG).a[k], RND);
+            mpfr_fms(_, b, x[k], *t_sin_cos(sy, cy, y, k, &_, TRIG).a, RND);
             mpfr_div_si(x[k + 1], _, - (k + 1), RND);
             //  y' = sin(z) - By
-            mpfr_fms(_, y[k], b, t_sin_cos(sz, cz, z, k, &_, TRIG).a[k], RND);
+            mpfr_fms(_, b, y[k], *t_sin_cos(sz, cz, z, k, &_, TRIG).a, RND);
             mpfr_div_si(y[k + 1], _, - (k + 1), RND);
             //  z' = sin(x) - Bz
-            mpfr_fms(_, z[k], b, t_sin_cos(sx, cx, x, k, &_, TRIG).a[k], RND);
+            mpfr_fms(_, b, z[k], *t_sin_cos(sx, cx, x, k, &_, TRIG).a, RND);
             mpfr_div_si(z[k + 1], _, - (k + 1), RND);
         }
 
