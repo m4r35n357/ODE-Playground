@@ -308,7 +308,7 @@ def main():
             x[0], y[0] = x0, y0
             for k in index:
                 x[k + 1] = y[k] / (k + 1)
-                y[k + 1] = - (κ * x[k] + ζ * (2.0 * sqrt(κ)) * y[k]) / (k + 1)
+                y[k + 1] = - (κ * x[k] + 2.0 * sqrt(κ) * ζ * y[k]) / (k + 1)
             x0, y0 = t_horner(x, δt), t_horner(y, δt)
             output(x0, y0, 0.0, step * δt)
     elif model == "constant":

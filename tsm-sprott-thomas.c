@@ -11,8 +11,7 @@
 #include "taylor-ode.h"
 
 long n, nsteps;
-mpfr_t t, x0, y0, z0, a, b, h, _, *tx, *s2x, *ty, *s2y, *tz, *s2z, *ax, *ay, *az,
-        *sax, *cax, *say, *cay, *saz, *caz, *x, *y, *z;
+mpfr_t t, x0, y0, z0, a, b, h, _, *tx, *s2x, *ty, *s2y, *tz, *s2z, *ax, *ay, *az, *sax, *cax, *say, *cay, *saz, *caz, *x, *y, *z;
 
 int main (int argc, char **argv) {
     assert(argc == 10);

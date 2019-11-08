@@ -1,7 +1,7 @@
 /*
- * Genesio-Tesi System
+ * Yu-Wang System
  *
- * Example: ./tsm-genesio-tesi-dbg 16 10 0.01 150000 .1 .1 .1 .44 1.1 1
+ * Example: ./tsm-yu-wang-dbg 16 10 .001 50000 1 0 0 10 40 2 2.5
  *
  * (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -11,10 +11,10 @@
 #include "taylor-ode.h"
 
 long n, nsteps;
-mpfr_t t, x0, y0, z0, a, b, c, h, _, *x, *y, *z;
+mpfr_t t, x0, y0, z0, a, b, c, d, h, _, *xy, *e_xy, *x, *y, *z;
 
 int main (int argc, char **argv) {
-    assert(argc == 11);
+    assert(argc == 12);
     // initialize from command arguments
     t_stepper(argv, &n, &t, &h, &nsteps);
     t_arg(argv, 5, &x0);
@@ -23,12 +23,15 @@ int main (int argc, char **argv) {
     t_arg(argv, 8, &a);
     t_arg(argv, 9, &b);
     t_arg(argv, 10, &c);
+    t_arg(argv, 11, &d);
     mpfr_init(_);
 
     // initialize the derivative and temporary jets
     x = t_jet(n + 1);
     y = t_jet(n + 1);
     z = t_jet(n + 1);
+    xy = t_jet(n);
+    e_xy = t_jet(n);
 
     // main loop
     t_xyz_output(x0, y0, z0, t);
@@ -38,14 +41,16 @@ int main (int argc, char **argv) {
         mpfr_set(y[0], y0, RND);
         mpfr_set(z[0], z0, RND);
         for (int k = 0; k < n; k++) {
-            //  x' = y
-            mpfr_div_ui(x[k + 1], y[k], k + 1, RND);
-            //  y' = z
-            mpfr_div_ui(y[k + 1], z[k], k + 1, RND);
-            //  z' = x^2 - Cx - By -Az
-            mpfr_fms(_, c, x[k], *t_sqr(&_, x, k), RND);
-            mpfr_fma(_, b, y[k], _, RND);
-            mpfr_fma(_, a, z[k], _, RND);
+            //  x' = A(y - x)
+            mpfr_fmms(_, a, y[k], a, x[k], RND);
+            mpfr_div_ui(x[k + 1], _, k + 1, RND);
+            //  y' = Bx - cxz
+            mpfr_mul(_, c, *t_prod(&_, x, z, k), RND);
+            mpfr_fms(_, b, x[k], _, RND);
+            mpfr_div_ui(y[k + 1], _, k + 1, RND);
+            //  z' = e^(xy) - Dz
+            t_prod(xy, x, y, k);
+            mpfr_fms(_, d, z[k], *t_exp(e_xy, xy, k, &_), RND);
             mpfr_div_si(z[k + 1], _, - (k + 1), RND);
         }
 
