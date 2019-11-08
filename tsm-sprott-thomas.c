@@ -11,8 +11,8 @@
 #include "taylor-ode.h"
 
 long n, nsteps;
-mpfr_t t, x0, y0, z0, a, b, h, _, *wsx, *wcx, *wsy, *wcy, *wsz, *wcz, *wax, *way, *waz,
-        *wsax, *wcax, *wsay, *wcay, *wsaz, *wcaz, *cx, *cy, *cz;
+mpfr_t t, x0, y0, z0, a, b, h, _, *tx, *s2x, *ty, *s2y, *tz, *s2z, *ax, *ay, *az,
+        *sax, *cax, *say, *cay, *saz, *caz, *x, *y, *z;
 
 int main (int argc, char **argv) {
     assert(argc == 10);
@@ -26,51 +26,51 @@ int main (int argc, char **argv) {
     mpfr_init(_);
 
     // initialize the derivative and temporary jets
-    cx = t_jet(n + 1);
-    cy = t_jet(n + 1);
-    cz = t_jet(n + 1);
-    wax = t_jet(n);
-    way = t_jet(n);
-    waz = t_jet(n);
-    wsax = t_jet(n);
-    wsay = t_jet(n);
-    wsaz = t_jet(n);
-    wcax = t_jet(n);
-    wcay = t_jet(n);
-    wcaz = t_jet(n);
-    wsx = t_jet(n);
-    wsy = t_jet(n);
-    wsz = t_jet(n);
-    wcx = t_jet(n);
-    wcy = t_jet(n);
-    wcz = t_jet(n);
+    x = t_jet(n + 1);
+    y = t_jet(n + 1);
+    z = t_jet(n + 1);
+    ax = t_jet(n);
+    ay = t_jet(n);
+    az = t_jet(n);
+    sax = t_jet(n);
+    say = t_jet(n);
+    saz = t_jet(n);
+    cax = t_jet(n);
+    cay = t_jet(n);
+    caz = t_jet(n);
+    tx = t_jet(n);
+    ty = t_jet(n);
+    tz = t_jet(n);
+    s2x = t_jet(n);
+    s2y = t_jet(n);
+    s2z = t_jet(n);
 
     // main loop
     t_xyz_output(x0, y0, z0, t);
     for (long step = 1; step < nsteps + 1; step++) {
         // compute the taylor coefficients
-        mpfr_set(cx[0], x0, RND);
-        mpfr_set(cy[0], y0, RND);
-        mpfr_set(cz[0], z0, RND);
+        mpfr_set(x[0], x0, RND);
+        mpfr_set(y[0], y0, RND);
+        mpfr_set(z[0], z0, RND);
         for (int k = 0; k < n; k++) {
-            mpfr_mul(wax[k], cx[k], a, RND);
-            mpfr_mul(way[k], cy[k], a, RND);
-            mpfr_mul(waz[k], cz[k], a, RND);
-            //  x' = sin(Ay) - Bsin(x)
-            mpfr_fms(_, t_tan_sec2(wsx, wcx, cx, k, &_, TRIG).a[k], b, t_sin_cos(wsay, wcay, way, k, &_, TRIG).a[k], RND);
-            mpfr_div_si(cx[k + 1], _, - (k + 1), RND);
-            //  y' = sin(Az) - Bsin(y)
-            mpfr_fms(_, t_tan_sec2(wsy, wcy, cy, k, &_, TRIG).a[k], b, t_sin_cos(wsaz, wcaz, waz, k, &_, TRIG).a[k], RND);
-            mpfr_div_si(cy[k + 1], _, - (k + 1), RND);
-            //  z' = sin(Ax) - Bsin(z)
-            mpfr_fms(_, t_tan_sec2(wsz, wcz, cz, k, &_, TRIG).a[k], b, t_sin_cos(wsax, wcax, wax, k, &_, TRIG).a[k], RND);
-            mpfr_div_si(cz[k + 1], _, - (k + 1), RND);
+            mpfr_mul(ax[k], x[k], a, RND);
+            mpfr_mul(ay[k], y[k], a, RND);
+            mpfr_mul(az[k], z[k], a, RND);
+            //  x' = sin(Ay) - Btan(x)
+            mpfr_fms(_, t_tan_sec2(tx, s2x, x, k, &_, TRIG).a[k], b, t_sin_cos(say, cay, ay, k, &_, TRIG).a[k], RND);
+            mpfr_div_si(x[k + 1], _, - (k + 1), RND);
+            //  y' = sin(Az) - Btan(y)
+            mpfr_fms(_, t_tan_sec2(ty, s2y, y, k, &_, TRIG).a[k], b, t_sin_cos(saz, caz, az, k, &_, TRIG).a[k], RND);
+            mpfr_div_si(y[k + 1], _, - (k + 1), RND);
+            //  z' = sin(Ax) - Btan(z)
+            mpfr_fms(_, t_tan_sec2(tz, s2z, z, k, &_, TRIG).a[k], b, t_sin_cos(sax, cax, ax, k, &_, TRIG).a[k], RND);
+            mpfr_div_si(z[k + 1], _, - (k + 1), RND);
         }
 
         // sum the series using Horner's method and advance one step
-        t_horner(&x0, cx, n, h);
-        t_horner(&y0, cy, n, h);
-        t_horner(&z0, cz, n, h);
+        t_horner(&x0, x, n, h);
+        t_horner(&y0, y, n, h);
+        t_horner(&z0, z, n, h);
         mpfr_mul_ui(t, h, step, RND);
         t_xyz_output(x0, y0, z0, t);
     }
