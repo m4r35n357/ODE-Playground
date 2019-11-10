@@ -95,7 +95,7 @@ mpfr_t *t_quot (mpfr_t *q, const mpfr_t *u, const mpfr_t *v, int k) {
     }
     mpfr_sub(q[k], u[k], q[k], RND);
     mpfr_div(q[k], q[k], v[0], RND);
-    return q;
+    return &q[k];
 }
 
 mpfr_t *t_sqrt (mpfr_t *r, const mpfr_t *u, int k) {
@@ -118,7 +118,7 @@ mpfr_t *t_sqrt (mpfr_t *r, const mpfr_t *u, int k) {
         mpfr_div_2ui(r[k], r[k], 1, RND);
         mpfr_div(r[k], r[k], r[0], RND);
     }
-    return r;
+    return &r[k];
 }
 
 mpfr_t *t_pwr (mpfr_t *p, const mpfr_t *u, mpfr_t a, int k, mpfr_t *_) {
@@ -139,7 +139,7 @@ mpfr_t *t_pwr (mpfr_t *p, const mpfr_t *u, mpfr_t a, int k, mpfr_t *_) {
         mpfr_div_ui(p[k], p[k], k, RND);
         mpfr_div(p[k], p[k], u[0], RND);
     }
-    return p;
+    return &p[k];
 }
 
 mpfr_t *t_exp (mpfr_t *e, const mpfr_t *u, int k, mpfr_t *_) {
@@ -155,7 +155,7 @@ mpfr_t *t_exp (mpfr_t *e, const mpfr_t *u, int k, mpfr_t *_) {
             mpfr_fma(e[k], *_, u[k - j], e[k], RND);
         }
     }
-    return e;
+    return &e[k];
 }
 
 mpfr_t *t_ln (mpfr_t *l, const mpfr_t *u, int k, mpfr_t *_) {
@@ -174,7 +174,7 @@ mpfr_t *t_ln (mpfr_t *l, const mpfr_t *u, int k, mpfr_t *_) {
         mpfr_sub(l[k], u[k], l[k], RND);
         mpfr_div(l[k], l[k], u[0], RND);
     }
-    return l;
+    return &l[k];
 }
 
 struct Tuple t_sin_cos (mpfr_t *s, mpfr_t *c, const mpfr_t *u, int k, mpfr_t *_, geometry g) {

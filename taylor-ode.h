@@ -17,7 +17,7 @@ const int BASE;
 const mpfr_rnd_t RND;
 
 /*
- * For returning combined recurrence values
+ * For returning "paired" recurrence values
  */
 struct Tuple {
     mpfr_t *a;
@@ -35,11 +35,6 @@ typedef enum {TRIG, HYP} geometry;
 void t_arg (char **argv, int arg_no, mpfr_t *variable);
 
 /*
- * Prints an index column, and any number of data columns, into a single line
- */
-void t_line_output (mpfr_t t, int item_count, ...);
-
-/*
  * Prints an index column, and x, y, z columns, into a single line
  */
 void t_xyz_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t t);
@@ -50,12 +45,12 @@ void t_xyz_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t t);
 void t_stepper (char **argv, long *n, mpfr_t *t, mpfr_t *h, long *nsteps);
 
 /*
- * Creates an initialized derivative jet of the specified size, with no values set
+ * Creates an initialized jet of the specified size, with no values set
  */
 mpfr_t *t_jet (int size);
 
 /*
- * Creates a derivative jet of the specified size, with element zero set to value and the rest zeroed
+ * Returns a jet of the specified size, with element zero set to value and the rest zeroed
  */
 mpfr_t *t_jet_c (int size, mpfr_t value);
 
@@ -65,52 +60,52 @@ mpfr_t *t_jet_c (int size, mpfr_t value);
 void t_horner (mpfr_t *sum, const mpfr_t *jet, int n, mpfr_t h);
 
 /*
- * Calculates kth element of the absolute value of U, result stored in variable A
+ * Returns kth element of the absolute value of U, result stored and returned in variable A
  */
 mpfr_t *t_abs (mpfr_t *a, const mpfr_t *u, int k);
 
 /*
- * Calculates kth element of the square of U, result stored in variable S
+ * Returns kth element of the square of U, result stored and returned in variable S
  */
 mpfr_t *t_sqr (mpfr_t *S, const mpfr_t *U, int k);
 
 /*
- * Calculates kth element of the product of U and V, result stored in variable P
+ * Returns kth element of the product of U and V, result stored in variable P
  */
 mpfr_t *t_prod (mpfr_t *P, const mpfr_t *U, const mpfr_t *V, int k);
 
 /*
- * Calculates kth element of U / V, results stored in jet Q
+ * Returns kth element of U / V, results stored in jet Q
  */
 mpfr_t *t_quot (mpfr_t *Q, const mpfr_t *U, const mpfr_t *V, int k);
 
 /*
- * Calculates kth element of the square root of U, results stored in jet R
+ * Returns kth element of the square root of U, results stored in jet R
  */
 mpfr_t *t_sqrt (mpfr_t *R, const mpfr_t *U, int k);
 
 /*
- * Calculates kth element of U^a, results stored in jet P
+ * Returns kth element of U^a, results stored in jet P
  */
 mpfr_t *t_pwr (mpfr_t *P, const mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp1);
 
 /*
- * Calculates kth element of the exponential of U, results stored in jet E
+ * Returns kth element of the exponential of U, results stored in jet E
  */
 mpfr_t *t_exp (mpfr_t *E, const mpfr_t *U, int k, mpfr_t *tmp);
 
 /*
- * Calculates kth element of the natural logarithm of U, result stored in jet L
+ * Returns kth element of the natural logarithm of U, result stored in jet L
  */
 mpfr_t *t_ln (mpfr_t *L, const mpfr_t *U, int k, mpfr_t *tmp);
 
 /*
- * Calculates kth elements of the sine and cosine of U, results stored in jets S and C
+ * Returns a struct containing kth elements of the sine and cosine of U, results stored in jets S and C
  */
 struct Tuple t_sin_cos(mpfr_t *S, mpfr_t *C, const mpfr_t *U, int k, mpfr_t *tmp, geometry g);
 
 /*
- * Calculates Taylor Series for the tangent and squared secant of U, results stored in jets T and S2
+ * Returns a struct containing kth elements of the tangent and squared secant of U, results stored in jets T and S2
  */
 struct Tuple t_tan_sec2 (mpfr_t *T, mpfr_t *S2, const mpfr_t *U, int k, mpfr_t *tmp, geometry g);
 

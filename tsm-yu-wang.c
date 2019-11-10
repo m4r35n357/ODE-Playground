@@ -49,7 +49,7 @@ int main (int argc, char **argv) {
             mpfr_fms(_, b, x[k], _, RND);
             mpfr_div_ui(y[k + 1], _, k + 1, RND);
             //  z' = e^(xy) - Dz
-            t_prod(xy, x, y, k);
+            mpfr_set(xy[k], *t_prod(&_, x, y, k), RND);
             mpfr_fms(_, d, z[k], *t_exp(e_xy, xy, k, &_), RND);
             mpfr_div_si(z[k + 1], _, - (k + 1), RND);
         }
