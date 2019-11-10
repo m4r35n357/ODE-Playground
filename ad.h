@@ -59,69 +59,69 @@ void ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f
 /*
  * Scales Taylor Series U by a factor a, result stored in jet S
  */
-void ad_scale (mpfr_t *S, mpfr_t *U, mpfr_t a, int n);
+mpfr_t *ad_scale (mpfr_t *S, mpfr_t *U, mpfr_t a, int n);
 
 /*
  * Calculates Taylor Series for the sum of U and V, result stored in jet P
  */
-void ad_plus (mpfr_t *P, mpfr_t *V, mpfr_t *U, int n);
+mpfr_t *ad_plus (mpfr_t *P, mpfr_t *V, mpfr_t *U, int n);
 
 /*
  * Calculates Taylor Series for the difference of U and V, result stored in jet P
  */
-void ad_minus (mpfr_t *P, mpfr_t *V, mpfr_t *U, int n);
+mpfr_t *ad_minus (mpfr_t *P, mpfr_t *V, mpfr_t *U, int n);
 
 /*
  * Calculates Taylor Series for the square of U, result stored in jet S
  */
-void ad_square (mpfr_t *S, mpfr_t *U, int n);
+mpfr_t *ad_square (mpfr_t *S, mpfr_t *U, int n);
 
 /*
  * Calculates Taylor Series for U * V, result stored in jet P
  */
-void ad_product(mpfr_t *P, mpfr_t *V, mpfr_t *U, int n);
+mpfr_t *ad_product(mpfr_t *P, mpfr_t *V, mpfr_t *U, int n);
 
 /*
  * Calculates Taylor Series for U / V, result stored in jet Q
  */
-void ad_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int n);
+mpfr_t *ad_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int n);
 
 /*
  * Calculates Taylor Series for the square root of U, result stored in jet R
  */
-void ad_sqrt (mpfr_t *R, mpfr_t *U, int n);
+mpfr_t *ad_sqrt (mpfr_t *R, mpfr_t *U, int n);
 
 /*
  * Calculates Taylor Series for the exponential of U, results stored in jet E
  */
-void ad_exp (mpfr_t *E, mpfr_t *U, int n);
+mpfr_t *ad_exp (mpfr_t *E, mpfr_t *U, int n);
 
 /*
  * Calculates Taylor Series for the trigonometric sine and cosine of U, results stored in jets S and C
  */
-void ad_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n);
+struct Tuple ad_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n);
 
 /*
  * Calculates Taylor Series for the hyperbolic sine and cosine of U, results stored in jets S and C
  */
-void ad_sinh_cosh (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n);
+struct Tuple ad_sinh_cosh (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n);
 
 /*
  * Calculates Taylor Series for the trigonometric tangent and squared secant of U, results stored in jets T and S2
  */
-void ad_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n);
+struct Tuple ad_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n);
 
 /*
  * Calculates Taylor Series for the hyperbolic tangent and squared secant of U, results stored in jets T and S2
  */
-void ad_tanh_sech2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n);
+struct Tuple ad_tanh_sech2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n);
 
 /*
  * Calculates Taylor Series for U^a, results stored in jet P
  */
-void ad_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int n);
+mpfr_t *ad_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int n);
 
 /*
  * Calculates Taylor Series for the natural logarithm of U, results stored in jet L
  */
-void ad_ln (mpfr_t *L, mpfr_t *U, int n);
+mpfr_t *ad_ln (mpfr_t *L, mpfr_t *U, int n);
