@@ -59,32 +59,32 @@ mpfr_t *t_jet_c (int size, mpfr_t value);
 void t_horner (mpfr_t *sum, mpfr_t *jet, int n, mpfr_t h);
 
 /*
- * Returns kth element of the absolute value of U, result stored and returned in variable A
+ * Returns kth element of the absolute value of U, result stored and returned in variable A, NO JET STORAGE
  */
 mpfr_t *t_abs (mpfr_t *a, mpfr_t *u, int k);
 
 /*
- * Returns kth element of the square of U, result stored and returned in variable S
+ * Returns kth element of the square of U, result stored and returned in variable S, NO JET STORAGE
  */
 mpfr_t *t_sqr (mpfr_t *S, mpfr_t *U, int k);
 
 /*
- * Returns kth element of the product of U and V, result stored in variable P
+ * Returns kth element of the product of U and V, result stored in variable P, NO JET STORAGE
  */
 mpfr_t *t_prod (mpfr_t *P, mpfr_t *U, mpfr_t *V, int k);
 
 /*
- * Returns kth element of U / V, results stored in jet Q
+ * Returns kth element of U / V, results stored in jet Q, DOMAIN RESTRICTION u[0] != 0.0
  */
 mpfr_t *t_quot (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int k);
 
 /*
- * Returns kth element of the square root of U, results stored in jet R
+ * Returns kth element of the square root of U, results stored in jet R, DOMAIN RESTRICTION U[0] > 0.0
  */
 mpfr_t *t_sqrt (mpfr_t *R, mpfr_t *U, int k);
 
 /*
- * Returns kth element of U^a, results stored in jet P
+ * Returns kth element of U^a, results stored in jet P, DOMAIN RESTRICTION U[0] > 0.0
  */
 mpfr_t *t_pwr (mpfr_t *P, mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp);
 
@@ -94,7 +94,7 @@ mpfr_t *t_pwr (mpfr_t *P, mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp);
 mpfr_t *t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp);
 
 /*
- * Returns kth element of the natural logarithm of U, result stored in jet L
+ * Returns kth element of the natural logarithm of U, result stored in jet L, DOMAIN RESTRICTION U[0] > 0.0
  */
 mpfr_t *t_ln (mpfr_t *L, mpfr_t *U, int k, mpfr_t *tmp);
 

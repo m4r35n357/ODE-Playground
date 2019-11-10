@@ -42,6 +42,11 @@ void jet_to_derivs (mpfr_t *jet, long n);
 void derivative_output (mpfr_t *jet, long n, char* f_colour, char *fk_colour);
 
 /*
+ * Prints a line of solver output
+ */
+void ad_solver_output (int counter, mpfr_t x, mpfr_t f, mpfr_t delta);
+
+/*
  * Finds a root of fn(f, x) by bisection, where f and x are Taylor Series
  */
 void ad_bisect (model m, mpfr_t *xa, mpfr_t *xb, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *xc, mpfr_t *fa, mpfr_t *fc);
@@ -92,9 +97,19 @@ mpfr_t *ad_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int n);
 mpfr_t *ad_sqrt (mpfr_t *R, mpfr_t *U, int n);
 
 /*
+ * Calculates Taylor Series for U^a, results stored in jet P
+ */
+mpfr_t *ad_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int n);
+
+/*
  * Calculates Taylor Series for the exponential of U, results stored in jet E
  */
 mpfr_t *ad_exp (mpfr_t *E, mpfr_t *U, int n);
+
+/*
+ * Calculates Taylor Series for the natural logarithm of U, results stored in jet L
+ */
+mpfr_t *ad_ln (mpfr_t *L, mpfr_t *U, int n);
 
 /*
  * Calculates Taylor Series for the trigonometric sine and cosine of U, results stored in jets S and C
@@ -115,13 +130,3 @@ struct Tuple ad_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n);
  * Calculates Taylor Series for the hyperbolic tangent and squared secant of U, results stored in jets T and S2
  */
 struct Tuple ad_tanh_sech2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n);
-
-/*
- * Calculates Taylor Series for U^a, results stored in jet P
- */
-mpfr_t *ad_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int n);
-
-/*
- * Calculates Taylor Series for the natural logarithm of U, results stored in jet L
- */
-mpfr_t *ad_ln (mpfr_t *L, mpfr_t *U, int n);

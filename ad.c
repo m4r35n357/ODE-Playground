@@ -37,6 +37,10 @@ void derivative_output (mpfr_t *jet, long n, char* f_colour, char *fk_colour) {
     jet_output(jet, n, f_colour, fk_colour);
 }
 
+void ad_solver_output (int counter, mpfr_t x, mpfr_t f, mpfr_t delta) {
+    mpfr_fprintf(stderr, "%3d %20.12RNe %20.12RNe %20.12RNe\n", counter, x, f, delta);
+}
+
 void ad_bisect (model m, mpfr_t *a, mpfr_t *b, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *c, mpfr_t *fa, mpfr_t *fc) {
     mpfr_t delta, _;
     int counter = 0;
@@ -56,7 +60,7 @@ void ad_bisect (model m, mpfr_t *a, mpfr_t *b, int max_it, mpfr_t f_tol, mpfr_t 
         mpfr_sub(delta, b[0], a[0], RND);
         if (++counter > max_it) break;
     }
-    mpfr_fprintf(stderr, "%3d %20.12RNe %20.12RNe %20.12RNe\n", counter, c[0], fc[0], delta);
+    ad_solver_output(counter, c[0], fc[0], delta);
     mpfr_clears(delta, _, NULL);
 }
 
@@ -70,7 +74,7 @@ void ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t 
         mpfr_sub(x[0], x[0], delta, RND);
         if (++counter > max_it) break;
     }
-    mpfr_fprintf(stderr, "%3d %20.12RNe %20.12RNe %20.12RNe\n", counter, x[0], f[0], delta);
+    ad_solver_output(counter, x[0], f[0], delta);
     mpfr_clear(delta);
 }
 
@@ -87,7 +91,7 @@ void ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f
         mpfr_add(x[0], x[0], delta, RND);
         if (++counter > max_it) break;
     }
-    mpfr_fprintf(stderr, "%3d %20.12RNe %20.12RNe %20.12RNe\n", counter, x[0], f[0], delta);
+    ad_solver_output(counter, x[0], f[0], delta);
     mpfr_clear(delta);
 }
 
@@ -151,6 +155,16 @@ mpfr_t *ad_sqrt (mpfr_t *r, mpfr_t *u, int n) {
     return r;
 }
 
+mpfr_t *ad_power (mpfr_t *p, mpfr_t *u, mpfr_t a, int n) {
+    mpfr_t _;
+    mpfr_init(_);
+    for (int k = 0; k < n; k++) {
+        t_pwr(p, u, a, k, &_);
+    }
+    mpfr_clear(_);
+    return p;
+}
+
 mpfr_t *ad_exp (mpfr_t *e, mpfr_t *u, int n) {
     mpfr_t _;
     mpfr_init(_);
@@ -159,6 +173,16 @@ mpfr_t *ad_exp (mpfr_t *e, mpfr_t *u, int n) {
     }
     mpfr_clear(_);
     return e;
+}
+
+mpfr_t *ad_ln (mpfr_t *l, mpfr_t *u, int n) {
+    mpfr_t _;
+    mpfr_init(_);
+    for (int k = 0; k < n; k++) {
+        t_ln(l, u, k, &_);
+    }
+    mpfr_clear(_);
+    return l;
 }
 
 struct Tuple ad_sin_cos (mpfr_t *s, mpfr_t *c, mpfr_t *u, int n) {
@@ -199,24 +223,4 @@ struct Tuple ad_tanh_sech2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int n) {
     }
     mpfr_clear(_);
     return (struct Tuple){ t, s2 };
-}
-
-mpfr_t *ad_power (mpfr_t *p, mpfr_t *u, mpfr_t a, int n) {
-    mpfr_t _;
-    mpfr_init(_);
-    for (int k = 0; k < n; k++) {
-        t_pwr(p, u, a, k, &_);
-    }
-    mpfr_clear(_);
-    return p;
-}
-
-mpfr_t *ad_ln (mpfr_t *l, mpfr_t *u, int n) {
-    mpfr_t _;
-    mpfr_init(_);
-    for (int k = 0; k < n; k++) {
-        t_ln(l, u, k, &_);
-    }
-    mpfr_clear(_);
-    return l;
 }
