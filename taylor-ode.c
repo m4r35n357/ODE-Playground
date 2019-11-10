@@ -45,7 +45,7 @@ mpfr_t *t_jet_c (int n, mpfr_t value) {
     return jet;
 }
 
-void t_horner (mpfr_t *sum, const mpfr_t *jet, int n, mpfr_t h) {
+void t_horner (mpfr_t *sum, mpfr_t *jet, int n, mpfr_t h) {
     assert(n > 0);
     mpfr_set_zero(*sum, 1);
     for (int i = n; i > - 1; i--) {
@@ -53,14 +53,14 @@ void t_horner (mpfr_t *sum, const mpfr_t *jet, int n, mpfr_t h) {
     }
 }
 
-mpfr_t *t_abs (mpfr_t *a, const mpfr_t *u, int k) {
+mpfr_t *t_abs (mpfr_t *a, mpfr_t *u, int k) {
     assert(a != u);
     assert(k >= 0);
     mpfr_mul_si(*a, u[k], mpfr_sgn(u[0]), RND);
     return a;
 }
 
-mpfr_t *t_sqr (mpfr_t *s, const mpfr_t *u, int k) {
+mpfr_t *t_sqr (mpfr_t *s, mpfr_t *u, int k) {
     assert(s != u);
     assert(k >= 0);
     int upper = (k - (k % 2 == 0 ? 2 : 1)) / 2 + 1;
@@ -75,7 +75,7 @@ mpfr_t *t_sqr (mpfr_t *s, const mpfr_t *u, int k) {
     return s;
 }
 
-mpfr_t *t_prod (mpfr_t *p, const mpfr_t *u, const mpfr_t *v, int k) {
+mpfr_t *t_prod (mpfr_t *p, mpfr_t *u, mpfr_t *v, int k) {
     assert(p != u && p != v);
     assert(k >= 0);
     mpfr_set_zero(*p, 1);
@@ -85,7 +85,7 @@ mpfr_t *t_prod (mpfr_t *p, const mpfr_t *u, const mpfr_t *v, int k) {
     return p;
 }
 
-mpfr_t *t_quot (mpfr_t *q, const mpfr_t *u, const mpfr_t *v, int k) {
+mpfr_t *t_quot (mpfr_t *q, mpfr_t *u, mpfr_t *v, int k) {
     assert(mpfr_sgn(v[0]) != 0);
     assert(q != u && q != v && u != v);
     assert(k >= 0);
@@ -98,7 +98,7 @@ mpfr_t *t_quot (mpfr_t *q, const mpfr_t *u, const mpfr_t *v, int k) {
     return &q[k];
 }
 
-mpfr_t *t_sqrt (mpfr_t *r, const mpfr_t *u, int k) {
+mpfr_t *t_sqrt (mpfr_t *r, mpfr_t *u, int k) {
     assert(mpfr_sgn(u[0]) > 0);
     assert(r != u);
     assert(k >= 0);
@@ -121,7 +121,7 @@ mpfr_t *t_sqrt (mpfr_t *r, const mpfr_t *u, int k) {
     return &r[k];
 }
 
-mpfr_t *t_pwr (mpfr_t *p, const mpfr_t *u, mpfr_t a, int k, mpfr_t *_) {
+mpfr_t *t_pwr (mpfr_t *p, mpfr_t *u, mpfr_t a, int k, mpfr_t *_) {
     assert(mpfr_sgn(u[0]) > 0);
     assert(p != u);
     assert(_ != p && _ != u);
@@ -142,7 +142,7 @@ mpfr_t *t_pwr (mpfr_t *p, const mpfr_t *u, mpfr_t a, int k, mpfr_t *_) {
     return &p[k];
 }
 
-mpfr_t *t_exp (mpfr_t *e, const mpfr_t *u, int k, mpfr_t *_) {
+mpfr_t *t_exp (mpfr_t *e, mpfr_t *u, int k, mpfr_t *_) {
     assert(e != u);
     assert(_ != e && _ != u);
     assert(k >= 0);
@@ -158,7 +158,7 @@ mpfr_t *t_exp (mpfr_t *e, const mpfr_t *u, int k, mpfr_t *_) {
     return &e[k];
 }
 
-mpfr_t *t_ln (mpfr_t *l, const mpfr_t *u, int k, mpfr_t *_) {
+mpfr_t *t_ln (mpfr_t *l, mpfr_t *u, int k, mpfr_t *_) {
     assert(mpfr_sgn(u[0]) > 0);
     assert(l != u);
     assert(_ != l && _ != u);
@@ -177,7 +177,7 @@ mpfr_t *t_ln (mpfr_t *l, const mpfr_t *u, int k, mpfr_t *_) {
     return &l[k];
 }
 
-struct Tuple t_sin_cos (mpfr_t *s, mpfr_t *c, const mpfr_t *u, int k, mpfr_t *_, geometry g) {
+struct Tuple t_sin_cos (mpfr_t *s, mpfr_t *c, mpfr_t *u, int k, mpfr_t *_, geometry g) {
     assert(s != c && s != u && c != u);
     assert(_ != s && _ != c && _ != u);
     assert(k >= 0);
@@ -203,7 +203,7 @@ struct Tuple t_sin_cos (mpfr_t *s, mpfr_t *c, const mpfr_t *u, int k, mpfr_t *_,
     return (struct Tuple){ &s[k], &c[k] };
 }
 
-struct Tuple t_tan_sec2 (mpfr_t *t, mpfr_t *s2, const mpfr_t *u, int k, mpfr_t *_, geometry g) {
+struct Tuple t_tan_sec2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int k, mpfr_t *_, geometry g) {
     assert(t != s2 && t != u && s2 != u);
     assert(_ != t && _ != s2 && _ != u);
     assert(k >= 0);

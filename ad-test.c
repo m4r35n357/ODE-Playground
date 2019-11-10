@@ -22,7 +22,7 @@
 long order, n;
 mpfr_t x, y, _, D_1, D_05, D0, D05, D1, D2, D3, D4, D5, D6, D7, *cx, *cy, *cx0, *c1, *c2, *c3, *c5, *c6, *c7, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2, *wsqr, *wsqrt, *wsum, *wprod, *wquot, *wpwr, *__, *_1, *_2, *_3;
 
-void septic (mpfr_t *f, const mpfr_t *x, int n) {
+void septic (mpfr_t *f, mpfr_t *x, int n) {
     ad_minus(_2, x, c1, n);
     ad_plus(_1, x, c2, n);
     ad_product(_3, _2, _1, n);

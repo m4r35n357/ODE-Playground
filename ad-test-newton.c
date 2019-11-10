@@ -19,16 +19,16 @@ solver method;
 
 model m;
 
-void test_sqr (mpfr_t *f, const mpfr_t *x, int n) {
+void test_sqr (mpfr_t *f, mpfr_t *x, int n) {
     ad_square(f, x, n);
     ad_minus(f, f, w_value, n);
 }
 
-void trig (mpfr_t *f, const mpfr_t *x, int n) {
+void trig (mpfr_t *f, mpfr_t *x, int n) {
     ad_tan_sec2(f, _1, x, n);
 }
 
-void cosx_x3 (mpfr_t *f, const mpfr_t *x, int n) {
+void cosx_x3 (mpfr_t *f, mpfr_t *x, int n) {
     //  Example: ./ad-test-newton-dbg 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     ad_square(_1, x, n);
     ad_product(_2, _1, x, n);
@@ -37,7 +37,7 @@ void cosx_x3 (mpfr_t *f, const mpfr_t *x, int n) {
     ad_minus(f, _3, w_value, n);
 }
 
-void test_polynomial (mpfr_t *f, const mpfr_t *x, int n) {
+void test_polynomial (mpfr_t *f, mpfr_t *x, int n) {
     ad_square(f, x, n);
     ad_product(_2, f, x, n);
     ad_scale(_1, x, D2, n);
@@ -45,7 +45,7 @@ void test_polynomial (mpfr_t *f, const mpfr_t *x, int n) {
     ad_minus(f, f, w5, n);
 }
 
-void septic (mpfr_t *f, const mpfr_t *x, int n) {
+void septic (mpfr_t *f, mpfr_t *x, int n) {
     //  Example: ./ad-test-newton-dbg 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
     ad_minus(_2, x, w1, n);
     ad_plus(_1, x, w2, n);
@@ -61,7 +61,7 @@ void septic (mpfr_t *f, const mpfr_t *x, int n) {
     ad_product(f, _3, x, n);
 }
 
-void composite1 (mpfr_t *f, const mpfr_t *x, int n) {
+void composite1 (mpfr_t *f, mpfr_t *x, int n) {
     //  Example: ./ad-test-newton-dbg 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     ad_square(_1, x, n);
     ad_minus(_2, _1, w4, n);
@@ -71,7 +71,7 @@ void composite1 (mpfr_t *f, const mpfr_t *x, int n) {
     ad_ln(f, _3, n);
 }
 
-void composite2 (mpfr_t *f, const mpfr_t *x, int n) {
+void composite2 (mpfr_t *f, mpfr_t *x, int n) {
     //  Example: ./ad-test-newton-dbg 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     ad_exp(_1, x, n);
     ad_minus(_2, _1, w4, n);
@@ -81,7 +81,7 @@ void composite2 (mpfr_t *f, const mpfr_t *x, int n) {
     ad_sqrt(f, _3, n);
 }
 
-void lorentz (mpfr_t *f, const mpfr_t *x, int n) {
+void lorentz (mpfr_t *f, mpfr_t *x, int n) {
     ad_square(_1, x, n);
     ad_minus(_2, w1, _1, n);
     ad_power(f, _2, D_05, n);

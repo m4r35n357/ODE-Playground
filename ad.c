@@ -91,7 +91,7 @@ void ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f
     mpfr_clear(delta);
 }
 
-void ad_scale (mpfr_t *s, const mpfr_t *u, mpfr_t a, int n) {
+void ad_scale (mpfr_t *s, mpfr_t *u, mpfr_t a, int n) {
     assert(s != u);
     assert(sizeof *s == sizeof *u);
     assert(sizeof *a == sizeof (mpfr_t));
@@ -100,7 +100,7 @@ void ad_scale (mpfr_t *s, const mpfr_t *u, mpfr_t a, int n) {
     }
 }
 
-void ad_plus (mpfr_t *p, const mpfr_t *u, const mpfr_t *v, int n) {
+void ad_plus (mpfr_t *p, mpfr_t *u, mpfr_t *v, int n) {
     assert(p != u && p != v);
     assert(sizeof *p == sizeof *u && sizeof *p == sizeof *v);
     for (int k = 0; k < n; k++) {
@@ -108,7 +108,7 @@ void ad_plus (mpfr_t *p, const mpfr_t *u, const mpfr_t *v, int n) {
     }
 }
 
-void ad_minus (mpfr_t *p, const mpfr_t *u, const mpfr_t *v, int n) {
+void ad_minus (mpfr_t *p, mpfr_t *u, mpfr_t *v, int n) {
     assert(p != u && p != v);
     assert(sizeof *p == sizeof *u && sizeof *p == sizeof *v);
     for (int k = 0; k < n; k++) {
@@ -116,7 +116,7 @@ void ad_minus (mpfr_t *p, const mpfr_t *u, const mpfr_t *v, int n) {
     }
 }
 
-void ad_square (mpfr_t *s, const mpfr_t *u, int n) {
+void ad_square (mpfr_t *s, mpfr_t *u, int n) {
     assert(s != u);
     assert(sizeof *s == sizeof *u);
     for (int k = 0; k < n; k++) {
@@ -124,7 +124,7 @@ void ad_square (mpfr_t *s, const mpfr_t *u, int n) {
     }
 }
 
-void ad_product (mpfr_t *p, const mpfr_t *u, const mpfr_t *v, int n) {
+void ad_product (mpfr_t *p, mpfr_t *u, mpfr_t *v, int n) {
     assert(p != u && p != v);
     assert(sizeof *p == sizeof *u && sizeof *p == sizeof *v);
     for (int k = 0; k < n; k++) {
@@ -132,19 +132,19 @@ void ad_product (mpfr_t *p, const mpfr_t *u, const mpfr_t *v, int n) {
     }
 }
 
-void ad_quotient (mpfr_t *q, const mpfr_t *u, const mpfr_t *v, int n) {
+void ad_quotient (mpfr_t *q, mpfr_t *u, mpfr_t *v, int n) {
     for (int k = 0; k < n; k++) {
         t_quot(q, u, v, k);
     }
 }
 
-void ad_sqrt (mpfr_t *r, const mpfr_t *u, int n) {
+void ad_sqrt (mpfr_t *r, mpfr_t *u, int n) {
     for (int k = 0; k < n; k++) {
         t_sqrt(r, u, k);
     }
 }
 
-void ad_exp (mpfr_t *e, const mpfr_t *u, int n) {
+void ad_exp (mpfr_t *e, mpfr_t *u, int n) {
     mpfr_t _;
     mpfr_init(_);
     for (int k = 0; k < n; k++) {
@@ -153,7 +153,7 @@ void ad_exp (mpfr_t *e, const mpfr_t *u, int n) {
     mpfr_clear(_);
 }
 
-void ad_sin_cos (mpfr_t *s, mpfr_t *c, const mpfr_t *u, int n) {
+void ad_sin_cos (mpfr_t *s, mpfr_t *c, mpfr_t *u, int n) {
     mpfr_t _;
     mpfr_init(_);
     for (int k = 0; k < n; k++) {
@@ -162,7 +162,7 @@ void ad_sin_cos (mpfr_t *s, mpfr_t *c, const mpfr_t *u, int n) {
     mpfr_clear(_);
 }
 
-void ad_sinh_cosh (mpfr_t *s, mpfr_t *c, const mpfr_t *u, int n) {
+void ad_sinh_cosh (mpfr_t *s, mpfr_t *c, mpfr_t *u, int n) {
     mpfr_t _;
     mpfr_init(_);
     for (int k = 0; k < n; k++) {
@@ -171,7 +171,7 @@ void ad_sinh_cosh (mpfr_t *s, mpfr_t *c, const mpfr_t *u, int n) {
     mpfr_clear(_);
 }
 
-void ad_tan_sec2 (mpfr_t *t, mpfr_t *s2, const mpfr_t *u, int n) {
+void ad_tan_sec2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int n) {
     mpfr_t _;
     mpfr_init(_);
     for (int k = 0; k < n; k++) {
@@ -180,7 +180,7 @@ void ad_tan_sec2 (mpfr_t *t, mpfr_t *s2, const mpfr_t *u, int n) {
     mpfr_clear(_);
 }
 
-void ad_tanh_sech2 (mpfr_t *t, mpfr_t *s2, const mpfr_t *u, int n) {
+void ad_tanh_sech2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int n) {
     mpfr_t _;
     mpfr_init(_);
     for (int k = 0; k < n; k++) {
@@ -189,7 +189,7 @@ void ad_tanh_sech2 (mpfr_t *t, mpfr_t *s2, const mpfr_t *u, int n) {
     mpfr_clear(_);
 }
 
-void ad_power (mpfr_t *p, const mpfr_t *u, mpfr_t a, int n) {
+void ad_power (mpfr_t *p, mpfr_t *u, mpfr_t a, int n) {
     mpfr_t _;
     mpfr_init(_);
     for (int k = 0; k < n; k++) {
@@ -198,7 +198,7 @@ void ad_power (mpfr_t *p, const mpfr_t *u, mpfr_t a, int n) {
     mpfr_clear(_);
 }
 
-void ad_ln (mpfr_t *l, const mpfr_t *u, int n) {
+void ad_ln (mpfr_t *l, mpfr_t *u, int n) {
     mpfr_t _;
     mpfr_init(_);
     for (int k = 0; k < n; k++) {
