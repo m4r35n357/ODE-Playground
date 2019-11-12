@@ -4,20 +4,24 @@ fileA='/tmp/dataA'
 fileB='/tmp/dataB'
 
 original=$*
-echo 'Original: ' $original
 
 start="$1 $2 $3"
-step=$(echo "scale=3; $4/2;" | bc)
+step=$(echo "scale=6; $4/2;" | bc)
 steps=$(echo "scale=0; $5*2;" | bc)
 shift 5
 end="$*"
-echo 'Improved: ' $start $step $steps $end
+echo 'Better:' $start $step $steps $end
 
 $start $step $steps $end | sed -n '1~2p' >$fileB &\
 $original >$fileA &\
-
 wait
 
-./divergence.py $fileA $fileB 3 1.0
-./compare.py $fileA $fileB 3 &
+./divergence.py $fileA $fileB 3 0.000000000000000001 >/dev/null
+./divergence.py $fileA $fileB 3 0.000000000001 >/dev/null
+./divergence.py $fileA $fileB 3 0.000000001 >/dev/null
+./divergence.py $fileA $fileB 3 0.000001 >/dev/null
+./divergence.py $fileA $fileB 3 0.001 >/dev/null
+./divergence.py $fileA $fileB 3 1.0 >/dev/null
+
+./compare.py $fileA $fileB 3 >/dev/null &
 
