@@ -1,0 +1,23 @@
+#!/bin/sh
+
+fileA='/tmp/dataA'
+fileB='/tmp/dataB'
+
+original=$*
+echo 'Original: ' $original
+
+start="$1 $2 $3"
+step=$(echo "scale=3; $4/2;" | bc)
+steps=$(echo "scale=0; $5*2;" | bc)
+shift 5
+end="$*"
+echo 'Improved: ' $start $step $steps $end
+
+$start $step $steps $end | sed -n '1~2p' >$fileB &\
+$original >$fileA &\
+
+wait
+
+./divergence.py $fileA $fileB 3 1.0
+./compare.py $fileA $fileB 3 &
+
