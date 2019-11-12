@@ -43,7 +43,8 @@ int main (int argc, char **argv) {
             mpfr_sub(_, y[k], x[k], RND);
             mpfr_div_ui(x[k + 1], _, k + 1, RND);
             //  y' = - z * tan(x)
-            mpfr_div_si(y[k + 1], *t_prod(&_, z, t_tan_sec2(tx, s2x, x, k, &_, HYP).a, k), - (k + 1), RND);
+            t_tan_sec2(tx, s2x, x, k, &_, HYP);
+            mpfr_div_si(y[k + 1], *t_prod(&_, z, tx, k), - (k + 1), RND);
             //  z' = - A + x * y + |y|
             mpfr_add(_, *t_prod(&_, x, y, k), *t_abs(&__, y, k), RND);
             mpfr_sub(_, _, wa[k], RND);
