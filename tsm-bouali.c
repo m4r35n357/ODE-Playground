@@ -1,7 +1,7 @@
 /*
  * Bouali Attractor
  *
- * Example: ./tsm-bouali-dbg 80 40 0.02 50001 1 1 0 3 2.2 1 .01
+ * Example: ./tsm-bouali-dbg 16 10 0.1 50000 1 1 0 3 2.2 1 .01
  *
  * (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
