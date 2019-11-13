@@ -1,0 +1,34 @@
+/*
+ * Example: bc -q taylor.bc tsm-lotka-volterra.bc | ./plotAnimated.py 1 0 80
+ */
+ 
+scale=16
+n=10
+h=0.01
+steps=10000
+x=10.0
+y=10.0
+a=1.0
+b=0.5
+c=0.05
+d=0.02
+
+t_print(x, y, 0.0, 0.0)
+
+for (step = 1; step < steps + 1; step++) {
+    x[0] = x
+    y[0] = y
+    for (k = 0; k < n; k++) {
+        xy = t_prod(x[], y[], k)
+        x[k + 1] = (a * x[k] - c * xy) / (k + 1)
+        y[k + 1] = (d * xy - b * y[k]) / (k + 1)
+    }
+
+    x = t_horner(n, x[], h)
+    y = t_horner(n, y[], h)
+
+    t_print(x, y, 0.0, h * step)
+}
+
+quit
+
