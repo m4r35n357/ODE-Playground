@@ -121,27 +121,6 @@ mpfr_t *t_sqrt (mpfr_t *r, mpfr_t *u, int k) {
     return &r[k];
 }
 
-mpfr_t *t_pwr (mpfr_t *p, mpfr_t *u, mpfr_t a, int k, mpfr_t *_) {
-    assert(mpfr_sgn(u[0]) > 0);
-    assert(p != u);
-    assert(_ != p && _ != u);
-    assert(k >= 0);
-    if (k == 0) {
-        mpfr_pow(p[0], u[0], a, RND);
-    } else {
-        mpfr_set_zero(p[k], 1);
-        for (int j = 0; j < k; j++) {
-            mpfr_mul_ui(*_, a, k - j, RND);
-            mpfr_sub_ui(*_, *_, j, RND);
-            mpfr_mul(*_, *_, u[k - j], RND);
-            mpfr_fma(p[k], *_, p[j], p[k], RND);
-        }
-        mpfr_div_ui(p[k], p[k], k, RND);
-        mpfr_div(p[k], p[k], u[0], RND);
-    }
-    return &p[k];
-}
-
 mpfr_t *t_exp (mpfr_t *e, mpfr_t *u, int k, mpfr_t *_) {
     assert(e != u);
     assert(_ != e && _ != u);
@@ -156,25 +135,6 @@ mpfr_t *t_exp (mpfr_t *e, mpfr_t *u, int k, mpfr_t *_) {
         }
     }
     return &e[k];
-}
-
-mpfr_t *t_ln (mpfr_t *l, mpfr_t *u, int k, mpfr_t *_) {
-    assert(mpfr_sgn(u[0]) > 0);
-    assert(l != u);
-    assert(_ != l && _ != u);
-    assert(k >= 0);
-    if (k == 0) {
-        mpfr_log(l[0], u[0], RND);
-    } else {
-        mpfr_set_zero(l[k], 1);
-        for (int j = 1; j < k; j++) {
-            mpfr_mul_d(*_, u[k - j], j / (double)k, RND);
-            mpfr_fma(l[k], *_, l[j], l[k], RND);
-        }
-        mpfr_sub(l[k], u[k], l[k], RND);
-        mpfr_div(l[k], l[k], u[0], RND);
-    }
-    return &l[k];
 }
 
 struct Tuple t_sin_cos (mpfr_t *s, mpfr_t *c, mpfr_t *u, int k, mpfr_t *_, geometry g) {
@@ -234,3 +194,42 @@ struct Tuple t_tan_sec2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int k, mpfr_t *_, geo
     return (struct Tuple){ &t[k], &s2[k] };
 }
 
+mpfr_t *t_pwr (mpfr_t *p, mpfr_t *u, mpfr_t a, int k, mpfr_t *_) {
+    assert(mpfr_sgn(u[0]) > 0);
+    assert(p != u);
+    assert(_ != p && _ != u);
+    assert(k >= 0);
+    if (k == 0) {
+        mpfr_pow(p[0], u[0], a, RND);
+    } else {
+        mpfr_set_zero(p[k], 1);
+        for (int j = 0; j < k; j++) {
+            mpfr_mul_ui(*_, a, k - j, RND);
+            mpfr_sub_ui(*_, *_, j, RND);
+            mpfr_mul(*_, *_, u[k - j], RND);
+            mpfr_fma(p[k], *_, p[j], p[k], RND);
+        }
+        mpfr_div_ui(p[k], p[k], k, RND);
+        mpfr_div(p[k], p[k], u[0], RND);
+    }
+    return &p[k];
+}
+
+mpfr_t *t_ln (mpfr_t *l, mpfr_t *u, int k, mpfr_t *_) {
+    assert(mpfr_sgn(u[0]) > 0);
+    assert(l != u);
+    assert(_ != l && _ != u);
+    assert(k >= 0);
+    if (k == 0) {
+        mpfr_log(l[0], u[0], RND);
+    } else {
+        mpfr_set_zero(l[k], 1);
+        for (int j = 1; j < k; j++) {
+            mpfr_mul_d(*_, l[j], j / (double)k, RND);
+            mpfr_fma(l[k], *_, u[k - j], l[k], RND);
+        }
+        mpfr_sub(l[k], u[k], l[k], RND);
+        mpfr_div(l[k], l[k], u[0], RND);
+    }
+    return &l[k];
+}
