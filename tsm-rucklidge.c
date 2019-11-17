@@ -1,7 +1,7 @@
 /*
  * Rucklidge Attractor
  *
- * Example: ./tsm-rucklidge-dbg 16 10 0.01 10001 1 0 0 6.7 2
+ * Example: ./tsm-rucklidge-dbg 16 10 0.01 10000 1 0 0 6.7 2
  *
  * (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
