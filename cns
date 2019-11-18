@@ -12,8 +12,8 @@ shift 5
 end="$*"
 echo 'Better:' $start $step $steps $end
 
-$start $step $steps $end | sed -n '1~2p' >$fileB &
-$original >$fileA &
+$start $step $steps $end | sed -n '1~2p' >$fileA &
+$original >$fileB &
 wait
 
 ./divergence.py $fileA $fileB 3 0.000000000000000001 >/dev/null
