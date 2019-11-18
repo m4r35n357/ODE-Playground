@@ -10,46 +10,46 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-long order, nsteps;
-mpfr_t t, x, y, a, b, c, d, h, _, wxy, *cx, *cy;
+long n, nsteps;
+mpfr_t t, x0, y0, a, b, c, d, h, _, xy, *x, *y;
 
 int main (int argc, char **argv) {
     assert(argc == 12);
     // initialize from command arguments
-    t_stepper(argv, &order, &t, &h, &nsteps);
-    t_arg(argv, 5, &x);
-    t_arg(argv, 6, &y);
+    t_stepper(argv, &n, &t, &h, &nsteps);
+    t_arg(argv, 5, &x0);
+    t_arg(argv, 6, &y0);
     t_arg(argv, 8, &a);
     t_arg(argv, 9, &b);
     t_arg(argv, 10, &c);
     t_arg(argv, 11, &d);
-    mpfr_inits(_, wxy, NULL);
+    mpfr_inits(_, xy, NULL);
 
     // initialize the derivative and temporary jets
-    cx = t_jet(order + 1);
-    cy = t_jet(order + 1);
+    x = t_jet(n + 1);
+    y = t_jet(n + 1);
 
     // main loop
-    t_xyz_output(x, y, x, t);
+    t_xyz_output(x0, y0, x0, t);
     for (long step = 1; step < nsteps + 1; step++) {
         // compute the taylor coefficients
-        mpfr_set(cx[0], x, RND);
-        mpfr_set(cy[0], y, RND);
-        for (int k = 0; k < order; k++) {
-            t_prod(&wxy, cx, cy, k);
+        mpfr_set(x[0], x0, RND);
+        mpfr_set(y[0], y0, RND);
+        for (int k = 0; k < n; k++) {
+            t_prod(&xy, x, y, k);
             //  x' = Ax - Cxy
-            mpfr_fmms(_, a, cx[k], c, wxy, RND);
-            mpfr_div_ui(cx[k + 1], _, k + 1, RND);
+            mpfr_fmms(_, a, x[k], c, xy, RND);
+            mpfr_div_ui(x[k + 1], _, k + 1, RND);
             //  y' = Dxy - By
-            mpfr_fmms(_, d, wxy, b, cy[k], RND);
-            mpfr_div_ui(cy[k + 1], _, k + 1, RND);
+            mpfr_fmms(_, d, xy, b, y[k], RND);
+            mpfr_div_ui(y[k + 1], _, k + 1, RND);
         }
 
         // sum the series using Horner's method and advance one step
-        t_horner(&x, cx, order, h);
-        t_horner(&y, cy, order, h);
+        t_horner(&x0, x, n, h);
+        t_horner(&y0, y, n, h);
         mpfr_mul_ui(t, h, step, RND);
-        t_xyz_output(x, y, x, t);
+        t_xyz_output(x0, y0, x0, t);
     }
     return 0;
 }
