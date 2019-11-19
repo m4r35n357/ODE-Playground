@@ -1,7 +1,7 @@
 /*
  * Halvorsen Cyclic Attractor
  *
- * Example: ./tsm-halvorsen-dbg 16 10 .01 100000 1 0 0 1.4
+ * Example: ./tsm-halvorsen-dbg 16 10 .01 10000 1 0 0 1.4
  *
  * (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -10,13 +10,13 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-long order, nsteps;
+long n, nsteps;
 mpfr_t t, x0, y0, z0, a, h, _, w4x, w4y, w4z, *x, *y, *z;
 
 int main (int argc, char **argv) {
     assert(argc == 9);
     // initialize from command arguments
-    t_stepper(argv, &order, &t, &h, &nsteps);
+    t_stepper(argv, &n, &t, &h, &nsteps);
     t_arg(argv, 5, &x0);
     t_arg(argv, 6, &y0);
     t_arg(argv, 7, &z0);
@@ -24,9 +24,9 @@ int main (int argc, char **argv) {
     mpfr_inits(_, w4x, w4y, w4z, NULL);
 
     // initialize the derivative and temporary jets
-    x = t_jet(order + 1);
-    y = t_jet(order + 1);
-    z = t_jet(order + 1);
+    x = t_jet(n + 1);
+    y = t_jet(n + 1);
+    z = t_jet(n + 1);
 
     // main loop
     t_xyz_output(x0, y0, z0, t);
@@ -35,7 +35,7 @@ int main (int argc, char **argv) {
         mpfr_set(x[0], x0, RND);
         mpfr_set(y[0], y0, RND);
         mpfr_set(z[0], z0, RND);
-        for (int k = 0; k < order; k++) {
+        for (int k = 0; k < n; k++) {
             mpfr_mul_2ui(w4x, x[k], 2, RND);
             mpfr_mul_2ui(w4y, y[k], 2, RND);
             mpfr_mul_2ui(w4z, z[k], 2, RND);
@@ -57,9 +57,9 @@ int main (int argc, char **argv) {
         }
 
         // sum the series using Horner's method and advance one step
-        t_horner(&x0, x, order, h);
-        t_horner(&y0, y, order, h);
-        t_horner(&z0, z, order, h);
+        t_horner(&x0, x, n, h);
+        t_horner(&y0, y, n, h);
+        t_horner(&z0, z, n, h);
         mpfr_mul_ui(t, h, step, RND);
         t_xyz_output(x0, y0, z0, t);
     }
