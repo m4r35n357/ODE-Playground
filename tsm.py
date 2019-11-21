@@ -3,8 +3,8 @@
 #  (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 from sys import argv
-from math import sqrt, cos, pi
-from ad import Context, t_jet, t_horner, t_abs, t_prod, t_sin_cos, t_tan_sec2, t_sqr, t_exp
+from math import sqrt, cos, pi, floor, sin
+from ad import Context, t_jet, t_horner, t_abs, t_prod, t_sin_cos, t_tan_sec2, t_sqr, t_exp, t_quot
 
 
 def output(x, y, z, t):
@@ -273,6 +273,46 @@ def main():
                 y[k + 1] = (a * cos(ω * step * δt) - ζ * length * y[k] - m * g * sinθ[k]) / (m * length) / (k + 1)
             x0, y0 = t_horner(x, δt), t_horner(y, δt)  # Horner's method
             output(x0, y0, 0.0, step * δt)
+    elif model == "double-pendulum":
+        def polar_to_rectangular(length1, sin1, cos1, length2, sin2, cos2, t, th1, th2, w1, w2):
+            x_1, y_1 = length1 * sin1, - length1 * cos1  # convert angles to X-Y coordinates
+            x_2, y_2 = x_1 + length2 * sin2, y_1 - length2 * cos2
+            print(f"{x_1:.9e} {y_1:.9e} {x_2:.9e} {y_2:.9e} {t:.5e} 0.0 {th1:.9e} {th2:.9e} {w1:.9e} {w2:.9e}")
+        g, m1, m2, l1, l2, θ1_0, ω1_0, θ2_0, ω2_0 = 9.80665, float(argv[6]), float(argv[7]), float(argv[8]), float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12]), float(argv[13])  # physical parameters
+        ω1, ω2 = t_jet(order + 1), t_jet(order + 1)  # jets
+        ω1_2, ω2_2 = t_jet(order), t_jet(order)
+        θ1, sinθ1, cosθ1 = t_jet(order + 1), t_jet(order, sin(θ1_0)), t_jet(order, cos(θ1_0))
+        θ2, sinθ2, cosθ2 = t_jet(order + 1), t_jet(order, sin(θ2_0)), t_jet(order, cos(θ2_0))
+        _θ1_θ2, sinθ1_θ2, cosθ1_θ2 = t_jet(order), t_jet(order), t_jet(order)
+        _θ1_2θ2, sinθ1_2θ2, cosθ1_2θ2 = t_jet(order), t_jet(order), t_jet(order)
+        _2θ1_2θ2, sin2θ1_2θ2, cos2θ1_2θ2 = t_jet(order), t_jet(order), t_jet(order)
+        n1, n2, q1, q2, d = t_jet(order), t_jet(order), t_jet(order), t_jet(order), t_jet(order)
+        n1_, n2_  = t_jet(order), t_jet(order)
+        polar_to_rectangular(l1, sinθ1[0], cosθ1[0], l2, sinθ2[0], cosθ2[0], 0.0, θ1_0, θ2_0, ω1_0, ω2_0)
+        for step in steps:
+            θ1[0], θ2[0], ω1[0], ω2[0] = θ1_0, θ2_0, ω1_0, ω2_0
+            for k in index:  # build up jets using recurrences and the derivative rule
+                sinθ1[k], cosθ1[k] = t_sin_cos(sinθ1, cosθ1, θ1, k)
+                sinθ2[k], cosθ2[k] = t_sin_cos(sinθ2, cosθ2, θ2, k)
+                _θ1_θ2[k] = θ1[k] - θ2[k]
+                sinθ1_θ2[k], cosθ1_θ2[k] = t_sin_cos(sinθ1_θ2, cosθ1_θ2, _θ1_θ2, k)
+                _θ1_2θ2[k] = θ1[k] - 2.0 * θ2[k]
+                sinθ1_2θ2[k], cosθ1_2θ2[k] = t_sin_cos(sinθ1_2θ2, cosθ1_2θ2, _θ1_2θ2, k)
+                _2θ1_2θ2[k] = 2.0 * (θ1[k] - θ2[k])
+                sin2θ1_2θ2[k], cos2θ1_2θ2[k] = t_sin_cos(sin2θ1_2θ2, cos2θ1_2θ2, _2θ1_2θ2, k)
+                ω1_2[k] = t_sqr(ω1, k)
+                ω2_2[k] = t_sqr(ω2, k)
+                n1_[k] = l2 * ω2_2[k] + l1 * t_prod(ω1_2, cosθ1_θ2, k)
+                n1[k] = - g * (2.0 * m1 + m2) * sinθ1[k] - g * m2 * sinθ1_2θ2[k] - 2.0 * m2 * t_prod(sinθ1_θ2, n1_, k)
+                n2_[k] = g * (m1 + m2) * cosθ1[k] + l1 * (m1 + m2) * ω1_2[k] + l2 * m2 * t_prod(ω2_2, cosθ1_θ2, k)
+                n2[k] = 2.0 * t_prod(sinθ1_θ2, n2_, k)
+                d[k] = 2.0 * m1 + m2 - m2 * cos2θ1_2θ2[k]
+                θ1[k + 1] = ω1[k] / (k + 1)
+                θ2[k + 1] = ω2[k] / (k + 1)
+                ω1[k + 1] = t_quot(q1, n1, d, k) / l1 / (k + 1)
+                ω2[k + 1] = t_quot(q2, n2, d, k) / l2 / (k + 1)
+            θ1_0, θ2_0, ω1_0, ω2_0 = t_horner(θ1, δt), t_horner(θ2, δt), t_horner(ω1, δt), t_horner(ω2, δt)  # Horner's method
+            polar_to_rectangular(l1, sinθ1[0], cosθ1[0], l2, sinθ2[0], cosθ2[0], step * δt, θ1_0, θ2_0, ω1_0, ω2_0)
     elif model == "volterra":
         #  Example: ./tsm.py volterra 9 8 .01 2001 10 10 0 1 .5 .05 .02 | ./plotAnimated.py 1 0 80
         a, b, c, d = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
@@ -284,7 +324,9 @@ def main():
                 x[k + 1] = (a * x[k] - c * xy) / (k + 1)
                 y[k + 1] = (d * xy - b * y[k]) / (k + 1)
             x0, y0 = t_horner(x, δt), t_horner(y, δt)
-            output(x0, y0, 0.0, step * δt)
+            if floor(x0) == 0 or floor(y0) == 0:
+                break
+            output(floor(x0), floor(y0), 0.0, step * δt)
     elif model == "logistic":
         #  Example: ./tsm.py logistic 9 8 0.1 10001 .6 0 0 .1 | ./plotXY.py 1 3 0
         #  Example: ./tsm.py logistic 9 8 0.1 10001 .6 0 0 .1 | ./plotAnimated.py 1 0 2
