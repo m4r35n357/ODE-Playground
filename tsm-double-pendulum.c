@@ -14,14 +14,16 @@ long n, nsteps;
 mpfr_t t, t10, w10, t20, w20, g, m1, m2, l1, l2, h, _, __, *t1, *w1, *t2, *w2, x1, y1, x2, y2, *d, *st1, *ct1, *st2, *ct2, *w1_2, *w2_2;
 mpfr_t *_t1_t2, *_t1_2t2, *_2t1_2t2, *st1_t2, *ct1_t2, *st1_2t2, *ct1_2t2, *s2t1_2t2, *c2t1_2t2, *n1, *n1_, *n2, *n2_, *q1, *q2;
 
-void polar_to_rectangular (mpfr_t *xa, mpfr_t *ya, mpfr_t *xb, mpfr_t *yb, mpfr_t la, mpfr_t *sta, mpfr_t *cta, mpfr_t lb, mpfr_t *stb, mpfr_t *ctb, mpfr_t tt, mpfr_t ta, mpfr_t tb, mpfr_t wa, mpfr_t wb);
+void polar_to_rectangular (mpfr_t *xa, mpfr_t *ya, mpfr_t *xb, mpfr_t *yb, mpfr_t la, mpfr_t lb, mpfr_t tt, mpfr_t ta, mpfr_t tb, mpfr_t wa, mpfr_t wb, mpfr_t *tmp1, mpfr_t *tmp2);
 
-void polar_to_rectangular (mpfr_t *xa, mpfr_t *ya, mpfr_t *xb, mpfr_t *yb, mpfr_t la, mpfr_t *sta, mpfr_t *cta, mpfr_t lb, mpfr_t *stb, mpfr_t *ctb, mpfr_t tt, mpfr_t ta, mpfr_t tb, mpfr_t wa, mpfr_t wb) {
-    mpfr_mul(*xa, la, sta[0], RND);
-    mpfr_mul(*ya, la, cta[0], RND);
+void polar_to_rectangular (mpfr_t *xa, mpfr_t *ya, mpfr_t *xb, mpfr_t *yb, mpfr_t la, mpfr_t lb, mpfr_t tt, mpfr_t ta, mpfr_t tb, mpfr_t wa, mpfr_t wb, mpfr_t *_1, mpfr_t *_2) {
+    mpfr_sin_cos(*_1, *_2, t10, RND);
+    mpfr_mul(*xa, la, *_1, RND);
+    mpfr_mul(*ya, la, *_2, RND);
     mpfr_neg(*ya, *ya, RND);
-    mpfr_fma(*xb, lb, stb[0], *xa, RND);
-    mpfr_fms(*yb, lb, ctb[0], *ya, RND);
+    mpfr_sin_cos(*_1, *_2, t20, RND);
+    mpfr_fma(*xb, lb, *_1, *xa, RND);
+    mpfr_fms(*yb, lb, *_2, *ya, RND);
     mpfr_neg(*yb, *yb, RND);
     mpfr_printf("%.9RNe %.9RNe %.9RNe %.9RNe %.5RNe %.5RNe %.9RNe %.9RNe %.9RNe %.9RNe\n", xa, ya, x2, y2, tt, tt, ta, tb, wa, wb);
 }
@@ -70,9 +72,7 @@ int main (int argc, char **argv) {
     d = t_jet(n);
 
     // main loop
-    mpfr_sin_cos(st1[0], ct1[0], t10, RND);
-    mpfr_sin_cos(st2[0], ct2[0], t20, RND);
-    polar_to_rectangular(&x1, &y1, &x2, &y2, l1, st1, ct1, l2, st2, ct2, t, t10, t20, w10, w20);
+    polar_to_rectangular(&x1, &y1, &x2, &y2, l1, l2, t, t10, t20, w10, w20, &_, &__);
     for (long step = 1; step < nsteps + 1; step++) {
         // compute the taylor coefficients
         mpfr_set(t1[0], t10, RND);
@@ -133,7 +133,7 @@ int main (int argc, char **argv) {
         t_horner(&w10, w1, n, h);
         t_horner(&w20, w2, n, h);
         mpfr_mul_ui(t, h, step, RND);
-        polar_to_rectangular(&x1, &y1, &x2, &y2, l1, st1, ct1, l2, st2, ct2, t, t10, t20, w10, w20);
+        polar_to_rectangular(&x1, &y1, &x2, &y2, l1, l2, t, t10, t20, w10, w20, &_, &__);
     }
     return 0;
 }

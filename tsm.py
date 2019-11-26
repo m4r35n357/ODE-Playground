@@ -274,21 +274,21 @@ def main():
             x0, y0 = t_horner(x, δt), t_horner(y, δt)  # Horner's method
             output(x0, y0, 0.0, step * δt)
     elif model == "double-pendulum":
-        def polar_to_rectangular(length1, sin1, cos1, length2, sin2, cos2, t, th1, th2, w1, w2):
-            x_1, y_1 = length1 * sin1, - length1 * cos1  # convert angles to X-Y coordinates
-            x_2, y_2 = x_1 + length2 * sin2, y_1 - length2 * cos2
+        def polar_to_rectangular(length1, length2, t, th1, th2, w1, w2):
+            x_1, y_1 = length1 * sin(th1), - length1 * cos(th1)  # convert angles to X-Y coordinates
+            x_2, y_2 = x_1 + length2 * sin(th2), y_1 - length2 * cos(th2)
             print(f"{x_1:.9e} {y_1:.9e} {x_2:.9e} {y_2:.9e} {t:.5e} 0.0 {th1:.9e} {th2:.9e} {w1:.9e} {w2:.9e}")
         g, m1, m2, l1, l2, θ1_0, ω1_0, θ2_0, ω2_0 = 9.80665, float(argv[6]), float(argv[7]), float(argv[8]), float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12]), float(argv[13])  # physical parameters
         ω1, ω2 = t_jet(order + 1), t_jet(order + 1)  # jets
         ω1_2, ω2_2 = t_jet(order), t_jet(order)
-        θ1, sinθ1, cosθ1 = t_jet(order + 1), t_jet(order, sin(θ1_0)), t_jet(order, cos(θ1_0))
-        θ2, sinθ2, cosθ2 = t_jet(order + 1), t_jet(order, sin(θ2_0)), t_jet(order, cos(θ2_0))
+        θ1, sinθ1, cosθ1 = t_jet(order + 1), t_jet(order), t_jet(order)
+        θ2, sinθ2, cosθ2 = t_jet(order + 1), t_jet(order), t_jet(order)
         _θ1_θ2, sinθ1_θ2, cosθ1_θ2 = t_jet(order), t_jet(order), t_jet(order)
         _θ1_2θ2, sinθ1_2θ2, cosθ1_2θ2 = t_jet(order), t_jet(order), t_jet(order)
         _2θ1_2θ2, sin2θ1_2θ2, cos2θ1_2θ2 = t_jet(order), t_jet(order), t_jet(order)
         n1, n2, q1, q2, d = t_jet(order), t_jet(order), t_jet(order), t_jet(order), t_jet(order)
         n1_, n2_  = t_jet(order), t_jet(order)
-        polar_to_rectangular(l1, sinθ1[0], cosθ1[0], l2, sinθ2[0], cosθ2[0], 0.0, θ1_0, θ2_0, ω1_0, ω2_0)
+        polar_to_rectangular(l1, l2, 0.0, θ1_0, θ2_0, ω1_0, ω2_0)
         for step in steps:
             θ1[0], θ2[0], ω1[0], ω2[0] = θ1_0, θ2_0, ω1_0, ω2_0
             for k in index:  # build up jets using recurrences and the derivative rule
@@ -312,7 +312,7 @@ def main():
                 ω1[k + 1] = t_quot(q1, n1, d, k) / l1 / (k + 1)
                 ω2[k + 1] = t_quot(q2, n2, d, k) / l2 / (k + 1)
             θ1_0, θ2_0, ω1_0, ω2_0 = t_horner(θ1, δt), t_horner(θ2, δt), t_horner(ω1, δt), t_horner(ω2, δt)  # Horner's method
-            polar_to_rectangular(l1, sinθ1[0], cosθ1[0], l2, sinθ2[0], cosθ2[0], step * δt, θ1_0, θ2_0, ω1_0, ω2_0)
+            polar_to_rectangular(l1, l2, step * δt, θ1_0, θ2_0, ω1_0, ω2_0)
     elif model == "volterra":
         #  Example: ./tsm.py volterra 9 8 .01 2001 10 10 0 1 .5 .05 .02 | ./plotAnimated.py 1 0 80
         a, b, c, d = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
