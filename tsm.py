@@ -274,6 +274,7 @@ def main():
             x0, y0 = t_horner(x, δt), t_horner(y, δt)  # Horner's method
             output(x0, y0, 0.0, step * δt)
     elif model == "double-pendulum":
+        # Example: ./tsm.py double-pendulum 9 10 0.01 10000 1 1 1 1 3 -1 3 -1 | ./plotPi2d.py
         def polar_to_rectangular(length1, length2, t, th1, th2, w1, w2):
             x_1, y_1 = length1 * sin(th1), - length1 * cos(th1)  # convert angles to X-Y coordinates
             x_2, y_2 = x_1 + length2 * sin(th2), y_1 - length2 * cos(th2)
@@ -282,7 +283,7 @@ def main():
         ω1, ω2 = t_jet(order + 1), t_jet(order + 1)  # jets
         ω1_2, ω2_2 = t_jet(order), t_jet(order)
         θ1, sinθ1, cosθ1 = t_jet(order + 1), t_jet(order), t_jet(order)
-        θ2, sinθ2, cosθ2 = t_jet(order + 1), t_jet(order), t_jet(order)
+        θ2 = t_jet(order + 1)
         _θ1_θ2, sinθ1_θ2, cosθ1_θ2 = t_jet(order), t_jet(order), t_jet(order)
         _θ1_2θ2, sinθ1_2θ2, cosθ1_2θ2 = t_jet(order), t_jet(order), t_jet(order)
         _2θ1_2θ2, sin2θ1_2θ2, cos2θ1_2θ2 = t_jet(order), t_jet(order), t_jet(order)
@@ -293,7 +294,6 @@ def main():
             θ1[0], θ2[0], ω1[0], ω2[0] = θ1_0, θ2_0, ω1_0, ω2_0
             for k in index:  # build up jets using recurrences and the derivative rule
                 sinθ1[k], cosθ1[k] = t_sin_cos(sinθ1, cosθ1, θ1, k)
-                sinθ2[k], cosθ2[k] = t_sin_cos(sinθ2, cosθ2, θ2, k)
                 _θ1_θ2[k] = θ1[k] - θ2[k]
                 sinθ1_θ2[k], cosθ1_θ2[k] = t_sin_cos(sinθ1_θ2, cosθ1_θ2, _θ1_θ2, k)
                 _θ1_2θ2[k] = θ1[k] - 2.0 * θ2[k]

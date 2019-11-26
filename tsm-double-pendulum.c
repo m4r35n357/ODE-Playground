@@ -11,7 +11,7 @@
 #include "taylor-ode.h"
 
 long n, nsteps;
-mpfr_t t, t10, w10, t20, w20, g, m1, m2, l1, l2, h, _, __, *t1, *w1, *t2, *w2, x1, y1, x2, y2, *d, *st1, *ct1, *st2, *ct2, *w1_2, *w2_2;
+mpfr_t t, t10, w10, t20, w20, g, m1, m2, l1, l2, h, _, __, *t1, *w1, *t2, *w2, x1, y1, x2, y2, *d, *st1, *ct1, *w1_2, *w2_2;
 mpfr_t *_t1_t2, *_t1_2t2, *_2t1_2t2, *st1_t2, *ct1_t2, *st1_2t2, *ct1_2t2, *s2t1_2t2, *c2t1_2t2, *n1, *n1_, *n2, *n2_, *q1, *q2;
 
 void polar_to_rectangular (mpfr_t *xa, mpfr_t *ya, mpfr_t *xb, mpfr_t *yb, mpfr_t la, mpfr_t lb, mpfr_t tt, mpfr_t ta, mpfr_t tb, mpfr_t wa, mpfr_t wb, mpfr_t *tmp1, mpfr_t *tmp2);
@@ -50,8 +50,6 @@ int main (int argc, char **argv) {
     w2 = t_jet(n + 1);
     st1 = t_jet(n);
     ct1 = t_jet(n);
-    st2 = t_jet(n);
-    ct2 = t_jet(n);
     _t1_t2 = t_jet(n);
     _t1_2t2 = t_jet(n);
     _2t1_2t2 = t_jet(n);
@@ -81,7 +79,6 @@ int main (int argc, char **argv) {
         mpfr_set(w2[0], w20, RND);
         for (int k = 0; k < n; k++) {
             t_sin_cos(st1, ct1, t1, k, &_, TRIG);
-            t_sin_cos(st2, ct2, t2, k, &_, TRIG);
 
             mpfr_sub(_t1_t2[k], t1[k], t2[k], RND);
             t_sin_cos(st1_t2, ct1_t2, _t1_t2, k, &_, TRIG);
