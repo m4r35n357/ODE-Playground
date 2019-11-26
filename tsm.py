@@ -11,11 +11,11 @@ def output(x, y, z, t):
     print(f'{x:+.{Context.places}e} {y:+.{Context.places}e} {z:+.{Context.places}e} {t:.5e}')
 
 def main():
-    model, Context.places, order, δt, n_steps = argv[1], int(argv[2]), int(argv[3]), float(argv[4]), int(argv[5])  # controls
+    model, Context.places, n, δt, n_steps = argv[1], int(argv[2]), int(argv[3]), float(argv[4]), int(argv[5])  # controls
     x0, y0, z0 = float(argv[6]), float(argv[7]), float(argv[8])  # initial values
-    x, y, z = t_jet(order + 1), t_jet(order + 1), t_jet(order + 1)  # coordinate jets
+    x, y, z = t_jet(n + 1), t_jet(n + 1), t_jet(n + 1)  # coordinate jets
     steps = range(1, n_steps + 1)
-    index = range(order)
+    index = range(n)
 
     if model == "lorenz":
         #  Example: ./tsm.py lorenz 9 8 .01 3000 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
@@ -38,7 +38,7 @@ def main():
         d = c - a if model == "chen" else 0.0
         output(x0, y0, z0, 0.0)
         for step in steps:
-            x, y, z = t_jet(order + 1), t_jet(order + 1), t_jet(order + 1)  # reset coordinate jets (for more visual debugging)
+            x, y, z = t_jet(n + 1), t_jet(n + 1), t_jet(n + 1)  # reset coordinate jets (for more visual debugging)
             x[0], y[0], z[0] = x0, y0, z0
             for k in index:
                 x[k + 1] = a * (y[k] - x[k]) / (k + 1)
@@ -49,7 +49,7 @@ def main():
     elif model == "rossler":
         #  Example: ./tsm.py rossler 9 8 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotPi3d.py
         #  Example: ./tsm.py rossler 9 8 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotAnimated.py 1 -20 30
-        a, b, c = float(argv[9]), t_jet(order, float(argv[10])), float(argv[11])
+        a, b, c = float(argv[9]), t_jet(n, float(argv[10])), float(argv[11])
         output(x0, y0, z0, 0.0)
         for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
@@ -76,7 +76,7 @@ def main():
         #  Example: ./tsm.py bouali 9 8 0.02 50001 1 1 0 3 2.2 1 .01 | ./plotPi3d.py
         #  Example: ./tsm.py bouali 9 8 0.02 50001 1 1 0 3 2.2 1 .01 | ./plotAnimated.py 1 -5 5
         a, b, c, d = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
-        jet1, w4, w5 = t_jet(order, 1), t_jet(order), t_jet(order)
+        jet1, w4, w5 = t_jet(n, 1), t_jet(n), t_jet(n)
         output(x0, y0, z0, 0.0)
         for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
@@ -92,9 +92,9 @@ def main():
         #  Example: ./tsm.py thomas 9 8 0.1 30000 1 0 0 .19 | ./plotPi3d.py
         #  Example: ./tsm.py thomas 9 8 0.1 30000 1 0 0 .19 | ./plotAnimated.py 1 -5 5
         b = float(argv[9])
-        sx, cx = t_jet(order), t_jet(order)
-        sy, cy = t_jet(order), t_jet(order)
-        sz, cz = t_jet(order), t_jet(order)
+        sx, cx = t_jet(n), t_jet(n)
+        sy, cy = t_jet(n), t_jet(n)
+        sz, cz = t_jet(n), t_jet(n)
         output(x0, y0, z0, 0.0)
         for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
@@ -113,9 +113,9 @@ def main():
         #  Example: ./tsm.py sprott-thomas-2 9 8 0.02 30000 1 0 0 4.75 .7 | ./plotPi3d.py
         #  Example: ./tsm.py sprott-thomas-2 9 8 0.02 30000 1 0 0 4.75 .7 | ./plotAnimated.py 1 -1 1
         a, b = float(argv[9]), float(argv[10])
-        sx, cx, ax, sax, cax = t_jet(order), t_jet(order), t_jet(order), t_jet(order), t_jet(order)
-        sy, cy, ay, say, cay = t_jet(order), t_jet(order), t_jet(order), t_jet(order), t_jet(order)
-        sz, cz, az, saz, caz = t_jet(order), t_jet(order), t_jet(order), t_jet(order), t_jet(order)
+        sx, cx, ax, sax, cax = t_jet(n), t_jet(n), t_jet(n), t_jet(n), t_jet(n)
+        sy, cy, ay, say, cay = t_jet(n), t_jet(n), t_jet(n), t_jet(n), t_jet(n)
+        sz, cz, az, saz, caz = t_jet(n), t_jet(n), t_jet(n), t_jet(n), t_jet(n)
         fun = t_sin_cos if model == "sprott-thomas-1" else t_tan_sec2
         output(x0, y0, z0, 0.0)
         for step in steps:
@@ -136,8 +136,8 @@ def main():
     elif model == "rabinovich–fabrikant":
         #  Example: ./tsm.py rabinovich–fabrikant 9 8 .01 100001 .1 .1 .1 .2876 .1 | ./plotPi3d.py
         #  Example: ./tsm.py rabinovich–fabrikant 9 8 .01 100001 .1 .1 .1 .2876 .1 | ./plotAnimated.py 1 -3 3
-        α, γ = t_jet(order, float(argv[9])), float(argv[10])
-        jet1, a, b, c = t_jet(order, 1.0), t_jet(order), t_jet(order), t_jet(order)
+        α, γ = t_jet(n, float(argv[9])), float(argv[10])
+        jet1, a, b, c = t_jet(n, 1.0), t_jet(n), t_jet(n), t_jet(n)
         output(x0, y0, z0, 0.0)
         for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
@@ -154,7 +154,7 @@ def main():
     elif model == "sprott":
         #  Example: ./tsm.py sprott 9 8 0.1 30001 1 0 0 | ./plotPi3d.py
         #  Example: ./tsm.py sprott 9 8 0.1 30001 1 0 0 | ./plotAnimated.py 1 -20 20
-        w1 = t_jet(order, 1)
+        w1 = t_jet(n, 1)
         output(x0, y0, z0, 0.0)
         for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
@@ -168,7 +168,7 @@ def main():
     elif model == "sprott-jafari":
         #  Example: ./tsm.py sprott-jafari 9 8 0.01 30001 0 3.9 .7 8.888 4 | ./plotPi3d.py
         #  Example: ./tsm.py sprott-jafari 9 8 0.01 30001 0 3.9 .7 8.888 4 | ./plotAnimated.py 1 -20 20
-        a, b = float(argv[9]), t_jet(order, float(argv[10]))
+        a, b = float(argv[9]), t_jet(n, float(argv[10]))
         output(x0, y0, z0, 0.0)
         for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
@@ -194,7 +194,7 @@ def main():
     elif model == "nose-hoover":
         #  Example: ./tsm.py nose-hoover 9 8 0.01 10001 1 0 0 6.0 | ./plotPi3d.py
         #  Example: ./tsm.py nose-hoover 9 8 0.01 10001 1 0 0 6.0 | ./plotAnimated.py 1 -10 10
-        α = t_jet(order, float(argv[9]))
+        α = t_jet(n, float(argv[9]))
         output(x0, y0, z0, 0.0)
         for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
@@ -220,8 +220,8 @@ def main():
     elif model == "wimol-banlue":
         #  Example: ./tsm.py wimol-banlue 9 8 0.1 10001 1 0 0 2.0 | ./plotPi3d.py
         #  Example: ./tsm.py wimol-banlue 9 8 0.1 10001 1 0 0 2.0 | ./plotAnimated.py 1 -5 5
-        α = t_jet(order, float(argv[9]))
-        tx, sx = t_jet(order), t_jet(order)
+        α = t_jet(n, float(argv[9]))
+        tx, sx = t_jet(n), t_jet(n)
         output(x0, y0, z0, 0.0)
         for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
@@ -236,7 +236,7 @@ def main():
         #  Example: ./tsm.py yu-wang 9 8 .001 50000 1 0 0 10 40 2 2.5 | ./plotPi3d.py
         #  Example: ./tsm.py yu-wang 9 8 .001 50000 1 0 0 10 40 2 2.5 | ./plotAnimated.py 1 -25 50
         a, b, c, d = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
-        xy, e_xy = t_jet(order), t_jet(order)
+        xy, e_xy = t_jet(n), t_jet(n)
         output(x0, y0, z0, 0.0)
         for step in steps:
             x[0], y[0], z[0] = x0, y0, z0
@@ -263,7 +263,7 @@ def main():
         #  Example: ./tsm.py pendulum 9 8 .05 4001 0.0 0.0 0.0 1.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
         g, m, length = 9.80665, float(argv[9]), float(argv[10])  # physical parameters
         ζ, a, ω = float(argv[11]), float(argv[12]), 2.0 * pi * sqrt(length / g) * float(argv[12])  # damping/forcing
-        sinθ, cosθ = t_jet(order), t_jet(order)  # jets
+        sinθ, cosθ = t_jet(n), t_jet(n)  # jets
         output(x0, y0, 0.0, 0.0)
         for step in steps:
             x[0], y[0] = x0, y0
@@ -275,20 +275,18 @@ def main():
             output(x0, y0, 0.0, step * δt)
     elif model == "double-pendulum":
         # Example: ./tsm.py double-pendulum 9 10 0.01 10000 1 1 1 1 3 -1 3 -1 | ./plotPi2d.py
-        def polar_to_rectangular(length1, length2, t, th1, th2, w1, w2):
-            x_1, y_1 = length1 * sin(th1), - length1 * cos(th1)  # convert angles to X-Y coordinates
-            x_2, y_2 = x_1 + length2 * sin(th2), y_1 - length2 * cos(th2)
-            print(f"{x_1:.9e} {y_1:.9e} {x_2:.9e} {y_2:.9e} {t:.5e} 0.0 {th1:.9e} {th2:.9e} {w1:.9e} {w2:.9e}")
+        def polar_to_rectangular(l_1, l_2, t, th_1, th_2, w_1, w_2):
+            x_1, y_1 = l_1 * sin(th_1), - l_1 * cos(th_1)  # convert angles to X-Y coordinates
+            x_2, y_2 = x_1 + l_2 * sin(th_2), y_1 - l_2 * cos(th_2)
+            print(f"{x_1:.9e} {y_1:.9e} {x_2:.9e} {y_2:.9e} {t:.5e} 0.0 {th_1:.9e} {th_2:.9e} {w_1:.9e} {w_2:.9e}")
         g, m1, m2, l1, l2, θ1_0, ω1_0, θ2_0, ω2_0 = 9.80665, float(argv[6]), float(argv[7]), float(argv[8]), float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12]), float(argv[13])  # physical parameters
-        ω1, ω2 = t_jet(order + 1), t_jet(order + 1)  # jets
-        ω1_2, ω2_2 = t_jet(order), t_jet(order)
-        θ1, sinθ1, cosθ1 = t_jet(order + 1), t_jet(order), t_jet(order)
-        θ2 = t_jet(order + 1)
-        _θ1_θ2, sinθ1_θ2, cosθ1_θ2 = t_jet(order), t_jet(order), t_jet(order)
-        _θ1_2θ2, sinθ1_2θ2, cosθ1_2θ2 = t_jet(order), t_jet(order), t_jet(order)
-        _2θ1_2θ2, sin2θ1_2θ2, cos2θ1_2θ2 = t_jet(order), t_jet(order), t_jet(order)
-        n1, n2, q1, q2, d = t_jet(order), t_jet(order), t_jet(order), t_jet(order), t_jet(order)
-        n1_, n2_  = t_jet(order), t_jet(order)
+        θ1, θ2, sinθ1, cosθ1 = t_jet(n + 1), t_jet(n + 1), t_jet(n), t_jet(n)  # jets
+        _θ1_θ2, sinθ1_θ2, cosθ1_θ2 = t_jet(n), t_jet(n), t_jet(n)
+        _θ1_2θ2, sinθ1_2θ2, cosθ1_2θ2 = t_jet(n), t_jet(n), t_jet(n)
+        _2θ1_2θ2, sin2θ1_2θ2, cos2θ1_2θ2 = t_jet(n), t_jet(n), t_jet(n)
+        ω1, ω2 = t_jet(n + 1), t_jet(n + 1)
+        ω1_2, ω2_2 = t_jet(n), t_jet(n)
+        n1, n2, n1_, n2_, q1, q2, d = t_jet(n), t_jet(n), t_jet(n), t_jet(n), t_jet(n), t_jet(n), t_jet(n)
         polar_to_rectangular(l1, l2, 0.0, θ1_0, θ2_0, ω1_0, ω2_0)
         for step in steps:
             θ1[0], θ2[0], ω1[0], ω2[0] = θ1_0, θ2_0, ω1_0, ω2_0
@@ -331,7 +329,7 @@ def main():
         #  Example: ./tsm.py logistic 9 8 0.1 10001 .6 0 0 .1 | ./plotXY.py 1 3 0
         #  Example: ./tsm.py logistic 9 8 0.1 10001 .6 0 0 .1 | ./plotAnimated.py 1 0 2
         a = float(argv[9])
-        w1, wa, wb = t_jet(order, 1), t_jet(order), t_jet(order)
+        w1, wa, wb = t_jet(n, 1), t_jet(n), t_jet(n)
         output(x0, 0.0, 0.0, 0.0)
         for step in steps:
             x[0] = x0
