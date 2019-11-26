@@ -33,6 +33,7 @@ ls -lhrt --color ad-test*
 echo ""
 
 for model in \
+tsm-double-pendulum \
 tsm-lorenz \
 tsm-rossler \
 tsm-yu-wang \

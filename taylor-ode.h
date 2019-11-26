@@ -116,7 +116,7 @@ mpfr_t *t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp);
  * sinh(u)' = cosh(u).u', sin(u)' =  cos(u).u'
  * cosh(u)' = sinh(u).u', cos(u)' = -sin(u).u'
  */
-struct Tuple t_sin_cos(mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp, geometry g);
+struct Tuple t_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp, geometry g);
 
 /*
  * Returns a struct containing kth elements of the tangent and squared secant of U, results stored in jets T and S2
@@ -127,7 +127,7 @@ struct Tuple t_sin_cos(mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp, geom
 struct Tuple t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, geometry g);
 
 /*
- * Returns kth element of U^a (a is scalar), results stored in jet P, DOMAIN RESTRICTION U[0] > 0.0
+ * Returns kth element of U^a (where a is scalar), results stored in jet P, DOMAIN RESTRICTION U[0] > 0.0
  *
  * u^a'.u = a.u^a.u'
  */
