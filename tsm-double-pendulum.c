@@ -10,25 +10,25 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-long n, nsteps;
-mpfr_t t, t10, w10, t20, w20, g, m1, m2, l1, l2, h, _, __, *t1, *w1, *t2, *w2, x1, y1, x2, y2, *d, *st1, *ct1, *w1_2, *w2_2;
-mpfr_t *_t1_t2, *_t1_2t2, *_2t1_2t2, *st1_t2, *ct1_t2, *st1_2t2, *ct1_2t2, *s2t1_2t2, *c2t1_2t2, *n1, *n1_, *n2, *n2_, *q1, *q2;
-
 void polar_to_rectangular (mpfr_t *xa, mpfr_t *ya, mpfr_t *xb, mpfr_t *yb, mpfr_t la, mpfr_t lb, mpfr_t tt, mpfr_t ta, mpfr_t tb, mpfr_t wa, mpfr_t wb, mpfr_t *tmp1, mpfr_t *tmp2);
 
 void polar_to_rectangular (mpfr_t *xa, mpfr_t *ya, mpfr_t *xb, mpfr_t *yb, mpfr_t la, mpfr_t lb, mpfr_t tt, mpfr_t ta, mpfr_t tb, mpfr_t wa, mpfr_t wb, mpfr_t *_1, mpfr_t *_2) {
-    mpfr_sin_cos(*_1, *_2, t10, RND);
+    mpfr_sin_cos(*_1, *_2, ta, RND);
     mpfr_mul(*xa, la, *_1, RND);
     mpfr_mul(*ya, la, *_2, RND);
     mpfr_neg(*ya, *ya, RND);
-    mpfr_sin_cos(*_1, *_2, t20, RND);
+    mpfr_sin_cos(*_1, *_2, tb, RND);
     mpfr_fma(*xb, lb, *_1, *xa, RND);
     mpfr_fms(*yb, lb, *_2, *ya, RND);
     mpfr_neg(*yb, *yb, RND);
-    mpfr_printf("%.9RNe %.9RNe %.9RNe %.9RNe %.5RNe %.5RNe %.9RNe %.9RNe %.9RNe %.9RNe\n", xa, ya, x2, y2, tt, tt, ta, tb, wa, wb);
+    mpfr_printf("%.9RNe %.9RNe %.9RNe %.9RNe %.5RNe %.5RNe %.9RNe %.9RNe %.9RNe %.9RNe\n", xa, ya, xb, yb, tt, tt, ta, tb, wa, wb);
 }
 
 int main (int argc, char **argv) {
+    long n, nsteps;
+    mpfr_t t, t10, w10, t20, w20, g, m1, m2, l1, l2, h, _, __, *t1, *w1, *t2, *w2, x1, y1, x2, y2, *d, *st1, *ct1, *w1_2, *w2_2;
+    mpfr_t *_t1_t2, *_t1_2t2, *_2t1_2t2, *st1_t2, *ct1_t2, *st1_2t2, *ct1_2t2, *s2t1_2t2, *c2t1_2t2, *n1, *n1_, *n2, *n2_, *q1, *q2;
+
     assert(argc == 13);
     // initialize from command arguments
     t_stepper(argv, &n, &t, &h, &nsteps);

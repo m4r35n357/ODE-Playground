@@ -10,10 +10,10 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-long n, nsteps;
-mpfr_t t, x0, y0, z0, gamma, h, d3, _, x2_1, *a, *b, *c, *w1, *alpha, *x, *y, *z;
-
 int main (int argc, char **argv) {
+    long n, nsteps;
+    mpfr_t t, x0, y0, z0, gamma, h, d3, _, x2_1, *a, *b, *c, *w1, *alpha, *x, *y, *z;
+
     assert(argc == 10);
     // initialize from command arguments
     t_stepper(argv, &n, &t, &h, &nsteps);
