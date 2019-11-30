@@ -29,8 +29,8 @@ int main (int argc, char **argv) {
     mpfr_t t, t10, w10, t20, w20, g, m1, m2, l1, l2, h, _, __, *t1, *w1, *t2, *w2, x1, y1, x2, y2, *d, *st1, *ct1, *w1_2, *w2_2;
     mpfr_t *_t1_t2, *_t1_2t2, *_2t1_2t2, *st1_t2, *ct1_t2, *st1_2t2, *ct1_2t2, *s2t1_2t2, *c2t1_2t2, *n1, *n1_, *n2, *n2_, *q1, *q2;
 
-    assert(argc == 13);
     // initialize from command arguments
+    assert(argc == 13);
     t_stepper(argv, &n, &t, &h, &nsteps);
     t_arg(argv, 5, &m1);
     t_arg(argv, 6, &m2);

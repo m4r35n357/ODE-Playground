@@ -10,12 +10,12 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-long n, nsteps;
-mpfr_t t, x0, y0, z0, a, b, h, _, __, *w_b, *x, *y, *z;
-
 int main (int argc, char **argv) {
-    assert(argc == 10);
+    long n, nsteps;
+    mpfr_t t, x0, y0, z0, a, b, h, _, __, *w_b, *x, *y, *z;
+
     // initialize from command arguments
+    assert(argc == 10);
     t_stepper(argv, &n, &t, &h, &nsteps);
     t_arg(argv, 5, &x0);
     t_arg(argv, 6, &y0);

@@ -14,8 +14,8 @@ int main (int argc, char **argv) {
     long n, nsteps;
     mpfr_t t, x0, y0, z0, sigma, rho, beta, h, _, *x, *y, *z;
 
-    assert(argc == 12);
     // initialize from command arguments
+    assert(argc == 12);
     t_stepper(argv, &n, &t, &h, &nsteps);
     t_arg(argv, 5, &x0);
     t_arg(argv, 6, &y0);
