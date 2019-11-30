@@ -1,0 +1,25 @@
+ 
+define void t_print(x, y, z, t) {
+    print x, " ", y, " ", z, " ", t, "\n"
+}
+
+define t_horner(n, j[], h) {
+    auto i, s
+ 
+    s = 0.0
+    for (i = n; i > - 1; i--) {
+        s = s * h + j[i]
+    }
+    return(s)
+}
+ 
+define t_prod(u[], v[], k) {
+    auto j, p
+ 
+    p = 0.0
+    for (j = 0; j < k + 1; j++) {
+        p = p + u[j] * v[k - j]
+    }
+    return(p)
+}
+
