@@ -63,15 +63,12 @@ mpfr_t *t_abs (mpfr_t *a, mpfr_t *u, int k) {
 mpfr_t *t_sqr (mpfr_t *s, mpfr_t *u, int k) {
     assert(s != u);
     assert(k >= 0);
-    int upper = (k - (k % 2 == 0 ? 2 : 1)) / 2 + 1;
     mpfr_set_zero(*s, 1);
-    for (int j = 0; j < upper; j++) {
+    for (int j = 0; j < (k - (k % 2 == 0 ? 2 : 1)) / 2 + 1; j++) {
         mpfr_fma(*s, u[j], u[k - j], *s, RND);
     }
     mpfr_mul_2ui(*s, *s, 1, RND);
-    if (k % 2 == 0) {
-        mpfr_fma(*s, u[k / 2], u[k / 2], *s, RND);
-    }
+    if (k % 2 == 0) mpfr_fma(*s, u[k / 2], u[k / 2], *s, RND);
     return s;
 }
 
@@ -105,15 +102,12 @@ mpfr_t *t_sqrt (mpfr_t *r, mpfr_t *u, int k) {
     if (k == 0) {
         mpfr_sqrt(r[0], u[0], RND);
     } else {
-        int upper = (k - (k % 2 == 0 ? 2 : 1)) / 2 + 1;
         mpfr_set_zero(r[k], RND);
-        for (int j = 1; j < upper; j++) {
+        for (int j = 1; j < (k - (k % 2 == 0 ? 2 : 1)) / 2 + 1; j++) {
             mpfr_fma(r[k], r[j], r[k - j], r[k], RND);
         }
         mpfr_mul_2ui(r[k], r[k], 1, RND);
-        if (k % 2 == 0) {
-            mpfr_fma(r[k], r[k / 2], r[k / 2], r[k], RND);
-        }
+        if (k % 2 == 0) mpfr_fma(r[k], r[k / 2], r[k / 2], r[k], RND);
         mpfr_sub(r[k], u[k], r[k], RND);
         mpfr_div_2ui(r[k], r[k], 1, RND);
         mpfr_div(r[k], r[k], r[0], RND);
@@ -142,11 +136,7 @@ struct Tuple t_sin_cos (mpfr_t *s, mpfr_t *c, mpfr_t *u, int k, mpfr_t *_, geome
     assert(_ != s && _ != c && _ != u);
     assert(k >= 0);
     if (k == 0) {
-        if (g == TRIG) {
-            mpfr_sin_cos(s[0], c[0], u[0], RND);
-        } else {
-            mpfr_sinh_cosh(s[0], c[0], u[0], RND);
-        }
+        (g == TRIG) ? mpfr_sin_cos(s[0], c[0], u[0], RND) : mpfr_sinh_cosh(s[0], c[0], u[0], RND);
     } else {
         mpfr_set_zero(s[k], 1);
         mpfr_set_zero(c[k], 1);
@@ -155,9 +145,7 @@ struct Tuple t_sin_cos (mpfr_t *s, mpfr_t *c, mpfr_t *u, int k, mpfr_t *_, geome
             mpfr_fma(s[k], *_, c[j], s[k], RND);
             mpfr_fma(c[k], *_, s[j], c[k], RND);
         }
-        if (g == TRIG) {
-            mpfr_neg(c[k], c[k], RND);
-        }
+        if (g == TRIG) mpfr_neg(c[k], c[k], RND);
     }
     return (struct Tuple){ &s[k], &c[k] };
 }
@@ -187,9 +175,7 @@ struct Tuple t_tan_sec2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int k, mpfr_t *_, geo
             mpfr_fma(s2[k], *_, t[j], s2[k], RND);
         }
         mpfr_mul_2ui(s2[k], s2[k], 1, RND);
-        if (g == HYP) {
-            mpfr_neg(s2[k], s2[k], RND);
-        }
+        if (g == HYP) mpfr_neg(s2[k], s2[k], RND);
     }
     return (struct Tuple){ &t[k], &s2[k] };
 }
