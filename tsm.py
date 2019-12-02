@@ -19,7 +19,7 @@ def main():
 
     if model == "lorenz":
         #  Example: ./tsm.py lorenz 9 8 .01 3000 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
-        #  Example: ./tsm.py lorenz 9 8 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -25 50
+        #  Example: ./tsm.py lorenz 9 8 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -25 50
         #  Profile: py-spy --function -- python tsm.py lorenz 9 8 .01 10000000 -15.8 -17.48 35.64 10 28 8 3
         σ, ρ, β = float(argv[9]), float(argv[10]), float(argv[11]) / float(argv[12])
         output(x0, y0, z0, 0.0)
@@ -33,7 +33,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "lu" or model == "chen":
         #  Example: ./tsm.py lu 9 8 .01 3000 -3 2 20 36 3 20 | ./plotPi3d.py
-        #  Example: ./tsm.py chen 9 8 .01 3000 -3 2 20 35 3 28 | ./plotAnimated.py 1 -25 50
+        #  Example: ./tsm.py chen 9 8 .01 3000 -3 2 20 35 3 28 | ./plotAnimated.py -25 50
         a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
         d = c - a if model == "chen" else 0.0
         output(x0, y0, z0, 0.0)
@@ -48,7 +48,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "rossler":
         #  Example: ./tsm.py rossler 9 8 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotPi3d.py
-        #  Example: ./tsm.py rossler 9 8 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotAnimated.py 1 -20 30
+        #  Example: ./tsm.py rossler 9 8 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotAnimated.py -20 30
         a, b, c = float(argv[9]), t_jet(n, float(argv[10])), float(argv[11])
         output(x0, y0, z0, 0.0)
         for step in steps:
@@ -61,7 +61,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "genesio-tesi":
         #  Example: ./tsm.py genesio-tesi 9 8 0.01 150000 .1 .1 .1 .44 1.1 1 | ./plotPi3d.py
-        #  Example: ./tsm.py genesio-tesi 9 8 0.01 150000 0.0 -6.78 0.02 .44 1.1 1 | ./plotAnimated.py 1 -20 30
+        #  Example: ./tsm.py genesio-tesi 9 8 0.01 150000 0.0 -6.78 0.02 .44 1.1 1 | ./plotAnimated.py -20 30
         a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
         output(x0, y0, z0, 0.0)
         for step in steps:
@@ -74,7 +74,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "bouali":
         #  Example: ./tsm.py bouali 9 8 0.02 50001 1 1 0 3 2.2 1 .01 | ./plotPi3d.py
-        #  Example: ./tsm.py bouali 9 8 0.02 50001 1 1 0 3 2.2 1 .01 | ./plotAnimated.py 1 -5 5
+        #  Example: ./tsm.py bouali 9 8 0.02 50001 1 1 0 3 2.2 1 .01 | ./plotAnimated.py -5 5
         a, b, c, d = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
         jet1, w4, w5 = t_jet(n, 1), t_jet(n), t_jet(n)
         output(x0, y0, z0, 0.0)
@@ -90,7 +90,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "thomas":
         #  Example: ./tsm.py thomas 9 8 0.1 30000 1 0 0 .19 | ./plotPi3d.py
-        #  Example: ./tsm.py thomas 9 8 0.1 30000 1 0 0 .19 | ./plotAnimated.py 1 -5 5
+        #  Example: ./tsm.py thomas 9 8 0.1 30000 1 0 0 .19 | ./plotAnimated.py -5 5
         b = float(argv[9])
         sx, cx = t_jet(n), t_jet(n)
         sy, cy = t_jet(n), t_jet(n)
@@ -109,9 +109,9 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "sprott-thomas-1" or model == "sprott-thomas-2":
         #  Example: ./tsm.py sprott-thomas-1 9 8 0.02 30000 1 0 0 4.75 1 | ./plotPi3d.py
-        #  Example: ./tsm.py sprott-thomas-1 9 8 0.02 30000 1 0 0 4.75 1 | ./plotAnimated.py 1 -1 1
+        #  Example: ./tsm.py sprott-thomas-1 9 8 0.02 30000 1 0 0 4.75 1 | ./plotAnimated.py -1 1
         #  Example: ./tsm.py sprott-thomas-2 9 8 0.02 30000 1 0 0 4.75 .7 | ./plotPi3d.py
-        #  Example: ./tsm.py sprott-thomas-2 9 8 0.02 30000 1 0 0 4.75 .7 | ./plotAnimated.py 1 -1 1
+        #  Example: ./tsm.py sprott-thomas-2 9 8 0.02 30000 1 0 0 4.75 .7 | ./plotAnimated.py -1 1
         a, b = float(argv[9]), float(argv[10])
         sx, cx, ax, sax, cax = t_jet(n), t_jet(n), t_jet(n), t_jet(n), t_jet(n)
         sy, cy, ay, say, cay = t_jet(n), t_jet(n), t_jet(n), t_jet(n), t_jet(n)
@@ -135,7 +135,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "rabinovich–fabrikant":
         #  Example: ./tsm.py rabinovich–fabrikant 9 8 .01 100001 .1 .1 .1 .2876 .1 | ./plotPi3d.py
-        #  Example: ./tsm.py rabinovich–fabrikant 9 8 .01 100001 .1 .1 .1 .2876 .1 | ./plotAnimated.py 1 -3 3
+        #  Example: ./tsm.py rabinovich–fabrikant 9 8 .01 100001 .1 .1 .1 .2876 .1 | ./plotAnimated.py -3 3
         α, γ = t_jet(n, float(argv[9])), float(argv[10])
         jet1, a, b, c = t_jet(n, 1.0), t_jet(n), t_jet(n), t_jet(n)
         output(x0, y0, z0, 0.0)
@@ -153,7 +153,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "sprott":
         #  Example: ./tsm.py sprott 9 8 0.1 30001 1 0 0 | ./plotPi3d.py
-        #  Example: ./tsm.py sprott 9 8 0.1 30001 1 0 0 | ./plotAnimated.py 1 -20 20
+        #  Example: ./tsm.py sprott 9 8 0.1 30001 1 0 0 | ./plotAnimated.py -20 20
         w1 = t_jet(n, 1)
         output(x0, y0, z0, 0.0)
         for step in steps:
@@ -167,7 +167,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "sprott-jafari":
         #  Example: ./tsm.py sprott-jafari 9 8 0.01 30001 0 3.9 .7 8.888 4 | ./plotPi3d.py
-        #  Example: ./tsm.py sprott-jafari 9 8 0.01 30001 0 3.9 .7 8.888 4 | ./plotAnimated.py 1 -20 20
+        #  Example: ./tsm.py sprott-jafari 9 8 0.01 30001 0 3.9 .7 8.888 4 | ./plotAnimated.py -20 20
         a, b = float(argv[9]), t_jet(n, float(argv[10]))
         output(x0, y0, z0, 0.0)
         for step in steps:
@@ -180,7 +180,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "halvorsen":
         #  Example: ./tsm.py halvorsen 9 8 .01 100001 1 0 0 1.4 | ./plotPi3d.py
-        #  Example: ./tsm.py halvorsen 9 8 .01 100001 1 0 0 1.4 | ./plotAnimated.py 1 -15 10
+        #  Example: ./tsm.py halvorsen 9 8 .01 100001 1 0 0 1.4 | ./plotAnimated.py -15 10
         α = float(argv[9])
         output(x0, y0, z0, 0.0)
         for step in steps:
@@ -193,7 +193,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "nose-hoover":
         #  Example: ./tsm.py nose-hoover 9 8 0.01 10001 1 0 0 6.0 | ./plotPi3d.py
-        #  Example: ./tsm.py nose-hoover 9 8 0.01 10001 1 0 0 6.0 | ./plotAnimated.py 1 -10 10
+        #  Example: ./tsm.py nose-hoover 9 8 0.01 10001 1 0 0 6.0 | ./plotAnimated.py -10 10
         α = t_jet(n, float(argv[9]))
         output(x0, y0, z0, 0.0)
         for step in steps:
@@ -206,7 +206,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "rucklidge":
         #  Example: ./tsm.py rucklidge 9 8 0.01 10001 1 0 0 6.7 2 | ./plotPi3d.py
-        #  Example: ./tsm.py rucklidge 9 8 0.01 10001 1 0 0 6.7 2 | ./plotAnimated.py 1 -15 20
+        #  Example: ./tsm.py rucklidge 9 8 0.01 10001 1 0 0 6.7 2 | ./plotAnimated.py -15 20
         α, κ = float(argv[9]), float(argv[10])
         output(x0, y0, z0, 0.0)
         for step in steps:
@@ -219,7 +219,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "wimol-banlue":
         #  Example: ./tsm.py wimol-banlue 9 8 0.1 10001 1 0 0 2.0 | ./plotPi3d.py
-        #  Example: ./tsm.py wimol-banlue 9 8 0.1 10001 1 0 0 2.0 | ./plotAnimated.py 1 -5 5
+        #  Example: ./tsm.py wimol-banlue 9 8 0.1 10001 1 0 0 2.0 | ./plotAnimated.py -5 5
         α = t_jet(n, float(argv[9]))
         tx, sx = t_jet(n), t_jet(n)
         output(x0, y0, z0, 0.0)
@@ -234,7 +234,7 @@ def main():
             output(x0, y0, z0, step * δt)
     elif model == "yu-wang":
         #  Example: ./tsm.py yu-wang 9 8 .001 50000 1 0 0 10 40 2 2.5 | ./plotPi3d.py
-        #  Example: ./tsm.py yu-wang 9 8 .001 50000 1 0 0 10 40 2 2.5 | ./plotAnimated.py 1 -25 50
+        #  Example: ./tsm.py yu-wang 9 8 .001 50000 1 0 0 10 40 2 2.5 | ./plotAnimated.py -25 50
         a, b, c, d = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
         xy, e_xy = t_jet(n), t_jet(n)
         output(x0, y0, z0, 0.0)
@@ -249,7 +249,7 @@ def main():
             x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x0, y0, z0, step * δt)
     elif model == "oscillator":
-        #  Example: ./tsm.py oscillator 9 8 .05 4001 0.0 0.0 0.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
+        #  Example: ./tsm.py oscillator 9 8 .05 4001 0.0 0.0 0.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py -50 50
         κ, ζ, a, ω = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
         output(x0, y0, 0.0, 0.0)
         for step in steps:
@@ -260,7 +260,7 @@ def main():
             x0, y0 = t_horner(x, δt), t_horner(y, δt)
             output(x0, y0, 0.0, step * δt)
     elif model == "pendulum":
-        #  Example: ./tsm.py pendulum 9 8 .05 4001 0.0 0.0 0.0 1.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py 1 -50 50
+        #  Example: ./tsm.py pendulum 9 8 .05 4001 0.0 0.0 0.0 1.0 1.0 0.1 4.9 1.1 | ./plotAnimated.py -50 50
         g, m, length = 9.80665, float(argv[9]), float(argv[10])  # physical parameters
         ζ, a, ω = float(argv[11]), float(argv[12]), 2.0 * pi * sqrt(length / g) * float(argv[12])  # damping/forcing
         sinθ, cosθ = t_jet(n), t_jet(n)  # jets
@@ -312,7 +312,7 @@ def main():
             θ1_0, θ2_0, ω1_0, ω2_0 = t_horner(θ1, δt), t_horner(θ2, δt), t_horner(ω1, δt), t_horner(ω2, δt)  # Horner's method
             polar_to_rectangular(l1, l2, step * δt, θ1_0, θ2_0, ω1_0, ω2_0)
     elif model == "volterra":
-        #  Example: ./tsm.py volterra 9 8 .01 2001 10 10 0 1 .5 .05 .02 | ./plotAnimated.py 1 0 80
+        #  Example: ./tsm.py volterra 9 8 .01 2001 10 10 0 1 .5 .05 .02 | ./plotAnimated.py 0 80
         a, b, c, d = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
         output(x0, y0, 0.0, 0.0)
         for step in steps:
@@ -326,8 +326,8 @@ def main():
                 break
             output(floor(x0), floor(y0), 0.0, step * δt)
     elif model == "logistic":
-        #  Example: ./tsm.py logistic 9 8 0.1 10001 .6 0 0 .1 | ./plotXY.py 1 3 0
-        #  Example: ./tsm.py logistic 9 8 0.1 10001 .6 0 0 .1 | ./plotAnimated.py 1 0 2
+        #  Example: ./tsm.py logistic 9 8 0.1 10001 .6 0 0 .1 | ./plotXY.py 3 0
+        #  Example: ./tsm.py logistic 9 8 0.1 10001 .6 0 0 .1 | ./plotAnimated.py 0 2
         a = float(argv[9])
         w1, wa, wb = t_jet(n, 1), t_jet(n), t_jet(n)
         output(x0, 0.0, 0.0, 0.0)
@@ -340,8 +340,8 @@ def main():
             x0 = t_horner(x, δt)
             output(x0, 0.0, 0.0, step * δt)
     elif model == "damped":
-        #  Example: ./tsm.py damped 9 8 .1 1001 10 0 0 1 .5 | ./plotXY.py 1 3 0
-        #  Example: ./tsm.py damped 9 8 .1 1001 10 0 0 1 .5 | ./plotAnimated.py 1 -10 10
+        #  Example: ./tsm.py damped 9 8 .1 1001 10 0 0 1 .5 | ./plotXY.py 3 0
+        #  Example: ./tsm.py damped 9 8 .1 1001 10 0 0 1 .5 | ./plotAnimated.py -10 10
         κ, ζ = float(argv[9]), float(argv[10])
         output(x0, y0, 0.0, 0.0)
         for step in steps:
@@ -352,8 +352,8 @@ def main():
             x0, y0 = t_horner(x, δt), t_horner(y, δt)
             output(x0, y0, 0.0, step * δt)
     elif model == "constant":
-        #  Example: ./tsm.py constant 9 8 0.1 10001 10 0 0 -.05 | ./plotXY.py 1 3 0
-        #  Example: ./tsm.py constant 9 8 0.1 10001 10 0 0 -.05 | ./plotAnimated.py 1 0 10
+        #  Example: ./tsm.py constant 9 8 0.1 10001 10 0 0 -.05 | ./plotXY.py 3 0
+        #  Example: ./tsm.py constant 9 8 0.1 10001 10 0 0 -.05 | ./plotAnimated.py 0 10
         a = float(argv[9])
         output(x0, 0.0, 0.0, 0.0)
         for step in steps:

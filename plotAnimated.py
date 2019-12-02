@@ -35,7 +35,9 @@ def update(data):
     return line_data()
 
 if __name__ == "__main__":
-    interval, minimum, maximum = int(argv[1]), float(argv[2]), float(argv[3])
+    if len(argv) < 2:
+        raise Exception('>>> ERROR! Please supply max and min <<<')
+    minimum, maximum = float(argv[1]), float(argv[2])
     fig, ax = plt.subplots()
     line_x, = ax.plot([], [], 'g', lw=1)
     line_y, = ax.plot([], [], 'y', lw=1)
