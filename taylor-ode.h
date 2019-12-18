@@ -64,79 +64,87 @@ void t_horner (mpfr_t *sum, mpfr_t *jet, int n, mpfr_t h);
 mpfr_t *t_abs (mpfr_t *a, mpfr_t *u, int k);
 
 /*
- * Product rule:
+ * Product rule for c = a.b
  *
- *  c[k] = sum(0 to k) ( a[j].b[k-j] )
+ *  c[k] = sum{j = 0 to k} a[j].b[k - j]
  */
 
 /*
  * Returns kth element of the square of U, result stored and returned in variable S, NO JET STORAGE
  *
- * s = u.u
+ *  s = u.u
  */
 mpfr_t *t_sqr (mpfr_t *S, mpfr_t *U, int k);
 
 /*
  * Returns kth element of the product of U and V, result stored in variable P, NO JET STORAGE
  *
- * p = u.v
+ *  p = u.v
  */
 mpfr_t *t_prod (mpfr_t *P, mpfr_t *U, mpfr_t *V, int k);
 
 /*
  * Returns kth element of U / V, results stored in jet Q, DOMAIN RESTRICTION u[0] != 0.0
  *
- * u = q.v
+ *  u = q.v
  */
 mpfr_t *t_quot (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int k);
 
 /*
  * Returns kth element of the square root of U, results stored in jet R, DOMAIN RESTRICTION U[0] > 0.0
  *
- * u = r.r
+ *  u = r.r
  */
 mpfr_t *t_sqrt (mpfr_t *R, mpfr_t *U, int k);
 
 /*
- * Chain rule for derivative of composed function f(u) is f(u)' = (df/du).u', using f[k]' = (k + 1).f[k + 1]
+ * Chain rule for derivative of composed function f(u)
  *
- *  k.f[k] = sum(0 to k - 1) ((df/du)[j].(k - j).u[k - j])
+ *  f'(u) = (df/du).u'
+ *
+ * From product rule above, (note that f' and u' have one fewer elements than f and u)
+ *
+ *  f'[k - 1] = sum{j = 0 to k - 1} (df/du)[j].(k - 1 - j).u[k - 1 - j]
+ *
+ * Using f'[k] = (k + 1).f[k + 1], or f'[k - 1] = k.f[k], we can replace f' with f, and u' with u
+ *
+ *  -> k.f[k] = sum{j = 0 to k - 1} (df/du)[j].(k - j).u[k - j]
  */
 
 /*
  * Returns kth element of the exponential of U, results stored in jet E
  *
- * exp(u)' = exp(u).u'
+ * exp'(u) = exp(u).u'
  */
 mpfr_t *t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp);
 
 /*
  * Returns a struct containing kth elements of the sine and cosine of U, results stored in jets S and C
  *
- * sinh(u)' = cosh(u).u', sin(u)' =  cos(u).u'
- * cosh(u)' = sinh(u).u', cos(u)' = -sin(u).u'
+ *  sinh'(u) = cosh(u).u', sin'(u) =  cos(u).u'
+ *  cosh'(u) = sinh(u).u', cos'(u) = -sin(u).u'
  */
 struct Tuple t_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp, geometry g);
 
 /*
  * Returns a struct containing kth elements of the tangent and squared secant of U, results stored in jets T and S2
  *
- *   tanh(u)' =   sech^2(u).u',         tan(u)' = sec^2(u).u'
- * sech^2(u)' = - 2.tanh(u).tanh(u)', sec^2(u)' = 2.tan(u).tan(u)'
+ *    tanh'(u) =   sech^2(u).u',         tan'(u) = sec^2(u).u'
+ *  sech^2'(u) = - 2.tanh(u).tanh(u)', sec^2'(u) = 2.tan(u).tan(u)'
  */
 struct Tuple t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, geometry g);
 
 /*
  * Returns kth element of U^a (where a is scalar), results stored in jet P, DOMAIN RESTRICTION U[0] > 0.0
  *
- * u^a'.u = a.u^a.u'
+ *  u^a'.u = a.u^a.u'
  */
 mpfr_t *t_pwr (mpfr_t *P, mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp);
 
 /*
  * Returns kth element of the natural logarithm of U, result stored in jet L, DOMAIN RESTRICTION U[0] > 0.0
  *
- * u' = u.ln(u)'
+ *  u' = u.ln'(u)
  */
 mpfr_t *t_ln (mpfr_t *L, mpfr_t *U, int k, mpfr_t *tmp);
 
