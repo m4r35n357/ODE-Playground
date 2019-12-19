@@ -40,7 +40,7 @@ def t_exp(e, u, k):
     return exp(u[0]) if k == 0 else fsum((k - j) * e[j] * u[k - j] for j in range(k)) / k
 
 def t_ln(l, u, k):
-    return log(u[0]) if k == 0 else (u[k] - fsum(j * l[j] * u[k - j] for j in range(1, k)) / k) / u[0]
+    return log(u[0]) if k == 0 else (u[k] - fsum(u[j] * (k - j) * l[k - j] for j in range(1, k)) / k) / u[0]
 
 def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:

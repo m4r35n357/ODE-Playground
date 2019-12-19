@@ -211,8 +211,8 @@ mpfr_t *t_ln (mpfr_t *l, mpfr_t *u, int k, mpfr_t *_) {
     } else {
         mpfr_set_zero(l[k], 1);
         for (int j = 1; j < k; j++) {
-            mpfr_mul_d(*_, l[j], j / (double)k, RND);
-            mpfr_fma(l[k], *_, u[k - j], l[k], RND);
+            mpfr_mul_d(*_, l[k - j], (k - j) / (double)k, RND);
+            mpfr_fma(l[k], *_, u[j], l[k], RND);
         }
         mpfr_sub(l[k], u[k], l[k], RND);
         mpfr_div(l[k], l[k], u[0], RND);
