@@ -21,7 +21,7 @@ void polar_to_rectangular (mpfr_t *xa, mpfr_t *ya, mpfr_t *xb, mpfr_t *yb, mpfr_
     mpfr_fma(*xb, lb, *_1, *xa, RND);
     mpfr_fms(*yb, lb, *_2, *ya, RND);
     mpfr_neg(*yb, *yb, RND);
-    mpfr_printf("%.9RNe %.9RNe %.9RNe %.9RNe %.5RNe %.5RNe %.9RNe %.9RNe %.9RNe %.9RNe\n", xa, ya, xb, yb, tt, tt, ta, tb, wa, wb);
+    mpfr_printf("%+.9RNe %+.9RNe %+.9RNe %+.9RNe %+.5RNe %+.5RNe %+.9RNe %+.9RNe %+.9RNe %+.9RNe\n", xa, ya, xb, yb, tt, tt, ta, tb, wa, wb);
 }
 
 int main (int argc, char **argv) {
