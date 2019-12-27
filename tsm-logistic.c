@@ -3,7 +3,7 @@
  *
  * Example:  ./tsm-logistic-dbg 16 10 0.1 10000 .6 0 0 .1
  *
- * (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
 #include <assert.h>
