@@ -1,11 +1,10 @@
 #!/bin/sh
 
-# Copyright (c) 2018, Ian Smith (m4r35n357)
+# Copyright (c) 2018-2020, Ian Smith (m4r35n357)
 # All rights reserved.
 # For licencing see LICENCE file
 
-#WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra'
-WARNINGS='-Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra'
+WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra'
 
 CC='/usr/bin/c99'
 if [ x"$1" = x'clang' ]
@@ -20,13 +19,6 @@ build () {
 	${CC} -Og $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode.c -lmpfr
 	ls -lhrt --color ${name}*
 }
-
-/bin/rm -f *.o
-
-${CC} -Og -Wall -g -o ad-test-dbg taylor-ode.c ad.c ad-test.c -lmpfr
-${CC} -Og -Wall -g -o ad-test-newton-dbg taylor-ode.c ad.c ad-test-newton.c -lmpfr
-ls -lhrt --color ad-test*
-echo ""
 
 for model in \
 tsm-double-pendulum \
@@ -49,4 +41,9 @@ do
 	build ${model}
 	echo ""
 done
+
+${CC} -Og -Wall -g -o ad-test-dbg taylor-ode.c ad.c ad-test.c -lmpfr
+${CC} -Og -Wall -g -o ad-test-newton-dbg taylor-ode.c ad.c ad-test-newton.c -lmpfr
+ls -lhrt --color ad-test*
+echo ""
 
