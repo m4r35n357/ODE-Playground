@@ -15,20 +15,16 @@ fi
 
 build () {
 	name=$1
-	${CC} -O3 -DNDEBUG -o ${name} ${name}.c taylor-ode.o -lmpfr -s
-	${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.o -lm -lmpfr -lgmp -s
-	${CC} -Og $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode-dbg.o -lm -lmpfr
+	${CC} -O3 -DNDEBUG -o ${name} ${name}.c taylor-ode.c -lmpfr -s
+	${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c -lmpfr -lgmp -s
+	${CC} -Og $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode.c -lmpfr
 	ls -lhrt --color ${name}*
 }
 
 /bin/rm -f *.o
 
-${CC} -c -O3 -DNDEBUG -o taylor-ode.o taylor-ode.c
-${CC} -c -Og $WARNINGS -g -o taylor-ode-dbg.o taylor-ode.c
-${CC} -c -Og $WARNINGS -g -o ad-dbg.o ad.c
-
-${CC} -Og -Wall -g -o ad-test-dbg taylor-ode-dbg.o ad-dbg.o ad-test.c -lm -lmpfr
-${CC} -Og -Wall -g -o ad-test-newton-dbg taylor-ode-dbg.o ad-dbg.o ad-test-newton.c -lm -lmpfr
+${CC} -Og -Wall -g -o ad-test-dbg taylor-ode.c ad.c ad-test.c -lmpfr
+${CC} -Og -Wall -g -o ad-test-newton-dbg taylor-ode.c ad.c ad-test-newton.c -lmpfr
 ls -lhrt --color ad-test*
 echo ""
 
