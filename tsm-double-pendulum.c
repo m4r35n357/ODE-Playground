@@ -10,9 +10,7 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-void polar_to_rectangular (mpfr_t *xa, mpfr_t *ya, mpfr_t *xb, mpfr_t *yb, mpfr_t la, mpfr_t lb, mpfr_t tt, mpfr_t ta, mpfr_t tb, mpfr_t wa, mpfr_t wb, mpfr_t *tmp1, mpfr_t *tmp2);
-
-void polar_to_rectangular (mpfr_t *xa, mpfr_t *ya, mpfr_t *xb, mpfr_t *yb, mpfr_t la, mpfr_t lb, mpfr_t tt, mpfr_t ta, mpfr_t tb, mpfr_t wa, mpfr_t wb, mpfr_t *_1, mpfr_t *_2) {
+static void polar_to_rectangular (mpfr_t *xa, mpfr_t *ya, mpfr_t *xb, mpfr_t *yb, mpfr_t la, mpfr_t lb, mpfr_t tt, mpfr_t ta, mpfr_t tb, mpfr_t wa, mpfr_t wb, mpfr_t *_1, mpfr_t *_2) {
     mpfr_sin_cos(*_1, *_2, ta, RND);
     mpfr_mul(*xa, la, *_1, RND);
     mpfr_mul(*ya, la, *_2, RND);
