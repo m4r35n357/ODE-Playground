@@ -125,7 +125,7 @@ mpfr_t *t_exp (mpfr_t *e, mpfr_t *u, int k, mpfr_t *_) {
         mpfr_set_zero(e[k], 1);
         for (int j = 0; j < k; j++) {
             mpfr_mul_d(*_, u[k - j], (k - j) / (double)k, RND);
-            mpfr_fma(e[k], *_, e[j], e[k], RND);
+            mpfr_fma(e[k], e[j], *_, e[k], RND);
         }
     }
     return &e[k];
@@ -142,8 +142,8 @@ struct Tuple t_sin_cos (mpfr_t *s, mpfr_t *c, mpfr_t *u, int k, mpfr_t *_, geome
         mpfr_set_zero(c[k], 1);
         for (int j = 0; j < k; j++) {
             mpfr_mul_d(*_, u[k - j], (k - j) / (double)k, RND);
-            mpfr_fma(s[k], *_, c[j], s[k], RND);
-            mpfr_fma(c[k], *_, s[j], c[k], RND);
+            mpfr_fma(s[k], c[j], *_, s[k], RND);
+            mpfr_fma(c[k], s[j], *_, c[k], RND);
         }
         if (g == TRIG) mpfr_neg(c[k], c[k], RND);
     }
@@ -167,14 +167,13 @@ struct Tuple t_tan_sec2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int k, mpfr_t *_, geo
         mpfr_set_zero(t[k], 1);
         for (int j = 0; j < k; j++) {
             mpfr_mul_d(*_, u[k - j], (k - j) / (double)k, RND);
-            mpfr_fma(t[k], *_, s2[j], t[k], RND);
+            mpfr_fma(t[k], s2[j], *_, t[k], RND);
         }
-        mpfr_mul(s2[k], t[0], t[k], RND);
-        for (int j = 1; j < k; j++) {
-            mpfr_mul_d(*_, t[k - j], (k - j) / (double)k, RND);
-            mpfr_fma(s2[k], *_, t[j], s2[k], RND);
+        mpfr_set_zero(s2[k], 1);
+        for (int j = 0; j < k; j++) {
+            mpfr_mul_d(*_, t[k - j], 2.0 * (k - j) / (double)k, RND);
+            mpfr_fma(s2[k], t[j], *_, s2[k], RND);
         }
-        mpfr_mul_2ui(s2[k], s2[k], 1, RND);
         if (g == HYP) mpfr_neg(s2[k], s2[k], RND);
     }
     return (struct Tuple){ &t[k], &s2[k] };
@@ -193,7 +192,7 @@ mpfr_t *t_pwr (mpfr_t *p, mpfr_t *u, mpfr_t a, int k, mpfr_t *_) {
             mpfr_mul_ui(*_, a, k - j, RND);
             mpfr_sub_ui(*_, *_, j, RND);
             mpfr_mul(*_, *_, u[k - j], RND);
-            mpfr_fma(p[k], *_, p[j], p[k], RND);
+            mpfr_fma(p[k], p[j], *_, p[k], RND);
         }
         mpfr_div_ui(p[k], p[k], k, RND);
         mpfr_div(p[k], p[k], u[0], RND);
@@ -212,7 +211,7 @@ mpfr_t *t_ln (mpfr_t *l, mpfr_t *u, int k, mpfr_t *_) {
         mpfr_set_zero(l[k], 1);
         for (int j = 1; j < k; j++) {
             mpfr_mul_d(*_, l[k - j], (k - j) / (double)k, RND);
-            mpfr_fma(l[k], *_, u[j], l[k], RND);
+            mpfr_fma(l[k], u[j], *_, l[k], RND);
         }
         mpfr_sub(l[k], u[k], l[k], RND);
         mpfr_div(l[k], l[k], u[0], RND);
