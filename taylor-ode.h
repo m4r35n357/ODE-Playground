@@ -161,12 +161,11 @@ struct Tuple t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, g
 /*
  * Returns kth element of U^a (where a is scalar), results stored in jet P, DOMAIN RESTRICTION U[0] > 0.0
  *
- *  u.u^a' = a.u^a.u'
- *       0 = a.u^a.u' - u.u^a'
+ *  u^a'.u = a.u^a.u'
+ *       0 = a.u^a.u' - u^a'.u
  *
- *           0 = sum{j = 0 to k - 1} p[j].a.(k - j).u[k - j] - sum{j = 0 to k} p[j].(k - j).u[k - j]
- *
- * k.p[k].u[0] = sum{j = 0 to k - 1} p[j].a.(k - j).u[k - j] - sum{j = 0 to k - 1} p[j].(k - j).u[k - j]
+ *           0 = sum{j = 0 to k - 1} p[j].a.(k - j).u[k - j] - sum{j = 0 to k} j.p[j].u[k - j]
+ * k.p[k].u[0] = sum{j = 0 to k - 1} p[j].a.(k - j).u[k - j] - sum{j = 0 to k - 1} j.p[j].u[k - j]
  *
  *        p[k] = sum{j = 0 to k - 1} (a * (k - j) - j) * p[j] * u[k - j] / (k * u[0])
  */
