@@ -16,12 +16,12 @@ $start $step $steps $end | sed -n '1~2p' >$fileA &
 $original >$fileB &
 wait
 
-#./divergence.py $fileA $fileB 3 0.000000000000000001 >/dev/null
-#./divergence.py $fileA $fileB 3 0.000000000001 >/dev/null
-#./divergence.py $fileA $fileB 3 0.000000001 >/dev/null
-#./divergence.py $fileA $fileB 3 0.000001 >/dev/null
-#./divergence.py $fileA $fileB 3 0.001 >/dev/null
-#./divergence.py $fileA $fileB 3 1.0 >/dev/null
+./divergence.py $fileA $fileB 4 0.000000000000000001 >/dev/null
+./divergence.py $fileA $fileB 4 0.000000000001 >/dev/null
+./divergence.py $fileA $fileB 4 0.000000001 >/dev/null
+./divergence.py $fileA $fileB 4 0.000001 >/dev/null
+./divergence.py $fileA $fileB 4 0.001 >/dev/null
+./divergence.py $fileA $fileB 4 1.0 >/dev/null
 
 ./compareDP.py $fileA $fileB 4 >/dev/null &
 

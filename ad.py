@@ -53,7 +53,7 @@ def t_tan_sec2(t, s2, u, k, hyp=False):
     if k == 0:
         return (tanh(u[0]), 1.0 - tanh(u[0])**2) if hyp else (tan(u[0]), 1.0 + tan(u[0])**2)
     t[k] = fsum((k - j) * s2[j] * u[k - j] for j in range(k)) / k
-    s2[k] = 2.0 * (t[0] * t[k] + fsum((k - j) * t[j] * t[k - j] for j in range(1, k)) / k)
+    s2[k] = 2.0 * fsum((k - j) * t[j] * t[k - j] for j in range(k)) / k
     return (t[k], - s2[k]) if hyp else (t[k], s2[k])
 
 def t_asin(h, v, u, k, hyp=False):
