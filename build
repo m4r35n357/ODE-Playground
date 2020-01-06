@@ -17,7 +17,6 @@ build () {
 	${CC} -O3 -DNDEBUG -o ${name} ${name}.c taylor-ode.c -lmpfr -s
 	${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c -lmpfr -lgmp -s
 	${CC} -Og $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode.c -lmpfr
-	ls -lhrt --color ${name}*
 }
 
 for model in \
@@ -38,12 +37,12 @@ tsm-lotka-volterra \
 tsm-logistic \
 tsm-constant
 do
-	build ${model}
-	echo ""
+	build ${model} &
 done
 
-${CC} -Og -Wall -g -o ad-test-dbg taylor-ode.c ad.c ad-test.c -lmpfr
-${CC} -Og -Wall -g -o ad-test-newton-dbg taylor-ode.c ad.c ad-test-newton.c -lmpfr
-ls -lhrt --color ad-test*
-echo ""
+${CC} -Og -Wall -g -o ad-test-dbg taylor-ode.c ad.c ad-test.c -lmpfr &
+${CC} -Og -Wall -g -o ad-test-newton-dbg taylor-ode.c ad.c ad-test-newton.c -lmpfr &
+
+wait
+ls -lh --color ad-test* tsm-*
 
