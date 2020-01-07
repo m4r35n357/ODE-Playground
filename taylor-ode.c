@@ -16,7 +16,7 @@ void t_arg (char **argv, int arg, mpfr_t *dest) {
 }
 
 void t_xyz_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t t) {
-    mpfr_printf("%+.9RNe %+.9RNe %+.9RNe %+.5RNe\n", x, y, z, t);
+    mpfr_printf("%+.12RNe %+.12RNe %+.12RNe %+.6RNe\n", x, y, z, t);
 }
 
 void t_stepper (char **argv, long *n, mpfr_t *t, mpfr_t *h, long *nsteps) {
