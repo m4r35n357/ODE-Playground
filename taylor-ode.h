@@ -164,10 +164,10 @@ struct Tuple t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, g
  *  u^a'.u = a.u^a.u'
  *       0 = a.u^a.u' - u^a'.u
  *
- *           0 = sum{j = 0 to k - 1} p[j].a.(k - j).u[k - j] - sum{j = 0 to k} j.p[j].u[k - j]
- * k.p[k].u[0] = sum{j = 0 to k - 1} p[j].a.(k - j).u[k - j] - sum{j = 0 to k - 1} j.p[j].u[k - j]
+ *           0 = sum{j = 0 to k - 1} a.p[j].(k - j).u[k - j] - sum{j = 0 to k} j.p[j].u[k - j]
+ * k.p[k].u[0] = sum{j = 0 to k - 1} a.p[j].(k - j).u[k - j] - sum{j = 0 to k - 1} j.p[j].u[k - j]
  *
- *        p[k] = sum{j = 0 to k - 1} (a * (k - j) - j) * p[j] * u[k - j] / (k * u[0])
+ *        p[k] = sum{j = 0 to k - 1} (a.(k - j) - j).p[j].u[k - j] / (k * u[0])
  */
 mpfr_t *t_pwr (mpfr_t *P, mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp);
 
