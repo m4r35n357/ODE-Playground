@@ -178,6 +178,19 @@ def main():
                 z[k + 1] = (z[k] + a * t_sqr(x, k) - t_sqr(y, k) - b[k]) / (k + 1)
             x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x0, y0, z0, step * δt)
+    elif model == "sprott-minimal":
+        #  Example: ./tsm.py sprott-minimal 9 8 0.01 10001 .02 0 0 2.017 | ./plotPi3d.py
+        #  Example: ./tsm.py sprott-minimal 9 8 0.01 10001 .02 0 0 2.017 | ./plotAnimated.py -10 10
+        α = float(argv[9])
+        output(x0, y0, z0, 0.0)
+        for step in steps:
+            x[0], y[0], z[0] = x0, y0, z0
+            for k in index:
+                x[k + 1] = y[k] / (k + 1)
+                y[k + 1] = z[k] / (k + 1)
+                z[k + 1] = (- α * z[k] + t_sqr(y, k) - x[k]) / (k + 1)
+            x0, y0, z0 = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
+            output(x0, y0, z0, step * δt)
     elif model == "halvorsen":
         #  Example: ./tsm.py halvorsen 9 8 .01 100001 1 0 0 1.4 | ./plotPi3d.py
         #  Example: ./tsm.py halvorsen 9 8 .01 100001 1 0 0 1.4 | ./plotAnimated.py -15 10
