@@ -51,6 +51,7 @@ void t_horner (mpfr_t *sum, mpfr_t *jet, int n, mpfr_t h) {
     for (int i = n; i > - 1; i--) {
         mpfr_fma(*sum, *sum, h, jet[i], RND);
     }
+    assert(mpfr_number_p(*sum));
 }
 
 mpfr_t *t_abs (mpfr_t *a, mpfr_t *u, int k) {
