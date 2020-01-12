@@ -2,6 +2,7 @@
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <mpfr.h>
@@ -20,7 +21,8 @@ void t_xyz_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t t) {
 }
 
 void t_stepper (char **argv, long *n, mpfr_t *t, mpfr_t *h, long *nsteps) {
-    mpfr_set_default_prec(strtod(argv[1], NULL) * 3.32);
+    mpfr_set_default_prec(strtod(argv[1], NULL) * 3.322);
+    fprintf(stderr, " MPFR default precision: %lu bits\n", mpfr_get_default_prec());
     *n = strtol(argv[2], NULL, BASE);
     mpfr_init_set_ui(*t, 0, RND);
     mpfr_init_set_str(*h, argv[3], BASE, RND);
