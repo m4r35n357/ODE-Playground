@@ -49,7 +49,7 @@ void t_stepper (char **argv, long *n, mpfr_t *t, mpfr_t *h, long *nsteps);
 mpfr_t *t_jet (int size);
 
 /*
- * Returns a jet of the specified size, with element zero set to value and the rest zeroed
+ * Returns a jet of the specified size, with element zero set to value and the rest zeroed (represents a constant in an ODE)
  */
 mpfr_t *t_jet_c (int size, mpfr_t value);
 
