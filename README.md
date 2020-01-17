@@ -118,12 +118,23 @@ To find Python ODE example invocations:
 ```
 grep Example *.py
 ```
-Matplotlib progressive graph plotting
+Matplotlib progressive graph plotting in Python:
 ```
 ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
 ```
+or in c:
+```
+./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
+```
 
-3D ODE plotting
+3D ODE plotting (gnuplot)
+```
+./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 >/tmp/data
+gnuplot
+> splot '/tmp/data' with lines
+```
+
+3D ODE real time plotting (pi3d)
 ```
 ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
 ```
