@@ -25,3 +25,4 @@ wait
 
 ./compare.py $fileA $fileB 3 >/dev/null &
 
+echo "splot '$fileA' with lines, '$fileB' with lines" | gnuplot -p

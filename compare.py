@@ -3,7 +3,7 @@
 # Example: ./compare.py /tmp/dataA /tmp/dataB 3
 
 from math import sqrt
-from sys import argv, stderr
+from sys import argv
 from matplotlib import pyplot
 
 def position_error(a, b):

@@ -128,10 +128,14 @@ or in c:
 ```
 
 3D ODE plotting (gnuplot)
+
+Write to a data file
 ```
 ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 >/tmp/data
-gnuplot
-> splot '/tmp/data' with lines
+```
+then plot it
+```
+echo "splot '/tmp/data' with lines" | gnuplot -p
 ```
 
 3D ODE real time plotting (pi3d)
