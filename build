@@ -9,14 +9,14 @@ WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototyp
 CC='/usr/bin/c99'
 if [ x"$1" = x'clang' ]
 then
-	CC='/usr/bin/clang'
+    CC='/usr/bin/clang'
 fi
 
 build () {
-	name=$1
-	${CC} -O3 -DNDEBUG -o ${name} ${name}.c taylor-ode.c -lmpfr -s
-	${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c -lmpfr -lgmp -s
-	${CC} -Og $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode.c -lmpfr
+    name=$1
+    ${CC} -O3 -DNDEBUG -o ${name} ${name}.c taylor-ode.c -lmpfr -s
+    ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c -lmpfr -lgmp -s
+    ${CC} -Og $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode.c -lmpfr
 }
 
 for model in \
@@ -38,7 +38,7 @@ tsm-lotka-volterra \
 tsm-logistic \
 tsm-constant
 do
-	build ${model} &
+    build ${model} &
 done
 
 ${CC} -Og -Wall -g -o ad-test-dbg taylor-ode.c ad.c ad-test.c -lmpfr &

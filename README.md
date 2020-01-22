@@ -114,15 +114,15 @@ cd ../..
 This use case only involves calling the "t-functions" in tsm.py.
 No differentiation happens in these functions (they only implement the recurrence relations); it is the responsibility of the calling program to organize this properly.
 Refer to tsm.py for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors.
-To find Python ODE example invocations:
+To find some example invocations:
 ```
-grep Example *.py
+grep Example *.py tsm-*.c
 ```
 Matplotlib progressive graph plotting in Python:
 ```
 ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
 ```
-or in c:
+or in c (notice absence of the model parameter!):
 ```
 ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
 ```
@@ -155,33 +155,20 @@ Parameter | Meaning
 6,7,8 | x0, y0, z0
 9+ | ODE parameters
 
-
-## Analysing functions
-To test the function and multi-derivative plotting (Dual and Series representations), together with root, extremum and inflection finding:
-```
-./series_test.py 7 -8 8 1001 | ./plotMany.py 8 10 >/dev/null
-```
-There is a choice of analysis (root finding) method:
-
-Code | Meaning
-----------|-----------
-NA | No analysis
-BI | Bisection method
-NT | Newton's method
-
-Here is an invocation for the function (x - 1)^2
-```
-$ ./models.py BI -8 8 1001 13 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
-ad module loaded
-playground module loaded
-functions module loaded
-Bisection method
-ResultType(count=1, sense='+', mode='MIN_MAX', x=1.0000000000000009, f=7.888609052210118e-31, δx=1)
-```
-
-
 ## Interactivity
-Here is a quick example of interactive use; function inversion.
+
+Higher level function analysis
+```
+from plotters import *
+
+f = lambda a: (a.exp + (a.sqr - 4.0).exp).ln - value
+
+mplot(f)
+scan(f)
+
+```
+Here is a quick example of function inversion.
+There is a choice of analysis (root finding) method:
 ```
 $ ipython3
 Python 3.7.1 (default, Oct 22 2018, 11:21:55) 
@@ -205,51 +192,7 @@ In [4]: timeit(bisect(lambda x: x**2 - 2, xa=0.0, xb=2.0))
 In [5]: timeit(newton(lambda x: x**2 - 2, x0=1.0))                             
 76 µs ± 1.63 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 ```
-Here we differentiate a simple function of three variables with respect to each one.
-This is done twice; first using the Dual class and then using the Series class.
-The latter provides derivatives of higher order than the first.
-```
-$ ipython3
-...
-In [1]: from ad import *
-ad module loaded
 
-In [2]: a = Dual.get(3.0)
-
-In [3]: b = Dual.get(5.0)
-
-In [4]: c = Dual.get(7.0)
-
-In [5]: print(a * c**2 - b * c)
-+1.120000e+02 +0.000000e+00
-
-In [6]: print(a.var * c**2 - b * c)
-+1.120000e+02 +4.900000e+01
-
-In [7]: print(a * c**2 - b.var * c)
-+1.120000e+02 -7.000000e+00
-
-In [8]: print(a * c.var**2 - b * c.var)
-+1.120000e+02 +3.700000e+01
-
-In [9]: a = Series.get(3, 3.0)
-
-In [10]: b = Series.get(3, 5.0)
-
-In [11]: c = Series.get(3, 7.0)
-
-In [12]: print(a * c**2 - b * c)
-+1.120000e+02 +0.000000e+00 +0.000000e+00 
-
-In [13]: print(a.var * c**2 - b * c)
-+1.120000e+02 +4.900000e+01 +0.000000e+00 
-
-In [14]: print(a * c**2 - b.var * c)
-+1.120000e+02 -7.000000e+00 +0.000000e+00 
-
-In [15]: print(a * c.var**2 - b * c.var)
-+1.120000e+02 +3.700000e+01 +3.000000e+00 
-```
 Here we calculate _all_ the derivatives of a simple cubic in x, followed by its sensitivities to each parameter a, b, c.
 ```
 $ ipython3

@@ -51,6 +51,21 @@ else:
 '''
 from plotters import *
 
+f = lambda a: (a.exp + (a.sqr - 4.0).exp).ln - value
+f = lambda a: (a.sqr + (a.exp - 4).sqr).sqrt - value
+f = lambda a: (2 * a).sin - 2 * a.sin * a.cos - value
+f = lambda a: (2 * a).cos - a.cos.sqr + a.sin.sqr - value
+f = lambda a: (3 * a).sin - 3 * a.sin + 4 * a.sin * a.sin.sqr - value
+f = lambda a: (3 * a).cos + 3 * a.cos - 4 * a.cos * a.cos.sqr - value
+f = lambda a: a.sqr.sqrt - value
+f = lambda a: a.exp.ln - value
+f = lambda a: a.tan - a.sin / a.cos - value
+f = lambda a: a.tanh - a.sinh / a.cosh - value
+f = lambda a: a.sin.asin - value
+f = lambda a: a.cos.acos - value
+f = lambda a: a.tan.atan - value
+f = lambda a: (a + 7) / (3.0 - a)
+
 for i in range(-50, 51):
     print(i * 0.1)
     f = lambda a: (a**2 + 1)**(i*0.1)
