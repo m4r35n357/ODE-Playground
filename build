@@ -14,7 +14,7 @@ fi
 
 build () {
     name=$1
-    ${CC} -O3 -DNDEBUG -o ${name} ${name}.c taylor-ode.c -lmpfr -s
+    ${CC} -O3 -DNDEBUG -o ${name}-dynamic ${name}.c taylor-ode.c -lmpfr -s
     ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c -lmpfr -lgmp -s
     ${CC} -Og $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode.c -lmpfr
 }

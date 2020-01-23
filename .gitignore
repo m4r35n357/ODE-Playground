@@ -28,3 +28,9 @@ old-saved-files/
 
 test_*
 
+tsm-*-dbg
+tsm-*-static
+tsm-*-dynamic
+
+ad-test*-dbg
+

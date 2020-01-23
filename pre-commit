@@ -34,7 +34,7 @@ then
 	exit 1
 fi
 
-if ! ./tsm-lorenz 16 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null
+if ! ./tsm-lorenz-dynamic 16 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null
 then
 	echo "Lorenz failed!"
 	exit 1
