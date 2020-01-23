@@ -155,6 +155,8 @@ Parameter | Meaning
 6,7,8 | x0, y0, z0
 9+ | ODE parameters
 
+c is the same, except the "model" parameter which is part of the executable name and is omitted from the list.
+
 ## Interactivity
 
 Higher level function analysis
@@ -165,8 +167,8 @@ f = lambda a: (a.exp + (a.sqr - 4.0).exp).ln - value
 
 mplot(f)
 scan(f)
-
 ```
+
 Here is a quick example of function inversion.
 There is a choice of analysis (root finding) method:
 ```
