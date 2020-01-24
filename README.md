@@ -163,7 +163,7 @@ Higher level function analysis
 ```
 from plotters import *
 
-f = lambda a: (a.exp + (a.sqr - 4.0).exp).ln - value
+f = lambda a: (a.exp + (a.sqr - 4.0).exp).ln
 
 mplot(f)
 scan(f)
@@ -173,25 +173,25 @@ Here is a quick example of function inversion.
 There is a choice of analysis (root finding) method:
 ```
 $ ipython3
-Python 3.7.1 (default, Oct 22 2018, 11:21:55) 
+Python 3.7.1 (default, Oct 22 2018, 11:21:55)
 Type 'copyright', 'credits' or 'license' for more information
 IPython 7.2.0 -- An enhanced Interactive Python. Type '?' for help.
 
-In [1]: from ad import * 
-   ...: from playground import *                                               
+In [1]: from ad import *
+   ...: from playground import *
 ad module loaded
 playground module loaded
 
-In [2]: bisect(lambda x: x**2 - 2, xa=0.0, xb=2.0)                             
+In [2]: bisect(lambda x: x**2 - 2, xa=0.0, xb=2.0)
 Out[2]: Result(method='BI', x=1.414213562372879, f=-6.108447081487611e-13, δx=4.547473508864641e-13, count=42, sense='_', mode='ROOT___')
 
-In [3]: newton(lambda x: x**2 - 2, x0=1.0)                                     
+In [3]: newton(lambda x: x**2 - 2, x0=1.0)
 Out[3]: Result(method='NT', x=1.414213562373095, f=4.440892098500626e-16, δx=-1.570092458683775e-16, count=6, sense='_', mode='ROOT___')
 
-In [4]: timeit(bisect(lambda x: x**2 - 2, xa=0.0, xb=2.0))                     
+In [4]: timeit(bisect(lambda x: x**2 - 2, xa=0.0, xb=2.0))
 600 µs ± 10.4 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
 
-In [5]: timeit(newton(lambda x: x**2 - 2, x0=1.0))                             
+In [5]: timeit(newton(lambda x: x**2 - 2, x0=1.0))
 76 µs ± 1.63 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 ```
 
@@ -211,18 +211,18 @@ In [6]: c = Series.get(5, 7.0)
 In [7]: x = Series.get(5, 2.0)
 
 In [8]: print(a * x**3 - b * x**2 + c * x - 5)
-+1.300000e+01 +0.000000e+00 +0.000000e+00 +0.000000e+00 +0.000000e+00 
++1.300000e+01 +0.000000e+00 +0.000000e+00 +0.000000e+00 +0.000000e+00
 
 In [9]: print(a * x.var**3 - b * x.var**2 + c * x.var - 5)
-+1.300000e+01 +2.300000e+01 +1.300000e+01 +3.000000e+00 +0.000000e+00 
++1.300000e+01 +2.300000e+01 +1.300000e+01 +3.000000e+00 +0.000000e+00
 
 In [10]: print(a.var * x**3 - b * x**2 + c * x - 5)
-+1.300000e+01 +8.000000e+00 +0.000000e+00 +0.000000e+00 +0.000000e+00 
++1.300000e+01 +8.000000e+00 +0.000000e+00 +0.000000e+00 +0.000000e+00
 
 In [11]: print(a * x**3 - b.var * x**2 + c * x - 5)
-+1.300000e+01 -4.000000e+00 +0.000000e+00 +0.000000e+00 +0.000000e+00 
++1.300000e+01 -4.000000e+00 +0.000000e+00 +0.000000e+00 +0.000000e+00
 
 In [12]: print(a * x**3 - b * x**2 + c.var * x - 5)
-+1.300000e+01 +2.000000e+00 +0.000000e+00 +0.000000e+00 +0.000000e+00 
++1.300000e+01 +2.000000e+00 +0.000000e+00 +0.000000e+00 +0.000000e+00
 
 ```

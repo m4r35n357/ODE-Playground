@@ -3,16 +3,46 @@
 fileA='/tmp/dataA'
 fileB='/tmp/dataB'
 
+method=$1
+shift
 original=$*
 
-start="$1 $2 $3"
-step=$(echo "scale=6; $4/2;" | bc)
-steps=$(echo "scale=0; $5*2;" | bc)
-shift 5
-end="$*"
-echo 'Better:' $start $step $steps $end
+halfstep () {
+    start="$1 $2 $3"
+    step=$(echo "scale=6; $4/2;" | bc)
+    steps=$(echo "scale=0; $5*2;" | bc)
+    shift 5
+    end="$*"
+    echo 'Better:' $start $step $steps $end
+    $start $step $steps $end | sed -n '1~2p' >$fileA &
+}
 
-$start $step $steps $end | sed -n '1~2p' >$fileA &
+order2plus () {
+    start="$1 $2"
+    order=$(expr $3 + 2)
+    shift 3
+    end="$*"
+    echo 'Better:' $start $order $end
+    $start $order $end >$fileA &
+}
+
+orderstep () {
+    start="$1 $2"
+    order=$(expr $3 + 2)
+    step=$(echo "scale=6; $4/2;" | bc)
+    steps=$(echo "scale=0; $5*2;" | bc)
+    shift 5
+    end="$*"
+    echo 'Better:' $start $order $step $steps $end
+    $start $order $step $steps $end | sed -n '1~2p' >$fileA &
+}
+
+case $method in
+    'step') halfstep $original;;
+    'order') order2plus $original;;
+    'both') orderstep $original;;
+    *) echo "Bad Method"; exit 1;;
+esac
 $original >$fileB &
 wait
 
@@ -26,3 +56,4 @@ wait
 ./compare.py $fileA $fileB 3 >/dev/null &
 
 echo "splot '$fileA' with lines, '$fileB' with lines" | gnuplot -p
+
