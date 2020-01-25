@@ -17,9 +17,9 @@ halfstep () {
     $start $step $steps $end | sed -n '1~2p' >$fileA &
 }
 
-order2plus () {
+order1plus () {
     start="$1 $2"
-    order=$(expr $3 + 2)
+    order=$(expr $3 + 1)
     shift 3
     end="$*"
     echo 'Better:' $start $order $end
@@ -28,7 +28,7 @@ order2plus () {
 
 orderstep () {
     start="$1 $2"
-    order=$(expr $3 + 2)
+    order=$(expr $3 + 1)
     step=$(echo "scale=6; $4/2;" | bc)
     steps=$(echo "scale=0; $5*2;" | bc)
     shift 5
@@ -39,7 +39,7 @@ orderstep () {
 
 case $method in
     'step') halfstep $original;;
-    'order') order2plus $original;;
+    'order') order1plus $original;;
     'both') orderstep $original;;
     *) echo "Bad Method"; exit 1;;
 esac
