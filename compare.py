@@ -17,9 +17,9 @@ def main():
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')
     ax1.set_xlabel('time', color='b')
-    ax1.set_ylabel('x, y', color='b')
+    ax1.set_ylabel('x, y, z', color='b')
     ax2 = ax1.twinx()
-    ax2.set_ylabel('z, error', color='b')
+    ax2.set_ylabel('error', color='b')
     with open(argv[1]) as a, open(argv[2]) as b:
         line_a = a.readline()
         line_b = b.readline()
@@ -43,8 +43,8 @@ def main():
     ax1.plot(s, u, 'go-', linewidth=1, markersize=0)
     ax1.plot(s, v, 'ko-', linewidth=1, markersize=0)
     ax1.plot(s, w, 'yo-', linewidth=1, markersize=0)
-    ax2.plot(s, x, 'ko-', linewidth=1, markersize=0)
-    ax2.plot(s, y, 'co-', linewidth=1, markersize=0)
+    ax1.plot(s, x, 'ko-', linewidth=1, markersize=0)
+    ax1.plot(s, y, 'co-', linewidth=1, markersize=0)
     ax2.plot(s, z, 'ro-', linewidth=1, markersize=0)
     pyplot.show()
 
