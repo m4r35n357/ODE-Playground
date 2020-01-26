@@ -690,7 +690,7 @@ def test_pow_frac_zero(series):
 
 @mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_sqr_sqrt_zero(series):
+def test_sqr_sqrt_abs_zero(series):
     for term in (series.sqr.sqrt - abs(series)).jet:
         assert term == approx(0.0)
     for term in ((1.0 / series.sqr).sqrt - 1.0 / abs(series)).jet:

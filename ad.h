@@ -77,6 +77,11 @@ mpfr_t *ad_plus (mpfr_t *P, mpfr_t *V, mpfr_t *U, int n);
 mpfr_t *ad_minus (mpfr_t *P, mpfr_t *V, mpfr_t *U, int n);
 
 /*
+ * Calculates Taylor Series for the absolute value of U, result stored in jet A
+ */
+mpfr_t *ad_abs (mpfr_t *A, mpfr_t *U, int n);
+
+/*
  * Calculates Taylor Series for the square of U, result stored in jet S
  */
 mpfr_t *ad_square (mpfr_t *S, mpfr_t *U, int n);

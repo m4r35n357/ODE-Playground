@@ -123,6 +123,15 @@ mpfr_t *ad_minus (mpfr_t *p, mpfr_t *u, mpfr_t *v, int n) {
     return p;
 }
 
+mpfr_t *ad_abs (mpfr_t *a, mpfr_t *u, int n) {
+    assert(a != u);
+    assert(sizeof *a == sizeof *u);
+    for (int k = 0; k < n; k++) {
+        t_abs(&a[k], u, k);
+    }
+    return a;
+}
+
 mpfr_t *ad_square (mpfr_t *s, mpfr_t *u, int n) {
     assert(s != u);
     assert(sizeof *s == sizeof *u);

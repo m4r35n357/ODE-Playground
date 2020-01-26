@@ -20,7 +20,7 @@
 #define KBLD "\x1B[1;37m"
 
 long order, n;
-mpfr_t x, y, _, D_1, D_05, D0, D05, D1, D2, D3, D4, D5, D6, D7, *cx, *cy, *cx0, *c1, *c2, *c3, *c5, *c6, *c7, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2, *wsqr, *wsqrt, *wsum, *wprod, *wquot, *wpwr, *__, *_1, *_2, *_3;
+mpfr_t x, y, _, D_1, D_05, D0, D05, D1, D2, D3, D4, D5, D6, D7, *cx, *cy, *cx0, *c1, *c2, *c3, *c5, *c6, *c7, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2, *wabs, *wsqr, *wsqrt, *wsum, *wprod, *wquot, *wpwr, *__, *_1, *_2, *_3;
 
 void septic (mpfr_t *f, mpfr_t *x, int n) {
     ad_minus(_2, x, c1, n);
@@ -85,6 +85,7 @@ int main (int argc, char **argv) {
     set_ad_status(PI_4, VARIABLE);
 
     wsqr = t_jet(n);
+    wabs = t_jet(n);
     wsqrt = t_jet(n);
     wsum = t_jet(n);
     wprod = t_jet(n);
@@ -209,6 +210,14 @@ int main (int argc, char **argv) {
     derivative_output(wl, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
+    printf("%s%s%s\n", KCYN, "f(x) = sqrt(x^2) - |x|", KNRM);
+    ad_square(wsqr, cx, n);
+    ad_sqrt(wsqrt, wsqr, n);
+    ad_abs(wabs, cx, n);
+    ad_minus(__, wsqrt, wabs, n);
+    jet_output(__, n, KNRM, KGRY);
+    derivative_output(__, n, KBLD, KGRY);
+    printf("%s", KNRM);
     printf("%s%s%s\n", KCYN, "f(x) = sqrt(x^2)", KNRM);
     ad_square(wsqr, cx, n);
     ad_sqrt(wsqrt, wsqr, n);
