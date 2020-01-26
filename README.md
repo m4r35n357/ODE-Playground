@@ -71,8 +71,9 @@ The value parameter allows simple calculation of function inverse values, as wel
 There are some plotting and graphing utilities written in Python 3, (the data itself can come from either c or Python executables, which share output "formats").
 In the example invocations given below, communication between the executable and plotting script uses a Unix pipe.
 The dependencies are:
-* matplotlib for 2D graphs
-* pi3d for 3D trajectories (the visual python implementation is still distributed but is now considered legacy)
+* matplotlib for 2D graphs and progressive graphs
+* pi3d for 3D progressive trajectories (the visual python implementation is still distributed but is now considered legacy)
+* gnuplot for static 3D trajectories
 
 ## Getting started
 
@@ -88,7 +89,7 @@ Dependencies of Python 3 programs:
 
 ## Build environment (Debian/Ubuntu/Raspbian)
 ```
-sudo apt install build-essential mesa-utils-extra python3-dev libmpc-dev libatlas-base-dev virtualenvwrapper
+sudo apt install build-essential mesa-utils-extra python3-dev libmpc-dev libatlas-base-dev virtualenvwrapper gnuplot-x11
 ```
 This is a typical virtual environment setup:
 ```
@@ -127,7 +128,7 @@ or in c (notice absence of the model parameter!):
 ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
 ```
 
-3D ODE plotting (gnuplot)
+3D static trajectory plotting (gnuplot)
 
 Write to a data file
 ```
@@ -138,7 +139,7 @@ then plot it
 echo "splot '/tmp/data' with lines" | gnuplot -p
 ```
 
-3D ODE real time plotting (pi3d)
+3D progressive trajectory plotting (pi3d)
 ```
 ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
 ```
@@ -155,7 +156,7 @@ Parameter | Meaning
 6,7,8 | x0, y0, z0
 9+ | ODE parameters
 
-c is the same, except the "model" parameter which is part of the executable name and is omitted from the list.
+c is the same, except the "model" parameter, which is part of the executable name, is omitted from the list.
 
 ## Interactivity
 
