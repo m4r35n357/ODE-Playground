@@ -119,19 +119,19 @@ mpfr_t *ad_ln (mpfr_t *L, mpfr_t *U, int n);
 /*
  * Calculates Taylor Series for the trigonometric sine and cosine of U, results stored in jets S and C
  */
-struct Tuple ad_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n);
+tuple ad_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n);
 
 /*
  * Calculates Taylor Series for the hyperbolic sine and cosine of U, results stored in jets S and C
  */
-struct Tuple ad_sinh_cosh (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n);
+tuple ad_sinh_cosh (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n);
 
 /*
  * Calculates Taylor Series for the trigonometric tangent and squared secant of U, results stored in jets T and S2
  */
-struct Tuple ad_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n);
+tuple ad_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n);
 
 /*
  * Calculates Taylor Series for the hyperbolic tangent and squared secant of U, results stored in jets T and S2
  */
-struct Tuple ad_tanh_sech2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n);
+tuple ad_tanh_sech2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n);

@@ -134,7 +134,7 @@ mpfr_t *t_exp (mpfr_t *e, mpfr_t *u, int k, mpfr_t *_) {
     return &e[k];
 }
 
-struct Tuple t_sin_cos (mpfr_t *s, mpfr_t *c, mpfr_t *u, int k, mpfr_t *_, geometry g) {
+tuple t_sin_cos (mpfr_t *s, mpfr_t *c, mpfr_t *u, int k, mpfr_t *_, geometry g) {
     assert(s != c && s != u && c != u);
     assert(_ != s && _ != c && _ != u);
     assert(k >= 0);
@@ -150,10 +150,10 @@ struct Tuple t_sin_cos (mpfr_t *s, mpfr_t *c, mpfr_t *u, int k, mpfr_t *_, geome
         }
         if (g == TRIG) mpfr_neg(c[k], c[k], RND);
     }
-    return (struct Tuple){ &s[k], &c[k] };
+    return (tuple){&s[k], &c[k]};
 }
 
-struct Tuple t_tan_sec2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int k, mpfr_t *_, geometry g) {
+tuple t_tan_sec2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int k, mpfr_t *_, geometry g) {
     assert(t != s2 && t != u && s2 != u);
     assert(_ != t && _ != s2 && _ != u);
     assert(k >= 0);
@@ -179,7 +179,7 @@ struct Tuple t_tan_sec2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int k, mpfr_t *_, geo
         }
         if (g == HYP) mpfr_neg(s2[k], s2[k], RND);
     }
-    return (struct Tuple){ &t[k], &s2[k] };
+    return (tuple){&t[k], &s2[k]};
 }
 
 mpfr_t *t_pwr (mpfr_t *p, mpfr_t *u, mpfr_t a, int k, mpfr_t *_) {

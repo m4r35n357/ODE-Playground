@@ -194,42 +194,42 @@ mpfr_t *ad_ln (mpfr_t *l, mpfr_t *u, int n) {
     return l;
 }
 
-struct Tuple ad_sin_cos (mpfr_t *s, mpfr_t *c, mpfr_t *u, int n) {
+tuple ad_sin_cos (mpfr_t *s, mpfr_t *c, mpfr_t *u, int n) {
     mpfr_t _;
     mpfr_init(_);
     for (int k = 0; k < n; k++) {
         t_sin_cos(s, c, u, k, &_, TRIG);
     }
     mpfr_clear(_);
-    return (struct Tuple){ s, c };
+    return (tuple){s, c};
 }
 
-struct Tuple ad_sinh_cosh (mpfr_t *s, mpfr_t *c, mpfr_t *u, int n) {
+tuple ad_sinh_cosh (mpfr_t *s, mpfr_t *c, mpfr_t *u, int n) {
     mpfr_t _;
     mpfr_init(_);
     for (int k = 0; k < n; k++) {
         t_sin_cos(s, c, u, k, &_, HYP);
     }
     mpfr_clear(_);
-    return (struct Tuple){ s, c };
+    return (tuple){s, c};
 }
 
-struct Tuple ad_tan_sec2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int n) {
+tuple ad_tan_sec2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int n) {
     mpfr_t _;
     mpfr_init(_);
     for (int k = 0; k < n; k++) {
         t_tan_sec2(t, s2, u, k, &_, TRIG);
     }
     mpfr_clear(_);
-    return (struct Tuple){ t, s2 };
+    return (tuple){t, s2};
 }
 
-struct Tuple ad_tanh_sech2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int n) {
+tuple ad_tanh_sech2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int n) {
     mpfr_t _;
     mpfr_init(_);
     for (int k = 0; k < n; k++) {
         t_tan_sec2(t, s2, u, k, &_, HYP);
     }
     mpfr_clear(_);
-    return (struct Tuple){ t, s2 };
+    return (tuple){t, s2};
 }
