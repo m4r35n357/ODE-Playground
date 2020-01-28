@@ -21,6 +21,14 @@ then
 	exit 1
 fi
 
+echo "Running AD Test . . ."
+./ad-test-dbg 7 2 1 >/tmp/ad-test.txt
+if ! diff --context=1 /tmp/ad-test.txt ad-test.txt 
+then
+	echo "AD Test failed!"
+	exit 1
+fi
+
 echo "Running Lorenz executables . . ."
 if ! ./tsm-lorenz-dbg 16 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null
 then
