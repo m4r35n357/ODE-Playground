@@ -19,8 +19,8 @@ const mpfr_rnd_t RND;
  * For returning "paired" recurrence values
  */
 typedef struct {
-    mpfr_t *const a;
-    mpfr_t *const b;
+    mpfr_t *a;
+    mpfr_t *b;
 } tuple;
 
 /*
