@@ -20,7 +20,7 @@
 #define KBLD "\x1B[1;37m"
 
 long order, n;
-mpfr_t x, y, _, D_1, D_05, D0, D05, D1, D2, D3, D4, D5, D6, D7, *cx, *cy, *cx0, *c1, *c2, *c3, *c5, *c6, *c7, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2, *wabs, *wsqr, *wsqrt, *wsum, *wprod, *wquot, *wpwr, *__, *_1, *_2, *_3;
+mpfr_t x, y, _, D0, D1, D2, D3, D4, D5, D6, D7, *cx, *cy, *cx0, *c1, *c2, *c3, *c5, *c6, *c7, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2, *wabs, *wsqr, *wsqrt, *wsum, *wprod, *wquot, *wpwr, *__, *_1, *_2, *_3;
 
 void septic (mpfr_t *f, mpfr_t *x, int n) {
     ad_minus(_2, x, c1, n);
@@ -48,10 +48,7 @@ int main (int argc, char **argv) {
     mpfr_init_set_str(x, argv[2], BASE, RND);
     mpfr_init_set_str(y, argv[3], BASE, RND);
 
-    mpfr_init_set_si(D_1, -1, RND);
-    mpfr_init_set_str(D_05, "-0.5", BASE, RND);
     mpfr_init_set_ui(D0, 0, RND);
-    mpfr_init_set_str(D05, "0.5", BASE, RND);
     mpfr_init_set_ui(D1, 1, RND);
     mpfr_init_set_ui(D2, 2, RND);
     mpfr_init_set_ui(D3, 3, RND);
