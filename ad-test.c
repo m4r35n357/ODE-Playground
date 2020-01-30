@@ -1,7 +1,7 @@
 /*
  * Automatic Differentiation of Taylor Series, validation checks
  *
- * Example: ./ad-test-dbg 7 2 1
+ * Example: ./ad-test-dbg 7 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
