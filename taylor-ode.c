@@ -146,11 +146,8 @@ tuple t_tan_sec2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int k, mpfr_t *_, geometry g
     assert(_ != t && _ != s2 && _ != u);
     assert(k >= 0);
     if (k == 0) {
-        if (g == TRIG) {
-            mpfr_tan(t[0], u[0], RND); mpfr_sec(s2[0], u[0], RND);
-        } else {
-            mpfr_tanh(t[0], u[0], RND); mpfr_sech(s2[0], u[0], RND);
-        }
+        (g == TRIG) ? mpfr_tan(t[0], u[0], RND) : mpfr_tanh(t[0], u[0], RND);
+        (g == TRIG) ? mpfr_sec(s2[0], u[0], RND) : mpfr_sech(s2[0], u[0], RND);
         mpfr_sqr(s2[0], s2[0], RND);
         return (tuple){&t[0], &s2[0]};
     }
