@@ -157,19 +157,18 @@ tuple t_tan_sec2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int k, mpfr_t *_, geometry g
     return (tuple){d_cauchy(&t[k], s2, u, k, 1.0, 0, k, _), d_cauchy(&s2[k], t, t, k, (g == TRIG) ? 2.0 : - 2.0, 0, k, _)};
 }
 
-mpfr_t *t_pwr (mpfr_t *p, mpfr_t *u, mpfr_t a, int k, mpfr_t *_) {
+mpfr_t *t_pwr (mpfr_t *p, mpfr_t *u, double a, int k, mpfr_t *_) {
     assert(mpfr_sgn(u[0]) > 0);
     assert(p != u);
     assert(_ != p && _ != u);
     assert(k >= 0);
     if (k == 0) {
-        mpfr_pow(p[0], u[0], a, RND);
+        mpfr_set_d(*_, a, RND);
+        mpfr_pow(p[0], u[0], *_, RND);
     } else {
         mpfr_set_zero(p[k], 1);
         for (int j = 0; j < k; j++) {
-            mpfr_mul_ui(*_, a, k - j, RND);
-            mpfr_sub_ui(*_, *_, j, RND);
-            mpfr_mul(*_, *_, u[k - j], RND);
+            mpfr_mul_d(*_, u[k - j], a * (k - j) - j, RND);
             mpfr_fma(p[k], p[j], *_, p[k], RND);
         }
         mpfr_div_ui(p[k], p[k], k, RND);

@@ -169,7 +169,7 @@ tuple t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, geometry
  *
  *        p[k] = sum{j = 0 to k - 1} (a.(k - j) - j).p[j].u[k - j] / (k * u[0])
  */
-mpfr_t *t_pwr (mpfr_t *P, mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp);
+mpfr_t *t_pwr (mpfr_t *P, mpfr_t *U, double a, int k, mpfr_t *tmp);
 
 /*
  * Returns kth element of the natural logarithm of U, result stored in jet L, DOMAIN RESTRICTION U[0] > 0.0
