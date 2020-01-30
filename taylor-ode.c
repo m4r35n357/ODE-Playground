@@ -113,7 +113,7 @@ mpfr_t *t_sqrt (mpfr_t *r, mpfr_t *u, int k) {
 static mpfr_t *d_cauchy (mpfr_t *f, mpfr_t *h, mpfr_t *u, int k, double factor, int lower, int upper, mpfr_t *_) {
     mpfr_set_zero(*f, 1);
     for (int j = lower; j < upper; j++) {
-        mpfr_mul_d(*_, u[k - j], factor * (k - j) / (double)k, RND);
+        mpfr_mul_d(*_, u[k - j], factor * (k - j) / k, RND);
         mpfr_fma(*f, h[j], *_, *f, RND);
     }
     return f;
