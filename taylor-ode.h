@@ -110,15 +110,15 @@ mpfr_t *t_sqrt (mpfr_t *R, mpfr_t *U, int k);
 /*
  * Chain rule for derivative of composed function f(u) creates another product rule:
  *
- *  f'(u) = (df/du).u'
+ *  f'(u) = (df/du).u' = h.u'
  *
  * From product rule above, (note that f' and u' have one fewer elements than f and u)
  *
- *  f'[k - 1] = sum{j = 0 to k - 1} (df/du)[j].(k - 1 - j).u'[k - 1 - j]
+ *  f'[k - 1] = sum{j = 0 to k - 1} h[j].(k - 1 - j).u'[k - 1 - j]
  *
  * Using f'[k] = (k + 1).f[k + 1], or f'[k - 1] = k.f[k], we can replace f' with f, and u' with u
  *
- *  -> k.f[k] = sum{j = 0 to k - 1} (df/du)[j].(k - j).u[k - j]
+ *  -> k.f[k] = sum{j = 0 to k - 1} h[j].(k - j).u[k - j]
  */
 
 /*
@@ -169,7 +169,7 @@ tuple t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, geometry
  *
  *        p[k] = sum{j = 0 to k - 1} (a.(k - j) - j).p[j].u[k - j] / (k * u[0])
  */
-mpfr_t *t_pwr (mpfr_t *P, mpfr_t *U, mpfr_t a, int k, mpfr_t *tmp);
+mpfr_t *t_pwr (mpfr_t *P, mpfr_t *U, double a, int k, mpfr_t *tmp);
 
 /*
  * Returns kth element of the natural logarithm of U, result stored in jet L, DOMAIN RESTRICTION U[0] > 0.0

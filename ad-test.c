@@ -119,7 +119,7 @@ int main (int argc, char **argv) {
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^2.0", KNRM);
-    ad_power(wpwr, cx, D2, n);
+    ad_power(wpwr, cx, 2.0, n);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s", KNRM);
@@ -135,7 +135,7 @@ int main (int argc, char **argv) {
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^4.0", KNRM);
-    ad_power(wpwr, cx, D4, n);
+    ad_power(wpwr, cx, 4.0, n);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s", KNRM);
@@ -153,7 +153,7 @@ int main (int argc, char **argv) {
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^0.5", KNRM);
-    ad_power(wpwr, cx, D05, n);
+    ad_power(wpwr, cx, 0.5, n);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s", KNRM);
@@ -164,7 +164,7 @@ int main (int argc, char **argv) {
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^-0.5", KNRM);
-    ad_power(wpwr, cx, D_05, n);
+    ad_power(wpwr, cx, - 0.5, n);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s", KNRM);
@@ -176,7 +176,7 @@ int main (int argc, char **argv) {
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^-1", KNRM);
-    ad_power(wpwr, cx, D_1, n);
+    ad_power(wpwr, cx, - 1.0, n);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s", KNRM);
@@ -187,7 +187,7 @@ int main (int argc, char **argv) {
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^0", KNRM);
-    ad_power(wpwr, cx, D0, n);
+    ad_power(wpwr, cx, 0.0, n);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s", KNRM);
@@ -308,7 +308,7 @@ int main (int argc, char **argv) {
 
     printf("%s%s%s\n", KCYN, "f(x) = septic(x)^-1", KNRM);
     septic(__, cx, n);
-    ad_power(wpwr, __, D_1, n);
+    ad_power(wpwr, __, - 1.0, n);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s", KNRM);

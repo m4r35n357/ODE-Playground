@@ -104,7 +104,7 @@ mpfr_t *ad_sqrt (mpfr_t *R, mpfr_t *U, int n);
 /*
  * Calculates Taylor Series for U^a, results stored in jet P
  */
-mpfr_t *ad_power (mpfr_t *P, mpfr_t *U, mpfr_t a, int n);
+mpfr_t *ad_power (mpfr_t *P, mpfr_t *U, double a, int n);
 
 /*
  * Calculates Taylor Series for the exponential of U, results stored in jet E

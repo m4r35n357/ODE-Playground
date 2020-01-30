@@ -84,7 +84,7 @@ void composite2 (mpfr_t *f, mpfr_t *x, int n) {
 void lorentz (mpfr_t *f, mpfr_t *x, int n) {
     ad_square(_1, x, n);
     ad_minus(_2, w1, _1, n);
-    ad_power(f, _2, D_05, n);
+    ad_power(f, _2, - 0.5, n);
 }
 
 int main (int argc, char **argv) {
