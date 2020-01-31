@@ -160,7 +160,7 @@ c is the same, except the "model" parameter, which is part of the executable nam
 
 ## Interactivity
 
-Higher level function analysis
+Higher level function analysis; plotting function and derivatives, root and turning point analysis:
 ```
 from plotters import *
 
@@ -170,7 +170,7 @@ mplot(f)
 scan(f)
 ```
 
-Here is a quick example of function inversion.
+Here is a quick example of function inversion, to find the square root of 2.
 There is a choice of analysis (root finding) method:
 ```
 $ ipython3

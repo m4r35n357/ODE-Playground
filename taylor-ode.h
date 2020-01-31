@@ -112,13 +112,13 @@ mpfr_t *t_sqrt (mpfr_t *R, mpfr_t *U, int k);
  *
  *  f'(u) = (df/du).u' = h.u'
  *
+ * Using f'[k] = (k + 1).f[k + 1]  ==>  f'[k - 1] = k.f[k], we can replace f' with f, and u' with u as follows:
+ *
  * From product rule above, (note that f' and u' have one fewer elements than f and u)
  *
  *  f'[k - 1] = sum{j = 0 to k - 1} h[j].(k - 1 - j).u'[k - 1 - j]
  *
- * Using f'[k] = (k + 1).f[k + 1], or f'[k - 1] = k.f[k], we can replace f' with f, and u' with u
- *
- *  -> k.f[k] = sum{j = 0 to k - 1} h[j].(k - j).u[k - j]
+ *     k.f[k] = sum{j = 0 to k - 1} h[j].(k - j).u[k - j]  ==>  f[k] = sum{j = 0 to k - 1} h[j].(k - j).u[k - j] / k
  */
 
 /*
