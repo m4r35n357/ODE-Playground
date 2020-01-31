@@ -165,12 +165,12 @@ mpfr_t *ad_sqrt (mpfr_t *r, mpfr_t *u, int n) {
 }
 
 mpfr_t *ad_power (mpfr_t *p, mpfr_t *u, double a, int n) {
-    mpfr_t _;
-    mpfr_init(_);
+    mpfr_t _, __, ___;
+    mpfr_inits(_, __, ___, NULL);
     for (int k = 0; k < n; k++) {
-        t_pwr(p, u, a, k, &_);
+        t_pwr(p, u, a, k, &_, &__, &___);
     }
-    mpfr_clear(_);
+    mpfr_clears(_, __, ___, NULL);
     return p;
 }
 
