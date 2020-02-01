@@ -101,7 +101,7 @@ mpfr_t *t_sqrt (mpfr_t *r, mpfr_t *u, int k) {
     if (k == 0) {
         mpfr_sqrt(r[0], u[0], RND);
     } else {
-        mpfr_mul_2ui(r[k], *cauchy(&r[k], r, r, k, 0, (k - (k % 2 == 0 ? 2 : 1)) / 2), 1, RND);
+        mpfr_mul_2ui(r[k], *cauchy(&r[k], r, r, k, 1, (k - (k % 2 == 0 ? 2 : 1)) / 2), 1, RND);
         if (k % 2 == 0) mpfr_fma(r[k], r[k / 2], r[k / 2], r[k], RND);
         mpfr_sub(r[k], u[k], r[k], RND);
         mpfr_div_2ui(r[k], r[k], 1, RND);
