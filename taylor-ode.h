@@ -64,122 +64,126 @@ void t_horner (mpfr_t *sum, mpfr_t *jet, int n, mpfr_t h);
 mpfr_t *t_abs (mpfr_t *a, mpfr_t *u, int k);
 
 /*
- * Cauchy product for c = a.b
+ * Cauchy product for C = A.B
  *
- *  c[k] = sum{j = 0 to k} a[j].b[k - j]
+ *                 C[k] = sum{j=0->k} A[j].B[k - j]
  */
 
 /*
  * Returns kth element of the square of U, result stored and returned in variable S, NO JET STORAGE
  *
- *  s = u.u
+ *  S = U.U
  *
- *  s = sum{j = 0 to (k - 1) / 2} u[j].u[k - j]               if k odd
- *  s = sum{j = 0 to (k - 2) / 2} u[j].u[k - j] + u[k / 2]^2  if k even
+ *  S = sum{j=0->(k-1)/2} U[j].U[k - j]               if k odd
+ *  S = sum{j=0->(k-2)/2} U[j].U[k - j] + U[k / 2]^2  if k even
  */
 mpfr_t *t_sqr (mpfr_t *S, mpfr_t *U, int k);
 
 /*
  * Returns kth element of the product of U and V, result stored in variable P, NO JET STORAGE
  *
- *  p = u.v
+ *  P = U.V
  *
- *  p = sum{j = 0 to k} u[j].v[k - j]
+ *  P = sum{j=0->k} U[j].V[k - j]
  */
 mpfr_t *t_prod (mpfr_t *P, mpfr_t *U, mpfr_t *V, int k);
 
 /*
  * Returns kth element of U / V, results stored in jet Q, DOMAIN RESTRICTION v[0] != 0.0
  *
- *    u = q.v
+ *    Q = U / V ==> U = Q.V
  *
- * q[k] = (u[k] - sum{j = 0 to k - 1} q[j].v[k - j]) / v[0]
+ *                U[k] = sum{j=0->k} Q[j].V[k - j]
+ *
+ *                     = sum{j=0->k-1} Q[j].V[k - j] + Q[k]. V[0]
+ *
+ *                Q[k] = (U[k] - sum{j=0->k-1} Q[j].V[k - j]) / V[0]
  */
 mpfr_t *t_quot (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int k);
 
 /*
  * Returns kth element of the square root of U, results stored in jet R, DOMAIN RESTRICTION U[0] > 0.0
  *
- *    u = r.r
+ *    U = R.R
  *
- * r[k] = (u[k] - sum{j = 0 to (k - 1) / 2} r[j].r[k - j]) / (2.0 * u[0])               if k odd
- * r[k] = (u[k] - sum{j = 0 to (k - 2) / 2} r[j].r[k - j] - r[k / 2]^2) / (2.0 * u[0])  if k even
+ * r[k] = (u[k] - sum{j=1->(k-1)/2} r[j].r[k - j]) / (2.0 * u[0])               if k odd
+ * r[k] = (u[k] - sum{j=1->(k-2)/2} r[j].r[k - j] - r[k / 2]^2) / (2.0 * u[0])  if k even
  */
 mpfr_t *t_sqrt (mpfr_t *R, mpfr_t *U, int k);
 
 /*
  * Applying the chain rule for the derivative of a composed function f(u) creates another Cauchy product:
  *
- *       f'(u) = (df/du).u' = h.u'
+ *          F' = (df/du).U'
+ *             =       H.U'
  *
- * Using f'[k] = (k + 1).f[k + 1]  ==>  f'[k - 1] = k.f[k], we can replace f' with f, and u' with u as follows:
+ * Using F'[k] = (k + 1).F[k + 1]  ==>  F'[k - 1] = k.F[k], we can replace F' with F, and U' with U as follows:
  *
- * From product rule above, (note that f' and u' have one fewer elements than f and u)
+ * From product rule above, (note that F' and U' have one fewer elements than F and U)
  *
- *   f'[k - 1] = sum{j = 0 to k - 1} h[j].(k - 1 - j).u'[k - 1 - j]
+ *   F'[k - 1] = sum{j=0->k-1} H[j].(k - 1 - j).U'[k - 1 - j]
  *
- *      k.f[k] = sum{j = 0 to k - 1} h[j].(k - j).u[k - j]  ==>  f[k] = sum{j = 0 to k - 1} h[j].(k - j).u[k - j] / k
+ *      k.F[k] = sum{j=0->k-1} H[j].(k - j).U[k - j]
+ *
+ *        F[k] = sum{j=0->k-1} H[j].(k - j).U[k - j] / k
  */
 
 /*
  * Returns kth element of the exponential of U, results stored in jet E
  *
- *   exp'(u) = exp(u).u'
+ *      E' = E.U'
  *
- * exp(u)[k] = sum{j = 0 to k - 1} exp(u)[j].(k - j).u[k - j] / k
+ *    E[k] = sum{j=0->k-1} E[j].(k - j).U[k - j] / k
  */
 mpfr_t *t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp);
 
 /*
  * Returns a struct containing kth elements of the sine and cosine of U, results stored in jets S and C
  *
- *   sinh'(u) = cosh(u).u', sin'(u) =  cos(u).u'
- *   cosh'(u) = sinh(u).u', cos'(u) = -sin(u).u'
+ *      S' =     C.U'
+ *      C' = (+-)S.U'   (+ for cosh, - for cos)
  *
- *  sin(u)[k] = sum{j = 0 to k - 1}  cos(u)[j].(k - j).u[k - j] / k
- *  cos(u)[k] = sum{j = 0 to k - 1} -sin(u)[j].(k - j).u[k - j] / k
- *
- * sinh(u)[k] = sum{j = 0 to k - 1} cosh(u)[j].(k - j).u[k - j] / k
- * cosh(u)[k] = sum{j = 0 to k - 1} sinh(u)[j].(k - j).u[k - j] / k
+ *    S[k] = sum{j=0->k-1}      C(u)[j].(k - j).U[k - j] / k
+ *    C[k] = sum{j=0->k-1} (+-) S(u)[j].(k - j).U[k - j] / k
  */
 tuple t_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp, geometry g);
 
 /*
  * Returns a struct containing kth elements of the tangent and squared secant of U, results stored in jets T and S2
  *
- *     tanh'(u) =  sech^2(u).u',         tan'(u) = sec^2(u).u'
- *   sech^2'(u) = -2.tanh(u).tanh'(u), sec^2'(u) = 2.tan(u).tan'(u)
+ *      T' =     S^2.U'
+ *    S^2' = (+-)2.T.T'   (+ for sec^2, - for sech^2)
  *
- *    tan(u)[k] = sum{j = 0 to k - 1} sec^2(u)[j].(k - j).u[k - j] / k
- *  sec^2(u)[k] = sum{j = 0 to k - 1} 2.tan(u)[j].(k - j).tan(u)[k - j] / k
- *
- *   tanh(u)[k] = sum{j = 0 to k - 1}  sech^2(u)[j].(k - j).u[k - j] / k
- * sech^2(u)[k] = sum{j = 0 to k - 1} -2.tanh(u)[j].(k - j).tanh(u)[k - j] / k
+ *    T[k] = sum{j=0->k-1}     S^2[j].(k - j).U[k - j] / k
+ *  S^2[k] = sum{j=0->k-1} (+-)2.T[j].(k - j).T[k - j] / k
  */
 tuple t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, geometry g);
 
 /*
- * Returns kth element of U^a (where a is scalar), results stored in jet P, DOMAIN RESTRICTION U[0] > 0.0
+ * Returns kth element of P = U^a (where a is scalar), results stored in jet P, DOMAIN RESTRICTION U[0] > 0.0
  *
- *      u.u^a' = a.u^a.u'
- *           0 = a.u^a.u' - u^a'.u
+ *                    P'= U^a' = a.U^(a-1).U'
+ *                      U.U^a' = a.U^a.U'
+ *                        U.P' = a.P.U'
  *
- *           0 = sum{j = 0 to k - 1} a.p[j].(k - j).u[k - j] - sum{j = 0 to k} u[k - j].j.p[j]
- * u[0].k.p[k] = sum{j = 0 to k - 1} a.p[j].(k - j).u[k - j] - sum{j = 0 to k - 1} u[k - j].j.p[j]
+ * sum{j=0->k} U[k - j].j.P[j] = sum{j=0->k-1} a.P[j].(k - j).U[k - j]
  *
- *        p[k] = ( sum{j = 0 to k - 1} a.p[j].(k - j).u[k - j] / k - sum{j = 0 to k - 1} u[k - j].j.p[j] / k ) / u[0]
+ *                 U[0].k.P[k] = sum{j=0->k-1} a.P[j].(k - j).U[k - j] - sum{j=0->k-1} U[k - j].j.P[j]
+ *
+ *                        P[k] = (sum{j=0->k-1} a.P[j].(k - j).U[k - j] / k - sum{j=0->k-1} U[k - j].j.P[j] / k) / U[0]
  */
 mpfr_t *t_pwr (mpfr_t *P, mpfr_t *U, double a, int k, mpfr_t *tmp1, mpfr_t *tmp2, mpfr_t *tmp3);
 
 /*
  * Returns kth element of the natural logarithm of U, result stored in jet L, DOMAIN RESTRICTION U[0] > 0.0
  *
- *     u' = u.ln'(u)
+ *     L' = U' / U ==> U' = U.L'
  *
- * k.u[k] = sum{j = 0 to k - 1} u[j].(k - j).ln[k - j]
- *        = sum{j = 1 to k - 1} u[j].(k - j).ln[k - j] + u[0].k.ln[k]
+ *                 k.U[k] = sum{j=0->k-1} U[j].(k - j).L[k - j]
  *
- *  ln[k] = (u[k] - sum{j = 1 to k - 1} u[j] * (k - j) * ln[k - j] / k) / u[0]
+ *                        = sum{j=1->k-1} U[j].(k - j).L[k - j] + U[0].k.L[k]
+ *
+ *                   L[k] = (U[k] - sum{j=1->k-1} U[j].(k - j).L[k - j] / k) / U[0]
  */
 mpfr_t *t_ln (mpfr_t *L, mpfr_t *U, int k, mpfr_t *tmp);
 
