@@ -25,14 +25,14 @@ void test_sqr (mpfr_t *f, mpfr_t *x, int n) {
 }
 
 void trig (mpfr_t *f, mpfr_t *x, int n) {
-    ad_tan_sec2(f, _1, x, n);
+    ad_tan_sec2(f, _1, x, n, TRIG);
 }
 
 void cosx_x3 (mpfr_t *f, mpfr_t *x, int n) {
     //  Example: ./ad-test-newton-dbg 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     ad_square(_1, x, n);
     ad_product(_2, _1, x, n);
-    ad_sin_cos(_1, _3, x, n);
+    ad_sin_cos(_1, _3, x, n, TRIG);
     ad_minus(_3, _1, _2, n);
     ad_minus(f, _3, w_value, n);
 }

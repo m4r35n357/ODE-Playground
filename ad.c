@@ -164,16 +164,6 @@ mpfr_t *ad_sqrt (mpfr_t *r, mpfr_t *u, int n) {
     return r;
 }
 
-mpfr_t *ad_power (mpfr_t *p, mpfr_t *u, double a, int n) {
-    mpfr_t _, __, ___;
-    mpfr_inits(_, __, ___, NULL);
-    for (int k = 0; k < n; k++) {
-        t_pwr(p, u, a, k, &_, &__, &___);
-    }
-    mpfr_clears(_, __, ___, NULL);
-    return p;
-}
-
 mpfr_t *ad_exp (mpfr_t *e, mpfr_t *u, int n) {
     mpfr_t _;
     mpfr_init(_);
@@ -184,6 +174,36 @@ mpfr_t *ad_exp (mpfr_t *e, mpfr_t *u, int n) {
     return e;
 }
 
+tuple ad_sin_cos (mpfr_t *s, mpfr_t *c, mpfr_t *u, int n, geometry g) {
+    mpfr_t _;
+    mpfr_init(_);
+    for (int k = 0; k < n; k++) {
+        t_sin_cos(s, c, u, k, &_, g);
+    }
+    mpfr_clear(_);
+    return (tuple){s, c};
+}
+
+tuple ad_tan_sec2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int n, geometry g) {
+    mpfr_t _;
+    mpfr_init(_);
+    for (int k = 0; k < n; k++) {
+        t_tan_sec2(t, s2, u, k, &_, g);
+    }
+    mpfr_clear(_);
+    return (tuple){t, s2};
+}
+
+mpfr_t *ad_power (mpfr_t *p, mpfr_t *u, double a, int n) {
+    mpfr_t _, __, ___;
+    mpfr_inits(_, __, ___, NULL);
+    for (int k = 0; k < n; k++) {
+        t_pwr(p, u, a, k, &_, &__, &___);
+    }
+    mpfr_clears(_, __, ___, NULL);
+    return p;
+}
+
 mpfr_t *ad_ln (mpfr_t *l, mpfr_t *u, int n) {
     mpfr_t _;
     mpfr_init(_);
@@ -192,44 +212,4 @@ mpfr_t *ad_ln (mpfr_t *l, mpfr_t *u, int n) {
     }
     mpfr_clear(_);
     return l;
-}
-
-tuple ad_sin_cos (mpfr_t *s, mpfr_t *c, mpfr_t *u, int n) {
-    mpfr_t _;
-    mpfr_init(_);
-    for (int k = 0; k < n; k++) {
-        t_sin_cos(s, c, u, k, &_, TRIG);
-    }
-    mpfr_clear(_);
-    return (tuple){s, c};
-}
-
-tuple ad_sinh_cosh (mpfr_t *s, mpfr_t *c, mpfr_t *u, int n) {
-    mpfr_t _;
-    mpfr_init(_);
-    for (int k = 0; k < n; k++) {
-        t_sin_cos(s, c, u, k, &_, HYP);
-    }
-    mpfr_clear(_);
-    return (tuple){s, c};
-}
-
-tuple ad_tan_sec2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int n) {
-    mpfr_t _;
-    mpfr_init(_);
-    for (int k = 0; k < n; k++) {
-        t_tan_sec2(t, s2, u, k, &_, TRIG);
-    }
-    mpfr_clear(_);
-    return (tuple){t, s2};
-}
-
-tuple ad_tanh_sech2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int n) {
-    mpfr_t _;
-    mpfr_init(_);
-    for (int k = 0; k < n; k++) {
-        t_tan_sec2(t, s2, u, k, &_, HYP);
-    }
-    mpfr_clear(_);
-    return (tuple){t, s2};
 }

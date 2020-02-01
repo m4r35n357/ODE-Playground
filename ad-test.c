@@ -228,7 +228,7 @@ int main (int argc, char **argv) {
     derivative_output(wl, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    ad_sin_cos(ws, wc, cx0, n);
+    ad_sin_cos(ws, wc, cx0, n, TRIG);
     printf("%s%s%s\n", KCYN, "f(x) = sin(0)", KNRM);
     jet_output(ws, n, KNRM, KGRY);
     derivative_output(ws, n, KBLD, KGRY);
@@ -238,7 +238,7 @@ int main (int argc, char **argv) {
     derivative_output(wc, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    ad_sin_cos(ws, wc, PI_3, n);
+    ad_sin_cos(ws, wc, PI_3, n, TRIG);
     printf("%s%s%s\n", KCYN, "f(x) = sin(pi/3)", KNRM);
     jet_output(ws, n, KNRM, KGRY);
     derivative_output(ws, n, KBLD, KGRY);
@@ -248,7 +248,7 @@ int main (int argc, char **argv) {
     derivative_output(wc, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    ad_sinh_cosh(ws, wc, PI_3, n);
+    ad_sin_cos(ws, wc, PI_3, n, HYP);
     printf("%s%s%s\n", KCYN, "f(x) = sinh(pi/3)", KNRM);
     jet_output(ws, n, KNRM, KGRY);
     derivative_output(ws, n, KBLD, KGRY);
@@ -258,7 +258,7 @@ int main (int argc, char **argv) {
     derivative_output(wc, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    ad_tan_sec2(wt, ws2, PI_4, n);
+    ad_tan_sec2(wt, ws2, PI_4, n, TRIG);
     printf("%s%s%s\n", KCYN, "f(x) = tan(pi/4)", KNRM);
     jet_output(wt, n, KNRM, KGRY);
     derivative_output(wt, n, KBLD, KGRY);
@@ -268,7 +268,7 @@ int main (int argc, char **argv) {
     derivative_output(ws2, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    ad_tanh_sech2(wt, ws2, PI_4, n);
+    ad_tan_sec2(wt, ws2, PI_4, n, HYP);
     printf("%s%s%s\n", KCYN, "f(x) = tanh(pi/4)", KNRM);
     jet_output(wt, n, KNRM, KGRY);
     derivative_output(wt, n, KBLD, KGRY);
@@ -294,7 +294,7 @@ int main (int argc, char **argv) {
 
     printf("%s%s%s\n", KCYN, "f(x, y) = e^x / (x - y * sin(x^2), d/dx", KNRM);
     ad_square(wsqr, cx, n);
-    ad_sin_cos(ws, wc, wsqr, n);
+    ad_sin_cos(ws, wc, wsqr, n, TRIG);
     ad_product(wprod, cy, ws, n);
     ad_minus(wsum, cx, wprod, n);
     ad_exp(we, cx, n);
@@ -334,7 +334,7 @@ int main (int argc, char **argv) {
 
     printf("%s%s%s\n", KCYN, "f(x, y) = e^x / (x - y * sin(x^2), d/dy", KNRM);
     ad_square(wsqr, cx, n);
-    ad_sin_cos(ws, wc, wsqr, n);
+    ad_sin_cos(ws, wc, wsqr, n, TRIG);
     ad_product(wprod, cy, ws, n);
     ad_minus(wsum, cx, wprod, n);
     ad_exp(we, cx, n);
