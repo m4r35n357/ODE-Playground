@@ -74,8 +74,12 @@ mpfr_t *t_abs (mpfr_t *a, mpfr_t *u, int k);
  *
  *  S = U.U
  *
- *  S = sum{j=0->(k-1)/2} U[j].U[k - j]               if k odd
- *  S = sum{j=0->(k-2)/2} U[j].U[k - j] + U[k / 2]^2  if k even
+ *  S = sum{j=0->k} U[j].U[k - j]
+ *
+ *  or, from symmetry:
+ *
+ *  S = sum{j=0->(k-1)/2} U[j].U[k - j]             if k odd
+ *  S = sum{j=0->(k-2)/2} U[j].U[k - j] + U[k/2]^2  if k even
  */
 mpfr_t *t_sqr (mpfr_t *S, mpfr_t *U, int k);
 
@@ -106,8 +110,16 @@ mpfr_t *t_quot (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int k);
  *
  *    U = R.R
  *
- * r[k] = (u[k] - sum{j=1->(k-1)/2} r[j].r[k - j]) / (2.0 * u[0])               if k odd
- * r[k] = (u[k] - sum{j=1->(k-2)/2} r[j].r[k - j] - r[k / 2]^2) / (2.0 * u[0])  if k even
+ * U[k] = sum{j=0->k} R[j].R[k - j]
+ *
+ *      = sum{j=1->k-1} R[j].R[k - j] + 2.R[k].R[0]
+ *
+ * R[k] = (U[k] - sum{j=1->k-1} R[j].R[k - j]) / (2.R[0])
+ *
+ * or, from symmetry:
+ *
+ * R[k] = (U[k] - sum{j=1->(k-1)/2} R[j].R[k - j]) / (2.0.R[0])             if k odd
+ * R[k] = (U[k] - sum{j=1->(k-2)/2} R[j].R[k - j] - R[k/2]^2) / (2.0.R[0])  if k even
  */
 mpfr_t *t_sqrt (mpfr_t *R, mpfr_t *U, int k);
 
@@ -140,22 +152,22 @@ mpfr_t *t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp);
 /*
  * Returns a struct containing kth elements of the sine and cosine of U, results stored in jets S and C
  *
- *      S' =     C.U'
- *      C' = (+-)S.U'   (+ for cosh, - for cos)
+ *      S' =      C.U'
+ *      C' = (+/-)S.U'   (+ for cosh, - for cos)
  *
  *    S[k] = sum{j=0->k-1}      C(u)[j].(k - j).U[k - j] / k
- *    C[k] = sum{j=0->k-1} (+-) S(u)[j].(k - j).U[k - j] / k
+ *    C[k] = sum{j=0->k-1} (+/-)S(u)[j].(k - j).U[k - j] / k
  */
 tuple t_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp, geometry g);
 
 /*
  * Returns a struct containing kth elements of the tangent and squared secant of U, results stored in jets T and S2
  *
- *      T' =     S^2.U'
- *    S^2' = (+-)2.T.T'   (+ for sec^2, - for sech^2)
+ *      T' =      S^2.U'
+ *    S^2' = (+/-)2.T.T'   (+ for sec^2, - for sech^2)
  *
- *    T[k] = sum{j=0->k-1}     S^2[j].(k - j).U[k - j] / k
- *  S^2[k] = sum{j=0->k-1} (+-)2.T[j].(k - j).T[k - j] / k
+ *    T[k] = sum{j=0->k-1}      S^2[j].(k - j).U[k - j] / k
+ *  S^2[k] = sum{j=0->k-1} (+/-)2.T[j].(k - j).T[k - j] / k
  */
 tuple t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, geometry g);
 
