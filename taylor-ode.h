@@ -59,7 +59,7 @@ mpfr_t *t_jet_c (int size, mpfr_t value);
 void t_horner (mpfr_t *sum, mpfr_t *jet, int n, mpfr_t h);
 
 /*
- * Returns kth element of the absolute value of U, result stored and returned in variable A, NO JET STORAGE
+ * Returns a pointer to kth element of the absolute value of U, result stored and returned in variable A, NO JET STORAGE
  */
 mpfr_t *t_abs (mpfr_t *a, mpfr_t *u, int k);
 
@@ -70,7 +70,7 @@ mpfr_t *t_abs (mpfr_t *a, mpfr_t *u, int k);
  */
 
 /*
- * Returns kth element of the square of U, result stored and returned in variable S, NO JET STORAGE
+ * Returns a pointer to kth element of the square of U, result stored and returned in variable S, NO JET STORAGE
  *
  *  S = U.U
  *
@@ -84,7 +84,7 @@ mpfr_t *t_abs (mpfr_t *a, mpfr_t *u, int k);
 mpfr_t *t_sqr (mpfr_t *S, mpfr_t *U, int k);
 
 /*
- * Returns kth element of the product of U and V, result stored in variable P, NO JET STORAGE
+ * Returns a pointer to kth element of the product of U and V, result stored in variable P, NO JET STORAGE
  *
  *  P = U.V
  *
@@ -93,7 +93,7 @@ mpfr_t *t_sqr (mpfr_t *S, mpfr_t *U, int k);
 mpfr_t *t_prod (mpfr_t *P, mpfr_t *U, mpfr_t *V, int k);
 
 /*
- * Returns kth element of U / V, results stored in jet Q, DOMAIN RESTRICTION v[0] != 0.0
+ * Returns a pointer to kth element of U / V, results stored in jet Q, DOMAIN RESTRICTION v[0] != 0.0
  *
  *    Q = U / V ==> U = Q.V
  *
@@ -106,7 +106,7 @@ mpfr_t *t_prod (mpfr_t *P, mpfr_t *U, mpfr_t *V, int k);
 mpfr_t *t_quot (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int k);
 
 /*
- * Returns kth element of the square root of U, results stored in jet R, DOMAIN RESTRICTION U[0] > 0.0
+ * Returns a pointer to kth element of the square root of U, results stored in jet R, DOMAIN RESTRICTION U[0] > 0.0
  *
  *    U = R.R
  *
@@ -141,7 +141,7 @@ mpfr_t *t_sqrt (mpfr_t *R, mpfr_t *U, int k);
  */
 
 /*
- * Returns kth element of the exponential of U, results stored in jet E
+ * Returns a pointer to kth element of the exponential of U, results stored in jet E
  *
  *      E' = E.U'
  *
@@ -150,7 +150,7 @@ mpfr_t *t_sqrt (mpfr_t *R, mpfr_t *U, int k);
 mpfr_t *t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp);
 
 /*
- * Returns a struct containing kth elements of the sine and cosine of U, results stored in jets S and C
+ * Returns a pair of pointers to kth elements of the sine and cosine of U, results stored in jets S and C
  *
  *      S' =      C.U'
  *      C' = (+/-)S.U'   (+ for cosh, - for cos)
@@ -161,7 +161,7 @@ mpfr_t *t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp);
 tuple t_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp, geometry g);
 
 /*
- * Returns a struct containing kth elements of the tangent and squared secant of U, results stored in jets T and S2
+ * Returns a pair of pointers to kth elements of the tangent and squared secant of U, results stored in jets T and S2
  *
  *      T' =      S^2.U'
  *    S^2' = (+/-)2.T.T'   (+ for sec^2, - for sech^2)
@@ -172,7 +172,7 @@ tuple t_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp, geometry g
 tuple t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, geometry g);
 
 /*
- * Returns kth element of P = U^a (where a is scalar), results stored in jet P, DOMAIN RESTRICTION U[0] > 0.0
+ * Returns a pointer to kth element of P = U^a (where a is scalar), results stored in jet P, DOMAIN RESTRICTION U[0] > 0.0
  *
  *                    P'= U^a' = a.U^(a-1).U'
  *                      U.U^a' = a.U^a.U'
@@ -184,10 +184,10 @@ tuple t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, geometry
  *
  *                        P[k] = (sum{j=0->k-1} a.P[j].(k - j).U[k - j] / k - sum{j=0->k-1} U[k - j].j.P[j] / k) / U[0]
  */
-mpfr_t *t_pwr (mpfr_t *P, mpfr_t *U, double a, int k, mpfr_t *tmp1, mpfr_t *tmp2, mpfr_t *tmp3);
+mpfr_t *t_pwr (mpfr_t *P, mpfr_t *U, double a, int k, mpfr_t *tmpA, mpfr_t *tmpB);
 
 /*
- * Returns kth element of the natural logarithm of U, result stored in jet L, DOMAIN RESTRICTION U[0] > 0.0
+ * Returns a pointer to kth element of the natural logarithm of U, result stored in jet L, DOMAIN RESTRICTION U[0] > 0.0
  *
  *     L' = U' / U ==> U' = U.L'
  *

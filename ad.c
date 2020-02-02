@@ -195,12 +195,12 @@ tuple ad_tan_sec2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int n, geometry g) {
 }
 
 mpfr_t *ad_power (mpfr_t *p, mpfr_t *u, double a, int n) {
-    mpfr_t _, __, ___;
-    mpfr_inits(_, __, ___, NULL);
+    mpfr_t _, __;
+    mpfr_inits(_, __, NULL);
     for (int k = 0; k < n; k++) {
-        t_pwr(p, u, a, k, &_, &__, &___);
+        t_pwr(p, u, a, k, &_, &__);
     }
-    mpfr_clears(_, __, ___, NULL);
+    mpfr_clears(_, __, NULL);
     return p;
 }
 
