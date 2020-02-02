@@ -111,6 +111,19 @@ python3 setup.py install
 cd ../..
 ```
 
+## Running Python tests
+```
+pytest --cov=ad --cov=playground --cov-report html:cov_html ad_test.py solver_test.py -v
+```
+
+## Running c tests
+```
+$ ./build
+<build output>
+$ ./ad-test-dbg 7 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt
+$
+```
+
 ## Solving ODEs
 This use case only involves calling the "t-functions" in tsm.py.
 No differentiation happens in these functions (they only implement the recurrence relations); it is the responsibility of the calling program to organize this properly.
