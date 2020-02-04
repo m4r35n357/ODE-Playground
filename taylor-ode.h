@@ -66,7 +66,15 @@ mpfr_t *t_abs (mpfr_t *a, mpfr_t *u, int k);
 /*
  * Cauchy product for C = A.B
  *
- *                 C[k] = sum{j=0->k} A[j].B[k - j]
+ *  let c(x) = sum{k=0->inf} C(k) (x - a)^k
+ *
+ *   if c(x) = a(x) b(x)
+ *
+ * then c(x) = (sum{k=0->inf} A(k) (x - a)^k) (sum{k=0->inf} B(k) (x - a)^k)
+ *
+ *           = sum{k=0->inf} ( sum{j=0->k} A[j]B[k - j] ) (x - a)^k
+ *
+ *  ==> C[k] = sum{j=0->k} A[j]B[k - j]
  */
 
 /*
