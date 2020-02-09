@@ -173,24 +173,36 @@ c is the same, except the "model" parameter, which is part of the executable nam
 
 ## Interactivity
 
-Higher level function analysis; plotting function and derivatives, root and turning point analysis:
+##### Higher level function analysis
+Plotting function and derivatives, together with root and turning point analysis:
 ```
+$ ipython3
+Python 3.7.1 (default, Oct 22 2018, 11:21:55) 
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.2.0 -- An enhanced Interactive Python. Type '?' for help.
+PyDev console: using IPython 7.2.0
+Python 3.7.1 (default, Oct 22 2018, 11:21:55) 
+[GCC 8.2.0] on linux
 from plotters import *
-
+Backend TkAgg is interactive backend. Turning interactive mode on.
+ad module loaded
+playground module loaded
+plotters module loaded
 f = lambda a: (a.exp + (a.sqr - 4.0).exp).ln
-
-mplot(f)
 scan(f)
+BI  x: -1.962e+00  δx: -2.387e-10  f: +4.026e-10  \ ROOT___ 26
+BI  x: -1.312e+00  δx: -4.773e-10  f: +2.023e-10  / MIN_MAX 25
+BI  x: -1.849e-02  δx: -9.546e-10  f: -2.642e-10  / ROOT___ 24
+mplot(f)
 ```
+(matplotlib plot not shown!)
 
-Here is a quick example of function inversion, to find the square root of 2.
+##### Square root of two
+Here is a quick example of function inversion.
 There is a choice of analysis (root finding) method:
 ```
 $ ipython3
-Python 3.7.1 (default, Oct 22 2018, 11:21:55)
-Type 'copyright', 'credits' or 'license' for more information
-IPython 7.2.0 -- An enhanced Interactive Python. Type '?' for help.
-
+...
 In [1]: from ad import *
    ...: from playground import *
 ad module loaded
@@ -209,6 +221,7 @@ In [5]: timeit(newton(lambda x: x**2 - 2, x0=1.0))
 76 µs ± 1.63 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 ```
 
+##### Automatic Differentiation
 Here we calculate _all_ the derivatives of a simple cubic in x, followed by its sensitivities to each parameter a, b, c.
 ```
 $ ipython3
