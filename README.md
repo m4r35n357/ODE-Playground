@@ -15,9 +15,11 @@ These programs are the result.
 The main objective was to solve coupled nonlinear equations and investigate chaotic systems.
 There is a maths.tex file containing a technical note describing the majority of the procedure (apart from the recurrence relations which are obtained from the source listed below).
 
-The Taylor recurrence rules (the global "t-functions") generate "jets" of Taylor Series coefficients iteratively, term by term, using previously calculated lower order calculations.
+The Taylor recurrence rules (the global "t-functions" in c and Python) generate "jets" of Taylor Series coefficients iteratively, term by term, using previously calculated lower order calculations.
 The functions provided cover the basic algebraic operations (+ - * /), and also include several common functions:
 * abs
+* sqr
+* sqrt
 * exp
 * sin(h)_cos(h)
 * tan(h)_sec(h)2
@@ -34,16 +36,17 @@ As part of the work to verify my implementation of these recurrence rules, I hav
 The solver demo can be used to find roots (and also extrema and inflection points by "extending" Newton to higher derivatives) in single variable nonlinear equations.
 Additionally it is designed for finding inverse values (where real solutions exist) of complicated functions, not just their roots.
 
-
-The "higher-level" functions (in the Series class) generate Taylor series "jets" in one go, so are only useful for univariate functions.
+The "higher-level" ad_functions (or the Series class in Python) generate Taylor series "jets" in one go, so are only useful for univariate functions.
 There is an overloaded operator "~" which extracts the actual derivative values from the taylor series coefficents, as well as additional operators for (negation and **).
-The \*\* (power) operator caters for f(x)^a, a^f(x) and f1(x)^f2(x), subject to domain limitations on f(x) and the scalar a.
-There are also functions for:
+The \*\* (power) operator caters for f(x)^a, a^f(x) and f1(x)^f2(x), subject to domain limitations on f(x).
+There are also functions for (matching the t_functions):
 * abs
+* sqr
+* sqrt
 * exp
-* sin(h)
-* cos(h)
-* tan(h)
+* sin(h)_cos(h)
+* tan(h)_sec(h)2
+* pwr (f(x)^a, a is a scalar)
 * ln
 
 Using these higher level functions, Newton's method is implemented trivially, but I have also provided an implementations of the bisection method for comparison.
@@ -75,31 +78,21 @@ The dependencies are:
 * pi3d for 3D progressive trajectories (the visual python implementation is still distributed but is now considered legacy)
 * gnuplot for static 3D trajectories
 
-## Getting started
+## Build Environment (Debian/Ubuntu/Raspbian)
 
-There is a Python 3 version of the ODE solver programs with built-in models.
-Dependencies of Python 3 programs:
-* matplotlib
-* pi3d
-
-## Testing Requirements
-* pytest
-* pytest_cov
-* mutmut
-
-## Build environment (Debian/Ubuntu/Raspbian)
+OS level requirements:
 ```
 sudo apt install build-essential mesa-utils-extra python3-dev libmpc-dev libatlas-base-dev virtualenvwrapper gnuplot-x11
-```
-This is a typical virtual environment setup:
-```
-mkvirtualenv --python /usr/bin/python3 ad
-pip install matplotlib pillow pi3d pytest pytest-cov mutmut ipython
 ```
 Download:
 ```
 git clone https://github.com/m4r35n357/ODE-Playground
 cd ODE-Playground
+```
+This is a typical Python virtual environment setup:
+```
+mkvirtualenv --python /usr/bin/python3 ad
+pip install matplotlib pillow pi3d pytest pytest-cov mutmut ipython
 ```
 Now you can just use it "in place" in your virtual environment or, optionally, build and install an ad package to your venv
 ```
@@ -110,29 +103,42 @@ cd ad-1.0
 python3 setup.py install
 cd ../..
 ```
+c Build (GCC or Clang)
+```
+$ ./build
+$ ./build clang
+```
 
-## Running Python tests
+## Running Python Tests
+Testing Requirements
+* pytest
+* pytest_cov
+* mutmut
+
+Most of the code is covered several times over.
+Tests have been mutation tested with mutmut.
 ```
 pytest --cov=ad --cov=playground --cov-report html:cov_html ad_test.py solver_test.py -v
 ```
 
-## Running c tests
+## Running c Tests
+A successful test run creates no output:
 ```
-$ ./build
+$ ./build [clang]
 <build output>
 $ ./ad-test-dbg 7 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt
 $
 ```
 
-## Solving ODEs
+## Solving and Plotting ODEs
 This use case only involves calling the "t-functions" in tsm.py.
 No differentiation happens in these functions (they only implement the recurrence relations); it is the responsibility of the calling program to organize this properly.
-Refer to tsm.py for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors.
+Refer to tsm.py and tsm-*.c for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors.
 To find some example invocations:
 ```
 grep Example *.py tsm-*.c
 ```
-Matplotlib progressive graph plotting in Python:
+Matplotlib progressive graph plotting in Python (second parameter ignored as python floats are fixed double precision):
 ```
 ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
 ```
@@ -157,7 +163,7 @@ echo "splot '/tmp/data' with lines" | gnuplot -p
 ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
 ```
 
-## tsm.py Parameter reference
+## tsm.py Parameter Reference
 tsm.py comprises a long "if" statement containing a "zoo" of pre-programmed ODE systems.
 
 Parameter | Meaning

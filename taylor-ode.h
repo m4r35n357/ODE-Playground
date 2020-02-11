@@ -34,12 +34,12 @@ typedef enum {TRIG, HYP} geometry;
 void t_xyz_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t t);
 
 /*
- * Sets the order, step size, and number of steps for the integration
+ * Sets the order, step size, and number of steps for the integration from the command line arguments (1 to 4)
  */
 void t_stepper (char **argv, long *n, mpfr_t *t, mpfr_t *h, long *nsteps);
 
 /*
- * Bulk set MPFR variables from command line arguments
+ * Bulk set initial conditions and ODE parameters from the command line arguments (5 onwards)
  */
 void t_args (char **argv, int count, ...);
 
