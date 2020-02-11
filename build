@@ -16,7 +16,7 @@ build () {
     name=$1
     ${CC} -O3 -DNDEBUG -o ${name}-dynamic ${name}.c taylor-ode.c -lmpfr -s
     ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c -lmpfr -lgmp -s
-    ${CC} -Og $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode.c -lmpfr
+    ${CC} -O0 $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode.c -lmpfr
 }
 
 for model in \
@@ -41,9 +41,24 @@ do
     build ${model} &
 done
 
-${CC} -Og -Wall -g -o ad-test-dbg taylor-ode.c ad.c ad-test.c -lmpfr &
-${CC} -Og -Wall -g -o ad-test-newton-dbg taylor-ode.c ad.c ad-test-newton.c -lmpfr &
+${CC} -O0 -Wall -g -o ad-test-dbg taylor-ode.c ad.c ad-test.c -lmpfr &
+${CC} -O0 -Wall -g -o ad-test-newton-dbg taylor-ode.c ad.c ad-test-newton.c -lmpfr &
+
+# export LD_LIBRARY_PATH='.'
+# to compile and run against the shared library libtaylor.so:
+# gcc -L. -Wall -o test tsm-lorenz.c -ltaylor -lmpfr -s
+# ./test 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/data; echo "splot '/tmp/data' with lines" | gnuplot -p
+#
+${CC} -O0 -c $WARNINGS -g -fpic taylor-ode.c
+${CC} -shared -o libtaylor.so taylor-ode.o
+
+# to compile and run against the shared library libad.so:
+# gcc -L. -Wall -o test ad-test.c -lad -ltaylor -lmpfr -s
+# ./test 7 2 1
+#
+${CC} -O0 -c $WARNINGS -g -fpic ad.c
+${CC} -shared -o libad.so ad.o
 
 wait
-ls -lh --color ad-test* tsm-*
+ls -lh --color ad-test* tsm-* lib*.so
 
