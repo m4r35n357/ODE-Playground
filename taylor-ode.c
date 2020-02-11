@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <assert.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
@@ -11,10 +12,6 @@
 const int BASE = 10;
 
 const mpfr_rnd_t RND = MPFR_RNDN;
-
-void t_arg (char **argv, int arg, mpfr_t *dest) {
-    mpfr_init_set_str(*dest, argv[arg], BASE, RND);
-}
 
 void t_xyz_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t t) {
     mpfr_printf("%+.12RNe %+.12RNe %+.12RNe %+.6RNe\n", x, y, z, t);
@@ -27,6 +24,15 @@ void t_stepper (char **argv, long *n, mpfr_t *t, mpfr_t *h, long *nsteps) {
     mpfr_init_set_ui(*t, 0, RND);
     mpfr_init_set_str(*h, argv[3], BASE, RND);
     *nsteps = strtol(argv[4], NULL, BASE);
+}
+
+void t_args (char **argv, int count, ...) {
+    va_list vars;
+    va_start(vars, count);
+    for (int i = 5; i < count; i++) {
+        mpfr_init_set_str(*va_arg(vars, mpfr_t *), argv[i], BASE, RND);
+    }
+    va_end(vars);
 }
 
 mpfr_t *t_jet (int n) {

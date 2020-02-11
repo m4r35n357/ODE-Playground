@@ -30,14 +30,7 @@ int main (int argc, char **argv) {
     // initialize from command arguments
     assert(argc == 13);
     t_stepper(argv, &n, &t, &h, &nsteps);
-    t_arg(argv, 5, &m1);
-    t_arg(argv, 6, &m2);
-    t_arg(argv, 7, &l1);
-    t_arg(argv, 8, &l2);
-    t_arg(argv, 9, &t10);
-    t_arg(argv, 10, &w10);
-    t_arg(argv, 11, &t20);
-    t_arg(argv, 12, &w20);
+    t_args(argv, argc, &m1, &m2, &l1, &l2, &t10, &w10, &t20, &w20);
     mpfr_inits(_, __, x1, y1, x2, y2, NULL);
     mpfr_init_set_str(g, "9.80665", 10, RND);
 

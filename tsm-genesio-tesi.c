@@ -17,12 +17,7 @@ int main (int argc, char **argv) {
     // initialize from command arguments
     assert(argc == 11);
     t_stepper(argv, &n, &t, &h, &nsteps);
-    t_arg(argv, 5, &x0);
-    t_arg(argv, 6, &y0);
-    t_arg(argv, 7, &z0);
-    t_arg(argv, 8, &a);
-    t_arg(argv, 9, &b);
-    t_arg(argv, 10, &c);
+    t_args(argv, argc, &x0, &y0, &z0, &a, &b, &c);
     mpfr_init(_);
 
     // initialize the derivative and temporary jets

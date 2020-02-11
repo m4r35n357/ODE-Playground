@@ -18,12 +18,8 @@ int main (int argc, char **argv) {
     // initialize from command arguments
     assert(argc == 10);
     t_stepper(argv, &n, &t, &h, &nsteps);
-    t_arg(argv, 5, &x0);
-    t_arg(argv, 6, &y0);
-    t_arg(argv, 7, &z0);
-    t_arg(argv, 8, &_);
+    t_args(argv, argc, &x0, &y0, &z0, &_, &gamma);
     alpha = t_jet_c(n, _);
-    t_arg(argv, 9, &gamma);
 
     // initialize the derivative and temporary jets
     x = t_jet(n + 1);

@@ -29,11 +29,6 @@ typedef struct {
 typedef enum {TRIG, HYP} geometry;
 
 /*
- * Set an MPFR variable from a numbered string argument
- */
-void t_arg (char **argv, int arg_no, mpfr_t *variable);
-
-/*
  * Prints an index column, and x, y, z columns, into a single line
  */
 void t_xyz_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t t);
@@ -42,6 +37,11 @@ void t_xyz_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t t);
  * Sets the order, step size, and number of steps for the integration
  */
 void t_stepper (char **argv, long *n, mpfr_t *t, mpfr_t *h, long *nsteps);
+
+/*
+ * Bulk set MPFR variables from command line arguments
+ */
+void t_args (char **argv, int count, ...);
 
 /*
  * Creates an initialized jet of the specified size, with no values set
@@ -70,11 +70,11 @@ mpfr_t *t_abs (mpfr_t *a, mpfr_t *u, int k);
  *
  *   if c(x) = a(x) b(x)
  *
- * then c(x) = (sum{k=0->inf} A(k) (x - a)^k) (sum{k=0->inf} B(k) (x - a)^k)
+ * then c(x) = (sum{k=0 -> inf} A(k) (x - a)^k) (sum{k=0 -> inf} B(k) (x - a)^k)
  *
- *           = sum{k=0->inf} ( sum{j=0->k} A[j]B[k - j] ) (x - a)^k
+ *           = sum{k=0 -> inf} ( sum{j=0 -> k} A[j]B[k - j] ) (x - a)^k
  *
- *  ==> C[k] = sum{j=0->k} A[j]B[k - j]
+ *  ==> C[k] = sum{j=0 -> k} A[j]B[k - j]
  */
 
 /*
@@ -134,8 +134,17 @@ mpfr_t *t_sqrt (mpfr_t *R, mpfr_t *U, int k);
 /*
  * Applying the chain rule for the derivative of a composed function f(u) creates another Cauchy product:
  *
- *          F' = (df/du).U'
- *             =       H.U'
+ *                                           F' = (df/du).U'     = H.U'
+ *
+ *                                    let f'(x) = df(x)/du u'(x) = h(x) u'(x)
+ *
+ * then    sum{k=1 -> inf} F(k) k (x - a)^(k-1) = sum{i=0 -> inf} H(i) (x - a)^i sum{j=1 -> inf} jU(k) (x - a)^(j-1)
+ *
+ *                                   ==> k F[k] = sum{i+j=k} H[i] j U[j]
+ *
+ *                                              = sum{j=1 -> k} H[k - j] j U[j]
+ *
+ *                                              = sum{j=0 -> k-1} H[j] (k - j) U[k - j] ???, OR:
  *
  * Using F'[k] = (k+1)F[k+1]  ==>  F'[k-1] = kF[k], we can replace F' with F, and U' with U as follows:
  *
