@@ -5,3 +5,5 @@ tsm-*-dynamic
 
 ad-test*-dbg
 
+lib*.so
+
