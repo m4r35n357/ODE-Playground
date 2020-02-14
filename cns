@@ -41,7 +41,8 @@ case $method in
     'step') halfstep $original;;
     'order') order1plus $original;;
     'both') orderstep $original;;
-    *) echo "Bad Method"; exit 1;;
+    'data') cp d-604-502-1400 $fileA;;
+    *) echo "CNS: Bad Method"; exit 1;;
 esac
 $original >$fileB &
 wait
