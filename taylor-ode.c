@@ -106,13 +106,13 @@ mpfr_t *t_sqrt (mpfr_t *r, mpfr_t *u, int k) {
     assert(k >= 0);
     if (k == 0) {
         mpfr_sqrt(r[0], u[0], RND);
-    } else {
-        mpfr_mul_2ui(r[k], *cauchy(&r[k], r, r, k, 1, (k - (k % 2 == 0 ? 2 : 1)) / 2), 1, RND);
-        if (k % 2 == 0) mpfr_fma(r[k], r[k / 2], r[k / 2], r[k], RND);
-        mpfr_sub(r[k], u[k], r[k], RND);
-        mpfr_div_2ui(r[k], r[k], 1, RND);
-        mpfr_div(r[k], r[k], r[0], RND);
+        return &r[0];
     }
+    mpfr_mul_2ui(r[k], *cauchy(&r[k], r, r, k, 1, (k - (k % 2 == 0 ? 2 : 1)) / 2), 1, RND);
+    if (k % 2 == 0) mpfr_fma(r[k], r[k / 2], r[k / 2], r[k], RND);
+    mpfr_sub(r[k], u[k], r[k], RND);
+    mpfr_div_2ui(r[k], r[k], 1, RND);
+    mpfr_div(r[k], r[k], r[0], RND);
     return &r[k];
 }
 
@@ -122,8 +122,8 @@ static mpfr_t *d_cauchy (mpfr_t *f, mpfr_t *h, mpfr_t *u, int k, double factor, 
         mpfr_mul_ui(*_, u[k - j], k - j, RND);
         mpfr_fma(*f, h[j], *_, *f, RND);
     }
-    mpfr_mul_d(*f, *f, factor, RND);
     mpfr_div_ui(*f, *f, k, RND);
+    mpfr_mul_d(*f, *f, factor, RND);
     return f;
 }
 
@@ -149,17 +149,17 @@ tuple t_sin_cos (mpfr_t *s, mpfr_t *c, mpfr_t *u, int k, mpfr_t *_, geometry g) 
     return (tuple){d_cauchy(&s[k], c, u, k, 1.0, 0, k - 1, _), d_cauchy(&c[k], s, u, k, (g == TRIG) ? -1.0 : 1.0, 0, k - 1, _)};
 }
 
-tuple t_tan_sec2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int k, mpfr_t *_, geometry g) {
-    assert(t != s2 && t != u && s2 != u);
-    assert(_ != t && _ != s2 && _ != u);
+tuple t_tan_sec2 (mpfr_t *t, mpfr_t *s, mpfr_t *u, int k, mpfr_t *_, geometry g) {
+    assert(t != s && t != u && s != u);
+    assert(_ != t && _ != s && _ != u);
     assert(k >= 0);
     if (k == 0) {
         (g == TRIG) ? mpfr_tan(t[0], u[0], RND) : mpfr_tanh(t[0], u[0], RND);
-        (g == TRIG) ? mpfr_sec(s2[0], u[0], RND) : mpfr_sech(s2[0], u[0], RND);
-        mpfr_sqr(s2[0], s2[0], RND);
-        return (tuple){&t[0], &s2[0]};
+        (g == TRIG) ? mpfr_sec(s[0], u[0], RND) : mpfr_sech(s[0], u[0], RND);
+        mpfr_sqr(s[0], s[0], RND);
+        return (tuple){&t[0], &s[0]};
     }
-    return (tuple){d_cauchy(&t[k], s2, u, k, 1.0, 0, k - 1, _), d_cauchy(&s2[k], t, t, k, (g == TRIG) ? 2.0 : -2.0, 0, k - 1, _)};
+    return (tuple){d_cauchy(&t[k], s, u, k, 1.0, 0, k - 1, _), d_cauchy(&s[k], t, t, k, (g == TRIG) ? 2.0 : -2.0, 0, k - 1, _)};
 }
 
 mpfr_t *t_pwr (mpfr_t *p, mpfr_t *u, double a, int k, mpfr_t *_, mpfr_t *__) {
@@ -170,10 +170,10 @@ mpfr_t *t_pwr (mpfr_t *p, mpfr_t *u, double a, int k, mpfr_t *_, mpfr_t *__) {
     if (k == 0) {
         mpfr_set_d(*_, a, RND);
         mpfr_pow(p[0], u[0], *_, RND);
-    } else {
-        mpfr_sub(p[k], *d_cauchy(_, p, u, k, a, 0, k - 1, &p[k]), *d_cauchy(__, u, p, k, 1.0, 1, k - 1, &p[k]), RND);
-        mpfr_div(p[k], p[k], u[0], RND);
+        return &p[0];
     }
+    mpfr_sub(p[k], *d_cauchy(_, p, u, k, a, 0, k - 1, &p[k]), *d_cauchy(__, u, p, k, 1.0, 1, k - 1, &p[k]), RND);
+    mpfr_div(p[k], p[k], u[0], RND);
     return &p[k];
 }
 
@@ -184,9 +184,9 @@ mpfr_t *t_ln (mpfr_t *l, mpfr_t *u, int k, mpfr_t *_) {
     assert(k >= 0);
     if (k == 0) {
         mpfr_log(l[0], u[0], RND);
-    } else {
-        mpfr_sub(*_, u[k], *d_cauchy(&l[k], u, l, k, 1.0, 1, k - 1, _), RND);
-        mpfr_div(l[k], *_, u[0], RND);
+        return &l[0];
     }
+    mpfr_sub(*_, u[k], *d_cauchy(&l[k], u, l, k, 1.0, 1, k - 1, _), RND);
+    mpfr_div(l[k], *_, u[0], RND);
     return &l[k];
 }
