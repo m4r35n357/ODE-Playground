@@ -138,13 +138,13 @@ mpfr_t *t_sqrt (mpfr_t *R, mpfr_t *U, int k);
  *
  *                                    let f'(x) = df(x)/du u'(x) = h(x) u'(x)
  *
- * then    sum{k=1 -> inf} F(k) k (x - a)^(k-1) = sum{i=0 -> inf} H(i) (x - a)^i sum{j=1 -> inf} jU(k) (x - a)^(j-1)
+ * then     sum{k=1 -> inf} kF(k) (x - a)^(k-1) = sum{i=0 -> inf} H(i) (x - a)^i sum{j=1 -> inf} jU(j) (x - a)^(j-1)
  *
- *                                   ==> k F[k] = sum{i+j=k} H[i] j U[j]
+ *                                    ==> kF[k] = sum{i+j=k}    H[i].jU[j]         (there are k of them)
  *
- *                                              = sum{j=1 -> k} H[k - j] j U[j]
+ *                                              = sum{j=1->k} H[k-j].jU[j]
  *
- *                                              = sum{j=0 -> k-1} H[j] (k - j) U[k - j] ???, OR:
+ *                                         F[k] = sum{j=0->k-1} H[j].(k-j)U[k-j]/k                    ???, OR:
  *
  * Using F'[k] = (k+1)F[k+1]  ==>  F'[k-1] = kF[k], we can replace F' with F, and U' with U as follows:
  *

@@ -175,7 +175,7 @@ Parameter | Meaning
 6,7,8 | x0, y0, z0
 9+ | ODE parameters
 
-c is the same, except the "model" parameter, which is part of the executable name, is omitted from the list.
+c is mostly the same, except the "model" parameter, which is part of the executable name, is omitted from the list, and the executable itself is named tsm-"model".
 
 ## Interactivity
 
