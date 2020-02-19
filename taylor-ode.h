@@ -74,7 +74,7 @@ mpfr_t *t_abs (mpfr_t *a, mpfr_t *u, int k);
  *
  *           = sum{k=0 -> inf} ( sum{j=0 -> k} A[j]B[k - j] ) (x - a)^k
  *
- *  ==> C[k] = sum{j=0 -> k} A[j]B[k - j]
+ *  ==> C[k] = sum{j=0->k} A[j].B[k-j]     perhaps implemented by a static/private function cauchy(A, B, k)
  */
 
 /*
@@ -134,17 +134,7 @@ mpfr_t *t_sqrt (mpfr_t *R, mpfr_t *U, int k);
 /*
  * Applying the chain rule for the derivative of a composed function f(u) creates another Cauchy product:
  *
- *                                           F' = (df/du).U'     = H.U'
- *
- *                                    let f'(x) = df(x)/du u'(x) = h(x) u'(x)
- *
- * then     sum{k=1 -> inf} kF(k) (x - a)^(k-1) = sum{i=0 -> inf} H(i) (x - a)^i sum{j=1 -> inf} jU(j) (x - a)^(j-1)
- *
- *                                    ==> kF[k] = sum{i+j=k}    H[i].jU[j]         (there are k of them)
- *
- *                                              = sum{j=1->k} H[k-j].jU[j]
- *
- *                                         F[k] = sum{j=0->k-1} H[j].(k-j)U[k-j]/k                    ???, OR:
+ *          F' = (df/du).U' = H.U'
  *
  * Using F'[k] = (k+1)F[k+1]  ==>  F'[k-1] = kF[k], we can replace F' with F, and U' with U as follows:
  *
@@ -154,7 +144,7 @@ mpfr_t *t_sqrt (mpfr_t *R, mpfr_t *U, int k);
  *
  *       kF[k] = sum{j=0->k-1} H[j].(k-j)U[k-j]
  *
- *        F[k] = sum{j=0->k-1} H[j].(k-j)U[k-j]/k
+ *    ==> F[k] = sum{j=0->k-1} H[j].(k-j)U[k-j]/k     perhaps implemented by a static/private function d_cauchy(H, U, k)
  */
 
 /*
