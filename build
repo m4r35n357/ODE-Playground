@@ -12,6 +12,8 @@ then
     CC='/usr/bin/clang'
 fi
 
+rm -f *.gch
+
 build () {
     name=$1
     ${CC} -O3 -DNDEBUG -o ${name}-dynamic ${name}.c taylor-ode.c -lmpfr -s

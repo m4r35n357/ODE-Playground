@@ -1,4 +1,7 @@
 
+*.[oa]
+*~
+
 tsm-*-dbg
 tsm-*-static
 tsm-*-dynamic
