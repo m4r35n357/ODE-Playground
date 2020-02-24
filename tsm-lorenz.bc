@@ -1,7 +1,7 @@
 /*
- * Example: bc -q taylor.bc tsm-lorenz.bc | ./plotPi3d.py
+ * Example: bc -q taylor-ode.bc tsm-lorenz.bc | ./plotPi3d.py
  */
- 
+
 scale=16
 n=10
 h=0.01

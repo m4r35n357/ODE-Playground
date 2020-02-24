@@ -10,14 +10,14 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-static void polar_to_rectangular (mpfr_t *xa, mpfr_t *ya, mpfr_t *xb, mpfr_t *yb, mpfr_t la, mpfr_t lb, mpfr_t tt, mpfr_t ta, mpfr_t tb, mpfr_t wa, mpfr_t wb, mpfr_t *_1, mpfr_t *_2) {
-    mpfr_sin_cos(*_1, *_2, ta, RND);
-    mpfr_mul(*xa, la, *_1, RND);
-    mpfr_mul(*ya, la, *_2, RND);
+static void polar_to_rectangular (mpfr_t *xa, mpfr_t *ya, mpfr_t *xb, mpfr_t *yb, mpfr_t la, mpfr_t lb, mpfr_t tt, mpfr_t ta, mpfr_t tb, mpfr_t wa, mpfr_t wb, mpfr_t *s, mpfr_t *c) {
+    mpfr_sin_cos(*s, *c, ta, RND);
+    mpfr_mul(*xa, la, *s, RND);
+    mpfr_mul(*ya, la, *c, RND);
     mpfr_neg(*ya, *ya, RND);
-    mpfr_sin_cos(*_1, *_2, tb, RND);
-    mpfr_fma(*xb, lb, *_1, *xa, RND);
-    mpfr_fms(*yb, lb, *_2, *ya, RND);
+    mpfr_sin_cos(*s, *c, tb, RND);
+    mpfr_fma(*xb, lb, *s, *xa, RND);
+    mpfr_fms(*yb, lb, *c, *ya, RND);
     mpfr_neg(*yb, *yb, RND);
     mpfr_printf("%+.9RNe %+.9RNe %+.9RNe %+.9RNe %+.5RNe %+.9RNe %+.9RNe %+.9RNe %+.9RNe\n", xa, ya, xb, yb, tt, ta, tb, wa, wb);
 }

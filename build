@@ -11,8 +11,9 @@ if [ x"$1" = x'clang' ]
 then
     CC='/usr/bin/clang'
 fi
+${CC} --version
 
-rm -f *.gch
+rm -f *.o *.so *.gch
 
 build () {
     name=$1
@@ -40,9 +41,7 @@ tsm-lotka-volterra \
 tsm-logistic \
 tsm-constant
 do
-    rm -f ${model}-dynamic
-    rm -f ${model}-static
-    rm -f ${model}-dbg
+    rm -f ${model}-dynamic ${model}-static ${model}-dbg
     build ${model} &
 done
 

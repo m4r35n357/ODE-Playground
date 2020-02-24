@@ -160,7 +160,7 @@ mpfr_t *t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp);
  * Returns a pair of pointers to kth elements of the sine and cosine of U, results accumulated in jets S and C
  *
  *      S' =       C.U'
- *      C' = (+/-) S.U'   (+ for cosh(g=HYP), - for cos(g=TRIG))
+ *      C' = (+/-) S.U'   (+ for cosh(g == HYP), - for cos(g == TRIG))
  *
  *    S[k] = sum{j=0->k-1}       C[j].(k-j)U[k-j]/k
  *    C[k] = sum{j=0->k-1} (+/-) S[j].(k-j)U[k-j]/k
@@ -171,7 +171,7 @@ tuple t_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp, geometry g
  * Returns a pair of pointers to kth elements of the tangent and squared secant of U, results accumulated in jets T and S2
  *
  *      T' =       S2.U'
- *     S2' = (+/-)2 T.T'   (+ for sec^2(g=TRIG), - for sech^2(g=HYP))
+ *     S2' = (+/-)2 T.T'   (+ for sec^2(g == TRIG), - for sech^2(g == HYP))
  *
  *    T[k] = sum{j=0->k-1}       S2[j].(k-j)U[k-j]/k
  *   S2[k] = sum{j=0->k-1} (+/-)2 T[j].(k-j)T[k-j]/k
