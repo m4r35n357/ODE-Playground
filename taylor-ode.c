@@ -143,10 +143,10 @@ tuple t_sin_cos (mpfr_t *s, mpfr_t *c, mpfr_t *u, int k, mpfr_t *_, geometry g) 
     assert(_ != s && _ != c && _ != u);
     assert(k >= 0);
     if (k == 0) {
-        (g == TRIG) ? mpfr_sin_cos(s[0], c[0], u[0], RND) : mpfr_sinh_cosh(s[0], c[0], u[0], RND);
+        g == TRIG ? mpfr_sin_cos(s[0], c[0], u[0], RND) : mpfr_sinh_cosh(s[0], c[0], u[0], RND);
         return (tuple){&s[0], &c[0]};
     }
-    return (tuple){d_cauchy(&s[k], c, u, k, 1.0, 0, k - 1, _), d_cauchy(&c[k], s, u, k, (g == TRIG) ? -1.0 : 1.0, 0, k - 1, _)};
+    return (tuple){d_cauchy(&s[k], c, u, k, 1.0, 0, k - 1, _), d_cauchy(&c[k], s, u, k, g == TRIG ? -1.0 : 1.0, 0, k - 1, _)};
 }
 
 tuple t_tan_sec2 (mpfr_t *t, mpfr_t *s, mpfr_t *u, int k, mpfr_t *_, geometry g) {
@@ -154,12 +154,12 @@ tuple t_tan_sec2 (mpfr_t *t, mpfr_t *s, mpfr_t *u, int k, mpfr_t *_, geometry g)
     assert(_ != t && _ != s && _ != u);
     assert(k >= 0);
     if (k == 0) {
-        (g == TRIG) ? mpfr_tan(t[0], u[0], RND) : mpfr_tanh(t[0], u[0], RND);
-        (g == TRIG) ? mpfr_sec(s[0], u[0], RND) : mpfr_sech(s[0], u[0], RND);
+        g == TRIG ? mpfr_tan(t[0], u[0], RND) : mpfr_tanh(t[0], u[0], RND);
+        g == TRIG ? mpfr_sec(s[0], u[0], RND) : mpfr_sech(s[0], u[0], RND);
         mpfr_sqr(s[0], s[0], RND);
         return (tuple){&t[0], &s[0]};
     }
-    return (tuple){d_cauchy(&t[k], s, u, k, 1.0, 0, k - 1, _), d_cauchy(&s[k], t, t, k, (g == TRIG) ? 2.0 : -2.0, 0, k - 1, _)};
+    return (tuple){d_cauchy(&t[k], s, u, k, 1.0, 0, k - 1, _), d_cauchy(&s[k], t, t, k, g == TRIG ? 2.0 : -2.0, 0, k - 1, _)};
 }
 
 mpfr_t *t_pwr (mpfr_t *p, mpfr_t *u, double a, int k, mpfr_t *_, mpfr_t *__) {
