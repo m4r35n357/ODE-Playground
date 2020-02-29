@@ -92,7 +92,7 @@ mpfr_t *t_prod (mpfr_t *p, mpfr_t *u, mpfr_t *v, int k) {
 }
 
 mpfr_t *t_quot (mpfr_t *q, mpfr_t *u, mpfr_t *v, int k) {
-    assert(mpfr_sgn(v[0]) != 0);
+    assert(mpfr_zero_p(v[0]) == 0);
     assert(q != u && q != v && u != v);
     assert(k >= 0);
     mpfr_sub(q[k], u[k], *cauchy(&q[k], q, v, k, 0, k - 1), RND);
