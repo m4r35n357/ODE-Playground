@@ -38,14 +38,17 @@ orderstep () {
 }
 
 case $method in
-    'step') halfstep $original;;
+     'step') halfstep $original;;
     'order') order1plus $original;;
-    'both') orderstep $original;;
-    'data') cp d-604-502-1400 $fileA;;
-    *) echo "CNS: Bad Method"; exit 1;;
+     'both') orderstep $original;;
+     'data') cp d-604-502-1400 $fileA;;
+    'nosim') ;;
+          *) echo "CNS: Bad Method"; exit 1;;
 esac
-$original >$fileB &
-wait
+case $method in
+    'nosim') ;;
+          *) $original >$fileB & wait;;
+esac
 
 ./divergence.py $fileA $fileB 3 0.000000000000000001 >/dev/null
 ./divergence.py $fileA $fileB 3 0.000000000001 >/dev/null
