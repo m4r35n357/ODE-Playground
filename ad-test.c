@@ -19,22 +19,22 @@
 #define KGRY "\x1B[2;37m"
 #define KBLD "\x1B[1;37m"
 
-long order, n;
+long n;
 mpfr_t x, y, _, D0, D1, D2, D3, D4, D5, D6, D7, *cx, *cy, *cx0, *c1, *c2, *c3, *c5, *c6, *c7, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2, *wabs, *wsqr, *wsqrt, *wsum, *wprod, *wquot, *wpwr, *__, *_1, *_2, *_3;
 
-void septic (mpfr_t *f, mpfr_t *x, int n) {
-    ad_minus(_2, x, c1, n);
-    ad_plus(_1, x, c2, n);
-    ad_product(_3, _2, _1, n);
-    ad_minus(_1, x, c3, n);
-    ad_product(_2, _3, _1, n);
-    ad_plus(_1, x, c5, n);
-    ad_product(_3, _2, _1, n);
-    ad_minus(_1, x, c6, n);
-    ad_product(_2, _3, _1, n);
-    ad_plus(_1, x, c7, n);
-    ad_product(_3, _2, _1, n);
-    ad_product(f, _3, x, n);
+static void septic (mpfr_t *f, mpfr_t *value, int order) {
+    ad_minus(_2, value, c1, order);
+    ad_plus(_1, value, c2, order);
+    ad_product(_3, _2, _1, order);
+    ad_minus(_1, value, c3, order);
+    ad_product(_2, _3, _1, order);
+    ad_plus(_1, value, c5, order);
+    ad_product(_3, _2, _1, order);
+    ad_minus(_1, value, c6, order);
+    ad_product(_2, _3, _1, order);
+    ad_plus(_1, value, c7, order);
+    ad_product(_3, _2, _1, order);
+    ad_product(f, _3, value, order);
 }
 
 int main (int argc, char **argv) {

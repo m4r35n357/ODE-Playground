@@ -46,20 +46,29 @@ do
 done
 
 rm -f ad-test-dbg
-${CC} -O0 -Wall -g -o ad-test-dbg taylor-ode.c ad.c ad-test.c -lmpfr &
+${CC} -O0 $WARNINGS -g -o ad-test-dbg taylor-ode.c ad.c ad-test.c -lmpfr &
+#${CC} -O0 $WARNINGS -fprofile-arcs -ftest-coverage -g -o ad-test-dbg taylor-ode.c ad.c ad-test.c -lmpfr &
+rm -f libad-test-dbg
+${CC} -O0 $WARNINGS -g -o libad-test-dbg taylor-ode.c ad.c libad-test.c -lmpfr &
+#${CC} -O0 $WARNINGS -fprofile-arcs -ftest-coverage -g -o libad-test-dbg taylor-ode.c ad.c libad-test.c -lmpfr &
 rm -f ad-test-newton-dbg
-${CC} -O0 -Wall -g -o ad-test-newton-dbg taylor-ode.c ad.c ad-test-newton.c -lmpfr &
+${CC} -O0 -Wall -fprofile-arcs -ftest-coverage -g -o ad-test-newton-dbg taylor-ode.c ad.c ad-test-newton.c -lmpfr &
 
 rm -f libtaylor.so taylor-ode.o
 ${CC} -O0 -c $WARNINGS -g -fpic taylor-ode.c && ${CC} -shared -o libtaylor.so taylor-ode.o &
+# Example:
 # gcc -L. -Wall -g -o test tsm-lorenz.c -ltaylor -lmpfr
 # ./test 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/data; echo "splot '/tmp/data' with lines" | gnuplot -p
 
 rm -f libad.so ad.o
 ${CC} -O0 -c $WARNINGS -g -fpic ad.c && ${CC} -shared -o libad.so ad.o &
+# Example:
 # gcc -L. -Wall -g -o test ad-test.c -lad -ltaylor -lmpfr
 # ./test 7 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt
 
 wait
-ls -lh --color ad-test* tsm-* lib*.so
+
+${CC} -L. -Wall -o libad-test libad-test.c -lad -ltaylor -lmpfr
+
+ls -lh --color *ad-test* tsm-* lib*.so
 

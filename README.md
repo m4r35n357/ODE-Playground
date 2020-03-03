@@ -82,7 +82,7 @@ The dependencies are:
 
 OS level requirements:
 ```
-sudo apt install build-essential mesa-utils-extra python3-dev libmpc-dev libatlas-base-dev virtualenvwrapper gnuplot-x11
+sudo apt install build-essential mesa-utils-extra python3-dev libmpc-dev libatlas-base-dev virtualenvwrapper gnuplot-x11 lcov
 ```
 Download:
 ```
@@ -129,6 +129,20 @@ $ ./build [clang]
 $ ./ad-test-dbg 7 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt
 $
 ```
+Big build and test command:
+```
+time -p ./build && ./ad-test-dbg 7 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt && ./libad-test-dbg 32 20 2 1e-18 && echo OK
+```
+
+## c Code Coverage
+```
+rm -f *.gcno *.gcda
+./build
+./libad-test-dbg 32 20 2 1 1e-18
+lcov --capture --directory . --output-file coverage.info
+genhtml coverage.info --output-directory out
+```
+Then run tests and/or programs to generate data files, HTML at out/index.html
 
 ## Solving and Plotting ODEs
 This use case only involves calling the "t-functions" in tsm.py.

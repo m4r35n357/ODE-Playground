@@ -10,42 +10,50 @@
 echo "Running Python tests . . ."
 if ! pytest ad_test.py solver_test.py -q
 then
-	echo "Python tests failed!"
-	exit 1
+    echo "Python tests failed!"
+    exit 1
 fi
 
 echo "Running Clang build . . ."
 if ! ./build clang >/dev/null
 then
-	echo "c build failed!"
-	exit 1
+    echo "c build failed!"
+    exit 1
 fi
 
 echo "Running AD Test . . ."
 ./ad-test-dbg 7 2 1 >/tmp/ad-test.txt
-if ! diff --context=1 /tmp/ad-test.txt ad-test.txt 
+if ! diff --context=1 /tmp/ad-test.txt ad-test.txt
 then
-	echo "AD Test failed!"
-	exit 1
+    echo "AD Test failed!"
+    exit 1
+fi
+
+echo "Running AD Library Test . . ."
+export LD_LIBRARY_PATH='.'
+if ! ./libad-test 64 50 2 1e-32 >/dev/null
+then
+    echo "AD Library Test failed!"
+    exit 1
 fi
 
 echo "Running Lorenz executables . . ."
 if ! ./tsm-lorenz-dbg 16 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null
 then
-	echo "Lorenz(DBG) failed!"
-	exit 1
+    echo "Lorenz(DBG) failed!"
+    exit 1
 fi
 
 if ! ./tsm-lorenz-static 16 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null
 then
-	echo "Lorenz(STATIC) failed!"
-	exit 1
+    echo "Lorenz(STATIC) failed!"
+    exit 1
 fi
 
 if ! ./tsm-lorenz-dynamic 16 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null
 then
-	echo "Lorenz failed!"
-	exit 1
+    echo "Lorenz(DYNAMIC) failed!"
+    exit 1
 fi
 
 echo "OK to commit"
