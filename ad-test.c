@@ -207,19 +207,15 @@ int main (int argc, char **argv) {
     derivative_output(wl, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    printf("%s%s%s\n", KCYN, "f(x) = sqrt(x^2) - |x|", KNRM);
-    ad_square(wsqr, cx, n);
-    ad_sqrt(wsqrt, wsqr, n);
-    ad_abs(wabs, cx, n);
-    ad_minus(__, wsqrt, wabs, n);
-    jet_output(__, n, KNRM, KGRY);
-    derivative_output(__, n, KBLD, KGRY);
-    printf("%s", KNRM);
-    printf("%s%s%s\n", KCYN, "f(x) = sqrt(x^2)", KNRM);
-    ad_square(wsqr, cx, n);
-    ad_sqrt(wsqrt, wsqr, n);
+    printf("%s%s%s\n", KCYN, "f(x) = sqrt(x * x)", KNRM);
+    ad_sqrt(wsqrt, ad_product(wprod, cx, cx, n), n);
     jet_output(wsqrt, n, KNRM, KGRY);
     derivative_output(wsqrt, n, KBLD, KGRY);
+    printf("%s", KNRM);
+    printf("%s%s%s\n", KCYN, "f(x) = sqrt(x * x) - |x|", KNRM);
+    ad_minus(__, wsqrt, ad_abs(wabs, cx, n), n);
+    jet_output(__, n, KNRM, KGRY);
+    derivative_output(__, n, KBLD, KGRY);
     printf("%s", KNRM);
     printf("%s%s%s\n", KCYN, "f(x) = log(e^x)", KNRM);
     ad_exp(we, cx, n);
