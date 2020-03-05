@@ -10,11 +10,7 @@
 #include "ad.h"
 
 void set_ad_status (mpfr_t *jet, ad_status s) {
-    if (s == VARIABLE) {
-        mpfr_set_ui(jet[1], 1, RND);
-    } else {
-        mpfr_set_ui(jet[1], 0, RND);
-    }
+    s == VARIABLE ? mpfr_set_ui(jet[1], 1, RND) : mpfr_set_ui(jet[1], 0, RND);
 }
 
 void jet_output (mpfr_t *jet, long n, char* f_colour, char *fk_colour) {
