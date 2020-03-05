@@ -26,8 +26,7 @@ static result check_jets (char* name, mpfr_t *a, mpfr_t *b, int size, mpfr_t thr
     total++;
     for (int k = 0; k < size; k++) {
         mpfr_sub(*_, a[k], b[k], RND);
-        mpfr_abs(*_, *_, RND);
-        if (mpfr_greater_p(*_, threshold)) {
+        if (mpfr_cmp_abs(*_, threshold) > 0) {
             double da = mpfr_get_d(a[k], RND);
             double db = mpfr_get_d(b[k], RND);
             double difference = mpfr_get_d(*_, RND);

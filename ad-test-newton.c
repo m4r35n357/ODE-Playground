@@ -82,19 +82,17 @@ void lorentz (mpfr_t *f, mpfr_t *x, int n) {
 }
 
 int main (int argc, char **argv) {
-    long order, steps;
     mpfr_t x0, x1, x_step, x_prev, f_prev, f_target, f_tol, x_tol;
 
     assert(argc == 9);
-
     mpfr_set_default_prec(236);
     mpfr_inits(x_step, x_prev, f_prev, _, NULL);
 
-    order = strtol(argv[1], NULL, BASE);
+    long order = strtol(argv[1], NULL, BASE);
     solver s = strtol(argv[2], NULL, BASE);
     mpfr_init_set_str(x0, argv[3], BASE, RND);
     mpfr_init_set_str(x1, argv[4], BASE, RND);
-    steps = strtol(argv[5], NULL, BASE);
+    long steps = strtol(argv[5], NULL, BASE);
     mpfr_init_set_str(f_target, argv[6], BASE, RND);
     mpfr_init_set_str(f_tol, argv[7], BASE, RND);
     mpfr_init_set_str(x_tol, argv[8], BASE, RND);
@@ -123,11 +121,10 @@ int main (int argc, char **argv) {
     _2 = t_jet(order);
     _3 = t_jet(order);
 
+    model func = composite1;
     mpfr_t *f = t_jet(order);
     mpfr_t *x = t_jet_c(order, x0);
     set_ad_status(x, VARIABLE);
-
-    model func = composite1;
 
     mpfr_sub(_, x1, x0, RND);
     mpfr_div_ui(x_step, _, steps, RND);
