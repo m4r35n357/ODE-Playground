@@ -52,7 +52,7 @@ rm -f libad-test-dbg
 ${CC} -O0 $WARNINGS -g -o libad-test-dbg taylor-ode.c ad.c libad-test.c -lmpfr &
 #${CC} -O0 $WARNINGS -fprofile-arcs -ftest-coverage -g -o libad-test-dbg taylor-ode.c ad.c libad-test.c -lmpfr &
 rm -f ad-test-newton-dbg
-${CC} -O0 -Wall -fprofile-arcs -ftest-coverage -g -o ad-test-newton-dbg taylor-ode.c ad.c ad-test-newton.c -lmpfr &
+${CC} -O0 $WARNINGS -g -o ad-test-newton-dbg taylor-ode.c ad.c ad-test-newton.c -lmpfr &
 
 rm -f libtaylor.so taylor-ode.o
 ${CC} -O0 -c $WARNINGS -g -fpic taylor-ode.c && ${CC} -shared -o libtaylor.so taylor-ode.o &

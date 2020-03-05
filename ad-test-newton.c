@@ -12,17 +12,17 @@
 #include "ad.h"
 
 mpfr_t _, D_1, D_05, D0, D1, D2, D3, D4, D5, D6, D7, *w1, *w2, *w3, *w4, *w5, *w6, *w7, *target, *_1, *_2, *_3;
-
-void test_sqr (mpfr_t *f, mpfr_t *x, int n) {
+/*
+static void test_sqr (mpfr_t *f, mpfr_t *x, int n) {
     ad_square(f, x, n);
     ad_minus(f, f, target, n);
 }
 
-void trig (mpfr_t *f, mpfr_t *x, int n) {
+static void trig (mpfr_t *f, mpfr_t *x, int n) {
     ad_tan_sec2(f, _1, x, n, TRIG);
 }
 
-void cosx_x3 (mpfr_t *f, mpfr_t *x, int n) {
+static void cosx_x3 (mpfr_t *f, mpfr_t *x, int n) {
     //  Example: ./ad-test-newton-dbg 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     ad_square(_1, x, n);
     ad_product(_2, _1, x, n);
@@ -31,7 +31,7 @@ void cosx_x3 (mpfr_t *f, mpfr_t *x, int n) {
     ad_minus(f, _3, target, n);
 }
 
-void test_polynomial (mpfr_t *f, mpfr_t *x, int n) {
+static void test_polynomial (mpfr_t *f, mpfr_t *x, int n) {
     ad_square(f, x, n);
     ad_product(_2, f, x, n);
     ad_scale(_1, x, D2, n);
@@ -39,7 +39,7 @@ void test_polynomial (mpfr_t *f, mpfr_t *x, int n) {
     ad_minus(f, f, w5, n);
 }
 
-void septic (mpfr_t *f, mpfr_t *x, int n) {
+static void septic (mpfr_t *f, mpfr_t *x, int n) {
     //  Example: ./ad-test-newton-dbg 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
     ad_minus(_2, x, w1, n);
     ad_plus(_1, x, w2, n);
@@ -55,7 +55,7 @@ void septic (mpfr_t *f, mpfr_t *x, int n) {
     ad_product(f, _3, x, n);
 }
 
-void composite1 (mpfr_t *f, mpfr_t *x, int n) {
+static void composite1 (mpfr_t *f, mpfr_t *x, int n) {
     //  Example: ./ad-test-newton-dbg 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     ad_square(_1, x, n);
     ad_minus(_2, _1, w4, n);
@@ -65,7 +65,7 @@ void composite1 (mpfr_t *f, mpfr_t *x, int n) {
     ad_ln(f, _3, n);
 }
 
-void composite2 (mpfr_t *f, mpfr_t *x, int n) {
+static void composite2 (mpfr_t *f, mpfr_t *x, int n) {
     //  Example: ./ad-test-newton-dbg 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     ad_exp(_1, x, n);
     ad_minus(_2, _1, w4, n);
@@ -75,10 +75,21 @@ void composite2 (mpfr_t *f, mpfr_t *x, int n) {
     ad_sqrt(f, _3, n);
 }
 
-void lorentz (mpfr_t *f, mpfr_t *x, int n) {
+static void lorentz (mpfr_t *f, mpfr_t *x, int n) {
     ad_square(_1, x, n);
     ad_minus(_2, w1, _1, n);
     ad_power(f, _2, - 0.5, n);
+}
+*/
+
+static void composite1 (mpfr_t *f, mpfr_t *x, int n) {
+    //  Example: ./ad-test-newton-dbg 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
+    ad_square(_1, x, n);
+    ad_minus(_2, _1, w4, n);
+    ad_exp(_1, _2, n);
+    ad_exp(_2, x, n);
+    ad_plus(_3, _1, _2, n);
+    ad_ln(f, _3, n);
 }
 
 int main (int argc, char **argv) {

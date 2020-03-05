@@ -7,55 +7,62 @@
 #
 # To enable this hook, rename this file to "pre-commit".
 
-echo "Running Python tests . . ."
+echo "Running Python tests . . . "
 if ! pytest ad_test.py solver_test.py -q
 then
     echo "Python tests failed!"
     exit 1
 fi
+echo OK
 
-echo "Running Clang build . . ."
+echo -n "Running Clang build . . . "
 if ! ./build clang >/dev/null
 then
     echo "c build failed!"
     exit 1
 fi
+echo OK
 
-echo "Running AD Test . . ."
+echo -n "Running AD Test . . . "
 ./ad-test-dbg 7 2 1 >/tmp/ad-test.txt
 if ! diff --context=1 /tmp/ad-test.txt ad-test.txt
 then
     echo "AD Test failed!"
     exit 1
 fi
+echo OK
 
-echo "Running AD Library Test . . ."
+echo -n "Running AD Library Test . . . "
 export LD_LIBRARY_PATH='.'
 if ! ./libad-test 64 50 2 1e-32 >/dev/null
 then
     echo "AD Library Test failed!"
     exit 1
 fi
+echo OK
 
-echo "Running Lorenz executables . . ."
-if ! ./tsm-lorenz-dbg 16 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null
+echo -n "Running Lorenz executables . . . "
+if ! ./tsm-lorenz-dbg 16 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
 then
     echo "Lorenz(DBG) failed!"
     exit 1
 fi
+echo -n "Debug, "
 
-if ! ./tsm-lorenz-static 16 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null
+if ! ./tsm-lorenz-static 16 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
 then
     echo "Lorenz(STATIC) failed!"
     exit 1
 fi
+echo -n "Static, "
 
-if ! ./tsm-lorenz-dynamic 16 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null
+if ! ./tsm-lorenz-dynamic 16 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
 then
     echo "Lorenz(DYNAMIC) failed!"
     exit 1
 fi
+echo Dynamic
 
-echo "OK to commit"
+echo "Committing . . ."
 exit 0
 
