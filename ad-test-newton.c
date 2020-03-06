@@ -12,51 +12,25 @@
 #include "ad.h"
 
 mpfr_t _, D_1, D_05, D0, D1, D2, D3, D4, D5, D6, D7, *w1, *w2, *w3, *w4, *w5, *w6, *w7, *target, *_1, *_2, *_3;
-/*
-static void test_sqr (mpfr_t *f, mpfr_t *x, int n) {
-    ad_sqr(f, x, n);
-    ad_minus(f, f, target, n);
-}
-
-static void trig (mpfr_t *f, mpfr_t *x, int n) {
-    ad_tan_sec2(f, _1, x, n, TRIG);
-}
-
-static void cosx_x3 (mpfr_t *f, mpfr_t *x, int n) {
-    //  Example: ./ad-test-newton-dbg 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
-    ad_sqr(_1, x, n);
-    ad_product(_2, _1, x, n);
-    ad_sin_cos(_1, _3, x, n, TRIG);
-    ad_minus(_3, _1, _2, n);
-    ad_minus(f, _3, target, n);
-}
-
-static void test_polynomial (mpfr_t *f, mpfr_t *x, int n) {
-    ad_square(f, x, n);
-    ad_product(_2, f, x, n);
-    ad_scale(_1, x, D2, n);
-    ad_minus(f, _2, _1, n);
-    ad_minus(f, f, w5, n);
-}
 
 static void septic (mpfr_t *f, mpfr_t *x, int n) {
-    //  Example: ./ad-test-newton-dbg 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
+    //  Example: ./ad-test-newton-dbg 0 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
     ad_minus(_2, x, w1, n);
     ad_plus(_1, x, w2, n);
-    ad_product(_3, _2, _1, n);
+    ad_prod(_3, _2, _1, n);
     ad_minus(_1, x, w3, n);
-    ad_product(_2, _3, _1, n);
+    ad_prod(_2, _3, _1, n);
     ad_plus(_1, x, w5, n);
-    ad_product(_3, _2, _1, n);
+    ad_prod(_3, _2, _1, n);
     ad_minus(_1, x, w6, n);
-    ad_product(_2, _3, _1, n);
+    ad_prod(_2, _3, _1, n);
     ad_plus(_1, x, w7, n);
-    ad_product(_3, _2, _1, n);
-    ad_product(f, _3, x, n);
+    ad_prod(_3, _2, _1, n);
+    ad_prod(f, _3, x, n);
 }
 
 static void composite1 (mpfr_t *f, mpfr_t *x, int n) {
-    //  Example: ./ad-test-newton-dbg 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
+    //  Example: ./ad-test-newton-dbg 1 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     ad_sqr(_1, x, n);
     ad_minus(_2, _1, w4, n);
     ad_exp(_1, _2, n);
@@ -66,48 +40,57 @@ static void composite1 (mpfr_t *f, mpfr_t *x, int n) {
 }
 
 static void composite2 (mpfr_t *f, mpfr_t *x, int n) {
-    //  Example: ./ad-test-newton-dbg 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
+    //  Example: ./ad-test-newton-dbg 2 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     ad_exp(_1, x, n);
     ad_minus(_2, _1, w4, n);
-    ad_square(_1, _2, n);
-    ad_square(_2, x, n);
+    ad_sqr(_1, _2, n);
+    ad_sqr(_2, x, n);
     ad_plus(_3, _1, _2, n);
     ad_sqrt(f, _3, n);
 }
 
-static void lorentz (mpfr_t *f, mpfr_t *x, int n) {
+static void cosx_x3 (mpfr_t *f, mpfr_t *x, int n) {
+    //  Example: ./ad-test-newton-dbg 3 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
     ad_sqr(_1, x, n);
-    ad_minus(_2, w1, _1, n);
-    ad_power(f, _2, - 0.5, n);
-}
-*/
-
-static void composite1 (mpfr_t *f, mpfr_t *x, int n) {
-    //  Example: ./ad-test-newton-dbg 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
-    ad_sqr(_1, x, n);
-    ad_minus(_2, _1, w4, n);
-    ad_exp(_1, _2, n);
-    ad_exp(_2, x, n);
-    ad_plus(_3, _1, _2, n);
-    ad_ln(f, _3, n);
+    ad_prod(_2, _1, x, n);
+    ad_sin_cos(_1, _3, x, n, TRIG);
+    ad_minus(_3, _1, _2, n);
+    ad_minus(f, _3, target, n);
 }
 
 int main (int argc, char **argv) {
     mpfr_t x0, x1, x_step, x_prev, f_prev, f_target, f_tol, x_tol;
+    model func;
 
-    assert(argc == 9);
+    assert(argc == 10);
     mpfr_set_default_prec(236);
     mpfr_inits(x_step, x_prev, f_prev, _, NULL);
 
-    model func = composite1;
-    long order = strtol(argv[1], NULL, BASE);
-    solver s = strtol(argv[2], NULL, BASE);
-    mpfr_init_set_str(x0, argv[3], BASE, RND);
-    mpfr_init_set_str(x1, argv[4], BASE, RND);
-    long steps = strtol(argv[5], NULL, BASE);
-    mpfr_init_set_str(f_target, argv[6], BASE, RND);
-    mpfr_init_set_str(f_tol, argv[7], BASE, RND);
-    mpfr_init_set_str(x_tol, argv[8], BASE, RND);
+    switch(strtol(argv[1], NULL, BASE)) {
+        case 0 :
+            func = septic;
+            break;
+        case 1 :
+            func = composite1;
+            break;
+        case 2 :
+            func = composite2;
+            break;
+        case 3 :
+            func = cosx_x3;
+            break;
+        default :
+            printf("Invalid model\n" );
+            return 1;
+    }
+    long order = strtol(argv[2], NULL, BASE);
+    solver s = strtol(argv[3], NULL, BASE);
+    mpfr_init_set_str(x0, argv[4], BASE, RND);
+    mpfr_init_set_str(x1, argv[5], BASE, RND);
+    long steps = strtol(argv[6], NULL, BASE);
+    mpfr_init_set_str(f_target, argv[7], BASE, RND);
+    mpfr_init_set_str(f_tol, argv[8], BASE, RND);
+    mpfr_init_set_str(x_tol, argv[9], BASE, RND);
 
     mpfr_init_set_si(D_1, -1, RND);
     mpfr_init_set_d(D_05, -0.5, RND);
