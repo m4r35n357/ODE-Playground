@@ -40,11 +40,11 @@ static result check_jets (char* name, mpfr_t *a, mpfr_t *b, int size, mpfr_t thr
 }
 
 int main (int argc, char **argv) {
-    mpfr_t x0, DA, D05, D0, D1, D2, tmp, tol;
+    mpfr_t x0, DA, D05, D0, D1, D2, _, tol;
 
     assert(argc == 5);
 
-    mpfr_init(tmp);
+    mpfr_init(_);
     mpfr_set_default_prec(strtod(argv[1], NULL) * 3.322);
     long n = strtol(argv[2], NULL, BASE) + 1;
     assert(n > 1);
@@ -58,26 +58,24 @@ int main (int argc, char **argv) {
     mpfr_init_set_ui(D1, 1, RND);
     mpfr_init_set_ui(D2, 2, RND);
 
-    mpfr_t *wplus = t_jet(n);
-    mpfr_t *wminus = t_jet(n);
-    mpfr_t *wscale = t_jet(n);
-    mpfr_t *wsqr1 = t_jet(n);
-    mpfr_t *wsqr2 = t_jet(n);
+    mpfr_t *plus = t_jet(n);
+    mpfr_t *minus = t_jet(n);
+    mpfr_t *scale = t_jet(n);
+    mpfr_t *sqr1 = t_jet(n);
+    mpfr_t *sqr2 = t_jet(n);
     mpfr_t *wabs = t_jet(n);
-    mpfr_t *wsqrt = t_jet(n);
-    mpfr_t *wprod1 = t_jet(n);
-    mpfr_t *wprod2 = t_jet(n);
-    mpfr_t *wquot = t_jet(n);
-    mpfr_t *wpwr1 = t_jet(n);
-    mpfr_t *wpwr2 = t_jet(n);
-    mpfr_t *we1 = t_jet(n);
-    mpfr_t *we2 = t_jet(n);
-    mpfr_t *wl1 = t_jet(n);
-    mpfr_t *wl2 = t_jet(n);
-    mpfr_t *ws = t_jet(n);
-    mpfr_t *wc = t_jet(n);
-    mpfr_t *wt = t_jet(n);
-    mpfr_t *ws2 = t_jet(n);
+    mpfr_t *sqrt = t_jet(n);
+    mpfr_t *prod = t_jet(n);
+    mpfr_t *quot = t_jet(n);
+    mpfr_t *pwr = t_jet(n);
+    mpfr_t *e1 = t_jet(n);
+    mpfr_t *e2 = t_jet(n);
+    mpfr_t *l1 = t_jet(n);
+    mpfr_t *l2 = t_jet(n);
+    mpfr_t *s = t_jet(n);
+    mpfr_t *c = t_jet(n);
+    mpfr_t *t = t_jet(n);
+    mpfr_t *s2 = t_jet(n);
 
     printf("\n");
 
@@ -87,62 +85,57 @@ int main (int argc, char **argv) {
     mpfr_t *c0 = t_jet_c(n, D0);
     mpfr_t *c1 = t_jet_c(n, D1);
 
-    check_jets("x * x == sqr(x)", ad_product(wprod1, x, x, n), ad_square(wsqr1, x, n), n, tol, &tmp);
+    check_jets("x * x == sqr(x)", ad_prod(prod, x, x, n), ad_sqr(sqr1, x, n), n, tol, &_);
     if (mpfr_sgn(x[0]) > 0) {
-        check_jets("x * x == x^2", wprod1, ad_power(wpwr1, x, 2.0, n), n, tol, &tmp);
-    } else skipped++;
-
-    check_jets("x * x * x * x == sqr(sqr(x))", ad_product(wprod2, wprod1, wprod1, n), ad_square(wsqr2, wsqr1, n), n, tol, &tmp);
-    if (mpfr_sgn(x[0]) > 0) {
-        check_jets("x * x * x * x == x^4", wprod2, ad_power(wpwr2, wpwr1, 2.0, n), n, tol, &tmp);
+        check_jets("x * x == x^2", prod, ad_pwr(pwr, x, 2.0, n), n, tol, &_);
     } else skipped++;
 
     if (mpfr_sgn(x[0]) > 0) {
-        check_jets("x^0.5 == sqrt(x)", ad_power(wpwr1, x, 0.5, n), ad_sqrt(wsqrt, x, n), n, tol, &tmp);
+        check_jets("x^0.5 == sqrt(x)", ad_pwr(pwr, x, 0.5, n), ad_sqrt(sqrt, x, n), n, tol, &_);
     } else skipped++;
     if (mpfr_sgn(x[0]) > 0) {
-        check_jets("x^-0.5 == 1 / sqrt(x)", ad_power(wpwr1, x, -0.5, n), ad_quotient(wquot, c1, ad_sqrt(wsqrt, x, n), n), n, tol, &tmp);
+        check_jets("x^-0.5 == 1 / sqrt(x)", ad_pwr(pwr, x, -0.5, n), ad_quot(quot, c1, ad_sqrt(sqrt, x, n), n), n, tol, &_);
     } else skipped++;
     if (mpfr_sgn(x[0]) > 0) {
-        check_jets("x^-1 == 1 / x", ad_power(wpwr1, x, -1.0, n), ad_quotient(wquot, c1, x, n), n, tol, &tmp);
+        check_jets("x^-1 == 1 / x", ad_pwr(pwr, x, -1.0, n), ad_quot(quot, c1, x, n), n, tol, &_);
     } else skipped++;
     if (mpfr_sgn(x[0]) > 0) {
-        check_jets("x^0 == x / x", ad_power(wpwr1, x, 0.0, n), ad_quotient(wquot, x, ad_scale(wscale, x, D1, n), n), n, tol, &tmp);
+        check_jets("x^0 == x / x", ad_pwr(pwr, x, 0.0, n), ad_quot(quot, x, ad_scale(scale, x, D1, n), n), n, tol, &_);
     } else skipped++;
 
     if (mpfr_zero_p(x[0]) == 0) {
-        check_jets("sqrt(x * x) == |x|", ad_sqrt(wsqrt, ad_product(wprod1, x, x, n), n), ad_abs(wabs, x, n), n, tol, &tmp);
+        check_jets("sqrt(x * x) == |x|", ad_sqrt(sqrt, ad_prod(prod, x, x, n), n), ad_abs(wabs, x, n), n, tol, &_);
     } else skipped++;
 
     if (mpfr_sgn(x[0]) > 0) {
-        check_jets("log(x^a) == a * log(x)", ad_ln(wl1, ad_power(wpwr1, x, a, n), n), ad_scale(wscale, ad_ln(wl2, x, n), DA, n), n, tol, &tmp);
+        check_jets("log(x^a) == a * log(x)", ad_ln(l1, ad_pwr(pwr, x, a, n), n), ad_scale(scale, ad_ln(l2, x, n), DA, n), n, tol, &_);
     } else skipped++;
-    check_jets("log(e^x) == x", ad_ln(wl1, ad_exp(we1, x, n), n), x, n, tol, &tmp);
+    check_jets("log(e^x) == x", ad_ln(l1, ad_exp(e1, x, n), n), x, n, tol, &_);
 
-    ad_sin_cos(ws, wc, x, n, TRIG);
-    check_jets("cos^2(x) + sin^2(x) == 1", ad_plus(wplus, ad_square(wsqr1, wc, n), ad_square(wsqr2, ws, n), n), c1, n, tol, &tmp);
+    ad_sin_cos(s, c, x, n, TRIG);
+    check_jets("cos^2(x) + sin^2(x) == 1", ad_plus(plus, ad_sqr(sqr1, c, n), ad_sqr(sqr2, s, n), n), c1, n, tol, &_);
 
-    ad_sin_cos(ws, wc, x, n, HYP);
-    check_jets("cosh^2(x) - sinh^2(x) == 1", ad_minus(wminus, ad_square(wsqr1, wc, n), ad_square(wsqr2, ws, n), n), c1, n, tol, &tmp);
+    ad_sin_cos(s, c, x, n, HYP);
+    check_jets("cosh^2(x) - sinh^2(x) == 1", ad_minus(minus, ad_sqr(sqr1, c, n), ad_sqr(sqr2, s, n), n), c1, n, tol, &_);
 
-    ad_exp(we1, x, n);
-    ad_exp(we2, ad_minus(wminus, c0, x, n), n);
-    check_jets("sinh(x) == 0.5 * (e^x - e^-x)", ws, ad_scale(wscale, ad_minus(wminus, we1, we2, n), D05, n), n, tol, &tmp);
-    check_jets("cosh(x) == 0.5 * (e^x + e^-x)", wc, ad_scale(wscale, ad_plus(wplus, we1, we2, n), D05, n), n, tol, &tmp);
+    ad_exp(e1, x, n);
+    ad_exp(e2, ad_minus(minus, c0, x, n), n);
+    check_jets("sinh(x) == 0.5 * (e^x - e^-x)", s, ad_scale(scale, ad_minus(minus, e1, e2, n), D05, n), n, tol, &_);
+    check_jets("cosh(x) == 0.5 * (e^x + e^-x)", c, ad_scale(scale, ad_plus(plus, e1, e2, n), D05, n), n, tol, &_);
 
-    ad_tan_sec2(wt, ws2, x, n, TRIG);
-    check_jets("sec^2(x) - tan^2(x) == 1", ad_minus(wminus, ws2, ad_square(wsqr1, wt, n), n), c1, n, tol, &tmp);
+    ad_tan_sec2(t, s2, x, n, TRIG);
+    check_jets("sec^2(x) - tan^2(x) == 1", ad_minus(minus, s2, ad_sqr(sqr1, t, n), n), c1, n, tol, &_);
 
-    ad_sin_cos(ws, wc, x, n, TRIG);
-    check_jets("tan(x) == sin(x) / cos(x)", wt, ad_quotient(wquot, ws, wc, n), n, tol, &tmp);
-    check_jets("sec^2(x) == 1 / cos^2(x)", ws2, ad_quotient(wquot, c1, ad_square(wsqr1, wc, n), n), n, tol, &tmp);
+    ad_sin_cos(s, c, x, n, TRIG);
+    check_jets("tan(x) == sin(x) / cos(x)", t, ad_quot(quot, s, c, n), n, tol, &_);
+    check_jets("sec^2(x) == 1 / cos^2(x)", s2, ad_quot(quot, c1, ad_sqr(sqr1, c, n), n), n, tol, &_);
 
-    ad_tan_sec2(wt, ws2, x, n, HYP);
-    check_jets("sech^2(x) + tanh^2(x) == 1", ad_plus(wplus, ws2, ad_square(wsqr1, wt, n), n), c1, n, tol, &tmp);
+    ad_tan_sec2(t, s2, x, n, HYP);
+    check_jets("sech^2(x) + tanh^2(x) == 1", ad_plus(plus, s2, ad_sqr(sqr1, t, n), n), c1, n, tol, &_);
 
-    ad_sin_cos(ws, wc, x, n, HYP);
-    check_jets("tanh(x) == sinh(x) / cosh(x)", wt, ad_quotient(wquot, ws, wc, n), n, tol, &tmp);
-    check_jets("sech^2(x) == 1 / cosh^2(x)", ws2, ad_quotient(wquot, c1, ad_square(wsqr1, wc, n), n), n, tol, &tmp);
+    ad_sin_cos(s, c, x, n, HYP);
+    check_jets("tanh(x) == sinh(x) / cosh(x)", t, ad_quot(quot, s, c, n), n, tol, &_);
+    check_jets("sech^2(x) == 1 / cosh^2(x)", s2, ad_quot(quot, c1, ad_sqr(sqr1, c, n), n), n, tol, &_);
 
     printf("Total: %d, Passed: %d", total, passed);
     if (skipped > 0) {

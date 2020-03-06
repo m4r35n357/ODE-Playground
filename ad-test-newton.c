@@ -14,7 +14,7 @@
 mpfr_t _, D_1, D_05, D0, D1, D2, D3, D4, D5, D6, D7, *w1, *w2, *w3, *w4, *w5, *w6, *w7, *target, *_1, *_2, *_3;
 /*
 static void test_sqr (mpfr_t *f, mpfr_t *x, int n) {
-    ad_square(f, x, n);
+    ad_sqr(f, x, n);
     ad_minus(f, f, target, n);
 }
 
@@ -24,7 +24,7 @@ static void trig (mpfr_t *f, mpfr_t *x, int n) {
 
 static void cosx_x3 (mpfr_t *f, mpfr_t *x, int n) {
     //  Example: ./ad-test-newton-dbg 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
-    ad_square(_1, x, n);
+    ad_sqr(_1, x, n);
     ad_product(_2, _1, x, n);
     ad_sin_cos(_1, _3, x, n, TRIG);
     ad_minus(_3, _1, _2, n);
@@ -57,7 +57,7 @@ static void septic (mpfr_t *f, mpfr_t *x, int n) {
 
 static void composite1 (mpfr_t *f, mpfr_t *x, int n) {
     //  Example: ./ad-test-newton-dbg 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
-    ad_square(_1, x, n);
+    ad_sqr(_1, x, n);
     ad_minus(_2, _1, w4, n);
     ad_exp(_1, _2, n);
     ad_exp(_2, x, n);
@@ -76,7 +76,7 @@ static void composite2 (mpfr_t *f, mpfr_t *x, int n) {
 }
 
 static void lorentz (mpfr_t *f, mpfr_t *x, int n) {
-    ad_square(_1, x, n);
+    ad_sqr(_1, x, n);
     ad_minus(_2, w1, _1, n);
     ad_power(f, _2, - 0.5, n);
 }
@@ -84,7 +84,7 @@ static void lorentz (mpfr_t *f, mpfr_t *x, int n) {
 
 static void composite1 (mpfr_t *f, mpfr_t *x, int n) {
     //  Example: ./ad-test-newton-dbg 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
-    ad_square(_1, x, n);
+    ad_sqr(_1, x, n);
     ad_minus(_2, _1, w4, n);
     ad_exp(_1, _2, n);
     ad_exp(_2, x, n);
@@ -99,6 +99,7 @@ int main (int argc, char **argv) {
     mpfr_set_default_prec(236);
     mpfr_inits(x_step, x_prev, f_prev, _, NULL);
 
+    model func = composite1;
     long order = strtol(argv[1], NULL, BASE);
     solver s = strtol(argv[2], NULL, BASE);
     mpfr_init_set_str(x0, argv[3], BASE, RND);
@@ -132,7 +133,6 @@ int main (int argc, char **argv) {
     _2 = t_jet(order);
     _3 = t_jet(order);
 
-    model func = composite1;
     mpfr_t *f = t_jet(order);
     mpfr_t *x = t_jet_c(order, x0);
     set_ad_status(x, VARIABLE);

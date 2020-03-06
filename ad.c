@@ -80,7 +80,7 @@ void ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f
     mpfr_init_set_ui(delta, 1, RND);
     while(mpfr_cmp_abs(f[0], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
         m(f, x, n);
-        ad_quotient(f_recip, w1, f, n);
+        ad_quot(f_recip, w1, f, n);
         jet_to_derivs(f_recip, n);
         mpfr_div(delta, f_recip[n - 2], f_recip[n - 1], RND);
         mpfr_mul_ui(delta, delta, n - 1, RND);
@@ -92,9 +92,6 @@ void ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f
 }
 
 mpfr_t *ad_scale (mpfr_t *s, mpfr_t *u, mpfr_t a, int n) {
-    assert(s != u);
-    assert(sizeof *s == sizeof *u);
-    assert(sizeof *a == sizeof (mpfr_t));
     for (int k = 0; k < n; k++) {
         mpfr_mul(s[k], u[k], a, RND);
     }
@@ -102,8 +99,6 @@ mpfr_t *ad_scale (mpfr_t *s, mpfr_t *u, mpfr_t a, int n) {
 }
 
 mpfr_t *ad_plus (mpfr_t *p, mpfr_t *u, mpfr_t *v, int n) {
-    assert(p != u && p != v);
-    assert(sizeof *p == sizeof *u && sizeof *p == sizeof *v);
     for (int k = 0; k < n; k++) {
         mpfr_add(p[k], u[k], v[k], RND);
     }
@@ -111,8 +106,6 @@ mpfr_t *ad_plus (mpfr_t *p, mpfr_t *u, mpfr_t *v, int n) {
 }
 
 mpfr_t *ad_minus (mpfr_t *p, mpfr_t *u, mpfr_t *v, int n) {
-    assert(p != u && p != v);
-    assert(sizeof *p == sizeof *u && sizeof *p == sizeof *v);
     for (int k = 0; k < n; k++) {
         mpfr_sub(p[k], u[k], v[k], RND);
     }
@@ -120,37 +113,31 @@ mpfr_t *ad_minus (mpfr_t *p, mpfr_t *u, mpfr_t *v, int n) {
 }
 
 mpfr_t *ad_abs (mpfr_t *a, mpfr_t *u, int n) {
-    assert(a != u);
-    assert(sizeof *a == sizeof *u);
     for (int k = 0; k < n; k++) {
         t_abs(&a[k], u, k);
     }
     return a;
 }
 
-mpfr_t *ad_square (mpfr_t *s, mpfr_t *u, int n) {
-    assert(s != u);
-    assert(sizeof *s == sizeof *u);
-    for (int k = 0; k < n; k++) {
-        t_sqr(&s[k], u, k);
-    }
-    return s;
-}
-
-mpfr_t *ad_product (mpfr_t *p, mpfr_t *u, mpfr_t *v, int n) {
-    assert(p != u && p != v);
-    assert(sizeof *p == sizeof *u && sizeof *p == sizeof *v);
+mpfr_t *ad_prod (mpfr_t *p, mpfr_t *u, mpfr_t *v, int n) {
     for (int k = 0; k < n; k++) {
         t_prod(&p[k], u, v, k);
     }
     return p;
 }
 
-mpfr_t *ad_quotient (mpfr_t *q, mpfr_t *u, mpfr_t *v, int n) {
+mpfr_t *ad_quot (mpfr_t *q, mpfr_t *u, mpfr_t *v, int n) {
     for (int k = 0; k < n; k++) {
         t_quot(q, u, v, k);
     }
     return q;
+}
+
+mpfr_t *ad_sqr (mpfr_t *s, mpfr_t *u, int n) {
+    for (int k = 0; k < n; k++) {
+        t_sqr(&s[k], u, k);
+    }
+    return s;
 }
 
 mpfr_t *ad_sqrt (mpfr_t *r, mpfr_t *u, int n) {
@@ -190,7 +177,7 @@ tuple ad_tan_sec2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int n, geometry g) {
     return (tuple){t, s2};
 }
 
-mpfr_t *ad_power (mpfr_t *p, mpfr_t *u, double a, int n) {
+mpfr_t *ad_pwr (mpfr_t *p, mpfr_t *u, double a, int n) {
     mpfr_t _, __;
     mpfr_inits(_, __, NULL);
     for (int k = 0; k < n; k++) {

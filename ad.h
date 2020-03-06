@@ -82,19 +82,19 @@ mpfr_t *ad_minus (mpfr_t *P, mpfr_t *V, mpfr_t *U, int n);
 mpfr_t *ad_abs (mpfr_t *A, mpfr_t *U, int n);
 
 /*
- * Calculates Taylor Series for the square of U, result stored in jet S
- */
-mpfr_t *ad_square (mpfr_t *S, mpfr_t *U, int n);
-
-/*
  * Calculates Taylor Series for U * V, result stored in jet P
  */
-mpfr_t *ad_product(mpfr_t *P, mpfr_t *V, mpfr_t *U, int n);
+mpfr_t *ad_prod (mpfr_t *P, mpfr_t *V, mpfr_t *U, int n);
 
 /*
  * Calculates Taylor Series for U / V, result stored in jet Q
  */
-mpfr_t *ad_quotient (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int n);
+mpfr_t *ad_quot (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int n);
+
+/*
+ * Calculates Taylor Series for the square of U, result stored in jet S
+ */
+mpfr_t *ad_sqr (mpfr_t *S, mpfr_t *U, int n);
 
 /*
  * Calculates Taylor Series for the square root of U, result stored in jet R
@@ -119,7 +119,7 @@ tuple ad_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n, geometry g);
 /*
  * Calculates Taylor Series for U^a, results stored in jet P
  */
-mpfr_t *ad_power (mpfr_t *P, mpfr_t *U, double a, int n);
+mpfr_t *ad_pwr (mpfr_t *P, mpfr_t *U, double a, int n);
 
 /*
  * Calculates Taylor Series for the natural logarithm of U, results stored in jet L
