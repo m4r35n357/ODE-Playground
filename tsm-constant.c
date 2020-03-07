@@ -12,7 +12,7 @@
 
 int main (int argc, char **argv) {
     long n, nsteps;
-    mpfr_t t, x0, a, h, _, *x;
+    mpfr_t t, x0, a, h, _;
 
     // initialize from command arguments
     assert(argc == 9);
@@ -20,13 +20,12 @@ int main (int argc, char **argv) {
     t_args(argv, argc, &x0, &_, &_, &a);
 
     // initialize the derivative and temporary jets
-    x = t_jet(n + 1);
+    mpfr_t *x = t_jet_c(n + 1, x0);
 
     // main loop
-    t_xyz_output(x0, x0, x0, t);
+    t_xyz_output(x[0], x[0], x[0], t);
     for (long step = 1; step < nsteps + 1; step++) {
         // compute the taylor coefficients
-        mpfr_set(x[0], x0, RND);
         for (int k = 0; k < n; k++) {
             //  x' = Ax
             mpfr_mul(_, x[k], a, RND);
@@ -34,9 +33,9 @@ int main (int argc, char **argv) {
         }
 
         // sum the series using Horner's method and advance one step
-        t_horner(&x0, x, n, h);
+        t_horner(&_, x, n, h);
         mpfr_mul_ui(t, h, step, RND);
-        t_xyz_output(x0, x0, x0, t);
+        t_xyz_output(x[0], x[0], x[0], t);
     }
     return 0;
 }
