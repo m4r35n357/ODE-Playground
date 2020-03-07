@@ -105,7 +105,7 @@ int main (int argc, char **argv) {
     mpfr_set_str(__[2], "-4", BASE, RND);
     mpfr_set_str(__[3], "6", BASE, RND);
     t_horner(&_, __, n, D3);
-    mpfr_printf(" %7.3RNf\n", _);
+    mpfr_printf(" %7.3RNf\n", __[0]);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "x", KNRM);

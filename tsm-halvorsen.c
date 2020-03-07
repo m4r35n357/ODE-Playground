@@ -12,7 +12,7 @@
 
 int main (int argc, char **argv) {
     long n, nsteps;
-    mpfr_t t, x0, y0, z0, a, h, _, w4x, w4y, w4z, *x, *y, *z;
+    mpfr_t t, x0, y0, z0, a, h, _, w4x, w4y, w4z;
 
     // initialize from command arguments
     assert(argc == 9);
@@ -21,17 +21,14 @@ int main (int argc, char **argv) {
     mpfr_inits(_, w4x, w4y, w4z, NULL);
 
     // initialize the derivative and temporary jets
-    x = t_jet(n + 1);
-    y = t_jet(n + 1);
-    z = t_jet(n + 1);
+    mpfr_t *x = t_jet_c(n + 1, x0);
+    mpfr_t *y = t_jet_c(n + 1, y0);
+    mpfr_t *z = t_jet_c(n + 1, z0);
 
     // main loop
-    t_xyz_output(x0, y0, z0, t);
+    t_xyz_output(x[0], y[0], z[0], t);
     for (long step = 1; step < nsteps + 1; step++) {
         // compute the taylor coefficients
-        mpfr_set(x[0], x0, RND);
-        mpfr_set(y[0], y0, RND);
-        mpfr_set(z[0], z0, RND);
         for (int k = 0; k < n; k++) {
             mpfr_mul_2ui(w4x, x[k], 2, RND);
             mpfr_mul_2ui(w4y, y[k], 2, RND);
@@ -54,11 +51,11 @@ int main (int argc, char **argv) {
         }
 
         // sum the series using Horner's method and advance one step
-        t_horner(&x0, x, n, h);
-        t_horner(&y0, y, n, h);
-        t_horner(&z0, z, n, h);
+        t_horner(&_, x, n, h);
+        t_horner(&_, y, n, h);
+        t_horner(&_, z, n, h);
         mpfr_mul_ui(t, h, step, RND);
-        t_xyz_output(x0, y0, z0, t);
+        t_xyz_output(x[0], y[0], z[0], t);
     }
     return 0;
 }

@@ -24,7 +24,7 @@ static void polar_to_rectangular (mpfr_t *xa, mpfr_t *ya, mpfr_t *xb, mpfr_t *yb
 
 int main (int argc, char **argv) {
     long n, nsteps;
-    mpfr_t t, t10, w10, t20, w20, g, m1, m2, l1, l2, h, _, __, *t1, *w1, *t2, *w2, x1, y1, x2, y2, *d, *st1, *ct1, *w1_2, *w2_2;
+    mpfr_t t, t10, w10, t20, w20, g, m1, m2, l1, l2, h, _, __, x1, y1, x2, y2, *d, *st1, *ct1, *w1_2, *w2_2;
     mpfr_t *_t1_t2, *_t1_2t2, *_2t1_2t2, *st1_t2, *ct1_t2, *st1_2t2, *ct1_2t2, *s2t1_2t2, *c2t1_2t2, *n1, *n1_, *n2, *n2_, *q1, *q2;
 
     // initialize from command arguments
@@ -35,10 +35,10 @@ int main (int argc, char **argv) {
     mpfr_init_set_str(g, "9.80665", 10, RND);
 
     // initialize the derivative and temporary jets
-    t1 = t_jet(n + 1);
-    t2 = t_jet(n + 1);
-    w1 = t_jet(n + 1);
-    w2 = t_jet(n + 1);
+    mpfr_t *t1 = t_jet_c(n + 1, t10);
+    mpfr_t *w1 = t_jet_c(n + 1, w10);
+    mpfr_t *t2 = t_jet_c(n + 1, t20);
+    mpfr_t *w2 = t_jet_c(n + 1, w20);
     st1 = t_jet(n);
     ct1 = t_jet(n);
     _t1_t2 = t_jet(n);
@@ -61,13 +61,9 @@ int main (int argc, char **argv) {
     d = t_jet(n);
 
     // main loop
-    polar_to_rectangular(&x1, &y1, &x2, &y2, l1, l2, t, t10, t20, w10, w20, &_, &__);
+    polar_to_rectangular(&x1, &y1, &x2, &y2, l1, l2, t, t1[0], t2[0], w1[0], w2[0], &_, &__);
     for (long step = 1; step < nsteps + 1; step++) {
         // compute the taylor coefficients
-        mpfr_set(t1[0], t10, RND);
-        mpfr_set(t2[0], t20, RND);
-        mpfr_set(w1[0], w10, RND);
-        mpfr_set(w2[0], w20, RND);
         for (int k = 0; k < n; k++) {
             t_sin_cos(st1, ct1, t1, k, &_, TRIG);
 
@@ -121,7 +117,7 @@ int main (int argc, char **argv) {
         t_horner(&w10, w1, n, h);
         t_horner(&w20, w2, n, h);
         mpfr_mul_ui(t, h, step, RND);
-        polar_to_rectangular(&x1, &y1, &x2, &y2, l1, l2, t, t10, t20, w10, w20, &_, &__);
+        polar_to_rectangular(&x1, &y1, &x2, &y2, l1, l2, t, t1[0], t2[0], w1[0], w2[0], &_, &__);
     }
     return 0;
 }
