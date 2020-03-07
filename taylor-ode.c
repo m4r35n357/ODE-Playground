@@ -65,7 +65,7 @@ void t_horner (mpfr_t *sum, mpfr_t *jet, int n, mpfr_t h) {
 mpfr_t *t_abs (mpfr_t *a, mpfr_t *u, int k) {
     assert(a != u);
     assert(k >= 0);
-    mpfr_mul_si(*a, u[k], mpfr_sgn(u[0]), RND);
+    mpfr_sgn(u[0]) < 0 ? mpfr_neg(*a, u[k], RND) : mpfr_set(*a, u[k], RND);
     return a;
 }
 

@@ -13,7 +13,7 @@ proc t_horner* (jet: openArray[float], h: float): float =
         result = result * h + jet[i]
 
 proc t_abs* (u: openArray[float], k: int): float =
-    return u[k] * (if u[0] > 0.0: 1.0 else: (if u[0] < 0.0: - 1.0 else: 0.0))
+    return if u[0] < 0.0: - u[k] else: u[k]
 
 proc cauchy (a, b: openArray[float], k, lower, upper: int): float =
     for j in lower..upper:

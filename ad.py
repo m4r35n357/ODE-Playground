@@ -15,7 +15,7 @@ def t_horner(jet, h):
     return result
 
 def t_abs(u, k):
-    return (1.0 if u[0] > 0.0 else (- 1.0 if u[0] < 0.0 else 0.0)) * u[k]
+    return - u[k] if u[0] < 0.0 else u[k]
 
 def t_prod(u, v, k):
     return fsum(u[j] * v[k - j] for j in range(k + 1))
