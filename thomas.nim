@@ -19,9 +19,9 @@ var z0 = parseFloat(params[6])
 
 let b = parseFloat(params[7])
 
-var x = newSeq[float](n + 1)
-var y = newSeq[float](n + 1)
-var z = newSeq[float](n + 1)
+var x = t_jet_c(n + 1, x0)
+var y = t_jet_c(n + 1, y0)
+var z = t_jet_c(n + 1, z0)
 
 var sx = newSeq[float](n)
 var cx = newSeq[float](n)
@@ -30,17 +30,14 @@ var cy = newSeq[float](n)
 var sz = newSeq[float](n)
 var cz = newSeq[float](n)
 
-t_output(x0, y0, z0, 0.0)
+t_output(x[0], y[0], z[0], 0.0)
 for step in 1..steps+1:
-    x[0] = x0
-    y[0] = y0
-    z[0] = z0
     for k in 0..n-1:
         x[k + 1] = (t_sin_cos(sy, cy, y, k, trig)[0] - b * x[k]) / float(k + 1)
         y[k + 1] = (t_sin_cos(sz, cz, z, k, trig)[0] - b * y[k]) / float(k + 1)
         z[k + 1] = (t_sin_cos(sx, cx, x, k, trig)[0] - b * z[k]) / float(k + 1)
-    x0 = t_horner(x, h)
-    y0 = t_horner(y, h)
-    z0 = t_horner(z, h)
-    t_output(x0, y0, z0, float64(step) * h)
+    x[0] = t_horner(x, h)
+    y[0] = t_horner(y, h)
+    z[0] = t_horner(z, h)
+    t_output(x[0], y[0], z[0], float(step) * h)
 

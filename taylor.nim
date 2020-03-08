@@ -8,6 +8,14 @@ type
 proc t_output* (x, y, z, t: float) =
     c_printf("%+.12e %+.12e %+.12e %+.6e\n", x, y, z, t);  #echo(x, ' ', y, ' ', z, ' ', t)
 
+proc t_jet* (n: int): auto =
+    return newSeq[float](n + 1)
+
+proc t_jet_c* (n: int, value:float): auto =
+    result = t_jet(n)
+    result[0] = value
+    return result
+
 proc t_horner* (jet: openArray[float], h: float): float =
     for i in countdown(jet.high, jet.low):
         result = result * h + jet[i]

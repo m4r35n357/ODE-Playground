@@ -21,24 +21,21 @@ let a = parseFloat(params[7])
 let tmp = parseFloat(params[8])
 let c = parseFloat(params[9])
 
-var x = newSeq[float](n + 1)
-var y = newSeq[float](n + 1)
-var z = newSeq[float](n + 1)
+var x = t_jet_c(n + 1, x0)
+var y = t_jet_c(n + 1, y0)
+var z = t_jet_c(n + 1, z0)
 
 var b = newSeq[float](n)
 b[0] = tmp
 
-t_output(x0, y0, z0, 0.0)
+t_output(x[0], y[0], z[0], 0.0)
 for step in 1..steps+1:
-    x[0] = x0
-    y[0] = y0
-    z[0] = z0
     for k in 0..n-1:
         x[k + 1] = - (y[k] + z[k]) / float(k + 1)
         y[k + 1] = (x[k] + a * y[k]) / float(k + 1)
         z[k + 1] = (b[k] + t_prod(x, z, k) - c * z[k]) / float(k + 1)
-    x0 = t_horner(x, h)
-    y0 = t_horner(y, h)
-    z0 = t_horner(z, h)
-    t_output(x0, y0, z0, float(step) * h)
+    x[0] = t_horner(x, h)
+    y[0] = t_horner(y, h)
+    z[0] = t_horner(z, h)
+    t_output(x[0], y[0], z[0], float(step) * h)
 
