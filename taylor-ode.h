@@ -185,11 +185,13 @@ tuple t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, geometry
  *                      U.U^a' = a U^a.U'
  *                        U.P' = a P.U'
  *
- *    sum{j=0->k} U[k-j].jP[j] =  a sum{j=0->k-1} P[j].(k-j)U[k-j]
+ *              sum{j=0->k-1} U[j].(k-j)P[k-j] =  a sum{j=0->k-1} P[j].(k-j)U[k-j]
  *
- *                  U[0].kP[k] =  a sum{j=0->k-1} P[j].(k-j)U[k-j]   - sum{j=0->k-1} U[k-j].jP[j]
+ * U[0].kP[k] + sum{j=1->k-1} U[j].(k-j)P[k-j] =  a sum{j=0->k-1} P[j].(k-j)U[k-j]
  *
- *                        P[k] = (a sum{j=0->k-1} P[j].(k-j)U[k-j]/k - sum{j=0->k-1} U[k-j].jP[j]/k) / U[0]
+ *                                  U[0].kP[k] =  a sum{j=0->k-1} P[j].(k-j)U[k-j]   - sum{j=1->k-1} U[j].(k-j)P[k-j]
+ *
+ *                                        P[k] = (a sum{j=0->k-1} P[j].(k-j)U[k-j]/k - sum{j=1->k-1} U[j].(k-j)P[k-j]/k) / U[0]
  */
 mpfr_t *t_pwr (mpfr_t *P, mpfr_t *U, double a, int k, mpfr_t *tmpA, mpfr_t *tmpB);
 
