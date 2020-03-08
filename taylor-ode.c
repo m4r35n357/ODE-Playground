@@ -40,6 +40,7 @@ mpfr_t *t_jet (int n) {
     mpfr_t *jet = malloc(sizeof (mpfr_t) * n);
     for (int i = 0; i < n; i++) {
         mpfr_init(jet[i]);
+        mpfr_set_zero(jet[i], 1);
     }
     return jet;
 }
@@ -47,9 +48,6 @@ mpfr_t *t_jet (int n) {
 mpfr_t *t_jet_c (int n, mpfr_t value) {
     mpfr_t *jet = t_jet(n);
     mpfr_set(jet[0], value, RND);
-    for (int i = 1; i < n; i++) {
-         mpfr_set_zero(jet[i], 1);
-    }
     return jet;
 }
 
