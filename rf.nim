@@ -13,30 +13,23 @@ let n = parseInt(params[1])
 let h = parseFloat(params[2])
 let steps = parseInt(params[3])
 
-var x0 = parseFloat(params[4])
-var y0 = parseFloat(params[5])
-var z0 = parseFloat(params[6])
+var x = t_jet_c(n + 1, parseFloat(params[4]))
+var y = t_jet_c(n + 1, parseFloat(params[5]))
+var z = t_jet_c(n + 1, parseFloat(params[6]))
 
 let tmp = parseFloat(params[7])
 let gamma = parseFloat(params[8])
-
-var x = t_jet_c(n + 1, x0)
-var y = t_jet_c(n + 1, y0)
-var z = t_jet_c(n + 1, z0)
 
 var a = newSeq[float](n)
 var b = newSeq[float](n)
 var c = newSeq[float](n)
 
-var alpha = newSeq[float](n)
-alpha[0] = tmp
-
-var w1 = newSeq[float](n)
-w1[0] = 1.0
+var alpha = t_jet_c(n, tmp)
+var w1 = t_jet_c(n, 1.0)
 
 t_output(x[0], y[0], z[0], 0.0)
 for step in 1..steps+1:
-    for k in 0..n-1:
+    for k in 0..<n:
         let x2_1 = t_sqr(x, k) - w1[k]
         a[k] = z[k] + x2_1
         b[k] = 3.0 * z[k] - x2_1

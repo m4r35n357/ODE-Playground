@@ -13,24 +13,19 @@ let n = parseInt(params[1])
 let h = parseFloat(params[2])
 let steps = parseInt(params[3])
 
-var x0 = parseFloat(params[4])
-var y0 = parseFloat(params[5])
-var z0 = parseFloat(params[6])
+var x = t_jet_c(n + 1, parseFloat(params[4]))
+var y = t_jet_c(n + 1, parseFloat(params[5]))
+var z = t_jet_c(n + 1, parseFloat(params[6]))
 
 let a = parseFloat(params[7])
 let tmp = parseFloat(params[8])
 let c = parseFloat(params[9])
 
-var x = t_jet_c(n + 1, x0)
-var y = t_jet_c(n + 1, y0)
-var z = t_jet_c(n + 1, z0)
-
-var b = newSeq[float](n)
-b[0] = tmp
+var b = t_jet_c(n, tmp)
 
 t_output(x[0], y[0], z[0], 0.0)
 for step in 1..steps+1:
-    for k in 0..n-1:
+    for k in 0..<n:
         x[k + 1] = - (y[k] + z[k]) / float(k + 1)
         y[k + 1] = (x[k] + a * y[k]) / float(k + 1)
         z[k + 1] = (b[k] + t_prod(x, z, k) - c * z[k]) / float(k + 1)

@@ -14,7 +14,6 @@ proc t_jet* (n: int): auto =
 proc t_jet_c* (n: int, value:float): auto =
     result = t_jet(n)
     result[0] = value
-    return result
 
 proc t_horner* (jet: openArray[float], h: float): float =
     for i in countdown(jet.high, jet.low):
@@ -83,7 +82,7 @@ proc t_pow* (p: var openArray[float], u: openArray[float], a: float, k: int): fl
     if k == 0:
         p[k] = pow(u[0], a)
     else:
-        p[k] = (d_cauchy(p, u, k, 0, k - 1, a) - d_cauchy(u, p, k, 0, k - 1, 1.0)) / u[0]
+        p[k] = (d_cauchy(p, u, k, 0, k - 1, a) - d_cauchy(u, p, k, 1, k - 1, 1.0)) / u[0]
     return p[k]
 
 proc t_ln* (l: var openArray[float], u: openArray[float], k: int): float =

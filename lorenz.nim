@@ -13,21 +13,17 @@ let n = parseInt(params[1])
 let h = parseFloat(params[2])
 let steps = parseInt(params[3])
 
-var x0 = parseFloat(params[4])
-var y0 = parseFloat(params[5])
-var z0 = parseFloat(params[6])
+var x = t_jet_c(n + 1, parseFloat(params[4]))
+var y = t_jet_c(n + 1, parseFloat(params[5]))
+var z = t_jet_c(n + 1, parseFloat(params[6]))
 
 let sigma = parseFloat(params[7])
 let rho = parseFloat(params[8])
 let beta = parseFloat(params[9]) / parseFloat(params[10])
 
-var x = t_jet_c(n + 1, x0)
-var y = t_jet_c(n + 1, y0)
-var z = t_jet_c(n + 1, z0)
-
 t_output(x[0], y[0], z[0], 0.0)
 for step in 1..steps+1:
-    for k in 0..n-1:
+    for k in 0..<n:
         x[k + 1] = sigma * (y[k] - x[k]) / float(k + 1)
         y[k + 1] = (rho * x[k] - y[k] - t_prod(x, z, k)) / float(k + 1)
         z[k + 1] = (t_prod(x, y, k) - beta * z[k]) / float(k + 1)

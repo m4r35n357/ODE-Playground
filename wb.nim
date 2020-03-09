@@ -13,24 +13,20 @@ let n = parseInt(params[1])
 let h = parseFloat(params[2])
 let steps = parseInt(params[3])
 
-var x0 = parseFloat(params[4])
-var y0 = parseFloat(params[5])
-var z0 = parseFloat(params[6])
+var x = t_jet_c(n + 1, parseFloat(params[4]))
+var y = t_jet_c(n + 1, parseFloat(params[5]))
+var z = t_jet_c(n + 1, parseFloat(params[6]))
 
 let a = parseFloat(params[7])
 
-var x = t_jet_c(n + 1, x0)
-var y = t_jet_c(n + 1, y0)
-var z = t_jet_c(n + 1, z0)
-
 var tx = newSeq[float](n)
 var sx = newSeq[float](n)
-var wa = newSeq[float](n)
-wa[0] = a
+
+var wa = t_jet_c(n, a)
 
 t_output(x[0], y[0], z[0], 0.0)
 for step in 1..steps+1:
-    for k in 0..n-1:
+    for k in 0..<n:
         tx[k] = t_tan_sec2(tx, sx, x, k, hyp)[0]
         x[k + 1] = (y[k] - x[k]) / float(k + 1)
         y[k + 1] = - t_prod(z, tx, k) / float(k + 1)
