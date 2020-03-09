@@ -11,10 +11,11 @@
 #include "taylor-ode.h"
 #include "ad.h"
 
-mpfr_t _, D_1, D_05, D0, D1, D2, D3, D4, D5, D6, D7, *w1, *w2, *w3, *w4, *w5, *w6, *w7, *target, *_1, *_2, *_3;
+mpfr_t _, D_1, D_05, D0, D1, D2, D3, D4, D5, D6, D7, D54, D160, D641, D828, D1260, *w1, *w2, *w3, *w4, *w5, *w6, *w7, *target, *_1, *_2, *_3;
 
 static void septic (mpfr_t *f, mpfr_t *x, int n) {
     //  Example: ./ad-test-newton-dbg 0 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
+    // (x + 7)(x + 5)(x + 2)x(x - 1)(x - 3)(x - 6) = x^7 + 4x^6 - 54x^5 - 160x^4 + 641x^3 + 828x^2 - 1260x
     ad_minus(_2, x, w1, n);
     ad_plus(_1, x, w2, n);
     ad_prod(_3, _2, _1, n);
@@ -27,6 +28,24 @@ static void septic (mpfr_t *f, mpfr_t *x, int n) {
     ad_plus(_1, x, w7, n);
     ad_prod(_3, _2, _1, n);
     ad_prod(f, _3, x, n);
+}
+
+static void septic2 (mpfr_t *f, mpfr_t *x, int n) {
+    //  Example: ./ad-test-newton-dbg 4 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
+    // x^7 + 4x^6 - 54x^5 - 160x^4 + 641x^3 + 828x^2 - 1260x = ((((((x + 4)x - 54)x - 160)x + 641)x + 828)x - 1260)x
+    ad_set(_1, x, n);
+    mpfr_add(_1[0], _1[0], D4, RND);
+    ad_prod(_2, x, _1, n);
+    mpfr_sub(_2[0], _2[0], D54, RND);
+    ad_prod(_1, x, _2, n);
+    mpfr_sub(_1[0], _1[0], D160, RND);
+    ad_prod(_2, x, _1, n);
+    mpfr_add(_2[0], _2[0], D641, RND);
+    ad_prod(_1, x, _2, n);
+    mpfr_add(_1[0], _1[0], D828, RND);
+    ad_prod(_2, x, _1, n);
+    mpfr_sub(_2[0], _2[0], D1260, RND);
+    ad_prod(f, x, _2, n);
 }
 
 static void composite1 (mpfr_t *f, mpfr_t *x, int n) {
@@ -60,7 +79,7 @@ static void cosx_x3 (mpfr_t *f, mpfr_t *x, int n) {
 
 int main (int argc, char **argv) {
     mpfr_t x0, x1, x_step, x_prev, f_prev, f_target, f_tol, x_tol;
-    model func;
+    model function;
 
     assert(argc == 10);
     mpfr_set_default_prec(236);
@@ -68,16 +87,19 @@ int main (int argc, char **argv) {
 
     switch(strtol(argv[1], NULL, BASE)) {
         case 0 :
-            func = septic;
+            function = septic;
             break;
         case 1 :
-            func = composite1;
+            function = composite1;
             break;
         case 2 :
-            func = composite2;
+            function = composite2;
             break;
         case 3 :
-            func = cosx_x3;
+            function = cosx_x3;
+            break;
+        case 4 :
+            function = septic2;
             break;
         default :
             printf("Invalid model\n" );
@@ -94,14 +116,19 @@ int main (int argc, char **argv) {
 
     mpfr_init_set_si(D_1, -1, RND);
     mpfr_init_set_d(D_05, -0.5, RND);
-    mpfr_init_set_si(D0, 0, RND);
-    mpfr_init_set_si(D1, 1, RND);
-    mpfr_init_set_si(D2, 2, RND);
-    mpfr_init_set_si(D3, 3, RND);
-    mpfr_init_set_si(D4, 4, RND);
-    mpfr_init_set_si(D5, 5, RND);
-    mpfr_init_set_si(D6, 6, RND);
-    mpfr_init_set_si(D7, 7, RND);
+    mpfr_init_set_ui(D0, 0, RND);
+    mpfr_init_set_ui(D1, 1, RND);
+    mpfr_init_set_ui(D2, 2, RND);
+    mpfr_init_set_ui(D3, 3, RND);
+    mpfr_init_set_ui(D4, 4, RND);
+    mpfr_init_set_ui(D5, 5, RND);
+    mpfr_init_set_ui(D6, 6, RND);
+    mpfr_init_set_ui(D7, 7, RND);
+    mpfr_init_set_ui(D54, 54, RND);
+    mpfr_init_set_ui(D160, 160, RND);
+    mpfr_init_set_ui(D641, 641, RND);
+    mpfr_init_set_ui(D828, 828, RND);
+    mpfr_init_set_ui(D1260, 1260, RND);
 
     w1 = t_jet_c(order, D1);
     w2 = t_jet_c(order, D2);
@@ -125,7 +152,7 @@ int main (int argc, char **argv) {
     for (int k = 0; k < steps + 1; k++) {
         mpfr_mul_ui(_, x_step, k, RND);
         mpfr_add(x[0], x0, _, RND);
-        func(f, x, order);
+        function(f, x, order);
         mpfr_printf("%.3RNe ", x[0]);
         jet_to_derivs(f, order);
         for (int i = 0; i < order; i++) {
@@ -139,13 +166,13 @@ int main (int argc, char **argv) {
                     fprintf(stderr, "Bracketed a root, using ");
                     if (s == BISECT) {
                         fprintf(stderr, "Bisection\n");
-                        ad_bisect(func, t_jet_c(1, x_prev), x, 100, f_tol, x_tol, t_jet(1), t_jet(1), t_jet(1));
+                        ad_bisect(function, t_jet_c(1, x_prev), x, 100, f_tol, x_tol, t_jet(1), t_jet(1), t_jet(1));
                     } else if (s == NEWTON) {
                         fprintf(stderr, "Newton's method\n");
-                        ad_newton(func, t_jet_c(s, D1), x, 100, f_tol, x_tol);
+                        ad_newton(function, t_jet_c(s, D1), x, 100, f_tol, x_tol);
                     } else {
                         fprintf(stderr, "Householder's method of degree %d\n", s - 1);
-                        ad_householder(func, t_jet_c(s, D1), x, s, 100, f_tol, x_tol, t_jet(s), t_jet_c(s, D1));
+                        ad_householder(function, t_jet_c(s, D1), x, s, 100, f_tol, x_tol, t_jet(s), t_jet_c(s, D1));
                     }
                     fprintf(stderr, "\n");
                 }

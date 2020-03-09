@@ -91,6 +91,13 @@ void ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f
     mpfr_clear(delta);
 }
 
+mpfr_t *ad_set (mpfr_t *b, mpfr_t *a, int n) {
+    for (int k = 0; k < n; k++) {
+        mpfr_set(b[k], a[k], RND);
+    }
+    return b;
+}
+
 mpfr_t *ad_scale (mpfr_t *s, mpfr_t *u, mpfr_t a, int n) {
     for (int k = 0; k < n; k++) {
         mpfr_mul(s[k], u[k], a, RND);
