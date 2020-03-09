@@ -34,7 +34,10 @@ def t_sqrt(r, u, k):
     return 0.5 * (u[k] - f_sum if k % 2 == 1 else u[k] - f_sum - r[k // 2]**2) / r[0]
 
 def t_pwr(p, u, a, k):
-    return u[0]**a if k == 0 else fsum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
+    if k == 0:
+        return u[0]**a
+    return (a * fsum(p[j] * (k - j) * u[k - j] for j in range(k))
+            - fsum(u[j] * (k - j) * p[k - j] for j in range(1, k))) / (k * u[0])
 
 def t_exp(e, u, k):
     return exp(u[0]) if k == 0 else fsum((k - j) * e[j] * u[k - j] for j in range(k)) / k
