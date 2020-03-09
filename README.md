@@ -161,7 +161,7 @@ or in c (notice absence of the model parameter!):
 ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
 ```
 
-3D static trajectory plotting (gnuplot)
+## 3D static trajectory plotting (gnuplot)
 
 Write to a data file
 ```
