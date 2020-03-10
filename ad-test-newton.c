@@ -15,7 +15,7 @@ mpfr_t _, D_1, D_05, D0, D1, D2, D3, D4, D5, D6, D7, D54, D160, D641, D828, D126
 mpfr_t *w1, *w2, *w3, *w4, *w5, *w6, *w7, *target, *_1, *_2, *_3, *_f;
 
 static void septic (mpfr_t *f, mpfr_t *x, int n) {
-    //  Example: ./ad-test-newton-dbg 0 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
+    //  Example: ./ad-test-newton-dbg 0 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null 2>&1
     // (x + 7)(x + 5)(x + 2)x(x - 1)(x - 3)(x - 6) = x^7 + 4x^6 - 54x^5 - 160x^4 + 641x^3 + 828x^2 - 1260x
     ad_minus(_2, x, w1, n);
     ad_plus(_1, x, w2, n);
@@ -32,7 +32,7 @@ static void septic (mpfr_t *f, mpfr_t *x, int n) {
 }
 
 static void septic2 (mpfr_t *f, mpfr_t *x, int n) {
-    //  Example: ./ad-test-newton-dbg 4 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null
+    //  Example: ./ad-test-newton-dbg 4 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null 2>&1
     // x^7 + 4x^6 - 54x^5 - 160x^4 + 641x^3 + 828x^2 - 1260x = ((((((x + 4)x - 54)x - 160)x + 641)x + 828)x - 1260)x
     ad_set(f, x, n);
     mpfr_add(f[0], f[0], D4, RND);
@@ -50,7 +50,7 @@ static void septic2 (mpfr_t *f, mpfr_t *x, int n) {
 }
 
 static void composite1 (mpfr_t *f, mpfr_t *x, int n) {
-    //  Example: ./ad-test-newton-dbg 1 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
+    //  Example: ./ad-test-newton-dbg 1 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null 2>&1
     ad_sqr(_1, x, n);
     ad_minus(_2, _1, w4, n);
     ad_exp(_1, _2, n);
@@ -60,7 +60,7 @@ static void composite1 (mpfr_t *f, mpfr_t *x, int n) {
 }
 
 static void composite2 (mpfr_t *f, mpfr_t *x, int n) {
-    //  Example: ./ad-test-newton-dbg 2 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
+    //  Example: ./ad-test-newton-dbg 2 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null 2>&1
     ad_exp(_1, x, n);
     ad_minus(_2, _1, w4, n);
     ad_sqr(_1, _2, n);
@@ -70,7 +70,7 @@ static void composite2 (mpfr_t *f, mpfr_t *x, int n) {
 }
 
 static void cosx_x3 (mpfr_t *f, mpfr_t *x, int n) {
-    //  Example: ./ad-test-newton-dbg 3 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null
+    //  Example: ./ad-test-newton-dbg 3 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null 2>&1
     ad_sqr(_1, x, n);
     ad_prod(_2, _1, x, n);
     ad_sin_cos(_1, _3, x, n, TRIG);
@@ -108,6 +108,22 @@ int main (int argc, char **argv) {
     }
     long order = strtol(argv[2], NULL, BASE);
     solver s = strtol(argv[3], NULL, BASE);
+    switch (s) {
+        case BISECT :
+            fprintf(stderr, "Bisection\n");
+            break;
+        case NEWTON :
+            fprintf(stderr, "Newton's method\n");
+            break;
+        case H2 :
+        case H3 :
+        case H4 :
+            fprintf(stderr, "Householder's method of degree %d\n", s - 1);
+            break;
+        default :
+            printf("Invalid solverl\n" );
+            return 1;
+    }
     mpfr_init_set_str(x0, argv[4], BASE, RND);
     mpfr_init_set_str(x1, argv[5], BASE, RND);
     long steps = strtol(argv[6], NULL, BASE);
@@ -165,38 +181,32 @@ int main (int argc, char **argv) {
             if(k > 0) {
                 mpfr_mul(_, f0_prev, f[ROOT___], RND);
                 if (mpfr_sgn(_) < 0) {
-                    fprintf(stderr, "Bracketed a root, using ");
+                    fprintf(stderr, "Bracketed a root:\n");
                     switch (s) {
                         case BISECT :
-                            fprintf(stderr, "Bisection\n");
                             ad_bisect(function, t_jet_c(s + ROOT___, x_prev), x, 100, f_tol, x_tol,
                                         t_jet(s + ROOT___), t_jet(s + ROOT___), t_jet(s + ROOT___), ROOT___);
                             break;
                         case NEWTON :
-                            fprintf(stderr, "Newton's method\n");
                             ad_newton(function, t_jet_c(s, D1), x, 100, f_tol, x_tol, ROOT___);
                             break;
                         default :
-                            fprintf(stderr, "Householder's method of degree %d\n", s - 1);
                             ad_householder(function, t_jet_c(s, D1), x, s, 100, f_tol, x_tol, t_jet(s), t_jet_c(s, D1), ROOT___);
                     }
                     fprintf(stderr, "\n");
                 }
                 mpfr_mul(_, f1_prev, f[MIN_MAX], RND);
                 if (mpfr_sgn(_) < 0) {
-                    fprintf(stderr, "Bracketed a maximum/minimum, using ");
+                    fprintf(stderr, "Bracketed a maximum/minimum:\n");
                     switch (s) {
                         case BISECT :
-                            fprintf(stderr, "Bisection\n");
                             ad_bisect(function, t_jet_c(s + MIN_MAX, x_prev), x, 100, f_tol, x_tol,
                                         t_jet(s + MIN_MAX), t_jet(s + MIN_MAX), t_jet(s + MIN_MAX), MIN_MAX);
                             break;
                         case NEWTON :
-                            fprintf(stderr, "Newton's method\n");
                             ad_newton(function, t_jet_c(s + MIN_MAX, D1), x, 100, f_tol, x_tol, MIN_MAX);
                             break;
                         default :
-                            fprintf(stderr, "Householder's method of degree %d\n", s - 1);
                             ad_householder(function, t_jet_c(s + MIN_MAX, D1), x, s, 100, f_tol, x_tol,
                                         t_jet(s), t_jet_c(s + MIN_MAX, D1), MIN_MAX);
                     }
@@ -204,19 +214,16 @@ int main (int argc, char **argv) {
                 }
                 mpfr_mul(_, f2_prev, f[INFLECT], RND);
                 if (mpfr_sgn(_) < 0) {
-                    fprintf(stderr, "Bracketed an inflection point, using ");
+                    fprintf(stderr, "Bracketed an inflection point:\n");
                     switch (s) {
                         case BISECT :
-                            fprintf(stderr, "Bisection\n");
                             ad_bisect(function, t_jet_c(s + INFLECT, x_prev), x, 100, f_tol, x_tol,
                                         t_jet(s + INFLECT), t_jet(s + INFLECT), t_jet(s + INFLECT), INFLECT);
                             break;
                         case NEWTON :
-                            fprintf(stderr, "Newton's method\n");
                             ad_newton(function, t_jet_c(s + INFLECT, D1), x, 100, f_tol, x_tol, INFLECT);
                             break;
                         default :
-                            fprintf(stderr, "Householder's method of degree %d\n", s - 1);
                             ad_householder(function, t_jet_c(s + INFLECT, D1), x, s, 100, f_tol, x_tol,
                                         t_jet(s + INFLECT), t_jet_c(s + INFLECT, D1), INFLECT);
                     }
