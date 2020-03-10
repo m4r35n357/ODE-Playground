@@ -37,17 +37,19 @@ void ad_solver_output (int counter, mpfr_t x, mpfr_t f, mpfr_t delta) {
     mpfr_fprintf(stderr, "%3d %20.12RNe %20.12RNe %20.12RNe\n", counter, x, f, delta);
 }
 
-void ad_bisect (model m, mpfr_t *a, mpfr_t *b, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *c, mpfr_t *fa, mpfr_t *fc) {
+void ad_bisect (model function, mpfr_t *a, mpfr_t *b, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *c, mpfr_t *fa, mpfr_t *fc, mode degree) {
     mpfr_t delta, _;
     int counter = 0;
     mpfr_inits(delta, _, NULL);
-    m(fa, a, 1);
+    function(fa, a, degree + 1);
+    jet_to_derivs(fa, degree + 1);
     mpfr_sub(delta, b[0], a[0], RND);
-    while(mpfr_cmp_abs(fc[0], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
+    while(mpfr_cmp_abs(fc[degree], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
         mpfr_add(c[0], a[0], b[0], RND);
         mpfr_div_ui(c[0], c[0], 2, RND);
-        m(fc, c, 1);
-        mpfr_mul(_, fa[0], fc[0], RND);
+        function(fc, c, degree + 1);
+        jet_to_derivs(fc, degree + 1);
+        mpfr_mul(_, fa[degree], fc[degree], RND);
         if (mpfr_sgn(_) < 0) {
             mpfr_set(b[0], c[0], RND);
         } else {
@@ -56,30 +58,31 @@ void ad_bisect (model m, mpfr_t *a, mpfr_t *b, int max_it, mpfr_t f_tol, mpfr_t 
         mpfr_sub(delta, b[0], a[0], RND);
         if (++counter > max_it) break;
     }
-    ad_solver_output(counter, c[0], fc[0], delta);
+    ad_solver_output(counter, c[0], fc[degree], delta);
     mpfr_clears(delta, _, NULL);
 }
 
-void ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x_tol) {
+void ad_newton (model function, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x_tol, mode degree) {
     mpfr_t delta;
     int counter = 0;
     mpfr_init_set_ui(delta, 1, RND);
-    while(mpfr_cmp_abs(f[0], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
-        m(f, x, 2);
-        mpfr_div(delta, f[0], f[1], RND);
+    while(mpfr_cmp_abs(f[degree], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
+        function(f, x, degree + 2);
+        jet_to_derivs(f, degree + 2);
+        mpfr_div(delta, f[degree], f[degree + 1], RND);
         mpfr_sub(x[0], x[0], delta, RND);
         if (++counter > max_it) break;
     }
-    ad_solver_output(counter, x[0], f[0], delta);
+    ad_solver_output(counter, x[0], f[degree], delta);
     mpfr_clear(delta);
 }
 
-void ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *f_recip, mpfr_t *w1) {
+void ad_householder (model function, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *f_recip, mpfr_t *w1, mode degree) {
     mpfr_t delta;
     int counter = 0;
     mpfr_init_set_ui(delta, 1, RND);
-    while(mpfr_cmp_abs(f[0], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
-        m(f, x, n);
+    while(mpfr_cmp_abs(f[degree], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
+        function(f, x, n);
         ad_quot(f_recip, w1, f, n);
         jet_to_derivs(f_recip, n);
         mpfr_div(delta, f_recip[n - 2], f_recip[n - 1], RND);
@@ -87,7 +90,7 @@ void ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f
         mpfr_add(x[0], x[0], delta, RND);
         if (++counter > max_it) break;
     }
-    ad_solver_output(counter, x[0], f[0], delta);
+    ad_solver_output(counter, x[0], f[degree], delta);
     mpfr_clear(delta);
 }
 

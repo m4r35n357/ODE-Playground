@@ -27,10 +27,8 @@ static result check_jets (char* name, mpfr_t *a, mpfr_t *b, int size, mpfr_t thr
     for (int k = 0; k < size; k++) {
         mpfr_sub(*_, a[k], b[k], RND);
         if (mpfr_cmp_abs(*_, threshold) > 0) {
-            double da = mpfr_get_d(a[k], RND);
-            double db = mpfr_get_d(b[k], RND);
-            double difference = mpfr_get_d(*_, RND);
-            printf("%sFAILED%s %s,  k: %d diff: %+.3e a: %+.3e b: %+.3e\n", KRED, KNRM, name, k, difference, da, db);
+            printf("%sFAILED%s %s  k: %d  diff: %.3e  a: %.3e  b: %.3e\n",
+                    KRED, KNRM, name, k, mpfr_get_d(*_, RND), mpfr_get_d(a[k], RND), mpfr_get_d(b[k], RND));
             return FAIL;
         }
     }
