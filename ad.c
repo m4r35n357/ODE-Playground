@@ -34,10 +34,11 @@ void derivative_output (mpfr_t *jet, long n, char* f_colour, char *fk_colour) {
 }
 
 void ad_solver_output (int counter, mpfr_t x, mpfr_t f, mpfr_t delta) {
-    mpfr_fprintf(stderr, "%3d %20.12RNe %20.12RNe %20.12RNe\n", counter, x, f, delta);
+    mpfr_fprintf(stderr, "%3d %20.12RNe %20.12RNe %20.12RNe ", counter, x, delta, f);
 }
 
-void ad_bisect (model function, mpfr_t *a, mpfr_t *b, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *c, mpfr_t *fa, mpfr_t *fc, mode degree) {
+void ad_bisect (model function, mpfr_t *a, mpfr_t *b, int max_it, mpfr_t f_tol, mpfr_t x_tol,
+                mpfr_t *c, mpfr_t *fa, mpfr_t *fc, mode degree) {
     mpfr_t delta, _;
     int counter = 0;
     mpfr_inits(delta, _, NULL);
@@ -50,11 +51,8 @@ void ad_bisect (model function, mpfr_t *a, mpfr_t *b, int max_it, mpfr_t f_tol, 
         function(fc, c, degree + 1);
         jet_to_derivs(fc, degree + 1);
         mpfr_mul(_, fa[degree], fc[degree], RND);
-        if (mpfr_sgn(_) < 0) {
-            mpfr_set(b[0], c[0], RND);
-        } else {
-            mpfr_set(a[0], c[0], RND);
-        }
+        int a_or_b = mpfr_sgn(_);
+        if (a_or_b < 0) { mpfr_set(b[0], c[0], RND); } else if (a_or_b > 0) { mpfr_set(a[0], c[0], RND); } else { break; }
         mpfr_sub(delta, b[0], a[0], RND);
         if (++counter > max_it) break;
     }
@@ -77,7 +75,8 @@ void ad_newton (model function, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, 
     mpfr_clear(delta);
 }
 
-void ad_householder (model function, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *f_recip, mpfr_t *w1, mode degree) {
+void ad_householder (model function, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol,
+                    mpfr_t *f_recip, mpfr_t *w1, mode degree) {
     mpfr_t delta;
     int counter = 0;
     mpfr_init_set_ui(delta, 1, RND);

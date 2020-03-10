@@ -181,7 +181,6 @@ int main (int argc, char **argv) {
             if(k > 0) {
                 mpfr_mul(_, f0_prev, f[ROOT___], RND);
                 if (mpfr_sgn(_) < 0) {
-                    fprintf(stderr, "Bracketed a root:\n");
                     switch (s) {
                         case BISECT :
                             ad_bisect(function, t_jet_c(s + ROOT___, x_prev), x, 100, f_tol, x_tol,
@@ -193,11 +192,10 @@ int main (int argc, char **argv) {
                         default :
                             ad_householder(function, t_jet_c(s, D1), x, s, 100, f_tol, x_tol, t_jet(s), t_jet_c(s, D1), ROOT___);
                     }
-                    fprintf(stderr, "\n");
+                    mpfr_cmp(f0_prev, f[ROOT___]) > 0 ? fprintf(stderr, "\\ ROOT___\n") : fprintf(stderr, "/ ROOT___\n") ;
                 }
                 mpfr_mul(_, f1_prev, f[MIN_MAX], RND);
                 if (mpfr_sgn(_) < 0) {
-                    fprintf(stderr, "Bracketed a maximum/minimum:\n");
                     switch (s) {
                         case BISECT :
                             ad_bisect(function, t_jet_c(s + MIN_MAX, x_prev), x, 100, f_tol, x_tol,
@@ -208,13 +206,12 @@ int main (int argc, char **argv) {
                             break;
                         default :
                             ad_householder(function, t_jet_c(s + MIN_MAX, D1), x, s, 100, f_tol, x_tol,
-                                        t_jet(s), t_jet_c(s + MIN_MAX, D1), MIN_MAX);
+                                        t_jet(s + MIN_MAX), t_jet_c(s + MIN_MAX, D1), MIN_MAX);
                     }
-                    fprintf(stderr, "\n");
+                    mpfr_cmp(f1_prev, f[MIN_MAX]) > 0 ? fprintf(stderr, "\\ MIN_MAX\n") : fprintf(stderr, "/ MIN_MAX\n") ;
                 }
                 mpfr_mul(_, f2_prev, f[INFLECT], RND);
                 if (mpfr_sgn(_) < 0) {
-                    fprintf(stderr, "Bracketed an inflection point:\n");
                     switch (s) {
                         case BISECT :
                             ad_bisect(function, t_jet_c(s + INFLECT, x_prev), x, 100, f_tol, x_tol,
@@ -227,7 +224,7 @@ int main (int argc, char **argv) {
                             ad_householder(function, t_jet_c(s + INFLECT, D1), x, s, 100, f_tol, x_tol,
                                         t_jet(s + INFLECT), t_jet_c(s + INFLECT, D1), INFLECT);
                     }
-                    fprintf(stderr, "\n");
+                    mpfr_cmp(f2_prev, f[INFLECT]) > 0 ? fprintf(stderr, "\\ INFLECT\n") : fprintf(stderr, "/ INFLECT\n") ;
                 }
             }
         }
