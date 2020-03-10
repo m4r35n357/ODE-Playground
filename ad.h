@@ -14,12 +14,12 @@ typedef enum {VARIABLE, CONSTANT} ad_status;
 /*
  * Solver method
  */
-typedef enum {NONE=0, BISECT=1, NEWTON=2, H2=3, H3=4, H4=5} solver;
+typedef enum {NONE=0, NEWTON=2} solver;
 
 /*
  * Solver mode
  */
-typedef enum {ROOT___=0, MIN_MAX=1, INFLECT=2, ALL=3} mode;
+typedef enum {ROOT___=0, MIN_MAX=1, INFLECT=2} mode;
 
 /*
  * Signature for solver model functions
@@ -47,24 +47,9 @@ void jet_to_derivs (mpfr_t *jet, long n);
 void derivative_output (mpfr_t *jet, long n, char* f_colour, char *fk_colour);
 
 /*
- * Prints a line of solver output
- */
-void ad_solver_output (int counter, mpfr_t x, mpfr_t f, mpfr_t delta);
-
-/*
- * Finds a root of fn(f, x) by bisection, where f and x are Taylor Series
- */
-void ad_bisect (model m, mpfr_t *xa, mpfr_t *xb, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *xc, mpfr_t *fa, mpfr_t *fc, mode degree);
-
-/*
  * Finds a root of fn(f, x) by Newton's method, where f and x are Taylor Series
  */
-void ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x_tol, mode degree);
-
-/*
- * Finds a root of fn(f, x) by Householder's method, where f and x are Taylor Series
- */
-void ad_householder (model m, mpfr_t *f, mpfr_t *x, long n, int max_it, mpfr_t f_tol, mpfr_t x_tol, mpfr_t *f_recip, mpfr_t *w1, mode degree);
+void ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x_tol, mode degree, mpfr_t *delta);
 
 mpfr_t *ad_set (mpfr_t *B, mpfr_t *A, int n);
 

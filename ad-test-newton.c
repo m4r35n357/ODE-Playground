@@ -79,12 +79,12 @@ static void cosx_x3 (mpfr_t *f, mpfr_t *x, int n) {
 }
 
 int main (int argc, char **argv) {
-    mpfr_t x0, x1, x_step, x_prev, f0_prev, f1_prev, f2_prev, f_target, f_tol, x_tol;
+    mpfr_t x0, x1, x_step, x_prev, f0_prev, f1_prev, f2_prev, f_target, f_tol, x_tol, delta_x;
     model function;
 
     assert(argc == 10);
     mpfr_set_default_prec(236);
-    mpfr_inits(x_step, x_prev, f0_prev, f1_prev, f2_prev, _, NULL);
+    mpfr_inits(x_step, x_prev, f0_prev, f1_prev, f2_prev, _, delta_x, NULL);
 
     switch(strtol(argv[1], NULL, BASE)) {
         case 0 :
@@ -109,19 +109,14 @@ int main (int argc, char **argv) {
     long order = strtol(argv[2], NULL, BASE);
     solver s = strtol(argv[3], NULL, BASE);
     switch (s) {
-        case BISECT :
-            fprintf(stderr, "Bisection\n");
+        case NONE :
+            fprintf(stderr, "No analysis\n");
             break;
         case NEWTON :
             fprintf(stderr, "Newton's method\n");
             break;
-        case H2 :
-        case H3 :
-        case H4 :
-            fprintf(stderr, "Householder's method of degree %d\n", s - 1);
-            break;
         default :
-            printf("Invalid solverl\n" );
+            fprintf(stderr, "Invalid solver ID %d, parameter 3 must be %d or %d\n", s, NONE, NEWTON);
             return 1;
     }
     mpfr_init_set_str(x0, argv[4], BASE, RND);
@@ -161,7 +156,8 @@ int main (int argc, char **argv) {
     _3 = t_jet(order);
     _f = t_jet(order);
 
-    mpfr_t *f = t_jet(order);
+    mpfr_t *f = t_jet_c(order, D0);
+    mpfr_t *f_ = t_jet_c(NEWTON + INFLECT, D0);
     mpfr_t *x = t_jet_c(order, x0);
     set_ad_status(x, VARIABLE);
 
@@ -181,49 +177,17 @@ int main (int argc, char **argv) {
             if(k > 0) {
                 mpfr_mul(_, f0_prev, f[ROOT___], RND);
                 if (mpfr_sgn(_) < 0) {
-                    switch (s) {
-                        case BISECT :
-                            ad_bisect(function, t_jet_c(s + ROOT___, x_prev), x, 100, f_tol, x_tol,
-                                        t_jet(s + ROOT___), t_jet(s + ROOT___), t_jet(s + ROOT___), ROOT___);
-                            break;
-                        case NEWTON :
-                            ad_newton(function, t_jet_c(s, D1), x, 100, f_tol, x_tol, ROOT___);
-                            break;
-                        default :
-                            ad_householder(function, t_jet_c(s, D1), x, s, 100, f_tol, x_tol, t_jet(s), t_jet_c(s, D1), ROOT___);
-                    }
+                    ad_newton(function, f_, x, 100, f_tol, x_tol, ROOT___, &delta_x);
                     mpfr_cmp(f0_prev, f[ROOT___]) > 0 ? fprintf(stderr, "\\ ROOT___\n") : fprintf(stderr, "/ ROOT___\n") ;
                 }
                 mpfr_mul(_, f1_prev, f[MIN_MAX], RND);
                 if (mpfr_sgn(_) < 0) {
-                    switch (s) {
-                        case BISECT :
-                            ad_bisect(function, t_jet_c(s + MIN_MAX, x_prev), x, 100, f_tol, x_tol,
-                                        t_jet(s + MIN_MAX), t_jet(s + MIN_MAX), t_jet(s + MIN_MAX), MIN_MAX);
-                            break;
-                        case NEWTON :
-                            ad_newton(function, t_jet_c(s + MIN_MAX, D1), x, 100, f_tol, x_tol, MIN_MAX);
-                            break;
-                        default :
-                            ad_householder(function, t_jet_c(s + MIN_MAX, D1), x, s, 100, f_tol, x_tol,
-                                        t_jet(s + MIN_MAX), t_jet_c(s + MIN_MAX, D1), MIN_MAX);
-                    }
+                    ad_newton(function, f_, x, 100, f_tol, x_tol, MIN_MAX, &delta_x);
                     mpfr_cmp(f1_prev, f[MIN_MAX]) > 0 ? fprintf(stderr, "\\ MIN_MAX\n") : fprintf(stderr, "/ MIN_MAX\n") ;
                 }
                 mpfr_mul(_, f2_prev, f[INFLECT], RND);
                 if (mpfr_sgn(_) < 0) {
-                    switch (s) {
-                        case BISECT :
-                            ad_bisect(function, t_jet_c(s + INFLECT, x_prev), x, 100, f_tol, x_tol,
-                                        t_jet(s + INFLECT), t_jet(s + INFLECT), t_jet(s + INFLECT), INFLECT);
-                            break;
-                        case NEWTON :
-                            ad_newton(function, t_jet_c(s + INFLECT, D1), x, 100, f_tol, x_tol, INFLECT);
-                            break;
-                        default :
-                            ad_householder(function, t_jet_c(s + INFLECT, D1), x, s, 100, f_tol, x_tol,
-                                        t_jet(s + INFLECT), t_jet_c(s + INFLECT, D1), INFLECT);
-                    }
+                    ad_newton(function, f_, x, 100, f_tol, x_tol, INFLECT, &delta_x);
                     mpfr_cmp(f2_prev, f[INFLECT]) > 0 ? fprintf(stderr, "\\ INFLECT\n") : fprintf(stderr, "/ INFLECT\n") ;
                 }
             }
