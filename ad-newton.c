@@ -15,7 +15,7 @@ mpfr_t _, D_1, D_05, D0, D1, D2, D3, D4, D5, D6, D7, D54, D160, D641, D828, D126
 mpfr_t *w1, *w2, *w3, *w4, *w5, *w6, *w7, *target, *_1, *_2, *_3, *_f;
 
 static void septic (mpfr_t *f, mpfr_t *x, int n) {
-    //  Example: ./ad-test-newton-dbg 0 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null 2>&1
+    //  Example: ./ad-newton-dbg 0 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null 2>&1
     // (x + 7)(x + 5)(x + 2)x(x - 1)(x - 3)(x - 6) = x^7 + 4x^6 - 54x^5 - 160x^4 + 641x^3 + 828x^2 - 1260x
     ad_minus(_2, x, w1, n);
     ad_plus(_1, x, w2, n);
@@ -32,7 +32,7 @@ static void septic (mpfr_t *f, mpfr_t *x, int n) {
 }
 
 static void septic2 (mpfr_t *f, mpfr_t *x, int n) {
-    //  Example: ./ad-test-newton-dbg 4 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null 2>&1
+    //  Example: ./ad-newton-dbg 4 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null 2>&1
     // x^7 + 4x^6 - 54x^5 - 160x^4 + 641x^3 + 828x^2 - 1260x = ((((((x + 4)x - 54)x - 160)x + 641)x + 828)x - 1260)x
     ad_set(f, x, n);
     mpfr_add(f[0], f[0], D4, RND);
@@ -50,7 +50,7 @@ static void septic2 (mpfr_t *f, mpfr_t *x, int n) {
 }
 
 static void composite1 (mpfr_t *f, mpfr_t *x, int n) {
-    //  Example: ./ad-test-newton-dbg 1 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null 2>&1
+    //  Example: ./ad-newton-dbg 1 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null 2>&1
     ad_sqr(_1, x, n);
     ad_minus(_2, _1, w4, n);
     ad_exp(_1, _2, n);
@@ -60,7 +60,7 @@ static void composite1 (mpfr_t *f, mpfr_t *x, int n) {
 }
 
 static void composite2 (mpfr_t *f, mpfr_t *x, int n) {
-    //  Example: ./ad-test-newton-dbg 2 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null 2>&1
+    //  Example: ./ad-newton-dbg 2 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null 2>&1
     ad_exp(_1, x, n);
     ad_minus(_2, _1, w4, n);
     ad_sqr(_1, _2, n);
@@ -70,7 +70,7 @@ static void composite2 (mpfr_t *f, mpfr_t *x, int n) {
 }
 
 static void cosx_x3 (mpfr_t *f, mpfr_t *x, int n) {
-    //  Example: ./ad-test-newton-dbg 3 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null 2>&1
+    //  Example: ./ad-newton-dbg 3 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null 2>&1
     ad_sqr(_1, x, n);
     ad_prod(_2, _1, x, n);
     ad_sin_cos(_1, _3, x, n, TRIG);
