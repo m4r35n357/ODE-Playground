@@ -12,7 +12,7 @@
 #include "ad.h"
 
 mpfr_t _, D_1, D_05, D0, D1, D2, D3, D4, D5, D6, D7, D54, D160, D641, D828, D1260;
-mpfr_t *w1, *w2, *w3, *w4, *w5, *w6, *w7, *target, *_1, *_2, *_3, *_f;
+mpfr_t *w1, *w2, *w3, *w4, *w5, *w6, *w7, *target, *_1, *_2, *_3, *__;
 
 static void septic (mpfr_t *f, mpfr_t *x, int n) {
     //  Example: ./ad-newton-dbg 0 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null 2>&1
@@ -36,17 +36,17 @@ static void septic2 (mpfr_t *f, mpfr_t *x, int n) {
     // x^7 + 4x^6 - 54x^5 - 160x^4 + 641x^3 + 828x^2 - 1260x = ((((((x + 4)x - 54)x - 160)x + 641)x + 828)x - 1260)x
     ad_set(f, x, n);
     mpfr_add(f[0], f[0], D4, RND);
-    ad_prod(_f, x, f, n);
-    mpfr_sub(_f[0], _f[0], D54, RND);
-    ad_prod(f, x, _f, n);
+    ad_prod(__, x, f, n);
+    mpfr_sub(__[0], __[0], D54, RND);
+    ad_prod(f, x, __, n);
     mpfr_sub(f[0], f[0], D160, RND);
-    ad_prod(_f, x, f, n);
-    mpfr_add(_f[0], _f[0], D641, RND);
-    ad_prod(f, x, _f, n);
+    ad_prod(__, x, f, n);
+    mpfr_add(__[0], __[0], D641, RND);
+    ad_prod(f, x, __, n);
     mpfr_add(f[0], f[0], D828, RND);
-    ad_prod(_f, x, f, n);
-    mpfr_sub(_f[0], _f[0], D1260, RND);
-    ad_prod(f, x, _f, n);
+    ad_prod(__, x, f, n);
+    mpfr_sub(__[0], __[0], D1260, RND);
+    ad_prod(f, x, __, n);
 }
 
 static void composite1 (mpfr_t *f, mpfr_t *x, int n) {
@@ -154,7 +154,7 @@ int main (int argc, char **argv) {
     _1 = t_jet(order);
     _2 = t_jet(order);
     _3 = t_jet(order);
-    _f = t_jet(order);
+    __ = t_jet(order);
 
     mpfr_t *f = t_jet_c(order, D0);
     mpfr_t *f_ = t_jet_c(NEWTON + INFLECT, D0);
