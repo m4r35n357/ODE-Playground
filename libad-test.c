@@ -89,16 +89,19 @@ int main (int argc, char **argv) {
     } else skipped++;
 
     if (mpfr_sgn(x[0]) > 0) {
+        check_jets("x^1 == x", ad_pwr(pwr, x, 1.0, n), x, n, tol, &_);
+    } else skipped++;
+    if (mpfr_sgn(x[0]) > 0) {
         check_jets("x^0.5 == sqrt(x)", ad_pwr(pwr, x, 0.5, n), ad_sqrt(sqrt, x, n), n, tol, &_);
+    } else skipped++;
+    if (mpfr_sgn(x[0]) > 0) {
+        check_jets("x^0 == x / x", ad_pwr(pwr, x, 0.0, n), ad_quot(quot, x, ad_scale(scale, x, D1, n), n), n, tol, &_);
     } else skipped++;
     if (mpfr_sgn(x[0]) > 0) {
         check_jets("x^-0.5 == 1 / sqrt(x)", ad_pwr(pwr, x, -0.5, n), ad_quot(quot, c1, ad_sqrt(sqrt, x, n), n), n, tol, &_);
     } else skipped++;
     if (mpfr_sgn(x[0]) > 0) {
         check_jets("x^-1 == 1 / x", ad_pwr(pwr, x, -1.0, n), ad_quot(quot, c1, x, n), n, tol, &_);
-    } else skipped++;
-    if (mpfr_sgn(x[0]) > 0) {
-        check_jets("x^0 == x / x", ad_pwr(pwr, x, 0.0, n), ad_quot(quot, x, ad_scale(scale, x, D1, n), n), n, tol, &_);
     } else skipped++;
 
     if (mpfr_zero_p(x[0]) == 0) {
