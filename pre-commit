@@ -34,16 +34,16 @@ echo OK
 
 echo -n "Running AD Library Test (x = 3.0) . . . "
 export LD_LIBRARY_PATH='.'
-if ! ./libad-test 64 50 3 1e-32 >/dev/null
+if ! ./libad-test 32 20 2.5 1e-18 >/dev/null
 then
-    echo "AD Library Test (x = 3.0) failed!"
+    echo "AD Library Test (x = 2.5) failed!"
     exit 1
 fi
 echo OK
 
 echo -n "Running AD Library Test (x = 0.0) . . . "
 export LD_LIBRARY_PATH='.'
-if ! ./libad-test 64 50 0 1e-32 >/dev/null
+if ! ./libad-test 32 20 0 1e-18 >/dev/null
 then
     echo "AD Library Test (x = 0.0) failed!"
     exit 1
@@ -52,7 +52,7 @@ echo OK
 
 echo -n "Running AD Library Test (x = -2.0) . . . "
 export LD_LIBRARY_PATH='.'
-if ! ./libad-test 64 50 -2 1e-32 >/dev/null
+if ! ./libad-test 32 20 -2 1e-18 >/dev/null
 then
     echo "AD Library Test (x = -2.0) failed!"
     exit 1
