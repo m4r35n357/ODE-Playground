@@ -6,9 +6,10 @@ fileB='/tmp/dataB'
 method=$1
 shift
 original=$*
+prec=$(expr $2 + 8)
 
 halfstep () {
-    start="$1 $2 $3"
+    start="$1 $prec $3"
     step=$(echo "scale=6; $4/2;" | bc)
     steps=$(echo "scale=0; $5*2;" | bc)
     shift 5
@@ -18,7 +19,7 @@ halfstep () {
 }
 
 order1plus () {
-    start="$1 $2"
+    start="$1 $prec"
     order=$(expr $3 + 1)
     shift 3
     end="$*"
@@ -27,7 +28,7 @@ order1plus () {
 }
 
 orderstep () {
-    start="$1 $2"
+    start="$1 $prec"
     order=$(expr $3 + 1)
     step=$(echo "scale=6; $4/2;" | bc)
     steps=$(echo "scale=0; $5*2;" | bc)
