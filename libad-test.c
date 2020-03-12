@@ -15,7 +15,7 @@
 
 #define KNRM "\x1B[0;37m"
 #define KGRN "\x1B[1;32m"
-#define KCYN "\x1B[1;36m"
+#define KYLW "\x1B[1;33m"
 #define KRED "\x1B[1;31m"
 
 typedef enum {PASS, FAIL} result;
@@ -140,7 +140,7 @@ int main (int argc, char **argv) {
 
     printf("Total: %d, Passed: %d", total, passed);
     if (skipped > 0) {
-        printf(", %sSKIPPED%s %d", KCYN, KNRM, skipped);
+        printf(", %sSKIPPED%s %d", KYLW, KNRM, skipped);
     }
     if (passed == total) {
         printf("\n\n");
