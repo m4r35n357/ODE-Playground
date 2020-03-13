@@ -32,7 +32,7 @@ then
 fi
 echo OK
 
-echo -n "Running AD Library Test (x = 3.0) . . . "
+echo -n "Running AD Library Test (x = 2.5) . . . "
 export LD_LIBRARY_PATH='.'
 if ! ./libad-test 32 20 2.5 1e-18 >/dev/null
 then
