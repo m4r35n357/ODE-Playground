@@ -1,7 +1,9 @@
 /*
- * Lorenz System
+ * Lorenz System using RK4
  *
- * Example: ./rk4-lorenz-dbg 16 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+ * Example: ./rk4-lorenz-dbg 32 16 .00001 10000000 -15.8 -17.48 35.64 10 28 8 3 | sed -n '1~1000p' >/tmp/dataB
+ *          ./divergence.py d-604-502-1400 /tmp/dataB 3 1.0 >/dev/null
+ *          ./compare.py d-604-502-1400 /tmp/dataB 3 >/dev/null &
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -22,6 +24,16 @@ static void dy (mpfr_t *lhs, mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t r) {
 
 static void dz (mpfr_t *lhs, mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t b) {
     mpfr_fmms(*lhs, x, y, b, z, RND);
+}
+
+static mpfr_t *sum (mpfr_t *b, mpfr_t a1, mpfr_t a2, mpfr_t a3, mpfr_t a4) {
+    mpfr_add(*b, a1, a4, RND);
+    mpfr_mul_2ui(a2, a2, 1, RND);
+    mpfr_add(*b, *b, a2, RND);
+    mpfr_mul_2ui(a3, a3, 1, RND);
+    mpfr_add(*b, *b, a3, RND);
+    mpfr_div_ui(*b, *b, 6, RND);
+    return b;
 }
 
 int main (int argc, char **argv) {
@@ -64,29 +76,9 @@ int main (int argc, char **argv) {
         dy(&l4, _x, _y, _z, rho);
         dz(&m4, _x, _y, _z, beta);
 
-        mpfr_add(_, k1, k4, RND);
-        mpfr_mul_2ui(k2, k2, 1, RND);
-        mpfr_add(_, _, k2, RND);
-        mpfr_mul_2ui(k3, k3, 1, RND);
-        mpfr_add(_, _, k3, RND);
-        mpfr_div_ui(_, _, 6, RND);
-        mpfr_fma(x0, h, _, x0, RND);
-
-        mpfr_add(_, l1, l4, RND);
-        mpfr_mul_2ui(l2, l2, 1, RND);
-        mpfr_add(_, _, l2, RND);
-        mpfr_mul_2ui(l3, l3, 1, RND);
-        mpfr_add(_, _, l3, RND);
-        mpfr_div_ui(_, _, 6, RND);
-        mpfr_fma(y0, h, _, y0, RND);
-
-        mpfr_add(_, m1, m4, RND);
-        mpfr_mul_2ui(m2, m2, 1, RND);
-        mpfr_add(_, _, m2, RND);
-        mpfr_mul_2ui(m3, m3, 1, RND);
-        mpfr_add(_, _, m3, RND);
-        mpfr_div_ui(_, _, 6, RND);
-        mpfr_fma(z0, h, _, z0, RND);
+        mpfr_fma(x0, h, *sum(&_, k1, k2, k3, k4), x0, RND);
+        mpfr_fma(y0, h, *sum(&_, l1, l2, l3, l4), y0, RND);
+        mpfr_fma(z0, h, *sum(&_, m1, m2, m3, m4), z0, RND);
 
         mpfr_mul_ui(t, h, step, RND);
         t_xyz_output(x0, y0, z0, t);
