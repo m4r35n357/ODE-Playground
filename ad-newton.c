@@ -86,7 +86,8 @@ int main (int argc, char **argv) {
     mpfr_set_default_prec(236);
     mpfr_inits(x_step, x_prev, f0_prev, f1_prev, f2_prev, _, delta_x, NULL);
 
-    switch(strtol(argv[1], NULL, BASE)) {
+    long model_code = strtol(argv[1], NULL, BASE);
+    switch (model_code) {
         case 0 :
             function = septic;
             break;
@@ -103,7 +104,7 @@ int main (int argc, char **argv) {
             function = septic2;
             break;
         default :
-            printf("Invalid model\n" );
+            fprintf(stderr, "Invalid model ID %ld, parameter 1 must be between %d and %d\n", model_code, 0, 4);
             return 1;
     }
     long order = strtol(argv[2], NULL, BASE);

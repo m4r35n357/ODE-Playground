@@ -24,6 +24,7 @@ build () {
 
 for model in \
 tsm-double-pendulum \
+rk4-lorenz \
 tsm-lorenz \
 tsm-rossler \
 tsm-yu-wang \
@@ -53,9 +54,6 @@ ${CC} -O0 $WARNINGS -g -o libad-test-dbg taylor-ode.c ad.c libad-test.c -lmpfr &
 #${CC} -O0 $WARNINGS -fprofile-arcs -ftest-coverage -g -o libad-test-dbg taylor-ode.c ad.c libad-test.c -lmpfr &
 rm -f ad-newton-dbg
 ${CC} -O0 $WARNINGS -g -o ad-newton-dbg taylor-ode.c ad.c ad-newton.c -lmpfr &
-
-rm -f rk4-lorenz-dbg
-${CC} -O0 $WARNINGS -g -o rk4-lorenz-dbg taylor-ode.c rk4-lorenz.c -lmpfr &
 
 rm -f libtaylor.so taylor-ode.o
 ${CC} -O0 -c $WARNINGS -g -fpic taylor-ode.c && ${CC} -shared -o libtaylor.so taylor-ode.o &
