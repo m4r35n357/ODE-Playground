@@ -44,12 +44,12 @@ void t_stepper (char **argv, long *n, mpfr_t *t, mpfr_t *h, long *nsteps);
 void t_args (char **argv, int count, ...);
 
 /*
- * Creates an initialized jet of the specified size, with no values set
+ * Creates a zeroed jet of the specified size
  */
 mpfr_t *t_jet (int size);
 
 /*
- * Returns a jet of the specified size, with element zero set to value and the rest zeroed (represents a constant in an ODE)
+ * Returns a jet with element zero set to value and the rest zeroed (represents an additive constant in an ODE)
  */
 mpfr_t *t_jet_c (int size, mpfr_t value);
 
