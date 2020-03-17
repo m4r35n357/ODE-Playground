@@ -1,5 +1,13 @@
 #!/bin/sh
 
+# Copyright (c) 2018-2020, Ian Smith (m4r35n357)
+# All rights reserved.
+# For licencing see LICENCE file
+#
+# time -p ./cns data ./tsm-lorenz-static 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3     # (300 Lorenz time units)
+# time -p ./cns data ./tsm-lorenz-static 240 204 .01 65000 -15.8 -17.48 35.64 10 28 8 3     # (600 Lorenz time units)
+# time -p ./cns data ./tsm-lorenz-static 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 3   #(1500 Lorenz time units)
+
 fileA='/tmp/dataA'
 fileB='/tmp/dataB'
 

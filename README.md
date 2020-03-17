@@ -177,6 +177,20 @@ echo "splot '/tmp/data' with lines" | gnuplot -p
 ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
 ```
 
+## Clean Numerical Simulation (CNS)
+300 time units
+```
+time -p ./cns both ./tsm-lorenz-static 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3
+```
+600 time units
+```
+time -p ./cns both ./tsm-lorenz-static 240 204 .01 65000 -15.8 -17.48 35.64 10 28 8 3
+```
+1500 time units
+```
+time -p ./cns both ./tsm-lorenz-static 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 3
+```
+
 ## tsm.py Parameter Reference
 tsm.py comprises a long "if" statement containing a "zoo" of pre-programmed ODE systems.
 
