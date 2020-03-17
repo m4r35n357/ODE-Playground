@@ -19,8 +19,9 @@
 #define KGRY "\x1B[2;37m"
 #define KBLD "\x1B[1;37m"
 
-long n;
-mpfr_t x, y, _, D0, D1, D2, D3, D4, D5, D6, D7, *cx, *cy, *cx0, *c1, *c2, *c3, *c5, *c6, *c7, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2, *wabs, *wsqr, *wsqrt, *wsum, *wprod, *wquot, *wpwr, *__, *_1, *_2, *_3;
+static long n;
+
+static mpfr_t x, y, _, D0, D1, D2, D3, D4, D5, D6, D7, *cx, *cy, *cx0, *c1, *c2, *c3, *c5, *c6, *c7, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2, *wabs, *wsqr, *wsqrt, *wsum, *wprod, *wquot, *wpwr, *__, *_1, *_2, *_3;
 
 static void septic (mpfr_t *f, mpfr_t *value, int order) {
     ad_minus(_2, value, c1, order);
@@ -42,6 +43,7 @@ int main (int argc, char **argv) {
 
     mpfr_set_default_prec(113);
 
+    t_tempvars();
     mpfr_inits(_, NULL);
     n = strtol(argv[1], NULL, BASE);
     assert(n > 1);

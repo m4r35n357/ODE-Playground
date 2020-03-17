@@ -65,18 +65,18 @@ int main (int argc, char **argv) {
     for (long step = 1; step < nsteps + 1; step++) {
         // compute the taylor coefficients
         for (int k = 0; k < n; k++) {
-            t_sin_cos(st1, ct1, t1, k, &_, TRIG);
+            t_sin_cos(st1, ct1, t1, k, TRIG);
 
             mpfr_sub(_t1_t2[k], t1[k], t2[k], RND);
-            t_sin_cos(st1_t2, ct1_t2, _t1_t2, k, &_, TRIG);
+            t_sin_cos(st1_t2, ct1_t2, _t1_t2, k, TRIG);
 
             mpfr_mul_2ui(__, t2[k], 1, RND);
             mpfr_sub(_t1_2t2[k], t1[k], __, RND);
-            t_sin_cos(st1_2t2, ct1_2t2, _t1_2t2, k, &_, TRIG);
+            t_sin_cos(st1_2t2, ct1_2t2, _t1_2t2, k, TRIG);
 
             mpfr_mul_2ui(_, t1[k], 1, RND);
             mpfr_sub(_2t1_2t2[k], _, __, RND);
-            t_sin_cos(s2t1_2t2, c2t1_2t2, _2t1_2t2, k, &_, TRIG);
+            t_sin_cos(s2t1_2t2, c2t1_2t2, _2t1_2t2, k, TRIG);
 
             mpfr_set(w1_2[k], *t_sqr(&_, w1, k), RND);
             mpfr_set(w2_2[k], *t_sqr(&_, w2, k), RND);
