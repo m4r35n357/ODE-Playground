@@ -93,8 +93,8 @@ mpfr_t *t_quot (mpfr_t *q, mpfr_t *u, mpfr_t *v, int k) {
     assert(mpfr_zero_p(v[0]) == 0);
     assert(q != u && q != v && u != v);
     assert(k >= 0);
-    mpfr_sub(q[k], u[k], *cauchy(&q[k], q, v, k, 0, k - 1), RND);
-    mpfr_div(q[k], q[k], v[0], RND);
+    mpfr_sub(_, u[k], *cauchy(&__, q, v, k, 0, k - 1), RND);
+    mpfr_div(q[k], _, v[0], RND);
     return &q[k];
 }
 
@@ -113,11 +113,11 @@ mpfr_t *t_sqrt (mpfr_t *r, mpfr_t *u, int k) {
     if (k == 0) {
         mpfr_sqrt(r[k], u[0], RND);
     } else {
-        mpfr_mul_2ui(r[k], *cauchy(&r[k], r, r, k, 1, (k - (k % 2 == 0 ? 2 : 1)) / 2), 1, RND);
-        if (k % 2 == 0) mpfr_fma(r[k], r[k / 2], r[k / 2], r[k], RND);
-        mpfr_sub(r[k], u[k], r[k], RND);
-        mpfr_div_2ui(r[k], r[k], 1, RND);
-        mpfr_div(r[k], r[k], r[0], RND);
+        mpfr_mul_2ui(_, *cauchy(&__, r, r, k, 1, (k - (k % 2 == 0 ? 2 : 1)) / 2), 1, RND);
+        if (k % 2 == 0) mpfr_fma(_, r[k / 2], r[k / 2], _, RND);
+        mpfr_sub(_, u[k], _, RND);
+        mpfr_div_2ui(_, _, 1, RND);
+        mpfr_div(r[k], _, r[0], RND);
     }
     return &r[k];
 }
@@ -179,8 +179,8 @@ mpfr_t *t_pwr (mpfr_t *p, mpfr_t *u, double a, int k) {
         mpfr_set_d(_, a, RND);
         mpfr_pow(p[k], u[0], _, RND);
     } else {
-        mpfr_sub(p[k], *d_cauchy(&__, p, u, k, 0, k - 1, a), *d_cauchy(&___, u, p, k, 1, k - 1, 1.0), RND);
-        mpfr_div(p[k], p[k], u[0], RND);
+        mpfr_sub(_, *d_cauchy(&__, p, u, k, 0, k - 1, a), *d_cauchy(&___, u, p, k, 1, k - 1, 1.0), RND);
+        mpfr_div(p[k], _, u[0], RND);
     }
     return &p[k];
 }
@@ -192,7 +192,7 @@ mpfr_t *t_ln (mpfr_t *l, mpfr_t *u, int k) {
     if (k == 0) {
         mpfr_log(l[k], u[0], RND);
     } else {
-        mpfr_sub(_, u[k], *d_cauchy(&l[k], u, l, k, 1, k - 1, 1.0), RND);
+        mpfr_sub(_, u[k], *d_cauchy(&__, u, l, k, 1, k - 1, 1.0), RND);
         mpfr_div(l[k], _, u[0], RND);
     }
     return &l[k];
