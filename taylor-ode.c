@@ -58,14 +58,14 @@ mpfr_t *t_jet_c (int n, mpfr_t value) {
     return jet;
 }
 
-void t_horner (mpfr_t *sum, mpfr_t *jet, int n, mpfr_t h) {
+void t_horner (mpfr_t *jet, int n, mpfr_t h) {
     assert(n > 0);
-    mpfr_set_zero(*sum, 1);
+    mpfr_set_zero(_, 1);
     for (int i = n; i > - 1; i--) {
-        mpfr_fma(*sum, *sum, h, jet[i], RND);
+        mpfr_fma(_, _, h, jet[i], RND);
     }
-    assert(mpfr_number_p(*sum));
-    mpfr_swap(jet[0], *sum);
+    assert(mpfr_number_p(_));
+    mpfr_swap(jet[0], _);
 }
 
 mpfr_t *t_abs (mpfr_t *a, mpfr_t *u, int k) {

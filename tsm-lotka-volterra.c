@@ -39,8 +39,8 @@ int main (int argc, char **argv) {
         }
 
         // sum the series using Horner's method and advance one step
-        t_horner(&_, x, n, h);
-        t_horner(&_, y, n, h);
+        t_horner(x, n, h);
+        t_horner(y, n, h);
         mpfr_mul_ui(t, h, step, RND);
         t_xyz_output(x[0], y[0], x[0], t);
     }

@@ -61,7 +61,7 @@ mpfr_t *t_jet_c (int size, mpfr_t value);
 /*
  * Sums a Taylor series safely and efficiently
  */
-void t_horner (mpfr_t *sum, mpfr_t *jet, int n, mpfr_t h);
+void t_horner (mpfr_t *jet, int n, mpfr_t h);
 
 /*
  * Returns a pointer to kth element of the absolute value of U, result stored and returned in variable A, NO JET STORAGE

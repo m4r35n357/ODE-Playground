@@ -112,10 +112,10 @@ int main (int argc, char **argv) {
         }
 
         // sum the series using Horner's method and advance one step
-        t_horner(&t10, t1, n, h);
-        t_horner(&t20, t2, n, h);
-        t_horner(&w10, w1, n, h);
-        t_horner(&w20, w2, n, h);
+        t_horner(t1, n, h);
+        t_horner(t2, n, h);
+        t_horner(w1, n, h);
+        t_horner(w2, n, h);
         mpfr_mul_ui(t, h, step, RND);
         polar_to_rectangular(&x1, &y1, &x2, &y2, l1, l2, t, t1[0], t2[0], w1[0], w2[0], &_, &__);
     }
