@@ -123,6 +123,7 @@ mpfr_t *t_sqrt (mpfr_t *r, mpfr_t *u, int k) {
 }
 
 static mpfr_t *d_cauchy (mpfr_t *f, mpfr_t *h, mpfr_t *u, int k, int lower, int upper, double factor) {
+    assert(f != &_ && h != &_ && u != &_);
     mpfr_set_zero(*f, 1);
     for (int j = lower; j <= upper; j++) {
         mpfr_mul_ui(_, u[k - j], k - j, RND);
