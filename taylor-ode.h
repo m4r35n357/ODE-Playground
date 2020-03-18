@@ -28,6 +28,8 @@ typedef struct {
  */
 typedef enum {TRIG, HYP} geometry;
 
+void t_tempvars (void);
+
 /*
  * Prints an index column, and x, y, z columns, into a single line
  */
@@ -154,7 +156,7 @@ mpfr_t *t_sqrt (mpfr_t *R, mpfr_t *U, int k);
  *
  *    E[k] = sum{j=0->k-1} E[j].(k-j)U[k-j]/k
  */
-mpfr_t *t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp);
+mpfr_t *t_exp (mpfr_t *E, mpfr_t *U, int k);
 
 /*
  * Returns a pair of pointers to kth elements of the sine and cosine of U, results accumulated in jets S and C
@@ -165,7 +167,7 @@ mpfr_t *t_exp (mpfr_t *E, mpfr_t *U, int k, mpfr_t *tmp);
  *    S[k] = sum{j=0->k-1}       C[j].(k-j)U[k-j]/k
  *    C[k] = sum{j=0->k-1} (+/-) S[j].(k-j)U[k-j]/k
  */
-tuple t_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp, geometry g);
+tuple t_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, geometry g);
 
 /*
  * Returns a pair of pointers to kth elements of the tangent and squared secant of U, results accumulated in jets T and S2
@@ -176,7 +178,7 @@ tuple t_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, mpfr_t *tmp, geometry g
  *    T[k] = sum{j=0->k-1}       S2[j].(k-j)U[k-j]/k
  *   S2[k] = sum{j=0->k-1} (+/-)2 T[j].(k-j)T[k-j]/k
  */
-tuple t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, geometry g);
+tuple t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, geometry g);
 
 /*
  * Returns a pointer to kth element of P = U^a (where a is scalar), results accumulated in jet P, DOMAIN RESTRICTION U[0] > 0.0
@@ -193,7 +195,7 @@ tuple t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, mpfr_t *tmp, geometry
  *
  *                                        P[k] = (a sum{j=0->k-1} P[j].(k-j)U[k-j]/k - sum{j=1->k-1} U[j].(k-j)P[k-j]/k) / U[0]
  */
-mpfr_t *t_pwr (mpfr_t *P, mpfr_t *U, double a, int k, mpfr_t *tmpA, mpfr_t *tmpB);
+mpfr_t *t_pwr (mpfr_t *P, mpfr_t *U, double a, int k);
 
 /*
  * Returns a pointer to kth element of the natural logarithm of U, result accumulated in jet L, DOMAIN RESTRICTION U[0] > 0.0
@@ -206,5 +208,5 @@ mpfr_t *t_pwr (mpfr_t *P, mpfr_t *U, double a, int k, mpfr_t *tmpA, mpfr_t *tmpB
  *
  *                   L[k] = (U[k] - sum{j=1->k-1} U[j].(k-j)L[k-j]/k) / U[0]
  */
-mpfr_t *t_ln (mpfr_t *L, mpfr_t *U, int k, mpfr_t *tmp);
+mpfr_t *t_ln (mpfr_t *L, mpfr_t *U, int k);
 

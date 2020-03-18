@@ -37,13 +37,13 @@ int main (int argc, char **argv) {
         // compute the taylor coefficients
         for (int k = 0; k < n; k++) {
             //  x' = sin(y) - Bx
-            mpfr_fms(_, b, x[k], *t_sin_cos(sy, cy, y, k, &_, TRIG).a, RND);
+            mpfr_fms(_, b, x[k], *t_sin_cos(sy, cy, y, k, TRIG).a, RND);
             mpfr_div_si(x[k + 1], _, - (k + 1), RND);
             //  y' = sin(z) - By
-            mpfr_fms(_, b, y[k], *t_sin_cos(sz, cz, z, k, &_, TRIG).a, RND);
+            mpfr_fms(_, b, y[k], *t_sin_cos(sz, cz, z, k, TRIG).a, RND);
             mpfr_div_si(y[k + 1], _, - (k + 1), RND);
             //  z' = sin(x) - Bz
-            mpfr_fms(_, b, z[k], *t_sin_cos(sx, cx, x, k, &_, TRIG).a, RND);
+            mpfr_fms(_, b, z[k], *t_sin_cos(sx, cx, x, k, TRIG).a, RND);
             mpfr_div_si(z[k + 1], _, - (k + 1), RND);
         }
 

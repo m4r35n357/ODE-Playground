@@ -49,13 +49,13 @@ int main (int argc, char **argv) {
             mpfr_mul(ay[k], y[k], a, RND);
             mpfr_mul(az[k], z[k], a, RND);
             //  x' = sin(Ay) - Btan(x)
-            mpfr_fms(_, b, *t_tan_sec2(tx, s2x, x, k, &_, TRIG).a, *t_sin_cos(say, cay, ay, k, &_, TRIG).a, RND);
+            mpfr_fms(_, b, *t_tan_sec2(tx, s2x, x, k, TRIG).a, *t_sin_cos(say, cay, ay, k, TRIG).a, RND);
             mpfr_div_si(x[k + 1], _, - (k + 1), RND);
             //  y' = sin(Az) - Btan(y)
-            mpfr_fms(_, b, *t_tan_sec2(ty, s2y, y, k, &_, TRIG).a, *t_sin_cos(saz, caz, az, k, &_, TRIG).a, RND);
+            mpfr_fms(_, b, *t_tan_sec2(ty, s2y, y, k, TRIG).a, *t_sin_cos(saz, caz, az, k, TRIG).a, RND);
             mpfr_div_si(y[k + 1], _, - (k + 1), RND);
             //  z' = sin(Ax) - Btan(z)
-            mpfr_fms(_, b, *t_tan_sec2(tz, s2z, z, k, &_, TRIG).a, *t_sin_cos(sax, cax, ax, k, &_, TRIG).a, RND);
+            mpfr_fms(_, b, *t_tan_sec2(tz, s2z, z, k, TRIG).a, *t_sin_cos(sax, cax, ax, k, TRIG).a, RND);
             mpfr_div_si(z[k + 1], _, - (k + 1), RND);
         }
 

@@ -113,7 +113,7 @@ mpfr_t *ad_exp (mpfr_t *e, mpfr_t *u, int n) {
     mpfr_t _;
     mpfr_init(_);
     for (int k = 0; k < n; k++) {
-        t_exp(e, u, k, &_);
+        t_exp(e, u, k);
     }
     mpfr_clear(_);
     return e;
@@ -123,7 +123,7 @@ tuple ad_sin_cos (mpfr_t *s, mpfr_t *c, mpfr_t *u, int n, geometry g) {
     mpfr_t _;
     mpfr_init(_);
     for (int k = 0; k < n; k++) {
-        t_sin_cos(s, c, u, k, &_, g);
+        t_sin_cos(s, c, u, k, g);
     }
     mpfr_clear(_);
     return (tuple){s, c};
@@ -133,7 +133,7 @@ tuple ad_tan_sec2 (mpfr_t *t, mpfr_t *s2, mpfr_t *u, int n, geometry g) {
     mpfr_t _;
     mpfr_init(_);
     for (int k = 0; k < n; k++) {
-        t_tan_sec2(t, s2, u, k, &_, g);
+        t_tan_sec2(t, s2, u, k, g);
     }
     mpfr_clear(_);
     return (tuple){t, s2};
@@ -143,7 +143,7 @@ mpfr_t *ad_pwr (mpfr_t *p, mpfr_t *u, double a, int n) {
     mpfr_t _, __;
     mpfr_inits(_, __, NULL);
     for (int k = 0; k < n; k++) {
-        t_pwr(p, u, a, k, &_, &__);
+        t_pwr(p, u, a, k);
     }
     mpfr_clears(_, __, NULL);
     return p;
@@ -153,7 +153,7 @@ mpfr_t *ad_ln (mpfr_t *l, mpfr_t *u, int n) {
     mpfr_t _;
     mpfr_init(_);
     for (int k = 0; k < n; k++) {
-        t_ln(l, u, k, &_);
+        t_ln(l, u, k);
     }
     mpfr_clear(_);
     return l;
