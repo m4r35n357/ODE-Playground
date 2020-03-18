@@ -44,7 +44,7 @@ int main (int argc, char **argv) {
 
     mpfr_init(_);
     mpfr_set_default_prec(strtod(argv[1], NULL) * 3.322);
-    t_tempvars();
+    ad_tempvars();
     long n = strtol(argv[2], NULL, BASE) + 1;
     assert(n > 1);
     mpfr_init_set_str(x0, argv[3], BASE, RND);

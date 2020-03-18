@@ -79,12 +79,13 @@ static void cosx_x3 (mpfr_t *f, mpfr_t *x, int n) {
 }
 
 int main (int argc, char **argv) {
-    mpfr_t x0, x1, x_step, x_prev, f0_prev, f1_prev, f2_prev, f_target, f_tol, x_tol, delta_x;
+    mpfr_t x0, x1, x_step, x_prev, f0_prev, f1_prev, f2_prev, f_target, f_tol, x_tol;
     model function;
 
     assert(argc == 10);
     mpfr_set_default_prec(236);
-    mpfr_inits(x_step, x_prev, f0_prev, f1_prev, f2_prev, _, delta_x, NULL);
+    ad_tempvars();
+    mpfr_inits(x_step, x_prev, f0_prev, f1_prev, f2_prev, _, NULL);
 
     long model_code = strtol(argv[1], NULL, BASE);
     switch (model_code) {
@@ -178,17 +179,17 @@ int main (int argc, char **argv) {
             if(k > 0) {
                 mpfr_mul(_, f0_prev, f[ROOT___], RND);
                 if (mpfr_sgn(_) < 0) {
-                    ad_newton(function, f_, x, 100, f_tol, x_tol, ROOT___, &delta_x);
+                    ad_newton(function, f_, x, 100, f_tol, x_tol, ROOT___);
                     mpfr_cmp(f0_prev, f[ROOT___]) > 0 ? fprintf(stderr, "\\ ROOT___\n") : fprintf(stderr, "/ ROOT___\n") ;
                 }
                 mpfr_mul(_, f1_prev, f[MIN_MAX], RND);
                 if (mpfr_sgn(_) < 0) {
-                    ad_newton(function, f_, x, 100, f_tol, x_tol, MIN_MAX, &delta_x);
+                    ad_newton(function, f_, x, 100, f_tol, x_tol, MIN_MAX);
                     mpfr_cmp(f1_prev, f[MIN_MAX]) > 0 ? fprintf(stderr, "\\ MIN_MAX\n") : fprintf(stderr, "/ MIN_MAX\n") ;
                 }
                 mpfr_mul(_, f2_prev, f[INFLECT], RND);
                 if (mpfr_sgn(_) < 0) {
-                    ad_newton(function, f_, x, 100, f_tol, x_tol, INFLECT, &delta_x);
+                    ad_newton(function, f_, x, 100, f_tol, x_tol, INFLECT);
                     mpfr_cmp(f2_prev, f[INFLECT]) > 0 ? fprintf(stderr, "\\ INFLECT\n") : fprintf(stderr, "/ INFLECT\n") ;
                 }
             }

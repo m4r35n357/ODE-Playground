@@ -43,7 +43,7 @@ int main (int argc, char **argv) {
 
     mpfr_set_default_prec(113);
 
-    t_tempvars();
+    ad_tempvars();
     mpfr_inits(_, NULL);
     n = strtol(argv[1], NULL, BASE);
     assert(n > 1);

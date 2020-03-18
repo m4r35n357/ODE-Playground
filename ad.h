@@ -27,6 +27,11 @@ typedef enum {ROOT___=0, MIN_MAX=1, INFLECT=2} mode;
 typedef void (*model)(mpfr_t *, mpfr_t *, int);
 
 /*
+ * Initialize file scoped temporary storage
+ */
+void ad_tempvars (void);
+
+/*
  * Selects a jet for automatic diffentiation, or not
  */
 void set_ad_status (mpfr_t *jet, ad_status s);
@@ -49,7 +54,7 @@ void derivative_output (mpfr_t *jet, long n, char* f_colour, char *fk_colour);
 /*
  * Finds a root of fn(f, x) by Newton's method, where f and x are Taylor Series
  */
-void ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x_tol, mode degree, mpfr_t *delta);
+void ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x_tol, mode degree);
 
 mpfr_t *ad_set (mpfr_t *B, mpfr_t *A, int n);
 

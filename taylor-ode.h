@@ -28,6 +28,9 @@ typedef struct {
  */
 typedef enum {TRIG, HYP} geometry;
 
+/*
+ * Initialize file scoped temporary storage
+ */
 void t_tempvars (void);
 
 /*
