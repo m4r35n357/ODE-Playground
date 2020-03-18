@@ -35,7 +35,7 @@ int main (int argc, char **argv) {
             //  y' = z
             mpfr_div_ui(y[k + 1], z[k], k + 1, RND);
             //  z' = x^2 - Cx - By -Az
-            mpfr_fms(_, c, x[k], *t_sqr(&_, x, k), RND);
+            mpfr_fms(_, c, x[k], *t_sqr(x, k), RND);
             mpfr_fma(_, b, y[k], _, RND);
             mpfr_fma(_, a, z[k], _, RND);
             mpfr_div_si(z[k + 1], _, - (k + 1), RND);

@@ -12,13 +12,13 @@
 
 int main (int argc, char **argv) {
     long n, nsteps;
-    mpfr_t t, x0, y0, z0, a, h, _, __;
+    mpfr_t t, x0, y0, z0, a, h, _;
 
     // initialize from command arguments
     assert(argc == 9);
     t_stepper(argv, &n, &t, &h, &nsteps);
     t_args(argv, argc, &x0, &y0, &z0, &a);
-    mpfr_inits(_, __, NULL);
+    mpfr_init(_);
 
     // initialize the derivative and temporary jets
     mpfr_t *x = t_jet_c(n + 1, x0);
@@ -36,7 +36,7 @@ int main (int argc, char **argv) {
             mpfr_div_ui(y[k + 1], z[k], k + 1, RND);
             //  z' = - az + y^2 - x
             mpfr_fma(_, a, z[k], x[k], RND);
-            mpfr_sub(_, *t_sqr(&__, y, k), _, RND);
+            mpfr_sub(_, *t_sqr(y, k), _, RND);
             mpfr_div_ui(z[k + 1], _, k + 1, RND);
         }
 

@@ -83,7 +83,7 @@ mpfr_t *ad_abs (mpfr_t *a, mpfr_t *u, int n) {
 
 mpfr_t *ad_prod (mpfr_t *p, mpfr_t *u, mpfr_t *v, int n) {
     for (int k = 0; k < n; k++) {
-        t_prod(&p[k], u, v, k);
+        mpfr_set(p[k], *t_prod(u, v, k), RND);
     }
     return p;
 }
@@ -97,7 +97,7 @@ mpfr_t *ad_quot (mpfr_t *q, mpfr_t *u, mpfr_t *v, int n) {
 
 mpfr_t *ad_sqr (mpfr_t *s, mpfr_t *u, int n) {
     for (int k = 0; k < n; k++) {
-        t_sqr(&s[k], u, k);
+        mpfr_set(s[k], *t_sqr(u, k), RND);
     }
     return s;
 }

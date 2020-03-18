@@ -36,11 +36,11 @@ int main (int argc, char **argv) {
             mpfr_fmms(_, a, y[k], a, x[k], RND);
             mpfr_div_ui(x[k + 1], _, k + 1, RND);
             //  y' = Bx - cxz
-            mpfr_mul(_, c, *t_prod(&_, x, z, k), RND);
+            mpfr_mul(_, c, *t_prod(x, z, k), RND);
             mpfr_fms(_, b, x[k], _, RND);
             mpfr_div_ui(y[k + 1], _, k + 1, RND);
             //  z' = e^(xy) - Dz
-            mpfr_set(xy[k], *t_prod(&_, x, y, k), RND);
+            mpfr_set(xy[k], *t_prod(x, y, k), RND);
             mpfr_fms(_, d, z[k], *t_exp(e_xy, xy, k), RND);
             mpfr_div_si(z[k + 1], _, - (k + 1), RND);
         }

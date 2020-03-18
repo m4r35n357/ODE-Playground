@@ -91,7 +91,7 @@ mpfr_t *t_abs (mpfr_t *a, mpfr_t *u, int k);
  *  S = sum{j=0->(k-1)/2} U[j].U[k-j]             if k odd
  *  S = sum{j=0->(k-2)/2} U[j].U[k-j] + U[k/2]^2  if k even
  */
-mpfr_t *t_sqr (mpfr_t *S, mpfr_t *U, int k);
+mpfr_t *t_sqr (mpfr_t *U, int k);
 
 /*
  * Returns a pointer to kth element of the product of U and V, result stored in variable P, NO JET STORAGE
@@ -100,7 +100,7 @@ mpfr_t *t_sqr (mpfr_t *S, mpfr_t *U, int k);
  *
  *  P = sum{j=0->k} U[j].V[k-j]
  */
-mpfr_t *t_prod (mpfr_t *P, mpfr_t *U, mpfr_t *V, int k);
+mpfr_t *t_prod (mpfr_t *U, mpfr_t *V, int k);
 
 /*
  * Returns a pointer to kth element of U / V, results accumulated in jet Q, DOMAIN RESTRICTION v[0] != 0.0

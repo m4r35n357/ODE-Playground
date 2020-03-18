@@ -38,18 +38,18 @@ int main (int argc, char **argv) {
     for (long step = 1; step < nsteps + 1; step++) {
         // compute the taylor coefficients
         for (int k = 0; k < n; k++) {
-            mpfr_sub(x2_1, *t_sqr(&_, x, k), w1[k], RND);
+            mpfr_sub(x2_1, *t_sqr(x, k), w1[k], RND);
             //  x' = y(z - 1 + x^2) + Gx
             mpfr_add(a[k], z[k], x2_1, RND);
-            mpfr_fma(_, gamma, x[k], *t_prod(&_, y, a, k), RND);
+            mpfr_fma(_, gamma, x[k], *t_prod(y, a, k), RND);
             mpfr_div_ui(x[k + 1], _, k + 1, RND);
             //  y' = x(3z + 1 - x^2) + Gy
             mpfr_fms(b[k], d3, z[k], x2_1, RND);
-            mpfr_fma(_, gamma, y[k], *t_prod(&_, x, b, k), RND);
+            mpfr_fma(_, gamma, y[k], *t_prod(x, b, k), RND);
             mpfr_div_ui(y[k + 1], _, k + 1, RND);
             //  z' = -2z(A + xy)
-            mpfr_add(c[k], *t_prod(&_, x, y, k), alpha[k], RND);
-            mpfr_mul_2ui(_, *t_prod(&_, z, c, k), 1, RND);
+            mpfr_add(c[k], *t_prod(x, y, k), alpha[k], RND);
+            mpfr_mul_2ui(_, *t_prod(z, c, k), 1, RND);
             mpfr_div_si(z[k + 1], _, - (k + 1), RND);
         }
 

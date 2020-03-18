@@ -29,7 +29,7 @@ int main (int argc, char **argv) {
     for (long step = 1; step < nsteps + 1; step++) {
         // compute the taylor coefficients
         for (int k = 0; k < n; k++) {
-            t_prod(&xy, x, y, k);
+            mpfr_set(xy, *t_prod(x, y, k), RND);
             //  x' = Ax - Cxy
             mpfr_fmms(_, a, x[k], c, xy, RND);
             mpfr_div_ui(x[k + 1], _, k + 1, RND);

@@ -38,9 +38,9 @@ int main (int argc, char **argv) {
             mpfr_div_ui(x[k + 1], _, k + 1, RND);
             //  y' = - z * tan(x)
             t_tan_sec2(tx, s2x, x, k, HYP);
-            mpfr_div_si(y[k + 1], *t_prod(&_, z, tx, k), - (k + 1), RND);
+            mpfr_div_si(y[k + 1], *t_prod(z, tx, k), - (k + 1), RND);
             //  z' = - A + xy + |y|
-            mpfr_add(_, *t_prod(&_, x, y, k), *t_abs(&__, y, k), RND);
+            mpfr_add(_, *t_prod(x, y, k), *t_abs(&__, y, k), RND);
             mpfr_sub(_, _, wa[k], RND);
             mpfr_div_ui(z[k + 1], _, k + 1, RND);
         }

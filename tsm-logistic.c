@@ -34,7 +34,7 @@ int main (int argc, char **argv) {
             //  x' = Ax(1 - x)
             mpfr_mul(wa[k], a, x[k], RND);
             mpfr_sub(wb[k], w1[k], x[k], RND);
-            mpfr_div_ui(x[k + 1], *t_prod(&_, wa, wb, k), k + 1, RND);
+            mpfr_div_ui(x[k + 1], *t_prod(wa, wb, k), k + 1, RND);
         }
 
         // sum the series using Horner's method and advance one step

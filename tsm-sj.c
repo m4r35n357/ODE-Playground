@@ -34,12 +34,12 @@ int main (int argc, char **argv) {
             //  x' = y
             mpfr_div_ui(x[k + 1], y[k], k + 1, RND);
             //  y' = yz - x
-            mpfr_sub(_, *t_prod(&_, y, z, k), x[k], RND);
+            mpfr_sub(_, *t_prod(y, z, k), x[k], RND);
             mpfr_div_ui(y[k + 1], _, k + 1, RND);
             //  z' = z - ax^2 - y^2 - b
             mpfr_sub(__, z[k], w_b[k], RND);
-            mpfr_sub(__, __, *t_sqr(&_, y, k), RND);
-            mpfr_fma(_, *t_sqr(&_, x, k), a, __, RND);
+            mpfr_sub(__, __, *t_sqr(y, k), RND);
+            mpfr_fma(_, *t_sqr(x, k), a, __, RND);
             mpfr_div_ui(z[k + 1], _, k + 1, RND);
         }
 

@@ -78,12 +78,12 @@ int main (int argc, char **argv) {
             mpfr_sub(_2t1_2t2[k], _, __, RND);
             t_sin_cos(s2t1_2t2, c2t1_2t2, _2t1_2t2, k, TRIG);
 
-            mpfr_set(w1_2[k], *t_sqr(&_, w1, k), RND);
-            mpfr_set(w2_2[k], *t_sqr(&_, w2, k), RND);
+            mpfr_set(w1_2[k], *t_sqr(w1, k), RND);
+            mpfr_set(w2_2[k], *t_sqr(w2, k), RND);
 
             // TODO l & m set to 1 for now
-            mpfr_add(n1_[k], w2_2[k], *t_prod(&_, w1_2, ct1_t2, k), RND);
-            mpfr_mul_2ui(_, *t_prod(&_, st1_t2, n1_, k), 1, RND);
+            mpfr_add(n1_[k], w2_2[k], *t_prod(w1_2, ct1_t2, k), RND);
+            mpfr_mul_2ui(_, *t_prod(st1_t2, n1_, k), 1, RND);
             mpfr_fma(_, g, st1_2t2[k], _, RND);
             mpfr_mul_ui(__, g, 3, RND);
             mpfr_fma(n1[k], __, st1[k], _, RND);
@@ -92,8 +92,8 @@ int main (int argc, char **argv) {
             // TODO l & m set to 1 for now
             mpfr_fma(__, g, ct1[k], w1_2[k], RND);
             mpfr_mul_2ui(__, __, 1, RND);
-            mpfr_add(n2_[k], __, *t_prod(&_, w2_2, ct1_t2, k), RND);
-            mpfr_mul_2ui(n2[k], *t_prod(&_, st1_t2, n2_, k), 1, RND);
+            mpfr_add(n2_[k], __, *t_prod(w2_2, ct1_t2, k), RND);
+            mpfr_mul_2ui(n2[k], *t_prod(st1_t2, n2_, k), 1, RND);
 
             mpfr_mul_2ui(_, m1, 1, RND);
             mpfr_fms(__, c2t1_2t2[k], m2, m2, RND);

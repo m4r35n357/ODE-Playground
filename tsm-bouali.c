@@ -35,11 +35,11 @@ int main (int argc, char **argv) {
         for (int k = 0; k < n; k++) {
             //  x' = Ax(1 - y) - Bz
             mpfr_sub(wa[k], w1[k], y[k], RND);
-            mpfr_fmms(_, a, *t_prod(&_, x, wa, k), b, z[k], RND);
+            mpfr_fmms(_, a, *t_prod(x, wa, k), b, z[k], RND);
             mpfr_div_ui(x[k + 1], _, k + 1, RND);
             //  y' = - Gy(1 - x^2)
-            mpfr_sub(wb[k], w1[k], *t_sqr(&_, x, k), RND);
-            mpfr_mul(_, *t_prod(&_, y, wb, k), g, RND);
+            mpfr_sub(wb[k], w1[k], *t_sqr(x, k), RND);
+            mpfr_mul(_, *t_prod(y, wb, k), g, RND);
             mpfr_div_si(y[k + 1], _, - (k + 1), RND);
             //  z' = Mx
             mpfr_mul(_, m, x[k], RND);

@@ -34,11 +34,11 @@ int main (int argc, char **argv) {
             mpfr_fmms(_, sigma, y[k], sigma, x[k], RND);
             mpfr_div_ui(x[k + 1], _, k + 1, RND);
             //  y' = x(R - z) - y
-            mpfr_fms(_, x[k], rho, *t_prod(&_, x, z, k), RND);
+            mpfr_fms(_, x[k], rho, *t_prod(x, z, k), RND);
             mpfr_sub(_, _, y[k], RND);
             mpfr_div_ui(y[k + 1], _, k + 1, RND);
             //  z' = xy - Bz
-            mpfr_fms(_, beta, z[k], *t_prod(&_, x, y, k), RND);
+            mpfr_fms(_, beta, z[k], *t_prod(x, y, k), RND);
             mpfr_div_si(z[k + 1], _, - (k + 1), RND);
         }
 

@@ -83,10 +83,9 @@ static mpfr_t *cauchy (mpfr_t *c, mpfr_t *a, mpfr_t *b, int k, int lower, int up
     return c;
 }
 
-mpfr_t *t_prod (mpfr_t *p, mpfr_t *u, mpfr_t *v, int k) {
-    assert(p != u && p != v);
+mpfr_t *t_prod (mpfr_t *u, mpfr_t *v, int k) {
     assert(k >= 0);
-    return cauchy(p, u, v, k, 0, k);
+    return cauchy(&__, u, v, k, 0, k);
 }
 
 mpfr_t *t_quot (mpfr_t *q, mpfr_t *u, mpfr_t *v, int k) {
@@ -98,12 +97,11 @@ mpfr_t *t_quot (mpfr_t *q, mpfr_t *u, mpfr_t *v, int k) {
     return &q[k];
 }
 
-mpfr_t *t_sqr (mpfr_t *s, mpfr_t *u, int k) {
-    assert(s != u);
+mpfr_t *t_sqr (mpfr_t *u, int k) {
     assert(k >= 0);
-    mpfr_mul_2ui(*s, *cauchy(s, u, u, k, 0, (k - (k % 2 == 0 ? 2 : 1)) / 2), 1, RND);
-    if (k % 2 == 0) mpfr_fma(*s, u[k / 2], u[k / 2], *s, RND);
-    return s;
+    mpfr_mul_2ui(_, *cauchy(&__, u, u, k, 0, (k - (k % 2 == 0 ? 2 : 1)) / 2), 1, RND);
+    if (k % 2 == 0) mpfr_fma(_, u[k / 2], u[k / 2], _, RND);
+    return &_;
 }
 
 mpfr_t *t_sqrt (mpfr_t *r, mpfr_t *u, int k) {
@@ -123,7 +121,7 @@ mpfr_t *t_sqrt (mpfr_t *r, mpfr_t *u, int k) {
 }
 
 static mpfr_t *d_cauchy (mpfr_t *f, mpfr_t *h, mpfr_t *u, int k, int lower, int upper, double factor) {
-    assert(f != &_ && h != &_ && u != &_);
+    assert(f != &_);
     mpfr_set_zero(*f, 1);
     for (int j = lower; j <= upper; j++) {
         mpfr_mul_ui(_, u[k - j], k - j, RND);

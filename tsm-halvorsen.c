@@ -34,17 +34,17 @@ int main (int argc, char **argv) {
             mpfr_mul_2ui(w4y, y[k], 2, RND);
             mpfr_mul_2ui(w4z, z[k], 2, RND);
             //  x' = - Ax - 4y - 4z - y^2
-            mpfr_fma(_, a, x[k], *t_sqr(&_, y, k), RND);
+            mpfr_fma(_, a, x[k], *t_sqr(y, k), RND);
             mpfr_add(_, w4y, _, RND);
             mpfr_add(_, w4z, _, RND);
             mpfr_div_si(x[k + 1], _, - (k + 1), RND);
             //  y' = - Ay - 4z - 4x - z^2
-            mpfr_fma(_, a, y[k], *t_sqr(&_, z, k), RND);
+            mpfr_fma(_, a, y[k], *t_sqr(z, k), RND);
             mpfr_add(_, w4z, _, RND);
             mpfr_add(_, w4x, _, RND);
             mpfr_div_si(y[k + 1], _, - (k + 1), RND);
             //  z' = - Az - 4x - 4y - x^2
-            mpfr_fma(_, a, z[k], *t_sqr(&_, x, k), RND);
+            mpfr_fma(_, a, z[k], *t_sqr(x, k), RND);
             mpfr_add(_, w4x, _, RND);
             mpfr_add(_, w4y, _, RND);
             mpfr_div_si(z[k + 1], _, - (k + 1), RND);
