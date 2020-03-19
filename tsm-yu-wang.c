@@ -36,8 +36,7 @@ int main (int argc, char **argv) {
             mpfr_fmms(_, a, y[k], a, x[k], RND);
             mpfr_div_ui(x[k + 1], _, k + 1, RND);
             //  y' = Bx - cxz
-            mpfr_mul(_, c, *t_prod(x, z, k), RND);
-            mpfr_fms(_, b, x[k], _, RND);
+            mpfr_fmms(_, b, x[k], c, *t_prod(x, z, k), RND);
             mpfr_div_ui(y[k + 1], _, k + 1, RND);
             //  z' = e^(xy) - Dz
             mpfr_set(xy[k], *t_prod(x, y, k), RND);

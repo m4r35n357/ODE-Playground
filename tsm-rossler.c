@@ -37,9 +37,9 @@ int main (int argc, char **argv) {
             mpfr_fma(_, a, y[k], x[k], RND);
             mpfr_div_ui(y[k + 1], _, k + 1, RND);
             //  z' = B + z(x - C)
-            mpfr_add(_, b[k], *t_prod(z, x, k), RND);
-            mpfr_fms(_, c, z[k], _, RND);
-            mpfr_div_si(z[k + 1], _, - (k + 1), RND);
+            mpfr_fms(_, c, z[k], *t_prod(z, x, k), RND);
+            mpfr_sub(_, b[k], _, RND);
+            mpfr_div_ui(z[k + 1], _, k + 1, RND);
         }
 
         // sum the series using Horner's method and advance one step

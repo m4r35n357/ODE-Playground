@@ -64,7 +64,7 @@ int main (int argc, char **argv) {
     mpfr_t *scale = t_jet(n);
     mpfr_t *sqr1 = t_jet(n);
     mpfr_t *sqr2 = t_jet(n);
-    mpfr_t *wabs = t_jet(n);
+    mpfr_t *abs = t_jet(n);
     mpfr_t *sqrt = t_jet(n);
     mpfr_t *prod = t_jet(n);
     mpfr_t *quot = t_jet(n);
@@ -108,7 +108,7 @@ int main (int argc, char **argv) {
     } else skipped++;
 
     if (mpfr_zero_p(x[0]) == 0) {
-        compare("sqrt(x * x) == |x|", ad_sqrt(sqrt, ad_prod(prod, x, x, n), n), ad_abs(wabs, x, n), n, tol);
+        compare("sqrt(x * x) == |x|", ad_sqrt(sqrt, ad_prod(prod, x, x, n), n), ad_abs(abs, x, n), n, tol);
     } else skipped++;
 
     if (mpfr_sgn(x[0]) > 0) {

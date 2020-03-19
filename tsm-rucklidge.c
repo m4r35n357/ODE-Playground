@@ -31,9 +31,9 @@ int main (int argc, char **argv) {
         // compute the taylor coefficients
         for (int k = 0; k < n; k++) {
             //  x' = ay - kx - yz
-            mpfr_fms(_, alpha, y[k], *t_prod(y, z, k), RND);
-            mpfr_fms(_, kappa, x[k], _, RND);
-            mpfr_div_si(x[k + 1], _, - (k + 1), RND);
+            mpfr_fmms(_, alpha, y[k], kappa, x[k], RND);
+            mpfr_sub(_, _, *t_prod(y, z, k), RND);
+            mpfr_div_ui(x[k + 1], _, k + 1, RND);
             //  y' = x
             mpfr_div_ui(y[k + 1], x[k], k + 1, RND);
             //  z' = y^2 - z
