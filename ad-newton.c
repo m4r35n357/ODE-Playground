@@ -180,17 +180,20 @@ int main (int argc, char **argv) {
                 mpfr_mul(_, f0_prev, f[ROOT___], RND);
                 if (mpfr_sgn(_) < 0) {
                     ad_newton(function, f_, x, 100, f_tol, x_tol, ROOT___);
-                    mpfr_cmp(f0_prev, f[ROOT___]) > 0 ? fprintf(stderr, "\\ ROOT___\n") : fprintf(stderr, "/ ROOT___\n") ;
+                    mpfr_cmp(f0_prev, f[ROOT___]) > 0 ? fprintf(stderr, "\\") : fprintf(stderr, "/");
+                    fprintf(stderr, " ROOT___\n");
                 }
                 mpfr_mul(_, f1_prev, f[MIN_MAX], RND);
                 if (mpfr_sgn(_) < 0) {
                     ad_newton(function, f_, x, 100, f_tol, x_tol, MIN_MAX);
-                    mpfr_cmp(f1_prev, f[MIN_MAX]) > 0 ? fprintf(stderr, "\\ MIN_MAX\n") : fprintf(stderr, "/ MIN_MAX\n") ;
+                    mpfr_cmp(f1_prev, f[MIN_MAX]) > 0 ? fprintf(stderr, "\\") : fprintf(stderr, "/");
+                    fprintf(stderr, " MIN_MAX\n");
                 }
                 mpfr_mul(_, f2_prev, f[INFLECT], RND);
                 if (mpfr_sgn(_) < 0) {
                     ad_newton(function, f_, x, 100, f_tol, x_tol, INFLECT);
-                    mpfr_cmp(f2_prev, f[INFLECT]) > 0 ? fprintf(stderr, "\\ INFLECT\n") : fprintf(stderr, "/ INFLECT\n") ;
+                    mpfr_cmp(f2_prev, f[INFLECT]) > 0 ? fprintf(stderr, "\\") : fprintf(stderr, "/");
+                    fprintf(stderr, " INFLECT\n");
                 }
             }
         }
