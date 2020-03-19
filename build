@@ -52,8 +52,8 @@ ${CC} -O0 $WARNINGS -g -o ad-test-dbg taylor-ode.c ad.c ad-test.c -lmpfr &
 rm -f libad-test-dbg
 ${CC} -O0 $WARNINGS -g -o libad-test-dbg taylor-ode.c ad.c libad-test.c -lmpfr &
 #${CC} -O0 $WARNINGS -fprofile-arcs -ftest-coverage -g -o libad-test-dbg taylor-ode.c ad.c libad-test.c -lmpfr &
-rm -f ad-newton-dbg
-${CC} -O0 $WARNINGS -g -o ad-newton-dbg taylor-ode.c ad.c ad-newton.c -lmpfr &
+rm -f solver-dbg
+${CC} -O0 $WARNINGS -g -o solver-dbg taylor-ode.c ad.c solver.c -lmpfr &
 
 rm -f libtaylor.so taylor-ode.o
 ${CC} -O0 -c $WARNINGS -g -fpic taylor-ode.c && ${CC} -shared -o libtaylor.so taylor-ode.o &
@@ -69,7 +69,8 @@ ${CC} -O0 -c $WARNINGS -g -fpic ad.c && ${CC} -shared -o libad.so ad.o &
 
 wait
 
-${CC} -L. -Wall -o libad-test libad-test.c -lad -ltaylor -lmpfr
+rm -f libad-test
+${CC} -L. $WARNINGS -o libad-test libad-test.c -lad -ltaylor -lmpfr
 
-ls -lh --color *ad-* tsm-* lib*.so rk4-*
+ls -lh --color *ad-* tsm-* solver-* lib*.so rk4-*
 

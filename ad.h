@@ -19,7 +19,7 @@ typedef enum {NONE=0, NEWTON=2} solver;
 /*
  * Solver mode
  */
-typedef enum {ROOT___=0, MIN_MAX=1, INFLECT=2} mode;
+typedef enum {ROOT=0, MIN_MAX=1, INFLECTION=2} mode;
 
 /*
  * Signature for solver model functions
