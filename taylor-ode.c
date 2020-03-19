@@ -68,11 +68,10 @@ void t_horner (mpfr_t *jet, int n, mpfr_t h) {
     mpfr_swap(jet[0], _);
 }
 
-mpfr_t *t_abs (mpfr_t *a, mpfr_t *u, int k) {
-    assert(a != u);
+mpfr_t *t_abs (mpfr_t *u, int k) {
     assert(k >= 0);
-    mpfr_sgn(u[0]) < 0 ? mpfr_neg(*a, u[k], RND) : mpfr_set(*a, u[k], RND);
-    return a;
+    mpfr_sgn(u[0]) < 0 ? mpfr_neg(_, u[k], RND) : mpfr_set(_, u[k], RND);
+    return &_;
 }
 
 static mpfr_t *cauchy (mpfr_t *c, mpfr_t *a, mpfr_t *b, int k, int lower, int upper) {

@@ -66,7 +66,7 @@ void t_horner (mpfr_t *jet, int n, mpfr_t h);
 /*
  * Returns a pointer to kth element of the absolute value of U, result stored and returned in variable A, NO JET STORAGE
  */
-mpfr_t *t_abs (mpfr_t *a, mpfr_t *u, int k);
+mpfr_t *t_abs (mpfr_t *U, int k);
 
 /*
  * Cauchy product for C = A.B

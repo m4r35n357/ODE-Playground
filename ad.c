@@ -83,7 +83,7 @@ mpfr_t *ad_minus (mpfr_t *p, mpfr_t *u, mpfr_t *v, int n) {
 
 mpfr_t *ad_abs (mpfr_t *a, mpfr_t *u, int n) {
     for (int k = 0; k < n; k++) {
-        t_abs(&a[k], u, k);
+        mpfr_set(a[k], *t_abs(u, k), RND);
     }
     return a;
 }
