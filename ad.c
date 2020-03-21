@@ -74,11 +74,18 @@ mpfr_t *ad_plus (mpfr_t *p, mpfr_t *u, mpfr_t *v, int n) {
     return p;
 }
 
-mpfr_t *ad_minus (mpfr_t *p, mpfr_t *u, mpfr_t *v, int n) {
+mpfr_t *ad_minus (mpfr_t *m, mpfr_t *u, mpfr_t *v, int n) {
     for (int k = 0; k < n; k++) {
-        mpfr_sub(p[k], u[k], v[k], RND);
+        mpfr_sub(m[k], u[k], v[k], RND);
     }
-    return p;
+    return m;
+}
+
+mpfr_t *ad_neg (mpfr_t *m, mpfr_t *u, int n) {
+    for (int k = 0; k < n; k++) {
+        mpfr_neg(m[k], u[k], RND);
+    }
+    return m;
 }
 
 mpfr_t *ad_abs (mpfr_t *a, mpfr_t *u, int n) {

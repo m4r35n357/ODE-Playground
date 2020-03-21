@@ -61,6 +61,7 @@ int main (int argc, char **argv) {
 
     mpfr_t *plus = t_jet(n);
     mpfr_t *minus = t_jet(n);
+    mpfr_t *neg = t_jet(n);
     mpfr_t *scale = t_jet(n);
     mpfr_t *sqr1 = t_jet(n);
     mpfr_t *sqr2 = t_jet(n);
@@ -80,11 +81,9 @@ int main (int argc, char **argv) {
 
     printf("\n");
 
+    mpfr_t *c1 = t_jet_c(n, D1);
     mpfr_t *x = t_jet_c(n, x0);
     set_ad_status(x, VARIABLE);
-
-    mpfr_t *c0 = t_jet_c(n, D0);
-    mpfr_t *c1 = t_jet_c(n, D1);
 
     compare("x * x == sqr(x)", ad_prod(prod, x, x, n), ad_sqr(sqr1, x, n), n, tol);
     if (mpfr_sgn(x[0]) > 0) {
@@ -123,7 +122,7 @@ int main (int argc, char **argv) {
     compare("cosh^2(x) - sinh^2(x) == 1", ad_minus(minus, ad_sqr(sqr1, c, n), ad_sqr(sqr2, s, n), n), c1, n, tol);
 
     ad_exp(e1, x, n);
-    ad_exp(e2, ad_minus(minus, c0, x, n), n);
+    ad_exp(e2, ad_neg(neg, x, n), n);
     compare("sinh(x) == 0.5 * (e^x - e^-x)", s, ad_scale(scale, ad_minus(minus, e1, e2, n), D05, n), n, tol);
     compare("cosh(x) == 0.5 * (e^x + e^-x)", c, ad_scale(scale, ad_plus(plus, e1, e2, n), D05, n), n, tol);
 

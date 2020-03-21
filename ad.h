@@ -69,9 +69,14 @@ mpfr_t *ad_scale (mpfr_t *S, mpfr_t *U, mpfr_t a, int n);
 mpfr_t *ad_plus (mpfr_t *P, mpfr_t *V, mpfr_t *U, int n);
 
 /*
- * Calculates Taylor Series for the difference of U and V, result stored in jet P
+ * Calculates Taylor Series for the difference of U and V, result stored in jet M
  */
-mpfr_t *ad_minus (mpfr_t *P, mpfr_t *V, mpfr_t *U, int n);
+mpfr_t *ad_minus (mpfr_t *M, mpfr_t *V, mpfr_t *U, int n);
+
+/*
+ * Calculates Taylor Series for the negative of U, result stored in jet M
+ */
+mpfr_t *ad_neg (mpfr_t *M, mpfr_t *U, int n);
 
 /*
  * Calculates Taylor Series for the absolute value of U, result stored in jet A
