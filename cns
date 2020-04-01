@@ -70,3 +70,5 @@ esac
 
 echo "splot '$fileA' with lines, '$fileB' with lines" | gnuplot -p
 
+./plotCns.py $fileA $fileB
+
