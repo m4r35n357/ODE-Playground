@@ -7,7 +7,7 @@ from sys import stdin, stderr, argv
 from pi3d import Sphere, Display, Camera, Shader, Keyboard, screenshot, Lines, Font, String, Mouse
 
 class Body(Sphere):
-    def __init__(self, shader, colour, radius, position=(0.0, 0.0, 0.0), track_shader=None, track_max=2000):
+    def __init__(self, shader, colour, radius, position=(0.0, 0.0, 0.0), track_shader=None, track_max=1000):
         super(Body, self).__init__(radius=radius, x=position[0], y=position[1], z=position[2])
         super(Body, self).set_draw_details(shader, [])
         self.pos = position
@@ -62,13 +62,13 @@ def main():
     hud_string.draw()  # NB has to be drawn before quick_change() is called as buffer needs to exist
 
     if len(argv) > 3:
-        particle1 = Body(Shader('mat_light'), (0.0, 1.0, 0.0), 0.1, track_shader=Shader('mat_flat'),
+        particle1 = Body(Shader('mat_light'), (0.0, 1.0, 1.0), 0.2, track_shader=Shader('mat_flat'),
                         track_max=int(argv[3]))
-        particle2 = Body(Shader('mat_light'), (1.0, 0.0, 0.0), 0.1, track_shader=Shader('mat_flat'),
+        particle2 = Body(Shader('mat_light'), (1.0, 1.0, 0.0), 0.2, track_shader=Shader('mat_flat'),
                          track_max=int(argv[3]))
     else:
-        particle1 = Body(Shader('mat_light'), (0.0, 1.0, 0.0), 0.1, track_shader=Shader('mat_flat'))
-        particle2 = Body(Shader('mat_light'), (1.0, 0.0, 0.0), 0.1, track_shader=Shader('mat_flat'))
+        particle1 = Body(Shader('mat_light'), (0.0, 1.0, 1.0), 0.2, track_shader=Shader('mat_flat'))
+        particle2 = Body(Shader('mat_light'), (1.0, 1.0, 0.0), 0.2, track_shader=Shader('mat_flat'))
     # Enable key presses and mouse
     keys = Keyboard()
     mouse = Mouse(restrict=False)

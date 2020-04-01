@@ -8,8 +8,8 @@
 # time -p ./cns data ./tsm-lorenz-static 240 204 .01 65000 -15.8 -17.48 35.64 10 28 8 3     # (600 Lorenz time units)
 # time -p ./cns data ./tsm-lorenz-static 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 3   #(1500 Lorenz time units)
 
-fileA='/tmp/dataA'
-fileB='/tmp/dataB'
+fileA='/tmp/dataA'  # the "better" simulation, or data file
+fileB='/tmp/dataB'  # the original simulation
 
 method=$1
 shift
@@ -70,5 +70,5 @@ esac
 
 echo "splot '$fileA' with lines, '$fileB' with lines" | gnuplot -p
 
-./plotCns.py $fileA $fileB
+./plotCns.py $fileA $fileB 2>/dev/null
 
