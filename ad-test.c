@@ -91,10 +91,10 @@ int main (int argc, char **argv) {
     mpfr_t *__ = t_jet_c(n + 1, D0);
 
     printf("%s%s%s\n", KCYN, "Horner", KNRM);
-    mpfr_set_str(__[0], "-19", BASE, RND);
-    mpfr_set_str(__[1], "7", BASE, RND);
-    mpfr_set_str(__[2], "-4", BASE, RND);
-    mpfr_set_str(__[3], "6", BASE, RND);
+    mpfr_set_si(__[0], -19, RND);
+    mpfr_set_ui(__[1], 7, RND);
+    mpfr_set_si(__[2], -4, RND);
+    mpfr_set_ui(__[3], 6, RND);
     t_horner(__, n, D3);
     mpfr_printf(" %7.3RNf\n", __[0]);
     printf("%s\n", KNRM);

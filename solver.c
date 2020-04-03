@@ -1,5 +1,5 @@
 /*
- * Automatic Differentiation of Taylor Series, Newton's s
+ * Automatic Differentiation of Taylor Series, Newton's method
  *
  * (c) 2018,2019 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -127,7 +127,7 @@ int main (int argc, char **argv) {
     mpfr_init_set_str(x_tol, argv[9], BASE, RND);
 
     mpfr_init_set_si(D_1, -1, RND);
-    mpfr_init_set_d(D_05, -0.5, RND);
+    mpfr_init_set_str(D_05, "-0.5", BASE, RND);
     mpfr_init_set_ui(D0, 0, RND);
     mpfr_init_set_ui(D1, 1, RND);
     mpfr_init_set_ui(D2, 2, RND);

@@ -54,7 +54,7 @@ int main (int argc, char **argv) {
 
     double a = -3.7;
     mpfr_init_set_d(DA, a, RND);
-    mpfr_init_set_d(D05, 0.5, RND);
+    mpfr_init_set_str(D05, "0.5", BASE, RND);
     mpfr_init_set_ui(D0, 0, RND);
     mpfr_init_set_ui(D1, 1, RND);
 
