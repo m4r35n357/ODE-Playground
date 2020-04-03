@@ -40,7 +40,7 @@ static result compare (char* name, mpfr_t *a, mpfr_t *b, int size, mpfr_t thresh
 }
 
 int main (int argc, char **argv) {
-    mpfr_t x0, DA, D05, D0, D1, D2, tol;
+    mpfr_t x0, DA, D05, D0, D1, tol;
 
     assert(argc == 5);
 
@@ -57,7 +57,6 @@ int main (int argc, char **argv) {
     mpfr_init_set_d(D05, 0.5, RND);
     mpfr_init_set_ui(D0, 0, RND);
     mpfr_init_set_ui(D1, 1, RND);
-    mpfr_init_set_ui(D2, 2, RND);
 
     mpfr_t *plus = t_jet(n);
     mpfr_t *minus = t_jet(n);

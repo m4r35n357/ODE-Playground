@@ -19,30 +19,30 @@
 #define KGRY "\x1B[2;37m"
 #define KBLD "\x1B[1;37m"
 
-static long n;
-
-static mpfr_t x, y, _, D0, D1, D2, D3, D4, D5, D6, D7, *cx, *cy, *cx0, *c1, *c2, *c3, *c5, *c6, *c7, *PI_3, *PI_4, *we, *wl, *ws, *wc, *wt, *ws2, *wabs, *wsqr, *wsqrt, *wsum, *wprod, *wquot, *wpwr, *__, *_1, *_2, *_3;
+static mpfr_t *___;
 
 static void septic (mpfr_t *f, mpfr_t *value, int order) {
-    ad_minus(_2, value, c1, order);
-    ad_plus(_1, value, c2, order);
-    ad_prod(_3, _2, _1, order);
-    ad_minus(_1, value, c3, order);
-    ad_prod(_2, _3, _1, order);
-    ad_plus(_1, value, c5, order);
-    ad_prod(_3, _2, _1, order);
-    ad_minus(_1, value, c6, order);
-    ad_prod(_2, _3, _1, order);
-    ad_plus(_1, value, c7, order);
-    ad_prod(_3, _2, _1, order);
-    ad_prod(f, _3, value, order);
+    ad_set(f, value, order);
+    mpfr_add_ui(f[0], f[0], 4, RND);
+    ad_prod(___, value, f, order);
+    mpfr_sub_ui(___[0], ___[0], 54, RND);
+    ad_prod(f, value, ___, order);
+    mpfr_sub_ui(f[0], f[0], 160, RND);
+    ad_prod(___, value, f, order);
+    mpfr_add_ui(___[0], ___[0], 641, RND);
+    ad_prod(f, value, ___, order);
+    mpfr_add_ui(f[0], f[0], 828, RND);
+    ad_prod(___, value, f, order);
+    mpfr_sub_ui(___[0], ___[0], 1260, RND);
+    ad_prod(f, value, ___, order);
 }
 
 int main (int argc, char **argv) {
+    long n;
+    mpfr_t x, y, _, D0, D1, D3;
+
     assert(argc == 4);
-
     mpfr_set_default_prec(113);
-
     ad_tempvars();
     mpfr_inits(_, NULL);
     n = strtol(argv[1], NULL, BASE);
@@ -52,54 +52,43 @@ int main (int argc, char **argv) {
 
     mpfr_init_set_ui(D0, 0, RND);
     mpfr_init_set_ui(D1, 1, RND);
-    mpfr_init_set_ui(D2, 2, RND);
     mpfr_init_set_ui(D3, 3, RND);
-    mpfr_init_set_ui(D4, 4, RND);
-    mpfr_init_set_ui(D5, 5, RND);
-    mpfr_init_set_ui(D6, 6, RND);
-    mpfr_init_set_ui(D7, 7, RND);
 
-    c1 = t_jet_c(n, D1);
-    c2 = t_jet_c(n, D2);
-    c3 = t_jet_c(n, D3);
-    c5 = t_jet_c(n, D5);
-    c6 = t_jet_c(n, D6);
-    c7 = t_jet_c(n, D7);
+    ___ = t_jet(n);
 
-    cx = t_jet_c(n, x);
-    cx0 = t_jet_c(n, D0);
-    cy = t_jet_c(n, y);
+    mpfr_t *c1 = t_jet_c(n, D1);
+
+    mpfr_t *cx = t_jet_c(n, x);
+    mpfr_t *cx0 = t_jet_c(n, D0);
+    mpfr_t *cy = t_jet_c(n, y);
     set_ad_status(cx, VARIABLE);
     set_ad_status(cx0, VARIABLE);
     set_ad_status(cy, CONSTANT);
 
     mpfr_const_pi(_, RND);
     mpfr_div_ui(_, _, 3, RND);
-    PI_3 = t_jet_c(n, _);
+    mpfr_t *PI_3 = t_jet_c(n, _);
     set_ad_status(PI_3, VARIABLE);
 
     mpfr_const_pi(_, RND);
     mpfr_div_ui(_, _, 4, RND);
-    PI_4 = t_jet_c(n, _);
+    mpfr_t *PI_4 = t_jet_c(n, _);
     set_ad_status(PI_4, VARIABLE);
 
-    wsqr = t_jet(n);
-    wabs = t_jet(n);
-    wsqrt = t_jet(n);
-    wsum = t_jet(n);
-    wprod = t_jet(n);
-    wquot = t_jet(n);
-    wpwr = t_jet(n);
-    we = t_jet(n);
-    wl = t_jet(n);
-    ws = t_jet(n);
-    wc = t_jet(n);
-    wt = t_jet(n);
-    ws2 = t_jet(n);
-    __ = t_jet_c(n + 1, D0);
-    _1 = t_jet(n);
-    _2 = t_jet(n);
-    _3 = t_jet(n);
+    mpfr_t *wsqr = t_jet(n);
+    mpfr_t *wabs = t_jet(n);
+    mpfr_t *wsqrt = t_jet(n);
+    mpfr_t *wsum = t_jet(n);
+    mpfr_t *wprod = t_jet(n);
+    mpfr_t *wquot = t_jet(n);
+    mpfr_t *wpwr = t_jet(n);
+    mpfr_t *we = t_jet(n);
+    mpfr_t *wl = t_jet(n);
+    mpfr_t *ws = t_jet(n);
+    mpfr_t *wc = t_jet(n);
+    mpfr_t *wt = t_jet(n);
+    mpfr_t *ws2 = t_jet(n);
+    mpfr_t *__ = t_jet_c(n + 1, D0);
 
     printf("%s%s%s\n", KCYN, "Horner", KNRM);
     mpfr_set_str(__[0], "-19", BASE, RND);

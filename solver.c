@@ -11,7 +11,7 @@
 #include "taylor-ode.h"
 #include "ad.h"
 
-mpfr_t _, D_1, D_05, D0, D1, D2, D3, D4, D5, D6, D7, D54, D160, D641, D828, D1260;
+mpfr_t _, D_1, D_05, D0, D1, D2, D3, D4, D5, D6, D7;
 mpfr_t *w1, *w2, *w3, *w4, *w5, *w6, *w7, *target, *_1, *_2, *_3, *__;
 
 static void septic (mpfr_t *f, mpfr_t *x, int n) {
@@ -35,17 +35,17 @@ static void septic2 (mpfr_t *f, mpfr_t *x, int n) {
     //  Example: ./solver-dbg 4 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null 2>&1
     // x^7 + 4x^6 - 54x^5 - 160x^4 + 641x^3 + 828x^2 - 1260x = ((((((x + 4)x - 54)x - 160)x + 641)x + 828)x - 1260)x
     ad_set(f, x, n);
-    mpfr_add(f[0], f[0], D4, RND);
+    mpfr_add_ui(f[0], f[0], 4, RND);
     ad_prod(__, x, f, n);
-    mpfr_sub(__[0], __[0], D54, RND);
+    mpfr_sub_ui(__[0], __[0], 54, RND);
     ad_prod(f, x, __, n);
-    mpfr_sub(f[0], f[0], D160, RND);
+    mpfr_sub_ui(f[0], f[0], 160, RND);
     ad_prod(__, x, f, n);
-    mpfr_add(__[0], __[0], D641, RND);
+    mpfr_add_ui(__[0], __[0], 641, RND);
     ad_prod(f, x, __, n);
-    mpfr_add(f[0], f[0], D828, RND);
+    mpfr_add_ui(f[0], f[0], 828, RND);
     ad_prod(__, x, f, n);
-    mpfr_sub(__[0], __[0], D1260, RND);
+    mpfr_sub_ui(__[0], __[0], 1260, RND);
     ad_prod(f, x, __, n);
 }
 
@@ -136,11 +136,6 @@ int main (int argc, char **argv) {
     mpfr_init_set_ui(D5, 5, RND);
     mpfr_init_set_ui(D6, 6, RND);
     mpfr_init_set_ui(D7, 7, RND);
-    mpfr_init_set_ui(D54, 54, RND);
-    mpfr_init_set_ui(D160, 160, RND);
-    mpfr_init_set_ui(D641, 641, RND);
-    mpfr_init_set_ui(D828, 828, RND);
-    mpfr_init_set_ui(D1260, 1260, RND);
 
     w1 = t_jet_c(order, D1);
     w2 = t_jet_c(order, D2);
