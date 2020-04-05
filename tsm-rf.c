@@ -19,6 +19,7 @@ int main (int argc, char **argv) {
     assert(argc == 10);
     t_stepper(argv, &n, &t, &h, &nsteps);
     t_args(argv, argc, &x0, &y0, &z0, &_, &gamma);
+    mpfr_inits(d3, x2_1, NULL);
 
     // initialize the derivative and temporary jets
     mpfr_t *x = t_jet_c(n + 1, x0);
@@ -28,10 +29,9 @@ int main (int argc, char **argv) {
     mpfr_t *a = t_jet(n);
     mpfr_t *b = t_jet(n);
     mpfr_t *c = t_jet(n);
+    mpfr_set_ui(d3, 3, RND);
     mpfr_set_ui(_, 1, RND);
     mpfr_t *w1 = t_jet_c(n, _);
-    mpfr_init_set_ui(d3, 3, RND);
-    mpfr_init(x2_1);
 
     // main loop
     t_xyz_output(x[0], y[0], z[0], t);
