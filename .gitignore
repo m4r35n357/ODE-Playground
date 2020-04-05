@@ -6,7 +6,14 @@ tsm-*-dbg
 tsm-*-static
 tsm-*-dynamic
 
-ad-test*-dbg
+rk4-*-dbg
+rk4-*-static
+rk4-*-dynamic
+
+solver-dbg
+ad-test-dbg
+libad-test
+libad-test-dbg
 
 lib*.so
 
