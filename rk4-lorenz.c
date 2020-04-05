@@ -1,9 +1,9 @@
 /*
  * Lorenz System using RK4
  *
- * Example: ./rk4-lorenz-dbg 32 16 .00001 10000000 -15.8 -17.48 35.64 10 28 8 3 | sed -n '1~1000p' >/tmp/dataB
- *          ./divergence.py d-604-502-1400 /tmp/dataB 3 1.0 >/dev/null
- *          ./compare.py d-604-502-1400 /tmp/dataB 3 >/dev/null &
+ * Example: ./rk4-lorenz-dbg 32 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+ *
+ * NOTE plot interval in place of order!
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -37,12 +37,12 @@ static mpfr_t *sum (mpfr_t *b, mpfr_t a1, mpfr_t a2, mpfr_t a3, mpfr_t a4) {
 }
 
 int main (int argc, char **argv) {
-    long n, nsteps;
+    long nsteps, interval;
     mpfr_t t, x, y, z, sigma, rho, beta, h, _, h_2, _x, _y, _z;
     mpfr_t k1, l1, m1, k2, l2, m2, k3, l3, m3, k4, l4, m4;
 
     assert(argc == 12);
-    t_stepper(argv, &n, &t, &h, &nsteps);
+    t_stepper(argv, &interval, &t, &h, &nsteps);
     t_args(argv, argc, &x, &y, &z, &sigma, &rho, &beta, &_);
     mpfr_div(beta, beta, _, RND);
     mpfr_inits(h_2, _x, _y, _z, k1, l1, m1, k2, l2, m2, k3, l3, m3, k4, l4, m4, NULL);
@@ -81,7 +81,7 @@ int main (int argc, char **argv) {
         mpfr_fma(z, h, *sum(&_, m1, m2, m3, m4), z, RND);
 
         mpfr_mul_ui(t, h, step, RND);
-        t_xyz_output(x, y, z, t);
+        if (step % interval == 0) { t_xyz_output(x, y, z, t); }
     }
     return 0;
 }
