@@ -23,7 +23,6 @@ build () {
 }
 
 for model in \
-tsm-double-pendulum \
 rk4-lorenz \
 tsm-lorenz \
 tsm-rossler \

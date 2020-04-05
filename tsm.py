@@ -268,44 +268,6 @@ def main():
                 y[k + 1] = (a * cos(ω * step * δt) - ζ * length * y[k] - m * g * sinθ[k]) / (m * length) / (k + 1)
             x[0], y[0] = t_horner(x, δt), t_horner(y, δt)  # Horner's method
             output(x[0], y[0], z[0], step * δt)
-    elif model == "double-pendulum":
-        # Example: ./tsm.py double-pendulum 9 10 0.01 10000 1 1 1 1 3 -1 3 -1 | ./plotPi2d.py
-        def polar_to_rectangular(l_1, l_2, t, th_1, th_2, w_1, w_2):
-            x_1, y_1 = l_1 * sin(th_1), - l_1 * cos(th_1)  # convert angles to X-Y coordinates
-            x_2, y_2 = x_1 + l_2 * sin(th_2), y_1 - l_2 * cos(th_2)
-            print(f"{x_1:.9e} {y_1:.9e} {x_2:.9e} {y_2:.9e} {t:.5e} 0.0 {th_1:.9e} {th_2:.9e} {w_1:.9e} {w_2:.9e}")
-        g, m1, m2, l1, l2, θ1_0, ω1_0, θ2_0, ω2_0 = 9.80665, float(argv[6]), float(argv[7]), float(argv[8]), float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12]), float(argv[13])  # physical parameters
-        θ1, θ2, sinθ1, cosθ1 = t_jet(n + 1), t_jet(n + 1), t_jet(n), t_jet(n)  # jets
-        _θ1_θ2, sinθ1_θ2, cosθ1_θ2 = t_jet(n), t_jet(n), t_jet(n)
-        _θ1_2θ2, sinθ1_2θ2, cosθ1_2θ2 = t_jet(n), t_jet(n), t_jet(n)
-        _2θ1_2θ2, sin2θ1_2θ2, cos2θ1_2θ2 = t_jet(n), t_jet(n), t_jet(n)
-        ω1, ω2 = t_jet(n + 1), t_jet(n + 1)
-        ω1_2, ω2_2 = t_jet(n), t_jet(n)
-        n1, n2, n1_, n2_, q1, q2, d = t_jet(n), t_jet(n), t_jet(n), t_jet(n), t_jet(n), t_jet(n), t_jet(n)
-        polar_to_rectangular(l1, l2, 0.0, θ1_0, θ2_0, ω1_0, ω2_0)
-        for step in steps:
-            θ1[0], θ2[0], ω1[0], ω2[0] = θ1_0, θ2_0, ω1_0, ω2_0
-            for k in index:  # build up jets using recurrences and the derivative rule
-                sinθ1[k], cosθ1[k] = t_sin_cos(sinθ1, cosθ1, θ1, k)
-                _θ1_θ2[k] = θ1[k] - θ2[k]
-                sinθ1_θ2[k], cosθ1_θ2[k] = t_sin_cos(sinθ1_θ2, cosθ1_θ2, _θ1_θ2, k)
-                _θ1_2θ2[k] = θ1[k] - 2.0 * θ2[k]
-                sinθ1_2θ2[k], cosθ1_2θ2[k] = t_sin_cos(sinθ1_2θ2, cosθ1_2θ2, _θ1_2θ2, k)
-                _2θ1_2θ2[k] = 2.0 * (θ1[k] - θ2[k])
-                sin2θ1_2θ2[k], cos2θ1_2θ2[k] = t_sin_cos(sin2θ1_2θ2, cos2θ1_2θ2, _2θ1_2θ2, k)
-                ω1_2[k] = t_sqr(ω1, k)
-                ω2_2[k] = t_sqr(ω2, k)
-                n1_[k] = l2 * ω2_2[k] + l1 * t_prod(ω1_2, cosθ1_θ2, k)
-                n1[k] = - g * (2.0 * m1 + m2) * sinθ1[k] - g * m2 * sinθ1_2θ2[k] - 2.0 * m2 * t_prod(sinθ1_θ2, n1_, k)
-                n2_[k] = g * (m1 + m2) * cosθ1[k] + l1 * (m1 + m2) * ω1_2[k] + l2 * m2 * t_prod(ω2_2, cosθ1_θ2, k)
-                n2[k] = 2.0 * t_prod(sinθ1_θ2, n2_, k)
-                d[k] = 2.0 * m1 + m2 - m2 * cos2θ1_2θ2[k]
-                θ1[k + 1] = ω1[k] / (k + 1)
-                θ2[k + 1] = ω2[k] / (k + 1)
-                ω1[k + 1] = t_quot(q1, n1, d, k) / l1 / (k + 1)
-                ω2[k + 1] = t_quot(q2, n2, d, k) / l2 / (k + 1)
-            θ1_0, θ2_0, ω1_0, ω2_0 = t_horner(θ1, δt), t_horner(θ2, δt), t_horner(ω1, δt), t_horner(ω2, δt)  # Horner's method
-            polar_to_rectangular(l1, l2, step * δt, θ1_0, θ2_0, ω1_0, ω2_0)
     elif model == "volterra":
         #  Example: ./tsm.py volterra 9 8 .01 2001 10 10 0 1 .5 .05 .02 | ./plotAnimated.py 0 80
         a, b, c, d = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
