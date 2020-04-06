@@ -1,7 +1,7 @@
 /*
  * Thomas' cyclically symmetric attractor
  *
- * Example: ./tsm-thomas-dbg 16 10 0.1 30000 1 0 0 .19
+ * Example: ./tsm-thomas-dbg 32 10 0.1 30000 1 0 0 .19
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
