@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# Copyright (c) 2018-2020, Ian Smith (m4r35n357)
+# All rights reserved.
+# For licencing see LICENCE file
+#
+
+fileA='/tmp/dataA'  # the perurbed simulation
+fileB='/tmp/dataB'  # the original simulation
+
+delta=$1
+shift
+original=$*
+
+perturb () {
+    start="$1 $2 $3 $4 $5"
+    x=$(echo "scale=32; $6 + $delta;" | bc)
+    y=$(echo "scale=32; $7 + $delta;" | bc)
+    z=$(echo "scale=32; $8 + $delta;" | bc)
+    shift 8
+    end="$*"
+    echo 'Perturbed:' $start $x $y $z $end
+    $start $x $y $z $end >$fileA &
+}
+
+perturb $original
+$original >$fileB &
+wait
+
+./divergence.py $fileA $fileB 3 0.000000000000000001 0.000000000001 0.000000001 0.000001 0.001 1.0 >/dev/null
+
+./compare.py $fileA $fileB 3 >/dev/null &
+
+echo "splot '$fileA' with lines, '$fileB' with lines" | gnuplot -p
+
+./plotCns.py $fileA $fileB 2>/dev/null
+
