@@ -50,7 +50,7 @@ int main (int argc, char **argv) {
     mpfr_div_2ui(h_2, h, 1, RND);
 
     t_xyz_output(x, y, z, t);
-    for (long step = 1; step < nsteps + 1; step++) {
+    for (long step = 1; step <= nsteps; step++) {
         dx(&k1, x, y, sigma);
         dy(&l1, x, y, z, rho);
         dz(&m1, x, y, z, beta);

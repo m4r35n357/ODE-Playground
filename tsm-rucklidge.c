@@ -27,7 +27,7 @@ int main (int argc, char **argv) {
 
     // main loop
     t_xyz_output(x[0], y[0], z[0], t);
-    for (long step = 1; step < nsteps + 1; step++) {
+    for (long step = 1; step <= nsteps; step++) {
         // compute the taylor coefficients
         for (int k = 0; k < n; k++) {
             //  x' = ay - kx - yz
