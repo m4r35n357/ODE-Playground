@@ -33,10 +33,10 @@ void t_stepper (char **argv, long *n, mpfr_t *t, mpfr_t *h, long *nsteps) {
     t_tempvars();
 }
 
-void t_args (char **argv, int count, ...) {
+void t_args (char **argv, int argc, ...) {
     va_list vars;
-    va_start(vars, count);
-    for (int i = 5; i < count; i++) {
+    va_start(vars, argc);
+    for (int i = 5; i < argc; i++) {
         mpfr_init_set_str(*va_arg(vars, mpfr_t *), argv[i], BASE, RND);
     }
     va_end(vars);
