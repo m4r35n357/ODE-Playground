@@ -50,7 +50,7 @@ case $method in
      'step') halfstep $original;;
     'order') order1plus $original;;
      'both') orderstep $original;;
-     'data') cp d-800-501-005-1500 $fileA;;
+     'data') cp d-best $fileA;;
     'nosim') ;;
           *) echo "CNS: Bad Method"; exit 1;;
 esac
