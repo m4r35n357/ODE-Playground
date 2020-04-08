@@ -5,33 +5,53 @@
 # For licencing see LICENCE file
 #
 
-fileA='/tmp/dataA'  # the perurbed simulation
-fileB='/tmp/dataB'  # the original simulation
+fileA='/tmp/dataA'
+fileB='/tmp/dataB'
+fileC='/tmp/dataC'
+fileD='/tmp/dataD'
+fileE='/tmp/dataE'
+fileF='/tmp/dataF'
 
 delta=$1
 shift
-original=$*
 
 perturb () {
     start="$1 $2 $3 $4 $5"
-    x=$(echo "scale=32; $6 + $delta;" | bc)
-    y=$(echo "scale=32; $7 + $delta;" | bc)
-    z=$(echo "scale=32; $8 + $delta;" | bc)
+    x0=$6
+    y0=$7
+    z0=$8
     shift 8
     end="$*"
-    echo 'Perturbed:' $start $x $y $z $end
-    $start $x $y $z $end >$fileA &
+    y=$y0
+    z=$z0
+    x=$(echo "scale=32; $x0 + $delta;" | bc)
+    echo 'x+' $start $x $y $z $end
+    $start $x $y $z $end >$fileA 2>/dev/null &
+    x=$(echo "scale=32; $x0 - $delta;" | bc)
+    echo 'x-' $start $x $y $z $end
+    $start $x $y $z $end >$fileB 2>/dev/null &
+    x=$x0
+    z=$z0
+    y=$(echo "scale=32; $y0 + $delta;" | bc)
+    echo 'y+' $start $x $y $z $end
+    $start $x $y $z $end >$fileC 2>/dev/null &
+    y=$(echo "scale=32; $y0 - $delta;" | bc)
+    echo 'y-' $start $x $y $z $end
+    $start $x $y $z $end >$fileD 2>/dev/null &
+    x=$x0
+    y=$y0
+    z=$(echo "scale=32; $z0 + $delta;" | bc)
+    echo 'z+' $start $x $y $z $end
+    $start $x $y $z $end >$fileE 2>/dev/null &
+    z=$(echo "scale=32; $z0 - $delta;" | bc)
+    echo 'z-' $start $x $y $z $end
+    $start $x $y $z $end >$fileF 2>/dev/null &
 }
 
-perturb $original
-$original >$fileB &
+perturb $*
 wait
 
-./divergence.py $fileA $fileB 3 0.000000000000000001 0.000000000001 0.000000001 0.000001 0.001 1.0 >/dev/null
+echo "splot '$fileA' with lines, '$fileB' with lines, '$fileC' with lines, '$fileD' with lines, '$fileE' with lines, '$fileF' with lines" | gnuplot -p
 
-./compare.py $fileA $fileB 3 >/dev/null &
-
-echo "splot '$fileA' with lines, '$fileB' with lines" | gnuplot -p
-
-./plotCns.py $fileA $fileB 2>/dev/null
+./plotCns.py $fileA $fileB $fileC $fileD $fileE $fileF >/dev/null 2>&1 &
 
