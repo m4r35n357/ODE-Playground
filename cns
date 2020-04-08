@@ -65,5 +65,5 @@ esac
 
 echo "splot '$fileA' with lines, '$fileB' with lines" | gnuplot -p
 
-./plotCns.py $fileA $fileB 2>/dev/null &
+./plotCns.py $fileA $fileB >/dev/null 2>&1 &
 
