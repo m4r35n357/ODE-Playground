@@ -68,7 +68,9 @@ int main (int argc, char **argv) {
     mpfr_t *sqrt = t_jet(n);
     mpfr_t *prod = t_jet(n);
     mpfr_t *quot = t_jet(n);
-    mpfr_t *pwr = t_jet(n);
+    mpfr_t *pwr1 = t_jet(n);
+    mpfr_t *pwr2 = t_jet(n);
+    mpfr_t *pwr3 = t_jet(n);
     mpfr_t *e1 = t_jet(n);
     mpfr_t *e2 = t_jet(n);
     mpfr_t *l1 = t_jet(n);
@@ -86,23 +88,26 @@ int main (int argc, char **argv) {
 
     compare("x * x == sqr(x)", ad_prod(prod, x, x, n), ad_sqr(sqr1, x, n), n, tol);
     if (mpfr_sgn(x[0]) > 0) {
-        compare("x * x == x^2", prod, ad_pwr(pwr, x, 2.0, n), n, tol);
+        compare("x * x == x^2", prod, ad_pwr(pwr1, x, 2.0, n), n, tol);
     } else skipped++;
 
     if (mpfr_sgn(x[0]) > 0) {
-        compare("x^1 == x", ad_pwr(pwr, x, 1.0, n), x, n, tol);
+        compare("x^1 == x", ad_pwr(pwr1, x, 1.0, n), x, n, tol);
     } else skipped++;
     if (mpfr_sgn(x[0]) > 0) {
-        compare("x^0.5 == sqrt(x)", ad_pwr(pwr, x, 0.5, n), ad_sqrt(sqrt, x, n), n, tol);
+        compare("x^0.5 == sqrt(x)", ad_pwr(pwr1, x, 0.5, n), ad_sqrt(sqrt, x, n), n, tol);
     } else skipped++;
     if (mpfr_sgn(x[0]) > 0) {
-        compare("x^0 == x / x", ad_pwr(pwr, x, 0.0, n), ad_quot(quot, x, ad_scale(scale, x, D1, n), n), n, tol);
+        compare("x^0 == x / x", ad_pwr(pwr1, x, 0.0, n), ad_quot(quot, x, ad_scale(scale, x, D1, n), n), n, tol);
     } else skipped++;
     if (mpfr_sgn(x[0]) > 0) {
-        compare("x^-0.5 == 1 / sqrt(x)", ad_pwr(pwr, x, -0.5, n), ad_quot(quot, c1, ad_sqrt(sqrt, x, n), n), n, tol);
+        compare("x^-0.5 == 1 / sqrt(x)", ad_pwr(pwr1, x, -0.5, n), ad_quot(quot, c1, ad_sqrt(sqrt, x, n), n), n, tol);
     } else skipped++;
     if (mpfr_sgn(x[0]) > 0) {
-        compare("x^-1 == 1 / x", ad_pwr(pwr, x, -1.0, n), ad_quot(quot, c1, x, n), n, tol);
+        compare("x^-1 == 1 / x", ad_pwr(pwr1, x, -1.0, n), ad_quot(quot, c1, x, n), n, tol);
+    } else skipped++;
+    if (mpfr_sgn(x[0]) > 0) {
+        compare("x^2 * x^-5 == x^-3", ad_prod(prod, ad_pwr(pwr1, x, 2.0, n), ad_pwr(pwr2, x, -5.0, n), n), ad_pwr(pwr3, x, -3.0, n), n, tol);
     } else skipped++;
 
     if (mpfr_zero_p(x[0]) == 0) {
@@ -110,7 +115,7 @@ int main (int argc, char **argv) {
     } else skipped++;
 
     if (mpfr_sgn(x[0]) > 0) {
-        compare("log(x^a) == a * log(x)", ad_ln(l1, ad_pwr(pwr, x, a, n), n), ad_scale(scale, ad_ln(l2, x, n), DA, n), n, tol);
+        compare("log(x^a) == a * log(x)", ad_ln(l1, ad_pwr(pwr1, x, a, n), n), ad_scale(scale, ad_ln(l2, x, n), DA, n), n, tol);
     } else skipped++;
     compare("log(e^x) == x", ad_ln(l1, ad_exp(e1, x, n), n), x, n, tol);
 
