@@ -154,11 +154,11 @@ grep Example *.py tsm-*.c
 ```
 Matplotlib progressive graph plotting in Python (second parameter ignored as python floats are fixed double precision):
 ```
-./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
+./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 ```
 or in c (notice absence of the model parameter!):
 ```
-./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py 1 -30 50
+./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 ```
 
 ## 3D static trajectory plotting (gnuplot)
