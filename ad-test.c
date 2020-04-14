@@ -1,5 +1,5 @@
 /*
- * Automatic Differentiation of Taylor Series, validation checks
+ * Automatic Differentiation of Taylor Series, legacy validation checks
  *
  * Example: ./ad-test-dbg 7 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt
  *
