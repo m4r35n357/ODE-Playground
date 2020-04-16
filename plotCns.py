@@ -2,9 +2,10 @@
 #
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-from math import sin, cos, pi, radians
-from sys import stdin, stderr, argv
+from math import sin, cos, radians
+from sys import stderr, argv
 from pi3d import Sphere, Display, Camera, Shader, Keyboard, screenshot, Lines, Font, String, Mouse
+
 
 class Body(Sphere):
     def __init__(self, shader, colour, radius, position=(0.0, 0.0, 0.0), track_shader=None, track_max=1000):
@@ -43,6 +44,11 @@ def main():
         raise Exception('>>> ERROR! Please supply two quantities to plot <<<')
     file1 = open(argv[1])
     file2 = open(argv[2])
+    if len(argv) == 7:
+        file3 = open(argv[3])
+        file4 = open(argv[4])
+        file5 = open(argv[5])
+        file6 = open(argv[6])
 
     # Setup display and initialise pi3d
     display = Display.create(x=0, y=0, frames_per_second=60)
@@ -61,14 +67,13 @@ def main():
     hud_string.position((-display.width + rt - lt) / 2.0, (0.9 * display.height - tp + bm) / 2.0, 1.0)
     hud_string.draw()  # NB has to be drawn before quick_change() is called as buffer needs to exist
 
-    if len(argv) > 3:
-        particle1 = Body(Shader('mat_light'), (0.0, 1.0, 1.0), 0.2, track_shader=Shader('mat_flat'),
-                        track_max=int(argv[3]))
-        particle2 = Body(Shader('mat_light'), (1.0, 1.0, 0.0), 0.2, track_shader=Shader('mat_flat'),
-                         track_max=int(argv[3]))
-    else:
-        particle1 = Body(Shader('mat_light'), (0.0, 1.0, 1.0), 0.2, track_shader=Shader('mat_flat'))
-        particle2 = Body(Shader('mat_light'), (1.0, 1.0, 0.0), 0.2, track_shader=Shader('mat_flat'))
+    particle1 = Body(Shader('mat_light'), (0.0, 1.0, 1.0), 0.2, track_shader=Shader('mat_flat'))
+    particle2 = Body(Shader('mat_light'), (0.0, 1.0, 1.0), 0.2, track_shader=Shader('mat_flat'))
+    if len(argv) == 7:
+        particle3 = Body(Shader('mat_light'), (1.0, 1.0, 0.0), 0.2, track_shader=Shader('mat_flat'))
+        particle4 = Body(Shader('mat_light'), (1.0, 1.0, 0.0), 0.2, track_shader=Shader('mat_flat'))
+        particle5 = Body(Shader('mat_light'), (1.0, 0.0, 1.0), 0.2, track_shader=Shader('mat_flat'))
+        particle6 = Body(Shader('mat_light'), (1.0, 0.0, 1.0), 0.2, track_shader=Shader('mat_flat'))
     # Enable key presses and mouse
     keys = Keyboard()
     mouse = Mouse(restrict=False)
@@ -77,9 +82,19 @@ def main():
     # Display scene
     line1 = file1.readline()
     line2 = file2.readline()
+    if len(argv) == 7:
+        line3 = file3.readline()
+        line4 = file4.readline()
+        line5 = file5.readline()
+        line6 = file6.readline()
     while display.loop_running():
         data1 = line1.split(' ')
         data2 = line2.split(' ')
+        if len(argv) == 7:
+            data3 = line3.split(' ')
+            data4 = line4.split(' ')
+            data5 = line5.split(' ')
+            data6 = line6.split(' ')
         hud_string.quick_change(
             f' t {float(data1[3]):-5.1f}  x {float(data1[0]):-5.1f}  y {float(data1[1]):-5.1f}  z {float(data1[2]):-5.1f} ')
         hud_string.draw()
@@ -90,9 +105,18 @@ def main():
         camera.position((cam_rad * sin(r_rot) * cos(r_tilt), cam_rad * sin(r_tilt), - cam_rad * cos(r_rot) * cos(r_tilt)))
         # plot the entities
         particle1.pos = [float(data1[0]), float(data1[1]), float(data1[2])]
-        particle1.position_and_draw(trace_material=(0.0, 0.5, 0.0))
+        particle1.position_and_draw(trace_material=(0.0, 0.25, 0.0))
         particle2.pos = [float(data2[0]), float(data2[1]), float(data2[2])]
-        particle2.position_and_draw(trace_material=(0.5, 0.0, 0.0))
+        particle2.position_and_draw(trace_material=(0.0, 0.25, 0.0))
+        if len(argv) == 7:
+            particle3.pos = [float(data3[0]), float(data3[1]), float(data3[2])]
+            particle3.position_and_draw(trace_material=(0.4, 0.0, 0.0))
+            particle4.pos = [float(data4[0]), float(data4[1]), float(data4[2])]
+            particle4.position_and_draw(trace_material=(0.4, 0.0, 0.0))
+            particle5.pos = [float(data5[0]), float(data5[1]), float(data5[2])]
+            particle5.position_and_draw(trace_material=(0.0, 0.0, 0.5))
+            particle6.pos = [float(data6[0]), float(data6[1]), float(data6[2])]
+            particle6.position_and_draw(trace_material=(0.0, 0.0, 0.5))
         # process mouse and keyboard input
         mx, my = mouse.position()
         if mouse.button_status() == mouse.LEFT_BUTTON:
@@ -123,6 +147,11 @@ def main():
         # prepare for next iteration
         line1 = file1.readline()
         line2 = file2.readline()
+        if len(argv) == 7:
+            line3 = file3.readline()
+            line4 = file4.readline()
+            line5 = file5.readline()
+            line6 = file6.readline()
         if not line1:
             display.stop()
 
