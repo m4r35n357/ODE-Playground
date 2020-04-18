@@ -34,7 +34,7 @@ int main (int argc, char **argv) {
     // main loop
     t_xyz_output(x[0], y[0], z[0], t);
     for (long step = 1; step <= nsteps; step++) {
-        // compute the taylor coefficients
+        // build the jet of taylor coefficients
         for (int k = 0; k < n; k++) {
             //  x' = sin(y) - Bx
             mpfr_fms(_, b, x[k], *t_sin_cos(sy, cy, y, k, TRIG).a, RND);

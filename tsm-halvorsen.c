@@ -28,7 +28,7 @@ int main (int argc, char **argv) {
     // main loop
     t_xyz_output(x[0], y[0], z[0], t);
     for (long step = 1; step <= nsteps; step++) {
-        // compute the taylor coefficients
+        // build the jet of taylor coefficients
         for (int k = 0; k < n; k++) {
             mpfr_mul_2ui(w4x, x[k], 2, RND);
             mpfr_mul_2ui(w4y, y[k], 2, RND);
