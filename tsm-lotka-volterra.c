@@ -32,10 +32,10 @@ int main (int argc, char **argv) {
             mpfr_set(xy, *t_prod(x, y, k), RND);
             //  x' = Ax - Cxy
             mpfr_fmms(_, a, x[k], c, xy, RND);
-            mpfr_div_ui(x[k + 1], _, k + 1, RND);
+            t_next(x, _, k, POS);
             //  y' = Dxy - By
             mpfr_fmms(_, d, xy, b, y[k], RND);
-            mpfr_div_ui(y[k + 1], _, k + 1, RND);
+            t_next(y, _, k, POS);
         }
 
         // sum the series using Horner's method and advance one step

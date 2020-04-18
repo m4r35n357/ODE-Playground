@@ -29,7 +29,7 @@ int main (int argc, char **argv) {
         for (int k = 0; k < n; k++) {
             //  x' = Ax
             mpfr_mul(_, x[k], a, RND);
-            mpfr_div_ui(x[k + 1], _, k + 1, RND);
+            t_next(x, _, k, POS);
         }
 
         // sum the series using Horner's method and advance one step

@@ -38,13 +38,13 @@ int main (int argc, char **argv) {
         for (int k = 0; k < n; k++) {
             //  x' = sin(y) - Bx
             mpfr_fms(_, b, x[k], *t_sin_cos(sy, cy, y, k, TRIG).a, RND);
-            mpfr_div_si(x[k + 1], _, - (k + 1), RND);
+            t_next(x, _, k, NEG);
             //  y' = sin(z) - By
             mpfr_fms(_, b, y[k], *t_sin_cos(sz, cz, z, k, TRIG).a, RND);
-            mpfr_div_si(y[k + 1], _, - (k + 1), RND);
+            t_next(y, _, k, NEG);
             //  z' = sin(x) - Bz
             mpfr_fms(_, b, z[k], *t_sin_cos(sx, cx, x, k, TRIG).a, RND);
-            mpfr_div_si(z[k + 1], _, - (k + 1), RND);
+            t_next(z, _, k, NEG);
         }
 
         // sum the series using Horner's method and advance one step

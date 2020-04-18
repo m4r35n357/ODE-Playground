@@ -50,13 +50,13 @@ int main (int argc, char **argv) {
             mpfr_mul(az[k], z[k], a, RND);
             //  x' = sin(Ay) - Btan(x)
             mpfr_fms(_, b, *t_tan_sec2(tx, s2x, x, k, TRIG).a, *t_sin_cos(say, cay, ay, k, TRIG).a, RND);
-            mpfr_div_si(x[k + 1], _, - (k + 1), RND);
+            t_next(x, _, k, NEG);
             //  y' = sin(Az) - Btan(y)
             mpfr_fms(_, b, *t_tan_sec2(ty, s2y, y, k, TRIG).a, *t_sin_cos(saz, caz, az, k, TRIG).a, RND);
-            mpfr_div_si(y[k + 1], _, - (k + 1), RND);
+            t_next(y, _, k, NEG);
             //  z' = sin(Ax) - Btan(z)
             mpfr_fms(_, b, *t_tan_sec2(tz, s2z, z, k, TRIG).a, *t_sin_cos(sax, cax, ax, k, TRIG).a, RND);
-            mpfr_div_si(z[k + 1], _, - (k + 1), RND);
+            t_next(z, _, k, NEG);
         }
 
         // sum the series using Horner's method and advance one step

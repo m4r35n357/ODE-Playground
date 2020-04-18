@@ -28,18 +28,18 @@ int main (int argc, char **argv) {
     // main loop
     t_xyz_output(x[0], y[0], z[0], t);
     for (long step = 1; step <= nsteps; step++) {
-        // compute the taylor coefficients
+        // build the jet of taylor coefficients
         for (int k = 0; k < n; k++) {
             //  x' = S(y - x)
             mpfr_fmms(_, sigma, y[k], sigma, x[k], RND);
-            mpfr_div_ui(x[k + 1], _, k + 1, RND);
+            t_next(x, _, k, POS);
             //  y' = x(R - z) - y
             mpfr_fms(_, x[k], rho, *t_prod(x, z, k), RND);
             mpfr_sub(_, _, y[k], RND);
-            mpfr_div_ui(y[k + 1], _, k + 1, RND);
+            t_next(y, _, k, POS);
             //  z' = xy - Bz
             mpfr_fms(_, beta, z[k], *t_prod(x, y, k), RND);
-            mpfr_div_si(z[k + 1], _, - (k + 1), RND);
+            t_next(z, _, k, NEG);
         }
 
         // sum the series using Horner's method and advance one step

@@ -33,14 +33,15 @@ int main (int argc, char **argv) {
         for (int k = 0; k < n; k++) {
             //  x' = y
             mpfr_div_ui(x[k + 1], y[k], k + 1, RND);
+            t_next(x, y[k], k, POS);
             //  y' = yz - x
             mpfr_sub(_, *t_prod(y, z, k), x[k], RND);
-            mpfr_div_ui(y[k + 1], _, k + 1, RND);
+            t_next(y, _, k, POS);
             //  z' = z - ax^2 - y^2 - b
             mpfr_sub(__, z[k], w_b[k], RND);
             mpfr_sub(__, __, *t_sqr(y, k), RND);
             mpfr_fma(_, *t_sqr(x, k), a, __, RND);
-            mpfr_div_ui(z[k + 1], _, k + 1, RND);
+            t_next(z, _, k, POS);
         }
 
         // sum the series using Horner's method and advance one step

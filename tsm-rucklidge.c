@@ -33,12 +33,12 @@ int main (int argc, char **argv) {
             //  x' = ay - kx - yz
             mpfr_fmms(_, alpha, y[k], kappa, x[k], RND);
             mpfr_sub(_, _, *t_prod(y, z, k), RND);
-            mpfr_div_ui(x[k + 1], _, k + 1, RND);
+            t_next(x, _, k, POS);
             //  y' = x
-            mpfr_div_ui(y[k + 1], x[k], k + 1, RND);
+            t_next(y, x[k], k, POS);
             //  z' = y^2 - z
             mpfr_sub(_, *t_sqr(y, k), z[k], RND);
-            mpfr_div_ui(z[k + 1], _, k + 1, RND);
+            t_next(z, _, k, POS);
         }
 
         // sum the series using Horner's method and advance one step

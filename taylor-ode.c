@@ -58,6 +58,10 @@ mpfr_t *t_jet_c (int n, mpfr_t value) {
     return jet;
 }
 
+void t_next (mpfr_t *jet, mpfr_t dot, int k, sign s) {
+    s == NEG ? mpfr_div_si(jet[k + 1], dot, - (k + 1), RND) : mpfr_div_ui(jet[k + 1], dot, k + 1, RND);
+}
+
 void t_horner (mpfr_t *jet, int n, mpfr_t h) {
     assert(n > 0);
     mpfr_set_zero(_, 1);

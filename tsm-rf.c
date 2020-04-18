@@ -42,15 +42,15 @@ int main (int argc, char **argv) {
             //  x' = y(z - 1 + x^2) + Gx
             mpfr_add(a[k], z[k], x2_1, RND);
             mpfr_fma(_, gamma, x[k], *t_prod(y, a, k), RND);
-            mpfr_div_ui(x[k + 1], _, k + 1, RND);
+            t_next(x, _, k, POS);
             //  y' = x(3z + 1 - x^2) + Gy
             mpfr_fms(b[k], d3, z[k], x2_1, RND);
             mpfr_fma(_, gamma, y[k], *t_prod(x, b, k), RND);
-            mpfr_div_ui(y[k + 1], _, k + 1, RND);
+            t_next(y, _, k, POS);
             //  z' = -2z(A + xy)
             mpfr_add(c[k], *t_prod(x, y, k), alpha[k], RND);
             mpfr_mul_2ui(_, *t_prod(z, c, k), 1, RND);
-            mpfr_div_si(z[k + 1], _, - (k + 1), RND);
+            t_next(z, _, k, NEG);
         }
 
         // sum the series using Horner's method and advance one step

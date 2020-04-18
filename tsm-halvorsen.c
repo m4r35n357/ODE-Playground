@@ -37,17 +37,17 @@ int main (int argc, char **argv) {
             mpfr_fma(_, a, x[k], *t_sqr(y, k), RND);
             mpfr_add(_, w4y, _, RND);
             mpfr_add(_, w4z, _, RND);
-            mpfr_div_si(x[k + 1], _, - (k + 1), RND);
+            t_next(x, _, k, NEG);
             //  y' = - Ay - 4z - 4x - z^2
             mpfr_fma(_, a, y[k], *t_sqr(z, k), RND);
             mpfr_add(_, w4z, _, RND);
             mpfr_add(_, w4x, _, RND);
-            mpfr_div_si(y[k + 1], _, - (k + 1), RND);
+            t_next(y, _, k, NEG);
             //  z' = - Az - 4x - 4y - x^2
             mpfr_fma(_, a, z[k], *t_sqr(x, k), RND);
             mpfr_add(_, w4x, _, RND);
             mpfr_add(_, w4y, _, RND);
-            mpfr_div_si(z[k + 1], _, - (k + 1), RND);
+            t_next(z, _, k, NEG);
         }
 
         // sum the series using Horner's method and advance one step

@@ -31,13 +31,13 @@ int main (int argc, char **argv) {
         // compute the taylor coefficients
         for (int k = 0; k < n; k++) {
             //  x' = y
-            mpfr_div_ui(x[k + 1], y[k], k + 1, RND);
+            t_next(x, y[k], k, POS);
             //  y' = z
-            mpfr_div_ui(y[k + 1], z[k], k + 1, RND);
+            t_next(y, z[k], k, POS);
             //  z' = - az + y^2 - x
             mpfr_fma(_, a, z[k], x[k], RND);
             mpfr_sub(_, *t_sqr(y, k), _, RND);
-            mpfr_div_ui(z[k + 1], _, k + 1, RND);
+            t_next(z, _, k, POS);
         }
 
         // sum the series using Horner's method and advance one step

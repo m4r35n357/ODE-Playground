@@ -24,6 +24,11 @@ typedef struct {
 } tuple;
 
 /*
+ * Sign of a number
+ */
+typedef enum {POS, NEG} sign;
+
+/*
  * Selects either a trigonometric or hyperbolic version of the function
  */
 typedef enum {TRIG, HYP} geometry;
@@ -57,6 +62,11 @@ mpfr_t *t_jet (int size);
  * Returns a jet with element zero set to value and the rest zeroed (represents an additive constant in an ODE)
  */
 mpfr_t *t_jet_c (int size, mpfr_t value);
+
+/*
+ * Calculate next coefficient in jet
+ */
+void t_next (mpfr_t *jet, mpfr_t dot, int k, sign s);
 
 /*
  * Sums a Taylor series safely and efficiently
