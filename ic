@@ -51,7 +51,5 @@ perturb () {
 perturb $*
 wait
 
-echo "splot '$fileA' with lines, '$fileB' with lines, '$fileC' with lines, '$fileD' with lines, '$fileE' with lines, '$fileF' with lines" | gnuplot -p
-
-./plotCns.py $fileA $fileB $fileC $fileD $fileE $fileF >/dev/null 2>&1 &
+./plot3d.py $fileA $fileB $fileC $fileD $fileE $fileF >/dev/null 2>&1 &
 

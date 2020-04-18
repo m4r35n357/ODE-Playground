@@ -63,7 +63,5 @@ esac
 
 ./compare.py $fileA $fileB 3 >/dev/null &
 
-echo "splot '$fileA' with lines, '$fileB' with lines" | gnuplot -p
-
-./plotCns.py $fileA $fileB >/dev/null 2>&1 &
+./plot3d.py $fileA $fileB >/dev/null 2>&1 &
 
