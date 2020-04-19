@@ -32,7 +32,6 @@ int main (int argc, char **argv) {
         // build the jet of taylor coefficients
         for (int k = 0; k < n; k++) {
             //  x' = y
-            mpfr_div_ui(x[k + 1], y[k], k + 1, RND);
             t_next(x, y[k], k, POS);
             //  y' = yz - x
             mpfr_sub(_, *t_prod(y, z, k), x[k], RND);
