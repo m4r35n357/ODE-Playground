@@ -19,15 +19,15 @@ void t_tempvars (void) {
     mpfr_inits(_, __, ___, NULL);
 }
 
-void t_xyz_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t t) {
+void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, long step, mpfr_t t) {
+    mpfr_mul_ui(t, h, step, RND);
     mpfr_printf("%+.12RNe %+.12RNe %+.12RNe %+.6RNe\n", x, y, z, t);
 }
 
-void t_stepper (char **argv, long *n, mpfr_t *t, mpfr_t *h, long *nsteps) {
+void t_stepper (char **argv, long *n, mpfr_t *h, long *nsteps) {
     mpfr_set_default_prec(strtod(argv[1], NULL) * 3.322);
     fprintf(stderr, " MPFR default precision: %lu bits\n", mpfr_get_default_prec());
     *n = strtol(argv[2], NULL, BASE);
-    mpfr_init_set_ui(*t, 0, RND);
     mpfr_init_set_str(*h, argv[3], BASE, RND);
     *nsteps = strtol(argv[4], NULL, BASE);
     t_tempvars();

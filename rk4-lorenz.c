@@ -38,18 +38,18 @@ static mpfr_t *sum (mpfr_t *b, mpfr_t a1, mpfr_t a2, mpfr_t a3, mpfr_t a4) {
 
 int main (int argc, char **argv) {
     long nsteps, interval;
-    mpfr_t t, x, y, z, sigma, rho, beta, h, _, h_2, _x, _y, _z;
+    mpfr_t x, y, z, sigma, rho, beta, h, _, h_2, _x, _y, _z;
     mpfr_t k1, l1, m1, k2, l2, m2, k3, l3, m3, k4, l4, m4;
 
     assert(argc == 12);
-    t_stepper(argv, &interval, &t, &h, &nsteps);
+    t_stepper(argv, &interval, &h, &nsteps);
     t_args(argv, argc, &x, &y, &z, &sigma, &rho, &beta, &_);
     mpfr_div(beta, beta, _, RND);
     mpfr_inits(h_2, _x, _y, _z, k1, l1, m1, k2, l2, m2, k3, l3, m3, k4, l4, m4, NULL);
 
     mpfr_div_2ui(h_2, h, 1, RND);
 
-    t_xyz_output(x, y, z, t);
+    t_output(x, y, z, h, 0, _);
     for (long step = 1; step <= nsteps; step++) {
         dx(&k1, x, y, sigma);
         dy(&l1, x, y, z, rho);
@@ -80,8 +80,7 @@ int main (int argc, char **argv) {
         mpfr_fma(y, h, *sum(&_, l1, l2, l3, l4), y, RND);
         mpfr_fma(z, h, *sum(&_, m1, m2, m3, m4), z, RND);
 
-        mpfr_mul_ui(t, h, step, RND);
-        if (step % interval == 0) { t_xyz_output(x, y, z, t); }
+        if (step % interval == 0) { t_output(x, y, z, h, step, _); }
     }
     return 0;
 }

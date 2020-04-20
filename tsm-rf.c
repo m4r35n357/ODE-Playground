@@ -2,7 +2,7 @@
  * Rabinovich–Fabrikant System
  *
  * Example: ./tsm-rf-dbg 32 10 .01 50000 .05 -.05 .3 .28713 .1
- *          ./tsm-rf-dbg 32 16 .01 50000 .05 -.05 .3 .105 .1 | ./plotPi3d.py
+ *          ./tsm-rf-dbg 32 16 .01 50000 .05 -.05 .3 .105 .1 | ./plot3d.py
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -13,11 +13,11 @@
 
 int main (int argc, char **argv) {
     long n, nsteps;
-    mpfr_t t, x0, y0, z0, gamma, h, d3, _, x2_1;
+    mpfr_t x0, y0, z0, gamma, h, d3, _, x2_1;
 
     // initialize from command arguments
     assert(argc == 10);
-    t_stepper(argv, &n, &t, &h, &nsteps);
+    t_stepper(argv, &n, &h, &nsteps);
     t_args(argv, argc, &x0, &y0, &z0, &_, &gamma);
     mpfr_inits(d3, x2_1, NULL);
 
@@ -33,8 +33,7 @@ int main (int argc, char **argv) {
     mpfr_set_ui(_, 1, RND);
     mpfr_t *w1 = t_jet_c(n, _);
 
-    // main loop
-    t_xyz_output(x[0], y[0], z[0], t);
+    t_output(x[0], y[0], z[0], h, 0, _);
     for (long step = 1; step <= nsteps; step++) {
         // build the jet of taylor coefficients
         for (int k = 0; k < n; k++) {
@@ -57,8 +56,7 @@ int main (int argc, char **argv) {
         t_horner(x, n, h);
         t_horner(y, n, h);
         t_horner(z, n, h);
-        mpfr_mul_ui(t, h, step, RND);
-        t_xyz_output(x[0], y[0], z[0], t);
+        t_output(x[0], y[0], z[0], h, step, _);
     }
     return 0;
 }
