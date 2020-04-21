@@ -59,7 +59,7 @@ case $method in
           *) $original >$fileB & wait;;
 esac
 
-./divergence.py $fileA $fileB 3 0.000000000000000001 0.000000000001 0.000000001 0.000001 0.001 1.0 >/dev/null
+./divergence.py $fileA $fileB 3 0.000000000001 0.000000001 0.000001 0.001 1.0 >/dev/null
 
 ./compare.py $fileA $fileB 3 >/dev/null &
 
