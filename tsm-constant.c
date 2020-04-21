@@ -30,7 +30,6 @@ int main (int argc, char **argv) {
             mpfr_mul(_, x[k], a, RND);
             t_next(x, _, k, POS);
         }
-
         // sum the series using Horner's method and advance one step
         t_horner(x, n, h);
         t_output(x[0], x[0], x[0], h, step, _);

@@ -62,7 +62,7 @@ void t_next (mpfr_t *jet, mpfr_t dot, int k, sign s) {
     s == NEG ? mpfr_div_si(jet[k + 1], dot, - (k + 1), RND) : mpfr_div_ui(jet[k + 1], dot, k + 1, RND);
 }
 
-void t_horner (mpfr_t *jet, int n, mpfr_t h) {
+mpfr_t *t_horner (mpfr_t *jet, int n, mpfr_t h) {
     assert(n > 0);
     mpfr_set_zero(_, 1);
     for (int i = n; i > - 1; i--) {
@@ -70,6 +70,7 @@ void t_horner (mpfr_t *jet, int n, mpfr_t h) {
     }
     assert(mpfr_number_p(_));
     mpfr_swap(jet[0], _);
+    return &jet[0];
 }
 
 mpfr_t *t_abs (mpfr_t *u, int k) {

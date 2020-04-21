@@ -45,12 +45,8 @@ int main (int argc, char **argv) {
             mpfr_fms(_, b, z[k], *t_sin_cos(sx, cx, x, k, TRIG).a, RND);
             t_next(z, _, k, NEG);
         }
-
         // sum the series using Horner's method and advance one step
-        t_horner(x, n, h);
-        t_horner(y, n, h);
-        t_horner(z, n, h);
-        t_output(x[0], y[0], z[0], h, step, _);
+        t_output(*t_horner(x, n, h), *t_horner(y, n, h), *t_horner(z, n, h), h, step, _);
     }
     return 0;
 }

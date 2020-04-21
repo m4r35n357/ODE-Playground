@@ -71,7 +71,7 @@ void t_next (mpfr_t *jet, mpfr_t dot, int k, sign s);
 /*
  * Sums a Taylor series safely and efficiently
  */
-void t_horner (mpfr_t *jet, int n, mpfr_t h);
+mpfr_t *t_horner (mpfr_t *jet, int n, mpfr_t h);
 
 /*
  * Returns a pointer to kth element of the absolute value of U, result stored and returned in variable A, NO JET STORAGE
