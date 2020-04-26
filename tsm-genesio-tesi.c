@@ -33,11 +33,11 @@ int main (int argc, char **argv) {
             t_next(x, y[k], k, POS);
             //  y' = z
             t_next(y, z[k], k, POS);
-            //  z' = x^2 - Cx - By -Az
+            //  z' = x^2 - Cx - By - Az
             mpfr_fms(_, c, x[k], *t_sqr(x, k), RND);
             mpfr_fma(_, b, y[k], _, RND);
             mpfr_fma(_, a, z[k], _, RND);
-            t_next(z, y[k], k, NEG);
+            t_next(z, _, k, NEG);
         }
         // sum the series using Horner's method and advance one step
         t_output(*t_horner(x, n, h), *t_horner(y, n, h), *t_horner(z, n, h), h, step, _);
