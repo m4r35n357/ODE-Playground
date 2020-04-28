@@ -20,9 +20,7 @@ int main (int argc, char **argv) {
     t_args(argv, argc, &x0, &y0, &z0, &a, &_, &c);
 
     // initialize the derivative and temporary jets
-    mpfr_t *x = t_jet_c(n + 1, x0);
-    mpfr_t *y = t_jet_c(n + 1, y0);
-    mpfr_t *z = t_jet_c(n + 1, z0);
+    mpfr_t *x = t_jet_c(n + 1, x0), *y = t_jet_c(n + 1, y0), *z = t_jet_c(n + 1, z0);
     mpfr_t *b = t_jet_c(n, _);
 
     t_output(x[0], y[0], z[0], h, 0, _);

@@ -12,7 +12,7 @@
 
 int main (int argc, char **argv) {
     long n, nsteps;
-    mpfr_t x0, y0, z0, a, b, g, m, h, _, *gx2;
+    mpfr_t x0, y0, z0, a, b, g, m, h, _;
 
     // initialize from command arguments
     assert(argc == 12);
@@ -21,10 +21,8 @@ int main (int argc, char **argv) {
     mpfr_init(_);
 
     // initialize the derivative and temporary jets
-    mpfr_t *x = t_jet_c(n + 1, x0);
-    mpfr_t *y = t_jet_c(n + 1, y0);
-    mpfr_t *z = t_jet_c(n + 1, z0);
-    gx2 = t_jet(n);
+    mpfr_t *x = t_jet_c(n + 1, x0), *y = t_jet_c(n + 1, y0), *z = t_jet_c(n + 1, z0);
+    mpfr_t *gx2 = t_jet(n);
 
     t_output(x[0], y[0], z[0], h, 0, _);
     for (long step = 1; step <= nsteps; step++) {

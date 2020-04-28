@@ -56,6 +56,7 @@ rm -f libtaylor.so taylor-ode.o
 ${CC} -O0 -c $WARNINGS -g -fpic taylor-ode.c && ${CC} -shared -o libtaylor.so taylor-ode.o &
 # Example:
 # gcc -L. -Wall -g -o test tsm-lorenz.c -ltaylor -lmpfr
+# export LD_LIBRARY_PATH=.
 # ./test 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/data; echo "splot '/tmp/data' with lines" | gnuplot -p
 
 rm -f libad.so ad.o

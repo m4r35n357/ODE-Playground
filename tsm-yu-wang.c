@@ -21,11 +21,8 @@ int main (int argc, char **argv) {
     mpfr_init(_);
 
     // initialize the derivative and temporary jets
-    mpfr_t *x = t_jet_c(n + 1, x0);
-    mpfr_t *y = t_jet_c(n + 1, y0);
-    mpfr_t *z = t_jet_c(n + 1, z0);
-    mpfr_t *xy = t_jet(n);
-    mpfr_t *e_xy = t_jet(n);
+    mpfr_t *x = t_jet_c(n + 1, x0), *y = t_jet_c(n + 1, y0), *z = t_jet_c(n + 1, z0);
+    mpfr_t *xy = t_jet(n), *e_xy = t_jet(n);
 
     t_output(x[0], y[0], z[0], h, 0, _);
     for (long step = 1; step <= nsteps; step++) {
