@@ -24,7 +24,7 @@ typedef enum {ROOT=0, MIN_MAX=1, INFLECTION=2} mode;
 /*
  * Signature for solver model functions
  */
-typedef void (*model)(mpfr_t *, mpfr_t *, int);
+typedef void (*model)(series, series);
 
 /*
  * Initialize file scoped temporary storage
@@ -34,96 +34,96 @@ void ad_tempvars (void);
 /*
  * Selects a jet for automatic diffentiation, or not
  */
-void set_ad_status (mpfr_t *jet, ad_status s);
+void set_ad_status (series jet, ad_status s);
 
 /*
  * Prints a Taylor coefficient jet to order n
  */
-void jet_output (mpfr_t *jet, long n, char* f_colour, char *fk_colour);
+void jet_output (series jet, long n, char* f_colour, char *fk_colour);
 
 /*
  * Applies factorials to convert Taylor coefficients to actual derivative values
  */
-void jet_to_derivs (mpfr_t *jet, long n);
+void jet_to_derivs (series jet, long n);
 
 /*
  * Prints a derivative jet to order n
  */
-void derivative_output (mpfr_t *jet, long n, char* f_colour, char *fk_colour);
+void derivative_output (series jet, long n, char* f_colour, char *fk_colour);
 
 /*
  * Finds a root of fn(f, x) by Newton's method, where f and x are Taylor Series
  */
-void ad_newton (model m, mpfr_t *f, mpfr_t *x, int max_it, mpfr_t f_tol, mpfr_t x_tol, mode degree);
+void ad_newton (model m, series f, series x, int max_it, mpfr_t f_tol, mpfr_t x_tol, mode degree);
 
-mpfr_t *ad_set (mpfr_t *B, mpfr_t *A, int n);
+series ad_set (series B, series A);
 
 /*
  * Scales Taylor Series U by a factor a, result stored in jet S
  */
-mpfr_t *ad_scale (mpfr_t *S, mpfr_t *U, mpfr_t a, int n);
+series ad_scale (series S, series U, mpfr_t a);
 
 /*
  * Calculates Taylor Series for the sum of U and V, result stored in jet P
  */
-mpfr_t *ad_plus (mpfr_t *P, mpfr_t *V, mpfr_t *U, int n);
+series ad_plus (series P, series V, series U);
 
 /*
  * Calculates Taylor Series for the difference of U and V, result stored in jet M
  */
-mpfr_t *ad_minus (mpfr_t *M, mpfr_t *V, mpfr_t *U, int n);
+series ad_minus (series M, series V, series U);
 
 /*
  * Calculates Taylor Series for the negative of U, result stored in jet M
  */
-mpfr_t *ad_neg (mpfr_t *M, mpfr_t *U, int n);
+series ad_neg (series M, series U);
 
 /*
  * Calculates Taylor Series for the absolute value of U, result stored in jet A
  */
-mpfr_t *ad_abs (mpfr_t *A, mpfr_t *U, int n);
+series ad_abs (series A, series U);
 
 /*
  * Calculates Taylor Series for U * V, result stored in jet P
  */
-mpfr_t *ad_prod (mpfr_t *P, mpfr_t *V, mpfr_t *U, int n);
+series ad_prod (series P, series V, series U);
 
 /*
  * Calculates Taylor Series for U / V, result stored in jet Q
  */
-mpfr_t *ad_quot (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int n);
+series ad_quot (series Q, series U, series V);
 
 /*
  * Calculates Taylor Series for the square of U, result stored in jet S
  */
-mpfr_t *ad_sqr (mpfr_t *S, mpfr_t *U, int n);
+series ad_sqr (series S, series U);
 
 /*
  * Calculates Taylor Series for the square root of U, result stored in jet R
  */
-mpfr_t *ad_sqrt (mpfr_t *R, mpfr_t *U, int n);
+series ad_sqrt (series R, series U);
 
 /*
  * Calculates Taylor Series for the exponential of U, results stored in jet E
  */
-mpfr_t *ad_exp (mpfr_t *E, mpfr_t *U, int n);
+series ad_exp (series E, series U);
 
 /*
  * Calculates Taylor Series for the trigonometric sine and cosine of U, results stored in jets S and C
  */
-tuple ad_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int n, geometry g);
+tuple ad_sin_cos (series S, series C, series U, geometry g);
 
 /*
  * Calculates Taylor Series for the trigonometric tangent and squared secant of U, results stored in jets T and S2
  */
-tuple ad_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int n, geometry g);
+tuple ad_tan_sec2 (series T, series S2, series U, geometry g);
 
 /*
  * Calculates Taylor Series for U^a, results stored in jet P
  */
-mpfr_t *ad_pwr (mpfr_t *P, mpfr_t *U, double a, int n);
+series ad_pwr (series P, series U, double a);
 
 /*
  * Calculates Taylor Series for the natural logarithm of U, results stored in jet L
  */
-mpfr_t *ad_ln (mpfr_t *L, mpfr_t *U, int n);
+series ad_ln (series L, series U);

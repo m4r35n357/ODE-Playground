@@ -21,25 +21,25 @@ int main (int argc, char **argv) {
     mpfr_div(beta, beta, _, RND);
 
     // initialize the derivative and temporary jets
-    mpfr_t *x = t_jet_c(n + 1, x0), *y = t_jet_c(n + 1, y0), *z = t_jet_c(n + 1, z0);
+    series x = t_jet_c(n + 1, x0), y = t_jet_c(n + 1, y0), z = t_jet_c(n + 1, z0);
 
-    t_output(x[0], y[0], z[0], h, 0, _);
+    t_output(x.a[0], y.a[0], z.a[0], h, 0, _);
     for (long step = 1; step <= nsteps; step++) {
         // build the jet of taylor coefficients
         for (int k = 0; k < n; k++) {
             //  x' = S(y - x)
-            mpfr_fmms(_, sigma, y[k], sigma, x[k], RND);
+            mpfr_fmms(_, sigma, y.a[k], sigma, x.a[k], RND);
             t_next(x, _, k, POS);
             //  y' = x(R - z) - y
-            mpfr_fms(_, x[k], rho, *t_prod(x, z, k), RND);
-            mpfr_sub(_, _, y[k], RND);
+            mpfr_fms(_, x.a[k], rho, *t_prod(x, z, k), RND);
+            mpfr_sub(_, _, y.a[k], RND);
             t_next(y, _, k, POS);
             //  z' = xy - Bz
-            mpfr_fms(_, beta, z[k], *t_prod(x, y, k), RND);
+            mpfr_fms(_, beta, z.a[k], *t_prod(x, y, k), RND);
             t_next(z, _, k, NEG);
         }
         // sum the series using Horner's method and advance one step
-        t_output(*t_horner(x, n, h), *t_horner(y, n, h), *t_horner(z, n, h), h, step, _);
+        t_output(*t_horner(x, h), *t_horner(y, h), *t_horner(z, h), h, step, _);
     }
     return 0;
 }
