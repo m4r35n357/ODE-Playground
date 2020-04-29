@@ -65,7 +65,7 @@ void t_next (mpfr_t *jet, mpfr_t dot, int k, sign s) {
 mpfr_t *t_horner (mpfr_t *jet, int n, mpfr_t h) {
     assert(n > 0);
     mpfr_set_zero(_, 1);
-    for (int i = n; i > - 1; i--) {
+    for (int i = n - 1; i >= 0; i--) {
         mpfr_fma(_, _, h, jet[i], RND);
     }
     assert(mpfr_number_p(_));
