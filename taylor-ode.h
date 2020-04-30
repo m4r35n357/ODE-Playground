@@ -217,7 +217,7 @@ tuple t_tan_sec2 (series T, series S2, series U, int k, geometry g);
  *
  *                                        P[k] = (a sum{j=0->k-1} P[j].(k-j)U[k-j]/k - sum{j=1->k-1} U[j].(k-j)P[k-j]/k) / U[0]
  */
-mpfr_t *t_pwr (series P, series U, double a, int k);
+mpfr_t *t_pwr (series P, series U, mpfr_t a, int k);
 
 /*
  * Returns a pointer to kth element of the natural logarithm of U, result accumulated in jet L, DOMAIN RESTRICTION U[0] > 0.0

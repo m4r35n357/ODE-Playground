@@ -22,8 +22,23 @@ typedef enum {PASS, FAIL} result;
 
 static int total = 0, passed = 0, skipped = 0;
 
-static mpfr_t delta;
+static mpfr_t delta, D0, D05, D_05, D1, D_1, D2, D_2, D3, D_3, D_5, DA;
 
+static void ad_lib_test_tempvars (void) {
+    ad_tempvars();
+    mpfr_init(delta);
+    mpfr_init_set_ui(D0, 0, RND);
+    mpfr_init_set_str(D05, "0.5", BASE, RND);
+    mpfr_init_set_str(D_05, "-0.5", BASE, RND);
+    mpfr_init_set_ui(D1, 1, RND);
+    mpfr_init_set_si(D_1, -1, RND);
+    mpfr_init_set_ui(D2, 2, RND);
+    mpfr_init_set_si(D_2, -2, RND);
+    mpfr_init_set_ui(D3, 3, RND);
+    mpfr_init_set_si(D_3, -3, RND);
+    mpfr_init_set_si(D_5, -5, RND);
+    mpfr_init_set_str(DA, "-3.7", BASE, RND);
+}
 static result compare (char* name, series a, series b, mpfr_t threshold) {
     assert(b.size == a.size);
     total++;
@@ -41,22 +56,16 @@ static result compare (char* name, series a, series b, mpfr_t threshold) {
 }
 
 int main (int argc, char **argv) {
-    mpfr_t x0, DA, D05, D1, tol;
+    mpfr_t x0, tol;
 
     assert(argc == 5);
 
-    mpfr_init(delta);
     mpfr_set_default_prec(strtod(argv[1], NULL) * 3.322);
-    ad_tempvars();
+    ad_lib_test_tempvars();
     long n = strtol(argv[2], NULL, BASE) + 1;
     assert(n > 1);
     mpfr_init_set_str(x0, argv[3], BASE, RND);
     mpfr_init_set_str(tol, argv[4], BASE, RND);
-
-    double da = -3.7;
-    mpfr_init_set_d(DA, da, RND);
-    mpfr_init_set_str(D05, "0.5", BASE, RND);
-    mpfr_init_set_ui(D1, 1, RND);
 
     series a = t_jet(n);
     series p = t_jet(n);
@@ -75,34 +84,33 @@ int main (int argc, char **argv) {
     series c = t_jet(n);
     series t = t_jet(n);
 
-    printf("\n");
-
     series c1 = t_jet_c(n, D1);
     series x = t_jet_c(n, x0);
     set_ad_status(x, VARIABLE);
 
+    printf("\n");
     compare("x * x == sqr(x)", ad_prod(p, x, x), ad_sqr(s1, x), tol);
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("x * x == x^2", p, ad_pwr(p1, x, 2.0), tol);
+        compare("x * x == x^2", p, ad_pwr(p1, x, D2), tol);
     } else skipped++;
 
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("x^1 == x", ad_pwr(p1, x, 1.0), x, tol);
+        compare("x^1 == x", ad_pwr(p1, x, D1), x, tol);
     } else skipped++;
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("x^0.5 == sqrt(x)", ad_pwr(p1, x, 0.5), ad_sqrt(s, x), tol);
+        compare("x^0.5 == sqrt(x)", ad_pwr(p1, x, D05), ad_sqrt(s, x), tol);
     } else skipped++;
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("x^0 == x / x", ad_pwr(p1, x, 0.0), ad_quot(q, x, x), tol);
+        compare("x^0 == x / x", ad_pwr(p1, x, D0), ad_quot(q, x, x), tol);
     } else skipped++;
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("x^-0.5 == 1 / sqrt(x)", ad_pwr(p1, x, -0.5), ad_quot(q, c1, ad_sqrt(s, x)), tol);
+        compare("x^-0.5 == 1 / sqrt(x)", ad_pwr(p1, x, D_05), ad_quot(q, c1, ad_sqrt(s, x)), tol);
     } else skipped++;
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("x^-1 == 1 / x", ad_pwr(p1, x, -1.0), ad_quot(q, c1, x), tol);
+        compare("x^-1 == 1 / x", ad_pwr(p1, x, D_1), ad_quot(q, c1, x), tol);
     } else skipped++;
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("x^2 * x^-5 == x^-3", ad_prod(p, ad_pwr(p1, x, 2.0), ad_pwr(p2, x, -5.0)), ad_pwr(p3, x, -3.0), tol);
+        compare("x^2 * x^-5 == x^-3", ad_prod(p, ad_pwr(p1, x, D2), ad_pwr(p2, x, D_5)), ad_pwr(p3, x, D_3), tol);
     } else skipped++;
 
     if (mpfr_zero_p(x.a[0]) == 0) {
@@ -110,7 +118,7 @@ int main (int argc, char **argv) {
     } else skipped++;
 
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("log(x^a) == a * log(x)", ad_ln(l1, ad_pwr(p1, x, da)), ad_scale(s, ad_ln(l2, x), DA), tol);
+        compare("log(x^a) == a * log(x)", ad_ln(l1, ad_pwr(p1, x, DA)), ad_scale(s, ad_ln(l2, x), DA), tol);
     } else skipped++;
     compare("log(e^x) == x", ad_ln(l1, ad_exp(e1, x)), x, tol);
 

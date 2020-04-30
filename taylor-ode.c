@@ -13,10 +13,14 @@ const int BASE = 10;
 
 const mpfr_rnd_t RND = MPFR_RNDN;
 
-static mpfr_t _, __, ___;
+static mpfr_t D1, D_1, D2, D_2, _, __, ___;
 
 void t_tempvars (void) {
     mpfr_inits(_, __, ___, NULL);
+    mpfr_init_set_ui(D1, 1, RND);
+    mpfr_init_set_si(D_1, -1, RND);
+    mpfr_init_set_ui(D2, 2, RND);
+    mpfr_init_set_si(D_2, -2, RND);
 }
 
 void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, long step, mpfr_t t) {
@@ -124,7 +128,7 @@ mpfr_t *t_sqrt (series r, series u, int k) {
     return &r.a[k];
 }
 
-static mpfr_t *d_cauchy (mpfr_t *f, series h, series u, int k, int lower, int upper, double factor) {
+static mpfr_t *d_cauchy (mpfr_t *f, series h, series u, int k, int lower, int upper, mpfr_t factor) {
     assert(f != &_ && h.a != &_ && u.a != &_);
     mpfr_set_zero(*f, 1);
     for (int j = lower; j <= upper; j++) {
@@ -132,7 +136,7 @@ static mpfr_t *d_cauchy (mpfr_t *f, series h, series u, int k, int lower, int up
         mpfr_fma(*f, h.a[j], _, *f, RND);
     }
     mpfr_div_ui(*f, *f, k, RND);
-    mpfr_mul_d(*f, *f, factor, RND);
+    mpfr_mul(*f, *f, factor, RND);
     return f;
 }
 
@@ -142,7 +146,7 @@ mpfr_t *t_exp (series e, series u, int k) {
     if (k == 0) {
         mpfr_exp(e.a[k], u.a[0], RND);
     } else {
-        d_cauchy(&e.a[k], e, u, k, 0, k - 1, 1.0);
+        d_cauchy(&e.a[k], e, u, k, 0, k - 1, D1);
     }
     return &e.a[k];
 }
@@ -153,8 +157,8 @@ tuple t_sin_cos (series s, series c, series u, int k, geometry g) {
     if (k == 0) {
         g == TRIG ? mpfr_sin_cos(s.a[k], c.a[k], u.a[0], RND) : mpfr_sinh_cosh(s.a[k], c.a[k], u.a[0], RND);
     } else {
-        d_cauchy(&s.a[k], c, u, k, 0, k - 1, 1.0);
-        d_cauchy(&c.a[k], s, u, k, 0, k - 1, g == TRIG ? -1.0 : 1.0);
+        d_cauchy(&s.a[k], c, u, k, 0, k - 1, D1);
+        d_cauchy(&c.a[k], s, u, k, 0, k - 1, g == TRIG ? D_1 : D1);
     }
     return (tuple){&s.a[k], &c.a[k], u.size};
 }
@@ -167,21 +171,20 @@ tuple t_tan_sec2 (series t, series s, series u, int k, geometry g) {
         g == TRIG ? mpfr_sec(s.a[k], u.a[0], RND) : mpfr_sech(s.a[k], u.a[0], RND);
         mpfr_sqr(s.a[0], s.a[0], RND);
     } else {
-        d_cauchy(&t.a[k], s, u, k, 0, k - 1, 1.0);
-        d_cauchy(&s.a[k], t, t, k, 0, k - 1, g == TRIG ? 2.0 : -2.0);
+        d_cauchy(&t.a[k], s, u, k, 0, k - 1, D1);
+        d_cauchy(&s.a[k], t, t, k, 0, k - 1, g == TRIG ? D2 : D_2);
     }
     return (tuple){&t.a[k], &s.a[k], u.size};
 }
 
-mpfr_t *t_pwr (series p, series u, double a, int k) {
+mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {
     assert(mpfr_sgn(u.a[0]) > 0);
     assert(p.a != u.a);
     assert(k >= 0);
     if (k == 0) {
-        mpfr_set_d(_, a, RND);
-        mpfr_pow(p.a[k], u.a[0], _, RND);
+        mpfr_pow(p.a[k], u.a[0], a, RND);
     } else {
-        mpfr_sub(_, *d_cauchy(&__, p, u, k, 0, k - 1, a), *d_cauchy(&___, u, p, k, 1, k - 1, 1.0), RND);
+        mpfr_sub(_, *d_cauchy(&__, p, u, k, 0, k - 1, a), *d_cauchy(&___, u, p, k, 1, k - 1, D1), RND);
         mpfr_div(p.a[k], _, u.a[0], RND);
     }
     return &p.a[k];
@@ -194,7 +197,7 @@ mpfr_t *t_ln (series l, series u, int k) {
     if (k == 0) {
         mpfr_log(l.a[k], u.a[0], RND);
     } else {
-        mpfr_sub(_, u.a[k], *d_cauchy(&__, u, l, k, 1, k - 1, 1.0), RND);
+        mpfr_sub(_, u.a[k], *d_cauchy(&__, u, l, k, 1, k - 1, D1), RND);
         mpfr_div(l.a[k], _, u.a[0], RND);
     }
     return &l.a[k];

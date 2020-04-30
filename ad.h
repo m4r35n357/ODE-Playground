@@ -121,7 +121,7 @@ tuple ad_tan_sec2 (series T, series S2, series U, geometry g);
 /*
  * Calculates Taylor Series for U^a, results stored in jet P
  */
-series ad_pwr (series P, series U, double a);
+series ad_pwr (series P, series U, mpfr_t a);
 
 /*
  * Calculates Taylor Series for the natural logarithm of U, results stored in jet L

@@ -145,7 +145,7 @@ tuple ad_tan_sec2 (series t, series s2, series u, geometry g) {
     return (tuple){t.a, s2.a, u.size};
 }
 
-series ad_pwr (series p, series u, double a) {
+series ad_pwr (series p, series u, mpfr_t a) {
     for (int k = 0; k < u.size; k++) {
         t_pwr(p, u, a, k);
     }

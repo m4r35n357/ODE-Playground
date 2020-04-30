@@ -21,6 +21,21 @@
 
 static series ___;
 
+static mpfr_t D0, D05, D_05, D1, D_1, D2, D_2, D3, D4;
+
+static void ad_test_tempvars (void) {
+    ad_tempvars();
+    mpfr_init_set_ui(D0, 0, RND);
+    mpfr_init_set_str(D05, "0.5", BASE, RND);
+    mpfr_init_set_str(D_05, "-0.5", BASE, RND);
+    mpfr_init_set_ui(D1, 1, RND);
+    mpfr_init_set_si(D_1, -1, RND);
+    mpfr_init_set_ui(D2, 2, RND);
+    mpfr_init_set_si(D_2, -2, RND);
+    mpfr_init_set_ui(D3, 3, RND);
+    mpfr_init_set_ui(D4, 4, RND);
+}
+
 static void septic (series f, series value) {
     ad_set(f, value);
     mpfr_add_ui(f.a[0], f.a[0], 4, RND);
@@ -39,20 +54,16 @@ static void septic (series f, series value) {
 
 int main (int argc, char **argv) {
     long n;
-    mpfr_t x, y, _, D0, D1, D3;
+    mpfr_t x, y, _;
 
     assert(argc == 4);
     mpfr_set_default_prec(113);
-    ad_tempvars();
-    mpfr_inits(_, NULL);
+    ad_test_tempvars();
     n = strtol(argv[1], NULL, BASE);
     assert(n > 1);
     mpfr_init_set_str(x, argv[2], BASE, RND);
     mpfr_init_set_str(y, argv[3], BASE, RND);
-
-    mpfr_init_set_ui(D0, 0, RND);
-    mpfr_init_set_ui(D1, 1, RND);
-    mpfr_init_set_ui(D3, 3, RND);
+    mpfr_init(_);
 
     ___ = t_jet(n);
 
@@ -107,7 +118,7 @@ int main (int argc, char **argv) {
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^2.0", KNRM);
-    ad_pwr(wpwr, cx, 2.0);
+    ad_pwr(wpwr, cx, D2);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s", KNRM);
@@ -123,7 +134,7 @@ int main (int argc, char **argv) {
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^4.0", KNRM);
-    ad_pwr(wpwr, cx, 4.0);
+    ad_pwr(wpwr, cx, D4);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s", KNRM);
@@ -141,7 +152,7 @@ int main (int argc, char **argv) {
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^0.5", KNRM);
-    ad_pwr(wpwr, cx, 0.5);
+    ad_pwr(wpwr, cx, D05);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s", KNRM);
@@ -152,7 +163,7 @@ int main (int argc, char **argv) {
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^-0.5", KNRM);
-    ad_pwr(wpwr, cx, - 0.5);
+    ad_pwr(wpwr, cx, D_05);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s", KNRM);
@@ -164,7 +175,7 @@ int main (int argc, char **argv) {
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^-1", KNRM);
-    ad_pwr(wpwr, cx, - 1.0);
+    ad_pwr(wpwr, cx, D_1);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s", KNRM);
@@ -175,7 +186,7 @@ int main (int argc, char **argv) {
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "f(x) = x^0", KNRM);
-    ad_pwr(wpwr, cx, 0.0);
+    ad_pwr(wpwr, cx, D0);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s", KNRM);
@@ -292,7 +303,7 @@ int main (int argc, char **argv) {
 
     printf("%s%s%s\n", KCYN, "f(x) = septic(x)^-1", KNRM);
     septic(__, cx);
-    ad_pwr(wpwr, __, - 1.0);
+    ad_pwr(wpwr, __, D_1);
     jet_output(wpwr, n, KNRM, KGRY);
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s", KNRM);
