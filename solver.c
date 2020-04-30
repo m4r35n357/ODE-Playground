@@ -12,70 +12,70 @@
 #include "ad.h"
 
 mpfr_t _, D_1, D_05, D0, D1, D2, D3, D4, D5, D6, D7;
-mpfr_t *w1, *w2, *w3, *w4, *w5, *w6, *w7, *target, *_1, *_2, *_3, *__;
+series w1, w2, w3, w4, w5, w6, w7, target, _1, _2, _3, __;
 
-static void septic (mpfr_t *f, mpfr_t *x, int n) {
+static void septic (series f, series x) {
     //  Example: ./solver-dbg 0 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null 2>&1
     // (x + 7)(x + 5)(x + 2)x(x - 1)(x - 3)(x - 6) = x^7 + 4x^6 - 54x^5 - 160x^4 + 641x^3 + 828x^2 - 1260x
-    ad_minus(_2, x, w1, n);
-    ad_plus(_1, x, w2, n);
-    ad_prod(_3, _2, _1, n);
-    ad_minus(_1, x, w3, n);
-    ad_prod(_2, _3, _1, n);
-    ad_plus(_1, x, w5, n);
-    ad_prod(_3, _2, _1, n);
-    ad_minus(_1, x, w6, n);
-    ad_prod(_2, _3, _1, n);
-    ad_plus(_1, x, w7, n);
-    ad_prod(_3, _2, _1, n);
-    ad_prod(f, _3, x, n);
+    ad_minus(_2, x, w1);
+    ad_plus(_1, x, w2);
+    ad_prod(_3, _2, _1);
+    ad_minus(_1, x, w3);
+    ad_prod(_2, _3, _1);
+    ad_plus(_1, x, w5);
+    ad_prod(_3, _2, _1);
+    ad_minus(_1, x, w6);
+    ad_prod(_2, _3, _1);
+    ad_plus(_1, x, w7);
+    ad_prod(_3, _2, _1);
+    ad_prod(f, _3, x);
 }
 
-static void septic2 (mpfr_t *f, mpfr_t *x, int n) {
+static void septic2 (series f, series x) {
     //  Example: ./solver-dbg 4 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null 2>&1
     // x^7 + 4x^6 - 54x^5 - 160x^4 + 641x^3 + 828x^2 - 1260x = ((((((x + 4)x - 54)x - 160)x + 641)x + 828)x - 1260)x
-    ad_set(f, x, n);
-    mpfr_add_ui(f[0], f[0], 4, RND);
-    ad_prod(__, x, f, n);
-    mpfr_sub_ui(__[0], __[0], 54, RND);
-    ad_prod(f, x, __, n);
-    mpfr_sub_ui(f[0], f[0], 160, RND);
-    ad_prod(__, x, f, n);
-    mpfr_add_ui(__[0], __[0], 641, RND);
-    ad_prod(f, x, __, n);
-    mpfr_add_ui(f[0], f[0], 828, RND);
-    ad_prod(__, x, f, n);
-    mpfr_sub_ui(__[0], __[0], 1260, RND);
-    ad_prod(f, x, __, n);
+    ad_set(f, x);
+    mpfr_add_ui(f.a[0], f.a[0], 4, RND);
+    ad_prod(__, x, f);
+    mpfr_sub_ui(__.a[0], __.a[0], 54, RND);
+    ad_prod(f, x, __);
+    mpfr_sub_ui(f.a[0], f.a[0], 160, RND);
+    ad_prod(__, x, f);
+    mpfr_add_ui(__.a[0], __.a[0], 641, RND);
+    ad_prod(f, x, __);
+    mpfr_add_ui(f.a[0], f.a[0], 828, RND);
+    ad_prod(__, x, f);
+    mpfr_sub_ui(__.a[0], __.a[0], 1260, RND);
+    ad_prod(f, x, __);
 }
 
-static void composite1 (mpfr_t *f, mpfr_t *x, int n) {
+static void composite1 (series f, series x) {
     //  Example: ./solver-dbg 1 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null 2>&1
-    ad_sqr(_1, x, n);
-    ad_minus(_2, _1, w4, n);
-    ad_exp(_1, _2, n);
-    ad_exp(_2, x, n);
-    ad_plus(_3, _1, _2, n);
-    ad_ln(f, _3, n);
+    ad_sqr(_1, x);
+    ad_minus(_2, _1, w4);
+    ad_exp(_1, _2);
+    ad_exp(_2, x);
+    ad_plus(_3, _1, _2);
+    ad_ln(f, _3);
 }
 
-static void composite2 (mpfr_t *f, mpfr_t *x, int n) {
+static void composite2 (series f, series x) {
     //  Example: ./solver-dbg 2 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null 2>&1
-    ad_exp(_1, x, n);
-    ad_minus(_2, _1, w4, n);
-    ad_sqr(_1, _2, n);
-    ad_sqr(_2, x, n);
-    ad_plus(_3, _1, _2, n);
-    ad_sqrt(f, _3, n);
+    ad_exp(_1, x);
+    ad_minus(_2, _1, w4);
+    ad_sqr(_1, _2);
+    ad_sqr(_2, x);
+    ad_plus(_3, _1, _2);
+    ad_sqrt(f, _3);
 }
 
-static void cosx_x3 (mpfr_t *f, mpfr_t *x, int n) {
+static void cosx_x3 (series f, series x) {
     //  Example: ./solver-dbg 3 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 10 >/dev/null 2>&1
-    ad_sqr(_1, x, n);
-    ad_prod(_2, _1, x, n);
-    ad_sin_cos(_1, _3, x, n, TRIG);
-    ad_minus(_3, _1, _2, n);
-    ad_minus(f, _3, target, n);
+    ad_sqr(_1, x);
+    ad_prod(_2, _1, x);
+    ad_sin_cos(_1, _3, x, TRIG);
+    ad_minus(_3, _1, _2);
+    ad_minus(f, _3, target);
 }
 
 int main (int argc, char **argv) {
@@ -109,6 +109,7 @@ int main (int argc, char **argv) {
             return 1;
     }
     long order = strtol(argv[2], NULL, BASE);
+    order = order > NEWTON + INFLECTION ? order : NEWTON + INFLECTION;
     solver s = strtol(argv[3], NULL, BASE);
     switch (s) {
         case NONE :
@@ -151,48 +152,48 @@ int main (int argc, char **argv) {
     _3 = t_jet(order);
     __ = t_jet(order);
 
-    mpfr_t *f = t_jet_c(order, D0);
-    mpfr_t *f_ = t_jet_c(NEWTON + INFLECTION, D0);
-    mpfr_t *x = t_jet_c(order, x0);
+    series f = t_jet_c(order, D0);
+    series f_ = t_jet_c(order, D0);
+    series x = t_jet_c(order, x0);
     set_ad_status(x, VARIABLE);
 
     mpfr_sub(_, x1, x0, RND);
     mpfr_div_ui(x_step, _, steps, RND);
     for (int k = 0; k < steps + 1; k++) {
         mpfr_mul_ui(_, x_step, k, RND);
-        mpfr_add(x[0], x0, _, RND);
-        function(f, x, order);
-        mpfr_printf("%.3RNe ", x[0]);
+        mpfr_add(x.a[0], x0, _, RND);
+        function(f, x);
+        mpfr_printf("%.3RNe ", x.a[0]);
         jet_to_derivs(f, order);
         for (int i = 0; i < order; i++) {
-            mpfr_printf("%.6RNe ", f[i]);
+            mpfr_printf("%.6RNe ", f.a[i]);
         }
         printf("\n");
         if (s != NONE) {
             if(k > 0) {
-                mpfr_mul(_, f0_prev, f[ROOT], RND);
+                mpfr_mul(_, f0_prev, f.a[ROOT], RND);
                 if (mpfr_sgn(_) < 0) {
                     ad_newton(function, f_, x, 100, f_tol, x_tol, ROOT);
-                    mpfr_cmp(f0_prev, f[ROOT]) > 0 ? fprintf(stderr, "\\") : fprintf(stderr, "/");
+                    mpfr_cmp(f0_prev, f.a[ROOT]) > 0 ? fprintf(stderr, "\\") : fprintf(stderr, "/");
                     fprintf(stderr, " ROOT\n");
                 }
-                mpfr_mul(_, f1_prev, f[MIN_MAX], RND);
+                mpfr_mul(_, f1_prev, f.a[MIN_MAX], RND);
                 if (mpfr_sgn(_) < 0) {
                     ad_newton(function, f_, x, 100, f_tol, x_tol, MIN_MAX);
-                    mpfr_cmp(f1_prev, f[MIN_MAX]) > 0 ? fprintf(stderr, "\\ MAXIMUM\n") : fprintf(stderr, "/ MINIMUM\n");
+                    mpfr_cmp(f1_prev, f.a[MIN_MAX]) > 0 ? fprintf(stderr, "\\ MAXIMUM\n") : fprintf(stderr, "/ MINIMUM\n");
                 }
-                mpfr_mul(_, f2_prev, f[INFLECTION], RND);
+                mpfr_mul(_, f2_prev, f.a[INFLECTION], RND);
                 if (mpfr_sgn(_) < 0) {
                     ad_newton(function, f_, x, 100, f_tol, x_tol, INFLECTION);
-                    mpfr_cmp(f2_prev, f[INFLECTION]) > 0 ? fprintf(stderr, "\\") : fprintf(stderr, "/");
+                    mpfr_cmp(f2_prev, f.a[INFLECTION]) > 0 ? fprintf(stderr, "\\") : fprintf(stderr, "/");
                     fprintf(stderr, " INFLECTION\n");
                 }
             }
         }
-        mpfr_set(x_prev, x[0], RND);
-        mpfr_set(f0_prev, f[ROOT], RND);
-        mpfr_set(f1_prev, f[MIN_MAX], RND);
-        mpfr_set(f2_prev, f[INFLECTION], RND);
+        mpfr_set(x_prev, x.a[0], RND);
+        mpfr_set(f0_prev, f.a[ROOT], RND);
+        mpfr_set(f1_prev, f.a[MIN_MAX], RND);
+        mpfr_set(f2_prev, f.a[INFLECTION], RND);
     }
     fprintf(stderr, "\n");
     return 0;

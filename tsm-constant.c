@@ -20,19 +20,19 @@ int main (int argc, char **argv) {
     t_args(argv, argc, &x0, &_, &_, &a);
 
     // initialize the derivative and temporary jets
-    mpfr_t *x = t_jet_c(n + 1, x0);
+    series x = t_jet_c(n + 1, x0);
 
-    t_output(x[0], x[0], x[0], h, 0, _);
+    t_output(x.a[0], x.a[0], x.a[0], h, 0, _);
     for (long step = 1; step <= nsteps; step++) {
         // build the jet of taylor coefficients
         for (int k = 0; k < n; k++) {
             //  x' = Ax
-            mpfr_mul(_, x[k], a, RND);
+            mpfr_mul(_, x.a[k], a, RND);
             t_next(x, _, k, POS);
         }
         // sum the series using Horner's method and advance one step
-        t_horner(x, n, h);
-        t_output(x[0], x[0], x[0], h, step, _);
+        t_horner(x, h);
+        t_output(x.a[0], x.a[0], x.a[0], h, step, _);
     }
     return 0;
 }

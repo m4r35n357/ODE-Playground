@@ -16,11 +16,20 @@ const int BASE;
 const mpfr_rnd_t RND;
 
 /*
+ * Wrap coefficient "jets" in a structure
+ */
+typedef struct {
+    mpfr_t *a;
+    int size;
+} series;
+
+/*
  * For returning "paired" recurrence values
  */
 typedef struct {
     mpfr_t *a;
     mpfr_t *b;
+    int size;
 } tuple;
 
 /*
@@ -56,27 +65,27 @@ void t_args (char **argv, int count, ...);
 /*
  * Creates a zeroed jet of the specified size
  */
-mpfr_t *t_jet (int size);
+series t_jet (int size);
 
 /*
  * Returns a jet with element zero set to value and the rest zeroed (represents an additive constant in an ODE)
  */
-mpfr_t *t_jet_c (int size, mpfr_t value);
+series t_jet_c (int size, mpfr_t value);
 
 /*
  * Calculate next coefficient in jet
  */
-void t_next (mpfr_t *jet, mpfr_t dot, int k, sign s);
+void t_next (series jet, mpfr_t dot, int k, sign s);
 
 /*
  * Sums a Taylor series safely and efficiently
  */
-mpfr_t *t_horner (mpfr_t *jet, int n, mpfr_t h);
+mpfr_t *t_horner (series jet, mpfr_t h);
 
 /*
  * Returns a pointer to kth element of the absolute value of U, result stored and returned in variable A, NO JET STORAGE
  */
-mpfr_t *t_abs (mpfr_t *U, int k);
+mpfr_t *t_abs (series U, int k);
 
 /*
  * Cauchy product for C = A.B
@@ -104,7 +113,7 @@ mpfr_t *t_abs (mpfr_t *U, int k);
  *  S = sum{j=0->(k-1)/2} U[j].U[k-j]             if k odd
  *  S = sum{j=0->(k-2)/2} U[j].U[k-j] + U[k/2]^2  if k even
  */
-mpfr_t *t_sqr (mpfr_t *U, int k);
+mpfr_t *t_sqr (series U, int k);
 
 /*
  * Returns a pointer to kth element of the product of U and V, result stored in variable P, NO JET STORAGE
@@ -113,7 +122,7 @@ mpfr_t *t_sqr (mpfr_t *U, int k);
  *
  *  P = sum{j=0->k} U[j].V[k-j]
  */
-mpfr_t *t_prod (mpfr_t *U, mpfr_t *V, int k);
+mpfr_t *t_prod (series U, series V, int k);
 
 /*
  * Returns a pointer to kth element of U / V, results accumulated in jet Q, DOMAIN RESTRICTION v[0] != 0.0
@@ -126,7 +135,7 @@ mpfr_t *t_prod (mpfr_t *U, mpfr_t *V, int k);
  *
  *                Q[k] = (U[k] - sum{j=0->k-1} Q[j].V[k-j]) / V[0]
  */
-mpfr_t *t_quot (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int k);
+mpfr_t *t_quot (series Q, series U, series V, int k);
 
 /*
  * Returns a pointer to kth element of the square root of U, results accumulated in jet R, DOMAIN RESTRICTION U[0] > 0.0
@@ -144,7 +153,7 @@ mpfr_t *t_quot (mpfr_t *Q, mpfr_t *U, mpfr_t *V, int k);
  * R[k] = (U[k] - sum{j=1->(k-1)/2} R[j].R[k-j]) / (2.0.R[0])             if k odd
  * R[k] = (U[k] - sum{j=1->(k-2)/2} R[j].R[k-j] - R[k/2]^2) / (2.0.R[0])  if k even
  */
-mpfr_t *t_sqrt (mpfr_t *R, mpfr_t *U, int k);
+mpfr_t *t_sqrt (series r, series U, int k);
 
 /*
  * Applying the chain rule for the derivative of a composed function f(u) creates another Cauchy product:
@@ -169,7 +178,7 @@ mpfr_t *t_sqrt (mpfr_t *R, mpfr_t *U, int k);
  *
  *    E[k] = sum{j=0->k-1} E[j].(k-j)U[k-j]/k
  */
-mpfr_t *t_exp (mpfr_t *E, mpfr_t *U, int k);
+mpfr_t *t_exp (series E, series U, int k);
 
 /*
  * Returns a pair of pointers to kth elements of the sine and cosine of U, results accumulated in jets S and C
@@ -180,7 +189,7 @@ mpfr_t *t_exp (mpfr_t *E, mpfr_t *U, int k);
  *    S[k] = sum{j=0->k-1}       C[j].(k-j)U[k-j]/k
  *    C[k] = sum{j=0->k-1} (+/-) S[j].(k-j)U[k-j]/k
  */
-tuple t_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, geometry g);
+tuple t_sin_cos (series S, series C, series U, int k, geometry g);
 
 /*
  * Returns a pair of pointers to kth elements of the tangent and squared secant of U, results accumulated in jets T and S2
@@ -191,7 +200,7 @@ tuple t_sin_cos (mpfr_t *S, mpfr_t *C, mpfr_t *U, int k, geometry g);
  *    T[k] = sum{j=0->k-1}       S2[j].(k-j)U[k-j]/k
  *   S2[k] = sum{j=0->k-1} (+/-)2 T[j].(k-j)T[k-j]/k
  */
-tuple t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, geometry g);
+tuple t_tan_sec2 (series T, series S2, series U, int k, geometry g);
 
 /*
  * Returns a pointer to kth element of P = U^a (where a is scalar), results accumulated in jet P, DOMAIN RESTRICTION U[0] > 0.0
@@ -208,7 +217,7 @@ tuple t_tan_sec2 (mpfr_t *T, mpfr_t *S2, mpfr_t *U, int k, geometry g);
  *
  *                                        P[k] = (a sum{j=0->k-1} P[j].(k-j)U[k-j]/k - sum{j=1->k-1} U[j].(k-j)P[k-j]/k) / U[0]
  */
-mpfr_t *t_pwr (mpfr_t *P, mpfr_t *U, double a, int k);
+mpfr_t *t_pwr (series P, series U, double a, int k);
 
 /*
  * Returns a pointer to kth element of the natural logarithm of U, result accumulated in jet L, DOMAIN RESTRICTION U[0] > 0.0
@@ -221,5 +230,5 @@ mpfr_t *t_pwr (mpfr_t *P, mpfr_t *U, double a, int k);
  *
  *                   L[k] = (U[k] - sum{j=1->k-1} U[j].(k-j)L[k-j]/k) / U[0]
  */
-mpfr_t *t_ln (mpfr_t *L, mpfr_t *U, int k);
+mpfr_t *t_ln (series L, series U, int k);
 
