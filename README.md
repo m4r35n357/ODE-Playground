@@ -3,7 +3,7 @@
 This project is mainly a collection of programs for evolving systems of ODEs using the Taylor Series Method (TSM), a rather old but poorly acknowledged technique based on forward mode Automatic Differentiation (AD).
 TSM is a procedure for integrating ODEs using Taylor Series of arbitrary order, calculated to arbitrary precision (the former requires the latter in practice), using recurrence relations between time derivatives of increasing order.
 It is thus (or should be!) a serious competitor to the fourth-order RK4 for the majority of practical cases.
-For the uninitiated, here is a review of the method itself and it's history of repeated "discovery".
+For the uninitiated, here is a review of the method itself and its history of repeated "discovery".
 
 https://arxiv.org/abs/1111.7149
 
@@ -174,24 +174,35 @@ echo "splot '/tmp/data' with lines" | gnuplot -p
 
 3D progressive trajectory plotting (pi3d)
 ```
-./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
+./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 ```
 
 ## Clean Numerical Simulation (CNS)
+
+As a rough guide to the accuracy of a solution, it can be compared with a "better" solution (one made with "better" solver parameters), and discarded at the point where the solutions diverge.
+The simulations are run in parallel processes, but obviously the "better" solution takes longer.
+
 300 time units
 ```
-time -p ./cns both ./tsm-lorenz-static 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3
+./cns both ./tsm-lorenz-dbg 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3
 ```
 600 time units
 ```
-time -p ./cns both ./tsm-lorenz-static 240 204 .01 65000 -15.8 -17.48 35.64 10 28 8 3
+./cns both ./tsm-lorenz-dbg 240 204 .01 65000 -15.8 -17.48 35.64 10 28 8 3
 ```
 1500 time units
 ```
-time -p ./cns both ./tsm-lorenz-static 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 3
+./cns both ./tsm-lorenz-dbg 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 3
 ```
 
-## tsm.py Parameter Reference
+## Sensitivity to in variation in initial conditions
+
+The simulation is run six times in parallel processes, with each x, y, z initial condition perturbed by +/- the parameter to ic.
+```
+./ic .001 ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
+```
+
+## tsm.py and tsm-\*-\* Parameter Reference
 tsm.py comprises a long "if" statement containing a "zoo" of pre-programmed ODE systems.
 
 Parameter | Meaning
@@ -211,11 +222,11 @@ c is mostly the same, except the "model" parameter, which is part of the executa
 Plotting function and derivatives, together with root and turning point analysis:
 ```
 $ ipython3
-Python 3.7.1 (default, Oct 22 2018, 11:21:55) 
+Python 3.7.1 (default, Oct 22 2018, 11:21:55)
 Type 'copyright', 'credits' or 'license' for more information
 IPython 7.2.0 -- An enhanced Interactive Python. Type '?' for help.
 PyDev console: using IPython 7.2.0
-Python 3.7.1 (default, Oct 22 2018, 11:21:55) 
+Python 3.7.1 (default, Oct 22 2018, 11:21:55)
 [GCC 8.2.0] on linux
 from plotters import *
 Backend TkAgg is interactive backend. Turning interactive mode on.

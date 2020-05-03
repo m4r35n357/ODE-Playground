@@ -18,7 +18,7 @@ def main():
     index = range(n)
 
     if model == "lorenz":
-        #  Example: ./tsm.py lorenz 9 8 .01 3000 -15.8 -17.48 35.64 10 28 8 3 | ./plotPi3d.py
+        #  Example: ./tsm.py lorenz 9 8 .01 3000 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
         #  Example: ./tsm.py lorenz 9 8 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -25 50
         #  Profile: py-spy --function -- python tsm.py lorenz 9 8 .01 10000000 -15.8 -17.48 35.64 10 28 8 3
         σ, ρ, β = float(argv[9]), float(argv[10]), float(argv[11]) / float(argv[12])
@@ -31,7 +31,7 @@ def main():
             x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x[0], y[0], z[0], step * δt)
     elif model == "lu" or model == "chen":
-        #  Example: ./tsm.py lu 9 8 .01 3000 -3 2 20 36 3 20 | ./plotPi3d.py
+        #  Example: ./tsm.py lu 9 8 .01 3000 -3 2 20 36 3 20 | ./plot3d.py
         #  Example: ./tsm.py chen 9 8 .01 3000 -3 2 20 35 3 28 | ./plotAnimated.py -25 50
         a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
         d = c - a if model == "chen" else 0.0
@@ -45,7 +45,7 @@ def main():
             x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x[0], y[0], z[0], step * δt)
     elif model == "rossler":
-        #  Example: ./tsm.py rossler 9 8 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotPi3d.py
+        #  Example: ./tsm.py rossler 9 8 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plot3d.py
         #  Example: ./tsm.py rossler 9 8 0.01 150000 0.0 -6.78 0.02 .2 .2 5.7 | ./plotAnimated.py -20 30
         a, b, c = float(argv[9]), t_jet(n, float(argv[10])), float(argv[11])
         output(x[0], y[0], z[0], 0.0)
@@ -57,7 +57,7 @@ def main():
             x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x[0], y[0], z[0], step * δt)
     elif model == "genesio-tesi":
-        #  Example: ./tsm.py genesio-tesi 9 8 0.01 150000 .1 .1 .1 .44 1.1 1 | ./plotPi3d.py
+        #  Example: ./tsm.py genesio-tesi 9 8 0.01 150000 .1 .1 .1 .44 1.1 1 | ./plot3d.py
         #  Example: ./tsm.py genesio-tesi 9 8 0.01 150000 0.0 -6.78 0.02 .44 1.1 1 | ./plotAnimated.py -20 30
         a, b, c = float(argv[9]), float(argv[10]), float(argv[11])
         output(x[0], y[0], z[0], 0.0)
@@ -69,7 +69,7 @@ def main():
             x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x[0], y[0], z[0], step * δt)
     elif model == "bouali":
-        #  Example: ./tsm.py bouali 9 8 0.02 50001 1 1 0 3 2.2 1 .01 | ./plotPi3d.py
+        #  Example: ./tsm.py bouali 9 8 0.02 50001 1 1 0 3 2.2 1 .01 | ./plot3d.py
         #  Example: ./tsm.py bouali 9 8 0.02 50001 1 1 0 3 2.2 1 .01 | ./plotAnimated.py -5 5
         a, b, c, d = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
         jet1, w4, w5 = t_jet(n, 1), t_jet(n), t_jet(n)
@@ -84,7 +84,7 @@ def main():
             x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x[0], y[0], z[0], step * δt)
     elif model == "thomas":
-        #  Example: ./tsm.py thomas 9 8 0.1 30000 1 0 0 .19 | ./plotPi3d.py
+        #  Example: ./tsm.py thomas 9 8 0.1 30000 1 0 0 .19 | ./plot3d.py
         #  Example: ./tsm.py thomas 9 8 0.1 30000 1 0 0 .19 | ./plotAnimated.py -5 5
         b = float(argv[9])
         sx, cx = t_jet(n), t_jet(n)
@@ -102,9 +102,9 @@ def main():
             x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x[0], y[0], z[0], step * δt)
     elif model == "sprott-thomas-1" or model == "sprott-thomas-2":
-        #  Example: ./tsm.py sprott-thomas-1 9 8 0.02 30000 1 0 0 4.75 1 | ./plotPi3d.py
+        #  Example: ./tsm.py sprott-thomas-1 9 8 0.02 30000 1 0 0 4.75 1 | ./plot3d.py
         #  Example: ./tsm.py sprott-thomas-1 9 8 0.02 30000 1 0 0 4.75 1 | ./plotAnimated.py -1 1
-        #  Example: ./tsm.py sprott-thomas-2 9 8 0.02 30000 1 0 0 4.75 .7 | ./plotPi3d.py
+        #  Example: ./tsm.py sprott-thomas-2 9 8 0.02 30000 1 0 0 4.75 .7 | ./plot3d.py
         #  Example: ./tsm.py sprott-thomas-2 9 8 0.02 30000 1 0 0 4.75 .7 | ./plotAnimated.py -1 1
         a, b = float(argv[9]), float(argv[10])
         sx, cx, ax, sax, cax = t_jet(n), t_jet(n), t_jet(n), t_jet(n), t_jet(n)
@@ -127,7 +127,7 @@ def main():
             x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x[0], y[0], z[0], step * δt)
     elif model == "rabinovich–fabrikant":
-        #  Example: ./tsm.py rabinovich–fabrikant 9 8 .01 100001 .1 .1 .1 .2876 .1 | ./plotPi3d.py
+        #  Example: ./tsm.py rabinovich–fabrikant 9 8 .01 100001 .1 .1 .1 .2876 .1 | ./plot3d.py
         #  Example: ./tsm.py rabinovich–fabrikant 9 8 .01 100001 .1 .1 .1 .2876 .1 | ./plotAnimated.py -3 3
         α, γ = t_jet(n, float(argv[9])), float(argv[10])
         jet1, a, b, c = t_jet(n, 1.0), t_jet(n), t_jet(n), t_jet(n)
@@ -144,7 +144,7 @@ def main():
             x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x[0], y[0], z[0], step * δt)
     elif model == "sprott":
-        #  Example: ./tsm.py sprott 9 8 0.1 30001 1 0 0 | ./plotPi3d.py
+        #  Example: ./tsm.py sprott 9 8 0.1 30001 1 0 0 | ./plot3d.py
         #  Example: ./tsm.py sprott 9 8 0.1 30001 1 0 0 | ./plotAnimated.py -20 20
         w1 = t_jet(n, 1)
         output(x[0], y[0], z[0], 0.0)
@@ -157,7 +157,7 @@ def main():
             x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x[0], y[0], z[0], step * δt)
     elif model == "sprott-jafari":
-        #  Example: ./tsm.py sprott-jafari 9 8 0.01 30001 0 3.9 .7 8.888 4 | ./plotPi3d.py
+        #  Example: ./tsm.py sprott-jafari 9 8 0.01 30001 0 3.9 .7 8.888 4 | ./plot3d.py
         #  Example: ./tsm.py sprott-jafari 9 8 0.01 30001 0 3.9 .7 8.888 4 | ./plotAnimated.py -20 20
         a, b = float(argv[9]), t_jet(n, float(argv[10]))
         output(x[0], y[0], z[0], 0.0)
@@ -169,7 +169,7 @@ def main():
             x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x[0], y[0], z[0], step * δt)
     elif model == "sprott-minimal":
-        #  Example: ./tsm.py sprott-minimal 9 8 0.01 10001 .02 0 0 2.017 | ./plotPi3d.py
+        #  Example: ./tsm.py sprott-minimal 9 8 0.01 10001 .02 0 0 2.017 | ./plot3d.py
         #  Example: ./tsm.py sprott-minimal 9 8 0.01 10001 .02 0 0 2.017 | ./plotAnimated.py -10 10
         α = float(argv[9])
         output(x[0], y[0], z[0], 0.0)
@@ -181,7 +181,7 @@ def main():
             x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x[0], y[0], z[0], step * δt)
     elif model == "halvorsen":
-        #  Example: ./tsm.py halvorsen 9 8 .01 100001 1 0 0 1.4 | ./plotPi3d.py
+        #  Example: ./tsm.py halvorsen 9 8 .01 100001 1 0 0 1.4 | ./plot3d.py
         #  Example: ./tsm.py halvorsen 9 8 .01 100001 1 0 0 1.4 | ./plotAnimated.py -15 10
         α = float(argv[9])
         output(x[0], y[0], z[0], 0.0)
@@ -193,7 +193,7 @@ def main():
             x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x[0], y[0], z[0], step * δt)
     elif model == "nose-hoover":
-        #  Example: ./tsm.py nose-hoover 9 8 0.01 10001 1 0 0 6.0 | ./plotPi3d.py
+        #  Example: ./tsm.py nose-hoover 9 8 0.01 10001 1 0 0 6.0 | ./plot3d.py
         #  Example: ./tsm.py nose-hoover 9 8 0.01 10001 1 0 0 6.0 | ./plotAnimated.py -10 10
         α = t_jet(n, float(argv[9]))
         output(x[0], y[0], z[0], 0.0)
@@ -205,7 +205,7 @@ def main():
             x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x[0], y[0], z[0], step * δt)
     elif model == "rucklidge":
-        #  Example: ./tsm.py rucklidge 9 8 0.01 10001 1 0 0 6.7 2 | ./plotPi3d.py
+        #  Example: ./tsm.py rucklidge 9 8 0.01 10001 1 0 0 6.7 2 | ./plot3d.py
         #  Example: ./tsm.py rucklidge 9 8 0.01 10001 1 0 0 6.7 2 | ./plotAnimated.py -15 20
         α, κ = float(argv[9]), float(argv[10])
         output(x[0], y[0], z[0], 0.0)
@@ -217,7 +217,7 @@ def main():
             x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x[0], y[0], z[0], step * δt)
     elif model == "wimol-banlue":
-        #  Example: ./tsm.py wimol-banlue 9 8 0.1 10001 1 0 0 2.0 | ./plotPi3d.py
+        #  Example: ./tsm.py wimol-banlue 9 8 0.1 10001 1 0 0 2.0 | ./plot3d.py
         #  Example: ./tsm.py wimol-banlue 9 8 0.1 10001 1 0 0 2.0 | ./plotAnimated.py -5 5
         α = t_jet(n, float(argv[9]))
         tx, sx = t_jet(n), t_jet(n)
@@ -231,7 +231,7 @@ def main():
             x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
             output(x[0], y[0], z[0], step * δt)
     elif model == "yu-wang":
-        #  Example: ./tsm.py yu-wang 9 8 .001 50000 1 0 0 10 40 2 2.5 | ./plotPi3d.py
+        #  Example: ./tsm.py yu-wang 9 8 .001 50000 1 0 0 10 40 2 2.5 | ./plot3d.py
         #  Example: ./tsm.py yu-wang 9 8 .001 50000 1 0 0 10 40 2 2.5 | ./plotAnimated.py -25 50
         a, b, c, d = float(argv[9]), float(argv[10]), float(argv[11]), float(argv[12])
         xy, e_xy = t_jet(n), t_jet(n)

@@ -39,6 +39,7 @@ static void ad_lib_test_tempvars (void) {
     mpfr_init_set_si(D_5, -5, RND);
     mpfr_init_set_str(DA, "-3.7", BASE, RND);
 }
+
 static result compare (char* name, series a, series b, mpfr_t threshold) {
     assert(b.size == a.size);
     total++;
