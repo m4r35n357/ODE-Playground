@@ -129,7 +129,7 @@ mpfr_t *t_sqrt (series r, series u, int k) {
 }
 
 static mpfr_t *d_cauchy (mpfr_t *f, series h, series u, int k, int lower, int upper, mpfr_t factor) {
-    assert(f != &_ && h.a != &_ && u.a != &_);
+    assert(f != &_ && h.a != &_ && u.a != &_);  // _ is used internally so it cannot be a parameter
     mpfr_set_zero(*f, 1);
     for (int j = lower; j <= upper; j++) {
         mpfr_mul_ui(_, u.a[k - j], k - j, RND);

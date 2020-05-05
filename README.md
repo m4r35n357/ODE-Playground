@@ -195,7 +195,7 @@ The simulations are run in parallel processes, but obviously the "better" soluti
 ./cns both ./tsm-lorenz-dbg 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 3
 ```
 
-## Sensitivity to in variation in initial conditions
+## Sensitivity to variation in initial conditions
 
 The simulation is run six times in parallel processes, with each x, y, z initial condition perturbed by +/- the parameter to ic.
 ```

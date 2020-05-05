@@ -38,7 +38,7 @@ typedef struct {
 typedef enum {POS, NEG} sign;
 
 /*
- * Selects either a trigonometric or hyperbolic version of the function
+ * Selects the trigonometric or hyperbolic version of a function
  */
 typedef enum {TRIG, HYP} geometry;
 
@@ -48,12 +48,12 @@ typedef enum {TRIG, HYP} geometry;
 void t_tempvars (void);
 
 /*
- * Prints an index column, and x, y, z columns, into a single line
+ * Prints x, y, z, t in a single line
  */
 void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, long step, mpfr_t t);
 
 /*
- * Sets the order, step size, and number of steps for the integration from the command line arguments (1 to 4)
+ * Sets the (precision,) order, step size, and number of steps for the integration from the command line arguments (1 to 4)
  */
 void t_stepper (char **argv, long *n, mpfr_t *h, long *nsteps);
 
@@ -127,7 +127,7 @@ mpfr_t *t_prod (series U, series V, int k);
 /*
  * Returns a pointer to kth element of U / V, results accumulated in jet Q, DOMAIN RESTRICTION v[0] != 0.0
  *
- *    Q = U / V ==> U = Q.V
+ *     Q = U / V ==> U = Q.V
  *
  *                U[k] = sum{j=0->k} Q[j].V[k-j]
  *
@@ -205,9 +205,9 @@ tuple t_tan_sec2 (series T, series S2, series U, int k, geometry g);
 /*
  * Returns a pointer to kth element of P = U^a (where a is scalar), results accumulated in jet P, DOMAIN RESTRICTION U[0] > 0.0
  *
- *                    P'= U^a' = a U^(a-1).U'
- *                      U.U^a' = a U^a.U'
- *                        U.P' = a P.U'
+ *                                    P'= U^a' = a U^(a-1).U'
+ *                                      U.U^a' = a U^a.U'
+ *                                        U.P' = a P.U'
  *
  *              sum{j=0->k-1} U[j].(k-j)P[k-j] =  a sum{j=0->k-1} P[j].(k-j)U[k-j]
  *
@@ -222,7 +222,8 @@ mpfr_t *t_pwr (series P, series U, mpfr_t a, int k);
 /*
  * Returns a pointer to kth element of the natural logarithm of U, result accumulated in jet L, DOMAIN RESTRICTION U[0] > 0.0
  *
- *     L' = U' / U ==> U' = U.L'
+ *                     L' = U' / U
+ *                     U' = U.L'
  *
  *                 k.U[k] = sum{j=0->k-1} U[j].(k-j)L[k-j]
  *
