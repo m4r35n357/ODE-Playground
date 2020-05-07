@@ -2,20 +2,20 @@
 
 This project is mainly a collection of programs for evolving systems of ODEs using the Taylor Series Method (TSM), a rather old but poorly acknowledged technique based on forward mode Automatic Differentiation (AD).
 TSM is a procedure for integrating ODEs using Taylor Series of arbitrary order, calculated to arbitrary precision (the former requires the latter in practice), using recurrence relations between time derivatives of increasing order.
-It is thus (or should be!) a serious competitor to the fourth-order RK4 for the majority of practical cases.
-For the uninitiated, here is a review of the method itself and its history of repeated "discovery".
+It is therefore (or should be!) a serious competitor to the fourth-order RK4 for the majority of practical cases.
+The code has been partly developed on, and is suitable for running on a Raspberry Pi 4 computer.
 
+For the uninitiated, here is a review of the TSM itself and its history of repeated "discovery" and re-branding.
 https://arxiv.org/abs/1111.7149
 
-My work was inspired by the following paper and its associated software:
+My work was inspired by parts of the following paper and its associated software:
 https://web.ma.utexas.edu/users/mzou/taylor/taylor.pdf
 
-That software uses code generation to produce the recurrences and code to drive them, and it inspired me to try coding something by hand.
-These programs are the result.
-The main objective was to solve coupled nonlinear equations and investigate chaotic systems.
+That software uses code generation to produce the recurrences and code to drive them, and it inspired me to try coding something by hand; these programs are the result.
+My aim was to be able to solve coupled nonlinear equations and investigate chaotic systems, without relying on "black-box" ODE solvers.
 There is a maths.tex file containing a technical note describing the majority of the procedure (apart from the recurrence relations which are obtained from the source listed below).
 
-The Taylor recurrence rules (the global "t-functions" in c and Python) generate "jets" of Taylor Series coefficients iteratively, term by term, using previously calculated lower order calculations.
+The recurrence rules (the global "t-functions" in c and Python) generate "jets" of Taylor Series coefficients iteratively, term by term, using previously calculated lower order values.
 The functions provided cover the basic algebraic operations (+ - * /), and also include several common functions:
 * abs
 * sqr
@@ -150,31 +150,31 @@ No differentiation happens in these functions (they only implement the recurrenc
 Refer to tsm.py and tsm-*.c for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors.
 To find some example invocations:
 ```
-grep Example *.py tsm-*.c
+$ grep Example *.py tsm-*.c
 ```
 Matplotlib progressive graph plotting in Python (second parameter ignored as python floats are fixed double precision):
 ```
-./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
+$ ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 ```
 or in c (notice absence of the model parameter!):
 ```
-./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
+$ ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 ```
 
 ## 3D static trajectory plotting (gnuplot)
 
 Write to a data file
 ```
-./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 >/tmp/data
+$ ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 >/tmp/data
 ```
 then plot it
 ```
-echo "splot '/tmp/data' with lines" | gnuplot -p
+$ echo "splot '/tmp/data' with lines" | gnuplot -p
 ```
 
-3D progressive trajectory plotting (pi3d)
+## 3D progressive trajectory plotting (pi3d)
 ```
-./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
+$ ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 ```
 
 ## Clean Numerical Simulation (CNS)
@@ -184,23 +184,43 @@ The simulations are run in parallel processes, but obviously the "better" soluti
 
 300 time units
 ```
-./cns both ./tsm-lorenz-dbg 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3
+$ ./cns both ./tsm-lorenz-dbg 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3
+Better: ./tsm-lorenz-dbg 138 103 .005000 70000 -15.8 -17.48 35.64 10 28 8 3
+ MPFR default precision: 458 bits
+ MPFR default precision: 431 bits
+Threshold: 1.0e-12, t: 267.060
+Threshold: 1.0e-09, t: 278.700
+Threshold: 1.0e-06, t: 284.950
+Threshold: 1.0e-03, t: 293.140
+Threshold: 1.0e+00, t: 301.320
 ```
+(matplotlib plot not shown!)
+
 600 time units
 ```
-./cns both ./tsm-lorenz-dbg 240 204 .01 65000 -15.8 -17.48 35.64 10 28 8 3
+$ ./cns both ./tsm-lorenz-dbg 240 204 .01 65000 -15.8 -17.48 35.64 10 28 8 3
 ```
+(output not shown)
+
 1500 time units
 ```
-./cns both ./tsm-lorenz-dbg 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 3
+$ ./cns both ./tsm-lorenz-dbg 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 3
 ```
+(output not shown)
 
 ## Sensitivity to variation in initial conditions
 
 The simulation is run six times in parallel processes, with each x, y, z initial condition perturbed by +/- the parameter to ic.
 ```
-./ic .001 ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
+$ ./ic .001 ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
+x+ ./tsm-lorenz-dbg 16 10 .01 10001 -15.799 -17.48 35.64 10 28 8 3
+x- ./tsm-lorenz-dbg 16 10 .01 10001 -15.801 -17.48 35.64 10 28 8 3
+y+ ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.479 35.64 10 28 8 3
+y- ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.481 35.64 10 28 8 3
+z+ ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.641 10 28 8 3
+z- ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.639 10 28 8 3
 ```
+(3D plot not shown)
 
 ## tsm.py and tsm-\*-\* Parameter Reference
 tsm.py comprises a long "if" statement containing a "zoo" of pre-programmed ODE systems.
