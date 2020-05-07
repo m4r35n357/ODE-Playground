@@ -83,7 +83,6 @@ mpfr_t *t_abs (series u, int k) {
 }
 
 static mpfr_t *cauchy (mpfr_t *c, series a, series b, int k, int lower, int upper) {
-    assert(b.size == a.size);
     mpfr_set_zero(*c, 1);
     for (int j = lower; j <= upper; j++) {
         mpfr_fma(*c, a.a[j], b.a[k - j], *c, RND);
