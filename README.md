@@ -82,7 +82,7 @@ The dependencies are:
 
 OS level requirements:
 ```
-sudo apt install build-essential mesa-utils-extra python3-dev libmpc-dev libatlas-base-dev virtualenvwrapper gnuplot-x11 lcov
+sudo apt install bc git build-essential pkg-config mesa-utils-extra python3-tk python3-dev libmpc-dev libfreetype6-dev libatlas-base-dev virtualenvwrapper gnuplot-x11 lcov
 ```
 Download:
 ```
