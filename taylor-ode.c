@@ -71,7 +71,7 @@ mpfr_t *t_horner (series jet, mpfr_t h) {
     for (int i = jet.size - 1; i >= 0; i--) {
         mpfr_fma(_, _, h, jet.a[i], RND);
     }
-    assert(mpfr_number_p(_));
+    if (mpfr_number_p(_) == 0) exit(1);
     mpfr_swap(jet.a[0], _);
     return &jet.a[0];
 }
