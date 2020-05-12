@@ -91,8 +91,15 @@ int main (int argc, char **argv) {
 
     printf("\n");
     compare("x * x == sqr(x)", ad_prod(p, x, x), ad_sqr(s1, x), tol);
+    if (mpfr_zero_p(x.a[0]) == 0) {
+        compare("sqr(x) / x == x", ad_quot(q, ad_sqr(s1, x), x), x, tol);
+    } else skipped++;
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("x * x == x^2", p, ad_pwr(p1, x, D2), tol);
+        compare("sqrt(x) * sqrt(x) == x", ad_prod(p, ad_sqrt(s1, x), ad_sqrt(s2, x)), x, tol);
+    } else skipped++;
+    if (mpfr_sgn(x.a[0]) > 0) {
+        ad_sqrt(s1, x);
+        compare("x / sqrt(x) == sqrt(x)", ad_quot(q, x, s1), s1, tol);
     } else skipped++;
 
     if (mpfr_sgn(x.a[0]) > 0) {
@@ -115,13 +122,13 @@ int main (int argc, char **argv) {
     } else skipped++;
 
     if (mpfr_zero_p(x.a[0]) == 0) {
-        compare("sqrt(x * x) == |x|", ad_sqrt(s, ad_prod(p, x, x)), ad_abs(a, x), tol);
+        compare("(x * x)^0.5 == |x|", ad_pwr(p1, ad_prod(p, x, x), D05), ad_abs(a, x), tol);
     } else skipped++;
 
+    compare("log(e^x) == x", ad_ln(l1, ad_exp(e1, x)), x, tol);
     if (mpfr_sgn(x.a[0]) > 0) {
         compare("log(x^a) == a * log(x)", ad_ln(l1, ad_pwr(p1, x, DA)), ad_scale(s, ad_ln(l2, x), DA), tol);
     } else skipped++;
-    compare("log(e^x) == x", ad_ln(l1, ad_exp(e1, x)), x, tol);
 
     ad_sin_cos(s, c, x, TRIG);
     compare("cos^2(x) + sin^2(x) == 1", ad_plus(p, ad_sqr(s1, c), ad_sqr(s2, s)), c1, tol);
