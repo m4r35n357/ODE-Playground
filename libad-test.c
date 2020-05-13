@@ -20,9 +20,9 @@
 
 typedef enum {PASS, FAIL} result;
 
-static int total = 0, passed = 0, skipped = 0;
+static int debug = 0, total = 0, passed = 0, skipped = 0;
 
-static mpfr_t delta, tolerance, D0, D05, D_05, D1, D_1, D2, D_2, D3, D_3, D_5, DA;
+static mpfr_t x0, delta, tolerance, D0, D05, D_05, D1, D_1, D2, D_2, D3, D_3, D_5, DA;
 
 static void ad_lib_test_tempvars (void) {
     ad_tempvars();
@@ -46,26 +46,27 @@ static result compare (char* name, series a, series b) {
     for (int k = 0; k < b.size; k++) {
         mpfr_sub(delta, a.a[k], b.a[k], RND);
         if (mpfr_cmp_abs(delta, tolerance) > 0) {
-            printf("%sFAILED%s %s  k: %d  diff: %.3e  a: %.3e  b: %.3e\n",
+            printf("%sFAILED%s %s  k: %d  DIFF: %+.3e  LHS: %+.3e  RHS: %+.3e\n",
                     KRED, KNRM, name, k, mpfr_get_d(delta, RND), mpfr_get_d(a.a[k], RND), mpfr_get_d(b.a[k], RND));
             return FAIL;
         }
+        if (debug >= 2) printf("%s DEBUG%s %s  k: %.2d  DIFF: %+.3e  LHS: %+.3e  RHS: %+.3e\n",
+                               KNRM, KNRM, name, k, mpfr_get_d(delta, RND), mpfr_get_d(a.a[k], RND), mpfr_get_d(b.a[k], RND));
     }
-    printf("%sPASSED%s %s\n", KGRN, KNRM, name);
+    if (debug >= 1) printf("%sPASSED%s %s\n", KGRN, KNRM, name);
     passed++;
     return PASS;
 }
 
 int main (int argc, char **argv) {
-    mpfr_t x0;
-
-    assert(argc == 5);
+    assert(argc == 5 || argc == 6);
     mpfr_set_default_prec(strtod(argv[1], NULL) * 3.322);
     ad_lib_test_tempvars();
     long n = strtol(argv[2], NULL, BASE) + 1;
     assert(n > 1);
     mpfr_init_set_str(x0, argv[3], BASE, RND);
     mpfr_init_set_str(tolerance, argv[4], BASE, RND);
+    if (argc == 6) debug = strtol(argv[5], NULL, BASE);
 
     series abs = t_jet(n);
     series scale = t_jet(n);
@@ -166,7 +167,7 @@ int main (int argc, char **argv) {
     compare("tanh(x) == sinh(x) / cosh(x)", tan, ad_quot(quot, sin, cos));
     compare("sech^2(x) == 1 / cosh^2(x)", sec2, ad_quot(quot, c1, ad_sqr(sqr1, cos)));
 
-    printf("Total: %d, Passed: %d", total, passed);
+    printf("Total: %d, %sPASSED%s %d", total, KGRN, KNRM, passed);
     if (skipped > 0) {
         printf(", %sSKIPPED%s %d", KYLW, KNRM, skipped);
     }
