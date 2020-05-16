@@ -46,12 +46,13 @@ static result compare (char* name, series a, series b) {
     for (int k = 0; k < b.size; k++) {
         mpfr_sub(delta, a.a[k], b.a[k], RND);
         if (mpfr_cmp_abs(delta, tolerance) > 0) {
-            printf("%sFAILED%s %s  k: %d  %+.6e vs %+.6e  diff %+.3e\n",
+            printf("%sFAILED%s %s  k: %d  LHS: %.6e  RHS: %.6e  diff %.3e\n",
                     KRED, KNRM, name, k, mpfr_get_d(a.a[k], RND), mpfr_get_d(b.a[k], RND), mpfr_get_d(delta, RND));
             return FAIL;
         }
-        if (debug >= 2) printf("%s DEBUG%s %s  k: %.2d  %+.6e vs %+.6e  diff %+.3e\n",
-                               KNRM, KNRM, name, k, mpfr_get_d(a.a[k], RND), mpfr_get_d(b.a[k], RND), mpfr_get_d(delta, RND));
+        if (debug >= 2 && k == 0) printf("\n");
+        if (debug >= 2) printf("%s DEBUG%s  k: %2d  %+.6e vs %+.6e  diff %+.3e\n",
+                               KNRM, KNRM, k, mpfr_get_d(a.a[k], RND), mpfr_get_d(b.a[k], RND), mpfr_get_d(delta, RND));
     }
     if (debug >= 1) printf("%sPASSED%s %s\n", KGRN, KNRM, name);
     passed++;
