@@ -69,16 +69,7 @@ Operators on or between jets and numbers are implemented by overloading, and the
 These two approaches produce a fairly readable format for coding the models.
 The value parameter allows simple calculation of function inverse values, as well as roots.
 
-## Graph Plotting
-
-There are some plotting and graphing utilities written in Python 3, (the data itself can come from either c or Python executables, which share output "formats").
-In the example invocations given below, communication between the executable and plotting script uses a Unix pipe.
-The dependencies are:
-* matplotlib for 2D graphs and progressive graphs
-* pi3d for 3D progressive trajectories (the visual python implementation is still distributed but is now considered legacy)
-* gnuplot for static 3D trajectories
-
-## Build Environment (Debian/Ubuntu/Raspbian)
+## Build/Test Environment (Debian/Ubuntu/Raspbian)
 
 OS level requirements:
 ```
@@ -89,6 +80,15 @@ Download:
 git clone https://github.com/m4r35n357/ODE-Playground
 cd ODE-Playground
 ```
+
+#### Graph Plotting
+There are some plotting and graphing utilities written in Python 3, (the data itself can come from either c or Python executables, which share output "formats").
+In the example invocations given below, communication between the executable and plotting script uses a Unix pipe.
+The dependencies are:
+* matplotlib for 2D graphs and progressive graphs
+* pi3d for 3D progressive trajectories
+* gnuplot for static 3D trajectories
+
 This is a typical Python virtual environment setup:
 ```
 mkvirtualenv --python /usr/bin/python3 ad
@@ -103,17 +103,12 @@ cd ad-1.0
 python3 setup.py install
 cd ../..
 ```
-c Build (GCC or Clang)
-```
-$ ./build
-$ ./build clang
-```
 
-## Running Python Tests
+#### Running Python Tests
 Testing Requirements
 * pytest
 * pytest_cov
-* mutmut
+* mutmut (optional)
 
 Most of the code is covered several times over.
 Tests have been mutation tested with mutmut.
@@ -121,20 +116,45 @@ Tests have been mutation tested with mutmut.
 pytest --cov=ad --cov=playground --cov-report html:cov_html ad_test.py solver_test.py -v
 ```
 
-## Running c Tests
-A successful test run creates no output:
+#### c Build (GCC or Clang)
 ```
-$ ./build [clang]
-<build output>
-$ ./ad-test-dbg 7 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt
-$
+$ ./build
+$ ./build clang
 ```
-Big build and test command:
+
+#### Running c Tests
+#####Newer tests
+```
+$ ./libad-test-dbg 32 20 2 1e-18 1
+```
+The final parameter can be set to 0 (or left absent) for a summary, or 2 for full detail.
+
+Parameter | Meaning
+----------|-----------
+1 | (approximate) precision in decimal places in c
+2 | order of Taylor Series
+3 | x value
+4 | tolerance
+5 | debug level (optional)
+
+#####Older tests
+```
+$ ./ad-test-dbg 7 2 1
+```
+Output originally designed for visual checking, or see below how to do it automatically (hard-coded to quad precision).
+
+Parameter | Meaning
+----------|-----------
+1 | order of Taylor Series
+2 | x value
+3 | y value
+
+#####Big build and test command:
 ```
 time -p ./build && ./ad-test-dbg 7 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt && ./libad-test-dbg 32 20 2 1e-18 && echo OK
 ```
 
-## c Code Coverage
+##### c Code Coverage
 ```
 rm -f *.gcno *.gcda
 ./build
@@ -145,7 +165,7 @@ genhtml coverage.info --output-directory out
 Then run tests and/or programs to generate data files, HTML at out/index.html
 
 ## Solving and Plotting ODEs
-This use case only involves calling the "t-functions" in tsm.py.
+This use case only involves calling the "t-functions" in ad.py or taylor-ode.c.
 No differentiation happens in these functions (they only implement the recurrence relations); it is the responsibility of the calling program to organize this properly.
 Refer to tsm.py and tsm-*.c for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors.
 To find some example invocations:
@@ -161,7 +181,34 @@ or in c (notice absence of the model parameter!):
 $ ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 ```
 
-## 3D static trajectory plotting (gnuplot)
+#### tsm.py and tsm-\*-\* Parameter Reference
+The Python ODE solver, tsm.py, comprises a long "if" statement containing a "zoo" of pre-programmed ODE systems.
+tsm-\*-\* represents the individual c solvers.
+
+##### Python
+Parameter | Meaning
+----------|-----------
+1 | model (ODE) name
+2 | ignored
+3 | order of Taylor Series
+4 | step size
+5 | number of steps
+6,7,8 | x0, y0, z0
+9+ | ODE parameters
+
+##### c
+Parameter | Meaning
+----------|-----------
+1 | (approximate) precision in decimal places in c
+2 | order of Taylor Series (plot interval in RK4)
+3 | step size
+4 | number of steps
+5,6,7 | x0, y0, z0
+8+ | ODE parameters
+
+Since the RK4 Lorentz simulator (c only) is by definition fixed order, the "order" parameter is used to pass in a "plot interval" (e.g. 10 means plot only every 10th result).
+
+#### 3D static trajectory plotting (gnuplot)
 
 Write to a data file
 ```
@@ -172,7 +219,7 @@ then plot it
 $ echo "splot '/tmp/data' with lines" | gnuplot -p
 ```
 
-## 3D progressive trajectory plotting (pi3d)
+#### 3D progressive trajectory plotting (pi3d)
 ```
 $ ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 ```
@@ -180,7 +227,7 @@ $ ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 ## Clean Numerical Simulation (CNS)
 
 As a rough guide to the accuracy of a solution, it can be compared with a "better" solution (one made with "better" solver parameters), and discarded at the point where the solutions diverge.
-The simulations are run in parallel processes, but obviously the "better" solution takes longer.
+The two simulations are run in parallel processes, but obviously the "better" solution takes longer.
 
 300 time units
 ```
@@ -222,21 +269,8 @@ z- ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.639 10 28 8 3
 ```
 (3D plot not shown)
 
-## tsm.py and tsm-\*-\* Parameter Reference
-tsm.py comprises a long "if" statement containing a "zoo" of pre-programmed ODE systems.
-
-Parameter | Meaning
-----------|-----------
-1 | model (ODE) name
-2 | significant figures for display
-3 | 1 + order
-4,5 | step size, number of steps
-6,7,8 | x0, y0, z0
-9+ | ODE parameters
-
-c is mostly the same, except the "model" parameter, which is part of the executable name, is omitted from the list, and the executable itself is named tsm-"model".
-
-## Interactivity
+## Interactivity with Python
+This use case involves calling the Series methods and operators from ad.py, and the functions from plotters.py, from a Python interpreter.
 
 ##### Higher level function analysis
 Plotting function and derivatives, together with root and turning point analysis:
