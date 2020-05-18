@@ -68,9 +68,29 @@ void t_args (char **argv, int count, ...);
 series t_jet (int size);
 
 /*
- * Returns a jet with element zero set to value and the rest zeroed (represents an additive constant in an ODE)
+ * Creates a jet with element zero set to value and the rest zeroed (represents an additive constant in an ODE)
  */
 series t_jet_c (int size, mpfr_t value);
+
+/*
+ * The Taylor Series Method (TSM) in brief:
+ *
+ *              x(t0 + h) = x(t) = sum{k=0->inf} X[k] h^k,    where X[k] = x^k / k! and h = t - t0
+ *
+ *                         x'(t) = sum{k=0->inf} X'[k] h^k,   where x' = dx/dt        (A)
+ *
+ *                     d/dt x(t) = sum{k=1->inf} k X[k] h^(k-1)
+ *
+ *                               = sum{k=0->inf} (k+1) X[k+1] h^k                     (B)
+ *
+ * Conparing (A) and (B),  x'[k] = (k+1) x[k+1]    *** this is THE IDENTITY (also used in recurrences below) ***
+ *
+ *                   ==>  X[k+1] = X'[k] / (k + 1)
+ *
+ * 1. Build up a coefficient jet for each coordinate using THE IDENTITY, and Taylor recurrences where needed
+ *
+ * 2. Apply Horner's method to each jet to calculate the next set of coordinates
+ */
 
 /*
  * Calculate next coefficient in jet
@@ -78,7 +98,7 @@ series t_jet_c (int size, mpfr_t value);
 void t_next (series jet, mpfr_t dot, int k, sign s);
 
 /*
- * Sums a Taylor series safely and efficiently
+ * Evaluate a Taylor series safely and efficiently
  */
 mpfr_t *t_horner (series jet, mpfr_t h);
 
@@ -90,13 +110,13 @@ mpfr_t *t_abs (series U, int k);
 /*
  * Cauchy product for C = A.B
  *
- *  let c(x) = sum{k=0->inf} C(k) (x - a)^k
+ *  let c(t) = sum{k=0->inf} C(k) h^k
  *
- *   if c(x) = a(x) b(x)
+ *   if c(t) = a(t) b(t)
  *
- * then c(x) = (sum{k=0 -> inf} A(k) (x - a)^k) (sum{k=0 -> inf} B(k) (x - a)^k)
+ * then c(t) = (sum{j=0 -> inf} A(j) h^j) (sum{i=0 -> inf} B(i) h^i)
  *
- *           = sum{k=0 -> inf} ( sum{j=0 -> k} A[j]B[k - j] ) (x - a)^k
+ *           = sum{k=0 -> inf} ( sum{j=0 -> k} A[j]B[k - j] ) h^k     where k = i + j  ==>  i = k - j
  *
  *  ==> C[k] = sum{j=0->k} A[j].B[k-j]     perhaps implemented by a static/private function cauchy(A, B, k)
  */
@@ -158,17 +178,19 @@ mpfr_t *t_sqrt (series r, series U, int k);
 /*
  * Applying the chain rule for the derivative of a composed function f(u) creates another Cauchy product:
  *
- *          F' = (df/du).U' = H.U'
+ *           F' = (df/du).U' = H.U'
  *
- * Using F'[k] = (k+1)F[k+1]  ==>  F'[k-1] = kF[k], we can replace F' with F, and U' with U as follows:
+ *  Using F'[k] = (k+1)F[k+1]   (THE IDENTITY again)
+ *
+ * ==>  F'[k-1] = kF[k], we can replace F' with F, and U' with U as follows:
  *
  * from product rule above, (note that F' and U' have one fewer elements than F and U)
  *
- *     F'[k-1] = sum{j=0->k-1} H[j].U'[k-1-j]
+ *      F'[k-1] = sum{j=0->k-1} H[j].U'[k-1-j]
  *
- *       kF[k] = sum{j=0->k-1} H[j].(k-j)U[k-j]
+ *        kF[k] = sum{j=0->k-1} H[j].(k-j)U[k-j]
  *
- *    ==> F[k] = sum{j=0->k-1} H[j].(k-j)U[k-j]/k     perhaps implemented by a static/private function d_cauchy(H, U, k)
+ *     ==> F[k] = sum{j=0->k-1} H[j].(k-j)U[k-j]/k     perhaps implemented by a static/private function d_cauchy(H, U, k)
  */
 
 /*

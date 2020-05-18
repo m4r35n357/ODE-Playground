@@ -1,9 +1,12 @@
 ## Background
 
-This project is mainly a collection of programs for evolving systems of ODEs using the Taylor Series Method (TSM), a rather old but poorly acknowledged technique based on forward mode Automatic Differentiation (AD).
+This project is mainly a collection of programs in c and Python for evolving systems of ODEs using the Taylor Series Method (TSM), a rather old but poorly acknowledged technique based on forward mode Automatic Differentiation (AD).
 TSM is a procedure for integrating ODEs using Taylor Series of arbitrary order, calculated to arbitrary precision (the former requires the latter in practice), using recurrence relations between time derivatives of increasing order.
 It is therefore (or should be!) a serious competitor to the fourth-order RK4 for the majority of practical cases.
-The code has been partly developed on, and is suitable for running on a Raspberry Pi 4 computer.
+
+The code itself is tiny and has been partly developed on, and is suitable for running on, a Raspberry Pi 4 computer.
+The c code uses arbitrary precision, and is most suited to solving ODEs to high accuracy.
+The Python code uses float precision, and is most suited to interactive analysis and plotting of functions and their derivatives.
 
 For the uninitiated, here is a review of the TSM itself and its history of repeated "discovery" and re-branding.
 https://arxiv.org/abs/1111.7149
@@ -11,12 +14,14 @@ https://arxiv.org/abs/1111.7149
 My work was inspired by parts of the following paper and its associated software:
 https://web.ma.utexas.edu/users/mzou/taylor/taylor.pdf
 
-That software uses code generation to produce the recurrences and code to drive them, and it inspired me to try coding something by hand; these programs are the result.
-My aim was to be able to solve coupled nonlinear equations and investigate chaotic systems, without relying on "black-box" ODE solvers.
-There is a maths.tex file containing a technical note describing the majority of the procedure (apart from the recurrence relations which are obtained from the source listed below).
+That software uses code generation to produce the recurrences and code to drive them, and it inspired me to try coding something more direct by hand.
+These programs are the result.
+My primary aim was to be able to solve coupled nonlinear equations and investigate chaotic systems, without relying on "black-box" ODE solvers.
+The header file taylor-ode.h contains a brief description of the Taylor Series Method and the derivations of the recurrences that enable analysis of complex systems.
 
-The recurrence rules (the global "t-functions" in c and Python) generate "jets" of Taylor Series coefficients iteratively, term by term, using previously calculated lower order values.
-The functions provided cover the basic algebraic operations (+ - * /), and also include several common functions:
+The recurrence rules (the global "t-functions" in c and Python) are the key to calculating high order derivatives accurately, without needing finite differences.
+They generate "jets" of Taylor Series coefficients iteratively, term by term, using previously calculated lower order values.
+The functions provided cover the basic algebraic operations on Taylor Series (+ - * /), and also include several common functions:
 * abs
 * sqr
 * sqrt
@@ -26,18 +31,19 @@ The functions provided cover the basic algebraic operations (+ - * /), and also 
 * pwr (f(x)^a, a is a scalar)
 * ln
 
-The recurrence relations used here are derived in http://aimsciences.org/journals/displayPaperPro.jsp?paperID=9241 (open access).
-There are also factories for derivative "jets", and an implementation of Horner's method for summing the Taylor Series.
-These "low-level" functions, properly called,  are all that is needed to "integrate" systems of ODEs.
-There is a fairly extensive collection of nonlinear ODEs already implemented, in the file tsm.py.
-The list includes systems due to Lorenz, Rossler, Thomas, Bouali, Rabinovitch-Fabrikant, Sprott, and others.
+The recurrence relations used here are derived along the lines of (amongst other sources) http://www2.math.uni-wuppertal.de/wrswt/preprints/prep_05_4.pdf and http://aimsciences.org/journals/displayPaperPro.jsp?paperID=9241 (open access).
 
-As part of the work to verify my implementation of these recurrence rules, I have added a demonstration of using Taylor series to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
+There are also convenient factories for generating derivative "jets" of arbitrary order, and an implementation of Horner's method for summing the Taylor Series.
+These "low-level" functions, when properly called,  are all that is needed to solve systems of ODEs.
+There is a fairly extensive collection of nonlinear ODEs already implemented, in the file tsm.py.
+The list includes systems due to Lorenz, Rossler, Thomas, Bouali, Rabinovitch-Fabrikant, Sprott, and many others.
+
+As part of the work to verify my own implementation of these recurrence rules, I have added a demonstration of using Taylor series to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
 The solver demo can be used to find roots (and also extrema and inflection points by "extending" Newton to higher derivatives) in single variable nonlinear equations.
 Additionally it is designed for finding inverse values (where real solutions exist) of complicated functions, not just their roots.
 
-The "higher-level" ad_functions (or the Series class in Python) generate Taylor series "jets" in one go, so are only useful for univariate functions.
-There is an overloaded operator "~" which extracts the actual derivative values from the taylor series coefficents, as well as additional operators for (negation and **).
+The "higher-level" ad_functions (or the Series class in Python) manipulate entire  Taylor series "jets" at once, so are only useful for univariate functions.
+In Python there is an overloaded operator "~" which extracts the actual derivative values from the taylor series coefficents, as well as additional operators for (negation and **).
 The \*\* (power) operator caters for f(x)^a, a^f(x) and f1(x)^f2(x), subject to domain limitations on f(x).
 There are also functions for (matching the t_functions):
 * abs
@@ -50,7 +56,7 @@ There are also functions for (matching the t_functions):
 * ln
 
 Using these higher level functions, Newton's method is implemented trivially, but I have also provided an implementations of the bisection method for comparison.
-There are three main areas of application for the code:
+In summary, there are three main areas of application for the code:
 * solving nonlinear ODEs
 * plotting functions and their (higher) derivatives, with solution, turning-point, and inflection analysis
 * interactive investigations in the Python console
@@ -185,7 +191,7 @@ $ ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated
 The Python ODE solver, tsm.py, comprises a long "if" statement containing a "zoo" of pre-programmed ODE systems.
 tsm-\*-\* represents the individual c solvers.
 
-##### Python
+##### Python (float precision)
 Parameter | Meaning
 ----------|-----------
 1 | model (ODE) name
@@ -196,7 +202,7 @@ Parameter | Meaning
 6,7,8 | x0, y0, z0
 9+ | ODE parameters
 
-##### c
+##### c (MPFR arbitrary precision)
 Parameter | Meaning
 ----------|-----------
 1 | (approximate) precision in decimal places
