@@ -51,7 +51,7 @@ static result compare (char* name, series a, series b) {
             return FAIL;
         }
         if (debug >= 2 && k == 0) printf("\n");
-        if (debug >= 2) printf("%s DEBUG%s  k: %2d  %+.6e vs %+.6e  diff %+.3e\n",
+        if (debug >= 2) printf("%s DEBUG%s  k: %2d  %+.6e %+.6e  diff %+.3e\n",
                                KNRM, KNRM, k, mpfr_get_d(a.a[k], RND), mpfr_get_d(b.a[k], RND), mpfr_get_d(delta, RND));
     }
     if (debug >= 1) printf("%sPASSED%s %s\n", KGRN, KNRM, name);

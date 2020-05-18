@@ -123,7 +123,7 @@ $ ./build clang
 ```
 
 #### Running c Tests
-#####Newer tests
+##### Newer tests
 ```
 $ ./libad-test-dbg 32 20 2 1e-18 1
 ```
@@ -131,13 +131,13 @@ The final parameter can be set to 0 (or left absent) for a summary, or 2 for ful
 
 Parameter | Meaning
 ----------|-----------
-1 | (approximate) precision in decimal places in c
+1 | (approximate) precision in decimal places
 2 | order of Taylor Series
 3 | x value
 4 | tolerance
 5 | debug level (optional)
 
-#####Older tests
+##### Older tests
 ```
 $ ./ad-test-dbg 7 2 1
 ```
@@ -149,7 +149,7 @@ Parameter | Meaning
 2 | x value
 3 | y value
 
-#####Big build and test command:
+##### Big build and test command:
 ```
 time -p ./build && ./ad-test-dbg 7 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt && ./libad-test-dbg 32 20 2 1e-18 && echo OK
 ```
@@ -199,7 +199,7 @@ Parameter | Meaning
 ##### c
 Parameter | Meaning
 ----------|-----------
-1 | (approximate) precision in decimal places in c
+1 | (approximate) precision in decimal places
 2 | order of Taylor Series (plot interval in RK4)
 3 | step size
 4 | number of steps
