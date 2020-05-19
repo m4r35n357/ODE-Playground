@@ -50,8 +50,7 @@ series t_jet (int n) {
     assert(n > 0);
     mpfr_t *jet = malloc(sizeof (mpfr_t) * n);
     for (int i = 0; i < n; i++) {
-        mpfr_init(jet[i]);
-        mpfr_set_zero(jet[i], 1);
+        mpfr_init_set_ui(jet[i], 0, RND);
     }
     return (series){jet, n};
 }
@@ -168,7 +167,7 @@ tuple t_tan_sec2 (series t, series s, series u, int k, geometry g) {
     if (k == 0) {
         g == TRIG ? mpfr_tan(t.a[k], u.a[0], RND) : mpfr_tanh(t.a[k], u.a[0], RND);
         g == TRIG ? mpfr_sec(s.a[k], u.a[0], RND) : mpfr_sech(s.a[k], u.a[0], RND);
-        mpfr_sqr(s.a[0], s.a[0], RND);
+        mpfr_sqr(s.a[k], s.a[k], RND);
     } else {
         d_cauchy(&t.a[k], s, u, k, 0, k - 1, D1);
         d_cauchy(&s.a[k], t, t, k, 0, k - 1, g == TRIG ? D2 : D_2);
