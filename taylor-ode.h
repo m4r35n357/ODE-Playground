@@ -77,17 +77,17 @@ series t_jet_c (int size, mpfr_t value);
  *
  *              x(t0 + h) = x(t) = sum{k=0->inf} X[k] h^k,    where X[k] = (d/dt)^k x(t) / k! and h = t - t0
  *
- *                         x'(t) = sum{k=0->inf} X'[k] h^k,   where x' = dx/dt, the ODE equations   (A)
+ *                         x'(t) = sum{k=0->inf} X'[k] h^k,   where x'(t) = dx/dt, the ODE equations   (A)
  *
  *                     d/dt x(t) = sum{k=1->inf} k X[k] h^(k-1)
  *
- *                               = sum{k=0->inf} (k+1) X[k+1] h^k                                   (B)
+ *                               = sum{k=0->inf} (k+1) X[k+1] h^k                                      (B)
  *
- * Conparing (A) and (B),  x'[k] = (k+1) x[k+1]    *** this is THE IDENTITY (also used in recurrences below) ***
+ * Conparing (A) and (B),  X'[k] = (k+1) X[k+1]    *** this is THE IDENTITY (also used in recurrences below) ***
  *
  *                   ==>  X[k+1] = X'[k] / (k + 1)
  *
- * 1. Build up a coefficient jet for each coordinate using THE IDENTITY, and Taylor recurrences where needed
+ * 1. Build up a coefficient jet for each coordinate using the ODE, with Taylor recurrences where needed, and divide by k + 1
  *
  * 2. Apply Horner's method to each jet to calculate the next set of coordinates
  */
@@ -178,13 +178,15 @@ mpfr_t *t_sqrt (series r, series U, int k);
 /*
  * Applying the chain rule for the derivative of a composed function f(u) creates another Cauchy product:
  *
- *           F' = (df/du).U' = H.U'
+ *           F' = (df/du).U' = H.U'    where H = df/du
  *
- *  Using F'[k] = (k+1)F[k+1]   (THE IDENTITY again)
+ *  Using F'[k] = (k+1) F[k+1]   (THE IDENTITY again)
  *
- * ==>  F'[k-1] = kF[k], we can replace F' with F, and U' with U as follows:
+ * ==>  F'[k-1] = k F[k], because we WANT F[k], and we can now replace F' with F, and U' with U as follows:
  *
  * from product rule above, (note that F' and U' have one fewer elements than F and U)
+ *
+ *        F'[k] = sum{j=0->k} H[j].U'[k-j]
  *
  *      F'[k-1] = sum{j=0->k-1} H[j].U'[k-1-j]
  *
