@@ -2,10 +2,10 @@
 
 This project is mainly a collection of programs in c and Python for evolving systems of ODEs using the Taylor Series Method (TSM), a rather old but poorly acknowledged technique based on forward mode Automatic Differentiation (AD).
 TSM is a procedure for integrating ODEs using Taylor Series of arbitrary order, calculated to arbitrary precision (the former requires the latter in practice), using recurrence relations between time derivatives of increasing order.
-It is therefore (or should be!) a serious competitor to the fourth-order RK4 for the majority of practical cases.
+It is therefore (or should be, if it were better known!) a serious competitor to the fourth-order RK4 for the vast majority of cases.
 
-The code itself is tiny and has been partly developed on, and is suitable for running on, a Raspberry Pi 4 computer.
-The c code uses arbitrary precision, and is most suited to solving ODEs to high accuracy.
+The code itself is tiny (as are the dynamic executables) and has been partly developed on, and is suitable for running on, a Raspberry Pi 4 computer.
+The c code supports arbitrary precision, and is most suited to solving systems of ODEs to high accuracy.
 The Python code uses float precision, and is most suited to interactive analysis and plotting of functions and their derivatives.
 
 For the uninitiated, here is a review of the TSM itself and its history of repeated "discovery" and re-branding.
@@ -17,9 +17,9 @@ https://web.ma.utexas.edu/users/mzou/taylor/taylor.pdf
 That software uses code generation to produce the recurrences and code to drive them, and it inspired me to try coding something more direct by hand.
 These programs are the result.
 My primary aim was to be able to solve coupled nonlinear equations and investigate chaotic systems, without relying on "black-box" ODE solvers.
-The header file taylor-ode.h contains a brief description of the Taylor Series Method and the derivations of the recurrences that enable analysis of complex systems.
+The header file taylor-ode.h contains a terse but complete description of the Taylor Series Method and the derivations of the recurrences that enable analysis of complex systems.
 
-The recurrence rules (the global "t-functions" in c and Python) are the key to calculating high order derivatives accurately, without needing finite differences.
+The recurrence rules (the "t-functions" in c and Python) are the key to calculating high order derivatives accurately, without needing finite differences.
 They generate "jets" of Taylor Series coefficients iteratively, term by term, using previously calculated lower order values.
 The functions provided cover the basic algebraic operations on Taylor Series (+ - * /), and also include several common functions:
 * abs
@@ -35,7 +35,7 @@ The recurrence relations used here are derived along the lines of (amongst other
 
 There are also convenient factories for generating derivative "jets" of arbitrary order, and an implementation of Horner's method for summing the Taylor Series.
 These "low-level" functions, when properly called,  are all that is needed to solve systems of ODEs.
-There is a fairly extensive collection of nonlinear ODEs already implemented, in the file tsm.py.
+There is a fairly extensive collection of nonlinear ODE examples already implemented, in the file tsm.py, and in the tsm-\*-*.c files.
 The list includes systems due to Lorenz, Rossler, Thomas, Bouali, Rabinovitch-Fabrikant, Sprott, and many others.
 
 As part of the work to verify my own implementation of these recurrence rules, I have added a demonstration of using Taylor series to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
@@ -61,7 +61,8 @@ In summary, there are three main areas of application for the code:
 * plotting functions and their (higher) derivatives, with solution, turning-point, and inflection analysis
 * interactive investigations in the Python console
 
-The playground.py script provides the analysis of a "model" function's derivatives along with the value itself, across a range of the input variable.
+The plotters.py script enables the analysis of a "model" function's derivatives along with the value itself, across a range of the input variable.
+That file contains a selection of example invocations in the comments.
 Optionally it will analyse that range for roots, extrema and inflection points using the lower order derivatives.
 Here is a seventh-degree polynomial model by way of example, and a trigonometric identity as a check of the sin and sqr functions:
 ```python

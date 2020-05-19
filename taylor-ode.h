@@ -43,12 +43,12 @@ typedef enum {POS, NEG} sign;
 typedef enum {TRIG, HYP} geometry;
 
 /*
- * Initialize file scoped temporary storage
+ * Pre-allocate some MPFR variaboles
  */
 void t_tempvars (void);
 
 /*
- * Prints x, y, z, t in a single line
+ * Prints x, y, z, t values in a single line of output
  */
 void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, long step, mpfr_t t);
 
@@ -77,11 +77,11 @@ series t_jet_c (int size, mpfr_t value);
  *
  *              x(t0 + h) = x(t) = sum{k=0->inf} X[k] h^k,    where X[k] = x^k / k! and h = t - t0
  *
- *                         x'(t) = sum{k=0->inf} X'[k] h^k,   where x' = dx/dt        (A)
+ *                         x'(t) = sum{k=0->inf} X'[k] h^k,   where x' = dx/dt, the ODE equations   (A)
  *
  *                     d/dt x(t) = sum{k=1->inf} k X[k] h^(k-1)
  *
- *                               = sum{k=0->inf} (k+1) X[k+1] h^k                     (B)
+ *                               = sum{k=0->inf} (k+1) X[k+1] h^k                                   (B)
  *
  * Conparing (A) and (B),  x'[k] = (k+1) x[k+1]    *** this is THE IDENTITY (also used in recurrences below) ***
  *
@@ -110,13 +110,13 @@ mpfr_t *t_abs (series U, int k);
 /*
  * Cauchy product for C = A.B
  *
- *  let c(t) = sum{k=0->inf} C(k) h^k
- *
  *   if c(t) = a(t) b(t)
  *
- * then c(t) = (sum{j=0 -> inf} A(j) h^j) (sum{i=0 -> inf} B(i) h^i)
+ * then c(t) = sum{k=0->inf} C(k) h^k
  *
- *           = sum{k=0 -> inf} ( sum{j=0 -> k} A[j]B[k - j] ) h^k     where k = i + j  ==>  i = k - j
+ *           = sum{j=0->inf} A(j) h^j sum{i=0->inf} B(i) h^i
+ *
+ *           = sum{k=0->inf} sum{j=0->k} A[j]B[k - j] h^k     where k = i + j  ==>  i = k - j
  *
  *  ==> C[k] = sum{j=0->k} A[j].B[k-j]     perhaps implemented by a static/private function cauchy(A, B, k)
  */
