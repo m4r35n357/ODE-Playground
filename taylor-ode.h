@@ -75,7 +75,7 @@ series t_jet_c (int size, mpfr_t value);
 /*
  * The Taylor Series Method (TSM) in brief:
  *
- *              x(t0 + h) = x(t) = sum{k=0->inf} X[k] h^k,    where X[k] = x^k / k! and h = t - t0
+ *              x(t0 + h) = x(t) = sum{k=0->inf} X[k] h^k,    where X[k] = (d/dt)^k x(t) / k! and h = t - t0
  *
  *                         x'(t) = sum{k=0->inf} X'[k] h^k,   where x' = dx/dt, the ODE equations   (A)
  *
