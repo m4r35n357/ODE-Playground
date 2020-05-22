@@ -223,7 +223,7 @@ $ ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 >/tmp/data
 ```
 then plot it
 ```
-$ echo "splot '/tmp/data' with lines" | gnuplot -p
+$ gnuplot -p -e "splot '/tmp/data' with lines"
 ```
 
 #### 3D progressive trajectory plotting (pi3d)
