@@ -1,7 +1,7 @@
 /*
  * Sprott-Thomas' cyclically symmetric attractor
  *
- * Example: ./tsm-sprott-thomas-dbg 32 10 0.01 30000 1 0 0 4.75 1
+ * Example: ./tsm-sprott-thomas-dbg 9 32 10 0.01 30000 1 0 0 4.75 1
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -15,7 +15,7 @@ int main (int argc, char **argv) {
     mpfr_t x0, y0, z0, a, b, h, _;
 
     // initialize from command arguments
-    assert(argc == 10);
+    assert(argc == 11);
     t_stepper(argv, &n, &h, &nsteps);
     t_args(argv, argc, &x0, &y0, &z0, &a, &b);
     mpfr_init(_);

@@ -132,7 +132,7 @@ $ ./build clang
 #### Running c Tests
 ##### Newer tests
 ```
-$ ./libad-test-dbg 32 20 2 1e-18 1
+$ ./libad-test-dbg 9 32 20 2 1e-18 1
 ```
 The final parameter can be set to 0 (or left absent) for a summary, or 2 for full detail.
 
@@ -158,14 +158,14 @@ Parameter | Meaning
 
 ##### Big build and test command:
 ```
-time -p ./build && ./ad-test-dbg 7 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt && ./libad-test-dbg 32 20 2 1e-18 && echo OK
+time -p ./build && ./ad-test-dbg 7 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt && ./libad-test-dbg 9 32 20 2 1e-18 && echo OK
 ```
 
 ##### c Code Coverage
 ```
 rm -f *.gcno *.gcda
 ./build
-./libad-test-dbg 32 20 2 1 1e-18
+./libad-test-dbg 9 32 20 2 1 1e-18
 lcov --capture --directory . --output-file coverage.info
 genhtml coverage.info --output-directory out
 ```
@@ -206,12 +206,13 @@ Parameter | Meaning
 ##### c (MPFR arbitrary precision)
 Parameter | Meaning
 ----------|-----------
-1 | (approximate) precision in decimal places
-2 | order of Taylor Series (plot interval in RK4)
-3 | step size
-4 | number of steps
-5,6,7 | x0, y0, z0
-8+ | ODE parameters
+1 | x, y, z output precision in decimal places (0 for full)
+2 | (approximate) internal precision in decimal places
+3 | order of Taylor Series (plot interval in RK4)
+4 | step size
+5 | number of steps
+6,7, 8 | x0, y0, z0
+9+ | ODE parameters
 
 Since the RK4 Lorentz simulator (c only) is by definition fixed order, the "order" parameter is used to pass in a "plot interval" (e.g. 10 means plot only every 10th result).
 

@@ -1,7 +1,7 @@
 /*
  * Bouali Attractor
  *
- * Example: ./tsm-bouali-dbg 32 10 0.01 50000 1 1 0 3 2.2 1 .01
+ * Example: ./tsm-bouali-dbg 9 32 10 0.01 50000 1 1 0 3 2.2 1 .01
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -15,7 +15,7 @@ int main (int argc, char **argv) {
     mpfr_t x0, y0, z0, a, b, g, m, h, _;
 
     // initialize from command arguments
-    assert(argc == 12);
+    assert(argc == 13);
     t_stepper(argv, &n, &h, &nsteps);
     t_args(argv, argc, &x0, &y0, &z0, &a, &b, &g, &m);
     mpfr_init(_);

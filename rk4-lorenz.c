@@ -1,7 +1,7 @@
 /*
  * Lorenz System using RK4
  *
- * Example: ./rk4-lorenz-dbg 32 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+ * Example: ./rk4-lorenz-dbg 9 32 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
  *
  * NOTE plot interval in place of order!
  *

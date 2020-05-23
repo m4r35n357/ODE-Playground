@@ -1,8 +1,8 @@
 /*
  * Rabinovich–Fabrikant System
  *
- * Example: ./tsm-rf-dbg 32 10 .01 50000 .05 -.05 .3 .28713 .1
- *          ./tsm-rf-dbg 32 16 .01 50000 .05 -.05 .3 .105 .1 | ./plot3d.py
+ * Example: ./tsm-rf-dbg 9 32 10 .01 50000 .05 -.05 .3 .28713 .1
+ *          ./tsm-rf-dbg 9 32 16 .01 50000 .05 -.05 .3 .105 .1 | ./plot3d.py
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -16,7 +16,7 @@ int main (int argc, char **argv) {
     mpfr_t x0, y0, z0, gamma, h, d3, _, x2_1;
 
     // initialize from command arguments
-    assert(argc == 10);
+    assert(argc == 11);
     t_stepper(argv, &n, &h, &nsteps);
     t_args(argv, argc, &x0, &y0, &z0, &_, &gamma);
     mpfr_inits(d3, x2_1, NULL);

@@ -13,6 +13,8 @@ const int BASE = 10;
 
 const mpfr_rnd_t RND = MPFR_RNDN;
 
+static long dp;
+
 static mpfr_t D1, D_1, D2, D_2, _, __, ___;
 
 void t_tempvars (void) {
@@ -25,22 +27,29 @@ void t_tempvars (void) {
 
 void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, long step, mpfr_t t) {
     mpfr_mul_ui(t, h, step, RND);
-    mpfr_printf("%+.12RNe %+.12RNe %+.12RNe %+.6RNe\n", x, y, z, t);
+    char template[42];
+    if (dp == 0) {
+        sprintf(template, "%%.RNe %%.RNe %%.RNe %%.9RNe\n");
+    } else {
+        sprintf(template, "%%+.%luRNe %%+.%luRNe %%+.%luRNe %%+.9RNe\n", dp, dp, dp);
+    }
+    mpfr_printf(template, x, y, z, t);
 }
 
 void t_stepper (char **argv, long *n, mpfr_t *h, long *nsteps) {
-    mpfr_set_default_prec(strtod(argv[1], NULL) * 3.322);
+    dp = strtol(argv[1], NULL, BASE);
+    mpfr_set_default_prec(strtod(argv[2], NULL) * 3.322);
     fprintf(stderr, " MPFR default precision: %lu bits\n", mpfr_get_default_prec());
-    *n = strtol(argv[2], NULL, BASE);
-    mpfr_init_set_str(*h, argv[3], BASE, RND);
-    *nsteps = strtol(argv[4], NULL, BASE);
+    *n = strtol(argv[3], NULL, BASE);
+    mpfr_init_set_str(*h, argv[4], BASE, RND);
+    *nsteps = strtol(argv[5], NULL, BASE);
     t_tempvars();
 }
 
 void t_args (char **argv, int argc, ...) {
     va_list vars;
     va_start(vars, argc);
-    for (int i = 5; i < argc; i++) {
+    for (int i = 6; i < argc; i++) {
         mpfr_init_set_str(*va_arg(vars, mpfr_t *), argv[i], BASE, RND);
     }
     va_end(vars);

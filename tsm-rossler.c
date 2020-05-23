@@ -1,7 +1,7 @@
 /*
  * Rossler System
  *
- * Example: ./tsm-rossler-dbg 32 10 0.01 50000 0.0 -6.78 0.02 .2 .2 5.7
+ * Example: ./tsm-rossler-dbg 9 32 10 0.01 50000 0.0 -6.78 0.02 .2 .2 5.7
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -15,7 +15,7 @@ int main (int argc, char **argv) {
     mpfr_t x0, y0, z0, a, c, h, _;
 
     // initialize from command arguments
-    assert(argc == 11);
+    assert(argc == 12);
     t_stepper(argv, &n, &h, &nsteps);
     t_args(argv, argc, &x0, &y0, &z0, &a, &_, &c);
 

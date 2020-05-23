@@ -1,7 +1,7 @@
 /*
  * Sprott-Jafari System
  *
- * Example: ./tsm-sj-dbg 32 10 .01 10000 0 3.9 .7 8.888 4
+ * Example: ./tsm-sj-dbg 9 32 10 .01 10000 0 3.9 .7 8.888 4
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -15,7 +15,7 @@ int main (int argc, char **argv) {
     mpfr_t x0, y0, z0, a, b, h, _, __;
 
     // initialize from command arguments
-    assert(argc == 10);
+    assert(argc == 11);
     t_stepper(argv, &n, &h, &nsteps);
     t_args(argv, argc, &x0, &y0, &z0, &a, &b);
     mpfr_inits(_, __, NULL);
