@@ -1,7 +1,7 @@
 /*
  * Genesio-Tesi System
  *
- * Example: ./tsm-genesio-tesi-dbg 32 10 0.01 150000 .1 .1 .1 .44 1.1 1
+ * Example: ./tsm-genesio-tesi-dbg 9 32 10 0.01 150000 .1 .1 .1 .44 1.1 1
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -15,7 +15,7 @@ int main (int argc, char **argv) {
     mpfr_t x0, y0, z0, a, b, c, h, _;
 
     // initialize from command arguments
-    assert(argc == 11);
+    assert(argc == 12);
     t_stepper(argv, &n, &h, &nsteps);
     t_args(argv, argc, &x0, &y0, &z0, &a, &b, &c);
     mpfr_init(_);

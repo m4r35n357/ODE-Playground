@@ -1,7 +1,7 @@
 /*
  * Thomas' cyclically symmetric attractor
  *
- * Example: ./tsm-thomas-dbg 32 10 0.1 30000 1 0 0 .19
+ * Example: ./tsm-thomas-dbg 9 32 10 0.1 30000 1 0 0 .19
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -15,7 +15,7 @@ int main (int argc, char **argv) {
     mpfr_t x0, y0, z0, b, h, _;
 
     // initialize from command arguments
-    assert(argc == 9);
+    assert(argc == 10);
     t_stepper(argv, &n, &h, &nsteps);
     t_args(argv, argc, &x0, &y0, &z0, &b);
     mpfr_init(_);

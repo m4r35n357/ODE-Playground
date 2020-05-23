@@ -1,7 +1,7 @@
 /*
  * Yu-Wang System
  *
- * Example: ./tsm-yu-wang-dbg 32 10 .001 50000 1 0 0 10 40 2 2.5
+ * Example: ./tsm-yu-wang-dbg 9 32 10 .001 50000 1 0 0 10 40 2 2.5
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -15,7 +15,7 @@ int main (int argc, char **argv) {
     mpfr_t x0, y0, z0, a, b, c, d, h, _;
 
     // initialize from command arguments
-    assert(argc == 12);
+    assert(argc == 13);
     t_stepper(argv, &n, &h, &nsteps);
     t_args(argv, argc, &x0, &y0, &z0, &a, &b, &c, &d);
     mpfr_init(_);

@@ -60,21 +60,21 @@ fi
 echo OK
 
 echo -n "Running Lorenz executables . . . "
-if ! ./tsm-lorenz-dbg 16 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
+if ! ./tsm-lorenz-dbg 0 16 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
 then
     echo "Lorenz(DBG) failed!"
     exit 1
 fi
 echo -n "Debug, "
 
-if ! ./tsm-lorenz-static 16 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
+if ! ./tsm-lorenz-static 0 16 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
 then
     echo "Lorenz(STATIC) failed!"
     exit 1
 fi
 echo -n "Static, "
 
-if ! ./tsm-lorenz-dynamic 16 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
+if ! ./tsm-lorenz-dynamic 0 16 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
 then
     echo "Lorenz(DYNAMIC) failed!"
     exit 1
