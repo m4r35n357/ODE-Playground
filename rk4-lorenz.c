@@ -49,7 +49,7 @@ int main (int argc, char **argv) {
 
     mpfr_div_2ui(h_2, h, 1, RND);
 
-    t_output(x, y, z, h, 0, _);
+    t_output(x, y, z, h, 0);
     for (long step = 1; step <= nsteps; step++) {
         dx(&k1, x, y, sigma);
         dy(&l1, x, y, z, rho);
@@ -80,7 +80,7 @@ int main (int argc, char **argv) {
         mpfr_fma(y, h, *sum(&_, l1, l2, l3, l4), y, RND);
         mpfr_fma(z, h, *sum(&_, m1, m2, m3, m4), z, RND);
 
-        if (step % interval == 0) { t_output(x, y, z, h, step, _); }
+        if (step % interval == 0) { t_output(x, y, z, h, step); }
     }
     return 0;
 }

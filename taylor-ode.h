@@ -50,7 +50,7 @@ void t_tempvars (void);
 /*
  * Prints x, y, z, t values in a single line of output
  */
-void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, long step, mpfr_t t);
+void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, long step);
 
 /*
  * Sets the (precision,) order, step size, and number of steps for the integration from the command line arguments (1 to 4)

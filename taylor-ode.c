@@ -25,15 +25,11 @@ void t_tempvars (void) {
     mpfr_init_set_si(D_2, -2, RND);
 }
 
-void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, long step, mpfr_t t) {
-    mpfr_mul_ui(t, h, step, RND);
-    char template[42];
-    if (dp == 0) {
-        sprintf(template, "%%.RNe %%.RNe %%.RNe %%.9RNe\n");
-    } else {
-        sprintf(template, "%%+.%luRNe %%+.%luRNe %%+.%luRNe %%+.9RNe\n", dp, dp, dp);
-    }
-    mpfr_printf(template, x, y, z, t);
+void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, long step) {
+    char s[42];
+    dp == 0 ? sprintf(s, "%%.RNe %%.RNe %%.RNe %%.9RNe\n") : sprintf(s, "%%+.%luRNe %%+.%luRNe %%+.%luRNe %%+.9RNe\n", dp, dp, dp);
+    mpfr_mul_ui(_, h, step, RND);
+    mpfr_printf(s, x, y, z, _);
 }
 
 void t_stepper (char **argv, long *n, mpfr_t *h, long *nsteps) {

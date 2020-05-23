@@ -25,7 +25,7 @@ int main (int argc, char **argv) {
     series tx = t_jet(n), s2x = t_jet(n);
     series wa = t_jet_c(n, a);
 
-    t_output(x.a[0], y.a[0], z.a[0], h, 0, _);
+    t_output(x.a[0], y.a[0], z.a[0], h, 0);
     for (long step = 1; step <= nsteps; step++) {
         // build the jet of taylor coefficients
         for (int k = 0; k < n; k++) {
@@ -41,7 +41,7 @@ int main (int argc, char **argv) {
             t_next(z, _, k, POS);
         }
         // sum the series using Horner's method and advance one step
-        t_output(*t_horner(x, h), *t_horner(y, h), *t_horner(z, h), h, step, _);
+        t_output(*t_horner(x, h), *t_horner(y, h), *t_horner(z, h), h, step);
     }
     return 0;
 }

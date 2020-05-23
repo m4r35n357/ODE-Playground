@@ -22,7 +22,7 @@ int main (int argc, char **argv) {
     // initialize the derivative and temporary jets
     series x = t_jet_c(n + 1, x0);
 
-    t_output(x.a[0], x.a[0], x.a[0], h, 0, _);
+    t_output(x.a[0], x.a[0], x.a[0], h, 0);
     for (long step = 1; step <= nsteps; step++) {
         // build the jet of taylor coefficients
         for (int k = 0; k < n; k++) {
@@ -33,7 +33,7 @@ int main (int argc, char **argv) {
 
         // sum the series using Horner's method and advance one step
         t_horner(x, h);
-        t_output(x.a[0], x.a[0], x.a[0], h, step, _);
+        t_output(x.a[0], x.a[0], x.a[0], h, step);
     }
     return 0;
 }
