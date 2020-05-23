@@ -13,7 +13,7 @@ const int BASE = 10;
 
 const mpfr_rnd_t RND = MPFR_RNDN;
 
-static long dp;
+static char fs[42];
 
 static mpfr_t D1, D_1, D2, D_2, _, __, ___;
 
@@ -26,14 +26,13 @@ void t_tempvars (void) {
 }
 
 void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, long step) {
-    char s[42];
-    dp == 0 ? sprintf(s, "%%.RNe %%.RNe %%.RNe %%.9RNe\n") : sprintf(s, "%%+.%luRNe %%+.%luRNe %%+.%luRNe %%+.9RNe\n", dp, dp, dp);
     mpfr_mul_ui(_, h, step, RND);
-    mpfr_printf(s, x, y, z, _);
+    mpfr_printf(fs, x, y, z, _);
 }
 
 void t_stepper (char **argv, long *n, mpfr_t *h, long *nsteps) {
-    dp = strtol(argv[1], NULL, BASE);
+    long d = strtol(argv[1], NULL, BASE);
+    d == 0 ? sprintf(fs, "%%.RNe %%.RNe %%.RNe %%.9RNe\n") : sprintf(fs, "%%+.%luRNe %%+.%luRNe %%+.%luRNe %%+.9RNe\n", d, d, d);
     mpfr_set_default_prec(strtod(argv[2], NULL) * 3.322);
     fprintf(stderr, " MPFR default precision: %lu bits\n", mpfr_get_default_prec());
     *n = strtol(argv[3], NULL, BASE);
