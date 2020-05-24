@@ -185,7 +185,7 @@ $ ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.
 ```
 or in c (notice absence of the model parameter!):
 ```
-$ ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
+$ ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 ```
 
 #### tsm.py and tsm-\*-\* Parameter Reference
@@ -239,7 +239,7 @@ The two simulations are run in parallel processes, but obviously the "better" so
 
 300 time units
 ```
-$ ./cns both ./tsm-lorenz-dbg 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3
+$ ./cns both ./tsm-lorenz-dbg 15 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3
 Better: ./tsm-lorenz-dbg 138 103 .005000 70000 -15.8 -17.48 35.64 10 28 8 3
  MPFR default precision: 458 bits
  MPFR default precision: 431 bits
@@ -253,13 +253,13 @@ Threshold: 1.0e+00, t: 301.320
 
 600 time units
 ```
-$ ./cns both ./tsm-lorenz-dbg 240 204 .01 65000 -15.8 -17.48 35.64 10 28 8 3
+$ ./cns both ./tsm-lorenz-dbg 15 240 204 .01 65000 -15.8 -17.48 35.64 10 28 8 3
 ```
 (output not shown)
 
 1500 time units
 ```
-$ ./cns both ./tsm-lorenz-dbg 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 3
+$ ./cns both ./tsm-lorenz-dbg 15 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 3
 ```
 (output not shown)
 

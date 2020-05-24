@@ -14,33 +14,33 @@ fileB='/tmp/dataB'  # the original simulation
 method=$1
 shift
 original=$*
-prec=$(expr $2 + 8)
+prec=$(expr $3 + 8)
 
 halfstep () {
-    start="$1 $prec $3"
-    step=$(echo "scale=6; $4/2;" | bc)
-    steps=$(echo "scale=0; $5*2;" | bc)
-    shift 5
+    start="$1 $2 $prec $4"
+    step=$(echo "scale=6; $5/2;" | bc)
+    steps=$(echo "scale=0; $6*2;" | bc)
+    shift 6
     end="$*"
     echo 'Better:' $start $step $steps $end
     $start $step $steps $end | sed -n '1~2p' >$fileA &
 }
 
 order1plus () {
-    start="$1 $prec"
-    order=$(expr $3 + 1)
-    shift 3
+    start="$1 $2 $prec"
+    order=$(expr $4 + 1)
+    shift 4
     end="$*"
     echo 'Better:' $start $order $end
     $start $order $end >$fileA &
 }
 
 orderstep () {
-    start="$1 $prec"
-    order=$(expr $3 + 1)
-    step=$(echo "scale=6; $4/2;" | bc)
-    steps=$(echo "scale=0; $5*2;" | bc)
-    shift 5
+    start="$1 $2 $prec"
+    order=$(expr $4 + 1)
+    step=$(echo "scale=6; $5/2;" | bc)
+    steps=$(echo "scale=0; $6*2;" | bc)
+    shift 6
     end="$*"
     echo 'Better:' $start $order $step $steps $end
     $start $order $step $steps $end | sed -n '1~2p' >$fileA &
