@@ -180,7 +180,7 @@ mpfr_t *t_sqrt (series r, series U, int k);
  *
  *           F' = (df/du).U' = H.U'    where H = df/du
  *
- *  Using F'[k] = (k+1) F[k+1]   (THE IDENTITY again)
+ *  Using F'[k] = (k+1) F[k+1]   (THE IDENTITY from earlier)
  *
  * ==>  F'[k-1] = k F[k], because we WANT F[k], and we can now replace F' with F, and U' with U as follows:
  *
@@ -208,7 +208,7 @@ mpfr_t *t_exp (series E, series U, int k);
  * Returns a pair of pointers to kth elements of the sine and cosine of U, results accumulated in jets S and C
  *
  *      S' =       C.U'
- *      C' = (+/-) S.U'   (+ for cosh(g == HYP), - for cos(g == TRIG))
+ *      C' = (+/-) S.U'     + for cosh (g == HYP), - for cos (g == TRIG)
  *
  *    S[k] = sum{j=0->k-1}       C[j].(k-j)U[k-j]/k
  *    C[k] = sum{j=0->k-1} (+/-) S[j].(k-j)U[k-j]/k
@@ -219,7 +219,7 @@ tuple t_sin_cos (series S, series C, series U, int k, geometry g);
  * Returns a pair of pointers to kth elements of the tangent and squared secant of U, results accumulated in jets T and S2
  *
  *      T' =       S2.U'
- *     S2' = (+/-)2 T.T'   (+ for sec^2(g == TRIG), - for sech^2(g == HYP))
+ *     S2' = (+/-)2 T.T'    + for sec^2 (g == TRIG), - for sech^2 (g == HYP)
  *
  *    T[k] = sum{j=0->k-1}       S2[j].(k-j)U[k-j]/k
  *   S2[k] = sum{j=0->k-1} (+/-)2 T[j].(k-j)T[k-j]/k
