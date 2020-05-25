@@ -75,7 +75,7 @@ series t_jet_c (int size, mpfr_t value);
 /*
  * The Taylor Series Method (TSM) in brief:
  *
- *              x(t0 + h) = x(t) = sum{k=0->inf} X[k] h^k,    where X[k] = (d/dt)^k x(t) / k! and h = t - t0
+ *              x(t0 + h) = x(t) = sum{k=0->inf} X[k] h^k,    where X[0] = x(t0), X[k] = (d/dt)^k x(t0) / k! and h = t - t0
  *
  *                         x'(t) = sum{k=0->inf} X'[k] h^k,   where x'(t) = dx/dt, the ODE equations   (A)
  *
@@ -87,7 +87,7 @@ series t_jet_c (int size, mpfr_t value);
  *
  *                   ==>  X[k+1] = X'[k] / (k + 1)
  *
- * 1. Build up a coefficient jet for each coordinate using the ODE, with Taylor recurrences where needed, and divide by k + 1
+ * 1. Build up a coefficient jet for each coordinate using the ODE, using Taylor recurrences where needed, and divide by k + 1
  *
  * 2. Apply Horner's method to each jet to calculate the next set of coordinates
  */

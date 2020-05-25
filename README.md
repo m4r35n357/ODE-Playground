@@ -185,7 +185,7 @@ $ ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.
 ```
 or in c (notice absence of the model parameter!):
 ```
-$ ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
+$ ./tsm-lorenz-dbg 15 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 ```
 
 #### tsm.py and tsm-\*-\* Parameter Reference
