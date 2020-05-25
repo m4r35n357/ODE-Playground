@@ -109,9 +109,7 @@ mpfr_t *t_quot (series q, series u, series v, int k) {
 
 mpfr_t *t_sqr (series u, int k) {
     assert(k >= 0);
-    mpfr_mul_2ui(_, *cauchy(&__, u, u, k, 0, (k - (k % 2 == 0 ? 2 : 1)) / 2), 1, RND);
-    if (k % 2 == 0) mpfr_fma(_, u.a[k / 2], u.a[k / 2], _, RND);
-    return &_;
+    return cauchy(&__, u, u, k, 0, k);
 }
 
 mpfr_t *t_sqrt (series r, series u, int k) {
@@ -121,9 +119,7 @@ mpfr_t *t_sqrt (series r, series u, int k) {
     if (k == 0) {
         mpfr_sqrt(r.a[k], u.a[0], RND);
     } else {
-        mpfr_mul_2ui(_, *cauchy(&__, r, r, k, 1, (k - (k % 2 == 0 ? 2 : 1)) / 2), 1, RND);
-        if (k % 2 == 0) mpfr_fma(_, r.a[k / 2], r.a[k / 2], _, RND);
-        mpfr_sub(_, u.a[k], _, RND);
+        mpfr_sub(_, u.a[k], *cauchy(&__, r, r, k, 1, k - 1), RND);
         mpfr_div_2ui(_, _, 1, RND);
         mpfr_div(r.a[k], _, r.a[0], RND);
     }
