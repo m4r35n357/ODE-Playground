@@ -127,11 +127,6 @@ mpfr_t *t_abs (series U, int k);
  *  S = U.U
  *
  *  S = sum{j=0->k} U[j].U[k-j]
- *
- *  or, from symmetry:
- *
- *  S = sum{j=0->(k-1)/2} U[j].U[k-j]             if k odd
- *  S = sum{j=0->(k-2)/2} U[j].U[k-j] + U[k/2]^2  if k even
  */
 mpfr_t *t_sqr (series U, int k);
 
@@ -167,11 +162,6 @@ mpfr_t *t_quot (series Q, series U, series V, int k);
  *      = sum{j=1->k-1} R[j].R[k - j] + 2.R[k].R[0]
  *
  * R[k] = (U[k] - sum{j=1->k-1} R[j].R[k-j]) / (2.R[0])
- *
- * or, from symmetry:
- *
- * R[k] = (U[k] - sum{j=1->(k-1)/2} R[j].R[k-j]) / (2.0.R[0])             if k odd
- * R[k] = (U[k] - sum{j=1->(k-2)/2} R[j].R[k-j] - R[k/2]^2) / (2.0.R[0])  if k even
  */
 mpfr_t *t_sqrt (series r, series U, int k);
 
