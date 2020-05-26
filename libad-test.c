@@ -92,7 +92,8 @@ int main (int argc, char **argv) {
     set_ad_status(x, VARIABLE);
 
     printf("\n");
-    compare("x * x == sqr(x)", ad_prod(prod, x, x), ad_sqr(sqr1, x));
+    ad_sqr(sqr1, x);
+    compare("x * x == sqr(x)", ad_prod(prod, x, x), sqr1);
     if (mpfr_zero_p(x.a[0]) == 0) {
         compare("sqr(x) / x == x", ad_quot(quot, sqr1, x), x);
     } else skipped++;
@@ -136,36 +137,23 @@ int main (int argc, char **argv) {
 
     compare("log(e^x) == x", ad_ln(ln1, ad_exp(exp1, x)), x);
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("log(sqr(x)) == 2 * log(x)", ad_ln(ln1, sqr1), ad_scale(scale, ad_ln(ln2, x), D2));
+        ad_ln(ln2, x);
+        compare("log(sqr(x)) == 2 * log(x)", ad_ln(ln1, sqr1), ad_scale(scale, ln2, D2));
     } else skipped++;
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("log(sqrt(x)) == 0.5 * log(x)", ad_ln(ln1, sqrt), ad_scale(scale, ad_ln(ln2, x), D05));
+        compare("log(sqrt(x)) == 0.5 * log(x)", ad_ln(ln1, sqrt), ad_scale(scale, ln2, D05));
     } else skipped++;
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("log(1 / x) == - log(x)", ad_ln(ln1, quot), ad_neg(neg, ad_ln(ln2, x)));
+        compare("log(1 / x) == - log(x)", ad_ln(ln1, quot), ad_neg(neg, ln2));
     } else skipped++;
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("log(x^-3) == - 3 * log(x)", ad_ln(ln1, ad_pwr(pow1, x, D_3)), ad_scale(scale, ad_ln(ln2, x), D_3));
+        compare("log(x^-3) == - 3 * log(x)", ad_ln(ln1, ad_pwr(pow1, x, D_3)), ad_scale(scale, ln2, D_3));
     } else skipped++;
-
-
-    ad_sin_cos(sin, cos, x, TRIG);
-    compare("cos^2(x) + sin^2(x) == 1", ad_plus(sum, ad_sqr(sqr1, cos), ad_sqr(sqr2, sin)), c1);
 
     ad_sin_cos(sin, cos, x, HYP);
-    compare("cosh^2(x) - sinh^2(x) == 1", ad_minus(diff, ad_sqr(sqr1, cos), ad_sqr(sqr2, sin)), c1);
-
-    ad_exp(exp1, x);
-    ad_exp(exp2, ad_neg(neg, x));
-    compare("sinh(x) == 0.5 * (e^x - e^-x)", sin, ad_scale(scale, ad_minus(diff, exp1, exp2), D05));
-    compare("cosh(x) == 0.5 * (e^x + e^-x)", cos, ad_scale(scale, ad_plus(sum, exp1, exp2), D05));
-
-    ad_tan_sec2(tan, sec2, x, TRIG);
-    compare("sec^2(x) - tan^2(x) == 1", ad_minus(diff, sec2, ad_sqr(sqr1, tan)), c1);
-
-    ad_sin_cos(sin, cos, x, TRIG);
-    compare("tan(x) == sin(x) / cos(x)", tan, ad_quot(quot, sin, cos));
-    compare("sec^2(x) == 1 / cos^2(x)", sec2, ad_quot(quot, c1, ad_sqr(sqr1, cos)));
+    ad_sqr(sqr1, cos);
+    ad_sqr(sqr2, sin);
+    compare("cosh^2(x) - sinh^2(x) == 1", ad_minus(diff, sqr1, sqr2), c1);
 
     ad_tan_sec2(tan, sec2, x, HYP);
     compare("sech^2(x) + tanh^2(x) == 1", ad_plus(sum, sec2, ad_sqr(sqr1, tan)), c1);
@@ -173,6 +161,23 @@ int main (int argc, char **argv) {
     ad_sin_cos(sin, cos, x, HYP);
     compare("tanh(x) == sinh(x) / cosh(x)", tan, ad_quot(quot, sin, cos));
     compare("sech^2(x) == 1 / cosh^2(x)", sec2, ad_quot(quot, c1, ad_sqr(sqr1, cos)));
+
+    ad_exp(exp1, x);
+    ad_exp(exp2, ad_neg(neg, x));
+    compare("sinh(x) == 0.5 * (e^x - e^-x)", sin, ad_scale(scale, ad_minus(diff, exp1, exp2), D05));
+    compare("cosh(x) == 0.5 * (e^x + e^-x)", cos, ad_scale(scale, ad_plus(sum, exp1, exp2), D05));
+
+    ad_sin_cos(sin, cos, x, TRIG);
+    ad_sqr(sqr1, cos);
+    ad_sqr(sqr2, sin);
+    compare("cos^2(x) + sin^2(x) == 1", ad_plus(sum, sqr1, sqr2), c1);
+
+    ad_tan_sec2(tan, sec2, x, TRIG);
+    compare("sec^2(x) - tan^2(x) == 1", ad_minus(diff, sec2, ad_sqr(sqr1, tan)), c1);
+
+    ad_sin_cos(sin, cos, x, TRIG);
+    compare("tan(x) == sin(x) / cos(x)", tan, ad_quot(quot, sin, cos));
+    compare("sec^2(x) == 1 / cos^2(x)", sec2, ad_quot(quot, c1, ad_sqr(sqr1, cos)));
 
     printf("Total: %d, %sPASSED%s %d", total, KGRN, KNRM, passed);
     if (skipped > 0) {
