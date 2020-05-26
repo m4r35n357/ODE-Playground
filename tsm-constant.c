@@ -1,5 +1,5 @@
 /*
- * Proportional
+ * Exponential growth & decay
  *
  * Example: ./tsm-constant-dbg 9 32 10 0.1 10000 10 0 0 -.05
  *

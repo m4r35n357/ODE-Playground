@@ -22,7 +22,7 @@ typedef enum {PASS, FAIL} result;
 
 static int debug = 0, total = 0, passed = 0, skipped = 0;
 
-static mpfr_t x0, delta, tolerance, D0, D05, D_05, D1, D_1, D2, D_2, D3, D_3, D_5, DA;
+static mpfr_t x0, delta, tolerance, D0, D05, D_05, D1, D_1, D2, D_2, D_3;
 
 static void ad_lib_test_tempvars (void) {
     ad_tempvars();
@@ -34,10 +34,7 @@ static void ad_lib_test_tempvars (void) {
     mpfr_init_set_si(D_1, -1, RND);
     mpfr_init_set_ui(D2, 2, RND);
     mpfr_init_set_si(D_2, -2, RND);
-    mpfr_init_set_ui(D3, 3, RND);
     mpfr_init_set_si(D_3, -3, RND);
-    mpfr_init_set_si(D_5, -5, RND);
-    mpfr_init_set_str(DA, "-3.7", BASE, RND);
 }
 
 static result compare (char* name, series a, series b) {
@@ -81,7 +78,6 @@ int main (int argc, char **argv) {
     series sqrt = t_jet(n);
     series pow1 = t_jet(n);
     series pow2 = t_jet(n);
-    series pow3 = t_jet(n);
     series exp1 = t_jet(n);
     series exp2 = t_jet(n);
     series ln1 = t_jet(n);
@@ -131,17 +127,27 @@ int main (int argc, char **argv) {
     } else skipped++;
 
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("x^2 * x^-5 == x^-3", ad_prod(prod, ad_pwr(pow1, x, D2), ad_pwr(pow2, x, D_5)), ad_pwr(pow3, x, D_3));
+        compare("sqr(x) * x^-3 == 1 / x", ad_prod(prod, sqr1, ad_pwr(pow2, x, D_3)), ad_quot(quot, c1, x));
     } else skipped++;
 
     if (mpfr_zero_p(x.a[0]) == 0) {
-        compare("(x * x)^0.5 == |x|", ad_pwr(pow1, ad_prod(prod, x, x), D05), ad_abs(abs, x));
+        compare("sqr(x)^0.5 == |x|", ad_pwr(pow1, sqr1, D05), ad_abs(abs, x));
     } else skipped++;
 
     compare("log(e^x) == x", ad_ln(ln1, ad_exp(exp1, x)), x);
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("log(x^a) == a * log(x)", ad_ln(ln1, ad_pwr(pow1, x, DA)), ad_scale(scale, ad_ln(ln2, x), DA));
+        compare("log(sqr(x)) == 2 * log(x)", ad_ln(ln1, sqr1), ad_scale(scale, ad_ln(ln2, x), D2));
     } else skipped++;
+    if (mpfr_sgn(x.a[0]) > 0) {
+        compare("log(sqrt(x)) == 0.5 * log(x)", ad_ln(ln1, sqrt), ad_scale(scale, ad_ln(ln2, x), D05));
+    } else skipped++;
+    if (mpfr_sgn(x.a[0]) > 0) {
+        compare("log(1 / x) == - log(x)", ad_ln(ln1, quot), ad_neg(neg, ad_ln(ln2, x)));
+    } else skipped++;
+    if (mpfr_sgn(x.a[0]) > 0) {
+        compare("log(x^-3) == - 3 * log(x)", ad_ln(ln1, ad_pwr(pow1, x, D_3)), ad_scale(scale, ad_ln(ln2, x), D_3));
+    } else skipped++;
+
 
     ad_sin_cos(sin, cos, x, TRIG);
     compare("cos^2(x) + sin^2(x) == 1", ad_plus(sum, ad_sqr(sqr1, cos), ad_sqr(sqr2, sin)), c1);
