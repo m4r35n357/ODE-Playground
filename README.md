@@ -146,7 +146,7 @@ Parameter | Meaning
 
 ##### Older tests
 ```
-$ ./ad-test-dbg 7 2 1
+$ ./ad-test-dbg 6 2 1
 ```
 Output originally designed for visual checking, or see below how to do it automatically (hard-coded to quad precision).
 
@@ -158,7 +158,7 @@ Parameter | Meaning
 
 ##### Big build and test command:
 ```
-time -p ./build && ./ad-test-dbg 7 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt && ./libad-test-dbg 9 32 20 2 1e-18 && echo OK
+time -p ./build && ./ad-test-dbg 6 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt && ./libad-test-dbg 9 32 20 2 1e-18 && echo OK
 ```
 
 ##### c Code Coverage

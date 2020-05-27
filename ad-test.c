@@ -1,7 +1,7 @@
 /*
  * Automatic Differentiation of Taylor Series, legacy validation checks
  *
- * Example: ./ad-test-dbg 7 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt
+ * Example: ./ad-test-dbg 6 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -59,7 +59,7 @@ int main (int argc, char **argv) {
     assert(argc == 4);
     mpfr_set_default_prec(113);
     ad_test_tempvars();
-    n = strtol(argv[1], NULL, BASE);
+    n = strtol(argv[1], NULL, BASE) + 1;
     assert(n > 1);
     mpfr_init_set_str(x, argv[2], BASE, RND);
     mpfr_init_set_str(y, argv[3], BASE, RND);

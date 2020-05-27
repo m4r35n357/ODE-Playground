@@ -174,7 +174,7 @@ mpfr_t *t_sqrt (series r, series U, int k);
  *
  * ==>  F'[k-1] = k F[k], because we WANT F[k], and we can now replace F' with F, and U' with U as follows:
  *
- * from product rule above, (note that F' and U' have one fewer elements than F and U)
+ * Starting from the Cauchy product above, first rewrite it in terms of [k-1], then make the substitutions:
  *
  *        F'[k] = sum{j=0->k} H[j].U'[k-j]
  *
