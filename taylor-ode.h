@@ -83,7 +83,7 @@ series t_jet_c (int size, mpfr_t value);
  *
  *                               = sum{k=0->inf} (k+1) X[k+1] h^k                                      (B)
  *
- * Conparing (A) and (B),  X'[k] = (k+1) X[k+1]    *** this is THE IDENTITY (also used in recurrences below) ***
+ * Comparing (A) and (B),  X'[k] = (k+1) X[k+1]    *** this is THE IDENTITY (also used in recurrences below) ***
  *
  *                   ==>  X[k+1] = X'[k] / (k + 1)
  *
