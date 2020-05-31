@@ -16,8 +16,11 @@ void ad_tempvars (void) {
     mpfr_init(delta);
 }
 
-void set_ad_status (series jet, ad_status s) {
-    s == VARIABLE ? mpfr_set_ui(jet.a[1], 1, RND) : mpfr_set_ui(jet.a[1], 0, RND);
+series t_jet_v (int n, mpfr_t value) {
+    assert(n > 1);
+    series s = t_jet_c(n, value);
+    mpfr_set_ui(s.a[1], 1, RND);
+    return s;
 }
 
 void jet_output (series jet, long n, char* f_colour, char *fk_colour) {

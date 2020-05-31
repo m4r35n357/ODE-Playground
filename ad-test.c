@@ -69,22 +69,17 @@ int main (int argc, char **argv) {
 
     series c1 = t_jet_c(n, D1);
 
-    series cx = t_jet_c(n, x);
-    series cx0 = t_jet_c(n, D0);
+    series cx = t_jet_v(n, x);
+    series cx0 = t_jet_v(n, D0);
     series cy = t_jet_c(n, y);
-    set_ad_status(cx, VARIABLE);
-    set_ad_status(cx0, VARIABLE);
-    set_ad_status(cy, CONSTANT);
 
     mpfr_const_pi(_, RND);
     mpfr_div_ui(_, _, 3, RND);
-    series PI_3 = t_jet_c(n, _);
-    set_ad_status(PI_3, VARIABLE);
+    series PI_3 = t_jet_v(n, _);
 
     mpfr_const_pi(_, RND);
     mpfr_div_ui(_, _, 4, RND);
-    series PI_4 = t_jet_c(n, _);
-    set_ad_status(PI_4, VARIABLE);
+    series PI_4 = t_jet_v(n, _);
 
     series wsqr = t_jet(n);
     series wabs = t_jet(n);
@@ -313,8 +308,8 @@ int main (int argc, char **argv) {
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    set_ad_status(cx, CONSTANT);
-    set_ad_status(cy, VARIABLE);
+    cx = t_jet_c(n, x);
+    cy = t_jet_v(n, y);
 
     printf("%s%s%s\n", KCYN, "f(x, y) = x * y, d/dy", KNRM);
     ad_prod(wprod, cx, cy);

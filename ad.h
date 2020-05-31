@@ -7,11 +7,6 @@
  */
 
 /*
- * Whether a jet is intended for automatic diffentiation, or not
- */
-typedef enum {VARIABLE, CONSTANT} ad_status;
-
-/*
  * Solver method
  */
 typedef enum {NONE=0, NEWTON=2} solver;
@@ -32,9 +27,9 @@ typedef void (*model)(series, series);
 void ad_tempvars (void);
 
 /*
- * Selects a jet for automatic diffentiation, or not
+ * Creates a jet with element zero set to value, element one set to 1, and the rest zeroed (represents a variable)
  */
-void set_ad_status (series jet, ad_status s);
+series t_jet_v (int size, mpfr_t value);
 
 /*
  * Prints a Taylor coefficient jet to order n

@@ -154,8 +154,7 @@ int main (int argc, char **argv) {
 
     series f = t_jet_c(order, D0);
     series f_ = t_jet_c(order, D0);
-    series x = t_jet_c(order, x0);
-    set_ad_status(x, VARIABLE);
+    series x = t_jet_v(order, x0);
 
     mpfr_sub(_, x1, x0, RND);
     mpfr_div_ui(x_step, _, steps, RND);

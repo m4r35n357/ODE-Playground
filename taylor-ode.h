@@ -68,7 +68,7 @@ void t_args (char **argv, int count, ...);
 series t_jet (int size);
 
 /*
- * Creates a jet with element zero set to value and the rest zeroed (represents an additive constant in an ODE)
+ * Creates a jet with element zero set to value and the rest zeroed (represents a constant)
  */
 series t_jet_c (int size, mpfr_t value);
 
