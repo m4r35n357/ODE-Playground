@@ -85,12 +85,12 @@ mpfr_t *t_abs (series u, int k) {
     return &_;
 }
 
-static mpfr_t *cauchy (mpfr_t *c, series a, series b, int k, int lower, int upper) {
-    mpfr_set_zero(*c, 1);
+static mpfr_t *cauchy (mpfr_t *ck, series a, series b, int k, int lower, int upper) {
+    mpfr_set_zero(*ck, 1);
     for (int j = lower; j <= upper; j++) {
-        mpfr_fma(*c, a.a[j], b.a[k - j], *c, RND);
+        mpfr_fma(*ck, a.a[j], b.a[k - j], *ck, RND);
     }
-    return c;
+    return ck;
 }
 
 mpfr_t *t_prod (series u, series v, int k) {
@@ -126,16 +126,16 @@ mpfr_t *t_sqrt (series r, series u, int k) {
     return &r.a[k];
 }
 
-static mpfr_t *d_cauchy (mpfr_t *f, series h, series u, int k, int lower, int upper, mpfr_t factor) {
-    assert(f != &_ && h.a != &_ && u.a != &_);  // _ is used internally so it cannot be a parameter
-    mpfr_set_zero(*f, 1);
+static mpfr_t *d_cauchy (mpfr_t *fk, series h, series u, int k, int lower, int upper, mpfr_t factor) {
+    assert(fk != &_ && h.a != &_ && u.a != &_);  // _ is used internally so it cannot be a parameter
+    mpfr_set_zero(*fk, 1);
     for (int j = lower; j <= upper; j++) {
         mpfr_mul_ui(_, u.a[k - j], k - j, RND);
-        mpfr_fma(*f, h.a[j], _, *f, RND);
+        mpfr_fma(*fk, h.a[j], _, *fk, RND);
     }
-    mpfr_div_ui(*f, *f, k, RND);
-    mpfr_mul(*f, *f, factor, RND);
-    return f;
+    mpfr_div_ui(*fk, *fk, k, RND);
+    mpfr_mul(*fk, *fk, factor, RND);
+    return fk;
 }
 
 mpfr_t *t_exp (series e, series u, int k) {
