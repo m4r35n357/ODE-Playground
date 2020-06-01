@@ -113,6 +113,13 @@ series ad_quot (series q, series u, series v) {
     return q;
 }
 
+series ad_inv (series i, series v) {
+    for (int k = 0; k < v.size; k++) {
+        t_inv(i, v, k);
+    }
+    return i;
+}
+
 series ad_sqr (series s, series u) {
     for (int k = 0; k < u.size; k++) {
         mpfr_set(s.a[k], *t_sqr(u, k), RND);

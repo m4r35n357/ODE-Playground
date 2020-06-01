@@ -89,6 +89,11 @@ series ad_prod (series P, series V, series U);
 series ad_quot (series Q, series U, series V);
 
 /*
+ * Calculates Taylor Series for 1 / V, result stored in jet I
+ */
+series ad_inv (series I, series V);
+
+/*
  * Calculates Taylor Series for the square of U, result stored in jet S
  */
 series ad_sqr (series S, series U);

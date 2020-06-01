@@ -87,7 +87,7 @@ series t_jet_c (int size, mpfr_t value);
  *
  *                   ==>  X[k+1] = X'[k] / (k + 1)
  *
- * 1. Build up a coefficient jet for each coordinate using the ODE, using Taylor recurrences where needed, and divide by k + 1
+ * 1. Build up a coefficient jet for each x(t) using the ODEs, x'(t), and Taylor recurrences where needed, then divide by k + 1
  *
  * 2. Apply Horner's method to each jet to calculate the next set of coordinates
  */
@@ -118,7 +118,7 @@ mpfr_t *t_abs (series U, int k);
  *
  *           = sum{k=0->inf} sum{j=0->k} A[j]B[k - j] h^k     where k = i + j  ==>  i = k - j
  *
- *  ==> C[k] = sum{j=0->k} A[j].B[k-j]     perhaps implemented by a static/private function cauchy(A, B, k)
+ *  ==> C[k] = sum{j=0->k} A[j].B[k-j]     perhaps implemented by a static/private function cauchy(A, B, k, ...)
  */
 
 /*
@@ -149,8 +149,21 @@ mpfr_t *t_prod (series U, series V, int k);
  *                     = sum{j=0->k-1} Q[j].V[k-j] + Q[k].V[0]
  *
  *                Q[k] = (U[k] - sum{j=0->k-1} Q[j].V[k-j]) / V[0]
+ *
+ *                     =  U[0] / V[0]                                 if k == 0
+ *
+ *                     = (U[k] - sum{j=0->k-1} Q[j].V[k-j]) / V[0]    otherwise
  */
 mpfr_t *t_quot (series Q, series U, series V, int k);
+
+/*
+ * Returns a pointer to kth element of 1 / V, results accumulated in jet I, DOMAIN RESTRICTION v[0] != 0.0
+ *
+ * from quotient, I[k] = 1.0 / V[0]                                   if k == 0
+ *
+ *                I[k] = - sum{j=0->k-1} I[j].V[k-j] / V[0]           otherwise
+ */
+mpfr_t *t_inv (series I, series V, int k);
 
 /*
  * Returns a pointer to kth element of the square root of U, results accumulated in jet R, DOMAIN RESTRICTION U[0] > 0.0
@@ -180,9 +193,9 @@ mpfr_t *t_sqrt (series r, series U, int k);
  *
  *      F'[k-1] = sum{j=0->k-1} H[j].U'[k-1-j]
  *
- *        kF[k] = sum{j=0->k-1} H[j].(k-j)U[k-j]
+ *        kF[k] = sum{j=0->k-1} H[j].(k-j)U[k-j]       if k > 0, need a mathematical function call for k == 0
  *
- *     ==> F[k] = sum{j=0->k-1} H[j].(k-j)U[k-j]/k     perhaps implemented by a static/private function d_cauchy(H, U, k)
+ *     ==> F[k] = sum{j=0->k-1} H[j].(k-j)U[k-j]/k     perhaps implemented by a static/private function d_cauchy(H, U, k, ...)
  */
 
 /*

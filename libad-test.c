@@ -72,6 +72,7 @@ int main (int argc, char **argv) {
     series diff = t_jet(n);
     series prod = t_jet(n);
     series quot = t_jet(n);
+    series inv = t_jet(n);
     series neg = t_jet(n);
     series sqr1 = t_jet(n);
     series sqr2 = t_jet(n);
@@ -96,6 +97,9 @@ int main (int argc, char **argv) {
     if (mpfr_zero_p(x.a[0]) == 0) {
         compare("sqr(x) / x == x", ad_quot(quot, sqr1, x), x);
     } else skipped++;
+    if (mpfr_zero_p(x.a[0]) == 0) {
+        compare("x * 1 / x == 1", ad_prod(prod, x, ad_inv(inv, x)), c1);
+    } else skipped++;
     if (mpfr_sgn(x.a[0]) > 0) {
         ad_sqrt(sqrt, x);
         compare("sqrt(x) * sqrt(x) == x", ad_prod(prod, sqrt, sqrt), x);
@@ -114,20 +118,20 @@ int main (int argc, char **argv) {
         compare("x^0.5 == sqrt(x)", ad_pwr(pow1, x, D05), sqrt);
     } else skipped++;
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("x^0 == x / x", ad_pwr(pow1, x, D0), ad_quot(quot, x, x));
+        compare("x^0 == 1", ad_pwr(pow1, x, D0), c1);
     } else skipped++;
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("x^-0.5 == 1 / sqrt(x)", ad_pwr(pow1, x, D_05), ad_quot(quot, c1, sqrt));
+        compare("x^-0.5 == 1 / sqrt(x)", ad_pwr(pow1, x, D_05), ad_inv(inv, sqrt));
     } else skipped++;
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("x^-1 == 1 / x", ad_pwr(pow1, x, D_1), ad_quot(quot, c1, x));
+        compare("x^-1 == 1 / x", ad_pwr(pow1, x, D_1), ad_inv(inv, x));
     } else skipped++;
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("x^-2 == 1 / sqr(x)", ad_pwr(pow1, x, D_2), ad_quot(quot, c1, sqr1));
+        compare("x^-2 == 1 / sqr(x)", ad_pwr(pow1, x, D_2), ad_inv(inv, sqr1));
     } else skipped++;
 
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("sqr(x) * x^-3 == 1 / x", ad_prod(prod, sqr1, ad_pwr(pow2, x, D_3)), ad_quot(quot, c1, x));
+        compare("sqr(x) * x^-3 == 1 / x", ad_prod(prod, sqr1, ad_pwr(pow2, x, D_3)), ad_inv(inv, x));
     } else skipped++;
 
     if (mpfr_zero_p(x.a[0]) == 0) {
@@ -143,7 +147,7 @@ int main (int argc, char **argv) {
         compare("log(sqrt(x)) == 0.5 * log(x)", ad_ln(ln1, sqrt), ad_scale(scale, ln2, D05));
     } else skipped++;
     if (mpfr_sgn(x.a[0]) > 0) {
-        compare("log(1 / x) == - log(x)", ad_ln(ln1, quot), ad_neg(neg, ln2));
+        compare("log(1 / x) == - log(x)", ad_ln(ln1, ad_inv(inv, x)), ad_neg(neg, ln2));
     } else skipped++;
     if (mpfr_sgn(x.a[0]) > 0) {
         compare("log(x^-3) == - 3 * log(x)", ad_ln(ln1, ad_pwr(pow1, x, D_3)), ad_scale(scale, ln2, D_3));
@@ -159,7 +163,7 @@ int main (int argc, char **argv) {
 
     ad_sin_cos(sin, cos, x, HYP);
     compare("tanh(x) == sinh(x) / cosh(x)", tan, ad_quot(quot, sin, cos));
-    compare("sech^2(x) == 1 / cosh^2(x)", sec2, ad_quot(quot, c1, ad_sqr(sqr1, cos)));
+    compare("sech^2(x) == 1 / cosh^2(x)", sec2, ad_inv(inv, ad_sqr(sqr1, cos)));
 
     ad_exp(exp1, x);
     ad_exp(exp2, ad_neg(neg, x));
@@ -176,7 +180,7 @@ int main (int argc, char **argv) {
 
     ad_sin_cos(sin, cos, x, TRIG);
     compare("tan(x) == sin(x) / cos(x)", tan, ad_quot(quot, sin, cos));
-    compare("sec^2(x) == 1 / cos^2(x)", sec2, ad_quot(quot, c1, ad_sqr(sqr1, cos)));
+    compare("sec^2(x) == 1 / cos^2(x)", sec2, ad_inv(inv, ad_sqr(sqr1, cos)));
 
     printf("Total: %d, %sPASSED%s %d", total, KGRN, KNRM, passed);
     if (skipped > 0) {

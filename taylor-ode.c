@@ -102,9 +102,18 @@ mpfr_t *t_quot (series q, series u, series v, int k) {
     assert(mpfr_zero_p(v.a[0]) == 0);
     assert(q.a != u.a && q.a != v.a);
     assert(k >= 0);
-    mpfr_sub(_, u.a[k], *cauchy(&__, q, v, k, 0, k - 1), RND);
+    k == 0 ? mpfr_set(_, u.a[0], RND) : mpfr_sub(_, u.a[k], *cauchy(&__, q, v, k, 0, k - 1), RND);
     mpfr_div(q.a[k], _, v.a[0], RND);
     return &q.a[k];
+}
+
+mpfr_t *t_inv (series i, series v, int k) {
+    assert(mpfr_zero_p(v.a[0]) == 0);
+    assert(i.a != v.a);
+    assert(k >= 0);
+    k == 0 ? mpfr_set(_, D1, RND) : mpfr_neg(_, *cauchy(&__, i, v, k, 0, k - 1), RND);
+    mpfr_div(i.a[k], _, v.a[0], RND);
+    return &i.a[k];
 }
 
 mpfr_t *t_sqr (series u, int k) {

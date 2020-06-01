@@ -67,8 +67,6 @@ int main (int argc, char **argv) {
 
     ___ = t_jet(n);
 
-    series c1 = t_jet_c(n, D1);
-
     series cx = t_jet_v(n, x);
     series cx0 = t_jet_v(n, D0);
     series cy = t_jet_c(n, y);
@@ -164,7 +162,7 @@ int main (int argc, char **argv) {
     printf("%s", KNRM);
     printf("%s%s%s\n", KCYN, "f(x) = 1 / sqrt(x)", KNRM);
     ad_sqrt(wsqrt, cx);
-    ad_quot(wquot, c1, wsqrt);
+    ad_inv(wquot, wsqrt);
     jet_output(wquot, n, KNRM, KGRY);
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
@@ -175,7 +173,7 @@ int main (int argc, char **argv) {
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s", KNRM);
     printf("%s%s%s\n", KCYN, "f(x) = 1 / x", KNRM);
-    ad_quot(wquot, c1, cx);
+    ad_inv(wquot, cx);
     jet_output(wquot, n, KNRM, KGRY);
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
@@ -186,8 +184,7 @@ int main (int argc, char **argv) {
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s", KNRM);
     printf("%s%s%s\n", KCYN, "f(x) = x / x", KNRM);
-    ad_scale(__, cx, D1);
-    ad_quot(wquot, cx, __);
+    ad_quot(wquot, cx, cx);
     jet_output(wquot, n, KNRM, KGRY);
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
@@ -303,7 +300,7 @@ int main (int argc, char **argv) {
     derivative_output(wpwr, n, KBLD, KGRY);
     printf("%s", KNRM);
     printf("%s%s%s\n", KCYN, "f(x) = 1 / septic(x)", KNRM);
-    ad_quot(wquot, c1, __);
+    ad_inv(wquot, __);
     jet_output(wquot, n, KNRM, KGRY);
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
