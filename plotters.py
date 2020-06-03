@@ -7,7 +7,7 @@ from matplotlib import pyplot
 from ad import Series
 from playground import analyze, Solver, Mode
 
-def _plot(model, order=13, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
+def _plot(model, order, x_min, x_max, steps, y_min, y_max):
     #  Plot the function and its derivatives
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')
@@ -41,7 +41,7 @@ def msave(filename, model, order=13, x_min=-8.0, x_max=8.0, steps=1000, y_min=-1
     _plot(model, order, x_min, x_max, steps, y_min, y_max)
     pyplot.savefig(filename)
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # hard-coded example
     f = lambda a: (a - 1)**2 / (a.cosh + 1).ln - 1
     scan(f)
     mplot(f)
