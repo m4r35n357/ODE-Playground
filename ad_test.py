@@ -288,7 +288,7 @@ def test_divide_number_object(number):
     series = ~ (number / s_3)
     assert series.val == approx(derivative)
     for k in range(1, order):
-        derivative *= - k / f3
+        derivative *= - k * number / f3
         assert series.jet[k] == approx(derivative)
 
 def test_reciprocal():

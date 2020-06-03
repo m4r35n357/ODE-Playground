@@ -21,7 +21,10 @@ def t_prod(u, v, k):
     return fsum(u[j] * v[k - j] for j in range(k + 1))
 
 def t_quot(q, u, v, k):
-    return (u[k] - fsum(q[j] * v[k - j] for j in range(k))) / v[0]
+    return u[0] / v[0] if k == 0 else (u[k] - fsum(q[j] * v[k - j] for j in range(k))) / v[0]
+
+def t_inv(i, v, k):
+    return 1.0 / v[0] if k == 0 else - fsum(i[j] * v[k - j] for j in range(k)) / v[0]
 
 def t_sqr(u, k):
     f_sum = 2.0 * fsum(u[j] * u[k - j] for j in (range((k - 1) // 2 + 1) if k % 2 == 1 else range((k - 2) // 2 + 1)))
@@ -150,11 +153,15 @@ class Series:
             return Series(jet)
         elif isinstance(o, (float, int)):
             assert abs(o) != 0.0, f"other = {o}"
-            return self.__mul__(1.0 / o)
+            return Series([term / o for term in self.jet])
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __rtruediv__(self, o):
-        return Series(t_jet(self.n, o)).__truediv__(self)
+        assert self.val != 0.0, f"self.val = {self.val}"
+        jet = t_jet(self.n)
+        for k in self.index:
+            jet[k] = t_inv(jet, self.jet, k) * o
+        return Series(jet)
 
     def __pow__(self, o):
         if isinstance(o, int):
