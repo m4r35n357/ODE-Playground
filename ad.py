@@ -17,66 +17,75 @@ def t_horner(jet, h):
 def t_abs(u, k):
     return - u[k] if u[0] < 0.0 else u[k]
 
+def _cauchy(a, b, k, lower, upper):
+    return fsum(a[j] * b[k - j] for j in range(lower, upper + 1))
+
 def t_prod(u, v, k):
-    return fsum(u[j] * v[k - j] for j in range(k + 1))
+    return _cauchy(u, v, k, 0, k)
 
 def t_quot(q, u, v, k):
-    return u[0] / v[0] if k == 0 else (u[k] - fsum(q[j] * v[k - j] for j in range(k))) / v[0]
+    return u[0] / v[0] if k == 0 else (u[k] - _cauchy(q, v, k, 0, k - 1)) / v[0]
 
 def t_inv(i, v, k):
-    return 1.0 / v[0] if k == 0 else - fsum(i[j] * v[k - j] for j in range(k)) / v[0]
+    return 1.0 / v[0] if k == 0 else - _cauchy(i, v, k, 0, k - 1) / v[0]
 
 def t_sqr(u, k):
-    f_sum = 2.0 * fsum(u[j] * u[k - j] for j in (range((k - 1) // 2 + 1) if k % 2 == 1 else range((k - 2) // 2 + 1)))
-    return f_sum if k % 2 == 1 else f_sum + u[k // 2]**2
+    return _cauchy(u, u, k, 0, k)
 
 def t_sqrt(r, u, k):
-    if k == 0:
-        return sqrt(u[0])
-    f_sum = 2.0 * fsum(r[j] * r[k - j] for j in (range(1, (k - 1) // 2 + 1) if k % 2 == 1 else range(1, (k - 2) // 2 + 1)))
-    return 0.5 * (u[k] - f_sum if k % 2 == 1 else u[k] - f_sum - r[k // 2]**2) / r[0]
+    return sqrt(u[0]) if k == 0 else 0.5 * (u[k] - _cauchy(r, r, k, 1, k - 1)) / r[0]
 
-def t_pwr(p, u, a, k):
-    if k == 0:
-        return u[0]**a
-    return (a * fsum(p[j] * (k - j) * u[k - j] for j in range(k))
-              - fsum(u[j] * (k - j) * p[k - j] for j in range(1, k))) / (k * u[0])
+def _d_cauchy(h, u, k, lower, upper, factor=1.0):
+    return factor * fsum(h[j] * (k - j) * u[k - j] for j in range(lower, upper + 1)) / k
 
 def t_exp(e, u, k):
-    return exp(u[0]) if k == 0 else fsum((k - j) * e[j] * u[k - j] for j in range(k)) / k
-
-def t_ln(l, u, k):
-    return log(u[0]) if k == 0 else (u[k] - fsum(u[j] * (k - j) * l[k - j] for j in range(1, k)) / k) / u[0]
+    return exp(u[0]) if k == 0 else _d_cauchy(e, u, k, 0, k - 1)
 
 def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
         return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
-    s[k] = fsum((k - j) * c[j] * u[k - j] for j in range(k)) / k
-    c[k] = fsum((k - j) * s[j] * u[k - j] for j in range(k)) / k
-    return (s[k], c[k]) if hyp else (s[k], - c[k])
+    s[k] = _d_cauchy(c, u, k, 0, k - 1)
+    c[k] = _d_cauchy(s, u, k, 0, k - 1, -1.0 if not hyp else 1.0)
+    return s[k], c[k]
 
-def t_tan_sec2(t, s2, u, k, hyp=False):
+def t_tan_sec2(t, s, u, k, hyp=False):
     if k == 0:
         return (tanh(u[0]), 1.0 - tanh(u[0])**2) if hyp else (tan(u[0]), 1.0 + tan(u[0])**2)
-    t[k] = fsum((k - j) * s2[j] * u[k - j] for j in range(k)) / k
-    s2[k] = 2.0 * fsum((k - j) * t[j] * t[k - j] for j in range(k)) / k
-    return (t[k], - s2[k]) if hyp else (t[k], s2[k])
+    t[k] = _d_cauchy(s, u, k, 0, k - 1)
+    s[k] = _d_cauchy(t, t, k, 0, k - 1, 2.0 if not hyp else -2.0)
+    return t[k], s[k]
 
-def t_asin(h, v, u, k, hyp=False):
+def t_pwr(p, u, a, k):
+    return u[0]**a if k == 0 else (_d_cauchy(p, u, k, 0, k - 1, a) - _d_cauchy(u, p, k, 1, k - 1)) / u[0]
+
+def _i_cauchy(g, u, f, k, sign=True):
+    tmp = _d_cauchy(g, f, k, 1, k - 1)
+    return ((u[k] - tmp) if sign else - (u[k] + tmp)) / g[0]
+
+def t_ln(l, u, k):
+    return log(u[0]) if k == 0 else _i_cauchy(u, u, l, k)
+
+def t_tan(t, g, u, k, hyp=False):  # TODO needs tests
+    return (tanh(u[0]) if hyp else tan(u[0])) if k == 0 else _i_cauchy(g, u, t, k)
+
+def t_cot(c, g, u, k, hyp=False):  # TODO needs tests
+    return (1.0 / tan(u[0]) if hyp else 1.0 / tanh(u[0])) if k == 0 else _i_cauchy(g, u, c, k, sign=False)
+
+def t_asin(h, v, u, k, hyp=False):  # TODO needs updating
     if k == 0:
         return (asinh(u[0]), sqrt(u[0]**2 + 1.0)) if hyp else (asin(u[0]), sqrt(1.0 - u[0]**2))
     h[k] = (u[k] - fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
     v[k] = u[0] * h[k] + fsum(j * h[j] * u[k - j] for j in range(1, k)) / k
     return (h[k], v[k]) if hyp else (h[k], - v[k])
 
-def t_acos(h, v, u, k, hyp=False):
+def t_acos(h, v, u, k, hyp=False):  # TODO needs updating
     if k == 0:
         return (acosh(u[0]), sqrt(u[0]**2 - 1.0)) if hyp else (acos(u[0]), - sqrt(1.0 - u[0]**2))
     h[k] = (u[k] + fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
     v[k] = u[0] * h[k] + fsum(j * h[j] * u[k - j] for j in range(1, k)) / k
     return (h[k], - v[k]) if hyp else (h[k], v[k])
 
-def t_atan(h, v, u, k, hyp=False):
+def t_atan(h, v, u, k, hyp=False):  # TODO needs updating
     if k == 0:
         return (atanh(u[0]), 1.0 - u[0]**2) if hyp else (atan(u[0]), 1.0 + u[0]**2)
     h[k] = (u[k] - fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
