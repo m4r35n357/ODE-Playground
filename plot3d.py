@@ -38,18 +38,20 @@ class Body(Sphere):
                 self.track.draw()
 
 def main():
-    print("CNS Plotter: {}".format(argv))
+    print("Multi Plotter: {}".format(argv))
     argc = len(argv)
     if argc == 1 or argc == 2:
         file1 = stdin
     if argc >= 3:
         file1 = open(argv[1])
         file2 = open(argv[2])
-    if argc == 7:
+    if argc >= 7:
         file3 = open(argv[3])
         file4 = open(argv[4])
         file5 = open(argv[5])
         file6 = open(argv[6])
+    if argc == 8:
+        file7 = open(argv[7])
 
     # Setup display and initialise pi3d
     display = Display.create(x=0, y=0, frames_per_second=60)
@@ -73,12 +75,14 @@ def main():
         particle1 = Body(Shader('mat_light'), (0.0, 1.0, 1.0), 0.05, track_shader=Shader('mat_flat'), track_max=int(argv[1]))
     if argc == 3:
         particle2 = Body(Shader('mat_light'), (1.0, 1.0, 0.0), 0.1, track_shader=Shader('mat_flat'))
-    if argc == 7:
+    if argc >= 7:
         particle2 = Body(Shader('mat_light'), (0.0, 1.0, 1.0), 0.1, track_shader=Shader('mat_flat'))
         particle3 = Body(Shader('mat_light'), (1.0, 1.0, 0.0), 0.1, track_shader=Shader('mat_flat'))
         particle4 = Body(Shader('mat_light'), (1.0, 1.0, 0.0), 0.1, track_shader=Shader('mat_flat'))
         particle5 = Body(Shader('mat_light'), (1.0, 0.0, 1.0), 0.1, track_shader=Shader('mat_flat'))
         particle6 = Body(Shader('mat_light'), (1.0, 0.0, 1.0), 0.1, track_shader=Shader('mat_flat'))
+    if argc == 8:
+        particle7 = Body(Shader('mat_light'), (1.0, 1.0, 1.0), 0.1, track_shader=Shader('mat_flat'))
     # Enable key presses and mouse
     keys = Keyboard()
     mouse = Mouse(restrict=False)
@@ -88,20 +92,24 @@ def main():
     line1 = file1.readline()
     if argc >= 3:
         line2 = file2.readline()
-    if argc == 7:
+    if argc >= 7:
         line3 = file3.readline()
         line4 = file4.readline()
         line5 = file5.readline()
         line6 = file6.readline()
+    if argc == 8:
+        line7 = file7.readline()
     while display.loop_running():
         data1 = line1.split(' ')
         if argc >= 3:
             data2 = line2.split(' ')
-        if argc == 7:
+        if argc >= 7:
             data3 = line3.split(' ')
             data4 = line4.split(' ')
             data5 = line5.split(' ')
             data6 = line6.split(' ')
+        if argc == 8:
+            data7 = line7.split(' ')
         hud_string.quick_change(
             f' t {float(data1[3]):-5.1f}  x {float(data1[0]):-5.1f}  y {float(data1[1]):-5.1f}  z {float(data1[2]):-5.1f} ')
         hud_string.draw()
@@ -116,7 +124,7 @@ def main():
         if argc == 3:
             particle2.pos = [float(data2[0]), float(data2[1]), float(data2[2])]
             particle2.position_and_draw(trace_material=(0.4, 0.0, 0.0))
-        if argc == 7:
+        if argc >= 7:
             particle2.pos = [float(data2[0]), float(data2[1]), float(data2[2])]
             particle2.position_and_draw(trace_material=(0.0, 0.25, 0.0))
             particle3.pos = [float(data3[0]), float(data3[1]), float(data3[2])]
@@ -127,6 +135,9 @@ def main():
             particle5.position_and_draw(trace_material=(0.0, 0.0, 0.5))
             particle6.pos = [float(data6[0]), float(data6[1]), float(data6[2])]
             particle6.position_and_draw(trace_material=(0.0, 0.0, 0.5))
+        if argc == 8:
+            particle7.pos = [float(data7[0]), float(data7[1]), float(data7[2])]
+            particle7.position_and_draw(trace_material=(0.25, 0.25, 0.25))
         # process mouse and keyboard input
         mx, my = mouse.position()
         if mouse.button_status() == mouse.LEFT_BUTTON:
@@ -158,11 +169,13 @@ def main():
         line1 = file1.readline()
         if argc >= 3:
             line2 = file2.readline()
-        if argc == 7:
+        if argc >= 7:
             line3 = file3.readline()
             line4 = file4.readline()
             line5 = file5.readline()
             line6 = file6.readline()
+        if argc == 8:
+            line7 = file7.readline()
         if not line1:
             display.stop()
 

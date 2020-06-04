@@ -11,6 +11,7 @@ fileC='/tmp/dataC'
 fileD='/tmp/dataD'
 fileE='/tmp/dataE'
 fileF='/tmp/dataF'
+fileG='/tmp/dataG'
 
 delta=$1
 shift
@@ -22,6 +23,8 @@ perturb () {
     z0=$9
     shift 9
     end="$*"
+    echo 'oo' $start $x0 $y0 $z0 $end
+    $start $x0 $y0 $z0 $end >$fileG 2>/dev/null &
     y=$y0
     z=$z0
     x=$(echo "scale=32; $x0 + $delta;" | bc)
@@ -51,5 +54,5 @@ perturb () {
 perturb $*
 wait
 
-./plot3d.py $fileA $fileB $fileC $fileD $fileE $fileF >/dev/null 2>&1 &
+./plot3d.py $fileA $fileB $fileC $fileD $fileE $fileF $fileG >/dev/null 2>&1 &
 
