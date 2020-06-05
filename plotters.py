@@ -12,17 +12,18 @@ def _plot(model, order, x_min, x_max, steps, y_min, y_max):
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')
     ax1.set_xlabel('x.val', color='.2')
-    ax1.set_ylabel(f'f(x) and the first {order - 1} derivatives', color='.2')
+    ax1.set_ylabel(f'f(x) and the first {order} derivatives', color='.2')
     ax1.set_xlim(x_min, x_max)
     ax1.set_ylim(y_min, y_max)
     colour = ['k-', 'r-', 'g-', 'b-', 'y-', 'c-', 'm-', 'r:', 'g:', 'b:', 'y:', 'c:', 'm:']
-    data = [[] for _ in range(order + 1)]
+    data = [[] for _ in range(order + 2)]
     step = (x_max - x_min) / (steps - 1)
     for k in range(steps):
-        x = Series.get(order, x_min + k * step).var
+        x = Series.get(order + 1, x_min + k * step)
+        x = x.var if order > 0 else x
         for d_term, p_term in zip(data, [x.val] + (~ model(x)).jet):
             d_term.append(p_term)
-    for c in reversed(range(1, order + 1)):
+    for c in reversed(range(1, order + 2)):
         ax1.plot(data[0], data[c], f'{colour[c - 1]}', linewidth=2 if c == 1 else 1, markersize=0, label=c-1)
     ax1.legend(loc='lower right')
 
@@ -33,11 +34,11 @@ def scan(model, x_min=-8.0, x_max=8.0, steps=1000, ef=1e-9, ex=1e-9, limit=101, 
         if result.count < 101:
             print(result, file=stderr)
 
-def mplot(model, order=13, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
+def mplot(model, order=12, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
     _plot(model, order, x_min, x_max, steps, y_min, y_max)
     pyplot.show()
 
-def msave(filename, model, order=13, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
+def msave(filename, model, order=12, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
     _plot(model, order, x_min, x_max, steps, y_min, y_max)
     pyplot.savefig(filename)
 

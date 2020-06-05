@@ -101,8 +101,8 @@ class Series:
         self.jet = jet[:]
 
     @classmethod
-    def get(cls, order, value=0.0):
-        return cls(t_jet(order, value))
+    def get(cls, size, value=0.0):
+        return cls(t_jet(size, value))
 
     def __str__(self):
         return ''.join(f'{term:+.{Context.places}e} ' for term in self.jet)
@@ -292,7 +292,7 @@ class Series:
 
     @property
     def var(self):
-        assert self.n > 1, f"Order-1 series {self.val} cannot be a variable"
+        assert self.n > 1, f"Single-element series {self.val} cannot be a variable"
         return Series([self.val] + [1.0] + [0.0] * (self.n - 2))
 
 
