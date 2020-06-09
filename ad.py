@@ -59,8 +59,8 @@ def t_pwr(p, u, a, k):
     return u[0]**a if k == 0 else (_d_cauchy(p, u, k, 0, k - 1, a) - _d_cauchy(u, p, k, 1, k - 1)) / u[0]
 
 def _i_cauchy(g, u, f, k, sign=True):
-    tmp = _d_cauchy(g, f, k, 1, k - 1)
-    return ((u[k] - tmp) if sign else - (u[k] + tmp)) / g[0]
+    tmp = - _d_cauchy(g, f, k, 1, k - 1)
+    return ((tmp + u[k]) if sign else (tmp - u[k])) / g[0]
 
 def t_ln(l, u, k):
     return log(u[0]) if k == 0 else _i_cauchy(u, u, l, k)
@@ -71,26 +71,26 @@ def t_tan(t, g, u, k, hyp=False):  # TODO needs tests
 def t_cot(c, g, u, k, hyp=False):  # TODO needs tests
     return (1.0 / tan(u[0]) if hyp else 1.0 / tanh(u[0])) if k == 0 else _i_cauchy(g, u, c, k, sign=False)
 
-def t_asin(h, v, u, k, hyp=False):  # TODO needs updating
+def t_asin(h, g, u, k, hyp=False):
     if k == 0:
         return (asinh(u[0]), sqrt(u[0]**2 + 1.0)) if hyp else (asin(u[0]), sqrt(1.0 - u[0]**2))
-    h[k] = (u[k] - fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
-    v[k] = u[0] * h[k] + fsum(j * h[j] * u[k - j] for j in range(1, k)) / k
-    return (h[k], v[k]) if hyp else (h[k], - v[k])
+    h[k] = _i_cauchy(g, u, h, k)
+    g[k] = _d_cauchy(u, h, k, 0, k - 1)
+    return (h[k], g[k]) if hyp else (h[k], - g[k])
 
-def t_acos(h, v, u, k, hyp=False):  # TODO needs updating
+def t_acos(h, g, u, k, hyp=False):
     if k == 0:
-        return (acosh(u[0]), sqrt(u[0]**2 - 1.0)) if hyp else (acos(u[0]), - sqrt(1.0 - u[0]**2))
-    h[k] = (u[k] + fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
-    v[k] = u[0] * h[k] + fsum(j * h[j] * u[k - j] for j in range(1, k)) / k
-    return (h[k], - v[k]) if hyp else (h[k], v[k])
+        return (acosh(u[0]), sqrt(u[0]**2 - 1.0)) if hyp else (acos(u[0]), sqrt(1.0 - u[0]**2))
+    h[k] = _i_cauchy(g, u, h, k, sign=hyp)
+    g[k] = _d_cauchy(u, h, k, 0, k - 1)
+    return h[k], g[k]
 
-def t_atan(h, v, u, k, hyp=False):  # TODO needs updating
+def t_atan(h, g, u, k, hyp=False):
     if k == 0:
         return (atanh(u[0]), 1.0 - u[0]**2) if hyp else (atan(u[0]), 1.0 + u[0]**2)
-    h[k] = (u[k] - fsum(j * h[j] * v[k - j] for j in range(1, k)) / k) / v[0]
-    v[k] = 2.0 * (u[0] * u[k] + fsum(j * u[j] * u[k - j] for j in range(1, k)) / k)
-    return (h[k], - v[k]) if hyp else (h[k], v[k])
+    h[k] = _i_cauchy(g, u, h, k)
+    g[k] = 2.0 * _d_cauchy(u, u, k, 0, k - 1)
+    return (h[k], - g[k]) if hyp else (h[k], g[k])
 
 
 class Series:
