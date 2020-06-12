@@ -16,6 +16,12 @@ void ad_tempvars (void) {
     mpfr_init(delta);
 }
 
+series t_jet_c (int n, mpfr_t value) {
+    series s = t_jet(n);
+    mpfr_set(s.a[0], value, RND);
+    return s;
+}
+
 series t_jet_v (int n, mpfr_t value) {
     assert(n > 1);
     series s = t_jet_c(n, value);

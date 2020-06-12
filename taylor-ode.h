@@ -68,11 +68,6 @@ void t_args (char **argv, int count, ...);
 series t_jet (int size);
 
 /*
- * Creates a jet with element zero set to value and the rest zeroed (represents a constant)
- */
-series t_jet_c (int size, mpfr_t value);
-
-/*
  * The Taylor Series Method (TSM) in brief:
  *
  *              x(t0 + h) = x(t) = sum{k=0->inf} X[k] h^k,    where X[0] = x(t0), X[k] = (d/dt)^k x(t0) / k! and h = t - t0

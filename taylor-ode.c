@@ -59,12 +59,6 @@ series t_jet (int n) {
     return (series){jet, n};
 }
 
-series t_jet_c (int n, mpfr_t value) {
-    series s = t_jet(n);
-    mpfr_set(s.a[0], value, RND);
-    return s;
-}
-
 void t_next (series jet, mpfr_t dot, int k, sign s) {
     s == NEG ? mpfr_div_si(jet.a[k + 1], dot, - (k + 1), RND) : mpfr_div_ui(jet.a[k + 1], dot, k + 1, RND);
 }
