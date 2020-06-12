@@ -13,21 +13,17 @@
 
 int main (int argc, char **argv) {
     long n, nsteps;
-    mpfr_t x0, y0, z0, gamma, h, d3, _, x2_1;
+    mpfr_t gamma, h, d3, _, x2_1;
 
     // initialize from command arguments
     assert(argc == 11);
     t_stepper(argv, &n, &h, &nsteps);
-    t_args(argv, argc, &x0, &y0, &z0, &_, &gamma);
-    mpfr_inits(d3, x2_1, NULL);
-
-    // initialize the derivative and temporary jets
-    series x = t_jet_c(n + 1, x0), y = t_jet_c(n + 1, y0), z = t_jet_c(n + 1, z0);
-    series alpha = t_jet_c(n, _);
-    series a = t_jet(n), b = t_jet(n), c = t_jet(n);
-    mpfr_set_ui(d3, 3, RND);
-    mpfr_set_ui(_, 1, RND);
-    series w1 = t_jet_c(n, _);
+    series x = t_jet(n + 1), y = t_jet(n + 1), z = t_jet(n + 1), alpha = t_jet(n);
+    t_args(argv, argc, x.a, y.a, z.a, alpha.a, &gamma);
+    series a = t_jet(n), b = t_jet(n), c = t_jet(n), w1 = t_jet(n);
+    mpfr_set_ui(w1.a[0], 1, RND);
+    mpfr_inits(x2_1, _, NULL);
+    mpfr_init_set_ui(d3, 3, RND);
 
     t_output(x.a[0], y.a[0], z.a[0], h, 0);
     for (long step = 1; step <= nsteps; step++) {

@@ -12,15 +12,13 @@
 
 int main (int argc, char **argv) {
     long n, nsteps;
-    mpfr_t x0, a, h, _;
+    mpfr_t a, h, _;
 
     // initialize from command arguments
     assert(argc == 10);
     t_stepper(argv, &n, &h, &nsteps);
-    t_args(argv, argc, &x0, &_, &_, &a);
-
-    // initialize the derivative and temporary jets
-    series x = t_jet_c(n + 1, x0);
+    series x = t_jet(n + 1);
+    t_args(argv, argc, x.a, &_, &_, &a);
 
     t_output(x.a[0], x.a[0], x.a[0], h, 0);
     for (long step = 1; step <= nsteps; step++) {
