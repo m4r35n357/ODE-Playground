@@ -17,22 +17,22 @@ int main (int argc, char **argv) {
     // initialize from command arguments
     assert(argc == 11);
     t_stepper(argv, &n, &h, &nsteps);
-    series x = t_jet(n + 1), y = t_jet(n + 1), z = t_jet(n + 1);
-    t_args(argv, argc, x.a, y.a, z.a, &a, &b);
+    series x = t_series(n + 1), y = t_series(n + 1), z = t_series(n + 1);
+    t_args(argv, argc, x.jet, y.jet, z.jet, &a, &b);
     mpfr_init(_);
-    series sax = t_jet(n), say = t_jet(n), saz = t_jet(n);
-    series cax = t_jet(n), cay = t_jet(n), caz = t_jet(n);
-    series ax = t_jet(n), ay = t_jet(n), az = t_jet(n);
-    series tx = t_jet(n), ty = t_jet(n), tz = t_jet(n);
-    series sx = t_jet(n), sy = t_jet(n), sz = t_jet(n);
+    series sax = t_series(n), say = t_series(n), saz = t_series(n);
+    series cax = t_series(n), cay = t_series(n), caz = t_series(n);
+    series ax = t_series(n), ay = t_series(n), az = t_series(n);
+    series tx = t_series(n), ty = t_series(n), tz = t_series(n);
+    series sx = t_series(n), sy = t_series(n), sz = t_series(n);
 
-    t_output(x.a[0], y.a[0], z.a[0], h, 0);
+    t_output(x.jet[0], y.jet[0], z.jet[0], h, 0);
     for (long step = 1; step <= nsteps; step++) {
         // build the jet of taylor coefficients
         for (int k = 0; k < n; k++) {
-            mpfr_mul(ax.a[k], x.a[k], a, RND);
-            mpfr_mul(ay.a[k], y.a[k], a, RND);
-            mpfr_mul(az.a[k], z.a[k], a, RND);
+            mpfr_mul(ax.jet[k], x.jet[k], a, RND);
+            mpfr_mul(ay.jet[k], y.jet[k], a, RND);
+            mpfr_mul(az.jet[k], z.jet[k], a, RND);
             //  x' = sin(Ay) - Btan(x)
             mpfr_fms(_, b, *t_tan_sec2(tx, sx, x, k, TRIG).a, *t_sin_cos(say, cay, ay, k, TRIG).a, RND);
             t_next(x, _, k, NEG);

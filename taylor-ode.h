@@ -19,7 +19,7 @@ const mpfr_rnd_t RND;
  * Wrap coefficient "jets" in a structure
  */
 typedef struct {
-    mpfr_t *a;
+    mpfr_t *jet;
     int size;
 } series;
 
@@ -63,14 +63,9 @@ void t_stepper (char **argv, long *n, mpfr_t *h, long *nsteps);
 void t_args (char **argv, int count, ...);
 
 /*
- * Creates a zeroed jet of the specified size
+ * Creates a zeroed Taylor Series of the specified size
  */
-series t_jet (int size);
-
-/*
- * Creates a jet with element zero set to value and the rest zeroed (represents a constant)
- */
-series t_jet_c (int size, mpfr_t value);
+series t_series (int size);
 
 /*
  * The Taylor Series Method (TSM) in brief:
@@ -95,12 +90,12 @@ series t_jet_c (int size, mpfr_t value);
 /*
  * Calculate next coefficient in jet
  */
-void t_next (series jet, mpfr_t dot, int k, sign s);
+void t_next (series S, mpfr_t dot, int k, sign sgn);
 
 /*
  * Evaluate a Taylor series safely and efficiently
  */
-mpfr_t *t_horner (series jet, mpfr_t h);
+mpfr_t *t_horner (series S, mpfr_t h);
 
 /*
  * Returns a pointer to kth element of the absolute value of U, result stored and returned in variable A, NO JET STORAGE

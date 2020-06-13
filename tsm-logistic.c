@@ -17,21 +17,21 @@ int main (int argc, char **argv) {
     // initialize from command arguments
     assert(argc == 10);
     t_stepper(argv, &n, &h, &nsteps);
-    series x = t_jet(n + 1);
-    t_args(argv, argc, x.a, &_, &_, &a);
+    series x = t_series(n + 1);
+    t_args(argv, argc, x.jet, &_, &_, &a);
 
-    t_output(x.a[0], x.a[0], x.a[0], h, 0);
+    t_output(x.jet[0], x.jet[0], x.jet[0], h, 0);
     for (long step = 1; step <= nsteps; step++) {
         // build the jet of taylor coefficients
         for (int k = 0; k < n; k++) {
             //  x' = Ax(1 - x)
-            mpfr_fmms(_, a, x.a[k], a, *t_sqr(x, k), RND);
+            mpfr_fmms(_, a, x.jet[k], a, *t_sqr(x, k), RND);
             t_next(x, _, k, POS);
         }
 
         // sum the series using Horner's method and advance one step
         t_horner(x, h);
-        t_output(x.a[0], x.a[0], x.a[0], h, step);
+        t_output(x.jet[0], x.jet[0], x.jet[0], h, step);
     }
     return 0;
 }

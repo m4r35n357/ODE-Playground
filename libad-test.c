@@ -41,15 +41,15 @@ static result compare (char* name, series a, series b) {
     assert(b.size == a.size);
     total++;
     for (int k = 0; k < b.size; k++) {
-        mpfr_sub(delta, a.a[k], b.a[k], RND);
+        mpfr_sub(delta, a.jet[k], b.jet[k], RND);
         if (mpfr_cmp_abs(delta, tolerance) > 0) {
             printf("%sFAILED%s %s  k: %d  LHS: %.6e  RHS: %.6e  diff %.3e\n",
-                    KRED, KNRM, name, k, mpfr_get_d(a.a[k], RND), mpfr_get_d(b.a[k], RND), mpfr_get_d(delta, RND));
+                    KRED, KNRM, name, k, mpfr_get_d(a.jet[k], RND), mpfr_get_d(b.jet[k], RND), mpfr_get_d(delta, RND));
             return FAIL;
         }
         if (debug >= 2 && k == 0) printf("\n");
         if (debug >= 2) printf("%s DEBUG%s  k: %2d  %+.6e %+.6e  diff %+.3e\n",
-                               KNRM, KNRM, k, mpfr_get_d(a.a[k], RND), mpfr_get_d(b.a[k], RND), mpfr_get_d(delta, RND));
+                               KNRM, KNRM, k, mpfr_get_d(a.jet[k], RND), mpfr_get_d(b.jet[k], RND), mpfr_get_d(delta, RND));
     }
     if (debug >= 1) printf("%sPASSED%s %s\n", KGRN, KNRM, name);
     passed++;
@@ -66,90 +66,90 @@ int main (int argc, char **argv) {
     mpfr_init_set_str(tolerance, argv[4], BASE, RND);
     if (argc == 6) debug = strtol(argv[5], NULL, BASE);
 
-    series abs = t_jet(n);
-    series scale = t_jet(n);
-    series sum = t_jet(n);
-    series diff = t_jet(n);
-    series prod = t_jet(n);
-    series quot = t_jet(n);
-    series inv = t_jet(n);
-    series neg = t_jet(n);
-    series sqr1 = t_jet(n);
-    series sqr2 = t_jet(n);
-    series sqrt = t_jet(n);
-    series pow1 = t_jet(n);
-    series pow2 = t_jet(n);
-    series exp1 = t_jet(n);
-    series exp2 = t_jet(n);
-    series ln1 = t_jet(n);
-    series ln2 = t_jet(n);
-    series sin = t_jet(n);
-    series cos = t_jet(n);
-    series tan = t_jet(n);
-    series sec2 = t_jet(n);
+    series abs = t_series(n);
+    series scale = t_series(n);
+    series sum = t_series(n);
+    series diff = t_series(n);
+    series prod = t_series(n);
+    series quot = t_series(n);
+    series inv = t_series(n);
+    series neg = t_series(n);
+    series sqr1 = t_series(n);
+    series sqr2 = t_series(n);
+    series sqrt = t_series(n);
+    series pow1 = t_series(n);
+    series pow2 = t_series(n);
+    series exp1 = t_series(n);
+    series exp2 = t_series(n);
+    series ln1 = t_series(n);
+    series ln2 = t_series(n);
+    series sin = t_series(n);
+    series cos = t_series(n);
+    series tan = t_series(n);
+    series sec2 = t_series(n);
 
-    series c1 = t_jet_c(n, D1);
-    series x = t_jet_v(n, x0);
+    series c1 = ad_series_c(n, D1);
+    series x = ad_series_v(n, x0);
 
     printf("\n");
     ad_sqr(sqr1, x);
     compare("x * x == sqr(x)", ad_prod(prod, x, x), sqr1);
-    if (mpfr_zero_p(x.a[0]) == 0) {
+    if (mpfr_zero_p(x.jet[0]) == 0) {
         compare("sqr(x) / x == x", ad_quot(quot, sqr1, x), x);
     } else skipped++;
-    if (mpfr_zero_p(x.a[0]) == 0) {
+    if (mpfr_zero_p(x.jet[0]) == 0) {
         compare("x * 1 / x == 1", ad_prod(prod, x, ad_inv(inv, x)), c1);
     } else skipped++;
-    if (mpfr_sgn(x.a[0]) > 0) {
+    if (mpfr_sgn(x.jet[0]) > 0) {
         ad_sqrt(sqrt, x);
         compare("sqrt(x) * sqrt(x) == x", ad_prod(prod, sqrt, sqrt), x);
     } else skipped++;
-    if (mpfr_sgn(x.a[0]) > 0) {
+    if (mpfr_sgn(x.jet[0]) > 0) {
         compare("x / sqrt(x) == sqrt(x)", ad_quot(quot, x, sqrt), sqrt);
     } else skipped++;
 
-    if (mpfr_sgn(x.a[0]) > 0) {
+    if (mpfr_sgn(x.jet[0]) > 0) {
         compare("x^2 == sqr(x)", ad_pwr(pow1, x, D2), sqr1);
     } else skipped++;
-    if (mpfr_sgn(x.a[0]) > 0) {
+    if (mpfr_sgn(x.jet[0]) > 0) {
         compare("x^1 == x", ad_pwr(pow1, x, D1), x);
     } else skipped++;
-    if (mpfr_sgn(x.a[0]) > 0) {
+    if (mpfr_sgn(x.jet[0]) > 0) {
         compare("x^0.5 == sqrt(x)", ad_pwr(pow1, x, D05), sqrt);
     } else skipped++;
-    if (mpfr_sgn(x.a[0]) > 0) {
+    if (mpfr_sgn(x.jet[0]) > 0) {
         compare("x^0 == 1", ad_pwr(pow1, x, D0), c1);
     } else skipped++;
-    if (mpfr_sgn(x.a[0]) > 0) {
+    if (mpfr_sgn(x.jet[0]) > 0) {
         compare("x^-0.5 == 1 / sqrt(x)", ad_pwr(pow1, x, D_05), ad_inv(inv, sqrt));
     } else skipped++;
-    if (mpfr_sgn(x.a[0]) > 0) {
+    if (mpfr_sgn(x.jet[0]) > 0) {
         compare("x^-1 == 1 / x", ad_pwr(pow1, x, D_1), ad_inv(inv, x));
     } else skipped++;
-    if (mpfr_sgn(x.a[0]) > 0) {
+    if (mpfr_sgn(x.jet[0]) > 0) {
         compare("x^-2 == 1 / sqr(x)", ad_pwr(pow1, x, D_2), ad_inv(inv, sqr1));
     } else skipped++;
 
-    if (mpfr_sgn(x.a[0]) > 0) {
+    if (mpfr_sgn(x.jet[0]) > 0) {
         compare("sqr(x) * x^-3 == 1 / x", ad_prod(prod, sqr1, ad_pwr(pow2, x, D_3)), ad_inv(inv, x));
     } else skipped++;
 
-    if (mpfr_zero_p(x.a[0]) == 0) {
+    if (mpfr_zero_p(x.jet[0]) == 0) {
         compare("sqr(x)^0.5 == |x|", ad_pwr(pow1, sqr1, D05), ad_abs(abs, x));
     } else skipped++;
 
     compare("log(e^x) == x", ad_ln(ln1, ad_exp(exp1, x)), x);
-    if (mpfr_sgn(x.a[0]) > 0) {
+    if (mpfr_sgn(x.jet[0]) > 0) {
         ad_ln(ln2, x);
         compare("log(sqr(x)) == 2 * log(x)", ad_ln(ln1, sqr1), ad_scale(scale, ln2, D2));
     } else skipped++;
-    if (mpfr_sgn(x.a[0]) > 0) {
+    if (mpfr_sgn(x.jet[0]) > 0) {
         compare("log(sqrt(x)) == 0.5 * log(x)", ad_ln(ln1, sqrt), ad_scale(scale, ln2, D05));
     } else skipped++;
-    if (mpfr_sgn(x.a[0]) > 0) {
+    if (mpfr_sgn(x.jet[0]) > 0) {
         compare("log(1 / x) == - log(x)", ad_ln(ln1, ad_inv(inv, x)), ad_neg(neg, ln2));
     } else skipped++;
-    if (mpfr_sgn(x.a[0]) > 0) {
+    if (mpfr_sgn(x.jet[0]) > 0) {
         compare("log(x^-3) == - 3 * log(x)", ad_ln(ln1, ad_pwr(pow1, x, D_3)), ad_scale(scale, ln2, D_3));
     } else skipped++;
 

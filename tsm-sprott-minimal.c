@@ -17,20 +17,20 @@ int main (int argc, char **argv) {
     // initialize from command arguments
     assert(argc == 10);
     t_stepper(argv, &n, &h, &nsteps);
-    series x = t_jet(n + 1), y = t_jet(n + 1), z = t_jet(n + 1);
-    t_args(argv, argc, x.a, y.a, z.a, &a);
+    series x = t_series(n + 1), y = t_series(n + 1), z = t_series(n + 1);
+    t_args(argv, argc, x.jet, y.jet, z.jet, &a);
     mpfr_init(_);
 
-    t_output(x.a[0], y.a[0], z.a[0], h, 0);
+    t_output(x.jet[0], y.jet[0], z.jet[0], h, 0);
     for (long step = 1; step <= nsteps; step++) {
         // build the jet of taylor coefficients
         for (int k = 0; k < n; k++) {
             //  x' = y
-            t_next(x, y.a[k], k, POS);
+            t_next(x, y.jet[k], k, POS);
             //  y' = z
-            t_next(y, z.a[k], k, POS);
+            t_next(y, z.jet[k], k, POS);
             //  z' = - az + y^2 - x
-            mpfr_fma(_, a, z.a[k], x.a[k], RND);
+            mpfr_fma(_, a, z.jet[k], x.jet[k], RND);
             mpfr_sub(_, *t_sqr(y, k), _, RND);
             t_next(z, _, k, POS);
         }

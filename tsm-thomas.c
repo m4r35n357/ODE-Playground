@@ -17,23 +17,23 @@ int main (int argc, char **argv) {
     // initialize from command arguments
     assert(argc == 10);
     t_stepper(argv, &n, &h, &nsteps);
-    series x = t_jet(n + 1), y = t_jet(n + 1), z = t_jet(n + 1);
-    t_args(argv, argc, x.a, y.a, z.a, &b);
-    series sx = t_jet(n), sy = t_jet(n), sz = t_jet(n), cx = t_jet(n), cy = t_jet(n), cz = t_jet(n);
+    series x = t_series(n + 1), y = t_series(n + 1), z = t_series(n + 1);
+    t_args(argv, argc, x.jet, y.jet, z.jet, &b);
+    series sx = t_series(n), sy = t_series(n), sz = t_series(n), cx = t_series(n), cy = t_series(n), cz = t_series(n);
     mpfr_init(_);
 
-    t_output(x.a[0], y.a[0], z.a[0], h, 0);
+    t_output(x.jet[0], y.jet[0], z.jet[0], h, 0);
     for (long step = 1; step <= nsteps; step++) {
         // build the jet of taylor coefficients
         for (int k = 0; k < n; k++) {
             //  x' = sin(y) - Bx
-            mpfr_fms(_, b, x.a[k], *t_sin_cos(sy, cy, y, k, TRIG).a, RND);
+            mpfr_fms(_, b, x.jet[k], *t_sin_cos(sy, cy, y, k, TRIG).a, RND);
             t_next(x, _, k, NEG);
             //  y' = sin(z) - By
-            mpfr_fms(_, b, y.a[k], *t_sin_cos(sz, cz, z, k, TRIG).a, RND);
+            mpfr_fms(_, b, y.jet[k], *t_sin_cos(sz, cz, z, k, TRIG).a, RND);
             t_next(y, _, k, NEG);
             //  z' = sin(x) - Bz
-            mpfr_fms(_, b, z.a[k], *t_sin_cos(sx, cx, x, k, TRIG).a, RND);
+            mpfr_fms(_, b, z.jet[k], *t_sin_cos(sx, cx, x, k, TRIG).a, RND);
             t_next(z, _, k, NEG);
         }
         // sum the series using Horner's method and advance one step

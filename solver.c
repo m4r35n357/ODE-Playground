@@ -35,17 +35,17 @@ static void septic2 (series f, series x) {
     //  Example: ./solver-dbg 4 13 2 -8 8 1001 0 1e-12 1e-12 | ./plotMany.py 8 50000 >/dev/null 2>&1
     // x^7 + 4x^6 - 54x^5 - 160x^4 + 641x^3 + 828x^2 - 1260x = ((((((x + 4)x - 54)x - 160)x + 641)x + 828)x - 1260)x
     ad_set(f, x);
-    mpfr_add_ui(f.a[0], f.a[0], 4, RND);
+    mpfr_add_ui(f.jet[0], f.jet[0], 4, RND);
     ad_prod(__, x, f);
-    mpfr_sub_ui(__.a[0], __.a[0], 54, RND);
+    mpfr_sub_ui(__.jet[0], __.jet[0], 54, RND);
     ad_prod(f, x, __);
-    mpfr_sub_ui(f.a[0], f.a[0], 160, RND);
+    mpfr_sub_ui(f.jet[0], f.jet[0], 160, RND);
     ad_prod(__, x, f);
-    mpfr_add_ui(__.a[0], __.a[0], 641, RND);
+    mpfr_add_ui(__.jet[0], __.jet[0], 641, RND);
     ad_prod(f, x, __);
-    mpfr_add_ui(f.a[0], f.a[0], 828, RND);
+    mpfr_add_ui(f.jet[0], f.jet[0], 828, RND);
     ad_prod(__, x, f);
-    mpfr_sub_ui(__.a[0], __.a[0], 1260, RND);
+    mpfr_sub_ui(__.jet[0], __.jet[0], 1260, RND);
     ad_prod(f, x, __);
 }
 
@@ -138,61 +138,61 @@ int main (int argc, char **argv) {
     mpfr_init_set_ui(D6, 6, RND);
     mpfr_init_set_ui(D7, 7, RND);
 
-    w1 = t_jet_c(order, D1);
-    w2 = t_jet_c(order, D2);
-    w3 = t_jet_c(order, D3);
-    w4 = t_jet_c(order, D4);
-    w5 = t_jet_c(order, D5);
-    w6 = t_jet_c(order, D6);
-    w7 = t_jet_c(order, D7);
+    w1 = ad_series_c(order, D1);
+    w2 = ad_series_c(order, D2);
+    w3 = ad_series_c(order, D3);
+    w4 = ad_series_c(order, D4);
+    w5 = ad_series_c(order, D5);
+    w6 = ad_series_c(order, D6);
+    w7 = ad_series_c(order, D7);
 
-    target = t_jet_c(order, f_target);
-    _1 = t_jet(order);
-    _2 = t_jet(order);
-    _3 = t_jet(order);
-    __ = t_jet(order);
+    target = ad_series_c(order, f_target);
+    _1 = t_series(order);
+    _2 = t_series(order);
+    _3 = t_series(order);
+    __ = t_series(order);
 
-    series f = t_jet_c(order, D0);
-    series f_ = t_jet_c(order, D0);
-    series x = t_jet_v(order, x0);
+    series f = ad_series_c(order, D0);
+    series f_ = ad_series_c(order, D0);
+    series x = ad_series_v(order, x0);
 
     mpfr_sub(_, x1, x0, RND);
     mpfr_div_ui(x_step, _, steps, RND);
     for (int k = 0; k < steps + 1; k++) {
         mpfr_mul_ui(_, x_step, k, RND);
-        mpfr_add(x.a[0], x0, _, RND);
+        mpfr_add(x.jet[0], x0, _, RND);
         function(f, x);
-        mpfr_printf("%.3RNe ", x.a[0]);
+        mpfr_printf("%.3RNe ", x.jet[0]);
         jet_to_derivs(f, order);
         for (int i = 0; i < order; i++) {
-            mpfr_printf("%.6RNe ", f.a[i]);
+            mpfr_printf("%.6RNe ", f.jet[i]);
         }
         printf("\n");
         if (s != NONE) {
             if(k > 0) {
-                mpfr_mul(_, f0_prev, f.a[ROOT], RND);
+                mpfr_mul(_, f0_prev, f.jet[ROOT], RND);
                 if (mpfr_sgn(_) < 0) {
                     ad_newton(function, f_, x, 100, f_tol, x_tol, ROOT);
-                    mpfr_cmp(f0_prev, f.a[ROOT]) > 0 ? fprintf(stderr, "\\") : fprintf(stderr, "/");
+                    mpfr_cmp(f0_prev, f.jet[ROOT]) > 0 ? fprintf(stderr, "\\") : fprintf(stderr, "/");
                     fprintf(stderr, " ROOT\n");
                 }
-                mpfr_mul(_, f1_prev, f.a[MIN_MAX], RND);
+                mpfr_mul(_, f1_prev, f.jet[MIN_MAX], RND);
                 if (mpfr_sgn(_) < 0) {
                     ad_newton(function, f_, x, 100, f_tol, x_tol, MIN_MAX);
-                    mpfr_cmp(f1_prev, f.a[MIN_MAX]) > 0 ? fprintf(stderr, "\\ MAXIMUM\n") : fprintf(stderr, "/ MINIMUM\n");
+                    mpfr_cmp(f1_prev, f.jet[MIN_MAX]) > 0 ? fprintf(stderr, "\\ MAXIMUM\n") : fprintf(stderr, "/ MINIMUM\n");
                 }
-                mpfr_mul(_, f2_prev, f.a[INFLECTION], RND);
+                mpfr_mul(_, f2_prev, f.jet[INFLECTION], RND);
                 if (mpfr_sgn(_) < 0) {
                     ad_newton(function, f_, x, 100, f_tol, x_tol, INFLECTION);
-                    mpfr_cmp(f2_prev, f.a[INFLECTION]) > 0 ? fprintf(stderr, "\\") : fprintf(stderr, "/");
+                    mpfr_cmp(f2_prev, f.jet[INFLECTION]) > 0 ? fprintf(stderr, "\\") : fprintf(stderr, "/");
                     fprintf(stderr, " INFLECTION\n");
                 }
             }
         }
-        mpfr_set(x_prev, x.a[0], RND);
-        mpfr_set(f0_prev, f.a[ROOT], RND);
-        mpfr_set(f1_prev, f.a[MIN_MAX], RND);
-        mpfr_set(f2_prev, f.a[INFLECTION], RND);
+        mpfr_set(x_prev, x.jet[0], RND);
+        mpfr_set(f0_prev, f.jet[ROOT], RND);
+        mpfr_set(f1_prev, f.jet[MIN_MAX], RND);
+        mpfr_set(f2_prev, f.jet[INFLECTION], RND);
     }
     fprintf(stderr, "\n");
     return 0;

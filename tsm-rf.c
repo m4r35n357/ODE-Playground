@@ -18,28 +18,28 @@ int main (int argc, char **argv) {
     // initialize from command arguments
     assert(argc == 11);
     t_stepper(argv, &n, &h, &nsteps);
-    series x = t_jet(n + 1), y = t_jet(n + 1), z = t_jet(n + 1), alpha = t_jet(n);
-    t_args(argv, argc, x.a, y.a, z.a, alpha.a, &gamma);
-    series a = t_jet(n), b = t_jet(n), c = t_jet(n), w1 = t_jet(n);
-    mpfr_set_ui(w1.a[0], 1, RND);
+    series x = t_series(n + 1), y = t_series(n + 1), z = t_series(n + 1), alpha = t_series(n);
+    t_args(argv, argc, x.jet, y.jet, z.jet, alpha.jet, &gamma);
+    series a = t_series(n), b = t_series(n), c = t_series(n), w1 = t_series(n);
+    mpfr_set_ui(w1.jet[0], 1, RND);
     mpfr_inits(x2_1, _, NULL);
     mpfr_init_set_ui(d3, 3, RND);
 
-    t_output(x.a[0], y.a[0], z.a[0], h, 0);
+    t_output(x.jet[0], y.jet[0], z.jet[0], h, 0);
     for (long step = 1; step <= nsteps; step++) {
         // build the jet of taylor coefficients
         for (int k = 0; k < n; k++) {
-            mpfr_sub(x2_1, *t_sqr(x, k), w1.a[k], RND);
+            mpfr_sub(x2_1, *t_sqr(x, k), w1.jet[k], RND);
             //  x' = y(z - 1 + x^2) + Gx
-            mpfr_add(a.a[k], z.a[k], x2_1, RND);
-            mpfr_fma(_, gamma, x.a[k], *t_prod(y, a, k), RND);
+            mpfr_add(a.jet[k], z.jet[k], x2_1, RND);
+            mpfr_fma(_, gamma, x.jet[k], *t_prod(y, a, k), RND);
             t_next(x, _, k, POS);
             //  y' = x(3z + 1 - x^2) + Gy
-            mpfr_fms(b.a[k], d3, z.a[k], x2_1, RND);
-            mpfr_fma(_, gamma, y.a[k], *t_prod(x, b, k), RND);
+            mpfr_fms(b.jet[k], d3, z.jet[k], x2_1, RND);
+            mpfr_fma(_, gamma, y.jet[k], *t_prod(x, b, k), RND);
             t_next(y, _, k, POS);
             //  z' = -2z(A + xy)
-            mpfr_add(c.a[k], *t_prod(x, y, k), alpha.a[k], RND);
+            mpfr_add(c.jet[k], *t_prod(x, y, k), alpha.jet[k], RND);
             mpfr_mul_2ui(_, *t_prod(z, c, k), 1, RND);
             t_next(z, _, k, NEG);
         }
