@@ -84,7 +84,9 @@ int main (int argc, char **argv) {
     series ln1 = t_series(n);
     series ln2 = t_series(n);
     series sin = t_series(n);
+    series sin2 = t_series(n);
     series cos = t_series(n);
+    series cos2 = t_series(n);
     series tan = t_series(n);
     series sec2 = t_series(n);
 
@@ -154,16 +156,16 @@ int main (int argc, char **argv) {
     } else skipped++;
 
     ad_sin_cos(sin, cos, x, HYP);
+    ad_tan_sec2(tan, sec2, x, HYP);
     ad_sqr(sqr1, cos);
     ad_sqr(sqr2, sin);
     compare("cosh^2(x) - sinh^2(x) == 1", ad_minus(diff, sqr1, sqr2), c1);
-
-    ad_tan_sec2(tan, sec2, x, HYP);
     compare("sech^2(x) + tanh^2(x) == 1", ad_plus(sum, sec2, ad_sqr(sqr1, tan)), c1);
-
-    ad_sin_cos(sin, cos, x, HYP);
     compare("tanh(x) == sinh(x) / cosh(x)", tan, ad_quot(quot, sin, cos));
     compare("sech^2(x) == 1 / cosh^2(x)", sec2, ad_inv(inv, ad_sqr(sqr1, cos)));
+    ad_sin_cos(sin2, cos2, ad_scale(scale, x, D2), HYP);
+    compare("sinh(2 * x) == 2 * sinh(x) * cosh(x)", sin2, ad_scale(scale, ad_prod(prod, sin, cos), D2));
+    compare("cosh(2 * x) == cosh^2(x) + sinh^2(x)", cos2, ad_plus(sum, sqr1, sqr2));
 
     ad_exp(exp1, x);
     ad_exp(exp2, ad_neg(neg, x));
@@ -171,16 +173,16 @@ int main (int argc, char **argv) {
     compare("cosh(x) == 0.5 * (e^x + e^-x)", cos, ad_scale(scale, ad_plus(sum, exp1, exp2), D05));
 
     ad_sin_cos(sin, cos, x, TRIG);
+    ad_tan_sec2(tan, sec2, x, TRIG);
     ad_sqr(sqr1, cos);
     ad_sqr(sqr2, sin);
     compare("cos^2(x) + sin^2(x) == 1", ad_plus(sum, sqr1, sqr2), c1);
-
-    ad_tan_sec2(tan, sec2, x, TRIG);
     compare("sec^2(x) - tan^2(x) == 1", ad_minus(diff, sec2, ad_sqr(sqr1, tan)), c1);
-
-    ad_sin_cos(sin, cos, x, TRIG);
     compare("tan(x) == sin(x) / cos(x)", tan, ad_quot(quot, sin, cos));
     compare("sec^2(x) == 1 / cos^2(x)", sec2, ad_inv(inv, ad_sqr(sqr1, cos)));
+    ad_sin_cos(sin2, cos2, ad_scale(scale, x, D2), TRIG);
+    compare("sin(2 * x) == 2 * sin(x) * cos(x)", sin2, ad_scale(scale, ad_prod(prod, sin, cos), D2));
+    compare("cos(2 * x) == cos^2(x) + sin^2(x)", cos2, ad_minus(diff, sqr1, sqr2));
 
     printf("Total: %d, %sPASSED%s %d", total, KGRN, KNRM, passed);
     if (skipped > 0) {
