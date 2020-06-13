@@ -29,12 +29,12 @@ void ad_tempvars (void);
 /*
  * Creates a jet with element zero set to value and the rest zeroed (represents a constant)
  */
-series t_jet_c (int size, mpfr_t value);
+series ad_jet_c (int size, mpfr_t value);
 
 /*
  * Creates a jet with element zero set to value, element one set to 1, and the rest zeroed (represents a variable)
  */
-series t_jet_v (int size, mpfr_t value);
+series ad_jet_v (int size, mpfr_t value);
 
 /*
  * Prints a Taylor coefficient jet to order n

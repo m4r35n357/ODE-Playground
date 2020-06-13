@@ -138,23 +138,23 @@ int main (int argc, char **argv) {
     mpfr_init_set_ui(D6, 6, RND);
     mpfr_init_set_ui(D7, 7, RND);
 
-    w1 = t_jet_c(order, D1);
-    w2 = t_jet_c(order, D2);
-    w3 = t_jet_c(order, D3);
-    w4 = t_jet_c(order, D4);
-    w5 = t_jet_c(order, D5);
-    w6 = t_jet_c(order, D6);
-    w7 = t_jet_c(order, D7);
+    w1 = ad_jet_c(order, D1);
+    w2 = ad_jet_c(order, D2);
+    w3 = ad_jet_c(order, D3);
+    w4 = ad_jet_c(order, D4);
+    w5 = ad_jet_c(order, D5);
+    w6 = ad_jet_c(order, D6);
+    w7 = ad_jet_c(order, D7);
 
-    target = t_jet_c(order, f_target);
+    target = ad_jet_c(order, f_target);
     _1 = t_jet(order);
     _2 = t_jet(order);
     _3 = t_jet(order);
     __ = t_jet(order);
 
-    series f = t_jet_c(order, D0);
-    series f_ = t_jet_c(order, D0);
-    series x = t_jet_v(order, x0);
+    series f = ad_jet_c(order, D0);
+    series f_ = ad_jet_c(order, D0);
+    series x = ad_jet_v(order, x0);
 
     mpfr_sub(_, x1, x0, RND);
     mpfr_div_ui(x_step, _, steps, RND);

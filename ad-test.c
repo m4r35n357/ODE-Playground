@@ -67,17 +67,17 @@ int main (int argc, char **argv) {
 
     ___ = t_jet(n);
 
-    series cx = t_jet_v(n, x);
-    series cx0 = t_jet_v(n, D0);
-    series cy = t_jet_c(n, y);
+    series cx = ad_jet_v(n, x);
+    series cx0 = ad_jet_v(n, D0);
+    series cy = ad_jet_c(n, y);
 
     mpfr_const_pi(_, RND);
     mpfr_div_ui(_, _, 3, RND);
-    series PI_3 = t_jet_v(n, _);
+    series PI_3 = ad_jet_v(n, _);
 
     mpfr_const_pi(_, RND);
     mpfr_div_ui(_, _, 4, RND);
-    series PI_4 = t_jet_v(n, _);
+    series PI_4 = ad_jet_v(n, _);
 
     series wsqr = t_jet(n);
     series wabs = t_jet(n);
@@ -92,7 +92,7 @@ int main (int argc, char **argv) {
     series wc = t_jet(n);
     series wt = t_jet(n);
     series ws2 = t_jet(n);
-    series __ = t_jet_c(n, D0);
+    series __ = ad_jet_c(n, D0);
 
     printf("%s%s%s\n", KCYN, "Horner", KNRM);
     mpfr_set_si(__.a[0], -19, RND);
@@ -305,8 +305,8 @@ int main (int argc, char **argv) {
     derivative_output(wquot, n, KBLD, KGRY);
     printf("%s\n", KNRM);
 
-    cx = t_jet_c(n, x);
-    cy = t_jet_v(n, y);
+    cx = ad_jet_c(n, x);
+    cy = ad_jet_v(n, y);
 
     printf("%s%s%s\n", KCYN, "f(x, y) = x * y, d/dy", KNRM);
     ad_prod(wprod, cx, cy);

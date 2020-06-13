@@ -88,8 +88,8 @@ int main (int argc, char **argv) {
     series tan = t_jet(n);
     series sec2 = t_jet(n);
 
-    series c1 = t_jet_c(n, D1);
-    series x = t_jet_v(n, x0);
+    series c1 = ad_jet_c(n, D1);
+    series x = ad_jet_v(n, x0);
 
     printf("\n");
     ad_sqr(sqr1, x);
