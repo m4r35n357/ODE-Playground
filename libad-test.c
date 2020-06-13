@@ -18,7 +18,7 @@
 #define KYLW "\x1B[1;33m"
 #define KRED "\x1B[1;31m"
 
-typedef enum {PASS, FAIL} result;
+typedef enum {PASSED, SKIPPED, FAILED} result;
 
 static int debug = 0, total = 0, passed = 0, skipped = 0;
 
@@ -37,23 +37,30 @@ static void ad_lib_test_tempvars (void) {
     mpfr_init_set_si(D_3, -3, RND);
 }
 
+static result skip (char* name) {
+    total++;
+    skipped++;
+    printf("%sSKIPPED%s %s\n", KYLW, KNRM, name);
+    return SKIPPED;
+}
+
 static result compare (char* name, series a, series b) {
     assert(b.size == a.size);
     total++;
     for (int k = 0; k < b.size; k++) {
         mpfr_sub(delta, a.jet[k], b.jet[k], RND);
         if (mpfr_cmp_abs(delta, tolerance) > 0) {
-            printf("%sFAILED%s %s  k: %d  LHS: %.6e  RHS: %.6e  diff %.3e\n",
+            printf("%s FAILED%s %s  k: %d  LHS: %.6e  RHS: %.6e  diff %.3e\n",
                     KRED, KNRM, name, k, mpfr_get_d(a.jet[k], RND), mpfr_get_d(b.jet[k], RND), mpfr_get_d(delta, RND));
-            return FAIL;
+            return FAILED;
         }
         if (debug >= 2 && k == 0) printf("\n");
-        if (debug >= 2) printf("%s DEBUG%s  k: %2d  %+.6e %+.6e  diff %+.3e\n",
+        if (debug >= 2) printf("%s  DEBUG%s  k: %2d  %+.6e %+.6e  diff %+.3e\n",
                                KNRM, KNRM, k, mpfr_get_d(a.jet[k], RND), mpfr_get_d(b.jet[k], RND), mpfr_get_d(delta, RND));
     }
-    if (debug >= 1) printf("%sPASSED%s %s\n", KGRN, KNRM, name);
+    if (debug >= 1) printf("%s PASSED%s %s\n", KGRN, KNRM, name);
     passed++;
-    return PASS;
+    return PASSED;
 }
 
 int main (int argc, char **argv) {
@@ -99,67 +106,91 @@ int main (int argc, char **argv) {
     mpfr_const_pi(PI, RND);
     mpfr_div_2ui(PI_2, PI, 1, RND);
 
+    int positive = mpfr_sgn(x.jet[0]) > 0;
+    int non_zero = mpfr_zero_p(x.jet[0]) == 0;
+    int lt_pi = mpfr_cmpabs(x.jet[0], PI) < 0;
+    int lt_pi_2 = mpfr_cmpabs(x.jet[0], PI_2) < 0;
+
     printf("\n");
     ad_sqr(sqr1, x);
-    compare("x * x == sqr(x)", ad_prod(prod, x, x), sqr1);
-    if (mpfr_zero_p(x.jet[0]) == 0) {
-        compare("sqr(x) / x == x", ad_quot(quot, sqr1, x), x);
-    } else skipped++;
-    if (mpfr_zero_p(x.jet[0]) == 0) {
-        compare("x * 1 / x == 1", ad_prod(prod, x, ad_inv(inv, x)), c1);
-    } else skipped++;
-    if (mpfr_sgn(x.jet[0]) > 0) {
+    char* name = "x * x == sqr(x)";
+    compare(name, ad_prod(prod, x, x), sqr1);
+    name = "sqr(x) / x == x";
+    if (non_zero) {
+        compare(name, ad_quot(quot, sqr1, x), x);
+    } else skip(name);
+    name = "x * 1 / x == 1";
+    if (non_zero) {
+        compare(name, ad_prod(prod, x, ad_inv(inv, x)), c1);
+    } else skip(name);
+    name = "sqrt(x) * sqrt(x) == x";
+    if (positive) {
         ad_sqrt(sqrt, x);
-        compare("sqrt(x) * sqrt(x) == x", ad_prod(prod, sqrt, sqrt), x);
-    } else skipped++;
-    if (mpfr_sgn(x.jet[0]) > 0) {
-        compare("x / sqrt(x) == sqrt(x)", ad_quot(quot, x, sqrt), sqrt);
-    } else skipped++;
+        compare(name, ad_prod(prod, sqrt, sqrt), x);
+    } else skip(name);
+    name = "x / sqrt(x) == sqrt(x)";
+    if (positive) {
+        compare(name, ad_quot(quot, x, sqrt), sqrt);
+    } else skip(name);
 
-    if (mpfr_sgn(x.jet[0]) > 0) {
-        compare("x^2 == sqr(x)", ad_pwr(pow1, x, D2), sqr1);
-    } else skipped++;
-    if (mpfr_sgn(x.jet[0]) > 0) {
-        compare("x^1 == x", ad_pwr(pow1, x, D1), x);
-    } else skipped++;
-    if (mpfr_sgn(x.jet[0]) > 0) {
-        compare("x^0.5 == sqrt(x)", ad_pwr(pow1, x, D05), sqrt);
-    } else skipped++;
-    if (mpfr_sgn(x.jet[0]) > 0) {
-        compare("x^0 == 1", ad_pwr(pow1, x, D0), c1);
-    } else skipped++;
-    if (mpfr_sgn(x.jet[0]) > 0) {
-        compare("x^-0.5 == 1 / sqrt(x)", ad_pwr(pow1, x, D_05), ad_inv(inv, sqrt));
-    } else skipped++;
-    if (mpfr_sgn(x.jet[0]) > 0) {
-        compare("x^-1 == 1 / x", ad_pwr(pow1, x, D_1), ad_inv(inv, x));
-    } else skipped++;
-    if (mpfr_sgn(x.jet[0]) > 0) {
-        compare("x^-2 == 1 / sqr(x)", ad_pwr(pow1, x, D_2), ad_inv(inv, sqr1));
-    } else skipped++;
+    name = "x^2 == sqr(x)";
+    if (positive) {
+        compare(name, ad_pwr(pow1, x, D2), sqr1);
+    } else skip(name);
+    name = "x^1 == x";
+    if (positive) {
+        compare(name, ad_pwr(pow1, x, D1), x);
+    } else skip(name);
+    name = "x^0.5 == sqrt(x)";
+    if (positive) {
+        compare(name, ad_pwr(pow1, x, D05), sqrt);
+    } else skip(name);
+    name = "x^0 == 1";
+    if (positive) {
+        compare(name, ad_pwr(pow1, x, D0), c1);
+    } else skip(name);
+    name = "x^-0.5 == 1 / sqrt(x)";
+    if (positive) {
+        compare(name, ad_pwr(pow1, x, D_05), ad_inv(inv, sqrt));
+    } else skip(name);
+    name = "x^-1 == 1 / x";
+    if (positive) {
+        compare(name, ad_pwr(pow1, x, D_1), ad_inv(inv, x));
+    } else skip(name);
+    name = "x^-2 == 1 / sqr(x)";
+    if (positive) {
+        compare(name, ad_pwr(pow1, x, D_2), ad_inv(inv, sqr1));
+    } else skip(name);
 
-    if (mpfr_sgn(x.jet[0]) > 0) {
-        compare("sqr(x) * x^-3 == 1 / x", ad_prod(prod, sqr1, ad_pwr(pow2, x, D_3)), ad_inv(inv, x));
-    } else skipped++;
+    name = "sqr(x) * x^-3 == 1 / x";
+    if (positive) {
+        compare(name, ad_prod(prod, sqr1, ad_pwr(pow2, x, D_3)), ad_inv(inv, x));
+    } else skip(name);
 
-    if (mpfr_zero_p(x.jet[0]) == 0) {
-        compare("sqr(x)^0.5 == |x|", ad_pwr(pow1, sqr1, D05), ad_abs(abs, x));
-    } else skipped++;
+    name = "sqr(x)^0.5 == |x|";
+    if (non_zero) {
+        compare(name, ad_pwr(pow1, sqr1, D05), ad_abs(abs, x));
+    } else skip(name);
 
-    compare("log(e^x) == x", ad_ln(ln1, ad_exp(exp1, x)), x);
-    if (mpfr_sgn(x.jet[0]) > 0) {
+    name = "log(e^x) == x";
+    compare(name, ad_ln(ln1, ad_exp(exp1, x)), x);
+    name = "log(sqr(x)) == 2 * log(x)";
+    if (positive) {
         ad_ln(ln2, x);
-        compare("log(sqr(x)) == 2 * log(x)", ad_ln(ln1, sqr1), ad_scale(scale, ln2, D2));
-    } else skipped++;
-    if (mpfr_sgn(x.jet[0]) > 0) {
-        compare("log(sqrt(x)) == 0.5 * log(x)", ad_ln(ln1, sqrt), ad_scale(scale, ln2, D05));
-    } else skipped++;
-    if (mpfr_sgn(x.jet[0]) > 0) {
-        compare("log(1 / x) == - log(x)", ad_ln(ln1, ad_inv(inv, x)), ad_neg(neg, ln2));
-    } else skipped++;
-    if (mpfr_sgn(x.jet[0]) > 0) {
-        compare("log(x^-3) == - 3 * log(x)", ad_ln(ln1, ad_pwr(pow1, x, D_3)), ad_scale(scale, ln2, D_3));
-    } else skipped++;
+        compare(name, ad_ln(ln1, sqr1), ad_scale(scale, ln2, D2));
+    } else skip(name);
+    name = "log(sqrt(x)) == 0.5 * log(x)";
+    if (positive) {
+        compare(name, ad_ln(ln1, sqrt), ad_scale(scale, ln2, D05));
+    } else skip(name);
+    name = "log(1 / x) == - log(x)";
+    if (positive) {
+        compare(name, ad_ln(ln1, ad_inv(inv, x)), ad_neg(neg, ln2));
+    } else skip(name);
+    name = "log(x^-3) == - 3 * log(x)";
+    if (positive) {
+        compare(name, ad_ln(ln1, ad_pwr(pow1, x, D_3)), ad_scale(scale, ln2, D_3));
+    } else skip(name);
 
     ad_sin_cos(sin, cos, x, HYP);
     ad_tan_sec2(tan, sec2, x, HYP);
@@ -182,25 +213,31 @@ int main (int argc, char **argv) {
     ad_tan_sec2(tan, sec2, x, TRIG);
     ad_sqr(sqr1, cos);
     ad_sqr(sqr2, sin);
-    if (mpfr_cmpabs(x.jet[0], PI) < 0) {
-        compare("cos^2(x) + sin^2(x) == 1", ad_plus(sum, sqr1, sqr2), c1);
-    } else skipped++;
-    if (mpfr_cmpabs(x.jet[0], PI) < 0) {
-        compare("sec^2(x) - tan^2(x) == 1", ad_minus(diff, sec2, ad_sqr(sqr1, tan)), c1);
-    } else skipped++;
-    if (mpfr_cmpabs(x.jet[0], PI_2) < 0) {
-        compare("tan(x) == sin(x) / cos(x)", tan, ad_quot(quot, sin, cos));
-    } else skipped++;
-    if (mpfr_cmpabs(x.jet[0], PI_2) < 0) {
-        compare("sec^2(x) == 1 / cos^2(x)", sec2, ad_inv(inv, ad_sqr(sqr1, cos)));
-    } else skipped++;
+    name = "cos^2(x) + sin^2(x) == 1";
+    if (lt_pi) {
+        compare(name, ad_plus(sum, sqr1, sqr2), c1);
+    } else skip(name);
+    name = "sec^2(x) - tan^2(x) == 1";
+    if (lt_pi) {
+        compare(name, ad_minus(diff, sec2, ad_sqr(sqr1, tan)), c1);
+    } else skip(name);
+    name = "tan(x) == sin(x) / cos(x)";
+    if (lt_pi_2) {
+        compare(name, tan, ad_quot(quot, sin, cos));
+    } else skip(name);
+    name = "sec^2(x) == 1 / cos^2(x)";
+    if (lt_pi_2) {
+        compare(name, sec2, ad_inv(inv, ad_sqr(sqr1, cos)));
+    } else skip(name);
     ad_sin_cos(sin2, cos2, ad_scale(scale, x, D2), TRIG);
-    if (mpfr_cmpabs(x.jet[0], PI_2) < 0) {
-        compare("sin(2 * x) == 2 * sin(x) * cos(x)", sin2, ad_scale(scale, ad_prod(prod, sin, cos), D2));
-    } else skipped++;
-    if (mpfr_cmpabs(x.jet[0], PI_2) < 0) {
-        compare("cos(2 * x) == cos^2(x) + sin^2(x)", cos2, ad_minus(diff, sqr1, sqr2));
-    } else skipped++;
+    name = "sin(2 * x) == 2 * sin(x) * cos(x)";
+    if (lt_pi_2) {
+        compare(name, sin2, ad_scale(scale, ad_prod(prod, sin, cos), D2));
+    } else skip(name);
+    name = "cos(2 * x) == cos^2(x) + sin^2(x)";
+    if (lt_pi_2) {
+        compare(name, cos2, ad_minus(diff, sqr1, sqr2));
+    } else skip(name);
 
     printf("Total: %d, %sPASSED%s %d", total, KGRN, KNRM, passed);
     if (skipped > 0) {
@@ -210,7 +247,7 @@ int main (int argc, char **argv) {
         printf("\n\n");
         return 0;
     } else {
-        printf(", %sFAILED%s %d\n\n", KRED, KNRM, total - passed);
+        printf(", %sFAILED%s %d\n\n", KRED, KNRM, total - passed - skipped);
         return 1;
     }
 }
