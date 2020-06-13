@@ -16,31 +16,31 @@ void ad_tempvars (void) {
     mpfr_init(delta);
 }
 
-series ad_jet_c (int n, mpfr_t value) {
-    series s = t_jet(n);
-    mpfr_set(s.a[0], value, RND);
+series ad_series_c (int n, mpfr_t value) {
+    series s = t_series(n);
+    mpfr_set(s.jet[0], value, RND);
     return s;
 }
 
-series ad_jet_v (int n, mpfr_t value) {
+series ad_series_v (int n, mpfr_t value) {
     assert(n > 1);
-    series s = ad_jet_c(n, value);
-    mpfr_set_ui(s.a[1], 1, RND);
+    series s = ad_series_c(n, value);
+    mpfr_set_ui(s.jet[1], 1, RND);
     return s;
 }
 
-void jet_output (series jet, long n, char* f_colour, char *fk_colour) {
-    mpfr_printf("%s%9.6RNf ", f_colour, jet.a[0]);
+void jet_output (series s, long n, char* f_colour, char *fk_colour) {
+    mpfr_printf("%s%9.6RNf ", f_colour, s.jet[0]);
     for (int i = 1; i < n; i++) {
-        mpfr_printf("%s%9.6RNf ", fk_colour, jet.a[i]);
+        mpfr_printf("%s%9.6RNf ", fk_colour, s.jet[i]);
     }
     printf("%s\n", f_colour);
 }
 
-void jet_to_derivs (series jet, long n) {
+void jet_to_derivs (series s, long n) {
     for (int i = 1, fac = 1; i < n; i++) {
         fac *= i;
-        mpfr_mul_ui(jet.a[i], jet.a[i], fac, RND);
+        mpfr_mul_ui(s.jet[i], s.jet[i], fac, RND);
     }
 }
 
@@ -52,62 +52,62 @@ void derivative_output (series jet, long n, char* f_colour, char *fk_colour) {
 void ad_newton (model function, series f, series x, int max_it, mpfr_t f_tol, mpfr_t x_tol, mode degree) {
     int counter = 0;
     mpfr_set_ui(delta, 1, RND);
-    while(mpfr_cmp_abs(f.a[degree], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
+    while(mpfr_cmp_abs(f.jet[degree], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
         function(f, x);
         jet_to_derivs(f, NEWTON + degree);
-        mpfr_div(delta, f.a[degree], f.a[degree + 1], RND);
-        mpfr_sub(x.a[0], x.a[0], delta, RND);
+        mpfr_div(delta, f.jet[degree], f.jet[degree + 1], RND);
+        mpfr_sub(x.jet[0], x.jet[0], delta, RND);
         if (++counter > max_it) break;
     }
-    mpfr_fprintf(stderr, "%3d %11.3RNe %11.3RNe %11.3RNe ", counter, x.a[0], &delta, f.a[degree]);
+    mpfr_fprintf(stderr, "%3d %11.3RNe %11.3RNe %11.3RNe ", counter, x.jet[0], &delta, f.jet[degree]);
 }
 
 series ad_set (series b, series a) {
     assert(b.size == a.size);
     for (int k = 0; k < b.size; k++) {
-        mpfr_set(b.a[k], a.a[k], RND);
+        mpfr_set(b.jet[k], a.jet[k], RND);
     }
     return b;
 }
 
 series ad_scale (series s, series u, mpfr_t a) {
     for (int k = 0; k < u.size; k++) {
-        mpfr_mul(s.a[k], u.a[k], a, RND);
+        mpfr_mul(s.jet[k], u.jet[k], a, RND);
     }
     return s;
 }
 
 series ad_plus (series p, series u, series v) {
     for (int k = 0; k < u.size; k++) {
-        mpfr_add(p.a[k], u.a[k], v.a[k], RND);
+        mpfr_add(p.jet[k], u.jet[k], v.jet[k], RND);
     }
     return p;
 }
 
 series ad_minus (series m, series u, series v) {
     for (int k = 0; k < u.size; k++) {
-        mpfr_sub(m.a[k], u.a[k], v.a[k], RND);
+        mpfr_sub(m.jet[k], u.jet[k], v.jet[k], RND);
     }
     return m;
 }
 
 series ad_neg (series m, series u) {
     for (int k = 0; k < u.size; k++) {
-        mpfr_neg(m.a[k], u.a[k], RND);
+        mpfr_neg(m.jet[k], u.jet[k], RND);
     }
     return m;
 }
 
 series ad_abs (series a, series u) {
     for (int k = 0; k < u.size; k++) {
-        mpfr_set(a.a[k], *t_abs(u, k), RND);
+        mpfr_set(a.jet[k], *t_abs(u, k), RND);
     }
     return a;
 }
 
 series ad_prod (series p, series u, series v) {
     for (int k = 0; k < u.size; k++) {
-        mpfr_set(p.a[k], *t_prod(u, v, k), RND);
+        mpfr_set(p.jet[k], *t_prod(u, v, k), RND);
     }
     return p;
 }
@@ -128,7 +128,7 @@ series ad_inv (series i, series v) {
 
 series ad_sqr (series s, series u) {
     for (int k = 0; k < u.size; k++) {
-        mpfr_set(s.a[k], *t_sqr(u, k), RND);
+        mpfr_set(s.jet[k], *t_sqr(u, k), RND);
     }
     return s;
 }
@@ -151,14 +151,14 @@ tuple ad_sin_cos (series s, series c, series u, geometry g) {
     for (int k = 0; k < u.size; k++) {
         t_sin_cos(s, c, u, k, g);
     }
-    return (tuple){s.a, c.a, u.size};
+    return (tuple){s.jet, c.jet, u.size};
 }
 
 tuple ad_tan_sec2 (series t, series s2, series u, geometry g) {
     for (int k = 0; k < u.size; k++) {
         t_tan_sec2(t, s2, u, k, g);
     }
-    return (tuple){t.a, s2.a, u.size};
+    return (tuple){t.jet, s2.jet, u.size};
 }
 
 series ad_pwr (series p, series u, mpfr_t a) {

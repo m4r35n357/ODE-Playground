@@ -27,14 +27,14 @@ typedef void (*model)(series, series);
 void ad_tempvars (void);
 
 /*
- * Creates a jet with element zero set to value and the rest zeroed (represents a constant)
+ * Creates a Taylor Series with element zero set to value and the rest zeroed (represents a constant)
  */
-series ad_jet_c (int size, mpfr_t value);
+series ad_series_c (int size, mpfr_t value);
 
 /*
- * Creates a jet with element zero set to value, element one set to 1, and the rest zeroed (represents a variable)
+ * Creates a Taylor Series with element zero set to value, element one set to 1, and the rest zeroed (represents a variable)
  */
-series ad_jet_v (int size, mpfr_t value);
+series ad_series_v (int size, mpfr_t value);
 
 /*
  * Prints a Taylor coefficient jet to order n
