@@ -106,91 +106,57 @@ int main (int argc, char **argv) {
     mpfr_const_pi(PI, RND);
     mpfr_div_2ui(PI_2, PI, 1, RND);
 
-    int positive = mpfr_sgn(x.jet[0]) > 0;
-    int non_zero = mpfr_zero_p(x.jet[0]) == 0;
-    int lt_pi = mpfr_cmpabs(x.jet[0], PI) < 0;
-    int lt_pi_2 = mpfr_cmpabs(x.jet[0], PI_2) < 0;
+    int x_positive = mpfr_sgn(x.jet[0]) > 0;
+    int x_non_zero = mpfr_zero_p(x.jet[0]) == 0;
+    int x_lt_pi = mpfr_cmpabs(x.jet[0], PI) < 0;
+    int x_lt_pi_2 = mpfr_cmpabs(x.jet[0], PI_2) < 0;
 
     printf("\n");
     ad_sqr(sqr1, x);
     char* name = "x * x == sqr(x)";
     compare(name, ad_prod(prod, x, x), sqr1);
     name = "sqr(x) / x == x";
-    if (non_zero) {
-        compare(name, ad_quot(quot, sqr1, x), x);
-    } else skip(name);
+    x_non_zero ? compare(name, ad_quot(quot, sqr1, x), x) : skip(name);
     name = "x * 1 / x == 1";
-    if (non_zero) {
-        compare(name, ad_prod(prod, x, ad_inv(inv, x)), c1);
-    } else skip(name);
+    x_non_zero ? compare(name, ad_prod(prod, x, ad_inv(inv, x)), c1) : skip(name);
     name = "sqrt(x) * sqrt(x) == x";
-    if (positive) {
-        ad_sqrt(sqrt, x);
-        compare(name, ad_prod(prod, sqrt, sqrt), x);
-    } else skip(name);
+    ad_sqrt(sqrt, x);
+    x_positive ? compare(name, ad_prod(prod, sqrt, sqrt), x) : skip(name);
     name = "x / sqrt(x) == sqrt(x)";
-    if (positive) {
-        compare(name, ad_quot(quot, x, sqrt), sqrt);
-    } else skip(name);
+    x_positive ? compare(name, ad_quot(quot, x, sqrt), sqrt) : skip(name);
 
     name = "x^2 == sqr(x)";
-    if (positive) {
-        compare(name, ad_pwr(pow1, x, D2), sqr1);
-    } else skip(name);
+    x_positive ? compare(name, ad_pwr(pow1, x, D2), sqr1) : skip(name);
     name = "x^1 == x";
-    if (positive) {
-        compare(name, ad_pwr(pow1, x, D1), x);
-    } else skip(name);
+    x_positive ? compare(name, ad_pwr(pow1, x, D1), x) : skip(name);
     name = "x^0.5 == sqrt(x)";
-    if (positive) {
-        compare(name, ad_pwr(pow1, x, D05), sqrt);
-    } else skip(name);
+    x_positive ? compare(name, ad_pwr(pow1, x, D05), sqrt): skip(name);
     name = "x^0 == 1";
-    if (positive) {
-        compare(name, ad_pwr(pow1, x, D0), c1);
-    } else skip(name);
+    x_positive ? compare(name, ad_pwr(pow1, x, D0), c1) : skip(name);
     name = "x^-0.5 == 1 / sqrt(x)";
-    if (positive) {
-        compare(name, ad_pwr(pow1, x, D_05), ad_inv(inv, sqrt));
-    } else skip(name);
+    x_positive ? compare(name, ad_pwr(pow1, x, D_05), ad_inv(inv, sqrt)) : skip(name);
     name = "x^-1 == 1 / x";
-    if (positive) {
-        compare(name, ad_pwr(pow1, x, D_1), ad_inv(inv, x));
-    } else skip(name);
+    x_positive ? compare(name, ad_pwr(pow1, x, D_1), ad_inv(inv, x)) : skip(name);
     name = "x^-2 == 1 / sqr(x)";
-    if (positive) {
-        compare(name, ad_pwr(pow1, x, D_2), ad_inv(inv, sqr1));
-    } else skip(name);
+    x_positive ? compare(name, ad_pwr(pow1, x, D_2), ad_inv(inv, sqr1)) : skip(name);
 
     name = "sqr(x) * x^-3 == 1 / x";
-    if (positive) {
-        compare(name, ad_prod(prod, sqr1, ad_pwr(pow2, x, D_3)), ad_inv(inv, x));
-    } else skip(name);
+    x_positive ? compare(name, ad_prod(prod, sqr1, ad_pwr(pow2, x, D_3)), ad_inv(inv, x)) : skip(name);
 
     name = "sqr(x)^0.5 == |x|";
-    if (non_zero) {
-        compare(name, ad_pwr(pow1, sqr1, D05), ad_abs(abs, x));
-    } else skip(name);
+    x_non_zero ? compare(name, ad_pwr(pow1, sqr1, D05), ad_abs(abs, x)) : skip(name);
 
     name = "log(e^x) == x";
     compare(name, ad_ln(ln1, ad_exp(exp1, x)), x);
     name = "log(sqr(x)) == 2 * log(x)";
-    if (positive) {
-        ad_ln(ln2, x);
-        compare(name, ad_ln(ln1, sqr1), ad_scale(scale, ln2, D2));
-    } else skip(name);
+    ad_ln(ln2, x);
+    x_positive ? compare(name, ad_ln(ln1, sqr1), ad_scale(scale, ln2, D2)) : skip(name);
     name = "log(sqrt(x)) == 0.5 * log(x)";
-    if (positive) {
-        compare(name, ad_ln(ln1, sqrt), ad_scale(scale, ln2, D05));
-    } else skip(name);
+    x_positive ? compare(name, ad_ln(ln1, sqrt), ad_scale(scale, ln2, D05)) : skip(name);
     name = "log(1 / x) == - log(x)";
-    if (positive) {
-        compare(name, ad_ln(ln1, ad_inv(inv, x)), ad_neg(neg, ln2));
-    } else skip(name);
+    x_positive ? compare(name, ad_ln(ln1, ad_inv(inv, x)), ad_neg(neg, ln2)) : skip(name);
     name = "log(x^-3) == - 3 * log(x)";
-    if (positive) {
-        compare(name, ad_ln(ln1, ad_pwr(pow1, x, D_3)), ad_scale(scale, ln2, D_3));
-    } else skip(name);
+    x_positive ? compare(name, ad_ln(ln1, ad_pwr(pow1, x, D_3)), ad_scale(scale, ln2, D_3)) : skip(name);
 
     ad_sin_cos(sin, cos, x, HYP);
     ad_tan_sec2(tan, sec2, x, HYP);
@@ -214,30 +180,18 @@ int main (int argc, char **argv) {
     ad_sqr(sqr1, cos);
     ad_sqr(sqr2, sin);
     name = "cos^2(x) + sin^2(x) == 1";
-    if (lt_pi) {
-        compare(name, ad_plus(sum, sqr1, sqr2), c1);
-    } else skip(name);
+    x_lt_pi ? compare(name, ad_plus(sum, sqr1, sqr2), c1) :  skip(name);
     name = "sec^2(x) - tan^2(x) == 1";
-    if (lt_pi) {
-        compare(name, ad_minus(diff, sec2, ad_sqr(sqr1, tan)), c1);
-    } else skip(name);
+    x_lt_pi ? compare(name, ad_minus(diff, sec2, ad_sqr(sqr1, tan)), c1) : skip(name);
     name = "tan(x) == sin(x) / cos(x)";
-    if (lt_pi_2) {
-        compare(name, tan, ad_quot(quot, sin, cos));
-    } else skip(name);
+    x_lt_pi_2 ? compare(name, tan, ad_quot(quot, sin, cos)) : skip(name);
     name = "sec^2(x) == 1 / cos^2(x)";
-    if (lt_pi_2) {
-        compare(name, sec2, ad_inv(inv, ad_sqr(sqr1, cos)));
-    } else skip(name);
+    x_lt_pi_2 ? compare(name, sec2, ad_inv(inv, ad_sqr(sqr1, cos))) : skip(name);
     ad_sin_cos(sin2, cos2, ad_scale(scale, x, D2), TRIG);
     name = "sin(2 * x) == 2 * sin(x) * cos(x)";
-    if (lt_pi_2) {
-        compare(name, sin2, ad_scale(scale, ad_prod(prod, sin, cos), D2));
-    } else skip(name);
+    x_lt_pi_2 ? compare(name, sin2, ad_scale(scale, ad_prod(prod, sin, cos), D2)) : skip(name);
     name = "cos(2 * x) == cos^2(x) + sin^2(x)";
-    if (lt_pi_2) {
-        compare(name, cos2, ad_minus(diff, sqr1, sqr2));
-    } else skip(name);
+    x_lt_pi_2 ? compare(name, cos2, ad_minus(diff, sqr1, sqr2)) : skip(name);
 
     printf("Total: %d, %sPASSED%s %d", total, KGRN, KNRM, passed);
     if (skipped > 0) {
