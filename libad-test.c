@@ -14,6 +14,7 @@
 #include "ad.h"
 
 #define KNRM "\x1B[0;37m"
+#define KWHT "\x1B[1;37m"
 #define KGRN "\x1B[1;32m"
 #define KYLW "\x1B[1;33m"
 #define KRED "\x1B[1;31m"
@@ -64,7 +65,7 @@ static result compare (char* name, series a, series b) {
 }
 
 int main (int argc, char **argv) {
-    mpfr_t PI, PI_2;
+    mpfr_t PI_2;
 
     assert(argc == 5 || argc == 6);
     mpfr_set_default_prec(strtod(argv[1], NULL) * 3.322);
@@ -102,13 +103,12 @@ int main (int argc, char **argv) {
     series c1 = ad_series_c(n, D1);
     series x = ad_series_v(n, x0);
 
-    mpfr_inits(PI, PI_2, NULL);
-    mpfr_const_pi(PI, RND);
-    mpfr_div_2ui(PI_2, PI, 1, RND);
+    mpfr_init(PI_2);
+    mpfr_const_pi(PI_2, RND);
+    mpfr_div_2ui(PI_2, PI_2, 1, RND);
 
     int x_positive = mpfr_sgn(x.jet[0]) > 0;
     int x_non_zero = mpfr_zero_p(x.jet[0]) == 0;
-    int x_lt_pi = mpfr_cmpabs(x.jet[0], PI) < 0;
     int x_lt_pi_2 = mpfr_cmpabs(x.jet[0], PI_2) < 0;
 
     printf("\n");
@@ -120,7 +120,7 @@ int main (int argc, char **argv) {
     name = "x * 1 / x == 1";
     x_non_zero ? compare(name, ad_prod(prod, x, ad_inv(inv, x)), c1) : skip(name);
     name = "sqrt(x) * sqrt(x) == x";
-    ad_sqrt(sqrt, x);
+    if (x_positive) ad_sqrt(sqrt, x);
     x_positive ? compare(name, ad_prod(prod, sqrt, sqrt), x) : skip(name);
     name = "x / sqrt(x) == sqrt(x)";
     x_positive ? compare(name, ad_quot(quot, x, sqrt), sqrt) : skip(name);
@@ -149,7 +149,7 @@ int main (int argc, char **argv) {
     name = "log(e^x) == x";
     compare(name, ad_ln(ln1, ad_exp(exp1, x)), x);
     name = "log(sqr(x)) == 2 * log(x)";
-    ad_ln(ln2, x);
+    if (x_positive) ad_ln(ln2, x);
     x_positive ? compare(name, ad_ln(ln1, sqr1), ad_scale(scale, ln2, D2)) : skip(name);
     name = "log(sqrt(x)) == 0.5 * log(x)";
     x_positive ? compare(name, ad_ln(ln1, sqrt), ad_scale(scale, ln2, D05)) : skip(name);
@@ -162,38 +162,46 @@ int main (int argc, char **argv) {
     ad_tan_sec2(tan, sec2, x, HYP);
     ad_sqr(sqr1, cos);
     ad_sqr(sqr2, sin);
-    compare("cosh^2(x) - sinh^2(x) == 1", ad_minus(diff, sqr1, sqr2), c1);
-    compare("sech^2(x) + tanh^2(x) == 1", ad_plus(sum, sec2, ad_sqr(sqr1, tan)), c1);
-    compare("tanh(x) == sinh(x) / cosh(x)", tan, ad_quot(quot, sin, cos));
-    compare("sech^2(x) == 1 / cosh^2(x)", sec2, ad_inv(inv, ad_sqr(sqr1, cos)));
+    name = "cosh^2(x) - sinh^2(x) == 1";
+    compare(name, ad_minus(diff, sqr1, sqr2), c1);
+    name = "sech^2(x) + tanh^2(x) == 1";
+    compare(name, ad_plus(sum, sec2, ad_sqr(sqr1, tan)), c1);
+    name = "tanh(x) == sinh(x) / cosh(x)";
+    compare(name, tan, ad_quot(quot, sin, cos));
+    name = "sech^2(x) == 1 / cosh^2(x)";
+    compare(name, sec2, ad_inv(inv, ad_sqr(sqr1, cos)));
     ad_sin_cos(sin2, cos2, ad_scale(scale, x, D2), HYP);
-    compare("sinh(2 * x) == 2 * sinh(x) * cosh(x)", sin2, ad_scale(scale, ad_prod(prod, sin, cos), D2));
-    compare("cosh(2 * x) == cosh^2(x) + sinh^2(x)", cos2, ad_plus(sum, sqr1, sqr2));
+    name = "sinh(2x) == 2 * sinh(x) * cosh(x)";
+    compare(name, sin2, ad_scale(scale, ad_prod(prod, sin, cos), D2));
+    name = "cosh(2x) == cosh^2(x) + sinh^2(x)";
+    compare(name, cos2, ad_plus(sum, sqr1, sqr2));
 
     ad_exp(exp1, x);
     ad_exp(exp2, ad_neg(neg, x));
-    compare("sinh(x) == 0.5 * (e^x - e^-x)", sin, ad_scale(scale, ad_minus(diff, exp1, exp2), D05));
-    compare("cosh(x) == 0.5 * (e^x + e^-x)", cos, ad_scale(scale, ad_plus(sum, exp1, exp2), D05));
+    name = "sinh(x) == 0.5 * (e^x - e^-x)";
+    compare(name, sin, ad_scale(scale, ad_minus(diff, exp1, exp2), D05));
+    name = "cosh(x) == 0.5 * (e^x + e^-x)";
+    compare(name, cos, ad_scale(scale, ad_plus(sum, exp1, exp2), D05));
 
     ad_sin_cos(sin, cos, x, TRIG);
     ad_tan_sec2(tan, sec2, x, TRIG);
     ad_sqr(sqr1, cos);
     ad_sqr(sqr2, sin);
     name = "cos^2(x) + sin^2(x) == 1";
-    x_lt_pi ? compare(name, ad_plus(sum, sqr1, sqr2), c1) :  skip(name);
+    compare(name, ad_plus(sum, sqr1, sqr2), c1);
     name = "sec^2(x) - tan^2(x) == 1";
-    x_lt_pi ? compare(name, ad_minus(diff, sec2, ad_sqr(sqr1, tan)), c1) : skip(name);
+    x_lt_pi_2 ? compare(name, ad_minus(diff, sec2, ad_sqr(sqr1, tan)), c1) : skip(name);
     name = "tan(x) == sin(x) / cos(x)";
     x_lt_pi_2 ? compare(name, tan, ad_quot(quot, sin, cos)) : skip(name);
     name = "sec^2(x) == 1 / cos^2(x)";
     x_lt_pi_2 ? compare(name, sec2, ad_inv(inv, ad_sqr(sqr1, cos))) : skip(name);
     ad_sin_cos(sin2, cos2, ad_scale(scale, x, D2), TRIG);
-    name = "sin(2 * x) == 2 * sin(x) * cos(x)";
-    x_lt_pi_2 ? compare(name, sin2, ad_scale(scale, ad_prod(prod, sin, cos), D2)) : skip(name);
-    name = "cos(2 * x) == cos^2(x) + sin^2(x)";
-    x_lt_pi_2 ? compare(name, cos2, ad_minus(diff, sqr1, sqr2)) : skip(name);
+    name = "sin(2x) == 2 * sin(x) * cos(x)";
+    compare(name, sin2, ad_scale(scale, ad_prod(prod, sin, cos), D2));
+    name = "cos(2x) == cos^2(x) - sin^2(x)";
+    compare(name, cos2, ad_minus(diff, sqr1, sqr2));
 
-    printf("Total: %d, %sPASSED%s %d", total, KGRN, KNRM, passed);
+    printf("%sTotal%s: %d, %sPASSED%s %d", KWHT, KNRM, total, KGRN, KNRM, passed);
     if (skipped > 0) {
         printf(", %sSKIPPED%s %d", KYLW, KNRM, skipped);
     }
