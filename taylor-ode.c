@@ -45,7 +45,7 @@ void t_args (char **argv, int argc, ...) {
     va_list vars;
     va_start(vars, argc);
     for (int i = 6; i < argc; i++) {
-        mpfr_init_set_str(*va_arg(vars, mpfr_t *), argv[i], BASE, RND);
+        mpfr_set_str(*va_arg(vars, mpfr_t *), argv[i], BASE, RND);
     }
     va_end(vars);
 }

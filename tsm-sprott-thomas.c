@@ -16,10 +16,10 @@ int main (int argc, char **argv) {
 
     // initialize from command arguments
     assert(argc == 11);
+    mpfr_inits(a, b, _, NULL);
     t_stepper(argv, &n, &h, &nsteps);
     series x = t_series(n + 1), y = t_series(n + 1), z = t_series(n + 1);
     t_args(argv, argc, x.jet, y.jet, z.jet, &a, &b);
-    mpfr_init(_);
     series sax = t_series(n), say = t_series(n), saz = t_series(n);
     series cax = t_series(n), cay = t_series(n), caz = t_series(n);
     series ax = t_series(n), ay = t_series(n), az = t_series(n);
