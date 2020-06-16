@@ -16,10 +16,10 @@ int main (int argc, char **argv) {
 
     // initialize from command arguments
     assert(argc == 10);
+    mpfr_inits(a, w4x, w4y, w4z, _, NULL);
     t_stepper(argv, &n, &h, &nsteps);
     series x = t_series(n + 1), y = t_series(n + 1), z = t_series(n + 1);
     t_args(argv, argc, x.jet, y.jet, z.jet, &a);
-    mpfr_inits(_, w4x, w4y, w4z, NULL);
 
     t_output(x.jet[0], y.jet[0], z.jet[0], h, 0);
     for (long step = 1; step <= nsteps; step++) {

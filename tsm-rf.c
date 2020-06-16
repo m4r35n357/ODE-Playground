@@ -17,13 +17,13 @@ int main (int argc, char **argv) {
 
     // initialize from command arguments
     assert(argc == 11);
+    mpfr_inits(gamma, d3, x2_1, _, NULL);
     t_stepper(argv, &n, &h, &nsteps);
     series x = t_series(n + 1), y = t_series(n + 1), z = t_series(n + 1), alpha = t_series(n);
     t_args(argv, argc, x.jet, y.jet, z.jet, alpha.jet, &gamma);
     series a = t_series(n), b = t_series(n), c = t_series(n), w1 = t_series(n);
     mpfr_set_ui(w1.jet[0], 1, RND);
-    mpfr_inits(x2_1, _, NULL);
-    mpfr_init_set_ui(d3, 3, RND);
+    mpfr_set_ui(d3, 3, RND);
 
     t_output(x.jet[0], y.jet[0], z.jet[0], h, 0);
     for (long step = 1; step <= nsteps; step++) {
