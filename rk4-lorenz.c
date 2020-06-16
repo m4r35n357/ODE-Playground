@@ -41,11 +41,11 @@ int main (int argc, char **argv) {
     mpfr_t x, y, z, sigma, rho, beta, h, _, h_2, _x, _y, _z;
     mpfr_t k1, l1, m1, k2, l2, m2, k3, l3, m3, k4, l4, m4;
 
-    assert(argc == 12);
+    assert(argc == 13);
     t_stepper(argv, &interval, &h, &nsteps);
+    mpfr_inits(x, y, z, sigma, rho, beta, h_2, _, _x, _y, _z, k1, l1, m1, k2, l2, m2, k3, l3, m3, k4, l4, m4, NULL);
     t_args(argv, argc, &x, &y, &z, &sigma, &rho, &beta, &_);
     mpfr_div(beta, beta, _, RND);
-    mpfr_inits(h_2, _x, _y, _z, k1, l1, m1, k2, l2, m2, k3, l3, m3, k4, l4, m4, NULL);
 
     mpfr_div_2ui(h_2, h, 1, RND);
 
