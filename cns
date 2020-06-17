@@ -16,19 +16,19 @@ shift
 original=$*
 prec=$(expr $3 + 8)
 
-halfstep () {
+quarterstep () {
     start="$1 $2 $prec $4"
-    step=$(echo "scale=6; $5/2;" | bc)
-    steps=$(echo "scale=0; $6*2;" | bc)
+    step=$(echo "scale=6; $5 / 4;" | bc)
+    steps=$(echo "scale=0; $6 * 4;" | bc)
     shift 6
     end="$*"
     echo 'Better:' $start $step $steps $end
-    $start $step $steps $end | sed -n '1~2p' >$fileA &
+    $start $step $steps $end | sed -n '1~4p' >$fileA &
 }
 
-order1plus () {
+orderplus2 () {
     start="$1 $2 $prec"
-    order=$(expr $4 + 1)
+    order=$(expr $4 + 2)
     shift 4
     end="$*"
     echo 'Better:' $start $order $end
@@ -38,8 +38,8 @@ order1plus () {
 orderstep () {
     start="$1 $2 $prec"
     order=$(expr $4 + 1)
-    step=$(echo "scale=6; $5/2;" | bc)
-    steps=$(echo "scale=0; $6*2;" | bc)
+    step=$(echo "scale=6; $5 / 2;" | bc)
+    steps=$(echo "scale=0; $6 * 2;" | bc)
     shift 6
     end="$*"
     echo 'Better:' $start $order $step $steps $end
@@ -47,8 +47,8 @@ orderstep () {
 }
 
 case $method in
-     'step') halfstep $original;;
-    'order') order1plus $original;;
+     'step') quarterstep $original;;
+    'order') orderplus2 $original;;
      'both') orderstep $original;;
      'data') cp d-best $fileA;;
     'nosim') ;;

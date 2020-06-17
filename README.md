@@ -232,12 +232,19 @@ $ gnuplot -p -e "splot '/tmp/data' with lines"
 $ ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 ```
 
-## Clean Numerical Simulation (CNS)
+## cns script - Clean Numerical Simulation
 
 As a rough guide to the accuracy of a solution, it can be compared with a "better" solution (one made with "better" solver parameters), and discarded at the point where the solutions diverge.
 The two simulations are run in parallel processes, but obviously the "better" solution takes longer.
+There are three strategies for creating the "better" integrator:
 
-300 time units
+Parameter | Meaning
+----------|-----------
+step | The step size is reduced by a quarter (suitable for RK4) comparisons
+order | The Taylor Series order is increased by two
+both | The order in increased by one, and the step size by one half
+
+#### Example output - 300 time units
 ```
 $ ./cns both ./tsm-lorenz-dbg 15 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3
 Better: ./tsm-lorenz-dbg 138 103 .005000 70000 -15.8 -17.48 35.64 10 28 8 3
@@ -263,7 +270,12 @@ $ ./cns both ./tsm-lorenz-dbg 15 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 
 ```
 (output not shown)
 
-## Sensitivity to variation in initial conditions
+## ic script - Sensitivity to variation in initial conditions
+Six additional trajectories are created; each one is the centre of the face of a cube around the original value
+
+Parameter | Meaning
+----------|-----------
+separation | Initial separation between trajectories is double this value
 
 The simulation is run six times in parallel processes, with each x, y, z initial condition perturbed by +/- the parameter to ic.
 ```
