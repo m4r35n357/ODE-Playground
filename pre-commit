@@ -81,6 +81,14 @@ then
 fi
 echo Dynamic
 
+echo -n "Running Rabinovich-Fabrikant executable . . . "
+if [ 50001 -ne $(./tsm-rf-dbg 9 32 16 .01 50000 .05 -.05 .3 .105 .1 2>/dev/null | wc -l) ]
+then
+    echo "Rabinovich-Fabrikant test failed!"
+    exit 1
+fi
+echo OK
+
 echo "Committing . . ."
 exit 0
 
