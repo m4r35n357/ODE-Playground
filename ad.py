@@ -133,13 +133,13 @@ class Series:
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __radd__(self, o):
-        return self.__add__(o)
+        return self + o
 
     def __sub__(self, o):
-        return self.__add__(- o)
+        return self + (- o)
 
     def __rsub__(self, o):
-        return (- self).__add__(o)
+        return - self + o
 
     def __mul__(self, o):
         if isinstance(o, Series):
@@ -150,7 +150,7 @@ class Series:
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __rmul__(self, o):
-        return self.__mul__(o)
+        return self * o
 
     def __truediv__(self, o):
         if isinstance(o, Series):
@@ -174,27 +174,24 @@ class Series:
 
     def __pow__(self, o):
         if isinstance(o, int):
-            if o == 0:
-                return Series(t_jet(self.n, 1.0))
-            i_pow = Series(self.jet) if o > 0 else Series(self.jet).__rtruediv__(1.0)  # pragma: no mutate
-            multiplier = Series(i_pow.jet)
+            i_pow = Series(self.jet)
             for _ in range(abs(o) - 1):
-                i_pow = i_pow.__mul__(multiplier)
-            return i_pow
-        elif isinstance(o, Series):
-            assert o.n == self.n, f"Size mismatch - self: {self.n}, other: {o.n}"
-            return (self.ln.__mul__(o)).exp
+                i_pow = i_pow * self
+            return i_pow if o > 0 else (1.0 / i_pow if o < 0 else Series(t_jet(self.n, 1.0)))
         elif isinstance(o, float):
-            assert self.val > 0.0, f"self.val = {self.val}"
+            assert self.val > 0.0, f"self.val = {self.val}"  # pragma: no mutate
             jet = t_jet(self.n)
             for k in self.index:
                 jet[k] = t_pwr(jet, self.jet, o, k)
             return Series(jet)
+        elif isinstance(o, Series):
+            assert o.n == self.n, f"Size mismatch - self: {self.n}, other: {o.n}"
+            return (self.ln * o).exp
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __rpow__(self, o):
         assert o > 0.0, f"other = {o}"
-        return (self.__mul__(log(o))).exp
+        return (self * log(o)).exp
 
     def _exp_log_sqrt(self, f):
         a = t_jet(self.n)
