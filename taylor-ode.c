@@ -70,7 +70,7 @@ mpfr_t *t_horner (series s, mpfr_t h) {
     }
     if (mpfr_number_p(_) == 0) exit(1);
     mpfr_swap(s.jet[0], _);
-    return &s.jet[0];
+    return s.jet;
 }
 
 mpfr_t *t_abs (series u, int k) {
