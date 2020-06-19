@@ -134,7 +134,8 @@ $ ./build clang
 ```
 $ ./libad-test-dbg 9 32 20 2 1e-18 1
 ```
-The final parameter can be set to 0 (or left absent) for a summary, or 2 for full detail.
+The final parameter can be set to 0 (or left absent) for a summary, 1 for individual tests, or 2 for full detail of Taylor Series.
+Depending on the x value, some tests might be skipped owing to domain restrictions on some of the functions involved. 
 
 Parameter | Meaning
 ----------|-----------
@@ -183,7 +184,7 @@ Matplotlib progressive graph plotting in Python (second parameter ignored as pyt
 ```
 $ ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 ```
-or in c (notice absence of the model parameter!):
+or in c (notice absence of the model parameter and presence of the internal precision arg):
 ```
 $ ./tsm-lorenz-dbg 15 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 ```
