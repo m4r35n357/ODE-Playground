@@ -16,8 +16,8 @@ int main (int argc, char **argv) {
 
     // initialize from command arguments
     assert(argc == 10);
-    mpfr_init(_);
     t_stepper(argv, &n, &h, &nsteps);
+    mpfr_init(_);
     series x = t_series(n + 1), y = t_series(n + 1), z = t_series(n + 1);
     series wa = t_series(n);
     t_args(argv, argc,x.jet, y.jet, z.jet, wa.jet);
