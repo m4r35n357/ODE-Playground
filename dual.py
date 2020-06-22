@@ -158,7 +158,7 @@ class Result(namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', 'sens
 
 class Matrix3x3(namedtuple('Matrix3x3Type', ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'])):
     def __str__(self):
-        return f'{self.a:+}, {self.b:+}, {self.c:+}\n{self.d:+}, {self.e:+}, {self.f:+}\n{self.g:+}, {self.h:+}, {self.i:+}'
+        return f'{self.a:+.{Context.places}e}, {self.b:+.{Context.places}e}, {self.c:+.{Context.places}e}\n{self.d:+.{Context.places}e}, {self.e:+.{Context.places}e}, {self.f:+.{Context.places}e}\n{self.g:+.{Context.places}e}, {self.h:+.{Context.places}e}, {self.i:+.{Context.places}e}'
 
 def function_3(model_a, model_b, model_c, x, y, z):
     a, b, c = Dual.get(x), Dual.get(y), Dual.get(z)
@@ -193,15 +193,14 @@ def invert_3x3(m, transpose=True):
                      g=c.g/d, h=c.h/d, i=c.i/d)
 
 def c_e(m, l):
-    lam = Dual.get(l).var
-    return determinant_3x3(Matrix3x3(a=m.a - lam, b=m.b, c=m.c,
-                                     d=m.d, e=m.e - lam, f=m.f,
-                                     g=m.g, h=m.h, i=m.i - lam))[0]
+    return determinant_3x3(Matrix3x3(a=m.a - l, b=m.b, c=m.c,
+                                     d=m.d, e=m.e - l, f=m.f,
+                                     g=m.g, h=m.h, i=m.i - l))[0]
 
 def equilibrium(model_a, model_b, model_c, x, y, z, max_it=100):
     fx, fy, fz = function_3(model_a, model_b, model_c, x, y, z)
     count = 0
-    print(count, x, y, z, fx, fy, fz)
+    print(f'{count}, {x:+.{Context.places}e}, {y:+.{Context.places}e}, {z:+.{Context.places}e}, {fx:+.{Context.places}e}, {fy:+.{Context.places}e}, {fz:+.{Context.places}e}')
     while abs(fx) + abs(fy) + abs(fz) > 1e-12 and count < max_it:
         j_1 = invert_3x3(jacobian(model_a, model_b, model_c, x, y, z))
         x -= j_1.a * fx + j_1.b * fy + j_1.c * fz
@@ -209,21 +208,14 @@ def equilibrium(model_a, model_b, model_c, x, y, z, max_it=100):
         z -= j_1.g * fx + j_1.h * fy + j_1.i * fz
         fx, fy, fz = function_3(model_a, model_b, model_c, x, y, z)
         count += 1
-        print(count, x, y, z, fx, fy, fz)
+        print(f'{count}, {x:+.{Context.places}e}, {y:+.{Context.places}e}, {z:+.{Context.places}e}, {fx:+.{Context.places}e}, {fy:+.{Context.places}e}, {fz:+.{Context.places}e}')
     return x, y, z, fx, fy, fz
-
-def ode_model(l):
-    return l
 
 def analyze_3(model, model_a, model_b, model_c, x, y, z, x0, x1, steps, εf, εx, limit, console=True):
     f0_prev = None
     step = (x1 - x0) / (steps - 1)
     for k in range(steps):
-        l = Dual.get(x0 + k * step).var
-        j = jacobian(model_a, model_b, model_c, x, y, z)
-        f = determinant_3x3(Matrix3x3(a=j.a - l, b=j.b, c=j.c,
-                                     d=j.d, e=j.e - l, f=j.f,
-                                     g=j.g, h=j.h, i=j.i - l))[0]
+        f = c_e(jacobian(model_a, model_b, model_c, x, y, z), Dual.get(x0 + k * step).var)
         if not console:
             print(f'{x.val:.{Context.places}e} {f}')
         if k > 0:
