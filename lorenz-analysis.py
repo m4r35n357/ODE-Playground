@@ -27,6 +27,6 @@ def main():
     λa, λb = float(argv[5]), float(argv[6])
     σ, ρ, β = float(argv[7]), float(argv[8]), float(argv[9]) / float(argv[10])  # parameters
     print(equilibrium(f_a, f_b, f_c, x, y, z))
-    plot_lambda(f_a, f_b, f_c, x, y, z, λ_min=λa, λ_max=λb, ce_min=-5000, ce_max=1000)
+    plot_lambda(f_a, f_b, f_c, x, y, z, λ_min=λa, λ_max=λb, ce_min=-5000, ce_max=5000)
 
 main()

@@ -86,7 +86,7 @@ def newton_ce(j, λ0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug=F
             print(Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=λ.val, f=ce.val, δx=δλ), file=stderr)
     return Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=λ.val, f=ce.val, δx=δλ)
 
-def analyze_ce(j, method, λa, λb, steps, εf, εx, limit):
+def analyze_ce(j, method, λa, λb, steps, εf, εx, limit, debug):
     λ_prev = ce_prev = None
     step = (λb - λa) / (steps - 1)
     for k in range(steps):
@@ -96,17 +96,17 @@ def analyze_ce(j, method, λa, λb, steps, εf, εx, limit):
             if ce_prev * ce.val < 0.0:
                 sense = Sense.DECREASING if ce_prev > ce.val else Sense.INCREASING
                 if method == Solver.BI:
-                    yield bisect_ce(j, λ.val, λ_prev, εf, εx, limit=limit, sense=sense)
+                    yield bisect_ce(j, λ.val, λ_prev, εf, εx, limit=limit, sense=sense, debug=debug)
                 if method == Solver.NT:
-                    yield newton_ce(j, λ.val, εf, εx, limit, sense=sense)
+                    yield newton_ce(j, λ.val, εf, εx, limit, sense=sense, debug=debug)
         λ_prev = λ.val
         ce_prev = ce.val
 
 def plot_lambda(model_a, model_b, model_c, x, y, z, λ_min=-50.0, λ_max=50.0, steps=1000, ce_min=-1000.0, ce_max=1000.0,
-                εf=1e-12, εx=1e-12, limit=101, nt=False):
+                εf=1e-12, εx=1e-12, limit=101, nt=True, debug=False):
     solver = Solver.NT if nt else Solver.BI
     j = jacobian_3x3(model_a, model_b, model_c, x, y, z)
-    for result in analyze_ce(j, solver, λ_min, λ_max, steps, εf, εx, limit):
+    for result in analyze_ce(j, solver, λ_min, λ_max, steps, εf, εx, limit, debug):
         # noinspection PyTypeChecker
         if result.count < 101:
             print(f'eigenvalue: {result.x}')
@@ -114,7 +114,7 @@ def plot_lambda(model_a, model_b, model_c, x, y, z, λ_min=-50.0, λ_max=50.0, s
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')
     ax1.set_xlabel('λ', color='.2')
-    ax1.set_ylabel(f'Characteristic Equation value and derivative', color='.2')
+    ax1.set_ylabel(f'Characteristic Equation and its derivative', color='.2')
     ax1.set_xlim(λ_min, λ_max)
     ax1.set_ylim(ce_min, ce_max)
     colour = ['k-', 'r-', 'g-', 'b-', 'y-', 'c-', 'm-', 'r:', 'g:', 'b:', 'y:', 'c:', 'm:']
