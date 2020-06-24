@@ -4,7 +4,6 @@
 from sys import stderr
 from collections import namedtuple
 from enum import Enum, unique
-from math import copysign
 from ad import Context, Series
 
 @unique
@@ -33,7 +32,7 @@ class Result(namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', 'sens
 
 def bisect(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
     a, b, c = Series.get(3, xa).var, Series.get(3, xb).var, Series.get(3)
-    f_sign = copysign(1, (~ model(a)).jet[mode.value])
+    f_sign = model(a).jet[mode.value]
     fc = δx = i = 1
     while i <= limit and (abs(fc) > εf or abs(δx) > εx):
         c = 0.5 * (a + b)
