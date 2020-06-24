@@ -3,7 +3,8 @@
 #  Example: ./lorenz-analysis.py 3 -10 -10 10 -25 25 10.0 28.0 8.0 3.0
 
 from sys import argv
-from dual import Context, equilibrium, analyze_3, mplot_3
+from dual import Context
+from ode_analysis import equilibrium, plot_lambda
 
 σ, ρ, β = 0.0, 0.0, 0.0
 
@@ -26,6 +27,6 @@ def main():
     λa, λb = float(argv[5]), float(argv[6])
     σ, ρ, β = float(argv[7]), float(argv[8]), float(argv[9]) / float(argv[10])  # parameters
     print(equilibrium(f_a, f_b, f_c, x, y, z))
-    mplot_3(f_a, f_b, f_c, x, y, z, λ_min=λa, λ_max=λb, ce_min=-5000, ce_max=1000)
+    plot_lambda(f_a, f_b, f_c, x, y, z, λ_min=λa, λ_max=λb, ce_min=-5000, ce_max=1000)
 
 main()
