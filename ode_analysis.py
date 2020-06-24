@@ -34,12 +34,12 @@ def invert_3x3(m):
                      d=c.b/d, e=c.e/d, f=c.h/d,
                      g=c.c/d, h=c.f/d, i=c.i/d)
 
-def equilibrium(model_a, model_b, model_c, x, y, z, max_it=100):
+def equilibrium(model_a, model_b, model_c, x, y, z, εf=1e-12, max_it=100):
     fx, fy, fz = function_3(model_a, model_b, model_c, x, y, z)
     count = 0
     print(f'{count}, {x:+.{Context.places}e}, {y:+.{Context.places}e}, {z:+.{Context.places}e}, '
           f'{fx:+.{Context.places}e}, {fy:+.{Context.places}e}, {fz:+.{Context.places}e}')
-    while abs(fx) + abs(fy) + abs(fz) > 1e-12 and count < max_it:
+    while abs(fx) + abs(fy) + abs(fz) > εf and count < max_it:
         j_1 = invert_3x3(jacobian_3x3(model_a, model_b, model_c, x, y, z))
         x -= j_1.a * fx + j_1.b * fy + j_1.c * fz
         y -= j_1.d * fx + j_1.e * fy + j_1.f * fz
@@ -55,7 +55,26 @@ def characteristic_equation(m, λ):
                                      d=m.d, e=m.e - λ, f=m.f,
                                      g=m.g, h=m.h, i=m.i - λ))[0]
 
-def newton_ce(j, λ0, εf, εx, limit, sense):
+def bisect_ce(j, λa, λb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug=False):
+    a, b, c = Dual.get(λa), Dual.get(λb), Dual.get()
+    ce_sign = characteristic_equation(j, Dual.get(λa)).val
+    δx = ce = i = 1
+    while i <= limit and abs(ce) > εf or abs(δx) > εx:
+        c = 0.5 * (a + b)
+        ce = characteristic_equation(j, c).val
+        if ce_sign * ce < 0.0:
+            b = c
+        elif ce_sign * ce > 0.0:
+            a = c
+        else:
+            break
+        δx = b.val - a.val
+        i += 1
+        if debug:
+            print(Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=ce, δx=δx), file=stderr)
+    return Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=ce, δx=δx)
+
+def newton_ce(j, λ0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug=False):
     λ, ce = Dual.get(λ0).var, Dual.get(1)
     δλ = i = 1
     while i <= limit and abs(ce.val) > εf or abs(δλ) > εx:
@@ -63,23 +82,31 @@ def newton_ce(j, λ0, εf, εx, limit, sense):
         δλ = - ce.val / ce.der
         λ += δλ
         i += 1
-        print(Result(method=Solver.NT.name, count=i - 1, sense=sense.value, x=λ.val, f=ce.val, δx=δλ), file=stderr)
+        if debug:
+            print(Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=λ.val, f=ce.val, δx=δλ), file=stderr)
     return Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=λ.val, f=ce.val, δx=δλ)
 
-def analyze_ce(j, λa, λb, steps, εf, εx, limit):
-    f0_prev = None
+def analyze_ce(j, method, λa, λb, steps, εf, εx, limit):
+    λ_prev = ce_prev = None
     step = (λb - λa) / (steps - 1)
     for k in range(steps):
         λ = Dual.get(λa + k * step).var
         ce = characteristic_equation(j, λ)
         if k > 0:
-            if f0_prev * ce.val < 0.0:
-                yield newton_ce(j, λ.val, εf, εx, limit, Sense.DECREASING if f0_prev > ce.val else Sense.INCREASING)
-        f0_prev = ce.val
+            if ce_prev * ce.val < 0.0:
+                sense = Sense.DECREASING if ce_prev > ce.val else Sense.INCREASING
+                if method == Solver.BI:
+                    yield bisect_ce(j, λ.val, λ_prev, εf, εx, limit=limit, sense=sense)
+                if method == Solver.NT:
+                    yield newton_ce(j, λ.val, εf, εx, limit, sense=sense)
+        λ_prev = λ.val
+        ce_prev = ce.val
 
-def plot_lambda(model_a, model_b, model_c, x, y, z, λ_min=-50.0, λ_max=50.0, steps=1000, ce_min=-1000.0, ce_max=1000.0):
+def plot_lambda(model_a, model_b, model_c, x, y, z, λ_min=-50.0, λ_max=50.0, steps=1000, ce_min=-1000.0, ce_max=1000.0,
+                εf=1e-12, εx=1e-12, limit=101, nt=False):
+    solver = Solver.NT if nt else Solver.BI
     j = jacobian_3x3(model_a, model_b, model_c, x, y, z)
-    for result in analyze_ce(j, λ_min, λ_max, steps, εf=1e-12, εx=1e-12, limit=101):
+    for result in analyze_ce(j, solver, λ_min, λ_max, steps, εf, εx, limit):
         # noinspection PyTypeChecker
         if result.count < 101:
             print(f'eigenvalue: {result.x}')
