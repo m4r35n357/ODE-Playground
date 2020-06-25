@@ -1,4 +1,4 @@
-
+import datetime
 from sys import stderr
 from collections import namedtuple
 from matplotlib import pyplot
@@ -102,7 +102,7 @@ def analyze_ce(j, method, λa, λb, steps, εf, εx, limit, debug):
         λ_prev = λ.val
         ce_prev = ce.val
 
-def plot_lambda(model_a, model_b, model_c, x, y, z, λ_min=-50.0, λ_max=50.0, steps=1000, ce_min=-1000.0, ce_max=1000.0,
+def _plot(model_a, model_b, model_c, x, y, z, λ_min=-50.0, λ_max=50.0, steps=1000, ce_min=-1000.0, ce_max=1000.0,
                 εf=1e-12, εx=1e-12, limit=101, nt=True, debug=False):
     solver = Solver.NT if nt else Solver.BI
     j = jacobian_3x3(model_a, model_b, model_c, x, y, z)
@@ -128,5 +128,15 @@ def plot_lambda(model_a, model_b, model_c, x, y, z, λ_min=-50.0, λ_max=50.0, s
     for c in reversed(range(1, 3)):
         ax1.plot(data[0], data[c], f'{colour[c - 1]}', linewidth=2 if c == 1 else 1, markersize=0, label=c-1)
     ax1.legend(loc='lower right')
+
+def plot_lambda(model_a, model_b, model_c, x, y, z, λ_min=-50.0, λ_max=50.0, steps=1000, ce_min=-1000.0, ce_max=1000.0,
+                εf=1e-12, εx=1e-12, limit=101, nt=True, debug=False):
+    _plot(model_a, model_b, model_c, x, y, z, λ_min=λ_min, λ_max=λ_max, steps=steps, ce_min=-5000, ce_max=5000,
+                εf=εf, εx=εx, limit=limit, nt=nt, debug=debug)
     pyplot.show()
 
+def save_lambda(model_a, model_b, model_c, x, y, z, λ_min=-50.0, λ_max=50.0, steps=1000, ce_min=-1000.0, ce_max=1000.0,
+                εf=1e-12, εx=1e-12, limit=101, nt=True, debug=False):
+    _plot(model_a, model_b, model_c, x, y, z, λ_min=λ_min, λ_max=λ_max, steps=steps, ce_min=-5000, ce_max=5000,
+                εf=εf, εx=εx, limit=limit, nt=nt, debug=debug)
+    pyplot.savefig(f'/tmp/plot-{datetime.datetime.now()}.png')
