@@ -86,7 +86,7 @@ def newton_ce(j, λ0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug=F
             print(Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=λ.val, f=ce.val, δx=δλ), file=stderr)
     return Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=λ.val, f=ce.val, δx=δλ)
 
-def analyze_ce(j, method, λa, λb, steps, εf, εx, limit, debug):
+def analyze_ce(j, method, λa, λb, steps, εf=1e-12, εx=1e-12, limit=101, debug=False):
     λ_prev = ce_prev = None
     step = (λb - λa) / (steps - 1)
     for k in range(steps):
@@ -102,19 +102,18 @@ def analyze_ce(j, method, λa, λb, steps, εf, εx, limit, debug):
         λ_prev = λ.val
         ce_prev = ce.val
 
-def _plot(model_a, model_b, model_c, x, y, z, λ_min=-50.0, λ_max=50.0, steps=1000, ce_min=-1000.0, ce_max=1000.0,
-                εf=1e-12, εx=1e-12, limit=101, nt=True, debug=False):
+def _plot(model_a, model_b, model_c, x, y, z, λ_min, λ_max, steps, ce_min, ce_max, εf, εx, limit, nt, debug):
     solver = Solver.NT if nt else Solver.BI
     j = jacobian_3x3(model_a, model_b, model_c, x, y, z)
+    print(f'Jacobian({x}, {y}, {z})\n{j}')
     for result in analyze_ce(j, solver, λ_min, λ_max, steps, εf, εx, limit, debug):
         # noinspection PyTypeChecker
         if result.count < 101:
-            print(f'eigenvalue: {result.x}')
-            print(result, file=stderr)
+            print(f'eigenvalue: {result.x}\n{result}')
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')
     ax1.set_xlabel('λ', color='.2')
-    ax1.set_ylabel(f'Characteristic Equation and its derivative', color='.2')
+    ax1.set_ylabel(f'Characteristic Equation and first derivative', color='.2')
     ax1.set_xlim(λ_min, λ_max)
     ax1.set_ylim(ce_min, ce_max)
     colour = ['k-', 'r-', 'g-', 'b-', 'y-', 'c-', 'm-', 'r:', 'g:', 'b:', 'y:', 'c:', 'm:']
@@ -129,14 +128,14 @@ def _plot(model_a, model_b, model_c, x, y, z, λ_min=-50.0, λ_max=50.0, steps=1
         ax1.plot(data[0], data[c], f'{colour[c - 1]}', linewidth=2 if c == 1 else 1, markersize=0, label=c-1)
     ax1.legend(loc='lower right')
 
-def plot_lambda(model_a, model_b, model_c, x, y, z, λ_min=-50.0, λ_max=50.0, steps=1000, ce_min=-1000.0, ce_max=1000.0,
+def plot_lambda(model_a, model_b, model_c, x, y, z, λ_min=-50.0, λ_max=50.0, steps=1000, ce_min=-5000.0, ce_max=5000.0,
                 εf=1e-12, εx=1e-12, limit=101, nt=True, debug=False):
-    _plot(model_a, model_b, model_c, x, y, z, λ_min=λ_min, λ_max=λ_max, steps=steps, ce_min=-5000, ce_max=5000,
+    _plot(model_a, model_b, model_c, x, y, z, λ_min=λ_min, λ_max=λ_max, steps=steps, ce_min=ce_min, ce_max=ce_max,
                 εf=εf, εx=εx, limit=limit, nt=nt, debug=debug)
     pyplot.show()
 
 def save_lambda(model_a, model_b, model_c, x, y, z, λ_min=-50.0, λ_max=50.0, steps=1000, ce_min=-1000.0, ce_max=1000.0,
                 εf=1e-12, εx=1e-12, limit=101, nt=True, debug=False):
-    _plot(model_a, model_b, model_c, x, y, z, λ_min=λ_min, λ_max=λ_max, steps=steps, ce_min=-5000, ce_max=5000,
+    _plot(model_a, model_b, model_c, x, y, z, λ_min=λ_min, λ_max=λ_max, steps=steps, ce_min=-ce_min, ce_max=ce_max,
                 εf=εf, εx=εx, limit=limit, nt=nt, debug=debug)
     pyplot.savefig(f'/tmp/plot-{datetime.datetime.now()}.png')
