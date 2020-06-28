@@ -14,10 +14,17 @@ https://arxiv.org/abs/1111.7149
 My work was inspired by parts of the following paper and its associated software:
 https://web.ma.utexas.edu/users/mzou/taylor/taylor.pdf
 
-That software uses code generation to produce the recurrences and code to drive them, and it inspired me to try coding something more direct by hand.
+Their software (called "Taylor") uses code generation to produce the recurrences and code to drive them, and it inspired me to try coding something more direct by hand.
 These programs are the result.
+
+Finally, more general resources on automatic differentiation can be found at the following portal: http://www.autodiff.org/ (see specifically the "Applications" and "Tools" sections).
+
+## Implementations (c and Python)
+
 My primary aim was to be able to solve coupled nonlinear equations and investigate chaotic systems, without relying on "black-box" ODE solvers.
-The header file taylor-ode.h contains a terse but complete description of the Taylor Series Method and the derivations of the recurrences that enable analysis of complex systems.
+The resulting c code takes the form of a small (<200 loc) arbitrary precision Taylor Series "library", and the model-specific ODE simulators are tiny client programs to this, typically 40-50 loc each.
+The header file taylor-ode.h contains a terse but complete description of the Taylor Series Method as implemented here, together with derivations of the recurrences that enable analysis of complex composed functions.
+I have also duplicated the ODE solving functionality in Python 3 (at float precision), but with extra testing and more advanced function analysis features (enabled by operator overloading and the Python REPL).
 
 The recurrence rules (the "t-functions" in c and Python) are the key to calculating high order derivatives accurately, without needing finite differences.
 They generate "jets" of Taylor Series coefficients iteratively, term by term, using previously calculated lower order values.
@@ -28,7 +35,7 @@ The functions provided cover the basic algebraic operations on Taylor Series (+ 
 * exp
 * sin(h)_cos(h)
 * tan(h)_sec(h)2
-* pwr (f(x)^a, a is a scalar)
+* pwr (f(x)^a, where a is a scalar)
 * ln
 
 The recurrence relations used here are derived along the lines of (amongst other sources) http://www2.math.uni-wuppertal.de/wrswt/preprints/prep_05_4.pdf and http://aimsciences.org/journals/displayPaperPro.jsp?paperID=9241 (open access).
@@ -38,9 +45,9 @@ These "low-level" functions, when properly called,  are all that is needed to so
 There is a fairly extensive collection of nonlinear ODE examples already implemented, in the file tsm.py, and in the tsm-\*-*.c files.
 The list includes systems due to Lorenz, Rossler, Thomas, Bouali, Rabinovitch-Fabrikant, Sprott, and many others.
 
-As part of the work to verify my own implementation of these recurrence rules, I have added a demonstration of using Taylor series to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
+Partly to verify my own implementation of these recurrence rules, I have added a demonstration of using Taylor series to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
 The solver demo can be used to find roots (and also extrema and inflection points by "extending" Newton to higher derivatives) in single variable nonlinear equations.
-Additionally it is designed for finding inverse values (where real solutions exist) of complicated functions, not just their roots.
+Of course it is more generally useful for finding inverse values (where real solutions exist) of complicated functions, not just their roots.
 
 The "higher-level" ad_functions (or the Series class in Python) manipulate entire  Taylor series "jets" at once, so are only useful for univariate functions.
 In Python there is an overloaded operator "~" which extracts the actual derivative values from the taylor series coefficents, as well as additional operators for (negation and **).
@@ -52,14 +59,16 @@ There are also functions for (matching the t_functions):
 * exp
 * sin(h)_cos(h)
 * tan(h)_sec(h)2
-* pwr (f(x)^a, a is a scalar)
+* pwr (f(x)^a, where a is a scalar)
 * ln
 
-Using these higher level functions, Newton's method is implemented trivially, but I have also provided an implementations of the bisection method for comparison.
+## Function Analysis (a little in c but mostly in Python)
+
+Using these "higher level" functions, Newton's method is implemented trivially, but I have also provided an implementations of the bisection method for comparison.
 In summary, there are three main areas of application for the code:
-* solving nonlinear ODEs
-* plotting functions and their (higher) derivatives, with solution, turning-point, and inflection analysis
-* interactive investigations in the Python console
+* solving nonlinear ODEs (to arbitrary precision with c/MPFR)
+* plotting functions and their (higher) derivatives, with solution, turning-point, and inflection analysis (Python is best here)
+* various interactive investigations in the Python console
 
 The plotters.py script enables the analysis of a "model" function's derivatives along with the value itself, across a range of the input variable.
 That file contains a selection of example invocations in the comments.
@@ -157,10 +166,11 @@ Parameter | Meaning
 2 | x value
 3 | y value
 
-##### Big build and test command:
+##### Big build and test command (recommended):
 ```
 time -p ./build && ./ad-test-dbg 6 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt && ./libad-test-dbg 9 32 20 2 1e-18 && echo OK
 ```
+There is also a sample Git pre-commit script that you might want to copy (and edit) to .git/hooks
 
 ##### c Code Coverage
 ```
