@@ -25,7 +25,7 @@ class Dual:
         return f'{self.val:+.{Context.places}e} {self.der:+.{Context.places}e}'
 
     def __abs__(self):
-        return Dual(abs(self.val), self.der if self.val > 0.0 else (- self.der if self.val < 0.0 else 0.0))
+        return - self if self.val < 0.0 else + self
 
     def __pos__(self):
         return Dual(self.val, self.der)
