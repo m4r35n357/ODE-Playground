@@ -108,7 +108,7 @@ class Series:
         return ''.join(f'{term:+.{Context.places}e} ' for term in self.jet)
 
     def __abs__(self):
-        return Series([t_abs(self.jet, k) for k in self.index])
+        return - self if self.val < 0.0 else + self
 
     def __pos__(self):
         return Series(self.jet[:])
