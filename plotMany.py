@@ -3,12 +3,12 @@
 from sys import argv, stdin, stderr
 from matplotlib import pyplot
 from ad import Series
-from playground import analyze, Solver
+from playground import s_analyze, Solver
 
 def mplot(model, order, x_min, x_max, steps, y_min, y_max, newton=False):
     #  Example: mplot(lambda x: x**3 + 3 * x**2 - 3, 5, -8, 8, 100, -10, 10)
     solver = Solver.NT if newton else Solver.BI
-    for result in analyze(model, solver, x_min, x_max, steps, 1e-12, 1e-12, limit=101):
+    for result in s_analyze(model, solver, x_min, x_max, steps, 1e-12, 1e-12, limit=101):
         if result.count < 101:
             print(result)
     ax1 = pyplot.figure().add_subplot(111)

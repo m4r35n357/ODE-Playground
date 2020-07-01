@@ -1,8 +1,10 @@
+
 import datetime
 from sys import stderr
 from collections import namedtuple
 from matplotlib import pyplot
-from dual import Context, Dual, Result, Solver, Sense
+from ad import Context, Dual
+from playground import Sense, Solver, Result, Mode
 
 class Matrix3x3(namedtuple('Matrix3x3Type', ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'])):
     def __str__(self):
@@ -71,8 +73,8 @@ def bisect_ce(j, λa, λb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, de
         δx = b.val - a.val
         i += 1
         if debug:
-            print(Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=ce, δx=δx), file=stderr)
-    return Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=ce, δx=δx)
+            print(Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=ce, δx=δx, mode=Mode.ROOT___), file=stderr)
+    return Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=ce, δx=δx, mode=Mode.ROOT___)
 
 def newton_ce(j, λ0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug=False):
     λ, ce = Dual.get(λ0).var, Dual.get(1)
@@ -83,8 +85,8 @@ def newton_ce(j, λ0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug=F
         λ += δλ
         i += 1
         if debug:
-            print(Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=λ.val, f=ce.val, δx=δλ), file=stderr)
-    return Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=λ.val, f=ce.val, δx=δλ)
+            print(Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=λ.val, f=ce.val, δx=δλ, mode=Mode.ROOT___), file=stderr)
+    return Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=λ.val, f=ce.val, δx=δλ, mode=Mode.ROOT___)
 
 def analyze_ce(j, method, λa, λb, steps, εf=1e-12, εx=1e-12, limit=101, debug=False):
     λ_prev = ce_prev = None

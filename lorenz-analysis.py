@@ -2,7 +2,7 @@
 
 #  Example: ./lorenz-analysis.py 3 -10 -10 10 -25 25 10.0 28.0 8.0 3.0
 from sys import argv
-from dual import Context
+from ad import Context
 from ode_analysis import equilibrium, plot_lambda
 
 σ, ρ, β = 0.0, 0.0, 0.0
