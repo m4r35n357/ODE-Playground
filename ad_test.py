@@ -676,16 +676,21 @@ def test_tanh():
 
 @mark.domain
 @mark.parametrize('number', [1.0 - δ, -1.0 + δ])
-def test_asin_domain_good(number):  # TODO needs updating
+def test_asin_domain_good(number):
+    _ = Dual.get(number).var.asin
     _ = Series.get(order, number).var.asin
 
 @mark.domain
 @mark.parametrize('number', [3.0, 1.0, -1.0, -3.0, 3, 1, -1, -3])
-def test_asin_domain_bad(number):  # TODO needs updating
+def test_asin_domain_bad(number):
     with raises(AssertionError):
+        _ = Dual.get(number).var.asin
         _ = Series.get(order, number).var.asin
 
-def test_asin():  # TODO needs updating
+def test_asin():
+    dual = d_05.sin.asin
+    assert dual.val == approx(d_05.val)
+    assert dual.der == approx(d_05.der)
     series = s_05.asin
     asin, _ = t_jet(order), t_jet(order)
     for k in range(order):
@@ -696,16 +701,21 @@ def test_asin():  # TODO needs updating
 
 @mark.domain
 @mark.parametrize('number', [1.0 - δ, -1.0 + δ])
-def test_acos_domain_good(number):  # TODO needs updating
+def test_acos_domain_good(number):
+    _ = Dual.get(number).var.acos
     _ = Series.get(order, number).var.acos
 
 @mark.domain
 @mark.parametrize('number', [3.0, 1.0, -1.0, -3.0, 3, 1, -1, -3])
-def test_acos_domain_bad(number):  # TODO needs updating
+def test_acos_domain_bad(number):
     with raises(AssertionError):
+        _ = Dual.get(number).var.acos
         _ = Series.get(order, number).var.acos
 
-def test_acos():  # TODO needs updating
+def test_acos():
+    dual = d_05.cos.acos
+    assert dual.val == approx(d_05.val)
+    assert dual.der == approx(d_05.der)
     series = s_05.acos
     acos, _ = t_jet(order), t_jet(order)
     for k in range(order):
@@ -714,7 +724,10 @@ def test_acos():  # TODO needs updating
     assert series.jet[0] == approx(pi / 3.0)
     assert len(series.jet) == order
 
-def test_atan():  # TODO needs updating
+def test_atan():
+    dual = d_05.tan.atan
+    assert dual.val == approx(d_05.val)
+    assert dual.der == approx(d_05.der)
     series = s_1.atan
     atan, _ = t_jet(order), t_jet(order)
     for k in range(order):
@@ -723,7 +736,10 @@ def test_atan():  # TODO needs updating
     assert series.jet[0] == approx(pi / 4.0)
     assert len(series.jet) == order
 
-def test_asinh():  # TODO needs updating
+def test_asinh():
+    dual = d_05.sinh.asinh
+    assert dual.val == approx(d_05.val)
+    assert dual.der == approx(d_05.der)
     x = s_05
     series = x.asinh
     asinh, _ = t_jet(order), t_jet(order)
@@ -735,16 +751,21 @@ def test_asinh():  # TODO needs updating
 
 @mark.domain
 @mark.parametrize('number', [1.0 + δ])
-def test_acosh_domain_good(number):  # TODO needs updating
+def test_acosh_domain_good(number):
+    _ = Dual.get(number).var.acosh
     _ = Series.get(order, number).var.acosh
 
 @mark.domain
 @mark.parametrize('number', [zero, - zero, 1.0 - δ, 1.0])
-def test_acosh_domain_bad(number):  # TODO needs updating
+def test_acosh_domain_bad(number):
     with raises(AssertionError):
+        _ = Dual.get(number).var.acosh
         _ = Series.get(order, number).var.acosh
 
-def test_acosh():  # TODO needs updating
+def test_acosh():
+    dual = d_05.cosh.acosh
+    assert dual.val == approx(d_05.val)
+    assert dual.der == approx(d_05.der)
     x = s_2
     series = x.acosh
     acosh, _ = t_jet(order), t_jet(order)
@@ -756,16 +777,21 @@ def test_acosh():  # TODO needs updating
 
 @mark.domain
 @mark.parametrize('number', [1.0 - δ, -1.0 + δ])
-def test_atanh_domain_good(number):  # TODO needs updating
+def test_atanh_domain_good(number):
+    _ = Dual.get(number).var.atanh
     _ = Series.get(order, number).var.atanh
 
 @mark.domain
 @mark.parametrize('number', [1.0, -1.0, 1, -1])
-def test_atanh_domain_bad(number):  # TODO needs updating
+def test_atanh_domain_bad(number):
     with raises(AssertionError):
+        _ = Dual.get(number).var.atanh
         _ = Series.get(order, number).var.atanh
 
-def test_atanh():  # TODO needs updating
+def test_atanh():
+    dual = d_05.tanh.atanh
+    assert dual.val == approx(d_05.val)
+    assert dual.der == approx(d_05.der)
     x = s_05
     series = x.atanh
     atanh, _ = t_jet(order), t_jet(order)

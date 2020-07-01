@@ -58,11 +58,11 @@ def t_tan_sec2(t, s, u, k, hyp=False):
 def t_pwr(p, u, a, k):
     return u[0]**a if k == 0 else (_d_cauchy(p, u, k, 0, k - 1, a) - _d_cauchy(u, p, k, 1, k - 1)) / u[0]
 
+def t_ln(l, u, k):
+    return log(u[0]) if k == 0 else (u[k] - _d_cauchy(u, l, k, 1, k - 1)) / u[0]
+
 def _i_cauchy(g, u, f, k, sign=True):
     return ((u[k] if sign else - u[k]) - _d_cauchy(g, f, k, 1, k - 1)) / g[0]
-
-def t_ln(l, u, k):
-    return log(u[0]) if k == 0 else _i_cauchy(u, u, l, k)
 
 def t_asin(h, g, u, k, hyp=False):
     if k == 0:
@@ -403,6 +403,34 @@ class Dual:
     def tanh(self):
         t = tanh(self.val)
         return Dual(t, self.der * (1.0 - t**2))
+
+    @property
+    def asin(self):
+        assert abs(self.val) < 1.0, f"self.val = {self.val}"
+        return Dual(asin(self.val), self.der / sqrt(1.0 - self.val * self.val))
+
+    @property
+    def acos(self):
+        assert abs(self.val) < 1.0, f"self.val = {self.val}"
+        return Dual(acos(self.val), - self.der / sqrt(1.0 - self.val * self.val))
+
+    @property
+    def atan(self):
+        return Dual(atan(self.val), self.der / (1.0 + self.val * self.val))
+
+    @property
+    def asinh(self):
+        return Dual(asinh(self.val), self.der / sqrt(self.val * self.val + 1.0))
+
+    @property
+    def acosh(self):
+        assert self.val > 1.0, f"self.val = {self.val}"
+        return Dual(acosh(self.val), self.der / sqrt(self.val * self.val - 1.0))
+
+    @property
+    def atanh(self):
+        assert abs(self.val) < 1.0, f"self.val = {self.val}"
+        return Dual(atanh(self.val), self.der / (1.0 - self.val * self.val))
 
     @property
     def sqr(self):
