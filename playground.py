@@ -6,7 +6,6 @@ from collections import namedtuple
 from enum import Enum, unique
 from ad import Context, Series, Dual
 
-
 @unique
 class Solver(Enum):
     NA = "No analysis, or all"

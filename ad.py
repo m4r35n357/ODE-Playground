@@ -65,12 +65,6 @@ def _i_cauchy(g, u, f, k, sign=True):
 def t_ln(l, u, k):
     return log(u[0]) if k == 0 else _i_cauchy(u, u, l, k)
 
-def t_tan(t, g, u, k, hyp=False):  # TODO needs tests
-    return (tanh(u[0]) if hyp else tan(u[0])) if k == 0 else _i_cauchy(g, u, t, k)
-
-def t_cot(c, g, u, k, hyp=False):  # TODO needs tests
-    return (1.0 / tan(u[0]) if hyp else 1.0 / tanh(u[0])) if k == 0 else _i_cauchy(g, u, c, k, sign=False)
-
 def t_asin(h, g, u, k, hyp=False):
     if k == 0:
         return (asinh(u[0]), sqrt(u[0]**2 + 1.0)) if hyp else (asin(u[0]), sqrt(1.0 - u[0]**2))
@@ -413,7 +407,7 @@ class Dual:
 
     @property
     def sqr(self):
-        return Dual(self.val * self.val, self.der * 2.0 * self.val)
+        return self * self
 
     @property
     def sqrt(self):
