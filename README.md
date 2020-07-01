@@ -245,6 +245,7 @@ $ ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 
 ## cns script - Clean Numerical Simulation
 
+This is a relatively new approach to dealing with the global error of ODE simulations, described in detail here: https://arxiv.org/abs/1109.0130.
 As a rough guide to the accuracy of a solution, it can be compared with a "better" solution (one made with "better" solver parameters), and discarded at the point where the solutions diverge.
 The two simulations are run in parallel processes, but obviously the "better" solution takes longer.
 There are three strategies for creating the "better" integrator:
@@ -253,7 +254,7 @@ Parameter | Meaning
 ----------|-----------
 step | The step size is reduced by a quarter (suitable for RK4) comparisons
 order | The Taylor Series order is increased by two
-both | The order in increased by one, and the step size by one half
+both | The order is increased by one, and the step size by one half
 
 #### Example output - 300 time units
 ```
@@ -282,21 +283,22 @@ $ ./cns both ./tsm-lorenz-dbg 15 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 
 (output not shown)
 
 ## ic script - Sensitivity to variation in initial conditions
-Six additional trajectories are created; each one is the centre of the face of a cube around the original value
+As well as the trajectory specified in the command arguments, six others are created and evolved; each one is the centre of the face of a cube around the original value
 
 Parameter | Meaning
 ----------|-----------
-separation | Initial separation between trajectories is double this value
+separation | Initial separation between "original" trajectory and the additional ones
 
-The simulation is run six times in parallel processes, with each x, y, z initial condition perturbed by +/- the parameter to ic.
+The simulation is run seven times in parallel processes, the original along with each perturbed x, y, z.
 ```
-$ ./ic .001 ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
-x+ ./tsm-lorenz-dbg 16 10 .01 10001 -15.799 -17.48 35.64 10 28 8 3
-x- ./tsm-lorenz-dbg 16 10 .01 10001 -15.801 -17.48 35.64 10 28 8 3
-y+ ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.479 35.64 10 28 8 3
-y- ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.481 35.64 10 28 8 3
-z+ ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.641 10 28 8 3
-z- ./tsm-lorenz-dbg 16 10 .01 10001 -15.8 -17.48 35.639 10 28 8 3
+$ ./ic .001 ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
+oo ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
+x+ ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.799 -17.48 35.64 10 28 8 3
+x- ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.801 -17.48 35.64 10 28 8 3
+y+ ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.479 35.64 10 28 8 3
+y- ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.481 35.64 10 28 8 3
+z+ ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.48 35.641 10 28 8 3
+z- ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.48 35.639 10 28 8 3
 ```
 (3D plot not shown)
 
