@@ -5,7 +5,7 @@ TSM is a procedure for integrating ODEs using Taylor Series of arbitrary order, 
 It is therefore (or should be, if it were better known!) a serious competitor to the fourth-order RK4 for the vast majority of cases.
 
 The code itself is tiny (as are the dynamic executables) and has been partly developed on, and is suitable for running on, a Raspberry Pi 4 computer.
-The c code supports arbitrary precision, and is most suited to solving systems of ODEs to high accuracy.
+The c code supports arbitrary precision (using the GNU MPFR library: https://www.mpfr.org), and is most suited to solving systems of ODEs to high accuracy.
 The Python code uses float precision, and is most suited to interactive analysis and plotting of functions and their derivatives.
 
 For the uninitiated, here is a review of the TSM itself and its history of repeated "discovery" and re-branding.
@@ -19,11 +19,12 @@ These programs are the result.
 
 Finally, more general resources on automatic differentiation can be found at the following portal: http://www.autodiff.org/ (see specifically the "Applications" and "Tools" sections).
 
-## Implementations (c and Python)
+## Implementations (c/MPFR and Python)
 
 My primary aim was to be able to solve coupled nonlinear equations and investigate chaotic systems, without relying on "black-box" ODE solvers.
 The resulting c code takes the form of a small (<200 loc) arbitrary precision Taylor Series "library", and the model-specific ODE simulators are tiny client programs to this, typically 40-50 loc each.
 The header file taylor-ode.h contains a terse but complete description of the Taylor Series Method as implemented here, together with derivations of the recurrences that enable analysis of complex composed functions.
+
 I have also duplicated the ODE solving functionality in Python 3 (at float precision), but with extra testing and more advanced function analysis features (enabled by operator overloading and the Python REPL).
 
 The recurrence rules (the "t-functions" in c and Python) are the key to calculating high order derivatives accurately, without needing finite differences.
