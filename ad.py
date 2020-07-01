@@ -59,8 +59,7 @@ def t_pwr(p, u, a, k):
     return u[0]**a if k == 0 else (_d_cauchy(p, u, k, 0, k - 1, a) - _d_cauchy(u, p, k, 1, k - 1)) / u[0]
 
 def _i_cauchy(g, u, f, k, sign=True):
-    tmp = - _d_cauchy(g, f, k, 1, k - 1)
-    return ((tmp + u[k]) if sign else (tmp - u[k])) / g[0]
+    return ((u[k] if sign else - u[k]) - _d_cauchy(g, f, k, 1, k - 1)) / g[0]
 
 def t_ln(l, u, k):
     return log(u[0]) if k == 0 else _i_cauchy(u, u, l, k)
