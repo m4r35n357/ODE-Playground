@@ -114,6 +114,10 @@ mpfr_t *t_abs (series U, int k);
  *           = sum{k=0->inf} sum{j=0->k} A[j]B[k - j] h^k     where k = i + j  ==>  i = k - j
  *
  *  ==> C[k] = sum{j=0->k} A[j].B[k-j]     perhaps implemented by a static/private function cauchy(A, B, k, ...)
+ *
+ *  Dual numbers:
+ *      C[0] = A[0].B[0]
+ *      C[1] = A[0].B[1] + A[1].B[0]
  */
 
 /*
@@ -188,9 +192,13 @@ mpfr_t *t_sqrt (series r, series U, int k);
  *
  *      F'[k-1] = sum{j=0->k-1} H[j].U'[k-1-j]
  *
- *        kF[k] = sum{j=0->k-1} H[j].(k-j)U[k-j]       if k > 0, need a mathematical function call for k == 0
+ *        kF[k] = sum{j=0->k-1} H[j].(k-j)U[k-j]       if k > 0, need a mathematical function call for k == 0 (see Dual numbers)
  *
  *     ==> F[k] = sum{j=0->k-1} H[j].(k-j)U[k-j]/k     perhaps implemented by a static/private function d_cauchy(H, U, k, ...)
+ *
+ *  Dual numbers:
+ *      F[0] = f(U[0])
+ *      F[1] = H[0].U[1]
  */
 
 /*
@@ -199,6 +207,10 @@ mpfr_t *t_sqrt (series r, series U, int k);
  *      E' = E.U'
  *
  *    E[k] = sum{j=0->k-1} E[j].(k-j)U[k-j]/k
+ *
+ *  Dual numbers:
+ *      E[0] = exp(U[0])
+ *      E[1] = E[0].U[1]
  */
 mpfr_t *t_exp (series E, series U, int k);
 
@@ -210,6 +222,12 @@ mpfr_t *t_exp (series E, series U, int k);
  *
  *    S[k] = sum{j=0->k-1}       C[j].(k-j)U[k-j]/k
  *    C[k] = sum{j=0->k-1} (+/-) S[j].(k-j)U[k-j]/k
+ *
+ *  Dual numbers:
+ *      S[0] =      cos(U[0])
+ *      C[0] = (+-) sin(U[0])
+ *      S[1] =      C[0].U[1]
+ *      C[1] = (+-) S[0].U[1]
  */
 tuple t_sin_cos (series S, series C, series U, int k, geometry g);
 
@@ -238,6 +256,10 @@ tuple t_tan_sec2 (series T, series S2, series U, int k, geometry g);
  *                                  U[0].kP[k] =  a sum{j=0->k-1} P[j].(k-j)U[k-j]   - sum{j=1->k-1} U[j].(k-j)P[k-j]
  *
  *                                        P[k] = (a sum{j=0->k-1} P[j].(k-j)U[k-j]/k - sum{j=1->k-1} U[j].(k-j)P[k-j]/k) / U[0]
+ *
+ *  Dual numbers:
+ *      P[0] = pwr(U[0], a)
+ *      P[1] = a * P[0].U[1] / U[0]
  */
 mpfr_t *t_pwr (series P, series U, mpfr_t a, int k);
 

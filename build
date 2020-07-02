@@ -54,10 +54,6 @@ echo " Building libad-test-dbg"
 rm -f libad-test-dbg
 ${CC} -O0 $WARNINGS -g -o libad-test-dbg taylor-ode.c ad.c libad-test.c -lmpfr &
 
-echo " Building solver-dbg"
-rm -f solver-dbg
-${CC} -O0 $WARNINGS -g -o solver-dbg taylor-ode.c ad.c solver.c -lmpfr &
-
 echo " Building libtaylor"
 rm -f libtaylor.so taylor-ode.o
 ${CC} -O3 -DNDEBUG -c $WARNINGS -fpic taylor-ode.c && ${CC} -shared -o libtaylor.so taylor-ode.o -s &
@@ -81,5 +77,5 @@ rm -f libad-test
 ${CC} -L. $WARNINGS -o libad-test libad-test.c -lad -ltaylor -lmpfr
 
 echo ""
-ls -lh --color *ad-* tsm-* solver-* lib*.so rk4-*
+ls -lh --color *ad-* tsm-* lib*.so rk4-*
 

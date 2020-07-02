@@ -2,9 +2,9 @@
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 #  Unit Testing
-#  pytest --cov=ad --cov=playground --cov-report html:cov_html ad_test.py solver_test.py -v
+#  pytest --cov=ad --cov=ad --cov-report html:cov_html ad_test.py solver_test.py -v
 from math import sqrt
-from playground import bisect, newton, analyze, Solver, Mode, Sense
+from ad import s_bisect, s_newton, s_analyze, Solver, Mode, Sense
 import pytest
 
 εf = 1.0e-9
@@ -17,15 +17,15 @@ model = lambda x: x ** 3 - 4 * x ** 2 + 3 * x - 2
 
 def test_bail():
     max_iterations = 1
-    assert bisect(lambda a: a**2 - 2, 1.0, 2.0, εf=εf, εx=εx, limit=max_iterations).count == max_iterations
-    assert newton(lambda a: a**2 - 2, 1.5, εf=εf, εx=εx, limit=max_iterations).count == max_iterations
+    assert s_bisect(lambda a: a ** 2 - 2, 1.0, 2.0, εf=εf, εx=εx, limit=max_iterations).count == max_iterations
+    assert s_newton(lambda a: a ** 2 - 2, 1.5, εf=εf, εx=εx, limit=max_iterations).count == max_iterations
 
 def test_quadratic_solve():
     target = 2.0
-    result = bisect(lambda a: a**2 - target, 1.0, 2.0, εf=εf, εx=εx, limit=max_it, debug=True)
+    result = s_bisect(lambda a: a ** 2 - target, 1.0, 2.0, εf=εf, εx=εx, limit=max_it, debug=True)
     assert result.count < max_it
     assert abs(result.x - sqrt(target)) < εx
-    result = newton(lambda a: a**2 - target, 1.0, εf=εf, εx=εx, limit=max_it, debug=True)
+    result = s_newton(lambda a: a ** 2 - target, 1.0, εf=εf, εx=εx, limit=max_it, debug=True)
     assert result.count < max_it
     assert abs(result.x - sqrt(target)) < εx
 
@@ -35,12 +35,12 @@ def test_quadratic_solve():
                           (2.0, 3.0, Mode.MIN_MAX, +2.215250437e+00),
                           (3.0, 4.0, Mode.ROOT___, +3.269530842e+00)])
 def test_cubic_solve(a, b, mode, target_x):
-    result = bisect(model, a, b, εf=εf, εx=εx, limit=max_it, mode=mode, debug=True)
+    result = s_bisect(model, a, b, εf=εf, εx=εx, limit=max_it, mode=mode, debug=True)
     assert result.count < max_it
     assert abs(result.δx) < εx
     assert abs(result.f) < εf
     assert abs(target_x - result.x) < εx
-    result = newton(model, (a + b) / 2.0, εf=εf, εx=εx, limit=max_it, mode=mode, debug=True)
+    result = s_newton(model, (a + b) / 2.0, εf=εf, εx=εx, limit=max_it, mode=mode, debug=True)
     assert result.count < max_it
     assert abs(result.δx) < εx
     assert abs(result.f) < εf
@@ -49,7 +49,7 @@ def test_cubic_solve(a, b, mode, target_x):
 def test_analysis_na(capsys):
     captured = capsys.readouterr()
     results = []
-    for result in analyze(model, Solver.NA, plot_min, plot_max, n_points, εf, εx, limit=max_it, console=False):
+    for result in s_analyze(model, Solver.NA, plot_min, plot_max, n_points, εf, εx, limit=max_it, console=False):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 0
@@ -58,8 +58,8 @@ def test_analysis_na(capsys):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cubic(solver):
     results = []
-    for result in analyze(lambda a: a**3 + 3 * a**2 - 3,
-                          solver, plot_min, plot_max, n_points, εf, εx, limit=max_it):
+    for result in s_analyze(lambda a: a ** 3 + 3 * a ** 2 - 3,
+                            solver, plot_min, plot_max, n_points, εf, εx, limit=max_it):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 6  # 3 roots, 1 maximum, 1 minimum, 1 inflection
@@ -73,8 +73,8 @@ def test_analysis_cubic(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cos_cubic(solver):
     results = []
-    for result in analyze(lambda a: a.cos - a**3,
-                          solver, plot_min, plot_max, n_points, εf, εx, limit=max_it):
+    for result in s_analyze(lambda a: a.cos - a ** 3,
+                            solver, plot_min, plot_max, n_points, εf, εx, limit=max_it):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 4
@@ -86,8 +86,8 @@ def test_analysis_cos_cubic(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_messy(solver):
     results = []
-    for result in analyze(lambda a: (a - 1)**2 / (a.cosh + 1).ln - 1,
-                          solver, plot_min, plot_max, n_points, εf, εx, limit=max_it):
+    for result in s_analyze(lambda a: (a - 1) ** 2 / (a.cosh + 1).ln - 1,
+                            solver, plot_min, plot_max, n_points, εf, εx, limit=max_it):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 6
@@ -101,8 +101,8 @@ def test_analysis_messy(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_septic(solver):
     results = []
-    for result in analyze(lambda a: (a + 7) * (5 + a) * (a + 2.0) * a * (1 - a) * (3.0 - a) * (a - 6),
-                          solver, plot_min, plot_max, n_points, εf, εx, limit=max_it):
+    for result in s_analyze(lambda a: (a + 7) * (5 + a) * (a + 2.0) * a * (1 - a) * (3.0 - a) * (a - 6),
+                            solver, plot_min, plot_max, n_points, εf, εx, limit=max_it):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 18  # 7 roots, 3 maxima, 3 minima, 5 inflections
