@@ -58,18 +58,11 @@ def t_tan_sec2(t, s, u, k, hyp=False):
 def t_pwr(p, u, a, k):
     return u[0]**a if k == 0 else (_d_cauchy(p, u, k, 0, k - 1, a) - _d_cauchy(u, p, k, 1, k - 1)) / u[0]
 
-def _i_cauchy(g, u, f, k, sign=True):
-    tmp = - _d_cauchy(g, f, k, 1, k - 1)
-    return ((tmp + u[k]) if sign else (tmp - u[k])) / g[0]
-
 def t_ln(l, u, k):
-    return log(u[0]) if k == 0 else _i_cauchy(u, u, l, k)
+    return log(u[0]) if k == 0 else (u[k] - _d_cauchy(u, l, k, 1, k - 1)) / u[0]
 
-def t_tan(t, g, u, k, hyp=False):  # TODO needs tests
-    return (tanh(u[0]) if hyp else tan(u[0])) if k == 0 else _i_cauchy(g, u, t, k)
-
-def t_cot(c, g, u, k, hyp=False):  # TODO needs tests
-    return (1.0 / tan(u[0]) if hyp else 1.0 / tanh(u[0])) if k == 0 else _i_cauchy(g, u, c, k, sign=False)
+def _i_cauchy(g, u, f, k, sign=True):
+    return ((u[k] if sign else - u[k]) - _d_cauchy(g, f, k, 1, k - 1)) / g[0]
 
 def t_asin(h, g, u, k, hyp=False):
     if k == 0:
@@ -91,6 +84,10 @@ def t_atan(h, g, u, k, hyp=False):
     h[k] = _i_cauchy(g, u, h, k)
     g[k] = 2.0 * _d_cauchy(u, u, k, 0, k - 1)
     return (h[k], - g[k]) if hyp else (h[k], g[k])
+
+
+class Context:
+    places = 3
 
 
 class Series:
@@ -293,8 +290,161 @@ class Series:
         return Series([self.val] + [1.0] + [0.0] * (self.n - 2))
 
 
-class Context:
-    places = 3
+class Dual:
+
+    def __init__(self, value, derivative):
+        self.val = value
+        self.der = derivative
+
+    @classmethod
+    def get(cls, value=0.0):
+        return cls(value if isinstance(value, float) else float(value), 0.0)
+
+    def __str__(self):
+        return f'{self.val:+.{Context.places}e} {self.der:+.{Context.places}e}'
+
+    def __abs__(self):
+        return - self if self.val < 0.0 else + self
+
+    def __pos__(self):
+        return Dual(self.val, self.der)
+
+    def __neg__(self):
+        return Dual(- self.val, - self.der)
+
+    def __add__(self, o):
+        if isinstance(o, Dual):
+            return Dual(self.val + o.val, self.der + o.der)
+        elif isinstance(o, (float, int)):
+            return Dual(self.val + o, self.der)
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
+
+    def __radd__(self, o):
+        return self + o
+
+    def __sub__(self, o):
+        return self + (- o)
+
+    def __rsub__(self, o):
+        return - self + o
+
+    def __mul__(self, o):
+        if isinstance(o, Dual):
+            return Dual(self.val * o.val, self.der * o.val + self.val * o.der)
+        elif isinstance(o, (float, int)):
+            return Dual(self.val * o, self.der * o)
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
+
+    def __rmul__(self, o):
+        return self * o
+
+    def __truediv__(self, o):
+        if isinstance(o, Dual):
+            assert abs(o.val) != 0.0, f"other.val = {o.val}"
+            return Dual(self.val / o.val, (self.der * o.val - self.val * o.der) / o.val**2)
+        elif isinstance(o, (float, int)):
+            assert abs(o) != 0.0, f"other = {o}"
+            return Dual(self.val / o, self.der / o)
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
+
+    def __rtruediv__(self, o):
+        assert self.val != 0.0, f"self.val = {self.val}"
+        return Dual(o / self.val, - self.der * o / self.val**2)
+
+    def __pow__(self, o):
+        if isinstance(o, int):
+            i_pow = Dual(self.val, self.der)
+            for _ in range(abs(o) - 1):
+                i_pow = i_pow * self
+            return i_pow if o > 0 else (1.0 / i_pow if o < 0 else Dual(1.0, 0.0))
+        elif isinstance(o, float):
+            assert self.val > 0.0, f"self.val = {self.val}"  # pragma: no mutate
+            return Dual(self.val**o, self.der * o * self.val**(o - 1))
+        elif isinstance(o, Dual):
+            return (self.ln * o).exp
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
+
+    def __rpow__(self, o):
+        assert o > 0.0, f"other = {o}"
+        return (self * log(o)).exp
+
+    @property
+    def exp(self):
+        exp_val = exp(self.val)
+        return Dual(exp_val, self.der * exp_val)
+
+    @property
+    def ln(self):
+        assert self.val > 0.0, f"self.val = {self.val}"
+        return Dual(log(self.val), self.der / self.val)
+
+    @property
+    def sin(self):
+        return Dual(sin(self.val), self.der * cos(self.val))
+
+    @property
+    def cos(self):
+        return Dual(cos(self.val), - self.der * sin(self.val))
+
+    @property
+    def tan(self):
+        t = tan(self.val)
+        return Dual(t, self.der * (1.0 + t**2))
+
+    @property
+    def sinh(self):
+        return Dual(sinh(self.val), self.der * cosh(self.val))
+
+    @property
+    def cosh(self):
+        return Dual(cosh(self.val), self.der * sinh(self.val))
+
+    @property
+    def tanh(self):
+        t = tanh(self.val)
+        return Dual(t, self.der * (1.0 - t**2))
+
+    @property
+    def asin(self):
+        assert abs(self.val) < 1.0, f"self.val = {self.val}"
+        return Dual(asin(self.val), self.der / sqrt(1.0 - self.val * self.val))
+
+    @property
+    def acos(self):
+        assert abs(self.val) < 1.0, f"self.val = {self.val}"
+        return Dual(acos(self.val), - self.der / sqrt(1.0 - self.val * self.val))
+
+    @property
+    def atan(self):
+        return Dual(atan(self.val), self.der / (1.0 + self.val * self.val))
+
+    @property
+    def asinh(self):
+        return Dual(asinh(self.val), self.der / sqrt(self.val * self.val + 1.0))
+
+    @property
+    def acosh(self):
+        assert self.val > 1.0, f"self.val = {self.val}"
+        return Dual(acosh(self.val), self.der / sqrt(self.val * self.val - 1.0))
+
+    @property
+    def atanh(self):
+        assert abs(self.val) < 1.0, f"self.val = {self.val}"
+        return Dual(atanh(self.val), self.der / (1.0 - self.val * self.val))
+
+    @property
+    def sqr(self):
+        return self * self
+
+    @property
+    def sqrt(self):
+        assert self.val > 0.0, f"self.val = {self.val}"  # pragma: no mutate
+        r = sqrt(self.val)
+        return Dual(r, self.der * 0.5 / r)
+
+    @property
+    def var(self):
+        return Dual(self.val, 1.0)
 
 
 print(f'{__name__} module loaded', file=stderr)

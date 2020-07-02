@@ -5,7 +5,7 @@
 from sys import stderr
 from matplotlib import pyplot
 from ad import Series
-from playground import analyze, Solver, Mode
+from playground import s_analyze, Solver, Mode
 
 def _plot(model, order, x_min, x_max, steps, y_min, y_max):
     #  Plot the function and its derivatives
@@ -30,7 +30,7 @@ def _plot(model, order, x_min, x_max, steps, y_min, y_max):
 def scan(model, x_min=-8.0, x_max=8.0, steps=1000, ef=1e-9, ex=1e-9, limit=101, newton=False, mode=Mode.ALL, debug=False):
     #  Find roots, turning points and inflections of the model function
     solver = Solver.NT if newton else Solver.BI
-    for result in analyze(model, solver, x_min, x_max, steps, εf=ef, εx=ex, limit=limit, mode=mode, debug=debug):
+    for result in s_analyze(model, solver, x_min, x_max, steps, εf=ef, εx=ex, limit=limit, mode=mode, debug=debug):
         if result.count < 101:
             print(result, file=stderr)
 
