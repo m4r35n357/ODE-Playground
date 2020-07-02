@@ -2,9 +2,9 @@
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 #  Unit Testing
-#  pytest --cov=ad --cov=playground --cov-report html:cov_html ad_test.py solver_test.py -v
+#  pytest --cov=ad --cov=ad --cov-report html:cov_html ad_test.py solver_test.py -v
 from math import sqrt
-from playground import s_bisect, s_newton, s_analyze, Solver, Mode, Sense
+from ad import s_bisect, s_newton, s_analyze, Solver, Mode, Sense
 import pytest
 
 εf = 1.0e-9
