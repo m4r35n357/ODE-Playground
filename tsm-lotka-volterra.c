@@ -21,7 +21,7 @@ int main (int argc, char **argv) {
     series x = t_series(n + 1), y = t_series(n + 1);
     t_args(argv, argc, x.jet, y.jet, &_, &a, &b, &c, &d);
 
-    t_output(x.jet[0], y.jet[0], x.jet[0], h, 0);
+    t_output(x.jet[0], y.jet[0], _, h, 0);
     for (long step = 1; step <= nsteps; step++) {
         // build the jet of taylor coefficients
         for (int k = 0; k < n; k++) {
@@ -33,11 +33,8 @@ int main (int argc, char **argv) {
             mpfr_fmms(_, d, xy, b, y.jet[k], RND);
             t_next(y, _, k, POS);
         }
-
         // sum the series using Horner's method and advance one step
-        t_horner(x, h);
-        t_horner(y, h);
-        t_output(x.jet[0], y.jet[0], x.jet[0], h, step);
+        t_output(*t_horner(x, h), *t_horner(y, h), _, h, step);
     }
     return 0;
 }
