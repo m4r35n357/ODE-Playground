@@ -553,8 +553,8 @@ def d_bisect(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, d
         δx = b.val - a.val
         i += 1
         if debug:
-            print(Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=fc, δx=δx, mode=Mode.ROOT___), file=stderr)
-    return Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=fc, δx=δx, mode=Mode.ROOT___)
+            print(Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=fc, δx=δx, mode=Mode.ROOT___.name), file=stderr)
+    return Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=fc, δx=δx, mode=Mode.ROOT___.name)
 
 def d_newton(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug=False):
     x, f = Dual.get(x0).var, Dual.get(1)
@@ -565,8 +565,8 @@ def d_newton(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug
         x += δx
         i += 1
         if debug:
-            print(Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=x.val, f=f.val, δx=δx, mode=Mode.ROOT___), file=stderr)
-    return Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=x.val, f=f.val, δx=δx, mode=Mode.ROOT___)
+            print(Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=x.val, f=f.val, δx=δx, mode=Mode.ROOT___.name), file=stderr)
+    return Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=x.val, f=f.val, δx=δx, mode=Mode.ROOT___.name)
 
 def d_analyze(model, method, x0, x1, steps, εf, εx, limit, console=True):
     x_prev = f0_prev = None

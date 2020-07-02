@@ -3,8 +3,8 @@
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 from sys import argv
-from math import sqrt, cos, pi, floor, sin
-from ad import Context, t_jet, t_horner, t_abs, t_prod, t_sin_cos, t_tan_sec2, t_sqr, t_exp, t_quot
+from math import sqrt, cos, pi, floor
+from ad import Context, t_jet, t_horner, t_abs, t_prod, t_sin_cos, t_tan_sec2, t_sqr, t_exp
 
 
 def output(x, y, z, t):

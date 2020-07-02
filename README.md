@@ -22,7 +22,7 @@ Finally, more general resources on automatic differentiation can be found at the
 ## Implementations (c/MPFR and Python)
 
 My primary aim was to be able to solve coupled nonlinear equations and investigate chaotic systems, without relying on "black-box" ODE solvers.
-The resulting c code takes the form of a small (<200 loc) arbitrary precision Taylor Series "library", and the model-specific ODE simulators are tiny client programs to this, typically 40-50 loc each.
+The resulting c code takes the form of a small (<200 loc) arbitrary precision Taylor Series "library", and the model-specific ODE simulators are tiny client programs to this, typically 25-35 loc each.
 The header file taylor-ode.h contains a terse but complete description of the Taylor Series Method as implemented here, together with derivations of the recurrences that enable analysis of complex composed functions.
 
 I have also duplicated the ODE solving functionality in Python 3 (at float precision), but with extra testing and more advanced function analysis features (enabled by operator overloading and the Python REPL).
@@ -38,6 +38,7 @@ The functions provided cover the basic algebraic operations on Taylor Series (+ 
 * tan(h)_sec(h)2
 * pwr (f(x)^a, where a is a scalar)
 * ln
+* asin(h), acos(h), atan(h) - Python only
 
 The recurrence relations used here are derived along the lines of (amongst other sources) http://www2.math.uni-wuppertal.de/wrswt/preprints/prep_05_4.pdf and http://aimsciences.org/journals/displayPaperPro.jsp?paperID=9241 (open access).
 
@@ -62,6 +63,7 @@ There are also functions for (matching the t_functions):
 * tan(h)_sec(h)2
 * pwr (f(x)^a, where a is a scalar)
 * ln
+* asin(h), acos(h), atan(h) - Python only
 
 ## Function Analysis (a little in c but mostly in Python)
 
