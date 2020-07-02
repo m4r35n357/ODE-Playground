@@ -3,8 +3,7 @@ import datetime
 from sys import stderr
 from collections import namedtuple
 from matplotlib import pyplot
-from ad import Context, Dual
-from playground import Sense, Solver, Result, Mode
+from ad import Context, Dual, Sense, Solver, Result, Mode
 
 class Matrix3x3(namedtuple('Matrix3x3Type', ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'])):
     def __str__(self):
@@ -58,26 +57,26 @@ def characteristic_equation(m, λ):
                                      g=m.g, h=m.h, i=m.i - λ))[0]
 
 def bisect_ce(j, λa, λb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug=False):
-    a, b, c = Dual.get(λa), Dual.get(λb), Dual.get()
+    λa, λb, λ = Dual.get(λa), Dual.get(λb), Dual.get()
     ce_sign = characteristic_equation(j, Dual.get(λa)).val
-    δx = ce = i = 1
-    while i <= limit and abs(ce) > εf or abs(δx) > εx:
-        c = 0.5 * (a + b)
-        ce = characteristic_equation(j, c).val
+    δλ = ce = i = 1
+    while i <= limit and abs(ce) > εf or abs(δλ) > εx:
+        λ = 0.5 * (λa + λb)
+        ce = characteristic_equation(j, λ).val
         if ce_sign * ce < 0.0:
-            b = c
+            λb = λ
         elif ce_sign * ce > 0.0:
-            a = c
+            λa = λ
         else:
             break
-        δx = b.val - a.val
+        δλ = λb.val - λa.val
         i += 1
         if debug:
-            print(Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=ce, δx=δx, mode=Mode.ROOT___), file=stderr)
-    return Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=ce, δx=δx, mode=Mode.ROOT___)
+            print(Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=λ.val, f=ce, δx=δλ, mode=Mode.ROOT___), file=stderr)
+    return Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=λ.val, f=ce, δx=δλ, mode=Mode.ROOT___)
 
 def newton_ce(j, λ0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug=False):
-    λ, ce = Dual.get(λ0).var, Dual.get(1)
+    λ, ce = Dual.get(λ0).var, Dual.get(1.0)
     δλ = i = 1
     while i <= limit and abs(ce.val) > εf or abs(δλ) > εx:
         ce = characteristic_equation(j, λ)
@@ -109,7 +108,6 @@ def _plot(model_a, model_b, model_c, x, y, z, λ_min, λ_max, steps, ce_min, ce_
     j = jacobian_3x3(model_a, model_b, model_c, x, y, z)
     print(f'Jacobian({x}, {y}, {z})\n{j}')
     for result in analyze_ce(j, solver, λ_min, λ_max, steps, εf, εx, limit, debug):
-        # noinspection PyTypeChecker
         if result.count < 101:
             print(f'eigenvalue: {result.x}\n{result}')
     ax1 = pyplot.figure().add_subplot(111)
