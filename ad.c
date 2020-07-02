@@ -49,19 +49,6 @@ void derivative_output (series jet, long n, char* f_colour, char *fk_colour) {
     jet_output(jet, n, f_colour, fk_colour);
 }
 
-void ad_newton (model function, series f, series x, int max_it, mpfr_t f_tol, mpfr_t x_tol, mode degree) {
-    int counter = 0;
-    mpfr_set_ui(delta, 1, RND);
-    while(mpfr_cmp_abs(f.jet[degree], f_tol) >= 0 || mpfr_cmp_abs(delta, x_tol) >= 0) {
-        function(f, x);
-        jet_to_derivs(f, NEWTON + degree);
-        mpfr_div(delta, f.jet[degree], f.jet[degree + 1], RND);
-        mpfr_sub(x.jet[0], x.jet[0], delta, RND);
-        if (++counter > max_it) break;
-    }
-    mpfr_fprintf(stderr, "%3d %11.3RNe %11.3RNe %11.3RNe ", counter, x.jet[0], &delta, f.jet[degree]);
-}
-
 series ad_set (series b, series a) {
     assert(b.size == a.size);
     for (int k = 0; k < b.size; k++) {
