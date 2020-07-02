@@ -55,7 +55,7 @@ void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, long step);
 /*
  * Sets the (precision,) order, step size, and number of steps for the integration from the command line arguments (1 to 5)
  */
-void t_stepper (char **argv, long *n, mpfr_t *h, long *nsteps);
+void t_stepper (char **argv, long *ts_order, mpfr_t *step_size, long *n_steps);
 
 /*
  * Bulk set initial coordinate values and ODE parameters from the command line arguments (6 onwards)

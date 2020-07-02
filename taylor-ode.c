@@ -30,14 +30,14 @@ void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, long step) {
     mpfr_printf(fs, x, y, z, _);
 }
 
-void t_stepper (char **argv, long *n, mpfr_t *h, long *nsteps) {
+void t_stepper (char **argv, long *ts_order, mpfr_t *step_size, long *n_steps) {
     long d = strtol(argv[1], NULL, BASE);
     d == 0 ? sprintf(fs, "%%.RNe %%.RNe %%.RNe %%.9RNe\n") : sprintf(fs, "%%+.%luRNe %%+.%luRNe %%+.%luRNe %%+.9RNe\n", d, d, d);
     mpfr_set_default_prec(strtod(argv[2], NULL) * 3.322);
     fprintf(stderr, " MPFR default precision: %lu bits\n", mpfr_get_default_prec());
-    *n = strtol(argv[3], NULL, BASE);
-    mpfr_init_set_str(*h, argv[4], BASE, RND);
-    *nsteps = strtol(argv[5], NULL, BASE);
+    *ts_order = strtol(argv[3], NULL, BASE);
+    mpfr_init_set_str(*step_size, argv[4], BASE, RND);
+    *n_steps = strtol(argv[5], NULL, BASE);
     t_tempvars();
 }
 
