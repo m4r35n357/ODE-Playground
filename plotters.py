@@ -7,7 +7,7 @@ from matplotlib import pyplot
 from ad import Series, Dual, s_analyze, d_analyze, Solver, Mode
 
 
-def _plot(model, order, x_min, x_max, steps, y_min, y_max):
+def _plot_s(model, order, x_min, x_max, steps, y_min, y_max):
     #  Plot the function and its derivatives
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')
@@ -27,26 +27,21 @@ def _plot(model, order, x_min, x_max, steps, y_min, y_max):
         ax1.plot(data[0], data[c], f'{colour[c - 1]}', linewidth=2 if c == 1 else 1, markersize=0, label=c-1)
     ax1.legend(loc='lower right')
 
-def scan(model, x_min=-8.0, x_max=8.0, steps=1000, ef=1e-9, ex=1e-9, limit=101, newton=False, mode=Mode.ALL, debug=False):
+def scan_s(model, x_min=-8.0, x_max=8.0, steps=1000, εf=1e-9, εx=1e-9, limit=101, newton=True, mode=Mode.ALL, console=True, debug=False):
     #  Find roots, turning points and inflections of the model function
-    solver = Solver.NT if newton else Solver.BI
-    for result in s_analyze(model, solver, x_min, x_max, steps, εf=ef, εx=ex, limit=limit, mode=mode, debug=debug):
+    for result in s_analyze(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, mode, console, debug):
         if result.count < 101:
             print(result, file=stderr)
 
-def mplot(model, order=12, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
-    _plot(model, order, x_min, x_max, steps, y_min, y_max)
+def mplot_s(model, order=12, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
+    _plot_s(model, order, x_min, x_max, steps, y_min, y_max)
     pyplot.show()
 
-def msave(filename, model, order=12, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
-    _plot(model, order, x_min, x_max, steps, y_min, y_max)
+def msave_s(filename, model, order=12, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
+    _plot_s(model, order, x_min, x_max, steps, y_min, y_max)
     pyplot.savefig(filename)
 
-def d_mplot(model, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0, newton=False):
-    solver = Solver.NT if newton else Solver.BI
-    for result in d_analyze(model, solver, x_min, x_max, steps, εf=1e-9, εx=1e-9, limit=101):
-        if result.count < 101:
-            print(result, file=stderr)
+def _plot_d(model, x_min, x_max, steps, y_min, y_max):
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')
     ax1.set_xlabel('Variable', color='.2')
@@ -64,15 +59,27 @@ def d_mplot(model, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0, n
     for c in reversed(range(1, 3)):
         ax1.plot(data[0], data[c], f'{colour[c - 1]}', linewidth=2 if c == 1 else 1, markersize=0, label=c-1)
     ax1.legend(loc='lower right')
+
+def scan_d(model, x_min=-8.0, x_max=8.0, steps=1000, εf=1e-9, εx=1e-9, limit=101, newton=True, console=True, debug=False):
+    for result in d_analyze(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, console, debug):
+        if result.count < 101:
+            print(result, file=stderr)
+
+def mplot_d(model, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
+    _plot_d(model, x_min, x_max, steps, y_min, y_max)
     pyplot.show()
+
+def msave_d(filename, model, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
+    _plot_d(model, x_min, x_max, steps, y_min, y_max)
+    pyplot.savefig(filename)
 
 if __name__ == "__main__":  # hard-coded example
     f = lambda a: (a - 1)**2 / (a.cosh + 1).ln - 1
     print(f'Multi Scan (Series)')
-    scan(f, newton=True)
-    mplot(f)
+    scan_s(f)
+    mplot_s(f)
     print(f'Root Scan (Dual)')
-    d_mplot(f, newton=True)
+    mplot_d(f)
 else:
     print(__name__ + " module loaded", file=stderr)
 

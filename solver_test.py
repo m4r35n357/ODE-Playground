@@ -49,7 +49,8 @@ def test_cubic_solve(a, b, mode, target_x):
 def test_analysis_na(capsys):
     captured = capsys.readouterr()
     results = []
-    for result in s_analyze(model, Solver.NA, plot_min, plot_max, n_points, εf, εx, limit=max_it, console=False):
+    for result in s_analyze(model=model, method=Solver.NA, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
+                            limit=max_it, mode=Mode.ALL, console=False, debug=False):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 0
@@ -58,8 +59,9 @@ def test_analysis_na(capsys):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cubic(solver):
     results = []
-    for result in s_analyze(lambda a: a ** 3 + 3 * a ** 2 - 3,
-                            solver, plot_min, plot_max, n_points, εf, εx, limit=max_it):
+    for result in s_analyze(model=lambda a: a ** 3 + 3 * a ** 2 - 3,
+                            method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
+                            limit=max_it, mode=Mode.ALL, console=True, debug=False):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 6  # 3 roots, 1 maximum, 1 minimum, 1 inflection
@@ -73,8 +75,9 @@ def test_analysis_cubic(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cos_cubic(solver):
     results = []
-    for result in s_analyze(lambda a: a.cos - a ** 3,
-                            solver, plot_min, plot_max, n_points, εf, εx, limit=max_it):
+    for result in s_analyze(model=lambda a: a.cos - a ** 3,
+                            method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
+                            limit=max_it, mode=Mode.ALL, console=True, debug=False):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 4
@@ -86,8 +89,9 @@ def test_analysis_cos_cubic(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_messy(solver):
     results = []
-    for result in s_analyze(lambda a: (a - 1) ** 2 / (a.cosh + 1).ln - 1,
-                            solver, plot_min, plot_max, n_points, εf, εx, limit=max_it):
+    for result in s_analyze(model=lambda a: (a - 1) ** 2 / (a.cosh + 1).ln - 1,
+                            method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
+                            limit=max_it, mode=Mode.ALL, console=True, debug=False):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 6
@@ -101,8 +105,9 @@ def test_analysis_messy(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_septic(solver):
     results = []
-    for result in s_analyze(lambda a: (a + 7) * (5 + a) * (a + 2.0) * a * (1 - a) * (3.0 - a) * (a - 6),
-                            solver, plot_min, plot_max, n_points, εf, εx, limit=max_it):
+    for result in s_analyze(model=lambda a: (a + 7) * (5 + a) * (a + 2.0) * a * (1 - a) * (3.0 - a) * (a - 6),
+                            method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
+                            limit=max_it, mode=Mode.ALL, console=True, debug=False):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 18  # 7 roots, 3 maxima, 3 minima, 5 inflections

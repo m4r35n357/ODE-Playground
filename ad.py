@@ -504,7 +504,7 @@ def s_newton(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=
             print(Result(method=Solver.NT.name, count=i-1, sense=sense.value, mode=mode.name, x=x.val, f=f[0], δx=δx), file=stderr)
     return Result(method=Solver.NT.name, count=i-1, sense=sense.value, mode=mode.name, x=x.val, f=f[0], δx=δx)
 
-def s_analyze(model, method, x0, x1, steps, εf, εx, limit, mode=Mode.ALL, console=True, debug=False):
+def s_analyze(model, method, x0, x1, steps, εf, εx, limit, mode, console, debug):
     x_prev = f0_prev = f1_prev = f2_prev = None
     step = (x1 - x0) / (steps - 1)
     for k in range(steps):
@@ -568,7 +568,7 @@ def d_newton(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug
             print(Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=x.val, f=f.val, δx=δx, mode=Mode.ROOT___.name), file=stderr)
     return Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=x.val, f=f.val, δx=δx, mode=Mode.ROOT___.name)
 
-def d_analyze(model, method, x0, x1, steps, εf, εx, limit, console=True):
+def d_analyze(model, method, x0, x1, steps, εf, εx, limit, console, debug):
     x_prev = f0_prev = None
     step = (x1 - x0) / (steps - 1)
     for k in range(steps):
@@ -581,9 +581,9 @@ def d_analyze(model, method, x0, x1, steps, εf, εx, limit, console=True):
                 if f0_prev * f.val < 0.0:
                     sense = Sense.DECREASING if f0_prev > f.val else Sense.INCREASING
                     if method == Solver.BI:
-                        yield d_bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=sense)
+                        yield d_bisect(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=sense, debug=debug)
                     if method == Solver.NT:
-                        yield d_newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=sense)
+                        yield d_newton(model, x.val, εf=εf, εx=εx, limit=limit, sense=sense, debug=debug)
         x_prev = x.val
         f0_prev = f.val
 
