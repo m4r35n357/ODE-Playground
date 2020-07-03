@@ -65,7 +65,7 @@ There are also functions for (matching the t_functions):
 * ln
 * asin(h), acos(h), atan(h) - Python only
 
-## Function Analysis (a little in c but mostly in Python)
+## Function Analysis (Python)
 
 Using these "higher level" functions, Newton's method is implemented trivially, but I have also provided an implementations of the bisection method for comparison.
 In summary, there are three main areas of application for the code:
