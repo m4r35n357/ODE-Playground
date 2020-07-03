@@ -139,3 +139,5 @@ def save_lambda(model_a, model_b, model_c, x, y, z, λ_min=-50.0, λ_max=50.0, s
     _plot(model_a, model_b, model_c, x, y, z, λ_min=λ_min, λ_max=λ_max, steps=steps, ce_min=-ce_min, ce_max=ce_max,
                 εf=εf, εx=εx, limit=limit, nt=nt, debug=debug)
     pyplot.savefig(f'/tmp/plot-{datetime.datetime.now()}.png')
+
+print(f'{__name__} module loaded', file=stderr)
