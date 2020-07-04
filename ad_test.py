@@ -28,8 +28,9 @@ d_3, s_3 = Dual.get(f3).var, Series.get(order, f3).var
 s_1 = Series.get(order, f1).var
 s_2 = Series.get(order, f2).var
 
-data1_d = Dual(3.1, -6.6)
+data1_d = Dual(1.4, -6.6)
 data2_d = Dual(0.5, 7.0)
+
 data1_s = Series([0.5] * order)
 for i in range(1, order):
     data1_s.jet[i] = 0.7 * i * data1_s.jet[i - 1]
@@ -168,13 +169,6 @@ def test_unary_minus():
     assert len(series.jet) == order
     for result, original in zip(series.jet, (~ data1_s).jet):
         assert result == approx(- original)
-
-@mark.parametrize('series', [data1_s, data2_s])
-def test_abs_reflect(series):
-    for a, b in zip(abs(- series).jet, abs(series).jet):
-        assert a == approx(b)
-    for a, b in zip(abs(abs(series)).jet, abs(series).jet):
-        assert a == approx(b)
 
 def test_abs():
     dual = abs(d_05)
@@ -838,94 +832,116 @@ def test_var():
 
 #  Zero identities
 @mark.toplevel
-def test_diff_squares():
+def test_diff_squares_dual():
     dual = data1_d**2 - data2_d**2 - (data1_d - data2_d) * (data1_d + data2_d)
     assert dual.val == approx(0.0)
     assert dual.der == approx(0.0)
     dual = data1_d**2.0 - data2_d**2.0 - (data1_d - data2_d) * (data1_d + data2_d)
     assert dual.val == approx(0.0)
     assert dual.der == approx(0.0)
+
+@mark.toplevel
+def test_diff_squares_series():
     for term in (data1_s**2 - data2_s**2 - (data1_s - data2_s) * (data1_s + data2_s)).jet:
         assert term == approx(0.0)
     for term in (data1_s**2.0 - data2_s**2.0 - (data1_s - data2_s) * (data1_s + data2_s)).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
-def test_abs_identities():
+def test_abs_identities_dual():
+    a, b = abs(data1_d * data2_d), abs(data1_d) * abs(data2_d)
+    assert a.val == approx(b.val)
+    assert a.der == approx(b.der)
+    a, b = abs(data1_d / data2_d), abs(data1_d) / abs(data2_d)
+    assert a.val == approx(b.val)
+    assert a.der == approx(b.der)
+
+@mark.toplevel
+def test_abs_identities_series():
     data = data1_s * data2_s
     for a, b in zip(abs(data).jet, (abs(data1_s) * abs(data2_s)).jet):
         assert a == approx(b)
     data = data1_s / data2_s
     for a, b in zip(abs(data).jet, (abs(data1_s) / abs(data2_s)).jet):
         assert a == approx(b)
-    data = data2_s / data1_s
-    for a, b in zip(abs(data).jet, (abs(data2_s) / abs(data1_s)).jet):
-        assert a == approx(b)
+
+@mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_pow_neg_zero_dual(dual):
+    e = dual**-2.0 - 1.0 / dual**2
+    assert e.val == approx(0.0)
+    assert e.der == approx(0.0)
 
 @mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_pow_neg_zero(series):
-    dual = 1.0 / data1_d**2 - data1_d**-2.0
-    assert dual.val == approx(0.0)
-    assert dual.der == approx(0.0)
-    for term in (1.0 / series**2 - series**-2.0).jet:
+def test_pow_neg_zero_series(series):
+    for term in (series**-2.0 - 1.0 / series**2).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_pow_frac_zero_dual(dual):
+    e = (dual**2)**0.5 - abs(dual)
+    assert e.val == approx(0.0)
+    assert e.der == approx(0.0)
+    e = (dual**2)**-0.5 - 1.0 / abs(dual)
+    assert e.val == approx(0.0)
+    assert e.der == approx(0.0)
+
+@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_pow_frac_zero(series):
-    dual = (d_4**2)**0.5 - abs(d_4)
-    assert dual.val == approx(0.0)
-    assert dual.der == approx(0.0)
-    dual = (d_4**2)**-0.5 - 1.0 / abs(d_4)
-    assert dual.val == approx(0.0)
-    assert dual.der == approx(0.0)
+def test_pow_frac_zero_series(series):
     for term in ((series**2)**0.5 - abs(series)).jet:
         assert term == approx(0.0)
     for term in ((series**2)**-0.5 - 1.0 / abs(series)).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
-@mark.parametrize('series', [data1_s, data2_s])
-def test_sqr_sqrt_abs_zero(series):
-    for term in (series.sqr.sqrt - abs(series)).jet:
-        assert term == approx(0.0)
-    for term in ((1.0 / series.sqr).sqrt - 1.0 / abs(series)).jet:
-        assert term == approx(0.0)
-
-@mark.toplevel
-def test_exp_zero():
-    dual = data1_d.exp.ln - data1_d
-    assert dual.val == approx(0.0)
-    assert dual.der == approx(0.0)
+def test_exp_zero_dual():
     dual = (data1_d + data2_d).exp - data1_d.exp * data2_d.exp
     assert dual.val == approx(0.0)
     assert dual.der == approx(0.0)
-    for term in (data1_s.exp.ln - data1_s).jet:
-        assert term == approx(0.0)
+
+@mark.toplevel
+def test_exp_zero_series():
     for term in ((data1_s + data2_s).exp - data1_s.exp * data2_s.exp).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
-def test_ln_zero():
-    dual = data1_d.ln.exp - data1_d
-    assert dual.val == approx(0.0)
-    assert dual.der == approx(0.0)
+def test_ln_zero_dual():
     dual = (data1_d * data2_d).ln - (data1_d.ln + data2_d.ln)
     assert dual.val == approx(0.0)
     assert dual.der == approx(0.0)
-    for term in (data1_s.ln.exp - data1_s).jet:
-        assert term == approx(0.0)
+
+@mark.toplevel
+def test_ln_zero_series():
     for term in ((data1_s * data2_s).ln - (data1_s.ln + data2_s.ln)).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_sinh_zero_dual(dual):
+    e = 0.5 * (dual.exp - (- dual).exp) - dual.sinh
+    assert e.val == approx(0.0)
+    assert e.der == approx(0.0)
+
+@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_sinh_zero(series):
-    dual = 0.5 * (data1_d.exp - (-data1_d).exp) - data1_d.sinh
-    assert dual.val == approx(0.0)
-    assert dual.der == approx(0.0)
+def test_sinh_zero_series(series):
     for term in (0.5 * (series.exp - (- series).exp) - series.sinh).jet:
+        assert term == approx(0.0)
+
+@mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_cosh_zero_dual(dual):
+    e = 0.5 * (dual.exp + (- dual).exp) - dual.cosh
+    assert e.val == approx(0.0)
+    assert e.der == approx(0.0)
+
+@mark.toplevel
+@mark.parametrize('series', [data1_s, data2_s])
+def test_cosh_zero_series(series):
+    for term in (0.5 * (series.exp + (- series).exp) - series.cosh).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
@@ -938,115 +954,261 @@ def test_cosh_zero(series):
         assert term == approx(0.0)
 
 @mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_tan_zero_dual(dual):
+    e = dual.tan - dual.sin / dual.cos
+    assert e.val == approx(0.0)
+    assert e.der == approx(0.0)
+
+@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_tan_zero(series):
-    dual = data1_d.tan - data1_d.sin / data1_d.cos
-    assert dual.val == approx(0.0)
-    assert dual.der == approx(0.0)
+def test_tan_zero_series(series):
     for term in (series.tan - series.sin / series.cos).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_tanh_zero_dual(dual):
+    e = dual.tanh - dual.sinh / dual.cosh
+    assert e.val == approx(0.0)
+    assert e.der == approx(0.0)
+
+@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_tanh_zero(series):
-    dual = d_05.tanh - d_05.sinh / d_05.cosh
-    assert dual.val == approx(0.0)
-    assert dual.der == approx(0.0)
+def test_tanh_zero_series(series):
     for term in (series.tanh - series.sinh / series.cosh).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_pythagoras_trig_dual(dual):
+    e = dual.cos ** 2 + dual.sin ** 2 - 1.0
+    assert e.val == approx(0.0)
+    assert e.der == approx(0.0)
+
+@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_pythagoras_trig(series):
+def test_pythagoras_trig_series(series):
     for term in (series.cos**2 + series.sin**2 - 1.0).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_pythagoras_hyp_dual(dual):
+    e = dual.cosh ** 2 - dual.sinh ** 2 - 1.0
+    assert e.val == approx(0.0)
+    assert e.der == approx(0.0)
+
+@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_pythagoras_hyp(series):
+def test_pythagoras_hyp_series(series):
     for term in (series.cosh**2 - series.sinh**2 - 1.0).jet:
         assert term == approx(0.0)
 
 @mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_sin_3x_dual(dual):
+    a = (3 * dual).sin
+    b = 3.0 * dual.sin - 4.0 * dual.sin**3
+    assert a.val == approx(b.val)
+    assert a.der == approx(b.der)
+
+@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_sin_3x_zero(series):
-    dual = (3 * data1_d).sin - 3.0 * data1_d.sin + 4.0 * data1_d.sin**3
-    assert dual.val == approx(0.0)
-    assert dual.der == approx(0.0)
+def test_sin_3x_series(series):
     for a, b in zip((3 * series).sin.jet, (3.0 * series.sin - 4.0 * series.sin**3).jet):
         assert a == approx(b)
 
 @mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_cos_3x_dual(dual):
+    a = (3 * dual).cos
+    b = - 3.0 * dual.cos + 4.0 * dual.cos**3
+    assert a.val == approx(b.val)
+    assert a.der == approx(b.der)
+
+@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_cos_3x_zero(series):
-    dual = (3 * data1_d).cos + 3.0 * data1_d.cos - 4.0 * data1_d.cos**3
-    assert dual.val == approx(0.0)
-    assert dual.der == approx(0.0)
+def test_cos_3x_series(series):
     for a, b in zip((3 * series).cos.jet, (- 3.0 * series.cos + 4.0 * series.cos**3).jet):
         assert a == approx(b)
 
 @mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_sinh_3x_dual(dual):
+    a = (3 * dual).sinh
+    b = 3.0 * dual.sinh + 4.0 * dual.sinh**3
+    assert a.val == approx(b.val)
+    assert a.der == approx(b.der)
+
+@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_sinh_3x_zero(series):
-    dual = (3 * d_05).sinh - 3.0 * d_05.sinh - 4.0 * d_05.sinh**3
-    assert dual.val == approx(0.0)
-    assert dual.der == approx(0.0)
+def test_sinh_3x_series(series):
     for a, b in zip((3 * series).sinh.jet, (3.0 * series.sinh + 4.0 * series.sinh**3).jet):
         assert a == approx(b)
 
 @mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_cosh_3x_dual(dual):
+    a = (3 * dual).cosh
+    b = - 3.0 * dual.cosh + 4.0 * dual.cosh**3
+    assert a.val == approx(b.val)
+    assert a.der == approx(b.der)
+
+@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_cosh_3x_zero(series):
-    dual = (3 * d_05).cosh + 3.0 * d_05.cosh - 4.0 * d_05.cosh**3
-    assert dual.val == approx(0.0)
-    assert dual.der == approx(0.0)
+def test_cosh_3x_series(series):
     for a, b in zip((3 * series).cosh.jet, (- 3.0 * series.cosh + 4.0 * series.cosh**3).jet):
         assert a == approx(b)
 
 @mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_sin_asin_dual(dual):
+    a = dual.sin.asin
+    b = dual
+    assert a.val == approx(b.val)
+    assert a.der == approx(b.der)
+
+@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_sin_asin_zero(series):
+def test_sin_asin_series(series):
     for a, b in zip(series.sin.asin.jet, series.jet):
         assert a == approx(b)
 
 @mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_cos_acos_dual(dual):
+    a = dual.cos.acos
+    b = dual
+    assert a.val == approx(b.val)
+    assert a.der == approx(b.der)
+
+@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_cos_acos_zero(series):
+def test_cos_acos_series(series):
     for a, b in zip(series.cos.acos.jet, series.jet):
         assert a == approx(b)
 
 @mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_tan_atan_dual(dual):
+    a = dual.tan.atan
+    b = dual
+    assert a.val == approx(b.val)
+    assert a.der == approx(b.der)
+
+@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_tan_atan_zero(series):
+def test_tan_atan_series(series):
     for a, b in zip(series.tan.atan.jet, series.jet):
         assert a == approx(b)
 
 @mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_sinh_asinh_dual(dual):
+    a = dual.sinh.asinh
+    b = dual
+    assert a.val == approx(b.val)
+    assert a.der == approx(b.der)
+
+@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_sinh_asinh_zero(series):
+def test_sinh_asinh_series(series):
     for a, b in zip(series.sinh.asinh.jet, series.jet):
         assert a == approx(b)
 
 @mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_cosh_acosh_dual(dual):
+    a = dual.cosh.acosh
+    b = dual
+    assert a.val == approx(b.val)
+    assert a.der == approx(b.der)
+
+@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_cosh_acosh_zero(series):
+def test_cosh_acosh_series(series):
     for a, b in zip(series.cosh.acosh.jet, series.jet):
         assert a == approx(b)
 
 @mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_tanh_atanh_dual(dual):
+    a = dual.tanh.atanh
+    b = dual
+    assert a.val == approx(b.val)
+    assert a.der == approx(b.der)
+
+@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_tanh_atanh_zero(series):
+def test_tanh_atanh_series(series):
     for a, b in zip(series.tanh.atanh.jet, series.jet):
         assert a == approx(b)
 
 @mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_sqr_sqrt_dual(dual):
+    a, b = dual.sqr.sqrt, abs(dual)
+    assert a.val == approx(b.val)
+    assert a.der == approx(b.der)
+
+@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_sqr(series):
+def test_sqr_sqrt_series(series):
+    for a, b in zip(series.sqr.sqrt.jet, abs(series).jet):
+        assert a == approx(b)
+
+@mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_sqr_dual(dual):
+    a, b = dual.sqr, dual**2
+    assert a.val == approx(b.val)
+    assert a.der == approx(b.der)
+
+@mark.toplevel
+@mark.parametrize('series', [data1_s, data2_s])
+def test_sqr_series(series):
     for a, b in zip(series.sqr.jet, (series**2).jet):
         assert a == approx(b)
 
 @mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_sqrt_dual(dual):
+    a, b = dual.sqrt, dual**0.5
+    assert a.val == approx(b.val)
+    assert a.der == approx(b.der)
+
+@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
-def test_sqrt(series):
+def test_sqrt_series(series):
     for a, b in zip(series.sqrt.jet, (series**0.5).jet):
+        assert a == approx(b)
+
+@mark.toplevel
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_exp_ln_dual(dual):
+    a, b = dual.exp.ln, dual
+    assert a.val == approx(b.val)
+    assert a.der == approx(b.der)
+
+@mark.toplevel
+@mark.parametrize('series', [data1_s, data2_s])
+def test_exp_ln_series(series):
+    for a, b in zip(series.exp.ln.jet, series.jet):
+        assert a == approx(b)
+
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_abs_reflect_dual(dual):
+    a, b = abs(- dual), abs(dual)
+    assert a.val == approx(b.val)
+    assert a.der == approx(b.der)
+    a, b = abs(abs(dual)), abs(dual)
+    assert a.val == approx(b.val)
+    assert a.der == approx(b.der)
+
+@mark.parametrize('series', [data1_s, data2_s])
+def test_abs_reflect_series(series):
+    for a, b in zip(abs(- series).jet, abs(series).jet):
+        assert a == approx(b)
+    for a, b in zip(abs(abs(series)).jet, abs(series).jet):
         assert a == approx(b)
