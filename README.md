@@ -132,7 +132,13 @@ Testing Requirements
 Most of the code is covered several times over.
 Tests have been mutation tested with mutmut.
 ```
-pytest --cov=ad --cov=playground --cov-report html:cov_html ad_test.py solver_test.py -v
+$ pytest --cov=ad --cov-report html:cov_html ad_test.py solver_test.py -q
+.......................................................................... [ 24%]
+.......................................................................... [ 48%]
+.......................................................................... [ 73%]
+.......................................................................... [ 97%]
+........                                                                   [100%]
+
 ```
 
 #### c Build (GCC or Clang)
@@ -144,7 +150,9 @@ $ ./build clang
 #### Running c Tests
 ##### Newer tests
 ```
-$ ./libad-test-dbg 9 32 20 2 1e-18 1
+$ ./libad-test-dbg 32 20 1 1e-18
+
+Total: 33, PASSED 33
 ```
 The final parameter can be set to 0 (or left absent) for a summary, 1 for individual tests, or 2 for full detail of Taylor Series.
 Depending on the x value, some tests might be skipped owing to domain restrictions on some of the functions involved. 
