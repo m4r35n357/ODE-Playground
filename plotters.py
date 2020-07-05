@@ -4,7 +4,7 @@
 #
 from sys import stderr
 from matplotlib import pyplot
-from ad import Series, Dual, s_analyze, d_analyze, Solver, Mode
+from ad import Series, Dual, analyze_s, analyze_d, Solver, Mode
 
 
 def _plot_s(model, order, x_min, x_max, steps, y_min, y_max):
@@ -29,7 +29,7 @@ def _plot_s(model, order, x_min, x_max, steps, y_min, y_max):
 
 def scan_s(model, x_min=-8.0, x_max=8.0, steps=1000, εf=1e-9, εx=1e-9, limit=101, newton=True, mode=Mode.ALL, console=True, debug=False):
     #  Find roots, turning points and inflections of the model function
-    for result in s_analyze(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, mode, console, debug):
+    for result in analyze_s(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, mode, console, debug):
         if result.count < 101:
             print(result, file=stderr)
 
@@ -61,7 +61,7 @@ def _plot_d(model, x_min, x_max, steps, y_min, y_max):
     ax1.legend(loc='lower right')
 
 def scan_d(model, x_min=-8.0, x_max=8.0, steps=1000, εf=1e-9, εx=1e-9, limit=101, newton=True, console=True, debug=False):
-    for result in d_analyze(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, console, debug):
+    for result in analyze_d(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, console, debug):
         if result.count < 101:
             print(result, file=stderr)
 

@@ -4,7 +4,7 @@
 #  Unit Testing
 #  pytest --cov=ad --cov=ad --cov-report html:cov_html ad_test.py solver_test.py -v
 from math import sqrt
-from ad import Solver, Mode, Sense, s_bisect, s_newton, s_analyze, d_bisect, d_newton, d_analyze
+from ad import Solver, Mode, Sense, bisect_s, newton_s, analyze_s, bisect_d, newton_d, analyze_d
 import pytest
 
 εf = 1.0e-9
@@ -17,26 +17,26 @@ model = lambda x: x ** 3 - 4 * x ** 2 + 3 * x - 2
 
 def test_bail():
     max_iterations = 1
-    assert s_bisect(lambda a: a ** 2 - 2, 1.0, 2.0, εf=εf, εx=εx, limit=max_iterations).count == max_iterations
-    assert s_newton(lambda a: a ** 2 - 2, 1.5, εf=εf, εx=εx, limit=max_iterations).count == max_iterations
-    assert d_bisect(lambda a: a ** 2 - 2, 1.0, 2.0, εf=εf, εx=εx, limit=max_iterations).count == max_iterations
-    assert d_newton(lambda a: a ** 2 - 2, 1.5, εf=εf, εx=εx, limit=max_iterations).count == max_iterations
+    assert bisect_s(lambda a: a ** 2 - 2, 1.0, 2.0, εf=εf, εx=εx, limit=max_iterations).count == max_iterations
+    assert newton_s(lambda a: a ** 2 - 2, 1.5, εf=εf, εx=εx, limit=max_iterations).count == max_iterations
+    assert bisect_d(lambda a: a ** 2 - 2, 1.0, 2.0, εf=εf, εx=εx, limit=max_iterations).count == max_iterations
+    assert newton_d(lambda a: a ** 2 - 2, 1.5, εf=εf, εx=εx, limit=max_iterations).count == max_iterations
 
 def test_quadratic_solve_series():
     target = 2.0
-    result = s_bisect(lambda a: a ** 2 - target, 1.0, 2.0, εf=εf, εx=εx, limit=max_it, debug=True)
+    result = bisect_s(lambda a: a ** 2 - target, 1.0, 2.0, εf=εf, εx=εx, limit=max_it, debug=True)
     assert result.count < max_it
     assert abs(result.x - sqrt(target)) < εx
-    result = s_newton(lambda a: a ** 2 - target, 1.0, εf=εf, εx=εx, limit=max_it, debug=True)
+    result = newton_s(lambda a: a ** 2 - target, 1.0, εf=εf, εx=εx, limit=max_it, debug=True)
     assert result.count < max_it
     assert abs(result.x - sqrt(target)) < εx
 
 def test_quadratic_solve_dual():
     target = 2.0
-    result = d_bisect(lambda a: a ** 2 - target, 1.0, 2.0, εf=εf, εx=εx, limit=max_it, debug=True)
+    result = bisect_d(lambda a: a ** 2 - target, 1.0, 2.0, εf=εf, εx=εx, limit=max_it, debug=True)
     assert result.count < max_it
     assert abs(result.x - sqrt(target)) < εx
-    result = d_newton(lambda a: a ** 2 - target, 1.0, εf=εf, εx=εx, limit=max_it, debug=True)
+    result = newton_d(lambda a: a ** 2 - target, 1.0, εf=εf, εx=εx, limit=max_it, debug=True)
     assert result.count < max_it
     assert abs(result.x - sqrt(target)) < εx
 
@@ -46,12 +46,12 @@ def test_quadratic_solve_dual():
                           (2.0, 3.0, Mode.MIN_MAX, +2.215250437e+00),
                           (3.0, 4.0, Mode.ROOT___, +3.269530842e+00)])
 def test_cubic_solve_series(a, b, mode, target_x):
-    result = s_bisect(model, a, b, εf=εf, εx=εx, limit=max_it, mode=mode, debug=True)
+    result = bisect_s(model, a, b, εf=εf, εx=εx, limit=max_it, mode=mode, debug=True)
     assert result.count < max_it
     assert abs(result.δx) < εx
     assert abs(result.f) < εf
     assert abs(target_x - result.x) < εx
-    result = s_newton(model, (a + b) / 2.0, εf=εf, εx=εx, limit=max_it, mode=mode, debug=True)
+    result = newton_s(model, (a + b) / 2.0, εf=εf, εx=εx, limit=max_it, mode=mode, debug=True)
     assert result.count < max_it
     assert abs(result.δx) < εx
     assert abs(result.f) < εf
@@ -60,12 +60,12 @@ def test_cubic_solve_series(a, b, mode, target_x):
 @pytest.mark.parametrize('a, b, mode, target_x',
                          [(3.0, 4.0, Mode.ROOT___, +3.269530842e+00)])
 def test_cubic_solve_dual(a, b, mode, target_x):
-    result = d_bisect(model, a, b, εf=εf, εx=εx, limit=max_it, debug=True)
+    result = bisect_d(model, a, b, εf=εf, εx=εx, limit=max_it, debug=True)
     assert result.count < max_it
     assert abs(result.δx) < εx
     assert abs(result.f) < εf
     assert abs(target_x - result.x) < εx
-    result = d_newton(model, (a + b) / 2.0, εf=εf, εx=εx, limit=max_it, debug=True)
+    result = newton_d(model, (a + b) / 2.0, εf=εf, εx=εx, limit=max_it, debug=True)
     assert result.count < max_it
     assert abs(result.δx) < εx
     assert abs(result.f) < εf
@@ -74,7 +74,7 @@ def test_cubic_solve_dual(a, b, mode, target_x):
 def test_analysis_na_series(capsys):
     captured = capsys.readouterr()
     results = []
-    for result in s_analyze(model=model, method=Solver.NA, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
+    for result in analyze_s(model=model, method=Solver.NA, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, mode=Mode.ALL, console=False, debug=False):
         if result.count < max_it:
             results.append(result)
@@ -84,7 +84,7 @@ def test_analysis_na_series(capsys):
 def test_analysis_na_dual(capsys):
     captured = capsys.readouterr()
     results = []
-    for result in d_analyze(model=model, method=Solver.NA, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
+    for result in analyze_d(model=model, method=Solver.NA, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, console=False, debug=False):
         if result.count < max_it:
             results.append(result)
@@ -94,7 +94,7 @@ def test_analysis_na_dual(capsys):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cubic_series(solver):
     results = []
-    for result in s_analyze(model=lambda a: a ** 3 + 3 * a ** 2 - 3,
+    for result in analyze_s(model=lambda a: a ** 3 + 3 * a ** 2 - 3,
                             method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, mode=Mode.ALL, console=True, debug=False):
         if result.count < max_it:
@@ -110,7 +110,7 @@ def test_analysis_cubic_series(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cubic_dual(solver):
     results = []
-    for result in d_analyze(model=lambda a: a ** 3 + 3 * a ** 2 - 3,
+    for result in analyze_d(model=lambda a: a ** 3 + 3 * a ** 2 - 3,
                             method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, console=True, debug=False):
         if result.count < max_it:
@@ -123,7 +123,7 @@ def test_analysis_cubic_dual(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cos_cubic_series(solver):
     results = []
-    for result in s_analyze(model=lambda a: a.cos - a ** 3,
+    for result in analyze_s(model=lambda a: a.cos - a ** 3,
                             method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, mode=Mode.ALL, console=True, debug=False):
         if result.count < max_it:
@@ -137,7 +137,7 @@ def test_analysis_cos_cubic_series(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cos_cubic_dual(solver):
     results = []
-    for result in d_analyze(model=lambda a: a.cos - a ** 3,
+    for result in analyze_d(model=lambda a: a.cos - a ** 3,
                             method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, console=True, debug=False):
         if result.count < max_it:
@@ -148,7 +148,7 @@ def test_analysis_cos_cubic_dual(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_messy_series(solver):
     results = []
-    for result in s_analyze(model=lambda a: (a - 1) ** 2 / (a.cosh + 1).ln - 1,
+    for result in analyze_s(model=lambda a: (a - 1) ** 2 / (a.cosh + 1).ln - 1,
                             method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, mode=Mode.ALL, console=True, debug=False):
         if result.count < max_it:
@@ -164,7 +164,7 @@ def test_analysis_messy_series(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_messy_dual(solver):
     results = []
-    for result in d_analyze(model=lambda a: (a - 1) ** 2 / (a.cosh + 1).ln - 1,
+    for result in analyze_d(model=lambda a: (a - 1) ** 2 / (a.cosh + 1).ln - 1,
                             method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, console=True, debug=False):
         if result.count < max_it:
@@ -176,7 +176,7 @@ def test_analysis_messy_dual(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_septic_series(solver):
     results = []
-    for result in s_analyze(model=lambda a: (a + 7) * (5 + a) * (a + 2.0) * a * (1 - a) * (3.0 - a) * (a - 6),
+    for result in analyze_s(model=lambda a: (a + 7) * (5 + a) * (a + 2.0) * a * (1 - a) * (3.0 - a) * (a - 6),
                             method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, mode=Mode.ALL, console=True, debug=False):
         if result.count < max_it:
@@ -204,7 +204,7 @@ def test_analysis_septic_series(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_septic_dual(solver):
     results = []
-    for result in d_analyze(model=lambda a: (a + 7) * (5 + a) * (a + 2.0) * a * (1 - a) * (3.0 - a) * (a - 6),
+    for result in analyze_d(model=lambda a: (a + 7) * (5 + a) * (a + 2.0) * a * (1 - a) * (3.0 - a) * (a - 6),
                             method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, console=True, debug=False):
         if result.count < max_it:
