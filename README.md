@@ -315,28 +315,36 @@ z- ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.48 35.639 10 28 8 3
 
 ## Interactivity with Python
 This use case involves calling the Series methods and operators from ad.py, and the functions from plotters.py, from a Python interpreter.
+This is how I like to set things up:
+```
+$ echo '
+from math import *
+from ad import *
+from plotters import *
+from ode_analysis import *
+' > ipython.py
+$ ipython -i ipython.py
+```
 
 ##### Higher level function analysis
 Plotting function and derivatives, together with root and turning point analysis:
 ```
-$ ipython3
-Python 3.7.1 (default, Oct 22 2018, 11:21:55)
+$ ipython -i ipython.py 
+Python 3.6.8 (default, Jan 14 2019, 11:02:34) 
 Type 'copyright', 'credits' or 'license' for more information
-IPython 7.2.0 -- An enhanced Interactive Python. Type '?' for help.
-PyDev console: using IPython 7.2.0
-Python 3.7.1 (default, Oct 22 2018, 11:21:55)
-[GCC 8.2.0] on linux
-from plotters import *
-Backend TkAgg is interactive backend. Turning interactive mode on.
+IPython 7.8.0 -- An enhanced Interactive Python. Type '?' for help.
 ad module loaded
-playground module loaded
 plotters module loaded
-f = lambda a: (a.exp + (a.sqr - 4.0).exp).ln
-scan(f)
-BI  x: -1.962e+00  δx: -2.387e-10  f: +4.026e-10  \ ROOT___ 26
-BI  x: -1.312e+00  δx: -4.773e-10  f: +2.023e-10  / MIN_MAX 25
-BI  x: -1.849e-02  δx: -9.546e-10  f: -2.642e-10  / ROOT___ 24
-mplot(f)
+ode_analysis module loaded
+
+In [1]: f = lambda a: (a.exp + (a.sqr - 4.0).exp).ln                                                                                
+
+In [2]: scan_s(f)                                                                                                                   
+NT  x: -1.962e+00  δx: +4.123e-16  f: +1.332e-15  \ ROOT___ 4
+NT  x: -1.312e+00  δx: -0.000e+00  f: +0.000e+00  / MIN_MAX 4
+NT  x: -1.849e-02  δx: -2.714e-13  f: +2.662e-13  / ROOT___ 3
+
+In [3]: mplot_s(f)                                                                                                                  
 ```
 (matplotlib plot not shown!)
 
@@ -344,55 +352,58 @@ mplot(f)
 Here is a quick example of function inversion.
 There is a choice of analysis (root finding) method:
 ```
-$ ipython3
-...
-In [1]: from ad import *
-   ...: from playground import *
+$ ipython -i ipython.py 
+Python 3.6.8 (default, Jan 14 2019, 11:02:34) 
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.8.0 -- An enhanced Interactive Python. Type '?' for help.
 ad module loaded
-playground module loaded
+plotters module loaded
+ode_analysis module loaded
 
-In [2]: bisect(lambda x: x**2 - 2, xa=0.0, xb=2.0)
-Out[2]: Result(method='BI', x=1.414213562372879, f=-6.108447081487611e-13, δx=4.547473508864641e-13, count=42, sense='_', mode='ROOT___')
+In [1]: newton_d(lambda x: x * x - 2.0, x0=1.0)                                                                                     
+Out[1]: Result(method='NT', x=1.414213562373095, f=4.440892098500626e-16, δx=-1.570092458683775e-16, count=6, sense='_', mode='ROOT___')
 
-In [3]: newton(lambda x: x**2 - 2, x0=1.0)
-Out[3]: Result(method='NT', x=1.414213562373095, f=4.440892098500626e-16, δx=-1.570092458683775e-16, count=6, sense='_', mode='ROOT___')
+In [2]: timeit(newton_d(lambda x: x * x - 2.0, x0=1.0))                                                                             
+25.4 µs ± 1.35 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 
-In [4]: timeit(bisect(lambda x: x**2 - 2, xa=0.0, xb=2.0))
-600 µs ± 10.4 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+In [3]: bisect_d(lambda x: x * x, xa=1.0, xb=2.0)                                                                                   
+Out[3]: Result(method='BI', x=2.0, f=4.0, δx=0.0, count=101, sense='_', mode='ROOT___')
 
-In [5]: timeit(newton(lambda x: x**2 - 2, x0=1.0))
-76 µs ± 1.63 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
+In [4]: timeit(bisect_d(lambda x: x * x, xa=1.0, xb=2.0))                                                                           
+342 µs ± 7.4 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
 ```
 
 ##### Automatic Differentiation
 Here we calculate _all_ the derivatives of a simple cubic in x, followed by its sensitivities to each parameter a, b, c.
 ```
-$ ipython3
-...
-In [3]: from ad import *
+$ ipython -i ipython.py 
+Python 3.6.8 (default, Jan 14 2019, 11:02:34) 
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.8.0 -- An enhanced Interactive Python. Type '?' for help.
 ad module loaded
+plotters module loaded
+ode_analysis module loaded
 
-In [4]: a = Series.get(5, 3.0)
+In [1]: a = Series.get(5, 3.0)                                                                                                      
 
-In [5]: b = Series.get(5, 5.0)
+In [2]: b = Series.get(5, 5.0)                                                                                                      
 
-In [6]: c = Series.get(5, 7.0)
+In [3]: c = Series.get(5, 7.0)                                                                                                      
 
-In [7]: x = Series.get(5, 2.0)
+In [4]: x = Series.get(5, 2.0)                                                                                                      
 
-In [8]: print(a * x**3 - b * x**2 + c * x - 5)
-+1.300000e+01 +0.000000e+00 +0.000000e+00 +0.000000e+00 +0.000000e+00
+In [5]: print(a * x**3 - b * x**2 + c * x - 5)                                                                                      
++1.300e+01 +0.000e+00 +0.000e+00 +0.000e+00 +0.000e+00 
 
-In [9]: print(a * x.var**3 - b * x.var**2 + c * x.var - 5)
-+1.300000e+01 +2.300000e+01 +1.300000e+01 +3.000000e+00 +0.000000e+00
+In [6]: print(a * x.var**3 - b * x.var**2 + c * x.var - 5)                                                                          
++1.300e+01 +2.300e+01 +1.300e+01 +3.000e+00 +0.000e+00 
 
-In [10]: print(a.var * x**3 - b * x**2 + c * x - 5)
-+1.300000e+01 +8.000000e+00 +0.000000e+00 +0.000000e+00 +0.000000e+00
+In [7]: print(a.var * x**3 - b * x**2 + c * x - 5)                                                                                  
++1.300e+01 +8.000e+00 +0.000e+00 +0.000e+00 +0.000e+00 
 
-In [11]: print(a * x**3 - b.var * x**2 + c * x - 5)
-+1.300000e+01 -4.000000e+00 +0.000000e+00 +0.000000e+00 +0.000000e+00
+In [8]: print(a * x**3 - b.var * x**2 + c * x - 5)                                                                                  
++1.300e+01 -4.000e+00 +0.000e+00 +0.000e+00 +0.000e+00 
 
-In [12]: print(a * x**3 - b * x**2 + c.var * x - 5)
-+1.300000e+01 +2.000000e+00 +0.000000e+00 +0.000000e+00 +0.000000e+00
-
+In [9]: print(a * x**3 - b * x**2 + c.var * x - 5)                                                                                  
++1.300e+01 +2.000e+00 +0.000e+00 +0.000e+00 +0.000e+00 
 ```
