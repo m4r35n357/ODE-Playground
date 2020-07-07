@@ -67,7 +67,7 @@ There are also functions for (matching the t_functions):
 
 ## Function Analysis (Python)
 
-Using these "higher level" functions, Newton's method is implemented trivially, but I have also provided an implementations of the bisection method for comparison.
+Using these "higher level" functions, Newton's method is implemented trivially, but I have also provided an implementation of the bisection method for comparison.
 In summary, there are three main areas of application for the code:
 * solving nonlinear ODEs (to arbitrary precision with c/MPFR)
 * plotting functions and their (higher) derivatives, with solution, turning-point, and inflection analysis (Python is best here)

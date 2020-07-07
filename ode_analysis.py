@@ -68,7 +68,7 @@ def bisect_ce(j, λa, λb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, de
         elif ce_sign * ce > 0.0:
             λa = λ
         else:
-            break
+            λb, λa = λ, λ
         δλ = λb.val - λa.val
         i += 1
         if debug:

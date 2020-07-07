@@ -485,7 +485,7 @@ def bisect_s(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, m
         elif f_sign * fc > 0.0:
             a = c
         else:
-            break
+            b, a = c, c
         δx = b.val - a.val
         i += 1
         if debug:
@@ -549,7 +549,7 @@ def bisect_d(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, d
         elif f_sign * fc > 0.0:
             a = c
         else:
-            break
+            b, a = c, c
         δx = b.val - a.val
         i += 1
         if debug:
