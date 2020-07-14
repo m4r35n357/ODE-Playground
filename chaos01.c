@@ -93,59 +93,66 @@ void mean_square_displacement (long double c, long n, long *n_cut, long double *
 }
 
 int main(int argc, char **argv) {
-    long double c;
-    long n, n_cut, column, random = NO;
-    long double data[100000], pc[100000], qc[100000], mc[10000], dc[10000], xi[10000],  kn[100], cn[100];
+    long n, n_cut, nc = -1, command, column, random = NO;
+    long double c = -1.0, data[100000], pc[100000], qc[100000], mc[10000], dc[10000], xi[10000],  kn[100], cn[100];
 
     assert(argc == 4 || argc == 5);
+    command = strtol(argv[1], NULL, 10);
     column = strtol(argv[2], NULL, 10);
-    c = strtold(argv[3], NULL);
-    if (argc == 5) {
-        random = strtol(argv[4], NULL, 10);
-        switch (random) {
-            case NO : case YES : break;
-            default :
-                fprintf(stderr, ">>> ARG 4: invalid c domain [%ld] - use one of [ 0 (linear) | 1 (random) ] <<<\n", random);
+    switch (command) {
+        case PC : case MSD :
+            c = strtold(argv[3], NULL);
+            if (c < 0.0 || c > PI) {
+                fprintf(stderr, ">>> ARG 3: bad c value [%Lf] - should be 0.0 <= c <= PI <<<\n", c);
                 exit(1);
-        }
+            }
+            break;
+        case KVC : case K :
+            nc = strtol(argv[3], NULL, 10);
+            if (nc < 2 || nc % 2 == 1) {
+                fprintf(stderr, ">>> ARG 3: bad c range [%ld] - should be even and greater than 2 <<<\n", nc);
+                exit(1);
+            }
+            random = strtol(argv[4], NULL, 10);
+            if (random != NO && random != YES) {
+                fprintf(stderr, ">>> ARG 4: bad c domain [%ld] - use one of [ 0 (linear) | 1 (random) ] <<<\n", random);
+                exit(1);
+            }
+            break;
+        default :
+            fprintf(stderr, ">>> ARG 1: command [%ld] not recognized - use one of [ 0 (PC) | 1 (MSD) | 2 (KVC) | 3 (K) ] <<<\n",
+                    command);
+            exit(1);
     }
     import_data(&n, data, column);
-    switch (strtol(argv[1], NULL, 10)) {
+    switch (command) {
         case PC :
-            assert(argc == 4);
             translation_variables(c, n, data, pc, qc, YES);
             break;
         case MSD :
-            assert(argc == 4);
             translation_variables(c, n, data, pc, qc, NO);
             mean_square_displacement(c, n, &n_cut, data, pc, qc, mc, dc, xi, YES);
             break;
         case KVC :
-            assert(argc == 5);
-            for (int p = 0; p < c; p++) {
-                cn[p] = random == NO ? (0.5 + p) * PI / c : random_pi();
+            for (int p = 0; p < nc; p++) {
+                cn[p] = random == NO ? (0.5 + p) * PI / nc : random_pi();
                 translation_variables(cn[p], n, data, pc, qc, NO);
                 mean_square_displacement(cn[p], n, &n_cut, data, pc, qc, mc, dc, xi, NO);
                 kn[p] = corr(n_cut, xi, dc);
                 printf("%+.12Le %+.12Le\n", cn[p], kn[p]);
             }
-            fprintf(stderr, "%+.12Le\n", median(c, kn));
+            fprintf(stderr, "%+.12Le\n", median(nc, kn));
             break;
         case K :
-            assert(argc == 5);
-            for (int r = 0; r < c; r++) {
-                cn[r] = random == NO ? (0.5 + r) * PI / c : random_pi();
+            for (int r = 0; r < nc; r++) {
+                cn[r] = random == NO ? (0.5 + r) * PI / nc : random_pi();
                 translation_variables(cn[r], n, data, pc, qc, NO);
                 mean_square_displacement(cn[r], n, &n_cut, data, pc, qc, mc, dc, xi, NO);
                 kn[r] = corr(n_cut, xi, dc);
                 fprintf(stderr, "%+.12Le %+.12Le\n", cn[r], kn[r]);
             }
-            printf("%+.12Le\n", median(c, kn));
+            printf("%+.12Le\n", median(nc, kn));
             break;
-        default :
-            fprintf(stderr, ">>> ARG 1: subcommand [%ld] not recognized - use one of [ 0 (PC) | 1 (MSD) | 2 (KVC) | 3 (K) ] <<<\n",
-                    strtol(argv[1], NULL, 10));
-            exit(1);
     }
 
     return 0;
