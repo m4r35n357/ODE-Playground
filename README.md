@@ -211,11 +211,11 @@ $ grep Example *.py tsm-*.c
 ```
 Matplotlib progressive graph plotting in Python (second parameter ignored as python floats are fixed double precision):
 ```
-$ ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
+$ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 ```
 or in c (notice absence of the model parameter and presence of the internal precision arg):
 ```
-$ ./tsm-lorenz-dbg 15 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
+$ ./tsm-lorenz-dbg 15 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 ```
 
 #### tsm.py and tsm-\*-\* Parameter Reference
@@ -250,7 +250,7 @@ Since the RK4 Lorentz simulator (c only) is by definition fixed order, the "orde
 
 Write to a data file
 ```
-$ ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 >/tmp/data
+$ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/data
 ```
 then plot it
 ```
@@ -259,18 +259,33 @@ $ gnuplot -p -e "splot '/tmp/data' with lines"
 
 #### 3D progressive trajectory plotting (pi3d)
 ```
-$ ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
+$ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 ```
 
 ## [NEW] '0-1' test for chaos (c)
 
+Accepts data from stdin, writes to stdout.
+Input can be piped directly from a data file, an ODE solver or via a sed filter.
+Output can be sent to a plotting script.
+MSD and K calculations are based on 1/10 of the number of data values in stdin.
+
 Parameter | Meaning
 ----------|-----------
 1 | Output type [ 0 (P & C),  1 (MSD),  2 (K vs C),  3 (Summary K) ]
-2 | Column in stdin to use as data (0, 1, 2)
+2 | Column of stdin to use as data (0, 1, 2)
 3 | Value of c (P & C and MSD), or number of automatic c values (K vs C or Summary K)
 4 | 0 for linear c range, 1 for random (K vs C or Summary K)
 
+Examples (note increased number of steps, and the sed filtering, to overcome oversampling):
+```
+./tsm-lorenz-dbg 24 32 20 .01 100000 -15.8 -17.48 35.64 10 28 8 3 | sed -n '1~10p' | time -p ./chaos-0-1-test 0 0 0.5 | ./plotXY.py 2 3
+
+./tsm-lorenz-dbg 24 32 20 .01 100000 -15.8 -17.48 35.64 10 28 8 3 | sed -n '1~10p' | time -p ./chaos-0-1-test 1 0 0.5 | ./plotXYZ.py 0 1 2
+
+./tsm-lorenz-dbg 24 32 20 .01 100000 -15.8 -17.48 35.64 10 28 8 3 | sed -n '1~10p' | time -p ./chaos-0-1-test 2 0 8 0 | ./plotXY.py 0 1
+
+./tsm-lorenz-dbg 24 32 20 .01 100000 -15.8 -17.48 35.64 10 28 8 3 | sed -n '1~10p' | time -p ./chaos-0-1-test 3 0 8 0
+```
 ## cns script - Clean Numerical Simulation
 
 This is a relatively new approach to dealing with the global error of ODE simulations, described in detail here: https://arxiv.org/abs/1109.0130.
