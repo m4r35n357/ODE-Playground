@@ -19,6 +19,8 @@ These programs are the result.
 
 Finally, more general resources on automatic differentiation can be found at the following portal: http://www.autodiff.org/ (see specifically the "Applications" and "Tools" sections).
 
+[NEW] I have recently added an initial implementation of Gottwald & Melbourne's '0-1' test to detect chaos (c only).
+
 ## Implementations (c/MPFR and Python)
 
 My primary aim was to be able to solve coupled nonlinear equations and investigate chaotic systems, without relying on "black-box" ODE solvers.
@@ -64,6 +66,12 @@ There are also functions for (matching the t_functions):
 * pwr (f(x)^a, where a is a scalar)
 * ln
 * asin(h), acos(h), atan(h) - Python only
+
+## [NEW] '0-1' test for chaos (c)
+
+This is an implementation of Gottwald & Melbourne's latest algorithm with subtraction of the "oscillating term" from the Mean Squared Deviation.
+K value is calculated using the correlation method.
+Overall K can be generated from a random or linear range of c.
 
 ## Function Analysis (Python)
 
@@ -254,6 +262,15 @@ $ gnuplot -p -e "splot '/tmp/data' with lines"
 $ ./tsm.py lorenz 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 ```
 
+## [NEW] '0-1' test for chaos (c)
+
+Parameter | Meaning
+----------|-----------
+1 | Output type [ 0 (P & C),  1 (MSD),  2 (K vs C),  3 (Summary K) ]
+2 | Column in stdin to use as data (0, 1, 2)
+3 | Value of c (P & C and MSD), or number of automatic c values (K vs C or Summary K)
+4 | 0 for linear c range, 1 for random (K vs C or Summary K)
+
 ## cns script - Clean Numerical Simulation
 
 This is a relatively new approach to dealing with the global error of ODE simulations, described in detail here: https://arxiv.org/abs/1109.0130.
@@ -313,7 +330,7 @@ z- ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.48 35.639 10 28 8 3
 ```
 (3D plot not shown)
 
-## Interactivity with Python
+## Interactive Function Analysis with Python
 This use case involves calling the Series methods and operators from ad.py, and the functions from plotters.py, from a Python interpreter.
 This is how I like to set things up:
 ```
