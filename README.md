@@ -21,7 +21,7 @@ Finally, more general resources on automatic differentiation can be found at the
 
 [NEW] I have recently added an initial implementation of Gottwald & Melbourne's '0-1' test to detect chaos (c only).
 
-## Implementations (c/MPFR and Python)
+## Taylor Series ODE Solvers (c/MPFR and Python)
 
 My primary aim was to be able to solve coupled nonlinear equations and investigate chaotic systems, without relying on "black-box" ODE solvers.
 The resulting c code takes the form of a small (<200 loc) arbitrary precision Taylor Series "library", and the model-specific ODE simulators are tiny client programs to this, typically 25-35 loc each.
@@ -72,6 +72,7 @@ There are also functions for (matching the t_functions):
 This is an implementation of Gottwald & Melbourne's latest algorithm with subtraction of the "oscillating term" from the Mean Squared Deviation.
 K value is calculated using the correlation method.
 Overall K can be generated from a random or linear range of c.
+http://www.maths.usyd.edu.au/u/gottwald/preprints/testforchaos_MPI.pdf
 
 ## Function Analysis (Python)
 

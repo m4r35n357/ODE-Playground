@@ -97,7 +97,6 @@ void mean_square_displacement (long double c, long n, long double data[], long d
 int main(int argc, char **argv) {
     long double c = -1.0;
     long nc = -1, random = NO;
-
     assert(argc == 4 || argc == 5);
     long command = strtol(argv[1], NULL, 10);
     switch (command) {
