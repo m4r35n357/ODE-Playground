@@ -58,10 +58,12 @@ void import_data (long *n, long double data[], long column) {
             fprintf(stderr, ">>> ARG 2: invalid data column [%ld] - use one of [ 0 (x) | 1 (y) | 2 (z) ] <<<\n", column);
             exit(1);
     }
+    fprintf(stderr, "Loading data . . . ");
     while (scanf("%Le%Le%Le%Le", &x, &y, &z, &t) != EOF) {
         data[*n] = *d;
         *n += 1;
     }
+    fprintf(stderr, "%ld items\n", *n - 1);
 }
 
 void translation_variables (long double c, long n, long double data[], long double p[], long double q[], choice print) {
@@ -138,7 +140,7 @@ int main(int argc, char **argv) {
             break;
         case KVC :
             for (int p = 1; p <= nc; p++) {
-                cn[p] = random == NO ? (p - 0.5) * PI / nc : random_pi();
+                cn[p] = random == YES ? random_pi() : (p - 0.5) * PI / nc;
                 translation_variables(cn[p], n, data, pc, qc, NO);
                 mean_square_displacement(cn[p], n, data, pc, qc, &n_cut, mc, dc, xi, NO);
                 kn[p] = corr(n_cut, xi, dc);
@@ -148,7 +150,7 @@ int main(int argc, char **argv) {
             break;
         case K :
             for (int r = 1; r <= nc; r++) {
-                cn[r] = random == NO ? (r - 0.5) * PI / nc : random_pi();
+                cn[r] = random == YES ? random_pi() : (r - 0.5) * PI / nc;
                 translation_variables(cn[r], n, data, pc, qc, NO);
                 mean_square_displacement(cn[r], n, data, pc, qc, &n_cut, mc, dc, xi, NO);
                 kn[r] = corr(n_cut, xi, dc);

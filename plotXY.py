@@ -5,7 +5,7 @@ from matplotlib import pyplot
 
 
 def main():
-    print("X-Y Plotter: {}".format(argv))
+    print("X-Y Plotter: {}".format(argv), file=stderr)
     if len(argv) < 2:
         raise Exception('>>> ERROR! Please supply two quantities to plot <<<')
     coordinate1 = int(argv[1])
