@@ -26,6 +26,6 @@ void import_data (long *n, long double *data, long column);
 
 void translation_variables (long double c, long n, long double *data, long double *pc, long double *qc, choice print);
 
-void mean_square_displacement (long double c, long n, long *n_cut, long double *data, long double *pc, long double *qc,
-                                long double *mc, long double *dc, long double *xi, choice print);
+void mean_square_displacement (long double c, long n, long double *data, long double *pc, long double *qc,
+                                long *n_cut, long double *mc, long double *dc, long double *xi, choice print);
 

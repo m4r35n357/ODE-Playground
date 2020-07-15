@@ -50,7 +50,6 @@ long double median (int n, long double array[]) {
 
 void import_data (long *n, long double data[], long column) {
     long double x, y, z, t, *d;
-    *n = 1;
     switch (column) {
         case 0 : d = &x; break;
         case 1 : d = &y; break;
@@ -63,7 +62,6 @@ void import_data (long *n, long double data[], long column) {
         data[*n] = *d;
         *n += 1;
     }
-    data[0] = NAN;  // temporary protection
 }
 
 void translation_variables (long double c, long n, long double data[], long double p[], long double q[], choice print) {
@@ -76,32 +74,32 @@ void translation_variables (long double c, long n, long double data[], long doub
         }
         if (print) printf("%+.6d %+.12Le %+.12Le %+.12Le\n", k, data[k], p[k], q[k]);
     }
-    p[0] = NAN; q[0] = NAN;  // temporary protection
 }
 
-void mean_square_displacement (long double c, long n, long *n_cut, long double data[], long double p[], long double q[],
-                                long double m[], long double d[], long double xi[], choice print) {
-    *n_cut = n / 10;
+void mean_square_displacement (long double c, long n, long double data[], long double p[], long double q[],
+                                long *n_cut, long double m[], long double d[], long double xi[], choice print) {
     long double e2 = mean(n, data) * mean(n, data);
+    *n_cut = n / 10;
     for (int k = 1; k <= *n_cut; k++) {
         m[k] = 0.0;
-        for (int j = 1; j <= n - *n_cut; j++) {
-            m[k] += ((p[j + k] - p[j]) * (p[j + k] - p[j]) + (q[j + k] - q[j]) * (q[j + k] - q[j])) / (n - *n_cut);
+        long limit = n - *n_cut;
+        for (int j = 1; j <= limit; j++) {
+            long double p_term = (p[j + k] - p[j]);
+            long double q_term = (q[j + k] - q[j]);
+            m[k] += (p_term * p_term + q_term * q_term) / limit;
         }
         d[k] = m[k] - e2 * (1.0 - cos(k * c)) / (1.0 - cos(c));
         xi[k] = (long double)k;
         if (print) printf("%+.6d %+.12Le %+.12Le %+.12Le\n", k, m[k], d[k], xi[k]);
     }
-    m[0] = NAN; d[0] = NAN; xi[0] = NAN;  // temporary protection
 }
 
 int main(int argc, char **argv) {
-    long n, n_cut, nc = -1, command, column, random = NO;
-    long double c = -1.0, data[100002], pc[100002], qc[100002], mc[10002], dc[10002], xi[10002],  kn[102], cn[102];
+    long double c = -1.0;
+    long nc = -1, random = NO;
 
     assert(argc == 4 || argc == 5);
-    command = strtol(argv[1], NULL, 10);
-    column = strtol(argv[2], NULL, 10);
+    long command = strtol(argv[1], NULL, 10);
     switch (command) {
         case PC : case MSD :
             c = strtold(argv[3], NULL);
@@ -127,20 +125,23 @@ int main(int argc, char **argv) {
                     command);
             exit(1);
     }
-    import_data(&n, data, column);
+
+    long double data[100002], pc[100002], qc[100002], mc[10002], dc[10002], xi[10002],  kn[102], cn[102];
+    long n = 1, n_cut;
+    import_data(&n, data, strtol(argv[2], NULL, 10));
     switch (command) {
         case PC :
             translation_variables(c, n, data, pc, qc, YES);
             break;
         case MSD :
             translation_variables(c, n, data, pc, qc, NO);
-            mean_square_displacement(c, n, &n_cut, data, pc, qc, mc, dc, xi, YES);
+            mean_square_displacement(c, n, data, pc, qc, &n_cut, mc, dc, xi, YES);
             break;
         case KVC :
             for (int p = 1; p <= nc; p++) {
                 cn[p] = random == NO ? (p - 0.5) * PI / nc : random_pi();
                 translation_variables(cn[p], n, data, pc, qc, NO);
-                mean_square_displacement(cn[p], n, &n_cut, data, pc, qc, mc, dc, xi, NO);
+                mean_square_displacement(cn[p], n, data, pc, qc, &n_cut, mc, dc, xi, NO);
                 kn[p] = corr(n_cut, xi, dc);
                 printf("%+.12Le %+.12Le\n", cn[p], kn[p]);
             }
@@ -150,7 +151,7 @@ int main(int argc, char **argv) {
             for (int r = 1; r <= nc; r++) {
                 cn[r] = random == NO ? (r - 0.5) * PI / nc : random_pi();
                 translation_variables(cn[r], n, data, pc, qc, NO);
-                mean_square_displacement(cn[r], n, &n_cut, data, pc, qc, mc, dc, xi, NO);
+                mean_square_displacement(cn[r], n, data, pc, qc, &n_cut, mc, dc, xi, NO);
                 kn[r] = corr(n_cut, xi, dc);
                 fprintf(stderr, "%+.12Le %+.12Le\n", cn[r], kn[r]);
             }
