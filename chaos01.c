@@ -15,19 +15,19 @@ long double random_pi () {
     return ((long double)rand() / (long double)(RAND_MAX)) * PI;
 }
 
-long double mean (long n, long double *data) {
+long double mean (long n, long double data[]) {
     long double m = 0.0;
-    for (int j = 0; j < n; j++) {
+    for (int j = 1; j <= n; j++) {
         m += data[j];
     }
     return m / n;
 }
 
-long double cov (long n, long double *a, long double *b) {
+long double cov (long n, long double a[], long double b[]) {
     long double a_bar = mean(n, a);
     long double b_bar = mean(n, b);
     long double c = 0.0;
-    for (int j = 0; j < n; j++) {
+    for (int j = 1; j <= n; j++) {
         c += (a[j] - a_bar) * (b[j] - b_bar);
     }
     return c / n;
@@ -43,14 +43,14 @@ int compare (const void *a, const void *b) {
     return fa > fb ? 1 : -1;
 }
 
-long double median (int n, long double *array) {
+long double median (int n, long double array[]) {
     qsort(array, n, sizeof(long double), compare);
-    return n % 2 == 0 ? (array[n / 2] + array[n / 2 - 1]) / 2 : array[n / 2];
+    return n % 2 == 0 ? (array[n / 2 + 1] + array[n / 2]) / 2 : array[(n + 1) / 2];
 }
 
-void import_data (long *n, long double *data, long column) {
+void import_data (long *n, long double data[], long column) {
     long double x, y, z, t, *d;
-    *n = 0;
+    *n = 1;
     switch (column) {
         case 0 : d = &x; break;
         case 1 : d = &y; break;
@@ -63,38 +63,41 @@ void import_data (long *n, long double *data, long column) {
         data[*n] = *d;
         *n += 1;
     }
+    data[0] = NAN;  // temporary protection
 }
 
-void translation_variables (long double c, long n, long double *data, long double *p, long double *q, choice print) {
-    for (int k = 0; k < n; k++) {
+void translation_variables (long double c, long n, long double data[], long double p[], long double q[], choice print) {
+    for (int k = 1; k <= n; k++) {
         p[k] = 0.0;
         q[k] = 0.0;
-        for (int j = 0; j < k; j++) {
-            p[k] += data[j] * cos((j + 1) * c);
-            q[k] += data[j] * sin((j + 1) * c);
+        for (int j = 1; j <= k; j++) {
+            p[k] += data[j] * cos(j * c);
+            q[k] += data[j] * sin(j * c);
         }
         if (print) printf("%+.6d %+.12Le %+.12Le %+.12Le\n", k, data[k], p[k], q[k]);
     }
+    p[0] = NAN; q[0] = NAN;  // temporary protection
 }
 
-void mean_square_displacement (long double c, long n, long *n_cut, long double *data, long double *p, long double *q,
-                                long double *m, long double *d, long double *xi, choice print) {
+void mean_square_displacement (long double c, long n, long *n_cut, long double data[], long double p[], long double q[],
+                                long double m[], long double d[], long double xi[], choice print) {
     *n_cut = n / 10;
     long double e2 = mean(n, data) * mean(n, data);
-    for (int k = 0; k < *n_cut; k++) {
+    for (int k = 1; k <= *n_cut; k++) {
         m[k] = 0.0;
-        for (int j = 0; j < n - *n_cut; j++) {
+        for (int j = 1; j <= n - *n_cut; j++) {
             m[k] += ((p[j + k] - p[j]) * (p[j + k] - p[j]) + (q[j + k] - q[j]) * (q[j + k] - q[j])) / (n - *n_cut);
         }
         d[k] = m[k] - e2 * (1.0 - cos(k * c)) / (1.0 - cos(c));
         xi[k] = (long double)k;
         if (print) printf("%+.6d %+.12Le %+.12Le %+.12Le\n", k, m[k], d[k], xi[k]);
     }
+    m[0] = NAN; d[0] = NAN; xi[0] = NAN;  // temporary protection
 }
 
 int main(int argc, char **argv) {
     long n, n_cut, nc = -1, command, column, random = NO;
-    long double c = -1.0, data[100000], pc[100000], qc[100000], mc[10000], dc[10000], xi[10000],  kn[100], cn[100];
+    long double c = -1.0, data[100002], pc[100002], qc[100002], mc[10002], dc[10002], xi[10002],  kn[102], cn[102];
 
     assert(argc == 4 || argc == 5);
     command = strtol(argv[1], NULL, 10);
@@ -134,8 +137,8 @@ int main(int argc, char **argv) {
             mean_square_displacement(c, n, &n_cut, data, pc, qc, mc, dc, xi, YES);
             break;
         case KVC :
-            for (int p = 0; p < nc; p++) {
-                cn[p] = random == NO ? (0.5 + p) * PI / nc : random_pi();
+            for (int p = 1; p <= nc; p++) {
+                cn[p] = random == NO ? (p - 0.5) * PI / nc : random_pi();
                 translation_variables(cn[p], n, data, pc, qc, NO);
                 mean_square_displacement(cn[p], n, &n_cut, data, pc, qc, mc, dc, xi, NO);
                 kn[p] = corr(n_cut, xi, dc);
@@ -144,8 +147,8 @@ int main(int argc, char **argv) {
             fprintf(stderr, "%+.12Le\n", median(nc, kn));
             break;
         case K :
-            for (int r = 0; r < nc; r++) {
-                cn[r] = random == NO ? (0.5 + r) * PI / nc : random_pi();
+            for (int r = 1; r <= nc; r++) {
+                cn[r] = random == NO ? (r - 0.5) * PI / nc : random_pi();
                 translation_variables(cn[r], n, data, pc, qc, NO);
                 mean_square_displacement(cn[r], n, &n_cut, data, pc, qc, mc, dc, xi, NO);
                 kn[r] = corr(n_cut, xi, dc);
