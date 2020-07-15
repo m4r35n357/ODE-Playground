@@ -286,6 +286,14 @@ Examples (note increased number of steps, and the sed filtering, to overcome ove
 
 ./tsm-lorenz-dbg 24 32 20 .01 100000 -15.8 -17.48 35.64 10 28 8 3 | sed -n '1~10p' | time -p ./chaos-0-1-test 3 0 8 0
 ```
+Here is a nice pipeline, analyzing the Thomas cyclic attractor over a range of its only parameter and displaying the plot.
+```
+$ h=0.001; steps=300; step=0; while [ $step -le $steps ]; do x=$(echo "scale=3; $h * $step;" | bc); echo -n "$x "; ./tsm-thomas-dbg 9 32 10 0.1 10000 1 0 0 $x 2>/dev/null | sed -n '1~100p' | ./chaos-0-1-test 3 0 8 0 2>/dev/null; step=$(expr $step + 1); done | ./plotXY.py 0 1
+```
+Another cyclic attractor with a single parameter, Halvorsen:
+```
+$ h=0.001; steps=3000; step=0; while [ $step -le $steps ]; do x=$(echo "scale=4; $h * $step;" | bc); echo -n "$x "; ./tsm-halvorsen-dbg 9 32 10 .01 10000 1 0 0 $x 2>/dev/null | sed -n '1~100p' | time -p ./chaos-0-1-test 3 0 8 0 2>/dev/null; step=$(expr $step + 1); done | ./plotXY.py 0 1
+```
 ## cns script - Clean Numerical Simulation
 
 This is a relatively new approach to dealing with the global error of ODE simulations, described in detail here: https://arxiv.org/abs/1109.0130.
