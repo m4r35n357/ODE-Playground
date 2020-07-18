@@ -49,7 +49,18 @@ These "low-level" functions, when properly called,  are all that is needed to so
 There is a fairly extensive collection of nonlinear ODE examples already implemented, in the file tsm.py, and in the tsm-\*-*.c files.
 The list includes systems due to Lorenz, Rossler, Thomas, Bouali, Rabinovitch-Fabrikant, Sprott, and many others.
 
-Partly to verify my own implementation of these recurrence rules, I have added a demonstration of using Taylor series to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
+## [NEW] '0-1' test for chaos (c)
+
+This is an implementation of Gottwald & Melbourne's data-based test, which takes as input the trajectories from and ODE solver, or other time series.
+It does not use the ODE equations in any way, just the output.
+This is the latest version of the algorithm with subtraction of the "oscillating term" from the Mean Squared Deviation.
+K value is calculated using the correlation method.
+Overall K can be generated from a random or linear range of c.
+http://www.maths.usyd.edu.au/u/gottwald/preprints/testforchaos_MPI.pdf
+
+## Function Analysis (Python)
+
+Partly to verify my own implementation of the Taylor recurrence rules, I have added a demonstration of using series to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
 The solver demo can be used to find roots (and also extrema and inflection points by "extending" Newton to higher derivatives) in single variable nonlinear equations.
 Of course it is more generally useful for finding inverse values (where real solutions exist) of complicated functions, not just their roots.
 
@@ -66,15 +77,6 @@ There are also functions for (matching the t_functions):
 * pwr (f(x)^a, where a is a scalar)
 * ln
 * asin(h), acos(h), atan(h) - Python only
-
-## [NEW] '0-1' test for chaos (c)
-
-This is an implementation of Gottwald & Melbourne's latest algorithm with subtraction of the "oscillating term" from the Mean Squared Deviation.
-K value is calculated using the correlation method.
-Overall K can be generated from a random or linear range of c.
-http://www.maths.usyd.edu.au/u/gottwald/preprints/testforchaos_MPI.pdf
-
-## Function Analysis (Python)
 
 Using these "higher level" functions, Newton's method is implemented trivially, but I have also provided an implementation of the bisection method for comparison.
 In summary, there are three main areas of application for the code:
