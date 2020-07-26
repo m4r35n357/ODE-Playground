@@ -54,5 +54,5 @@ perturb () {
 perturb $*
 wait
 
-./plot3d.py $fileA $fileB $fileC $fileD $fileE $fileF $fileG >/dev/null 2>&1 &
+#./plot3d.py $fileA $fileB $fileC $fileD $fileE $fileF $fileG >/dev/null 2>&1 &
 
