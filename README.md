@@ -49,14 +49,23 @@ These "low-level" functions, when properly called,  are all that is needed to so
 There is a fairly extensive collection of nonlinear ODE examples already implemented, in the file tsm.py, and in the tsm-\*-*.c files.
 The list includes systems due to Lorenz, Rossler, Thomas, Bouali, Rabinovitch-Fabrikant, Sprott, and many others.
 
-## [NEW] '0-1' test for chaos (c)
+## [UPDATED] '0-1' test for chaos (c)
 
+### [Latest approach]
+This is based on deviations from the "nominal" trajectory, using a technique similar to that in the "CNS" script described below.
+It was motivated by the first part of this paper by Wernecke.
+https://arxiv.org/abs/1605.05616
+
+### [Previous approach]
 This is an implementation of Gottwald & Melbourne's data-based test, which takes as input the trajectories from and ODE solver, or other time series.
 It does not use the ODE equations in any way, just the output.
 This is the latest version of the algorithm with subtraction of the "oscillating term" from the Mean Squared Deviation.
 K value is calculated using the correlation method.
 Overall K can be generated from a random or linear range of c.
-http://www.maths.usyd.edu.au/u/gottwald/preprints/testforchaos_MPI.pdf
+http://www.maths.usyd.edu.au/u/gottwald/preprints/testforchaos_MPI.pdf.
+
+Unfortunately when applied to continuous systems the method needs to be compensated for oversampling, which is a very manual step which involves caclulating the PSD, and discarding samples.
+I do not intend to develop this approach further.
 
 ## Function Analysis (Python)
 
@@ -265,8 +274,12 @@ $ gnuplot -p -e "splot '/tmp/data' with lines"
 $ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 ```
 
-## [NEW] '0-1' test for chaos (c)
+## [UPDATED] '0-1' test for chaos (c)
 
+### [Latest approach]
+Latest method requires manual editing of a shell script.
+
+### [Previous approach]
 Accepts data from stdin, writes to stdout.
 Input can be piped directly from a data file, an ODE solver or via a sed filter.
 Output can be sent to a plotting script.

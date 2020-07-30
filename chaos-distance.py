@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 # Example: ./ic .00001 ./tsm-rf-dbg 9 32 10 .01 50000 .05 -.05 .3 .125 .1
-#
-#          ./chaos-distance.py /tmp/dataA /tmp/dataB /tmp/dataC /tmp/dataD /tmp/dataE /tmp/dataF /tmp/dataG 50001 0.000001 0
+#          ./chaos-distance.py /tmp/dataA /tmp/dataB /tmp/dataC /tmp/dataD /tmp/dataE /tmp/dataF /tmp/dataG 50001 0.000001 0 1
 
 from sys import argv, stderr
 from math import sqrt
@@ -21,7 +20,7 @@ def scan():
     if len(argv) != 12:
         raise Exception(">>> ERROR! Please supply seven file names, the intended data file length, a threshold, [0|1] for final/median  and [0|1] for data/summary <<<")
     data_a, data_b, data_c, data_d, data_e, data_f, data_g = [], [], [], [], [], [], []
-    with open(argv[1]) as a, open(argv[2]) as b,open(argv[3]) as c, open(argv[4]) as d, open(argv[5]) as e, open(argv[6]) as f, open(argv[7]) as g:
+    with open(argv[1]) as a, open(argv[2]) as b, open(argv[3]) as c, open(argv[4]) as d, open(argv[5]) as e, open(argv[6]) as f, open(argv[7]) as g:
         for line_a, line_b, line_c, line_d, line_e, line_f, line_g in zip(a, b, c, d, e, f, g):
             data_a.append(line_to_data(line_a))
             data_b.append(line_to_data(line_b))

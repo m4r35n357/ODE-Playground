@@ -14,7 +14,8 @@ fileF='/tmp/dataF'
 fileG='/tmp/dataG'
 
 delta=$1
-shift
+plot=$2
+shift 2
 
 perturb () {
     start="$1 $2 $3 $4 $5 $6"
@@ -54,5 +55,8 @@ perturb () {
 perturb $*
 wait
 
-#./plot3d.py $fileA $fileB $fileC $fileD $fileE $fileF $fileG >/dev/null 2>&1 &
+if [ "x$plot" = "xplot" ]
+then
+    ./plot3d.py $fileA $fileB $fileC $fileD $fileE $fileF $fileG >/dev/null 2>&1 &
+fi
 
