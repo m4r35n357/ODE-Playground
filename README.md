@@ -49,15 +49,17 @@ These "low-level" functions, when properly called,  are all that is needed to so
 There is a fairly extensive collection of nonlinear ODE examples already implemented, in the file tsm.py, and in the tsm-\*-*.c files.
 The list includes systems due to Lorenz, Rossler, Thomas, Bouali, Rabinovitch-Fabrikant, Sprott, and many others.
 
-## [UPDATED] '0-1' test for chaos (c)
+## [UPDATED] Scanning for chaos
 
 ### [Latest approach]
-This is based on deviations from the "nominal" trajectory, using a technique similar to that in the "CNS" script described below.
-It was motivated by the first part of this paper by Wernecke.
+This is based on deviations from the "nominal" trajectory, using a technique similar to what is already used in the "CNS" script described below.
+It was motivated by the first part of this paper by Wernecke:
 https://arxiv.org/abs/1605.05616
+but does not use the ensemble average, or any correlations.
+As well as distinguishing between limit cycles and chaos, it also identifies unbounded and static solutions.
 
-### [Previous approach]
-This is an implementation of Gottwald & Melbourne's data-based test, which takes as input the trajectories from and ODE solver, or other time series.
+### [Previous approach, already deprecated!]
+This is an implementation of Gottwald & Melbourne's data-based '0-1' test, which takes as input the trajectories from and ODE solver, or other time series.
 It does not use the ODE equations in any way, just the output.
 This is the latest version of the algorithm with subtraction of the "oscillating term" from the Mean Squared Deviation.
 K value is calculated using the correlation method.
@@ -69,7 +71,7 @@ I do not intend to develop this approach further.
 
 ## Function Analysis (Python)
 
-Partly to verify my own implementation of the Taylor recurrence rules, I have added a demonstration of using series to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
+Partly to verify my own implementation of the Taylor recurrence rules, I have added a demonstration of using series arithmetic to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
 The solver demo can be used to find roots (and also extrema and inflection points by "extending" Newton to higher derivatives) in single variable nonlinear equations.
 Of course it is more generally useful for finding inverse values (where real solutions exist) of complicated functions, not just their roots.
 
@@ -274,11 +276,55 @@ $ gnuplot -p -e "splot '/tmp/data' with lines"
 $ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 ```
 
-## [UPDATED] '0-1' test for chaos (c)
+## [UPDATED] Scanning for chaos
 
 ### [Latest approach]
-Latest method requires manual editing of a shell script.
+Latest method requires manual editing of a shell script (note Lorenz system is uncommented).
+```
+#!/bin/sh
 
+start=$1
+end=$2
+step=$3
+datalines=$4
+separation=$5
+method=$6
+summary=$7
+
+files='/tmp/dataA /tmp/dataB /tmp/dataC /tmp/dataD /tmp/dataE /tmp/dataF /tmp/dataG'
+
+x=$start
+while [ 1 -eq "$(echo "scale=3; $x < $end" | bc)" ]
+do
+    echo -n "$x "
+#    ./ic $separation noplot ./tsm-rf-static 18 32 16 .01 $datalines .05 -.05 .3 $x .1 >/dev/null 2>/dev/null
+#    ./ic $separation noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
+    ./ic $separation noplot ./tsm-lorenz-static 18 32 10 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
+#    ./ic $separation noplot ./tsm-sprott-minimal-static 18 32 10 .01 $datalines .02 0 0 $x >/dev/null 2>/dev/null
+#    ./ic $separation noplot ./tsm-halvorsen-static 18 32 10 .01 $datalines 1 0 0 $x >/dev/null 2>/dev/null
+    ./chaos-distance.py $files $(expr $datalines + 1) $(echo "scale=15; $separation * 100;" | bc) $method $summary
+    x=$(echo "scale=3; $x + $step;" | bc)
+done 
+```
+Typical output for Lorenz system (sigma = 10.0, rho is the parameter below, beta = 8 / 3):
+```
+$ ./chaos-scan 180.5 181.5 .1 10000 .000000001 0 1 2>/dev/null
+180.5   CHAOTIC (final value = 1.070e+02 >= 1.000e-07)
+180.6   CHAOTIC (final value = 8.597e+01 >= 1.000e-07)
+180.7   CHAOTIC (final value = 1.130e+02 >= 1.000e-07)
+180.8   CHAOTIC (final value = 7.705e+00 >= 1.000e-07)
+180.9   CHAOTIC (final value = 2.420e+00 >= 1.000e-07)
+181.0  PERIODIC (final value = 7.278e-10  < 1.000e-07)
+181.1  PERIODIC (final value = 5.852e-09  < 1.000e-07)
+181.2  PERIODIC (final value = 5.282e-09  < 1.000e-07)
+181.3  PERIODIC (final value = 5.688e-08  < 1.000e-07)
+181.4   CHAOTIC (final value = 4.713e+01 >= 1.000e-07)
+```
+For a (rough) plot:
+```
+$ ./chaos-scan 180.5 181.5 .1 10000 .000000001 0 0 2>/dev/null | tee /tmp/results
+$ ./plotXYZ.py 0 1 2 </tmp/results
+```
 ### [Previous approach]
 Accepts data from stdin, writes to stdout.
 Input can be piped directly from a data file, an ODE solver or via a sed filter.
