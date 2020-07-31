@@ -77,5 +77,5 @@ rm -f libad-test
 ${CC} -L. $WARNINGS -o libad-test libad-test.c -lad -ltaylor -lmpfr
 
 echo ""
-ls -lh --color *ad-* tsm-* lib*.so rk4-* chaos*&
+ls -lh --color *ad-* tsm-* lib*.so rk4-* chaos-*&
 

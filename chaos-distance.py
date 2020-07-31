@@ -48,7 +48,7 @@ def scan():
             print(f'{clip(results[-1]):.3e} {clip(median(results[-1000:])):.3e}')
     else:
         if not summary:
-            print(f'{-1:.3e} {-1:.3e}')
+            print(f'{-0.1:.3e} {-0.1:.3e}')
     if summary:
         if data_g_length < data_length:
             print(f'UNBOUNDED ({data_g_length} lines out of {data_length})')

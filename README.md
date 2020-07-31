@@ -264,7 +264,9 @@ $ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 
 ## Scanning for chaos
 
-Currently the method requires manual editing of a shell script, chaos-scan (note Lorenz system is uncommented).
+Currently the method requires manual editing of a shell script, chaos-scan (note the Lorenz system is uncommented below).
+The chaos-scan script calls the ic script to generate six "nearby" trajectories over a range of a chosen ODE parameter.
+These trajectories are then processed by chaos-distance.py to generate a summary or a rough plot.
 ```
 #!/bin/sh
 
@@ -316,7 +318,7 @@ $ ./plotXYZ.py 0 1 2 </tmp/results
 This is a relatively new approach to dealing with the global error of ODE simulations, described in detail here: https://arxiv.org/abs/1109.0130.
 As a rough guide to the accuracy of a solution, it can be compared with a "better" solution (one made with "better" solver parameters), and discarded at the point where the solutions diverge.
 The two simulations are run in parallel processes, but obviously the "better" solution takes longer.
-There are three strategies for creating the "better" integrator:
+There are three alternative strategies for creating the "better" integrator:
 
 Parameter | Meaning
 ----------|-----------
