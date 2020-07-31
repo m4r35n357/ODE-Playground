@@ -19,8 +19,6 @@ These programs are the result.
 
 Finally, more general resources on automatic differentiation can be found at the following portal: http://www.autodiff.org/ (see specifically the "Applications" and "Tools" sections).
 
-[NEW] I have recently added an initial implementation of Gottwald & Melbourne's '0-1' test to detect chaos (c only).
-
 ## Taylor Series ODE Solvers (c/MPFR and Python)
 
 My primary aim was to be able to solve coupled nonlinear equations and investigate chaotic systems, without relying on "black-box" ODE solvers.
@@ -49,25 +47,13 @@ These "low-level" functions, when properly called,  are all that is needed to so
 There is a fairly extensive collection of nonlinear ODE examples already implemented, in the file tsm.py, and in the tsm-\*-*.c files.
 The list includes systems due to Lorenz, Rossler, Thomas, Bouali, Rabinovitch-Fabrikant, Sprott, and many others.
 
-## [UPDATED] Scanning for chaos
+## Scanning for chaos
 
-### [Latest approach]
 This is based on deviations from the "nominal" trajectory, using a technique similar to what is already used in the "CNS" script described below.
 It was motivated by the first part of this paper by Wernecke:
 https://arxiv.org/abs/1605.05616
 but does not use the ensemble average, or any correlations.
 As well as distinguishing between limit cycles and chaos, it also identifies unbounded and static solutions.
-
-### [Previous approach, already deprecated!]
-This is an implementation of Gottwald & Melbourne's data-based '0-1' test, which takes as input the trajectories from and ODE solver, or other time series.
-It does not use the ODE equations in any way, just the output.
-This is the latest version of the algorithm with subtraction of the "oscillating term" from the Mean Squared Deviation.
-K value is calculated using the correlation method.
-Overall K can be generated from a random or linear range of c.
-http://www.maths.usyd.edu.au/u/gottwald/preprints/testforchaos_MPI.pdf.
-
-Unfortunately when applied to continuous systems the method needs to be compensated for oversampling, which is a very manual step which involves caclulating the PSD, and discarding samples.
-I do not intend to develop this approach further.
 
 ## Function Analysis (Python)
 
@@ -276,10 +262,9 @@ $ gnuplot -p -e "splot '/tmp/data' with lines"
 $ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 ```
 
-## [UPDATED] Scanning for chaos
+## Scanning for chaos
 
-### [Latest approach]
-Latest method requires manual editing of a shell script (note Lorenz system is uncommented).
+Currently the method requires manual editing of a shell script, chaos-scan (note Lorenz system is uncommented).
 ```
 #!/bin/sh
 
@@ -325,37 +310,7 @@ For a (rough) plot:
 $ ./chaos-scan 180.5 181.5 .1 10000 .000000001 0 0 2>/dev/null | tee /tmp/results
 $ ./plotXYZ.py 0 1 2 </tmp/results
 ```
-### [Previous approach]
-Accepts data from stdin, writes to stdout.
-Input can be piped directly from a data file, an ODE solver or via a sed filter.
-Output can be sent to a plotting script.
-MSD and K calculations are based on 1/10 of the number of data values in stdin.
 
-Parameter | Meaning
-----------|-----------
-1 | Output type [ 0 (P & C),  1 (MSD),  2 (K vs C),  3 (Summary K) ]
-2 | Column of stdin to use as data (0, 1, 2)
-3 | Value of c (P & C and MSD), or number of automatic c values (K vs C or Summary K)
-4 | 0 for linear c range, 1 for random (K vs C or Summary K)
-
-Examples (note increased number of steps, and the sed filtering, to overcome oversampling):
-```
-./tsm-lorenz-dbg 24 32 20 .01 100000 -15.8 -17.48 35.64 10 28 8 3 | sed -n '1~10p' | time -p ./chaos-0-1-test 0 0 0.5 | ./plotXY.py 2 3
-
-./tsm-lorenz-dbg 24 32 20 .01 100000 -15.8 -17.48 35.64 10 28 8 3 | sed -n '1~10p' | time -p ./chaos-0-1-test 1 0 0.5 | ./plotXYZ.py 0 1 2
-
-./tsm-lorenz-dbg 24 32 20 .01 100000 -15.8 -17.48 35.64 10 28 8 3 | sed -n '1~10p' | time -p ./chaos-0-1-test 2 0 8 0 | ./plotXY.py 0 1
-
-./tsm-lorenz-dbg 24 32 20 .01 100000 -15.8 -17.48 35.64 10 28 8 3 | sed -n '1~10p' | time -p ./chaos-0-1-test 3 0 8 0
-```
-Here is a nice pipeline, analyzing the Thomas cyclic attractor over a range of its only parameter and displaying the plot.
-```
-$ h=0.001; steps=300; step=0; while [ $step -le $steps ]; do x=$(echo "scale=3; $h * $step;" | bc); echo -n "$x "; ./tsm-thomas-dbg 9 32 10 0.1 10000 1 0 0 $x 2>/dev/null | sed -n '1~100p' | ./chaos-0-1-test 3 0 8 0 2>/dev/null; step=$(expr $step + 1); done | ./plotXY.py 0 1
-```
-Another cyclic attractor with a single parameter, Halvorsen:
-```
-$ h=0.001; steps=3000; step=0; while [ $step -le $steps ]; do x=$(echo "scale=4; $h * $step;" | bc); echo -n "$x "; ./tsm-halvorsen-dbg 9 32 10 .01 10000 1 0 0 $x 2>/dev/null | sed -n '1~100p' | time -p ./chaos-0-1-test 3 0 8 0 2>/dev/null; step=$(expr $step + 1); done | ./plotXY.py 0 1
-```
 ## cns script - Clean Numerical Simulation
 
 This is a relatively new approach to dealing with the global error of ODE simulations, described in detail here: https://arxiv.org/abs/1109.0130.
