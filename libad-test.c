@@ -1,5 +1,5 @@
 /*
- * Automatic Differentiation of Taylor Seriesewest validation checks
+ * Automatic Differentiation of Taylor Series, newest validation checks
  *
  * Example: ./libad-test-dbg 32 20 2 1e-18
  *
