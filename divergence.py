@@ -18,7 +18,7 @@ def diverged(x, y, thresh):
         (float(x[0]) - float(y[0]))**2 + (float(x[1]) - float(y[1]))**2 + (float(x[2]) - float(y[2]))**2) > thresh
 
 def main():
-    print(f'Divergence: {argv}')
+    print(f'Divergence: {argv}', file=stderr)
     if len(argv) < 5:
         raise Exception(">>> ERROR! Please supply two file names, a time column, and a list of thresholds <<<")
     time = int(argv[3])
