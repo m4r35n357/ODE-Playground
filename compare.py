@@ -27,8 +27,7 @@ def main():
         while line_a and line_b:
             if 'nan' in line_a or 'nan' in line_b:
                 break
-            data_a = line_a.split(' ')
-            data_b = line_b.split(' ')
+            data_a, data_b = line_a.split(), line_b.split()
             s.append(float(data_a[time]))
             t.append(float(data_a[0]))
             u.append(float(data_b[0]))

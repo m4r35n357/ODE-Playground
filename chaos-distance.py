@@ -9,7 +9,7 @@ from statistics import median
 
 def line_to_data(line):
     data = []
-    for number in line.split(" "):
+    for number in line.split():
         data.append(float(number))
     return data
 

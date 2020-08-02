@@ -38,7 +38,7 @@ def main():
             else:
                 colour = RED
             while line_a and line_b:
-                data_a, data_b = line_a.split(' '), line_b.split(' ')
+                data_a, data_b = line_a.split(), line_b.split()
                 if diverged(data_a, data_b, threshold):
                     print(f"{GREY}Threshold: {colour}{threshold:.1e}{GREY}, t: {WHITE}{float(data_a[time]):.3f}{NORMAL}", file=stderr)
                     break

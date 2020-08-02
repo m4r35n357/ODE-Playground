@@ -19,7 +19,7 @@ def main():
     x = []
     y = []
     while line:
-        p = line.split(' ')
+        p = line.split()
         x.append(float(p[coordinate1]))
         y.append(float(p[coordinate2]))
         line = stdin.readline()

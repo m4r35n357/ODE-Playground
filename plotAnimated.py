@@ -7,7 +7,7 @@ import matplotlib.animation as animation
 def data_gen():
     line = stdin.readline()
     while line:
-        p = line.split(' ')
+        p = line.split()
         yield float(p[3]), float(p[0]), float(p[1]), float(p[2])
         line = stdin.readline()
 

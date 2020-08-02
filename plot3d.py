@@ -100,16 +100,16 @@ def main():
     if argc == 8:
         line7 = file7.readline()
     while display.loop_running():
-        data1 = line1.split(' ')
+        data1 = line1.split()
         if argc >= 3:
-            data2 = line2.split(' ')
+            data2 = line2.split()
         if argc >= 7:
-            data3 = line3.split(' ')
-            data4 = line4.split(' ')
-            data5 = line5.split(' ')
-            data6 = line6.split(' ')
+            data3 = line3.split()
+            data4 = line4.split()
+            data5 = line5.split()
+            data6 = line6.split()
         if argc == 8:
-            data7 = line7.split(' ')
+            data7 = line7.split()
         hud_string.quick_change(
             f' t {float(data1[3]):-5.1f}  x {float(data1[0]):-5.1f}  y {float(data1[1]):-5.1f}  z {float(data1[2]):-5.1f} ')
         hud_string.draw()
