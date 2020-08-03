@@ -47,9 +47,5 @@ def scan():
     else:
         print(f'   STABLE ({"final value"} = {r:.3e}  < {(threshold / 1000):.3e})')
 
-
-def main():
-    print(f'SCAN: {argv}', file=stderr)
-    scan()
-
-main()
+print(f'SCAN: {argv}', file=stderr)
+scan()
