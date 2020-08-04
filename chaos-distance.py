@@ -4,7 +4,7 @@
 #          ./chaos-distance.py /tmp/dataA /tmp/dataB /tmp/dataC /tmp/dataD /tmp/dataE /tmp/dataF /tmp/dataG 50001 0.000001
 
 from sys import argv, stderr
-from math import sqrt
+from math import sqrt, log
 
 def line_to_data(line):
     data = []
@@ -12,12 +12,15 @@ def line_to_data(line):
         data.append(float(number))
     return data
 
+def distance(a, b):
+    return sqrt((a[0] - b[0])**2 + (a[1] - b[1])**2 + (a[2] - b[2])**2)
+
 def scan():
     if len(argv) != 4:
         raise Exception(">>> ERROR! Please the intended data file length, and two separations <<<")
+    # read first set of data
     data_a1, data_b1, data_c1, data_d1, data_e1, data_f1, data_g1 = [], [], [], [], [], [], []
-    data_a2, data_b2, data_c2, data_d2, data_e2, data_f2, data_g2 = [], [], [], [], [], [], []
-    with open('/tmp/dataA') as a, open('/tmp/dataB') as b, open('/tmp/dataC') as c, open('/tmp/dataD') as d, open('/tmp/dataE') as e, open('/tmp/dataF') as f, open('/tmp/dataG') as g:
+    with open('/tmp/dataA1') as a, open('/tmp/dataB1') as b, open('/tmp/dataC1') as c, open('/tmp/dataD1') as d, open('/tmp/dataE1') as e, open('/tmp/dataF1') as f, open('/tmp/dataG1') as g:
         for line_a, line_b, line_c, line_d, line_e, line_f, line_g in zip(a, b, c, d, e, f, g):
             data_a1.append(line_to_data(line_a))
             data_b1.append(line_to_data(line_b))
@@ -27,7 +30,9 @@ def scan():
             data_f1.append(line_to_data(line_f))
             data_g1.append(line_to_data(line_g))
     data_g1_length = len(data_g1)
-    with open('/tmp/dataA') as a, open('/tmp/dataB') as b, open('/tmp/dataC') as c, open('/tmp/dataD') as d, open('/tmp/dataE') as e, open('/tmp/dataF') as f, open('/tmp/dataG') as g:
+    # read second set of data
+    data_a2, data_b2, data_c2, data_d2, data_e2, data_f2, data_g2 = [], [], [], [], [], [], []
+    with open('/tmp/dataA2') as a, open('/tmp/dataB2') as b, open('/tmp/dataC2') as c, open('/tmp/dataD2') as d, open('/tmp/dataE2') as e, open('/tmp/dataF2') as f, open('/tmp/dataG2') as g:
         for line_a, line_b, line_c, line_d, line_e, line_f, line_g in zip(a, b, c, d, e, f, g):
             data_a2.append(line_to_data(line_a))
             data_b2.append(line_to_data(line_b))
@@ -37,38 +42,35 @@ def scan():
             data_f2.append(line_to_data(line_f))
             data_g2.append(line_to_data(line_g))
     data_g2_length = len(data_g2)
-    assert(data_g1_length == data_g2_length)
+    # process data sets
     data_length = int(argv[1])
-    separation1 = float(argv[2])
-    separation2 = float(argv[3])
-    results1, results2 = [], []
+    separation1, separation2 = float(argv[2]), float(argv[3])
+    slope = separation1 / separation2
     r1, r2 = 0.0, 0.0
-    if data_g1_length == data_length:
+    if data_g1_length == data_length and data_g2_length == data_length:
         for ref, trajectory in zip(data_g1, zip(data_a1, data_b1, data_c1, data_d1, data_e1, data_f1)):
             d_max = 0.0
             for point in trajectory:
-                dist = sqrt((ref[0] - point[0])**2 + (ref[1] - point[1])**2 + (ref[2] - point[2])**2)
+                dist = distance(ref, point)
                 d_max = dist if dist > d_max else d_max
-            results1.append(d_max)
-        r1 = results1[-1]
-    if data_g2_length == data_length:
+            r1 = d_max
         for ref, trajectory in zip(data_g2, zip(data_a2, data_b2, data_c2, data_d2, data_e2, data_f2)):
             d_max = 0.0
             for point in trajectory:
-                dist = sqrt((ref[0] - point[0])**2 + (ref[1] - point[1])**2 + (ref[2] - point[2])**2)
+                dist = distance(ref, point)
                 d_max = dist if dist > d_max else d_max
-            results2.append(d_max)
-        r2 = results1[-1]
+            r2 = d_max
+    # analyze data
     if data_g1_length < data_length or data_g2_length < data_length:
-        print(f'UNBOUNDED ({"dummy value"} = {-0.1:.1f} {data_g1_length} / {data_g2_length} lines out of {data_length})')
-    elif r1 < separation1 or r2 < separation2:
-        print(f'   STABLE ({"final value"} = {r1:.3e} {r2:.3e})')
-    elif r1 / r2 < 0.1 * separation1 / separation2:
-        print(f'  CHAOTIC ({"final value"} = {r1:.3e} {r2:.3e})')
-    elif 0.9 * separation1 / separation2 < r1 / r2 < 1.1 * separation1 / separation2:
-        print(f' PERIODIC ({"final value"} = {r1:.3e} {r2:.3e})')
+        print(f'  UNBOUNDED ({"dummy values"} = {-0.1:.1f} {data_g1_length} / {data_g2_length} lines out of {data_length})')
+    elif r1 < separation1 and r2 < separation2:
+        print(f'  CONVERGED ({"final values"} = {r1:.3e} < {separation1:.1e}, {r2:.3e} < {separation2:.1e})')
+    elif 0.9 * slope < r1 / r2 < 1.1 * slope:
+        print(f'LIMIT CYCLE ({"final values"} = {r1:.3e} {r2:.3e} ratio = {r1 / r2:.1e})')
+    elif 0.5 < r1 / r2 < 2.0:
+        print(f'    CHAOTIC ({"final values"} = {r1:.3e} {r2:.3e} ratio = {r1 / r2:.1e})')
     else:
-        print(f'  UNKNOWN ')
+        print(f'    UNKNOWN ({"final values"} = {r1:.3e} {r2:.3e} ratio = {r1 / r2:.1e} {10.0 * log(r1 / r2):.1e})')
 
 print(f'SCAN: {argv}', file=stderr)
 scan()
