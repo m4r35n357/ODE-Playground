@@ -6,6 +6,16 @@
 from sys import argv, stderr
 from math import sqrt
 
+RED = '\x1b[1;31m'
+GREEN = '\x1b[0;32m'
+ORANGE = '\x1b[0;33m'
+YELLOW = '\x1b[1;33m'
+BLUE = '\x1b[1;34m'
+CYAN = '\x1b[0;36m'
+GREY = '\x1B[0m\x1b[2;37m'
+WHITE = '\x1b[0;37m'
+NORMAL = '\x1B[0m'
+
 def line_to_data(line):
     data = []
     for number in line.split():
@@ -53,15 +63,16 @@ def scan():
             wd2 = worst_deviation(r, t)
     # analyze data
     if data_g1_length < data_length or data_g2_length < data_length:
-        print(f'  UNBOUNDED ({"dummy values"} = {-0.1:.1f} {data_g1_length} / {data_g2_length} lines out of {data_length})')
+        print(f'  {WHITE}UNBOUNDED{NORMAL} {"dummy values"} = {-0.1:.1f} {data_g1_length} / {data_g2_length} lines out of {data_length}')
     elif wd1 < separation1 and wd2 < separation2:
-        print(f'  CONVERGED ({"final values"} = {wd1:.3e} < {separation1:.1e}, {wd2:.3e} < {separation2:.1e})')
-    elif 0.9 * slope < wd1 / wd2 < 1.1 * slope:
-        print(f'LIMIT CYCLE ({"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f})')
+        print(f'  {BLUE}CONVERGED{NORMAL} {"final values"} = {wd1:.3e} < {separation1:.1e}, {wd2:.3e} < {separation2:.1e}')
+    elif 0.8 * slope < wd1 / wd2 < 1.2 * slope:
+        print(f'{GREEN}LIMIT CYCLE{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
     elif 0.5 < wd1 / wd2 < 2.0:
-        print(f'    CHAOTIC ({"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f})')
+        print(f'    {RED}CHAOTIC{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
     else:
-        print(f'    UNKNOWN ({"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f})')
+        label = "       HIGH" if wd1 / wd2 > 1000.0 else ("        LOW" if 1.0 < wd1 / wd2 < 1000.0 else "   VERY LOW")
+        print(f'{YELLOW}{label}{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
 
 print(f'SCAN: {argv}', file=stderr)
 scan()
