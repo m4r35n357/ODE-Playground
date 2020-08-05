@@ -266,7 +266,7 @@ $ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 
 Currently the method requires manual editing of a shell script, chaos-scan (note the Lorenz system is uncommented below).
 The chaos-scan script calls the ic script to generate six "nearby" trajectories over a range of a chosen ODE parameter.
-These trajectories are then processed by chaos-distance.py to generate a summary or a rough plot.
+These trajectories are then processed by chaos-distance.py to generate a summary.
 ```
 #!/bin/sh
 
@@ -274,43 +274,54 @@ start=$1
 end=$2
 step=$3
 datalines=$4
-separation=$5
-method=$6
-summary=$7
-
-files='/tmp/dataA /tmp/dataB /tmp/dataC /tmp/dataD /tmp/dataE /tmp/dataF /tmp/dataG'
+separation1=$5
+separation2=$(echo "scale=15; $separation1 / 1000;" | bc)
 
 x=$start
 while [ 1 -eq "$(echo "scale=3; $x < $end" | bc)" ]
 do
     echo -n "$x "
-#    ./ic $separation noplot ./tsm-rf-static 18 32 16 .01 $datalines .05 -.05 .3 $x .1 >/dev/null 2>/dev/null
-#    ./ic $separation noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-    ./ic $separation noplot ./tsm-lorenz-static 18 32 10 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
-#    ./ic $separation noplot ./tsm-sprott-minimal-static 18 32 10 .01 $datalines .02 0 0 $x >/dev/null 2>/dev/null
-#    ./ic $separation noplot ./tsm-halvorsen-static 18 32 10 .01 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-    ./chaos-distance.py $files $(expr $datalines + 1) $(echo "scale=15; $separation * 100;" | bc) $method $summary
+#    ./ic $separation1 noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
+    ./ic $separation1 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
+#    ./ic $separation1 noplot ./tsm-sprott-minimal-static 18 32 10 .01 $datalines .02 0 0 $x >/dev/null 2>/dev/null
+#    ./ic $separation1 noplot ./tsm-halvorsen-static 18 32 10 .01 $datalines 1 0 0 $x >/dev/null 2>/dev/null
+#    ./ic $separation1 noplot ./tsm-rf-static 18 32 16 .01 $datalines .05 -.05 .3 $x .1 >/dev/null 2>/dev/null
+    cp /tmp/dataA /tmp/dataA1
+    cp /tmp/dataB /tmp/dataB1
+    cp /tmp/dataC /tmp/dataC1
+    cp /tmp/dataD /tmp/dataD1
+    cp /tmp/dataE /tmp/dataE1
+    cp /tmp/dataF /tmp/dataF1
+    cp /tmp/dataG /tmp/dataG1
+#    ./ic $separation2 noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
+    ./ic $separation2 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
+#    ./ic $separation2 noplot ./tsm-sprott-minimal-static 18 32 10 .01 $datalines .02 0 0 $x >/dev/null 2>/dev/null
+#    ./ic $separation2 noplot ./tsm-halvorsen-static 18 32 10 .01 $datalines 1 0 0 $x >/dev/null 2>/dev/null
+#    ./ic $separation2 noplot ./tsm-rf-static 18 32 16 .01 $datalines .05 -.05 .3 $x .1 >/dev/null 2>/dev/null
+    cp /tmp/dataA /tmp/dataA2
+    cp /tmp/dataB /tmp/dataB2
+    cp /tmp/dataC /tmp/dataC2
+    cp /tmp/dataD /tmp/dataD2
+    cp /tmp/dataE /tmp/dataE2
+    cp /tmp/dataF /tmp/dataF2
+    cp /tmp/dataG /tmp/dataG2
+    ./chaos-distance.py $(expr $datalines + 1) $separation1 $separation2
     x=$(echo "scale=3; $x + $step;" | bc)
-done 
+done
 ```
 Typical output for Lorenz system (sigma = 10.0, rho is the parameter below, beta = 8 / 3):
 ```
-$ ./chaos-scan 180.5 181.5 .1 10000 .000000001 0 1 2>/dev/null
-180.5   CHAOTIC (final value = 1.070e+02 >= 1.000e-07)
-180.6   CHAOTIC (final value = 8.597e+01 >= 1.000e-07)
-180.7   CHAOTIC (final value = 1.130e+02 >= 1.000e-07)
-180.8   CHAOTIC (final value = 7.705e+00 >= 1.000e-07)
-180.9   CHAOTIC (final value = 2.420e+00 >= 1.000e-07)
-181.0  PERIODIC (final value = 7.278e-10  < 1.000e-07)
-181.1  PERIODIC (final value = 5.852e-09  < 1.000e-07)
-181.2  PERIODIC (final value = 5.282e-09  < 1.000e-07)
-181.3  PERIODIC (final value = 5.688e-08  < 1.000e-07)
-181.4   CHAOTIC (final value = 4.713e+01 >= 1.000e-07)
-```
-For a (rough) plot:
-```
-$ ./chaos-scan 180.5 181.5 .1 10000 .000000001 0 0 2>/dev/null | tee /tmp/results
-$ ./plotXYZ.py 0 1 2 </tmp/results
+$ ./chaos-scan 180.5 181.5 .1 10000 .000000001 2>/dev/null
+180.5     CHAOTIC final values = 8.119e+01 9.845e+01 ratio = 0.8
+180.6     CHAOTIC final values = 1.388e+02 1.170e+02 ratio = 1.2
+180.7     CHAOTIC final values = 1.243e+02 1.154e+02 ratio = 1.1
+180.8     CHAOTIC final values = 1.076e+01 9.701e+00 ratio = 1.1
+180.9     CHAOTIC final values = 1.026e+00 1.281e+00 ratio = 0.8
+181.0   CONVERGED final values = 7.281e-10 7.419e-13
+181.1 LIMIT CYCLE final values = 5.851e-09 5.863e-12 ratio = 998.0
+181.2 LIMIT CYCLE final values = 5.282e-09 5.285e-12 ratio = 999.5
+181.3 LIMIT CYCLE final values = 5.688e-08 5.688e-11 ratio = 999.9
+181.4 LIMIT CYCLE final values = 7.241e+01 6.289e-02 ratio = 1151.4
 ```
 
 ## cns script - Clean Numerical Simulation
