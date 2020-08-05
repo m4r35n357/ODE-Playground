@@ -68,10 +68,10 @@ def scan():
         print(f'  {BLUE}CONVERGED{NORMAL} {"final values"} = {wd1:.3e} < {separation1:.1e}, {wd2:.3e} < {separation2:.1e}')
     elif 0.8 * slope < wd1 / wd2 < 1.2 * slope:
         print(f'{GREEN}LIMIT CYCLE{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
-    elif 0.5 < wd1 / wd2 < 2.0:
+    elif wd1 / wd2 < 2.0:
         print(f'    {RED}CHAOTIC{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
     else:
-        label = "       HIGH" if wd1 / wd2 > 1000.0 else ("        LOW" if 1.0 < wd1 / wd2 < 1000.0 else "   VERY LOW")
+        label = "       HIGH" if wd1 / wd2 > slope else "        LOW"
         print(f'{YELLOW}{label}{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
 
 print(f'SCAN: {argv}', file=stderr)
