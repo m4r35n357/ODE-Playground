@@ -7,13 +7,13 @@ from sys import argv, stderr
 from math import sqrt
 
 RED = '\x1b[1;31m'
-GREEN = '\x1b[0;32m'
+GREEN = '\x1b[1;32m'
 ORANGE = '\x1b[0;33m'
 YELLOW = '\x1b[1;33m'
 BLUE = '\x1b[1;34m'
 CYAN = '\x1b[0;36m'
 GREY = '\x1B[0m\x1b[2;37m'
-WHITE = '\x1b[0;37m'
+WHITE = '\x1b[1;37m'
 NORMAL = '\x1B[0m'
 
 def line_to_data(line):
@@ -65,7 +65,7 @@ def scan():
     if data_g1_length < data_length or data_g2_length < data_length:
         print(f'  {WHITE}UNBOUNDED{NORMAL} {"dummy values"} = {-0.1:.1f} {data_g1_length} / {data_g2_length} lines out of {data_length}')
     elif wd1 < separation1 and wd2 < separation2:
-        print(f'  {BLUE}CONVERGED{NORMAL} {"final values"} = {wd1:.3e} < {separation1:.1e}, {wd2:.3e} < {separation2:.1e}')
+        print(f'  {BLUE}CONVERGED{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e}')
     elif 0.8 * slope < wd1 / wd2 < 1.2 * slope:
         print(f'{GREEN}LIMIT CYCLE{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
     elif wd1 / wd2 < 2.0:
