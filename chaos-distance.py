@@ -11,7 +11,8 @@ GREEN = '\x1b[1;32m'
 ORANGE = '\x1b[0;33m'
 YELLOW = '\x1b[1;33m'
 BLUE = '\x1b[1;34m'
-CYAN = '\x1b[0;36m'
+MAGENTA = '\x1b[1;35m'
+CYAN = '\x1b[1;36m'
 GREY = '\x1B[0m\x1b[2;37m'
 WHITE = '\x1b[1;37m'
 NORMAL = '\x1B[0m'
@@ -63,16 +64,16 @@ def scan():
             wd2 = worst_deviation(r, t)
     # analyze data
     if data_g1_length < data_length or data_g2_length < data_length:
-        print(f'  {WHITE}UNBOUNDED{NORMAL} {"dummy values"} = {-0.1:.1f} {data_g1_length} / {data_g2_length} lines out of {data_length}')
+        print(f'  {WHITE}UNBOUNDED{NORMAL} {"dummy values"} = {-1.0:.1f} {-1.0:.1f} ratio = {0.0:.1f} {data_g1_length} / {data_g2_length} lines out of {data_length}')
     elif wd1 < separation1 and wd2 < separation2:
-        print(f'  {BLUE}CONVERGED{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e}')
+        print(f'  {BLUE}CONVERGED{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
     elif 0.8 * slope < wd1 / wd2 < 1.2 * slope:
-        print(f'{GREEN}LIMIT CYCLE{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
-    elif wd1 / wd2 < 2.0:
+        print(f'{GREEN}LIMIT-CYCLE{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
+    elif 0.5 < wd1 / wd2 < 2.0:
         print(f'    {RED}CHAOTIC{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
     else:
-        label = "       HIGH" if wd1 / wd2 > slope else "        LOW"
-        print(f'{YELLOW}{label}{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
+        label = f"       {MAGENTA}HIGH" if wd1 / wd2 > 1000.0 else (f"        {YELLOW}MID" if 1.0 < wd1 / wd2 < 1000.0 else f"        {CYAN}LOW")
+        print(f'{label}{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
 
 print(f'SCAN: {argv}', file=stderr)
 scan()
