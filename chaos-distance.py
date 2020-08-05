@@ -6,17 +6,32 @@
 from sys import argv, stderr
 from math import sqrt
 
+RED = '\x1b[1;31m'
+GREEN = '\x1b[1;32m'
+ORANGE = '\x1b[0;33m'
+YELLOW = '\x1b[1;33m'
+BLUE = '\x1b[1;34m'
+CYAN = '\x1b[0;36m'
+GREY = '\x1B[0m\x1b[2;37m'
+WHITE = '\x1b[1;37m'
+NORMAL = '\x1B[0m'
+
 def line_to_data(line):
     data = []
     for number in line.split():
         data.append(float(number))
     return data
 
-def scan():
-    if len(argv) != 10:
-        raise Exception(">>> ERROR! Please supply seven file names, the intended data file length, and a threshold <<<")
+def worst_deviation(ref, trajectory):
+    d_max = 0.0
+    for point in trajectory:
+        dist = sqrt((ref[0] - point[0])**2 + (ref[1] - point[1])**2 + (ref[2] - point[2])**2)
+        d_max = dist if dist > d_max else d_max
+    return d_max
+
+def read_files(file_a, file_b, file_c, file_d, file_e, file_f, file_g):
     data_a, data_b, data_c, data_d, data_e, data_f, data_g = [], [], [], [], [], [], []
-    with open(argv[1]) as a, open(argv[2]) as b, open(argv[3]) as c, open(argv[4]) as d, open(argv[5]) as e, open(argv[6]) as f, open(argv[7]) as g:
+    with open(file_a) as a, open(file_b) as b, open(file_c) as c, open(file_d) as d, open(file_e) as e, open(file_f) as f, open(file_g) as g:
         for line_a, line_b, line_c, line_d, line_e, line_f, line_g in zip(a, b, c, d, e, f, g):
             data_a.append(line_to_data(line_a))
             data_b.append(line_to_data(line_b))
@@ -25,31 +40,39 @@ def scan():
             data_e.append(line_to_data(line_e))
             data_f.append(line_to_data(line_f))
             data_g.append(line_to_data(line_g))
-    data_g_length = len(data_g)
-    data_length = int(argv[8])
-    threshold = float(argv[9])
-    results = []
-    r = 0.0
-    if data_g_length == data_length:
-        for ref, trajectory in zip(data_g, zip(data_a, data_b, data_c, data_d, data_e, data_f)):
-            d_max = 0.0
-            for point in trajectory:
-                dist = sqrt((ref[0] - point[0])**2 + (ref[1] - point[1])**2 + (ref[2] - point[2])**2)
-                d_max = dist if dist > d_max else d_max
-            results.append(d_max)
-        r = results[-1]
-    if data_g_length < data_length:
-        print(f'UNBOUNDED ({"dummy value"} = {-0.1:.3e} {data_g_length} lines out of {data_length})')
-    elif r >= threshold:
-        print(f'  CHAOTIC ({"final value"} = {r:.3e} >= {threshold:.3e})')
-    elif r >= threshold / 1000:
-        print(f' PERIODIC ({"final value"} = {r:.3e}  < {threshold:.3e})')
+    return data_a, data_b, data_c, data_d, data_e, data_f, data_g
+
+def scan():
+    if len(argv) != 4:
+        raise Exception(">>> ERROR! Please the intended data file length, and two separations <<<")
+    # read first set of data
+    data_a1, data_b1, data_c1, data_d1, data_e1, data_f1, data_g1 = read_files('/tmp/dataA1', '/tmp/dataB1', '/tmp/dataC1', '/tmp/dataD1', '/tmp/dataE1', '/tmp/dataF1', '/tmp/dataG1')
+    data_g1_length = len(data_g1)
+    # read second set of data
+    data_a2, data_b2, data_c2, data_d2, data_e2, data_f2, data_g2 = read_files('/tmp/dataA2', '/tmp/dataB2', '/tmp/dataC2', '/tmp/dataD2', '/tmp/dataE2', '/tmp/dataF2', '/tmp/dataG2')
+    data_g2_length = len(data_g2)
+    # process data sets
+    data_length = int(argv[1])
+    separation1, separation2 = float(argv[2]), float(argv[3])
+    slope = separation1 / separation2
+    wd1, wd2 = 0.0, 0.0
+    if data_g1_length == data_length and data_g2_length == data_length:
+        for r, t in zip(data_g1, zip(data_a1, data_b1, data_c1, data_d1, data_e1, data_f1)):
+            wd1 = worst_deviation(r, t)
+        for r, t in zip(data_g2, zip(data_a2, data_b2, data_c2, data_d2, data_e2, data_f2)):
+            wd2 = worst_deviation(r, t)
+    # analyze data
+    if data_g1_length < data_length or data_g2_length < data_length:
+        print(f'  {WHITE}UNBOUNDED{NORMAL} {"dummy values"} = {-0.1:.1f} {data_g1_length} / {data_g2_length} lines out of {data_length}')
+    elif wd1 < separation1 and wd2 < separation2:
+        print(f'  {BLUE}CONVERGED{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e}')
+    elif 0.8 * slope < wd1 / wd2 < 1.2 * slope:
+        print(f'{GREEN}LIMIT CYCLE{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
+    elif wd1 / wd2 < 2.0:
+        print(f'    {RED}CHAOTIC{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
     else:
-        print(f'   STABLE ({"final value"} = {r:.3e}  < {(threshold / 1000):.3e})')
+        label = "       HIGH" if wd1 / wd2 > slope else "        LOW"
+        print(f'{YELLOW}{label}{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
 
-
-def main():
-    print(f'SCAN: {argv}', file=stderr)
-    scan()
-
-main()
+print(f'SCAN: {argv}', file=stderr)
+scan()
