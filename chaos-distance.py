@@ -4,7 +4,7 @@
 #          ./chaos-distance.py /tmp/dataA /tmp/dataB /tmp/dataC /tmp/dataD /tmp/dataE /tmp/dataF /tmp/dataG 50001 0.000001
 
 from sys import argv, stderr
-from math import sqrt
+from math import sqrt, log
 
 RED = '\x1b[1;31m'
 GREEN = '\x1b[1;32m'
@@ -30,6 +30,11 @@ def worst_deviation(ref, trajectory):
         d_max = dist if dist > d_max else d_max
     return d_max
 
+def clip (a, limit, below=False):
+    if below:
+        return a if a > limit else limit
+    return a if a < limit else limit
+
 def read_files(file_a, file_b, file_c, file_d, file_e, file_f, file_g):
     data_a, data_b, data_c, data_d, data_e, data_f, data_g = [], [], [], [], [], [], []
     with open(file_a) as a, open(file_b) as b, open(file_c) as c, open(file_d) as d, open(file_e) as e, open(file_f) as f, open(file_g) as g:
@@ -48,32 +53,34 @@ def scan():
         raise Exception(">>> ERROR! Please the intended data file length, and two separations <<<")
     # read first set of data
     data_a1, data_b1, data_c1, data_d1, data_e1, data_f1, data_g1 = read_files('/tmp/dataA1', '/tmp/dataB1', '/tmp/dataC1', '/tmp/dataD1', '/tmp/dataE1', '/tmp/dataF1', '/tmp/dataG1')
-    data_g1_length = len(data_g1)
     # read second set of data
     data_a2, data_b2, data_c2, data_d2, data_e2, data_f2, data_g2 = read_files('/tmp/dataA2', '/tmp/dataB2', '/tmp/dataC2', '/tmp/dataD2', '/tmp/dataE2', '/tmp/dataF2', '/tmp/dataG2')
-    data_g2_length = len(data_g2)
     # process data sets
+    length_g1, length_g2 = len(data_g1), len(data_g2)
     data_length = int(argv[1])
     separation1, separation2 = float(argv[2]), float(argv[3])
     slope = separation1 / separation2
-    wd1, wd2 = 0.0, 0.0
-    if data_g1_length == data_length and data_g2_length == data_length:
+    wd1, wd2, d1, d2 = 0.0, 0.0, 0.0, 0.0
+    if length_g1 == data_length and length_g2 == data_length:
         for r, t in zip(data_g1, zip(data_a1, data_b1, data_c1, data_d1, data_e1, data_f1)):
-            wd1 = worst_deviation(r, t)
+            d1 = worst_deviation(r, t)
+            wd1 = d1 if d1 > wd1 else wd1
         for r, t in zip(data_g2, zip(data_a2, data_b2, data_c2, data_d2, data_e2, data_f2)):
-            wd2 = worst_deviation(r, t)
+            d2 = worst_deviation(r, t)
+            wd2 = d2 if d2 > wd2 else wd2
     # analyze data
-    if data_g1_length < data_length or data_g2_length < data_length:
-        print(f'  {WHITE}UNBOUNDED{NORMAL} {"dummy values"} = {-1.0:.1f} {-1.0:.1f} ratio = {0.0:.1f} {data_g1_length} / {data_g2_length} lines out of {data_length}')
-    elif wd1 < separation1 and wd2 < separation2:
-        print(f'  {BLUE}CONVERGED{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
-    elif 0.8 * slope < wd1 / wd2 < 1.2 * slope:
-        print(f'{GREEN}LIMIT-CYCLE{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
+    if length_g1 < data_length or length_g2 < data_length:
+        print(f'  {WHITE}UNBOUNDED{NORMAL} value = {10.0:.1f} {10.0:.1f} ratio = {-100.0:.1f} {length_g1} / {length_g2} lines out of {data_length}')
+    elif d1 < separation1 and d2 < separation2:
+        d1, d2 = clip(d1, 1e-21, below=True), clip(d2, 1e-21, below=True)
+        print(f'  {BLUE}CONVERGED{NORMAL} value = {log(d1):.3e} {log(d2):.3e} ratio = {clip(d1 / d2, 1500.0):.1f}')
+    elif 0.8 * slope < d1 / d2 < 1.2 * slope:
+        print(f'{GREEN}LIMIT-CYCLE{NORMAL} value = {log(d1):.3e} {log(d2):.3e} ratio = {clip(d1 / d2, 1500.0):.1f}')
     elif 0.5 < wd1 / wd2 < 2.0:
-        print(f'    {RED}CHAOTIC{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
+        print(f'    {RED}CHAOTIC{NORMAL} value = {log(wd1):.3e} {log(wd2):.3e} ratio = {clip(wd1 / wd2, 1500.0):.1f}')
     else:
         label = f"       {MAGENTA}HIGH" if wd1 / wd2 > 1000.0 else (f"        {YELLOW}MID" if 1.0 < wd1 / wd2 < 1000.0 else f"        {CYAN}LOW")
-        print(f'{label}{NORMAL} {"final values"} = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
+        print(f'{label}{NORMAL} value = {log(wd1):.3e} {log(wd2):.3e} ratio = {clip(wd1 / wd2, 1500.0):.1f}')
 
 print(f'SCAN: {argv}', file=stderr)
 scan()
