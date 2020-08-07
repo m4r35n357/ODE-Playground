@@ -49,11 +49,9 @@ The list includes systems due to Lorenz, Rossler, Thomas, Bouali, Rabinovitch-Fa
 
 ## Scanning for chaos
 
-This is based on deviations from the "nominal" trajectory, using a technique similar to what is already used in the "CNS" script described below.
-It was motivated by the first part of this paper by Wernecke:
-https://arxiv.org/abs/1605.05616
-but does not use the ensemble average, or any correlations.
-As well as distinguishing between limit cycles and chaos, it also identifies unbounded and static solutions.
+This is a very literal method based on deviations from the "nominal" trajectory, using a technique similar to what is already used in the "CNS" script described below.
+It was motivated by the first part of this paper by Wernecke, https://arxiv.org/abs/1605.05616 but does not use any statistical tools such as ensemble averages, or any correlations.
+As well as distinguishing between limit cycles and chaos, the method used here also identifies unbounded and static solutions.
 
 ## Function Analysis (Python)
 
@@ -266,7 +264,12 @@ $ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 
 Currently the method requires manual editing of a shell script, chaos-scan (note the Lorenz system is uncommented below).
 The chaos-scan script calls the ic script to generate six "nearby" trajectories over a range of a chosen ODE parameter.
-These trajectories are then processed by chaos-distance.py to generate a summary.
+These trajectories are then processed in the following order by chaos-distance.py to generate a summary.
+* Unbounded solutions are identified by length of the truncated results file
+* Converged solutions are identified by the final separation being smaller than the initial separation
+* Limit cycles are identified by strict proportionality of final to to initial separation ove two different runs
+* Chaotic solutions are identified by worst separation being independent of initial separation
+* Remaining solutions are ripe for investigation!
 ```
 #!/bin/sh
 
@@ -309,19 +312,63 @@ do
     x=$(echo "scale=3; $x + $step;" | bc)
 done
 ```
-Typical output for Lorenz system (sigma = 10.0, rho is the parameter below, beta = 8 / 3):
+Typical output for Lorenz system (sigma = 10.0, rho is the LHS parameter below, beta = 8 / 3):
 ```
-$ ./chaos-scan 180.5 181.5 .1 10000 .000000001 2>/dev/null
-180.5     CHAOTIC final values = 8.119e+01 9.845e+01 ratio = 0.8
-180.6     CHAOTIC final values = 1.388e+02 1.170e+02 ratio = 1.2
-180.7     CHAOTIC final values = 1.243e+02 1.154e+02 ratio = 1.1
-180.8     CHAOTIC final values = 1.076e+01 9.701e+00 ratio = 1.1
-180.9     CHAOTIC final values = 1.026e+00 1.281e+00 ratio = 0.8
-181.0   CONVERGED final values = 7.281e-10 7.419e-13
-181.1 LIMIT CYCLE final values = 5.851e-09 5.863e-12 ratio = 998.0
-181.2 LIMIT CYCLE final values = 5.282e-09 5.285e-12 ratio = 999.5
-181.3 LIMIT CYCLE final values = 5.688e-08 5.688e-11 ratio = 999.9
-181.4 LIMIT CYCLE final values = 7.241e+01 6.289e-02 ratio = 1151.4
+$ ./chaos-scan 180.65 181.15 .01 10000 .000001 2>/dev/null | tee /tmp/results
+180.65     CHAOTIC value = 5.368e+00 5.400e+00 ratio = 1.0
+180.66     CHAOTIC value = 5.407e+00 5.376e+00 ratio = 1.0
+180.67     CHAOTIC value = 5.304e+00 5.355e+00 ratio = 1.0
+180.68     CHAOTIC value = 5.537e+00 5.346e+00 ratio = 1.2
+180.69     CHAOTIC value = 5.361e+00 5.444e+00 ratio = 0.9
+180.70     CHAOTIC value = 5.406e+00 5.349e+00 ratio = 1.1
+180.71     CHAOTIC value = 5.407e+00 5.342e+00 ratio = 1.1
+180.72     CHAOTIC value = 5.276e+00 5.234e+00 ratio = 1.0
+180.73     CHAOTIC value = 3.730e+00 3.716e+00 ratio = 1.0
+180.74     CHAOTIC value = 3.779e+00 3.845e+00 ratio = 0.9
+180.75     CHAOTIC value = 3.572e+00 3.480e+00 ratio = 1.1
+180.76     CHAOTIC value = 3.658e+00 3.470e+00 ratio = 1.2
+180.77     CHAOTIC value = 3.485e+00 3.571e+00 ratio = 0.9
+180.78     CHAOTIC value = 3.570e+00 3.568e+00 ratio = 1.0
+180.79     CHAOTIC value = 3.430e+00 3.569e+00 ratio = 0.9
+180.80     CHAOTIC value = 3.592e+00 3.450e+00 ratio = 1.2
+180.81 LIMIT-CYCLE value = 2.661e+00 -4.393e+00 ratio = 1157.4
+180.82     CHAOTIC value = 3.581e+00 3.432e+00 ratio = 1.2
+180.83     CHAOTIC value = 3.322e+00 3.471e+00 ratio = 0.9
+180.84     CHAOTIC value = 3.345e+00 3.274e+00 ratio = 1.1
+180.85     CHAOTIC value = 3.228e+00 3.247e+00 ratio = 1.0
+180.86     CHAOTIC value = 3.263e+00 3.282e+00 ratio = 1.0
+180.87         MID value = 3.236e+00 -2.835e+00 ratio = 433.1
+180.88     CHAOTIC value = 3.157e+00 3.130e+00 ratio = 1.0
+180.89     CHAOTIC value = 3.086e+00 3.101e+00 ratio = 1.0
+180.90     CHAOTIC value = 3.173e+00 3.076e+00 ratio = 1.1
+180.91     CHAOTIC value = 2.677e+00 2.652e+00 ratio = 1.0
+180.92     CHAOTIC value = 2.507e+00 2.529e+00 ratio = 1.0
+180.93     CHAOTIC value = 2.527e+00 2.403e+00 ratio = 1.1
+180.94     CHAOTIC value = 2.259e+00 1.695e+00 ratio = 1.8
+180.95         MID value = 2.100e+00 3.516e-01 ratio = 5.7
+180.96         MID value = 1.207e+00 -3.422e+00 ratio = 102.4
+180.97 LIMIT-CYCLE value = -1.230e+01 -1.921e+01 ratio = 1004.6
+180.98 LIMIT-CYCLE value = -1.209e+01 -1.900e+01 ratio = 1000.2
+180.99   CONVERGED value = -1.408e+01 -2.098e+01 ratio = 1000.0
+181.00   CONVERGED value = -1.413e+01 -2.104e+01 ratio = 1000.0
+181.01 LIMIT-CYCLE value = -1.329e+01 -2.019e+01 ratio = 1000.0
+181.02 LIMIT-CYCLE value = -1.344e+01 -2.035e+01 ratio = 1000.0
+181.03   CONVERGED value = -1.387e+01 -2.078e+01 ratio = 1000.0
+181.04 LIMIT-CYCLE value = -1.378e+01 -2.069e+01 ratio = 1000.0
+181.05 LIMIT-CYCLE value = -1.356e+01 -2.047e+01 ratio = 1000.0
+181.06 LIMIT-CYCLE value = -1.320e+01 -2.010e+01 ratio = 1000.0
+181.07 LIMIT-CYCLE value = -1.281e+01 -1.971e+01 ratio = 1000.0
+181.08 LIMIT-CYCLE value = -1.248e+01 -1.939e+01 ratio = 1000.0
+181.09 LIMIT-CYCLE value = -1.225e+01 -1.916e+01 ratio = 1000.0
+181.10 LIMIT-CYCLE value = -1.205e+01 -1.896e+01 ratio = 1000.0
+181.11 LIMIT-CYCLE value = -1.182e+01 -1.872e+01 ratio = 1000.0
+181.12 LIMIT-CYCLE value = -1.154e+01 -1.844e+01 ratio = 1000.0
+181.13 LIMIT-CYCLE value = -1.117e+01 -1.808e+01 ratio = 1000.0
+181.14 LIMIT-CYCLE value = -1.061e+01 -1.751e+01 ratio = 1000.0
+```
+To plot:
+```
+./plotXYZ.py 0 5 8 </tmp/results
 ```
 
 ## cns script - Clean Numerical Simulation
