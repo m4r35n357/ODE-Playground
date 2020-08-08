@@ -49,7 +49,7 @@ The list includes systems due to Lorenz, Rossler, Thomas, Bouali, Rabinovitch-Fa
 
 ## Scanning for chaos
 
-This is a very literal method based on deviations from the "nominal" trajectory, using a technique similar to what is already used in the "CNS" script described below.
+This is a very basic and literal method based on deviations from the "nominal" trajectory, using a technique similar to what is already used in the "CNS" script described below.
 It was motivated by the first part of this paper by Wernecke, https://arxiv.org/abs/1605.05616 but does not use any statistical tools such as ensemble averages, or any correlations.
 As well as distinguishing between limit cycles and chaos, the method used here also identifies unbounded and static solutions.
 
@@ -264,14 +264,21 @@ $ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 
 Currently the method requires manual editing of a shell script, chaos-scan (note the Lorenz system is uncommented below).
 The chaos-scan script calls the ic script to generate six "nearby" trajectories over a range of a chosen ODE parameter.
-These trajectories are then processed in the following order by chaos-distance.py to generate a summary.
+These trajectories are then processed in the following order by chaos-distance.py to generate a colour-coded summary, with data suitable for plotting.
 * Unbounded solutions are identified by length of the truncated results file
 * Converged solutions are identified by the final separation being smaller than the initial separation
-* Limit cycles are identified by strict proportionality of final to to initial separation ove two different runs
-* Chaotic solutions are identified by worst separation being independent of initial separation
-* Remaining solutions are ripe for investigation!
+* Limit cycles are identified by proportionality of final to to initial separation over two different runs
+* Chaotic solutions are identified by final separation being independent of the initial separation
+* Remaining solutions are marked as unclassified for further investigation
 ```
 #!/bin/sh
+
+#  Thomas
+#  Example: time -p ./chaos-scan .010 .350 .01 10000 .000001 2>/dev/null | tee /tmp/results
+#  Lorenz
+#  Example: time -p ./chaos-scan 180.65 181.15 .01 10000 .000001 2>/dev/null | tee /tmp/results
+#  Rabinovich–Fabrikant
+#  Example: time -p ./chaos-scan .100 .350 .0005 50000 .000000001 2>/dev/null | tee /tmp/results
 
 start=$1
 end=$2
@@ -285,10 +292,10 @@ while [ 1 -eq "$(echo "scale=3; $x < $end" | bc)" ]
 do
     echo -n "$x "
 #    ./ic $separation1 noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-    ./ic $separation1 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
+#    ./ic $separation1 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
 #    ./ic $separation1 noplot ./tsm-sprott-minimal-static 18 32 10 .01 $datalines .02 0 0 $x >/dev/null 2>/dev/null
 #    ./ic $separation1 noplot ./tsm-halvorsen-static 18 32 10 .01 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-#    ./ic $separation1 noplot ./tsm-rf-static 18 32 16 .01 $datalines .05 -.05 .3 $x .1 >/dev/null 2>/dev/null
+    ./ic $separation1 noplot ./tsm-rf-static 18 32 16 .01 $datalines .05 -.05 .3 $x .1 >/dev/null 2>/dev/null
     cp /tmp/dataA /tmp/dataA1
     cp /tmp/dataB /tmp/dataB1
     cp /tmp/dataC /tmp/dataC1
@@ -297,10 +304,10 @@ do
     cp /tmp/dataF /tmp/dataF1
     cp /tmp/dataG /tmp/dataG1
 #    ./ic $separation2 noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-    ./ic $separation2 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
+#    ./ic $separation2 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
 #    ./ic $separation2 noplot ./tsm-sprott-minimal-static 18 32 10 .01 $datalines .02 0 0 $x >/dev/null 2>/dev/null
 #    ./ic $separation2 noplot ./tsm-halvorsen-static 18 32 10 .01 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-#    ./ic $separation2 noplot ./tsm-rf-static 18 32 16 .01 $datalines .05 -.05 .3 $x .1 >/dev/null 2>/dev/null
+    ./ic $separation2 noplot ./tsm-rf-static 18 32 16 .01 $datalines .05 -.05 .3 $x .1 >/dev/null 2>/dev/null
     cp /tmp/dataA /tmp/dataA2
     cp /tmp/dataB /tmp/dataB2
     cp /tmp/dataC /tmp/dataC2
