@@ -49,12 +49,13 @@ The list includes systems due to Lorenz, Rossler, Thomas, Bouali, Rabinovitch-Fa
 
 ## Scanning for chaos the simple way
 
-There have been significant recent developments in automated testing for chaos.
-These tend to be fairly complicated techniques using transformations and statistical methods against "ensembles" of nearby trajectories.
-The method presented here is a very basic and literal approach based on deviations from the "nominal" trajectory, using a technique similar to what is already used in the "CNS" script described below.
+There have been significant recent developments in automated testing for chaos, in particular from Gottwald & Melbourne http://www.maths.usyd.edu.au/u/gottwald/preprints/testforchaos_MPI.pdf and Wernecke, https://arxiv.org/abs/1605.05616.
 
-It was motivated by the first part of this paper by Wernecke, https://arxiv.org/abs/1605.05616 but does not use any statistical tools such as ensemble averages, or any correlations.
-It should be seen more as an analysis tool for identifying regions of interest than a strict '0-1' test.
+These tend to be fairly involved techniques using various transforms and statistical methods against ensembles of nearby trajectories.
+The method presented here is a very basic and literal approach based on deviations from a nominal trajectory, using a technique very similar to what is already used in the **Clean Numerical Simulation** shell script described below.
+
+It was motivated by the first part of the Wernecke paper, but does not attempt the full method, nor use any statistical tools such as ensemble average, or correlation.
+It should be seen as a solution fingerprinting tool for identifying regions of interest rather than a strict '0-1' test, which considering the fractal nature of the results, is probably an unattainable objective.
 As well as distinguishing between limit cycles and chaos, the method used here also identifies unbounded and converged solutions.
 
 ## Function Analysis (Python)
@@ -165,7 +166,7 @@ $ ./libad-test-dbg 32 20 1 1e-18
 Total: 33, PASSED 33
 ```
 The final parameter can be set to 0 (or left absent) for a summary, 1 for individual tests, or 2 for full detail of Taylor Series.
-Depending on the x value, some tests might be skipped owing to domain restrictions on some of the functions involved. 
+Depending on the x value, some tests might be skipped owing to domain restrictions on some of the functions involved.
 
 Parameter | Meaning
 ----------|-----------
@@ -266,8 +267,8 @@ $ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 
 ## Scanning for chaos
 
-Currently the method requires manual editing of a shell script, chaos-scan (note the Lorenz system is uncommented below).
-I think this is probably the best approach and have no good strategy currently to change this.
+Currently the method **requires manual editing of a shell script**, chaos-scan (note the Lorenz system is uncommented below).
+For the foreseeable future I think this is probably the best approach, and have no good strategy currently to change this.
 
 The chaos-scan shell script calls the ic shell script to generate six "nearby" trajectories over a range of a chosen ODE parameter.
 These trajectories are then processed in the following order by chaos-distance.py to generate a colour-coded text summary, with embedded data suitable for plotting.
@@ -385,7 +386,10 @@ To plot:
 ```
 ./plotXYZ.py 0 5 8 </tmp/results
 ```
-
+Plot every tenth line, to simulate a lower resolution run without regenerating data set
+```
+cat /tmp/results | sed -n '1~10p' | ./plotWXYZ.py 0 4 5 8 &
+```
 ## cns script - Clean Numerical Simulation
 
 This is a relatively new approach to dealing with the global error of ODE simulations, described in detail here: https://arxiv.org/abs/1109.0130.
@@ -426,15 +430,17 @@ $ ./cns both ./tsm-lorenz-dbg 15 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 
 (output not shown)
 
 ## ic script - Sensitivity to variation in initial conditions
+This script is used to generate deviation data for chaos scanning, but the data can also be plotted in real time using matplotlib.
 As well as the trajectory specified in the command arguments, six others are created and evolved; each one is the centre of the face of a cube around the original value
 
 Parameter | Meaning
 ----------|-----------
 separation | Initial separation between "original" trajectory and the additional ones
+plot / noplot | Allows non-interactive use without plotting the data (e.g. by the chaos scanner).
 
 The simulation is run seven times in parallel processes, the original along with each perturbed x, y, z.
 ```
-$ ./ic .001 ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
+$ ./ic .001 plot ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
 oo ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
 x+ ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.799 -17.48 35.64 10 28 8 3
 x- ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.801 -17.48 35.64 10 28 8 3
@@ -461,22 +467,22 @@ $ ipython -i ipython.py
 ##### Higher level function analysis
 Plotting function and derivatives, together with root and turning point analysis:
 ```
-$ ipython -i ipython.py 
-Python 3.6.8 (default, Jan 14 2019, 11:02:34) 
+$ ipython -i ipython.py
+Python 3.6.8 (default, Jan 14 2019, 11:02:34)
 Type 'copyright', 'credits' or 'license' for more information
 IPython 7.8.0 -- An enhanced Interactive Python. Type '?' for help.
 ad module loaded
 plotters module loaded
 ode_analysis module loaded
 
-In [1]: f = lambda a: (a.exp + (a.sqr - 4.0).exp).ln                                                                                
+In [1]: f = lambda a: (a.exp + (a.sqr - 4.0).exp).ln
 
-In [2]: scan_s(f)                                                                                                                   
+In [2]: scan_s(f)
 NT  x: -1.962e+00  δx: +4.123e-16  f: +1.332e-15  \ ROOT___ 4
 NT  x: -1.312e+00  δx: -0.000e+00  f: +0.000e+00  / MIN_MAX 4
 NT  x: -1.849e-02  δx: -2.714e-13  f: +2.662e-13  / ROOT___ 3
 
-In [3]: mplot_s(f)                                                                                                                  
+In [3]: mplot_s(f)
 ```
 (matplotlib plot not shown!)
 
@@ -484,58 +490,58 @@ In [3]: mplot_s(f)
 Here is a quick example of function inversion.
 There is a choice of analysis (root finding) method:
 ```
-$ ipython -i ipython.py 
-Python 3.6.8 (default, Jan 14 2019, 11:02:34) 
+$ ipython -i ipython.py
+Python 3.6.8 (default, Jan 14 2019, 11:02:34)
 Type 'copyright', 'credits' or 'license' for more information
 IPython 7.8.0 -- An enhanced Interactive Python. Type '?' for help.
 ad module loaded
 plotters module loaded
 ode_analysis module loaded
 
-In [1]: newton_d(lambda x: x * x - 2.0, x0=1.0)                                                                                     
+In [1]: newton_d(lambda x: x * x - 2.0, x0=1.0)
 Out[1]: Result(method='NT', x=1.414213562373095, f=4.440892098500626e-16, δx=-1.570092458683775e-16, count=6, sense='_', mode='ROOT___')
 
-In [2]: timeit(newton_d(lambda x: x * x - 2.0, x0=1.0))                                                                             
+In [2]: timeit(newton_d(lambda x: x * x - 2.0, x0=1.0))
 25.4 µs ± 1.35 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 
-In [3]: bisect_d(lambda x: x * x, xa=1.0, xb=2.0)                                                                                   
+In [3]: bisect_d(lambda x: x * x, xa=1.0, xb=2.0)
 Out[3]: Result(method='BI', x=2.0, f=4.0, δx=0.0, count=101, sense='_', mode='ROOT___')
 
-In [4]: timeit(bisect_d(lambda x: x * x, xa=1.0, xb=2.0))                                                                           
+In [4]: timeit(bisect_d(lambda x: x * x, xa=1.0, xb=2.0))
 342 µs ± 7.4 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
 ```
 
 ##### Automatic Differentiation
 Here we calculate _all_ the derivatives of a simple cubic in x, followed by its sensitivities to each parameter a, b, c.
 ```
-$ ipython -i ipython.py 
-Python 3.6.8 (default, Jan 14 2019, 11:02:34) 
+$ ipython -i ipython.py
+Python 3.6.8 (default, Jan 14 2019, 11:02:34)
 Type 'copyright', 'credits' or 'license' for more information
 IPython 7.8.0 -- An enhanced Interactive Python. Type '?' for help.
 ad module loaded
 plotters module loaded
 ode_analysis module loaded
 
-In [1]: a = Series.get(5, 3.0)                                                                                                      
+In [1]: a = Series.get(5, 3.0)
 
-In [2]: b = Series.get(5, 5.0)                                                                                                      
+In [2]: b = Series.get(5, 5.0)
 
-In [3]: c = Series.get(5, 7.0)                                                                                                      
+In [3]: c = Series.get(5, 7.0)
 
-In [4]: x = Series.get(5, 2.0)                                                                                                      
+In [4]: x = Series.get(5, 2.0)
 
-In [5]: print(a * x**3 - b * x**2 + c * x - 5)                                                                                      
-+1.300e+01 +0.000e+00 +0.000e+00 +0.000e+00 +0.000e+00 
+In [5]: print(a * x**3 - b * x**2 + c * x - 5)
++1.300e+01 +0.000e+00 +0.000e+00 +0.000e+00 +0.000e+00
 
-In [6]: print(a * x.var**3 - b * x.var**2 + c * x.var - 5)                                                                          
-+1.300e+01 +2.300e+01 +1.300e+01 +3.000e+00 +0.000e+00 
+In [6]: print(a * x.var**3 - b * x.var**2 + c * x.var - 5)
++1.300e+01 +2.300e+01 +1.300e+01 +3.000e+00 +0.000e+00
 
-In [7]: print(a.var * x**3 - b * x**2 + c * x - 5)                                                                                  
-+1.300e+01 +8.000e+00 +0.000e+00 +0.000e+00 +0.000e+00 
+In [7]: print(a.var * x**3 - b * x**2 + c * x - 5)
++1.300e+01 +8.000e+00 +0.000e+00 +0.000e+00 +0.000e+00
 
-In [8]: print(a * x**3 - b.var * x**2 + c * x - 5)                                                                                  
-+1.300e+01 -4.000e+00 +0.000e+00 +0.000e+00 +0.000e+00 
+In [8]: print(a * x**3 - b.var * x**2 + c * x - 5)
++1.300e+01 -4.000e+00 +0.000e+00 +0.000e+00 +0.000e+00
 
-In [9]: print(a * x**3 - b * x**2 + c.var * x - 5)                                                                                  
-+1.300e+01 +2.000e+00 +0.000e+00 +0.000e+00 +0.000e+00 
+In [9]: print(a * x**3 - b * x**2 + c.var * x - 5)
++1.300e+01 +2.000e+00 +0.000e+00 +0.000e+00 +0.000e+00
 ```
