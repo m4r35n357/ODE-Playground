@@ -45,10 +45,8 @@ def read_files(file_a, file_b, file_c, file_d, file_e, file_f, file_g):
 def scan():
     if len(argv) != 4:
         raise Exception(">>> ERROR! Please the expected data file length, and two initial separations <<<")
-    # read in data
     data_a1, data_b1, data_c1, data_d1, data_e1, data_f1, data_g1 = read_files('/tmp/dataA1', '/tmp/dataB1', '/tmp/dataC1', '/tmp/dataD1', '/tmp/dataE1', '/tmp/dataF1', '/tmp/dataG1')
     data_a2, data_b2, data_c2, data_d2, data_e2, data_f2, data_g2 = read_files('/tmp/dataA2', '/tmp/dataB2', '/tmp/dataC2', '/tmp/dataD2', '/tmp/dataE2', '/tmp/dataF2', '/tmp/dataG2')
-    # analyze data
     length_g1, length_g2 = len(data_g1), len(data_g2)
     data_length, separation1, separation2 = int(argv[1]), float(argv[2]), float(argv[3])
     slope = separation1 / separation2
@@ -60,7 +58,6 @@ def scan():
         for r, t in zip(data_g2, zip(data_a2, data_b2, data_c2, data_d2, data_e2, data_f2)):
             d2 = worst_separation(r, t)
             wd2 = d2 if d2 > wd2 else wd2
-    # analyze data
         if d1 < separation1 and d2 < separation2:
             print(f'   {BLUE}CONVERGED{NORMAL} value = {d1:.3e} {d2:.3e} ratio = {slope:.1f}')
         elif 0.8 * slope < wd1 / wd2 < 1.2 * slope:
@@ -72,7 +69,7 @@ def scan():
     elif length_g1 < data_length or length_g2 < data_length:
         print(f'   {WHITE}UNBOUNDED{NORMAL} value = {10.0:.1f} {10.0:.1f} ratio = {-100.0:.1f} {length_g1} / {length_g2} lines out of {data_length}')
     else:
-        print(f'INCORRECT DATA SIZE: found {length_g1} / {length_g2} lines, expected {data_length}')
+        print(f'INCORRECT DATA SIZE: read {length_g1} / {length_g2} lines, expected {data_length}')
 
 print(f'SCAN: {argv}', file=stderr)
 scan()

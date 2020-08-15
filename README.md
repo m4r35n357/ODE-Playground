@@ -47,11 +47,15 @@ These "low-level" functions, when properly called,  are all that is needed to so
 There is a fairly extensive collection of nonlinear ODE examples already implemented, in the file tsm.py, and in the tsm-\*-*.c files.
 The list includes systems due to Lorenz, Rossler, Thomas, Bouali, Rabinovitch-Fabrikant, Sprott, and many others.
 
-## Scanning for chaos
+## Scanning for chaos the simple way
 
-This is a very basic and literal method based on deviations from the "nominal" trajectory, using a technique similar to what is already used in the "CNS" script described below.
+There have been significant recent developments in automated testing for chaos.
+These tend to be fairly complicated techniques using transformations and statistical methods against "ensembles" of nearby trajectories.
+The method presented here is a very basic and literal approach based on deviations from the "nominal" trajectory, using a technique similar to what is already used in the "CNS" script described below.
+
 It was motivated by the first part of this paper by Wernecke, https://arxiv.org/abs/1605.05616 but does not use any statistical tools such as ensemble averages, or any correlations.
-As well as distinguishing between limit cycles and chaos, the method used here also identifies unbounded and static solutions.
+It should be seen more as an analysis tool for identifying regions of interest than a strict '0-1' test.
+As well as distinguishing between limit cycles and chaos, the method used here also identifies unbounded and converged solutions.
 
 ## Function Analysis (Python)
 
@@ -263,13 +267,17 @@ $ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 ## Scanning for chaos
 
 Currently the method requires manual editing of a shell script, chaos-scan (note the Lorenz system is uncommented below).
-The chaos-scan script calls the ic script to generate six "nearby" trajectories over a range of a chosen ODE parameter.
-These trajectories are then processed in the following order by chaos-distance.py to generate a colour-coded summary, with data suitable for plotting.
+I think this is probably the best approach and have no good strategy currently to change this.
+
+The chaos-scan shell script calls the ic shell script to generate six "nearby" trajectories over a range of a chosen ODE parameter.
+These trajectories are then processed in the following order by chaos-distance.py to generate a colour-coded text summary, with embedded data suitable for plotting.
 * Unbounded solutions are identified by length of the truncated results file
-* Converged solutions are identified by the final separation being smaller than the initial separation
-* Limit cycles are identified by proportionality of final to to initial separation over two different runs
-* Chaotic solutions are identified by final separation being independent of the initial separation
-* Remaining solutions are marked as unclassified for further investigation
+* Converged solutions are identified by the final separation being *smaller* than the initial separation
+* Limit cycles are identified by *proportionality* of final to to initial separation over two different runs at different separations
+* Chaotic solutions are identified by final separation being *independent* of the initial separation
+* Remaining solutions are marked as UNCLASSIFIED for further investigation
+
+The data file can be plotted using plotWXYZ.py.
 ```
 #!/bin/sh
 
