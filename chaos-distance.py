@@ -61,11 +61,11 @@ def scan():
         if d1 < separation1 and d2 < separation2:
             print(f'   {BLUE}CONVERGED{NORMAL} value = {d1:.3e} {d2:.3e} ratio = {slope:.1f}')
         elif 0.8 * slope < wd1 / wd2 < 1.2 * slope:
-            print(f' {GREEN}LIMIT-CYCLE{NORMAL} value = {wd1:.3e} {wd2:.3e} ratio = {clip(wd1 / wd2, 1500.0):.1f}')
+            print(f' {GREEN}LIMIT-CYCLE{NORMAL} value = {wd1:.3e} {wd2:.3e} ratio = {clip(wd1 / wd2, 1.5 * slope):.1f}')
         elif 0.5 < wd1 / wd2 < 2.0:
-            print(f'     {RED}CHAOTIC{NORMAL} value = {wd1:.3e} {wd2:.3e} ratio = {clip(wd1 / wd2, 1500.0):.1f}')
+            print(f'     {RED}CHAOTIC{NORMAL} value = {wd1:.3e} {wd2:.3e} ratio = {clip(wd1 / wd2, 1.5 * slope):.1f}')
         else:
-            print(f'{YELLOW}UNCLASSIFIED{NORMAL} value = {wd1:.3e} {wd2:.3e} ratio = {clip(wd1 / wd2, 1500.0):.1f}')
+            print(f'{YELLOW}UNCLASSIFIED{NORMAL} value = {wd1:.3e} {wd2:.3e} ratio = {clip(wd1 / wd2, 1.5 * slope):.1f}')
     elif length_g1 < data_length or length_g2 < data_length:
         print(f'   {WHITE}UNBOUNDED{NORMAL} value = {10.0:.1f} {10.0:.1f} ratio = {-100.0:.1f} {length_g1} / {length_g2} lines out of {data_length}')
     else:

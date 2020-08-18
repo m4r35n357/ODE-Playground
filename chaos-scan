@@ -1,13 +1,13 @@
 #!/bin/sh
 
 #  Thomas
-#  Example: time -p ./chaos-scan .010 .350 .01 10000 .000001 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan .010 .350 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
 #
 #  Lorenz
-#  Example: time -p ./chaos-scan 180.70 181.00 .01 10000 .000001 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan 180.70 181.00 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
 #
 #  Rabinovich–Fabrikant
-#  Example: time -p ./chaos-scan .100 .350 .0005 50000 .000000001 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan .100 .350 .0005 50000 .000000001 10 2>/dev/null | tee /tmp/results
 #
 #  filter results:
 #  sed -n '1~10p' </tmp/results
@@ -17,7 +17,8 @@ end=$2
 step=$3
 datalines=$4
 separation1=$5
-separation2=$(echo "scale=15; $separation1 / 1000;" | bc)
+ratio=$6
+separation2=$(echo "scale=15; $separation1 / $ratio;" | bc)
 
 x=$start
 while [ 1 -eq "$(echo "scale=3; $x < $end" | bc)" ]
