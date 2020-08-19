@@ -283,28 +283,34 @@ The data file can be plotted using plotWXYZ.py.
 #!/bin/sh
 
 #  Thomas
-#  Example: time -p ./chaos-scan .010 .350 .01 10000 .000001 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan .010 .250 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
+#
 #  Lorenz
-#  Example: time -p ./chaos-scan 180.65 181.15 .01 10000 .000001 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan 180.70 181.00 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
+#
 #  Rabinovich–Fabrikant
-#  Example: time -p ./chaos-scan .100 .350 .0005 50000 .000000001 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan .100 .350 .0005 50000 .000000001 10 2>/dev/null | tee /tmp/results
+#
+#  filter results:
+#  sed -n '1~10p' </tmp/results
 
 start=$1
 end=$2
 step=$3
-datalines=$4
-separation1=$5
-separation2=$(echo "scale=15; $separation1 / 1000;" | bc)
+datalines=${4:-10000}
+separation1=${5:-0.000001}
+ratio=${6:-10}
+separation2=$(echo "scale=15; $separation1 / $ratio;" | bc)
 
 x=$start
 while [ 1 -eq "$(echo "scale=3; $x < $end" | bc)" ]
 do
     echo -n "$x "
 #    ./ic $separation1 noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-#    ./ic $separation1 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
+    ./ic $separation1 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
 #    ./ic $separation1 noplot ./tsm-sprott-minimal-static 18 32 10 .01 $datalines .02 0 0 $x >/dev/null 2>/dev/null
 #    ./ic $separation1 noplot ./tsm-halvorsen-static 18 32 10 .01 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-    ./ic $separation1 noplot ./tsm-rf-static 18 32 16 .01 $datalines .05 -.05 .3 $x .1 >/dev/null 2>/dev/null
+#    ./ic $separation1 noplot ./tsm-rf-static 18 32 16 .01 $datalines .05 -.05 .3 $x .1 >/dev/null 2>/dev/null
     cp /tmp/dataA /tmp/dataA1
     cp /tmp/dataB /tmp/dataB1
     cp /tmp/dataC /tmp/dataC1
@@ -313,10 +319,10 @@ do
     cp /tmp/dataF /tmp/dataF1
     cp /tmp/dataG /tmp/dataG1
 #    ./ic $separation2 noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-#    ./ic $separation2 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
+    ./ic $separation2 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
 #    ./ic $separation2 noplot ./tsm-sprott-minimal-static 18 32 10 .01 $datalines .02 0 0 $x >/dev/null 2>/dev/null
 #    ./ic $separation2 noplot ./tsm-halvorsen-static 18 32 10 .01 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-    ./ic $separation2 noplot ./tsm-rf-static 18 32 16 .01 $datalines .05 -.05 .3 $x .1 >/dev/null 2>/dev/null
+#    ./ic $separation2 noplot ./tsm-rf-static 18 32 16 .01 $datalines .05 -.05 .3 $x .1 >/dev/null 2>/dev/null
     cp /tmp/dataA /tmp/dataA2
     cp /tmp/dataB /tmp/dataB2
     cp /tmp/dataC /tmp/dataC2
@@ -328,6 +334,17 @@ do
     x=$(echo "scale=3; $x + $step;" | bc)
 done
 ```
+To run (after editing), see examples above
+
+Parameter | Meaning
+----------|-----------
+start | Start of parameter range
+end | End of parameter range
+step | Step in parameter value
+datalines | Number of time values to expect (for detecting unbounded solutions)
+separation | Initial separation of the six main perturbed values
+ratio | Relative separation of the six smaller deviation values
+
 Typical output for Lorenz system (sigma = 10.0, rho is the LHS parameter below, beta = 8 / 3):
 ```
 $ ./chaos-scan 180.65 181.15 .01 10000 .000001 2>/dev/null | tee /tmp/results

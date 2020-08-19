@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #  Thomas
-#  Example: time -p ./chaos-scan .010 .350 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan .010 .250 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
 #
 #  Lorenz
 #  Example: time -p ./chaos-scan 180.70 181.00 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
@@ -15,9 +15,9 @@
 start=$1
 end=$2
 step=$3
-datalines=$4
-separation1=$5
-ratio=$6
+datalines=${4:-10000}
+separation1=${5:-0.000001}
+ratio=${6:-10}
 separation2=$(echo "scale=15; $separation1 / $ratio;" | bc)
 
 x=$start
