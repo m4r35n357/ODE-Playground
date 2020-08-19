@@ -67,7 +67,7 @@ def scan():
         else:
             print(f'{YELLOW}UNCLASSIFIED{NORMAL} value = {wd1:.3e} {wd2:.3e} ratio = {clip(wd1 / wd2, 1.5 * slope):.1f}')
     elif length_g1 < data_length or length_g2 < data_length:
-        print(f'   {WHITE}UNBOUNDED{NORMAL} value = {10.0:.1f} {10.0:.1f} ratio = {-100.0:.1f} {length_g1} / {length_g2} lines out of {data_length}')
+        print(f'   {WHITE}UNBOUNDED{NORMAL} value = {slope:.1f} {slope:.1f} ratio = {-slope:.1f} {length_g1} / {length_g2} lines out of {data_length}')
     else:
         print(f'INCORRECT DATA SIZE: read {length_g1} / {length_g2} lines, expected {data_length}')
 
