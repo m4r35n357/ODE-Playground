@@ -6,6 +6,9 @@
 #  Lorenz
 #  Example: time -p ./chaos-scan 180.70 181.00 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
 #
+#  Halvorsen
+#  Example: time -p ./chaos-scan 1.240 1.700 .001 10000 .000001 10 2>/dev/null | tee /tmp/results
+#
 #  Rabinovich–Fabrikant
 #  Example: time -p ./chaos-scan .100 .350 .0005 50000 .000001 10 2>/dev/null | tee /tmp/results
 #
@@ -24,8 +27,9 @@ x=$start
 while [ 1 -eq "$(echo "scale=3; $x < $end" | bc)" ]
 do
     echo -n "$x "
-    ./ic $separation1 noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
+#    ./ic $separation1 noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
 #    ./ic $separation1 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
+    ./ic $separation1 noplot ./tsm-rossler-static 18 32 10 .1 $datalines 0.0 -6.78 0.02 0.1 0.1 $x >/dev/null 2>/dev/null
 #    ./ic $separation1 noplot ./tsm-sprott-minimal-static 18 32 10 .01 $datalines .02 0 0 $x >/dev/null 2>/dev/null
 #    ./ic $separation1 noplot ./tsm-halvorsen-static 18 32 10 .01 $datalines 1 0 0 $x >/dev/null 2>/dev/null
 #    ./ic $separation1 noplot ./tsm-rf-static 18 32 16 .01 $datalines .05 -.05 .3 $x .1 >/dev/null 2>/dev/null
@@ -36,8 +40,9 @@ do
     cp /tmp/dataE /tmp/dataE1
     cp /tmp/dataF /tmp/dataF1
     cp /tmp/dataG /tmp/dataG1
-    ./ic $separation2 noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
+#    ./ic $separation2 noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
 #    ./ic $separation2 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
+    ./ic $separation2 noplot ./tsm-rossler-static 18 32 10 .1 $datalines 0.0 -6.78 0.02 0.1 0.1 $x >/dev/null 2>/dev/null
 #    ./ic $separation2 noplot ./tsm-sprott-minimal-static 18 32 10 .01 $datalines .02 0 0 $x >/dev/null 2>/dev/null
 #    ./ic $separation2 noplot ./tsm-halvorsen-static 18 32 10 .01 $datalines 1 0 0 $x >/dev/null 2>/dev/null
 #    ./ic $separation2 noplot ./tsm-rf-static 18 32 16 .01 $datalines .05 -.05 .3 $x .1 >/dev/null 2>/dev/null
