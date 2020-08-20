@@ -47,11 +47,11 @@ def scan():
         raise Exception(">>> ERROR! Please the expected data file length, and two initial separations <<<")
     data_a1, data_b1, data_c1, data_d1, data_e1, data_f1, data_g1 = read_files('/tmp/dataA1', '/tmp/dataB1', '/tmp/dataC1', '/tmp/dataD1', '/tmp/dataE1', '/tmp/dataF1', '/tmp/dataG1')
     data_a2, data_b2, data_c2, data_d2, data_e2, data_f2, data_g2 = read_files('/tmp/dataA2', '/tmp/dataB2', '/tmp/dataC2', '/tmp/dataD2', '/tmp/dataE2', '/tmp/dataF2', '/tmp/dataG2')
-    length_g1, length_g2 = len(data_g1), len(data_g2)
-    data_length, separation1, separation2 = int(argv[1]), float(argv[2]), float(argv[3])
+    l_g1, l_g2 = len(data_g1), len(data_g2)
+    l_data, separation1, separation2 = int(argv[1]), float(argv[2]), float(argv[3])
     slope = separation1 / separation2
     d1, d2, wd1, wd2 = 0.0, 0.0, 0.0, 0.0
-    if length_g1 == data_length and length_g2 == data_length:
+    if l_g1 == l_data and l_g2 == l_data:
         for r, t in zip(data_g1, zip(data_a1, data_b1, data_c1, data_d1, data_e1, data_f1)):
             d1 = worst_separation(r, t)
             wd1 = d1 if d1 > wd1 else wd1
@@ -59,17 +59,17 @@ def scan():
             d2 = worst_separation(r, t)
             wd2 = d2 if d2 > wd2 else wd2
         if d1 < separation1 and d2 < separation2:
-            print(f'   {BLUE}CONVERGED{NORMAL} value = {d1:.3e} {d2:.3e} ratio = {slope:.1f}')
+            print(f'   {BLUE}CONVERGED{NORMAL} value = {d1:.3e} {d2:.3e} ratio = {2.0 * slope:.1f}')
         elif 0.8 * slope < wd1 / wd2 < 1.2 * slope:
-            print(f' {GREEN}LIMIT-CYCLE{NORMAL} value = {wd1:.3e} {wd2:.3e} ratio = {clip(wd1 / wd2, 1.5 * slope):.1f}')
+            print(f' {GREEN}LIMIT-CYCLE{NORMAL} value = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
         elif 0.5 < wd1 / wd2 < 2.0:
-            print(f'     {RED}CHAOTIC{NORMAL} value = {wd1:.3e} {wd2:.3e} ratio = {clip(wd1 / wd2, 1.5 * slope):.1f}')
+            print(f'     {RED}CHAOTIC{NORMAL} value = {wd1:.3e} {wd2:.3e} ratio = {wd1 / wd2:.1f}')
         else:
             print(f'{YELLOW}UNCLASSIFIED{NORMAL} value = {wd1:.3e} {wd2:.3e} ratio = {clip(wd1 / wd2, 1.5 * slope):.1f}')
-    elif length_g1 < data_length or length_g2 < data_length:
-        print(f'   {WHITE}UNBOUNDED{NORMAL} value = {slope:.1f} {slope:.1f} ratio = {-slope:.1f} {length_g1} / {length_g2} lines out of {data_length}')
+    elif l_g1 < l_data or l_g2 < l_data:
+        print(f'   {WHITE}UNBOUNDED{NORMAL} value = {slope:.1f} {slope:.1f} ratio = {-slope:.1f} {l_g1}/{l_g2} out of {l_data}')
     else:
-        print(f'INCORRECT DATA SIZE: read {length_g1} / {length_g2} lines, expected {data_length}')
+        print(f'INCORRECT DATA SIZE: read {l_g1} / {l_g2} lines, expected {l_data}')
 
 print(f'SCAN: {argv}', file=stderr)
 scan()
