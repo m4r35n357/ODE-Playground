@@ -4,10 +4,10 @@ from sys import argv, stdin, stderr
 from matplotlib import pyplot
 
 def main():
-    print("W-X-Y-Z Plotter: {}".format(argv), file=stderr)
-    if len(argv) < 4:
-        raise Exception('>>> ERROR! Please supply four quantities to plot <<<')
-    coordinate_a, coordinate_b, coordinate_c, coordinate_d = int(argv[1]), int(argv[2]), int(argv[3]), int(argv[4])
+    print("Chaos Plotter: {}".format(argv), file=stderr)
+    if len(argv) > 1:
+        raise Exception('>>> ERROR! No parameters, thanks! <<<')
+    coordinate_a, coordinate_b, coordinate_c, coordinate_d = 0, 4, 5, 8
     line = stdin.readline()
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')

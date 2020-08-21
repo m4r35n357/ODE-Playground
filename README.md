@@ -411,11 +411,11 @@ $ ./chaos-scan 180.65 181.15 .01 10000 .000001 1000 2>/dev/null | tee /tmp/resul
 ```
 To plot:
 ```
-./plotChaos.py 0 4 5 8 </tmp/results
+./plotChaos.py </tmp/results
 ```
 Plot every tenth line, to simulate a lower resolution run without regenerating data set
 ```
-cat /tmp/results | sed -n '1~10p' | ./plotChaos.py 0 4 5 8 &
+cat /tmp/results | sed -n '1~10p' | ./plotChaos.py &
 ```
 ## cns script - Clean Numerical Simulation
 
