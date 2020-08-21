@@ -141,3 +141,30 @@ def save_lambda(model_a, model_b, model_c, x, y, z, λ_min=-50.0, λ_max=50.0, s
     pyplot.savefig(f'/tmp/plot-{datetime.datetime.now()}.png')
 
 print(f'{__name__} module loaded', file=stderr)
+
+# import sys; print('Python %s on %s' % (sys.version, sys.platform))
+# sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])
+#
+# from ad import  *
+# from plotters import  *
+# from ode_analysis import  *
+#
+# def l_a(x, y, z):
+#     return sigma * (y - x)
+# def l_b(x, y, z):
+#     return x * (rho - z) - y
+# def l_c(x, y, z):
+#     return x * y - beta * z
+# sigma, rho, beta = 10.0, 28.0, 8.0/3.0
+# x, y, z = 10.0, 10.0, 10.0
+#
+# def rf_a(x, y, z):
+#     return y * (z - 1 + x**2) + γ * x
+# def rf_b(x, y, z):
+#     return x * (3 * z + 1 - x**2) + γ * y
+# def rf_c(x, y, z):
+#     return - 2 * z * (α + x * y)
+# α, γ = .105, .1
+# x, y, z = 1, 1, 1
+#
+# #plot_lambda(f_a, f_b, f_c, x, y, z, λ_min=-50, λ_max=50, ce_min=-5000, ce_max=1000)

@@ -55,7 +55,7 @@ These tend to be fairly involved techniques using various transforms and statist
 The method presented here is a very basic and literal approach based on deviations from a nominal trajectory, using a technique very similar to what is already used in the **Clean Numerical Simulation** shell script described below.
 
 It was motivated by the first part of the Wernecke paper, but does not attempt the full method, nor use any statistical tools such as ensemble average, or correlation.
-It should be seen as a solution fingerprinting tool for identifying regions of interest rather than a strict '0-1' test, which considering the fractal nature of the results, is probably an unattainable objective.
+It should be seen as a solution fingerprinting tool for identifying regions of interest rather than a strict '0-1' test, which considering the fractal nature of the results (amongst other factors), is probably an unattainable objective.
 As well as distinguishing between limit cycles and chaos, the method used here also identifies unbounded and converged solutions.
 
 ## Function Analysis (Python)
@@ -168,6 +168,8 @@ Total: 33, PASSED 33
 The final parameter can be set to 0 (or left absent) for a summary, 1 for individual tests, or 2 for full detail of Taylor Series.
 Depending on the x value, some tests might be skipped owing to domain restrictions on some of the functions involved.
 
+libad-test-dbg c executable ||
+----------|-----------
 Parameter | Meaning
 ----------|-----------
 1 | (approximate) precision in decimal places
@@ -182,6 +184,8 @@ $ ./ad-test-dbg 6 2 1
 ```
 Output originally designed for visual checking, or see below how to do it automatically (hard-coded to quad precision).
 
+ad-test-dbg c executable ||
+----------|-----------
 Parameter | Meaning
 ----------|-----------
 1 | order of Taylor Series
@@ -226,6 +230,8 @@ The Python ODE solver, tsm.py, comprises a long "if" statement containing a "zoo
 tsm-\*-\* represents the individual c solvers.
 
 ##### Python (float precision)
+tsm.py ||
+----------|-----------
 Parameter | Meaning
 ----------|-----------
 1 | model (ODE) name
@@ -237,6 +243,8 @@ Parameter | Meaning
 9+ | ODE parameters
 
 ##### c (MPFR arbitrary precision)
+tsm-\*-\* c executable ||
+----------|-----------
 Parameter | Meaning
 ----------|-----------
 1 | x, y, z output precision in decimal places (0 for full)
@@ -278,7 +286,7 @@ These trajectories are then processed in the following order by chaos-distance.p
 * Chaotic solutions are identified by final separation being *independent* of the initial separation
 * Remaining solutions are marked as UNCLASSIFIED for further investigation
 
-The data file can be plotted using plotWXYZ.py.
+The data file can be plotted using plotChaos.py.
 ```
 #!/bin/sh
 
@@ -336,6 +344,8 @@ done
 ```
 To run (after editing), see examples above
 
+chaos-scan shell script ||
+----------|-----------
 Parameter | Meaning
 ----------|-----------
 start | Start of parameter range
@@ -347,7 +357,7 @@ ratio | Relative separation of the six smaller deviation values
 
 Typical output for Lorenz system (sigma = 10.0, rho is the LHS parameter below, beta = 8 / 3):
 ```
-$ ./chaos-scan 180.65 181.15 .01 10000 .000001 2>/dev/null | tee /tmp/results
+$ ./chaos-scan 180.65 181.15 .01 10000 .000001 1000 2>/dev/null | tee /tmp/results
 180.65     CHAOTIC value = 5.368e+00 5.400e+00 ratio = 1.0
 180.66     CHAOTIC value = 5.407e+00 5.376e+00 ratio = 1.0
 180.67     CHAOTIC value = 5.304e+00 5.355e+00 ratio = 1.0
@@ -401,11 +411,11 @@ $ ./chaos-scan 180.65 181.15 .01 10000 .000001 2>/dev/null | tee /tmp/results
 ```
 To plot:
 ```
-./plotXYZ.py 0 5 8 </tmp/results
+./plotChaos.py 0 4 5 8 </tmp/results
 ```
 Plot every tenth line, to simulate a lower resolution run without regenerating data set
 ```
-cat /tmp/results | sed -n '1~10p' | ./plotWXYZ.py 0 4 5 8 &
+cat /tmp/results | sed -n '1~10p' | ./plotChaos.py 0 4 5 8 &
 ```
 ## cns script - Clean Numerical Simulation
 
@@ -414,6 +424,8 @@ As a rough guide to the accuracy of a solution, it can be compared with a "bette
 The two simulations are run in parallel processes, but obviously the "better" solution takes longer.
 There are three alternative strategies for creating the "better" integrator:
 
+cns shell script ||
+----------|-----------
 Parameter | Meaning
 ----------|-----------
 step | The step size is reduced by a quarter (suitable for RK4) comparisons
