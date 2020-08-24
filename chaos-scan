@@ -7,7 +7,7 @@
 #  Example: time -p ./chaos-scan 180.70 181.00 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
 #
 #  Halvorsen
-#  Example: time -p ./chaos-scan 1.240 1.700 .001 10000 .000001 10 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan 1.240 1.620 .001 10000 .000001 10 2>/dev/null | tee /tmp/results
 #
 #  Rabinovich–Fabrikant
 #  Example: time -p ./chaos-scan .100 .350 .0005 50000 .000001 10 2>/dev/null | tee /tmp/results
