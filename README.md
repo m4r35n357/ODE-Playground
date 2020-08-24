@@ -462,6 +462,8 @@ $ ./cns both ./tsm-lorenz-dbg 15 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 
 This script is used to generate deviation data for chaos scanning, but the data can also be plotted in real time using matplotlib.
 As well as the trajectory specified in the command arguments, six others are created and evolved; each one is the centre of the face of a cube around the original value
 
+ic shell script ||
+----------|-----------
 Parameter | Meaning
 ----------|-----------
 separation | Initial separation between "original" trajectory and the additional ones
