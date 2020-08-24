@@ -40,7 +40,7 @@ def read_files(file_a, file_b, file_c, file_d, file_e, file_f, file_g):
             data_e.append(data(line_e))
             data_f.append(data(line_f))
             data_g.append(data(line_g))
-    return (data_a, data_b, data_c, data_d, data_e, data_f), data_g
+    return zip(data_a, data_b, data_c, data_d, data_e, data_f), data_g
 
 def scan():
     if len(argv) != 4:
