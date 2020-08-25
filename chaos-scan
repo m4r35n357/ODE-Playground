@@ -24,11 +24,11 @@ ratio=${6:-10}
 separation2=$(echo "scale=15; $separation1 / $ratio;" | bc)
 
 x=$start
-while [ 1 -eq "$(echo "scale=3; $x < $end" | bc)" ]
+while [ 1 -eq "$(echo "$x < $end" | bc)" ]
 do
     echo -n "$x "
-#    ./ic $separation1 noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-    ./ic $separation1 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
+    ./ic $separation1 noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
+#    ./ic $separation1 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
 #    ./ic $separation1 noplot ./tsm-rossler-static 18 32 10 .1 $datalines 0.0 -6.78 0.02 0.1 0.1 $x >/dev/null 2>/dev/null
 #    ./ic $separation1 noplot ./tsm-sprott-minimal-static 18 32 10 .01 $datalines .02 0 0 $x >/dev/null 2>/dev/null
 #    ./ic $separation1 noplot ./tsm-halvorsen-static 18 32 10 .01 $datalines 1 0 0 $x >/dev/null 2>/dev/null
@@ -40,8 +40,8 @@ do
     cp /tmp/dataE /tmp/dataE1
     cp /tmp/dataF /tmp/dataF1
     cp /tmp/dataG /tmp/dataG1
-#    ./ic $separation2 noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-    ./ic $separation2 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
+    ./ic $separation2 noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
+#    ./ic $separation2 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
 #    ./ic $separation2 noplot ./tsm-rossler-static 18 32 10 .1 $datalines 0.0 -6.78 0.02 0.1 0.1 $x >/dev/null 2>/dev/null
 #    ./ic $separation2 noplot ./tsm-sprott-minimal-static 18 32 10 .01 $datalines .02 0 0 $x >/dev/null 2>/dev/null
 #    ./ic $separation2 noplot ./tsm-halvorsen-static 18 32 10 .01 $datalines 1 0 0 $x >/dev/null 2>/dev/null
@@ -54,6 +54,6 @@ do
     cp /tmp/dataF /tmp/dataF2
     cp /tmp/dataG /tmp/dataG2
     ./chaos-distance.py $(expr $datalines + 1) $separation1 $separation2
-    x=$(echo "scale=3; $x + $step;" | bc)
+    x=$(echo "$x + $step;" | bc)
 done
 
