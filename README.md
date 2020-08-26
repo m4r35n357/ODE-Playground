@@ -275,8 +275,7 @@ $ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 
 ## Scanning for chaos
 
-Currently the method **requires manual editing of a shell script**, chaos-scan (note the Lorenz system is uncommented below).
-For the foreseeable future I think this is probably the best approach, and have no good strategy currently to change this.
+This is now a bit easier to use, with a small collection of pre-supplied ODE models.
 
 The chaos-scan shell script calls the ic shell script to generate six "nearby" trajectories over a range of a chosen ODE parameter.
 These trajectories are then processed in the following order by chaos-distance.py to generate a colour-coded text summary, with embedded data suitable for plotting.
@@ -286,68 +285,11 @@ These trajectories are then processed in the following order by chaos-distance.p
 * Chaotic solutions are identified by final separation being *independent* of the initial separation
 * Remaining solutions are marked as UNCLASSIFIED for further investigation
 
-The data file can be plotted using plotChaos.py.
-```
-#!/bin/sh
-
-#  Thomas
-#  Example: time -p ./chaos-scan .010 .250 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
-#
-#  Lorenz
-#  Example: time -p ./chaos-scan 180.70 181.00 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
-#
-#  Rabinovich–Fabrikant
-#  Example: time -p ./chaos-scan .100 .350 .0005 50000 .000000001 10 2>/dev/null | tee /tmp/results
-#
-#  filter results:
-#  sed -n '1~10p' </tmp/results
-
-start=$1
-end=$2
-step=$3
-datalines=${4:-10000}
-separation1=${5:-0.000001}
-ratio=${6:-10}
-separation2=$(echo "scale=15; $separation1 / $ratio;" | bc)
-
-x=$start
-while [ 1 -eq "$(echo "scale=3; $x < $end" | bc)" ]
-do
-    echo -n "$x "
-#    ./ic $separation1 noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-    ./ic $separation1 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
-#    ./ic $separation1 noplot ./tsm-sprott-minimal-static 18 32 10 .01 $datalines .02 0 0 $x >/dev/null 2>/dev/null
-#    ./ic $separation1 noplot ./tsm-halvorsen-static 18 32 10 .01 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-#    ./ic $separation1 noplot ./tsm-rf-static 18 32 16 .01 $datalines .05 -.05 .3 $x .1 >/dev/null 2>/dev/null
-    cp /tmp/dataA /tmp/dataA1
-    cp /tmp/dataB /tmp/dataB1
-    cp /tmp/dataC /tmp/dataC1
-    cp /tmp/dataD /tmp/dataD1
-    cp /tmp/dataE /tmp/dataE1
-    cp /tmp/dataF /tmp/dataF1
-    cp /tmp/dataG /tmp/dataG1
-#    ./ic $separation2 noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-    ./ic $separation2 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
-#    ./ic $separation2 noplot ./tsm-sprott-minimal-static 18 32 10 .01 $datalines .02 0 0 $x >/dev/null 2>/dev/null
-#    ./ic $separation2 noplot ./tsm-halvorsen-static 18 32 10 .01 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-#    ./ic $separation2 noplot ./tsm-rf-static 18 32 16 .01 $datalines .05 -.05 .3 $x .1 >/dev/null 2>/dev/null
-    cp /tmp/dataA /tmp/dataA2
-    cp /tmp/dataB /tmp/dataB2
-    cp /tmp/dataC /tmp/dataC2
-    cp /tmp/dataD /tmp/dataD2
-    cp /tmp/dataE /tmp/dataE2
-    cp /tmp/dataF /tmp/dataF2
-    cp /tmp/dataG /tmp/dataG2
-    ./chaos-distance.py $(expr $datalines + 1) $separation1 $separation2
-    x=$(echo "scale=3; $x + $step;" | bc)
-done
-```
-To run (after editing), see examples above
-
 chaos-scan shell script ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
+model | [ thomas lorenz rossler sprott halvorsen rf ]
 start | Start of parameter range
 end | End of parameter range
 step | Step in parameter value
@@ -355,61 +297,37 @@ datalines | Number of time values to expect (for detecting unbounded solutions)
 separation | Initial separation of the six main perturbed values
 ratio | Relative separation of the six smaller deviation values
 
-Typical output for Lorenz system (sigma = 10.0, rho is the LHS parameter below, beta = 8 / 3):
 ```
-$ ./chaos-scan 180.65 181.15 .01 10000 .000001 1000 2>/dev/null | tee /tmp/results
-180.65     CHAOTIC value = 5.368e+00 5.400e+00 ratio = 1.0
-180.66     CHAOTIC value = 5.407e+00 5.376e+00 ratio = 1.0
-180.67     CHAOTIC value = 5.304e+00 5.355e+00 ratio = 1.0
-180.68     CHAOTIC value = 5.537e+00 5.346e+00 ratio = 1.2
-180.69     CHAOTIC value = 5.361e+00 5.444e+00 ratio = 0.9
-180.70     CHAOTIC value = 5.406e+00 5.349e+00 ratio = 1.1
-180.71     CHAOTIC value = 5.407e+00 5.342e+00 ratio = 1.1
-180.72     CHAOTIC value = 5.276e+00 5.234e+00 ratio = 1.0
-180.73     CHAOTIC value = 3.730e+00 3.716e+00 ratio = 1.0
-180.74     CHAOTIC value = 3.779e+00 3.845e+00 ratio = 0.9
-180.75     CHAOTIC value = 3.572e+00 3.480e+00 ratio = 1.1
-180.76     CHAOTIC value = 3.658e+00 3.470e+00 ratio = 1.2
-180.77     CHAOTIC value = 3.485e+00 3.571e+00 ratio = 0.9
-180.78     CHAOTIC value = 3.570e+00 3.568e+00 ratio = 1.0
-180.79     CHAOTIC value = 3.430e+00 3.569e+00 ratio = 0.9
-180.80     CHAOTIC value = 3.592e+00 3.450e+00 ratio = 1.2
-180.81 LIMIT-CYCLE value = 2.661e+00 -4.393e+00 ratio = 1157.4
-180.82     CHAOTIC value = 3.581e+00 3.432e+00 ratio = 1.2
-180.83     CHAOTIC value = 3.322e+00 3.471e+00 ratio = 0.9
-180.84     CHAOTIC value = 3.345e+00 3.274e+00 ratio = 1.1
-180.85     CHAOTIC value = 3.228e+00 3.247e+00 ratio = 1.0
-180.86     CHAOTIC value = 3.263e+00 3.282e+00 ratio = 1.0
-180.87         MID value = 3.236e+00 -2.835e+00 ratio = 433.1
-180.88     CHAOTIC value = 3.157e+00 3.130e+00 ratio = 1.0
-180.89     CHAOTIC value = 3.086e+00 3.101e+00 ratio = 1.0
-180.90     CHAOTIC value = 3.173e+00 3.076e+00 ratio = 1.1
-180.91     CHAOTIC value = 2.677e+00 2.652e+00 ratio = 1.0
-180.92     CHAOTIC value = 2.507e+00 2.529e+00 ratio = 1.0
-180.93     CHAOTIC value = 2.527e+00 2.403e+00 ratio = 1.1
-180.94     CHAOTIC value = 2.259e+00 1.695e+00 ratio = 1.8
-180.95         MID value = 2.100e+00 3.516e-01 ratio = 5.7
-180.96         MID value = 1.207e+00 -3.422e+00 ratio = 102.4
-180.97 LIMIT-CYCLE value = -1.230e+01 -1.921e+01 ratio = 1004.6
-180.98 LIMIT-CYCLE value = -1.209e+01 -1.900e+01 ratio = 1000.2
-180.99   CONVERGED value = -1.408e+01 -2.098e+01 ratio = 1000.0
-181.00   CONVERGED value = -1.413e+01 -2.104e+01 ratio = 1000.0
-181.01 LIMIT-CYCLE value = -1.329e+01 -2.019e+01 ratio = 1000.0
-181.02 LIMIT-CYCLE value = -1.344e+01 -2.035e+01 ratio = 1000.0
-181.03   CONVERGED value = -1.387e+01 -2.078e+01 ratio = 1000.0
-181.04 LIMIT-CYCLE value = -1.378e+01 -2.069e+01 ratio = 1000.0
-181.05 LIMIT-CYCLE value = -1.356e+01 -2.047e+01 ratio = 1000.0
-181.06 LIMIT-CYCLE value = -1.320e+01 -2.010e+01 ratio = 1000.0
-181.07 LIMIT-CYCLE value = -1.281e+01 -1.971e+01 ratio = 1000.0
-181.08 LIMIT-CYCLE value = -1.248e+01 -1.939e+01 ratio = 1000.0
-181.09 LIMIT-CYCLE value = -1.225e+01 -1.916e+01 ratio = 1000.0
-181.10 LIMIT-CYCLE value = -1.205e+01 -1.896e+01 ratio = 1000.0
-181.11 LIMIT-CYCLE value = -1.182e+01 -1.872e+01 ratio = 1000.0
-181.12 LIMIT-CYCLE value = -1.154e+01 -1.844e+01 ratio = 1000.0
-181.13 LIMIT-CYCLE value = -1.117e+01 -1.808e+01 ratio = 1000.0
-181.14 LIMIT-CYCLE value = -1.061e+01 -1.751e+01 ratio = 1000.0
+$ time -p ./chaos-scan thomas .010 .250 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
+.010      CHAOTIC value = 4.636e+01 5.579e+01 ratio = 0.8
+.020      CHAOTIC value = 3.581e+01 3.288e+01 ratio = 1.1
+.030      CHAOTIC value = 2.978e+01 2.960e+01 ratio = 1.0
+.040      CHAOTIC value = 2.555e+01 2.613e+01 ratio = 1.0
+.050      CHAOTIC value = 2.330e+01 2.119e+01 ratio = 1.1
+.060      CHAOTIC value = 1.926e+01 1.936e+01 ratio = 1.0
+.070      CHAOTIC value = 1.809e+01 1.850e+01 ratio = 1.0
+.080      CHAOTIC value = 1.749e+01 1.778e+01 ratio = 1.0
+.090      CHAOTIC value = 1.412e+01 1.416e+01 ratio = 1.0
+.100      CHAOTIC value = 1.218e+01 1.286e+01 ratio = 0.9
+.110  LIMIT-CYCLE value = 1.942e-04 1.941e-05 ratio = 10.0
+.120  LIMIT-CYCLE value = 4.863e-05 4.863e-06 ratio = 10.0
+.130  LIMIT-CYCLE value = 1.088e-05 1.088e-06 ratio = 10.0
+.140  LIMIT-CYCLE value = 3.069e-05 3.069e-06 ratio = 10.0
+.150  LIMIT-CYCLE value = 2.293e-04 2.293e-05 ratio = 10.0
+.160  LIMIT-CYCLE value = 4.952e-05 4.952e-06 ratio = 10.0
+.170  LIMIT-CYCLE value = 1.245e-04 1.245e-05 ratio = 10.0
+.180      CHAOTIC value = 9.226e+00 9.279e+00 ratio = 1.0
+.190  LIMIT-CYCLE value = 1.935e-05 1.935e-06 ratio = 10.0
+.200 UNCLASSIFIED value = 6.425e+00 3.639e-02 ratio = 15.0
+.210  LIMIT-CYCLE value = 1.535e-04 1.535e-05 ratio = 10.0
+.220  LIMIT-CYCLE value = 1.309e-05 1.309e-06 ratio = 10.0
+.230  LIMIT-CYCLE value = 3.292e-05 3.292e-06 ratio = 10.0
+.240  LIMIT-CYCLE value = 6.118e-06 6.118e-07 ratio = 10.0
+real 131.14
+user 456.76
+sys 1.93
 ```
-To plot:
+The data file can be plotted using plotChaos.py.
 ```
 ./plotChaos.py </tmp/results
 ```
