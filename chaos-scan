@@ -1,20 +1,22 @@
 #!/bin/sh
 
 #  Thomas
-#  Example: time -p ./chaos-scan .010 .250 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan thomas .010 .250 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
 #
 #  Lorenz
-#  Example: time -p ./chaos-scan 180.70 181.00 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan lorenz 180.70 181.00 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
 #
 #  Halvorsen
-#  Example: time -p ./chaos-scan 1.240 1.620 .001 10000 .000001 10 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan halvorsen 1.240 1.620 .001 10000 .000001 10 2>/dev/null | tee /tmp/results
 #
 #  Rabinovich–Fabrikant
-#  Example: time -p ./chaos-scan .100 .350 .0005 50000 .000001 10 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan rf .100 .350 .01 50000 .000001 10 2>/dev/null | tee /tmp/results
 #
 #  filter results:
 #  sed -n '1~10p' </tmp/results
 
+ode=$1
+shift
 start=$1
 end=$2
 step=$3
@@ -23,36 +25,29 @@ separation1=${5:-0.000001}
 ratio=${6:-10}
 separation2=$(echo "scale=15; $separation1 / $ratio;" | bc)
 
+case $ode in
+    'thomas')       cmd='./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x';;
+    'lorenz')       cmd='./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3';;
+    'rossler')      cmd='./tsm-rossler-static 18 32 10 .1 $datalines 0.0 -6.78 0.02 0.1 0.1 $x';;
+    'sprott')       cmd='./tsm-sprott-minimal-static 18 32 10 .01 $datalines .02 0 0 $x';;
+    'halvorsen')    cmd='./tsm-halvorsen-static 18 32 10 .01 $datalines 1 0 0 $x';;
+    'rf')           cmd='./tsm-rf-static 18 32 16 .01 $datalines .05 -.05 .3 $x .1';;
+    *)              echo "Unknown ODE"; exit;;
+esac
+
 x=$start
 while [ 1 -eq "$(echo "$x < $end" | bc)" ]
 do
     echo -n "$x "
-    ./ic $separation1 noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-#    ./ic $separation1 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
-#    ./ic $separation1 noplot ./tsm-rossler-static 18 32 10 .1 $datalines 0.0 -6.78 0.02 0.1 0.1 $x >/dev/null 2>/dev/null
-#    ./ic $separation1 noplot ./tsm-sprott-minimal-static 18 32 10 .01 $datalines .02 0 0 $x >/dev/null 2>/dev/null
-#    ./ic $separation1 noplot ./tsm-halvorsen-static 18 32 10 .01 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-#    ./ic $separation1 noplot ./tsm-rf-static 18 32 16 .01 $datalines .05 -.05 .3 $x .1 >/dev/null 2>/dev/null
-    cp /tmp/dataA /tmp/dataA1
-    cp /tmp/dataB /tmp/dataB1
-    cp /tmp/dataC /tmp/dataC1
-    cp /tmp/dataD /tmp/dataD1
-    cp /tmp/dataE /tmp/dataE1
-    cp /tmp/dataF /tmp/dataF1
-    cp /tmp/dataG /tmp/dataG1
-    ./ic $separation2 noplot ./tsm-thomas-static 18 32 10 0.1 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-#    ./ic $separation2 noplot ./tsm-lorenz-static 18 32 20 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3 >/dev/null 2>/dev/null
-#    ./ic $separation2 noplot ./tsm-rossler-static 18 32 10 .1 $datalines 0.0 -6.78 0.02 0.1 0.1 $x >/dev/null 2>/dev/null
-#    ./ic $separation2 noplot ./tsm-sprott-minimal-static 18 32 10 .01 $datalines .02 0 0 $x >/dev/null 2>/dev/null
-#    ./ic $separation2 noplot ./tsm-halvorsen-static 18 32 10 .01 $datalines 1 0 0 $x >/dev/null 2>/dev/null
-#    ./ic $separation2 noplot ./tsm-rf-static 18 32 16 .01 $datalines .05 -.05 .3 $x .1 >/dev/null 2>/dev/null
-    cp /tmp/dataA /tmp/dataA2
-    cp /tmp/dataB /tmp/dataB2
-    cp /tmp/dataC /tmp/dataC2
-    cp /tmp/dataD /tmp/dataD2
-    cp /tmp/dataE /tmp/dataE2
-    cp /tmp/dataF /tmp/dataF2
-    cp /tmp/dataG /tmp/dataG2
+    eval ./ic $separation1 noplot $cmd >/dev/null 2>/dev/null
+    mv /tmp/dataA /tmp/data1
+    mv /tmp/dataB /tmp/data2
+    mv /tmp/dataC /tmp/data3
+    mv /tmp/dataD /tmp/data4
+    mv /tmp/dataE /tmp/data5
+    mv /tmp/dataF /tmp/data6
+    mv /tmp/dataG /tmp/data7
+    eval ./ic $separation2 noplot $cmd >/dev/null 2>/dev/null
     ./chaos-distance.py $(expr $datalines + 1) $separation1 $separation2
     x=$(echo "$x + $step;" | bc)
 done

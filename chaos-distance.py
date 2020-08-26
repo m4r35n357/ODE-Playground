@@ -45,8 +45,8 @@ def read_files(file_a, file_b, file_c, file_d, file_e, file_f, file_g):
 def scan():
     if len(argv) != 4:
         raise Exception(">>> ERROR! Please the expected data file length, and two initial separation values (greater first!) <<<")
-    t_1, r_1 = read_files('/tmp/dataA1', '/tmp/dataB1', '/tmp/dataC1', '/tmp/dataD1', '/tmp/dataE1', '/tmp/dataF1', '/tmp/dataG1')
-    t_2, r_2 = read_files('/tmp/dataA2', '/tmp/dataB2', '/tmp/dataC2', '/tmp/dataD2', '/tmp/dataE2', '/tmp/dataF2', '/tmp/dataG2')
+    t_1, r_1 = read_files('/tmp/data1', '/tmp/data2', '/tmp/data3', '/tmp/data4', '/tmp/data5', '/tmp/data6', '/tmp/data7')
+    t_2, r_2 = read_files('/tmp/dataA', '/tmp/dataB', '/tmp/dataC', '/tmp/dataD', '/tmp/dataE', '/tmp/dataF', '/tmp/dataG')
     l_g1, l_g2 = len(r_1), len(r_2)
     l_data, δ_1, δ_2 = int(argv[1]), float(argv[2]), float(argv[3])
     ratio = δ_1 / δ_2
