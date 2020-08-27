@@ -1,86 +1,57 @@
 /*
- * Lorenz System using RK4
+ * Lorenz System
  *
- * Example: ./rk4-lorenz-dbg 9 32 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
- *
- * NOTE plot interval in place of order!
+ * Example: ./rk4-lorenz-dbg NA NA 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
 #include <stdlib.h>
 #include <assert.h>
-#include <mpfr.h>
 #include "taylor-ode.h"
 
-static void dx (mpfr_t *lhs, mpfr_t x, mpfr_t y, mpfr_t s) {
-    mpfr_fmms(*lhs, s, y, s, x, RND);
+static long double dx (long double x, long double y, long double s) {
+    return s * (y - x);
 }
 
-static void dy (mpfr_t *lhs, mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t r) {
-    mpfr_sub(*lhs, r, z, RND);
-    mpfr_fms(*lhs, *lhs, x, y, RND);
+static long double dy (long double x, long double y, long double z, long double r) {
+    return r * x - y - x * z;
 }
 
-static void dz (mpfr_t *lhs, mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t b) {
-    mpfr_fmms(*lhs, x, y, b, z, RND);
-}
-
-static mpfr_t *sum (mpfr_t *b, mpfr_t a1, mpfr_t a2, mpfr_t a3, mpfr_t a4) {
-    mpfr_add(*b, a1, a4, RND);
-    mpfr_mul_2ui(a2, a2, 1, RND);
-    mpfr_add(*b, *b, a2, RND);
-    mpfr_mul_2ui(a3, a3, 1, RND);
-    mpfr_add(*b, *b, a3, RND);
-    mpfr_div_ui(*b, *b, 6, RND);
-    return b;
+static long double dz (long double x, long double y, long double z, long double b) {
+    return x * y - b * z;
 }
 
 int main (int argc, char **argv) {
-    long nsteps, interval;
-    mpfr_t x, y, z, sigma, rho, beta, h, _, h_2, _x, _y, _z;
-    mpfr_t k1, l1, m1, k2, l2, m2, k3, l3, m3, k4, l4, m4;
+    long n, nsteps;
+    long double x0, y0, z0, sigma, rho, beta, h, _;
 
     assert(argc == 13);
-    t_stepper(argv, &interval, &h, &nsteps);
-    mpfr_inits(x, y, z, sigma, rho, beta, h_2, _, _x, _y, _z, k1, l1, m1, k2, l2, m2, k3, l3, m3, k4, l4, m4, NULL);
-    t_args(argv, argc, &x, &y, &z, &sigma, &rho, &beta, &_);
-    mpfr_div(beta, beta, _, RND);
+    t_stepper(argv, &n, &h, &nsteps);
+    t_args(argv, argc, &x0, &y0, &z0, &sigma, &rho, &beta, &_);
+    beta /= _;
 
-    mpfr_div_2ui(h_2, h, 1, RND);
+    long double k1, l1, m1, k2, l2, m2, k3, l3, m3, k4, l4, m4;
 
-    t_output(x, y, z, h, 0);
-    for (long step = 1; step <= nsteps; step++) {
-        dx(&k1, x, y, sigma);
-        dy(&l1, x, y, z, rho);
-        dz(&m1, x, y, z, beta);
+    t_xyz_output(x0, y0, z0, 0.0);
+    for (long step = 1; step < nsteps + 1; step++) {
+        k1 = dx(x0,                y0,                                   sigma);
+        l1 = dy(x0,                y0,                z0,                rho);
+        m1 = dz(x0,                y0,                z0,                beta);
+        k2 = dx(x0 + 0.5 * k1 * h, y0 + 0.5 * l1 * h,                    sigma);
+        l2 = dy(x0 + 0.5 * k1 * h, y0 + 0.5 * l1 * h, z0 + 0.5 * m1 * h, rho);
+        m2 = dz(x0 + 0.5 * k1 * h, y0 + 0.5 * l1 * h, z0 + 0.5 * m1 * h, beta);
+        k3 = dx(x0 + 0.5 * k2 * h, y0 + 0.5 * l2 * h,                    sigma);
+        l3 = dy(x0 + 0.5 * k2 * h, y0 + 0.5 * l2 * h, z0 + 0.5 * m2 * h, rho);
+        m3 = dz(x0 + 0.5 * k2 * h, y0 + 0.5 * l2 * h, z0 + 0.5 * m2 * h, beta);
+        k4 = dx(x0 +       k3 * h, y0 +       l3 * h,                    sigma);
+        l4 = dy(x0 +       k3 * h, y0 +       l3 * h, z0 +       m3 * h, rho);
+        m4 = dz(x0 +       k3 * h, y0 +       l3 * h, z0 +       m3 * h, beta);
 
-        mpfr_fma(_x, k1, h_2, x, RND);
-        mpfr_fma(_y, l1, h_2, y, RND);
-        mpfr_fma(_z, m1, h_2, z, RND);
-        dx(&k2, _x, _y, sigma);
-        dy(&l2, _x, _y, _z, rho);
-        dz(&m2, _x, _y, _z, beta);
-
-        mpfr_fma(_x, k2, h_2, x, RND);
-        mpfr_fma(_y, l2, h_2, y, RND);
-        mpfr_fma(_z, m2, h_2, z, RND);
-        dx(&k3, _x, _y, sigma);
-        dy(&l3, _x, _y, _z, rho);
-        dz(&m3, _x, _y, _z, beta);
-
-        mpfr_fma(_x, k3, h, x, RND);
-        mpfr_fma(_y, l3, h, y, RND);
-        mpfr_fma(_z, m3, h, z, RND);
-        dx(&k4, _x, _y, sigma);
-        dy(&l4, _x, _y, _z, rho);
-        dz(&m4, _x, _y, _z, beta);
-
-        mpfr_fma(x, h, *sum(&_, k1, k2, k3, k4), x, RND);
-        mpfr_fma(y, h, *sum(&_, l1, l2, l3, l4), y, RND);
-        mpfr_fma(z, h, *sum(&_, m1, m2, m3, m4), z, RND);
-
-        if (step % interval == 0) { t_output(x, y, z, h, step); }
+        x0 += h * (k1 + 2.0 * (k2 + k3) + k4) / 6.0;
+        y0 += h * (l1 + 2.0 * (l2 + l3) + l4) / 6.0;
+        z0 += h * (m1 + 2.0 * (m2 + m3) + m4) / 6.0;
+        t_xyz_output(x0, y0, z0, h * step);
     }
     return 0;
 }

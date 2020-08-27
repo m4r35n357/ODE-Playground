@@ -6,200 +6,153 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <assert.h>
-#include <mpfr.h>
+#include <math.h>
 #include "taylor-ode.h"
 
-const int BASE = 10;
-
-const mpfr_rnd_t RND = MPFR_RNDN;
-
-static char fs[42];
-
-static mpfr_t D1, D_1, D2, D_2, _, __, ___;
-
-void t_tempvars (void) {
-    mpfr_inits(_, __, ___, NULL);
-    mpfr_init_set_ui(D1, 1, RND);
-    mpfr_init_set_si(D_1, -1, RND);
-    mpfr_init_set_ui(D2, 2, RND);
-    mpfr_init_set_si(D_2, -2, RND);
+void t_xyz_output (long double x, long double y, long double z, long double t) {
+    printf("%+.12Le %+.12Le %+.12Le %+.6Le\n", x, y, z, t);
 }
 
-void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, long step) {
-    mpfr_mul_ui(_, h, step, RND);
-    mpfr_printf(fs, x, y, z, _);
+void t_stepper (char **argv, long *n, long double *h, long *nsteps) {
+    *n = strtol(argv[3], NULL, 10);
+    *h = strtold(argv[4], NULL);
+    *nsteps = strtol(argv[5], NULL, 10);
 }
 
-void t_stepper (char **argv, long *ts_order, mpfr_t *step_size, long *n_steps) {
-    long d = strtol(argv[1], NULL, BASE);
-    d == 0 ? sprintf(fs, "%%.RNe %%.RNe %%.RNe %%.9RNe\n") : sprintf(fs, "%%+.%luRNe %%+.%luRNe %%+.%luRNe %%+.9RNe\n", d, d, d);
-    mpfr_set_default_prec(strtod(argv[2], NULL) * 3.322);
-    fprintf(stderr, " MPFR default precision: %lu bits\n", mpfr_get_default_prec());
-    *ts_order = strtol(argv[3], NULL, BASE);
-    mpfr_init_set_str(*step_size, argv[4], BASE, RND);
-    *n_steps = strtol(argv[5], NULL, BASE);
-    t_tempvars();
-}
-
-void t_args (char **argv, int argc, ...) {
+void t_args (char **argv, int count, ...) {
     va_list vars;
-    va_start(vars, argc);
-    for (int i = 6; i < argc; i++) {
-        mpfr_set_str(*va_arg(vars, mpfr_t *), argv[i], BASE, RND);
+    va_start(vars, count);
+    for (int i = 6; i < count; i++) {
+        *va_arg(vars, long double *) = strtold(argv[i], NULL);
     }
     va_end(vars);
 }
 
-series t_series (int n) {
+long double *t_jet (int n) {
     assert(n > 0);
-    mpfr_t *jet = malloc(sizeof (mpfr_t) * n);
-    for (int i = 0; i < n; i++) {
-        mpfr_init_set_ui(jet[i], 0, RND);
+    return malloc(sizeof (long double) * n);
+}
+
+long double *t_jet_c (int n, long double value) {
+    long double *jet = t_jet(n);
+    jet[0] = value;
+    for (int i = 1; i < n; i++) {
+        jet[i] = 0.0;
     }
-    return (series){jet, n};
+    return jet;
 }
 
-void t_next (series s, mpfr_t dot, int k, sign sgn) {
-    sgn == NEG ? mpfr_div_si(s.jet[k + 1], dot, - (k + 1), RND) : mpfr_div_ui(s.jet[k + 1], dot, k + 1, RND);
-}
-
-mpfr_t *t_horner (series s, mpfr_t h) {
-    mpfr_set_zero(_, 1);
-    for (int i = s.size - 1; i >= 0; i--) {
-        mpfr_fma(_, _, h, s.jet[i], RND);
+long double t_horner (long double *jet, int n, long double h) {
+    assert(n > 0);
+    long double sum = 0.0;
+    for (int i = n; i >= 0; i--) {
+        sum = sum * h + jet[i];
     }
-    if (mpfr_number_p(_) == 0) exit(1);
-    mpfr_swap(s.jet[0], _);
-    return s.jet;
+    if (isnan(sum) || isinf(sum)) { fprintf(stderr, "OVERFLOW !\n"); exit(1); }
+    jet[0] = sum;
+    return sum;
 }
 
-mpfr_t *t_abs (series u, int k) {
+long double t_abs (long double *u, int k) {
     assert(k >= 0);
-    mpfr_sgn(u.jet[0]) < 0 ? mpfr_neg(_, u.jet[k], RND) : mpfr_set(_, u.jet[k], RND);
-    return &_;
+    return u[0] < 0.0 ? - u[k] : u[k];
 }
 
-static mpfr_t *cauchy (mpfr_t *ck, series a, series b, int k, int lower, int upper) {
-    mpfr_set_zero(*ck, 1);
+static long double cauchy (long double *a, long double *b, int k, int lower, int upper) {
+    long double c = 0.0;
     for (int j = lower; j <= upper; j++) {
-        mpfr_fma(*ck, a.jet[j], b.jet[k - j], *ck, RND);
+        c += a[j] * b[k - j];
     }
-    return ck;
+    return c;
 }
 
-mpfr_t *t_prod (series u, series v, int k) {
+long double t_prod (long double *u, long double *v, int k) {
     assert(k >= 0);
-    return cauchy(&__, u, v, k, 0, k);
+    return cauchy(u, v, k, 0, k);
 }
 
-mpfr_t *t_quot (series q, series u, series v, int k) {
-    assert(mpfr_zero_p(v.jet[0]) == 0);
-    assert(q.jet != u.jet && q.jet != v.jet);
+long double t_quot (long double *q, long double *u, long double *v, int k) {
+    assert(v[0] != 0.0);
+    assert(q != u && q != v && u != v);
     assert(k >= 0);
-    k == 0 ? mpfr_set(_, u.jet[0], RND) : mpfr_sub(_, u.jet[k], *cauchy(&__, q, v, k, 0, k - 1), RND);
-    mpfr_div(q.jet[k], _, v.jet[0], RND);
-    return &q.jet[k];
+    q[k] = (k == 0 ? u[0] : u[k] - cauchy(q, v, k, 0, k - 1)) / v[0];
+    return q[k];
 }
 
-mpfr_t *t_inv (series i, series v, int k) {
-    assert(mpfr_zero_p(v.jet[0]) == 0);
-    assert(i.jet != v.jet);
+long double t_inv (long double *i, long double *v, int k) {
+    assert(v[0] != 0.0);
+    assert(i != v);
     assert(k >= 0);
-    k == 0 ? mpfr_set(_, D1, RND) : mpfr_neg(_, *cauchy(&__, i, v, k, 0, k - 1), RND);
-    mpfr_div(i.jet[k], _, v.jet[0], RND);
-    return &i.jet[k];
+    i[k] = (k == 0 ? 1.0 : - cauchy(i, v, k, 0, k - 1)) / v[0];
+    return i[k];
 }
 
-mpfr_t *t_sqr (series u, int k) {
+long double t_sqr (long double *u, int k) {
     assert(k >= 0);
-    return cauchy(&__, u, u, k, 0, k);
+    return cauchy(u, u, k, 0, k);
 }
 
-mpfr_t *t_sqrt (series r, series u, int k) {
-    assert(mpfr_sgn(u.jet[0]) > 0);
-    assert(r.jet != u.jet);
+long double t_sqrt (long double *r, long double *u, int k) {
+    assert(u[0] > 0.0);
+    assert(r != u);
     assert(k >= 0);
-    if (k == 0) {
-        mpfr_sqrt(r.jet[k], u.jet[0], RND);
-    } else {
-        mpfr_sub(_, u.jet[k], *cauchy(&__, r, r, k, 1, k - 1), RND);
-        mpfr_div_2ui(_, _, 1, RND);
-        mpfr_div(r.jet[k], _, r.jet[0], RND);
-    }
-    return &r.jet[k];
+    r[k] = k == 0 ? sqrt(u[0]) : 0.5 * (u[k] - cauchy(r, r, k, 1, k - 1)) / r[0];
+    return r[k];
 }
 
-static mpfr_t *d_cauchy (mpfr_t *fk, series h, series u, int k, int lower, int upper, mpfr_t factor) {
-    assert(fk != &_ && h.jet != &_ && u.jet != &_);  // _ is used internally so it cannot be a parameter
-    mpfr_set_zero(*fk, 1);
+static long double d_cauchy (long double *h, long double *u, int k, int lower, int upper, long double factor) {
+    long double f = 0.0;
     for (int j = lower; j <= upper; j++) {
-        mpfr_mul_ui(_, u.jet[k - j], k - j, RND);
-        mpfr_fma(*fk, h.jet[j], _, *fk, RND);
+        f += h[j] * (k - j) * u[k - j];
     }
-    mpfr_div_ui(*fk, *fk, k, RND);
-    mpfr_mul(*fk, *fk, factor, RND);
-    return fk;
+    return factor * f / k;
 }
 
-mpfr_t *t_exp (series e, series u, int k) {
-    assert(e.jet != u.jet);
+long double t_exp (long double *e, long double *u, int k) {
+    assert(e != u);
     assert(k >= 0);
-    if (k == 0) {
-        mpfr_exp(e.jet[k], u.jet[0], RND);
-    } else {
-        d_cauchy(&e.jet[k], e, u, k, 0, k - 1, D1);
-    }
-    return &e.jet[k];
+    e[k] = k == 0 ? exp(u[0]) : d_cauchy(e, u, k, 0, k - 1, 1.0);
+    return e[k];
 }
 
-tuple t_sin_cos (series s, series c, series u, int k, geometry g) {
-    assert(s.jet != c.jet && s.jet != u.jet && c.jet != u.jet);
+tuple t_sin_cos (long double *s, long double *c, long double *u, int k, geometry g) {
+    assert(s != c && s != u && c != u);
     assert(k >= 0);
     if (k == 0) {
-        g == TRIG ? mpfr_sin_cos(s.jet[k], c.jet[k], u.jet[0], RND) : mpfr_sinh_cosh(s.jet[k], c.jet[k], u.jet[0], RND);
+        s[k] = g == TRIG ? sin(u[0]) : sinh(u[0]);
+        c[k] = g == TRIG ? cos(u[0]) : cosh(u[0]);
     } else {
-        d_cauchy(&s.jet[k], c, u, k, 0, k - 1, D1);
-        d_cauchy(&c.jet[k], s, u, k, 0, k - 1, g == TRIG ? D_1 : D1);
+        s[k] = d_cauchy(c, u, k, 0, k - 1, 1.0);
+        c[k] = d_cauchy(s, u, k, 0, k - 1, g == TRIG ? - 1.0 : 1.0);
     }
-    return (tuple){&s.jet[k], &c.jet[k], u.size};
+    return (tuple){&s[k], &c[k]};
 }
 
-tuple t_tan_sec2 (series t, series s, series u, int k, geometry g) {
-    assert(t.jet != s.jet && t.jet != u.jet && s.jet != u.jet);
+tuple t_tan_sec2 (long double *t, long double *s, long double *u, int k, geometry g) {
+    assert(t != s && t != u && s != u);
     assert(k >= 0);
     if (k == 0) {
-        g == TRIG ? mpfr_tan(t.jet[k], u.jet[0], RND) : mpfr_tanh(t.jet[k], u.jet[0], RND);
-        g == TRIG ? mpfr_sec(s.jet[k], u.jet[0], RND) : mpfr_sech(s.jet[k], u.jet[0], RND);
-        mpfr_sqr(s.jet[k], s.jet[k], RND);
+        t[k] = g == TRIG ? tan(u[0]) : tanh(u[0]);
+        s[k] = g == TRIG ? 1.0 + t[0] * t[0] : 1.0 - t[0] * t[0];
     } else {
-        d_cauchy(&t.jet[k], s, u, k, 0, k - 1, D1);
-        d_cauchy(&s.jet[k], t, t, k, 0, k - 1, g == TRIG ? D2 : D_2);
+        t[k] = d_cauchy(s, u, k, 0, k - 1, 1.0);
+        s[k] = d_cauchy(t, t, k, 0, k - 1, g == TRIG ? 2.0 : - 2.0);
     }
-    return (tuple){&t.jet[k], &s.jet[k], u.size};
+    return (tuple){&t[k], &s[k]};
 }
 
-mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {
-    assert(mpfr_sgn(u.jet[0]) > 0);
-    assert(p.jet != u.jet);
+long double t_pwr (long double *p, long double *u, long double a, int k) {
+    assert(u[0] > 0.0);
+    assert(p != u);
     assert(k >= 0);
-    if (k == 0) {
-        mpfr_pow(p.jet[k], u.jet[0], a, RND);
-    } else {
-        mpfr_sub(_, *d_cauchy(&__, p, u, k, 0, k - 1, a), *d_cauchy(&___, u, p, k, 1, k - 1, D1), RND);
-        mpfr_div(p.jet[k], _, u.jet[0], RND);
-    }
-    return &p.jet[k];
+    p[k] = k == 0 ? pow(u[0], a) : (d_cauchy(p, u, k, 0, k - 1, a) - d_cauchy(u, p, k, 1, k - 1, 1.0)) / u[0];
+    return p[k];
 }
 
-mpfr_t *t_ln (series l, series u, int k) {
-    assert(mpfr_sgn(u.jet[0]) > 0);
-    assert(l.jet != u.jet);
+long double t_ln (long double *l, long double *u, int k) {
+    assert(u[0] > 0.0);
+    assert(l != u);
     assert(k >= 0);
-    if (k == 0) {
-        mpfr_log(l.jet[k], u.jet[0], RND);
-    } else {
-        mpfr_sub(_, u.jet[k], *d_cauchy(&__, u, l, k, 1, k - 1, D1), RND);
-        mpfr_div(l.jet[k], _, u.jet[0], RND);
-    }
-    return &l.jet[k];
+    l[k] = k == 0 ? log(u[0]) : (u[k] - d_cauchy(u, l, k, 1, k - 1, 1.0)) / u[0];
+    return l[k];
 }

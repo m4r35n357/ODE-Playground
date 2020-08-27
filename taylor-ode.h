@@ -11,61 +11,42 @@
 const int BASE;
 
 /*
- * Global rounding strategy for MPFR
- */
-const mpfr_rnd_t RND;
-
-/*
- * Wrap coefficient "jets" in a structure
+ * For returning combined recurrence values
  */
 typedef struct {
-    mpfr_t *jet;
-    int size;
-} series;
-
-/*
- * For returning "paired" recurrence values
- */
-typedef struct {
-    mpfr_t *a;
-    mpfr_t *b;
-    int size;
+    long double *a;
+    long double *b;
 } tuple;
 
 /*
- * Sign of a number
- */
-typedef enum {POS, NEG} sign;
-
-/*
- * Selects the trigonometric or hyperbolic version of a function
+ * Selects either a trigonometric or hyperbolic version of the function
  */
 typedef enum {TRIG, HYP} geometry;
 
 /*
- * Pre-allocate some MPFR variaboles
+ * Prints an index column, and x, y, z columns, into a single line
  */
-void t_tempvars (void);
+void t_xyz_output (long double x, long double y, long double z, long double t);
 
 /*
- * Prints x, y, z, t values in a single line of output
+ * Sets the order, step size, and number of steps for the integration from the command line arguments (1 to 4)
  */
-void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, long step);
+void t_stepper (char **argv, long *n, long double *h, long *nsteps);
 
 /*
- * Sets the (precision,) order, step size, and number of steps for the integration from the command line arguments (1 to 5)
- */
-void t_stepper (char **argv, long *ts_order, mpfr_t *step_size, long *n_steps);
-
-/*
- * Bulk set initial coordinate values and ODE parameters from the command line arguments (6 onwards)
+ * Bulk set initial conditions and ODE parameters from the command line arguments (5 onwards)
  */
 void t_args (char **argv, int count, ...);
 
 /*
- * Creates a zeroed Taylor Series of the specified size
+ * Creates an initialized jet of the specified size, with no values set
  */
-series t_series (int size);
+long double *t_jet (int size);
+
+/*
+ * Returns a jet of the specified size, with element zero set to value and the rest zeroed (represents a constant in an ODE)
+ */
+long double *t_jet_c (int size, long double value);
 
 /*
  * The Taylor Series Method (TSM) in brief:
@@ -88,19 +69,14 @@ series t_series (int size);
  */
 
 /*
- * Calculate next coefficient in jet
+ * Sums a Taylor series safely and efficiently.  Result is BOTH returned and stored in jet[0]
  */
-void t_next (series S, mpfr_t dot, int k, sign sgn);
+long double t_horner (long double *jet, int n, long double h);
 
 /*
- * Evaluate a Taylor series safely and efficiently
+ * Returns kth element of the absolute value of U, NO JET STORAGE
  */
-mpfr_t *t_horner (series S, mpfr_t h);
-
-/*
- * Returns a pointer to kth element of the absolute value of U, result stored and returned in variable A, NO JET STORAGE
- */
-mpfr_t *t_abs (series U, int k);
+long double t_abs (long double *u, int k);
 
 /*
  * Cauchy product for C = A.B
@@ -117,27 +93,27 @@ mpfr_t *t_abs (series U, int k);
  */
 
 /*
- * Returns a pointer to kth element of the square of U, result stored and returned in variable S, NO JET STORAGE
+ * Returns kth element of the square of U, NO JET STORAGE
  *
  *  S = U.U
  *
  *  S = sum{j=0->k} U[j].U[k-j]
  */
-mpfr_t *t_sqr (series U, int k);
+long double t_sqr (long double *U, int k);
 
 /*
- * Returns a pointer to kth element of the product of U and V, result stored in variable P, NO JET STORAGE
+ * Returns kth element of the product of U and V, NO JET STORAGE
  *
  *  P = U.V
  *
  *  P = sum{j=0->k} U[j].V[k-j]
  */
-mpfr_t *t_prod (series U, series V, int k);
+long double t_prod (long double *U, long double *V, int k);
 
 /*
- * Returns a pointer to kth element of U / V, results accumulated in jet Q, DOMAIN RESTRICTION v[0] != 0.0
+ * Returns kth element of U / V, results accumulated in jet Q, DOMAIN RESTRICTION v[0] != 0.0
  *
- *     Q = U / V ==> U = Q.V
+ *    Q = U / V ==> U = Q.V
  *
  *                U[k] = sum{j=0->k} Q[j].V[k-j]
  *
@@ -149,19 +125,19 @@ mpfr_t *t_prod (series U, series V, int k);
  *
  *                     = (U[k] - sum{j=0->k-1} Q[j].V[k-j]) / V[0]    otherwise
  */
-mpfr_t *t_quot (series Q, series U, series V, int k);
+long double t_quot (long double *Q, long double *U, long double *V, int k);
 
 /*
- * Returns a pointer to kth element of 1 / V, results accumulated in jet I, DOMAIN RESTRICTION v[0] != 0.0
+ * Returns kth element of 1 / V, results accumulated in jet I, DOMAIN RESTRICTION v[0] != 0.0
  *
  * from quotient, I[k] = 1.0 / V[0]                                   if k == 0
  *
  *                I[k] = - sum{j=0->k-1} I[j].V[k-j] / V[0]           otherwise
  */
-mpfr_t *t_inv (series I, series V, int k);
+long double t_inv (long double *I, long double *V, int k);
 
 /*
- * Returns a pointer to kth element of the square root of U, results accumulated in jet R, DOMAIN RESTRICTION U[0] > 0.0
+ * Returns kth element of the square root of U, results accumulated in jet R, DOMAIN RESTRICTION U[0] > 0.0
  *
  *    U = R.R
  *
@@ -171,7 +147,7 @@ mpfr_t *t_inv (series I, series V, int k);
  *
  * R[k] = (U[k] - sum{j=1->k-1} R[j].R[k-j]) / (2.R[0])
  */
-mpfr_t *t_sqrt (series r, series U, int k);
+long double t_sqrt (long double *R, long double *U, int k);
 
 /*
  * Applying the chain rule for the derivative of a composed function f(u) creates another Cauchy product:
@@ -194,13 +170,13 @@ mpfr_t *t_sqrt (series r, series U, int k);
  */
 
 /*
- * Returns a pointer to kth element of the exponential of U, results accumulated in jet E
+ * Returns kth element of the exponential of U, results accumulated in jet E
  *
  *      E' = E.U'
  *
  *    E[k] = sum{j=0->k-1} E[j].(k-j)U[k-j]/k
  */
-mpfr_t *t_exp (series E, series U, int k);
+long double t_exp (long double *E, long double *U, int k);
 
 /*
  * Returns struct of pointers to kth elements of both sine and cosine of U, results accumulated in jets S and C
@@ -211,7 +187,7 @@ mpfr_t *t_exp (series E, series U, int k);
  *    S[k] = sum{j=0->k-1}       C[j].(k-j)U[k-j]/k
  *    C[k] = sum{j=0->k-1} (+/-) S[j].(k-j)U[k-j]/k
  */
-tuple t_sin_cos (series S, series C, series U, int k, geometry g);
+tuple t_sin_cos (long double *S, long double *C, long double *U, int k, geometry g);
 
 /*
  * Returns struct of pointers to kth elements of both tangent and squared secant of U, results accumulated in jets T and S2
@@ -222,10 +198,10 @@ tuple t_sin_cos (series S, series C, series U, int k, geometry g);
  *    T[k] = sum{j=0->k-1}       S2[j].(k-j)U[k-j]/k
  *   S2[k] = sum{j=0->k-1} (+/-)2 T[j].(k-j)T[k-j]/k
  */
-tuple t_tan_sec2 (series T, series S2, series U, int k, geometry g);
+tuple t_tan_sec2 (long double *T, long double *S2, long double *U, int k, geometry g);
 
 /*
- * Returns a pointer to kth element of P = U^a (where a is scalar), results accumulated in jet P, DOMAIN RESTRICTION U[0] > 0.0
+ * Returns kth element of P = U^a (where a is scalar), results accumulated in jet P, DOMAIN RESTRICTION U[0] > 0.0
  *
  *                                    P'= U^a' = a U^(a-1).U'
  *                                      U.U^a' = a U^a.U'
@@ -239,10 +215,10 @@ tuple t_tan_sec2 (series T, series S2, series U, int k, geometry g);
  *
  *                                        P[k] = (a sum{j=0->k-1} P[j].(k-j)U[k-j]/k - sum{j=1->k-1} U[j].(k-j)P[k-j]/k) / U[0]
  */
-mpfr_t *t_pwr (series P, series U, mpfr_t a, int k);
+long double t_pwr (long double *P, long double *U, long double a, int k);
 
 /*
- * Returns a pointer to kth element of the natural logarithm of U, result accumulated in jet L, DOMAIN RESTRICTION U[0] > 0.0
+ * Returns kth element of the natural logarithm of U, result accumulated in jet L, DOMAIN RESTRICTION U[0] > 0.0
  *
  *                     L' = U' / U
  *                     U' = U.L'
@@ -253,5 +229,5 @@ mpfr_t *t_pwr (series P, series U, mpfr_t a, int k);
  *
  *                   L[k] = (U[k] - sum{j=1->k-1} U[j].(k-j)L[k-j]/k) / U[0]
  */
-mpfr_t *t_ln (series L, series U, int k);
+long double t_ln (long double *L, long double *U, int k);
 

@@ -14,10 +14,9 @@ fileB='/tmp/dataB'  # the original simulation
 method=$1
 shift
 original=$*
-prec=$(expr $3 + 8)
 
 quarterstep () {
-    start="$1 $2 $prec $4"
+    start="$1 $2 $3 $4"
     step=$(echo "scale=6; $5 / 4;" | bc)
     steps=$(echo "scale=0; $6 * 4;" | bc)
     shift 6
@@ -27,7 +26,7 @@ quarterstep () {
 }
 
 orderplus2 () {
-    start="$1 $2 $prec"
+    start="$1 $2 $3"
     order=$(expr $4 + 2)
     shift 4
     end="$*"
@@ -36,7 +35,7 @@ orderplus2 () {
 }
 
 orderstep () {
-    start="$1 $2 $prec"
+    start="$1 $2 $3"
     order=$(expr $4 + 1)
     step=$(echo "scale=6; $5 / 2;" | bc)
     steps=$(echo "scale=0; $6 * 2;" | bc)

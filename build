@@ -4,12 +4,15 @@
 # All rights reserved.
 # For licencing see LICENCE file
 
-WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra -Werror=vla'
+WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra'
 
-CC='/usr/bin/gcc-8 -std=c18'
+CC='/usr/bin/c99'
 if [ x"$1" = x'clang' ]
 then
     CC='/usr/bin/clang'
+elif [ x"$1" = x'musl' ]
+then
+    CC='/usr/bin/musl-gcc'
 fi
 ${CC} --version
 
@@ -17,10 +20,9 @@ rm -f *.o *.so *.gch
 
 build () {
     name=$1
-    echo " Building $name"
-    ${CC} -O3 -DNDEBUG -o ${name}-dynamic ${name}.c taylor-ode.c -lmpfr -s
-    ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c -lmpfr -lgmp -s
-    ${CC} -O0 $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode.c -lmpfr
+    ${CC} -O3 -DNDEBUG -o ${name}-dynamic ${name}.c taylor-ode.c -lm -s
+    ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c -lm -s
+    ${CC} -O0 $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode.c -lm
 }
 
 for model in \
@@ -46,36 +48,6 @@ do
     build ${model} &
 done
 
-echo " Building ad-test-dbg"
-rm -f ad-test-dbg
-${CC} -O0 $WARNINGS -g -o ad-test-dbg taylor-ode.c ad.c ad-test.c -lmpfr &
-
-echo " Building libad-test-dbg"
-rm -f libad-test-dbg
-${CC} -O0 $WARNINGS -g -o libad-test-dbg taylor-ode.c ad.c libad-test.c -lmpfr &
-
-echo " Building libtaylor"
-rm -f libtaylor.so taylor-ode.o
-${CC} -O3 -DNDEBUG -c $WARNINGS -fpic taylor-ode.c && ${CC} -shared -o libtaylor.so taylor-ode.o -s &
-# Example:
-# gcc -O3 -DNDEBUG -L. -Wall -o test tsm-lorenz.c -ltaylor -lmpfr -s
-# export LD_LIBRARY_PATH=.
-# ./test 15 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/data; gnuplot -p -e "splot '/tmp/data' with lines"
-
-echo " Building libad"
-rm -f libad.so ad.o
-${CC} -O0 -c $WARNINGS -g -fpic ad.c && ${CC} -shared -o libad.so ad.o &
-# Example:
-# gcc -L. -Wall -g -o test ad-test.c -lad -ltaylor -lmpfr
-# ./test 7 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt
-
-echo ""
 wait
-
-echo " Building libad-test"
-rm -f libad-test
-${CC} -L. $WARNINGS -o libad-test libad-test.c -lad -ltaylor -lmpfr
-
-echo ""
-ls -lh --color *ad-* tsm-* lib*.so rk4-* chaos-*&
+ls -lh --color ad-test* tsm-*
 
