@@ -13,6 +13,10 @@ BLUE = '\x1b[1;34m'
 WHITE = '\x1b[1;37m'
 NORMAL = '\x1B[0m'
 
+SLOPE_DEVIATION = 0.1
+SLOPE_MAX = 1.0 + SLOPE_DEVIATION
+SLOPE_MIN = 1.0 - SLOPE_DEVIATION
+
 def data(line):
     d = []
     for number in line.split():
@@ -60,12 +64,12 @@ def scan():
             max_s2 = s2 if s2 > max_s2 else max_s2
         if s1 < δ_1 and s2 < δ_2:
             print(f'   {BLUE}CONVERGED{NORMAL} value = {s1:.3e} {s2:.3e} ratio = {2.0*ratio:.1f}')
-        elif 0.8 * ratio < max_s1 / max_s2 < 1.2 * ratio:
-            print(f' {GREEN}LIMIT-CYCLE{NORMAL} value = {max_s1:.3e} {max_s2:.3e} ratio = {max_s1/max_s2:.1f}')
-        elif 0.5 < max_s1 / max_s2 < 2.0:
-            print(f'     {RED}CHAOTIC{NORMAL} value = {max_s1:.3e} {max_s2:.3e} ratio = {max_s1/max_s2:.1f}')
+        elif SLOPE_MIN * ratio <= max_s1 / max_s2 <= SLOPE_MAX * ratio:
+            print(f' {GREEN}LIMIT-CYCLE{NORMAL} value = {max_s1:.3e} {max_s2:.3e} ratio = {max_s1/max_s2:.3f}')
+        elif SLOPE_MIN <= max_s1 / max_s2 <= SLOPE_MAX:
+            print(f'     {RED}CHAOTIC{NORMAL} value = {max_s1:.3e} {max_s2:.3e} ratio = {max_s1/max_s2:.3f}')
         else:
-            print(f'{YELLOW}UNCLASSIFIED{NORMAL} value = {max_s1:.3e} {max_s2:.3e} ratio = {clip(max_s1/max_s2, 1.5*ratio):.1f}')
+            print(f'{YELLOW}UNCLASSIFIED{NORMAL} value = {max_s1:.3e} {max_s2:.3e} ratio = {clip(max_s1/max_s2, 1.5*ratio):.3f}')
     elif l_g1 < l_data or l_g2 < l_data:
         print(f'   {WHITE}UNBOUNDED{NORMAL} value = {ratio:.1f} {ratio:.1f} ratio = {-0.5*ratio:.1f} {l_g1}/{l_g2} of {l_data}')
     else:
