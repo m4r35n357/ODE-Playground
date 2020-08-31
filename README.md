@@ -47,6 +47,10 @@ These "low-level" functions, when properly called,  are all that is needed to so
 There is a fairly extensive collection of nonlinear ODE examples already implemented, in the file tsm.py, and in the tsm-\*-*.c files.
 The list includes systems due to Lorenz, Rossler, Thomas, Bouali, Rabinovitch-Fabrikant, Sprott, and many others.
 
+## Accuracy of solutions
+Rather than estimating local error using the usual Taylor Series method, I have provided a clean numerical simulation (CNS) shell script, that makes it easy to run a "better" simulation alongside.
+The differences can be plotted for easy visual comparison.
+
 ## Scanning for chaos the simple way
 
 There have been significant recent developments in automated testing for chaos, in particular from Gottwald & Melbourne http://www.maths.usyd.edu.au/u/gottwald/preprints/testforchaos_MPI.pdf and Wernecke, https://arxiv.org/abs/1605.05616.
@@ -79,10 +83,6 @@ There are also functions for (matching the t_functions):
 * asin(h), acos(h), atan(h) - Python only
 
 Using these "higher level" functions, Newton's method is implemented trivially, but I have also provided an implementation of the bisection method for comparison.
-In summary, there are three main areas of application for the code:
-* solving nonlinear ODEs (to arbitrary precision with c/MPFR)
-* plotting functions and their (higher) derivatives, with solution, turning-point, and inflection analysis (Python is best here)
-* various interactive investigations in the Python console
 
 The plotters.py script enables the analysis of a "model" function's derivatives along with the value itself, across a range of the input variable.
 That file contains a selection of example invocations in the comments.
@@ -98,6 +98,13 @@ def trig(a):
 Operators on or between jets and numbers are implemented by overloading, and the functions are implemented as _properties_ of a jet.
 These two approaches produce a fairly readable format for coding the models.
 The value parameter allows simple calculation of function inverse values, as well as roots.
+
+In summary, there are five main areas of application for the code:
+* solving nonlinear ODEs (to arbitrary precision with c/MPFR)
+* scanning ODE parameters for detecting chaos in solutions
+* checking global accuracy of solutions
+* plotting functions and their (higher) derivatives, with solution, turning-point, and inflection analysis (Python is best here)
+* various interactive investigations in the Python console
 
 ## Build/Test Environment (Debian/Ubuntu/Raspbian)
 
