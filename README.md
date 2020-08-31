@@ -408,7 +408,6 @@ $ echo '
 from math import *
 from ad import *
 from plotters import *
-from ode_analysis import *
 ' > ipython.py
 $ ipython -i ipython.py
 ```
