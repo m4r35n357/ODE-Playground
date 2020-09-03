@@ -11,10 +11,10 @@ def main():
     line = stdin.readline()
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')
-    ax1.set_xlabel('Column ' + str(coordinate_a), color='g')
-    ax1.set_ylabel('Columns ' + str(coordinate_b) + ' & ' + str(coordinate_c), color='b')
+    ax1.set_xlabel('Parameter', color='g')
+    ax1.set_ylabel('Separations', color='b')
     ax2 = ax1.twinx()
-    ax2.set_ylabel('Column ' + str(coordinate_d), color='r')
+    ax2.set_ylabel('Ratio', color='r')
     n = 0
     w, x, y, z = [], [], [], []
     while line:
