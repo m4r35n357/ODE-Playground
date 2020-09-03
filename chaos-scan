@@ -1,16 +1,16 @@
 #!/bin/sh
 
 #  Thomas
-#  Example: time -p ./chaos-scan thomas .010 .250 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan thomas .010 .250 10000 .000001 10 2>/dev/null | tee /tmp/results
 #
 #  Lorenz
-#  Example: time -p ./chaos-scan lorenz 180.70 181.00 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan lorenz 180.70 181.00 10000 .000001 10 2>/dev/null | tee /tmp/results
 #
 #  Halvorsen
-#  Example: time -p ./chaos-scan halvorsen 1.240 1.620 .001 10000 .000001 10 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan halvorsen 1.240 1.620 10000 .000001 10 2>/dev/null | tee /tmp/results
 #
 #  Rabinovich–Fabrikant
-#  Example: time -p ./chaos-scan rf .100 .350 .01 50000 .000001 10 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan rf .100 .350 50000 .000001 10 2>/dev/null | tee /tmp/results
 #
 #  filter results:
 #  sed -n '1~10p' </tmp/results
@@ -19,11 +19,10 @@ ode=$1
 shift
 start=$1
 end=$2
-steps=$3
-step=$(echo "scale=15; ($end - $start) / $steps;" | bc)
-datalines=${4:-10000}
-separation1=${5:-0.000001}
-ratio=${6:-10}
+step=$(echo "scale=15; ($end - $start) / 100;" | bc)
+datalines=${3:-10000}
+separation1=${4:-0.000001}
+ratio=${5:-10}
 separation2=$(echo "scale=15; $separation1 / $ratio;" | bc)
 
 # shellcheck disable=SC2016
