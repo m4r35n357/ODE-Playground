@@ -1,5 +1,5 @@
 #!/bin/sh
-set -x
+
 #  Thomas
 #  Example: time -p ./chaos-scan thomas .010 .250 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
 #
@@ -19,7 +19,8 @@ ode=$1
 shift
 start=$1
 end=$2
-step=$3
+steps=$3
+step=$(echo "scale=15; ($end - $start) / $steps;" | bc)
 datalines=${4:-10000}
 separation1=${5:-0.000001}
 ratio=${6:-10}
