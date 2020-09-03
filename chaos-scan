@@ -1,13 +1,16 @@
 #!/bin/sh
 
 #  Thomas
-#  Example: time -p ./chaos-scan thomas .010 .250 10000 .000001 10 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan thomas .010 .250 2>/dev/null | tee /tmp/results
 #
 #  Lorenz
-#  Example: time -p ./chaos-scan lorenz 180.70 181.00 10000 .000001 10 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan lorenz 180.70 181.00 2>/dev/null | tee /tmp/results
+#
+#  Rossler
+#  Example: time -p ./chaos-scan rossler 0 33 2>/dev/null | tee /tmp/results
 #
 #  Halvorsen
-#  Example: time -p ./chaos-scan halvorsen 1.240 1.620 10000 .000001 10 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan halvorsen 1.240 1.620 2>/dev/null | tee /tmp/results
 #
 #  Rabinovich–Fabrikant
 #  Example: time -p ./chaos-scan rf .100 .350 50000 .000001 10 2>/dev/null | tee /tmp/results
