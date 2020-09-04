@@ -26,7 +26,6 @@ build () {
 }
 
 for model in \
-rk4-lorenz \
 tsm-lorenz \
 tsm-rossler \
 tsm-yu-wang \
@@ -39,15 +38,12 @@ tsm-wimol-banlue \
 tsm-thomas \
 tsm-sprott-minimal \
 tsm-sprott-thomas \
-tsm-sj \
-tsm-lotka-volterra \
-tsm-logistic \
-tsm-constant
+tsm-sj
 do
     rm -f ${model}-*
     build ${model} &
 done
 
 wait
-ls -lh --color ad-test* tsm-*
+ls -lh --color tsm-*
 

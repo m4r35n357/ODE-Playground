@@ -1,12 +1,10 @@
 ## Background
 
-This project is mainly a collection of programs in c and Python for evolving systems of ODEs using the Taylor Series Method (TSM), a rather old but poorly acknowledged technique based on forward mode Automatic Differentiation (AD).
-TSM is a procedure for integrating ODEs using Taylor Series of arbitrary order, calculated to arbitrary precision (the former requires the latter in practice), using recurrence relations between time derivatives of increasing order.
+This project is mainly a collection of programs in c for evolving systems of ODEs using the Taylor Series Method (TSM), a rather old but poorly acknowledged technique based on forward mode Automatic Differentiation (AD).
+TSM is a procedure for integrating ODEs using Taylor Series of arbitrary order, using recurrence relations between time derivatives of increasing order.
 It is therefore (or should be, if it were better known!) a serious competitor to the fourth-order RK4 for the vast majority of cases.
 
 The code itself is tiny (as are the dynamic executables) and has been partly developed on, and is suitable for running on, a Raspberry Pi 4 computer.
-The c code supports arbitrary precision (using the GNU MPFR library: https://www.mpfr.org), and is most suited to solving systems of ODEs to high accuracy.
-The Python code uses float precision, and is most suited to interactive analysis and plotting of functions and their derivatives.
 
 For the uninitiated, here is a review of the TSM itself and its history of repeated "discovery" and re-branding.
 https://arxiv.org/abs/1111.7149
@@ -22,10 +20,8 @@ Finally, more general resources on automatic differentiation can be found at the
 ## Taylor Series ODE Solvers (c/MPFR and Python)
 
 My primary aim was to be able to solve coupled nonlinear equations and investigate chaotic systems, without relying on "black-box" ODE solvers.
-The resulting c code takes the form of a small (<200 loc) arbitrary precision Taylor Series "library", and the model-specific ODE simulators are tiny client programs to this, typically 25-35 loc each.
+The resulting c code takes the form of a small (<150 loc) Taylor Series "library", and the model-specific ODE simulators are tiny client programs to this, typically 15-25 loc each.
 The header file taylor-ode.h contains a terse but complete description of the Taylor Series Method as implemented here, together with derivations of the recurrences that enable analysis of complex composed functions.
-
-I have also duplicated the ODE solving functionality in Python 3 (at float precision), but with extra testing and more advanced function analysis features (enabled by operator overloading and the Python REPL).
 
 The recurrence rules (the "t-functions" in c and Python) are the key to calculating high order derivatives accurately, without needing finite differences.
 They generate "jets" of Taylor Series coefficients iteratively, term by term, using previously calculated lower order values.
@@ -38,7 +34,6 @@ The functions provided cover the basic algebraic operations on Taylor Series (+ 
 * tan(h)_sec(h)2
 * pwr (f(x)^a, where a is a scalar)
 * ln
-* asin(h), acos(h), atan(h) - Python only
 
 The recurrence relations used here are derived along the lines of (amongst other sources) http://www2.math.uni-wuppertal.de/wrswt/preprints/prep_05_4.pdf and http://aimsciences.org/journals/displayPaperPro.jsp?paperID=9241 (open access).
 
@@ -62,55 +57,16 @@ It was motivated by the first part of the Wernecke paper, but does not attempt t
 It should be seen as a solution fingerprinting tool for identifying regions of interest rather than a strict '0-1' test, which considering the fractal nature of the results (amongst other factors), is probably an unattainable objective.
 As well as distinguishing between limit cycles and chaos, the method used here also identifies unbounded and converged solutions.
 
-## Function Analysis (Python)
-
-Partly to verify my own implementation of the Taylor recurrence rules, I have added a demonstration of using series arithmetic to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
-The solver demo can be used to find roots (and also extrema and inflection points by "extending" Newton to higher derivatives) in single variable nonlinear equations.
-Of course it is more generally useful for finding inverse values (where real solutions exist) of complicated functions, not just their roots.
-
-The "higher-level" ad_functions (or the Series class in Python) manipulate entire  Taylor series "jets" at once, so are only useful for univariate functions.
-In Python there is an overloaded operator "~" which extracts the actual derivative values from the taylor series coefficents, as well as additional operators for (negation and **).
-The \*\* (power) operator caters for f(x)^a, a^f(x) and f1(x)^f2(x), subject to domain limitations on f(x).
-There are also functions for (matching the t_functions):
-* abs
-* sqr
-* sqrt
-* exp
-* sin(h)_cos(h)
-* tan(h)_sec(h)2
-* pwr (f(x)^a, where a is a scalar)
-* ln
-* asin(h), acos(h), atan(h) - Python only
-
-Using these "higher level" functions, Newton's method is implemented trivially, but I have also provided an implementation of the bisection method for comparison.
-
-The plotters.py script enables the analysis of a "model" function's derivatives along with the value itself, across a range of the input variable.
-That file contains a selection of example invocations in the comments.
-Optionally it will analyse that range for roots, extrema and inflection points using the lower order derivatives.
-Here is a seventh-degree polynomial model by way of example, and a trigonometric identity as a check of the sin and sqr functions:
-```python
-def septic(a):
-    return (a + 7) * (5 + a) * (a + 2) * a * (a - 1) * (a - 3) * (a - 6)
-
-def trig(a):
-    return (3 * a).sin - 3 * a.sin + 4 * a.sin**3
-```
-Operators on or between jets and numbers are implemented by overloading, and the functions are implemented as _properties_ of a jet.
-These two approaches produce a fairly readable format for coding the models.
-The value parameter allows simple calculation of function inverse values, as well as roots.
-
-In summary, there are five main areas of application for the code:
-* solving nonlinear ODEs (to arbitrary precision with c/MPFR)
+In summary, there are three main areas of application for the code:
+* solving nonlinear ODEs
 * scanning ODE parameters for detecting chaos in solutions
 * checking global accuracy of solutions
-* plotting functions and their (higher) derivatives, with solution, turning-point, and inflection analysis (Python is best here)
-* various interactive investigations in the Python console
 
 ## Build/Test Environment (Debian/Ubuntu/Raspbian)
 
 OS level requirements:
 ```
-sudo apt install bc git build-essential pkg-config mesa-utils-extra python3-tk python3-dev libmpc-dev libfreetype6-dev libatlas-base-dev virtualenvwrapper gnuplot-x11 lcov
+sudo apt install bc git build-essential pkg-config mesa-utils-extra python3-tk python3-dev libfreetype6-dev libatlas-base-dev virtualenvwrapper gnuplot-x11
 ```
 Download:
 ```
@@ -129,35 +85,9 @@ The dependencies are:
 This is a typical Python virtual environment setup:
 ```
 mkvirtualenv --python /usr/bin/python3 ad
-pip install matplotlib pillow pi3d pytest pytest-cov mutmut ipython
+pip install matplotlib pillow pi3d
 ```
-Now you can just use it "in place" in your virtual environment or, optionally, build and install an ad package to your venv
-```
-python3 setup.py sdist
-cd dist
-tar xzvf ad-1.0.tar.gz
-cd ad-1.0
-python3 setup.py install
-cd ../..
-```
-
-#### Running Python Tests
-Testing Requirements
-* pytest
-* pytest_cov
-* mutmut (optional)
-
-Most of the code is covered several times over.
-Tests have been mutation tested with mutmut.
-```
-$ pytest --cov=ad --cov-report html:cov_html ad_test.py solver_test.py -q
-.......................................................................... [ 24%]
-.......................................................................... [ 48%]
-.......................................................................... [ 73%]
-.......................................................................... [ 97%]
-........                                                                   [100%]
-
-```
+Now you can just use it "in place" in your new virtual environment.
 
 #### c Build (GCC or Clang)
 ```
@@ -165,55 +95,10 @@ $ ./build
 $ ./build clang
 ```
 
-#### Running c Tests
-##### Newer tests
+##### Build command
 ```
-$ ./libad-test-dbg 32 20 1 1e-18
-
-Total: 33, PASSED 33
+./build && echo OK
 ```
-The final parameter can be set to 0 (or left absent) for a summary, 1 for individual tests, or 2 for full detail of Taylor Series.
-Depending on the x value, some tests might be skipped owing to domain restrictions on some of the functions involved.
-
-libad-test-dbg c executable ||
-----------|-----------
-Parameter | Meaning
-----------|-----------
-1 | (approximate) precision in decimal places
-2 | order of Taylor Series
-3 | x value
-4 | tolerance
-5 | debug level (optional)
-
-##### Older tests
-```
-$ ./ad-test-dbg 6 2 1
-```
-Output originally designed for visual checking, or see below how to do it automatically (hard-coded to quad precision).
-
-ad-test-dbg c executable ||
-----------|-----------
-Parameter | Meaning
-----------|-----------
-1 | order of Taylor Series
-2 | x value
-3 | y value
-
-##### Big build and test command (recommended):
-```
-time -p ./build && ./ad-test-dbg 6 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt && ./libad-test-dbg 9 32 20 2 1e-18 && echo OK
-```
-There is also a sample Git pre-commit script that you might want to copy (and edit) to .git/hooks
-
-##### c Code Coverage
-```
-rm -f *.gcno *.gcda
-./build
-./libad-test-dbg 9 32 20 2 1 1e-18
-lcov --capture --directory . --output-file coverage.info
-genhtml coverage.info --output-directory out
-```
-Then run tests and/or programs to generate data files, HTML at out/index.html
 
 ## Solving and Plotting ODEs
 This use case only involves calling the "t-functions" in ad.py or taylor-ode.c.
@@ -223,39 +108,17 @@ To find some example invocations:
 ```
 $ grep Example *.py tsm-*.c
 ```
-Matplotlib progressive graph plotting in Python (second parameter ignored as python floats are fixed double precision):
+Matplotlib progressive graph plotting:
 ```
-$ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
-```
-or in c (notice absence of the model parameter and presence of the internal precision arg):
-```
-$ ./tsm-lorenz-dbg 15 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
+$ ./tsm-lorenz-dbg NA NA 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 ```
 
-#### tsm.py and tsm-\*-\* Parameter Reference
-The Python ODE solver, tsm.py, comprises a long "if" statement containing a "zoo" of pre-programmed ODE systems.
-tsm-\*-\* represents the individual c solvers.
-
-##### Python (float precision)
-tsm.py ||
-----------|-----------
-Parameter | Meaning
-----------|-----------
-1 | model (ODE) name
-2 | ignored
-3 | order of Taylor Series
-4 | step size
-5 | number of steps
-6,7,8 | x0, y0, z0
-9+ | ODE parameters
-
-##### c (MPFR arbitrary precision)
 tsm-\*-\* c executable ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
-1 | x, y, z output precision in decimal places (0 for full)
-2 | (approximate) internal precision in decimal places
+1 | Not used
+2 | Not used
 3 | order of Taylor Series (plot interval in RK4)
 4 | step size
 5 | number of steps
@@ -266,18 +129,18 @@ Since the RK4 Lorentz simulator (c only) is by definition fixed order, the "orde
 
 #### 3D static trajectory plotting (gnuplot)
 
-Write to a data file
+Write to a data file:
 ```
-$ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/data
+$ ./tsm-lorenz-dbg NA NA 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3  >/tmp/data
 ```
-then plot it
+then plot it:
 ```
 $ gnuplot -p -e "splot '/tmp/data' with lines"
 ```
 
 #### 3D progressive trajectory plotting (pi3d)
 ```
-$ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
+$ ./tsm-lorenz-dbg NA NA 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3  | ./plot3d.py
 ```
 
 ## Scanning for chaos
@@ -299,49 +162,123 @@ Parameter | Meaning
 model | [ thomas lorenz rossler sprott halvorsen rf ]
 start | Start of parameter range
 end | End of parameter range
-step | Step in parameter value
 datalines | Number of time values to expect (for detecting unbounded solutions)
 separation | Initial separation of the six main perturbed values
 ratio | Relative separation of the six smaller deviation values
 
+The script produces 100 lines of output, equally spaced between start and end.
+The last three parameters have default values set (see script for details) and can usually be omitted:
 ```
-$ time -p ./chaos-scan thomas .010 .250 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
-.010      CHAOTIC value = 4.636e+01 5.579e+01 ratio = 0.8
-.020      CHAOTIC value = 3.581e+01 3.288e+01 ratio = 1.1
-.030      CHAOTIC value = 2.978e+01 2.960e+01 ratio = 1.0
-.040      CHAOTIC value = 2.555e+01 2.613e+01 ratio = 1.0
-.050      CHAOTIC value = 2.330e+01 2.119e+01 ratio = 1.1
-.060      CHAOTIC value = 1.926e+01 1.936e+01 ratio = 1.0
-.070      CHAOTIC value = 1.809e+01 1.850e+01 ratio = 1.0
-.080      CHAOTIC value = 1.749e+01 1.778e+01 ratio = 1.0
-.090      CHAOTIC value = 1.412e+01 1.416e+01 ratio = 1.0
-.100      CHAOTIC value = 1.218e+01 1.286e+01 ratio = 0.9
-.110  LIMIT-CYCLE value = 1.942e-04 1.941e-05 ratio = 10.0
-.120  LIMIT-CYCLE value = 4.863e-05 4.863e-06 ratio = 10.0
-.130  LIMIT-CYCLE value = 1.088e-05 1.088e-06 ratio = 10.0
-.140  LIMIT-CYCLE value = 3.069e-05 3.069e-06 ratio = 10.0
-.150  LIMIT-CYCLE value = 2.293e-04 2.293e-05 ratio = 10.0
-.160  LIMIT-CYCLE value = 4.952e-05 4.952e-06 ratio = 10.0
-.170  LIMIT-CYCLE value = 1.245e-04 1.245e-05 ratio = 10.0
-.180      CHAOTIC value = 9.226e+00 9.279e+00 ratio = 1.0
-.190  LIMIT-CYCLE value = 1.935e-05 1.935e-06 ratio = 10.0
-.200 UNCLASSIFIED value = 6.425e+00 3.639e-02 ratio = 15.0
-.210  LIMIT-CYCLE value = 1.535e-04 1.535e-05 ratio = 10.0
-.220  LIMIT-CYCLE value = 1.309e-05 1.309e-06 ratio = 10.0
-.230  LIMIT-CYCLE value = 3.292e-05 3.292e-06 ratio = 10.0
-.240  LIMIT-CYCLE value = 6.118e-06 6.118e-07 ratio = 10.0
-real 131.14
-user 456.76
-sys 1.93
+$ time -p ./chaos-scan thomas .010 .250 2>/dev/null | tee /tmp/results
+.010 UNCLASSIFIED value = 5.159e+01 3.624e+01 ratio = 1.423
+.012400000000000      CHAOTIC value = 4.252e+01 4.482e+01 ratio = 0.949
+.014800000000000      CHAOTIC value = 3.596e+01 3.539e+01 ratio = 1.016
+.017200000000000 UNCLASSIFIED value = 3.604e+01 4.225e+01 ratio = 0.853
+.019600000000000      CHAOTIC value = 3.545e+01 3.554e+01 ratio = 0.997
+.022000000000000 UNCLASSIFIED value = 3.954e+01 3.481e+01 ratio = 1.136
+.024400000000000      CHAOTIC value = 3.511e+01 3.388e+01 ratio = 1.036
+.026800000000000      CHAOTIC value = 3.503e+01 3.688e+01 ratio = 0.950
+.029200000000000 UNCLASSIFIED value = 3.278e+01 2.827e+01 ratio = 1.160
+.031600000000000 UNCLASSIFIED value = 2.527e+01 2.814e+01 ratio = 0.898
+.034000000000000      CHAOTIC value = 2.874e+01 2.850e+01 ratio = 1.008
+.036400000000000      CHAOTIC value = 3.021e+01 2.856e+01 ratio = 1.058
+.038800000000000      CHAOTIC value = 2.554e+01 2.623e+01 ratio = 0.974
+.041200000000000 UNCLASSIFIED value = 2.315e+01 2.600e+01 ratio = 0.890
+.043600000000000      CHAOTIC value = 2.526e+01 2.671e+01 ratio = 0.946
+.046000000000000      CHAOTIC value = 2.429e+01 2.334e+01 ratio = 1.041
+.048400000000000      CHAOTIC value = 2.309e+01 2.239e+01 ratio = 1.032
+.050800000000000      CHAOTIC value = 2.226e+01 2.102e+01 ratio = 1.059
+.053200000000000 UNCLASSIFIED value = 2.425e+01 2.133e+01 ratio = 1.137
+.055600000000000      CHAOTIC value = 2.139e+01 2.197e+01 ratio = 0.974
+.058000000000000      CHAOTIC value = 1.814e+01 1.971e+01 ratio = 0.921
+.060400000000000      CHAOTIC value = 1.960e+01 1.980e+01 ratio = 0.990
+.062800000000000      CHAOTIC value = 1.910e+01 1.851e+01 ratio = 1.032
+.065200000000000      CHAOTIC value = 1.914e+01 1.875e+01 ratio = 1.021
+.067600000000000      CHAOTIC value = 1.863e+01 1.911e+01 ratio = 0.975
+.070000000000000      CHAOTIC value = 1.868e+01 1.849e+01 ratio = 1.010
+.072400000000000 UNCLASSIFIED value = 1.662e+01 1.872e+01 ratio = 0.888
+.074800000000000      CHAOTIC value = 1.862e+01 1.800e+01 ratio = 1.035
+.077200000000000      CHAOTIC value = 1.735e+01 1.852e+01 ratio = 0.937
+.079600000000000      CHAOTIC value = 1.801e+01 1.712e+01 ratio = 1.052
+.082000000000000      CHAOTIC value = 1.846e+01 1.707e+01 ratio = 1.081
+.084400000000000      CHAOTIC value = 1.820e+01 1.706e+01 ratio = 1.066
+.086800000000000      CHAOTIC value = 1.710e+01 1.589e+01 ratio = 1.076
+.089200000000000      CHAOTIC value = 1.583e+01 1.629e+01 ratio = 0.971
+.091600000000000 UNCLASSIFIED value = 1.674e+01 1.387e+01 ratio = 1.207
+.094000000000000 UNCLASSIFIED value = 1.480e+01 1.313e+01 ratio = 1.127
+.096400000000000      CHAOTIC value = 1.244e+01 1.150e+01 ratio = 1.082
+.098800000000000 UNCLASSIFIED value = 1.387e+01 1.254e+01 ratio = 1.106
+.101200000000000      CHAOTIC value = 1.054e+01 1.055e+01 ratio = 0.998
+.103600000000000 UNCLASSIFIED value = 7.774e+00 7.033e+00 ratio = 1.105
+.106000000000000 UNCLASSIFIED value = 4.642e+00 5.167e+00 ratio = 0.898
+.108400000000000  LIMIT-CYCLE value = 4.363e-03 4.403e-04 ratio = 9.909
+.110800000000000  LIMIT-CYCLE value = 2.179e-04 2.178e-05 ratio = 10.002
+.113200000000000  LIMIT-CYCLE value = 5.612e-04 5.612e-05 ratio = 10.001
+.115600000000000  LIMIT-CYCLE value = 1.942e-04 1.942e-05 ratio = 10.000
+.118000000000000  LIMIT-CYCLE value = 6.280e-05 6.280e-06 ratio = 10.000
+.120400000000000  LIMIT-CYCLE value = 5.339e-05 5.339e-06 ratio = 10.000
+.122800000000000 UNCLASSIFIED value = 9.322e+00 8.418e+00 ratio = 1.107
+.125200000000000  LIMIT-CYCLE value = 1.006e-05 1.006e-06 ratio = 10.000
+.127600000000000  LIMIT-CYCLE value = 5.592e-05 5.592e-06 ratio = 10.000
+.130000000000000  LIMIT-CYCLE value = 1.088e-05 1.088e-06 ratio = 10.000
+.132400000000000  LIMIT-CYCLE value = 1.134e-05 1.134e-06 ratio = 10.000
+.134800000000000 UNCLASSIFIED value = 8.322e-01 5.878e-02 ratio = 14.159
+.137200000000000  LIMIT-CYCLE value = 4.220e-03 4.209e-04 ratio = 10.027
+.139600000000000  LIMIT-CYCLE value = 3.599e-05 3.599e-06 ratio = 10.000
+.142000000000000  LIMIT-CYCLE value = 1.922e-05 1.922e-06 ratio = 10.000
+.144400000000000  LIMIT-CYCLE value = 1.762e-05 1.762e-06 ratio = 10.000
+.146800000000000      CHAOTIC value = 8.289e+00 8.878e+00 ratio = 0.934
+.149200000000000 UNCLASSIFIED value = 2.429e-01 2.101e-02 ratio = 11.564
+.151600000000000  LIMIT-CYCLE value = 5.227e-03 5.225e-04 ratio = 10.003
+.154000000000000  LIMIT-CYCLE value = 1.341e-05 1.341e-06 ratio = 10.000
+.156400000000000  LIMIT-CYCLE value = 3.124e-05 3.124e-06 ratio = 10.000
+.158800000000000  LIMIT-CYCLE value = 1.194e-04 1.194e-05 ratio = 10.000
+.161200000000000  LIMIT-CYCLE value = 4.972e-05 4.972e-06 ratio = 10.000
+.163600000000000  LIMIT-CYCLE value = 6.120e-05 6.120e-06 ratio = 10.000
+.166000000000000  LIMIT-CYCLE value = 1.125e-04 1.125e-05 ratio = 10.000
+.168400000000000  LIMIT-CYCLE value = 2.569e-04 2.569e-05 ratio = 10.000
+.170800000000000  LIMIT-CYCLE value = 1.014e-04 1.014e-05 ratio = 10.000
+.173200000000000  LIMIT-CYCLE value = 6.226e-05 6.226e-06 ratio = 10.000
+.175600000000000  LIMIT-CYCLE value = 4.336e-05 4.336e-06 ratio = 10.000
+.178000000000000  LIMIT-CYCLE value = 3.234e-05 3.234e-06 ratio = 10.000
+.180400000000000  LIMIT-CYCLE value = 2.605e-05 2.605e-06 ratio = 10.000
+.182800000000000  LIMIT-CYCLE value = 1.971e-05 1.971e-06 ratio = 10.000
+.185200000000000      CHAOTIC value = 9.171e+00 9.168e+00 ratio = 1.000
+.187600000000000      CHAOTIC value = 9.152e+00 9.166e+00 ratio = 0.998
+.190000000000000  LIMIT-CYCLE value = 1.935e-05 1.935e-06 ratio = 10.000
+.192400000000000      CHAOTIC value = 9.135e+00 9.137e+00 ratio = 1.000
+.194800000000000      CHAOTIC value = 9.107e+00 9.086e+00 ratio = 1.002
+.197200000000000      CHAOTIC value = 9.025e+00 9.072e+00 ratio = 0.995
+.199600000000000      CHAOTIC value = 6.379e+00 6.292e+00 ratio = 1.014
+.202000000000000      CHAOTIC value = 6.198e+00 6.086e+00 ratio = 1.018
+.204400000000000  LIMIT-CYCLE value = 2.556e-04 2.556e-05 ratio = 10.002
+.206800000000000      CHAOTIC value = 5.964e+00 6.041e+00 ratio = 0.987
+.209200000000000  LIMIT-CYCLE value = 2.751e-04 2.751e-05 ratio = 10.000
+.211600000000000  LIMIT-CYCLE value = 1.283e-04 1.283e-05 ratio = 10.000
+.214000000000000  LIMIT-CYCLE value = 4.019e-05 4.019e-06 ratio = 10.000
+.216400000000000  LIMIT-CYCLE value = 2.354e-05 2.354e-06 ratio = 10.000
+.218800000000000  LIMIT-CYCLE value = 1.548e-05 1.548e-06 ratio = 10.000
+.221200000000000  LIMIT-CYCLE value = 1.085e-05 1.085e-06 ratio = 10.000
+.223600000000000  LIMIT-CYCLE value = 6.737e-06 6.737e-07 ratio = 10.000
+.226000000000000  LIMIT-CYCLE value = 2.413e-05 2.412e-06 ratio = 10.000
+.228400000000000  LIMIT-CYCLE value = 1.192e-04 1.192e-05 ratio = 10.000
+.230800000000000  LIMIT-CYCLE value = 2.505e-05 2.505e-06 ratio = 10.000
+.233200000000000  LIMIT-CYCLE value = 1.082e-05 1.082e-06 ratio = 10.000
+.235600000000000  LIMIT-CYCLE value = 7.616e-06 7.616e-07 ratio = 10.000
+.238000000000000  LIMIT-CYCLE value = 6.642e-06 6.642e-07 ratio = 10.000
+.240400000000000  LIMIT-CYCLE value = 6.029e-06 6.029e-07 ratio = 10.000
+.242800000000000  LIMIT-CYCLE value = 5.810e-06 5.810e-07 ratio = 10.000
+.245200000000000  LIMIT-CYCLE value = 5.887e-06 5.887e-07 ratio = 10.000
+.247600000000000  LIMIT-CYCLE value = 5.689e-06 5.689e-07 ratio = 10.000
+real 71.83
+user 128.30
+sys 4.48
 ```
 The data file can be plotted using plotChaos.py.
 ```
 ./plotChaos.py </tmp/results
 ```
-Plot every tenth line, to simulate a lower resolution run without regenerating data set
-```
-cat /tmp/results | sed -n '1~10p' | ./plotChaos.py &
-```
+
 ## cns script - Clean Numerical Simulation
 
 This is a relatively new approach to dealing with the global error of ODE simulations, described in detail here: https://arxiv.org/abs/1109.0130.
@@ -357,29 +294,28 @@ step | The step size is reduced by a quarter (suitable for RK4) comparisons
 order | The Taylor Series order is increased by two
 both | The order is increased by one, and the step size by one half
 
-#### Example output - 300 time units
+#### Example output - 30 time units
 ```
-$ ./cns both ./tsm-lorenz-dbg 15 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3
-Better: ./tsm-lorenz-dbg 138 103 .005000 70000 -15.8 -17.48 35.64 10 28 8 3
- MPFR default precision: 458 bits
- MPFR default precision: 431 bits
-Threshold: 1.0e-12, t: 267.060
-Threshold: 1.0e-09, t: 278.700
-Threshold: 1.0e-06, t: 284.950
-Threshold: 1.0e-03, t: 293.140
-Threshold: 1.0e+00, t: 301.320
+$ ./cns both ./tsm-lorenz-dbg NA NA 10 .01 35000 -15.8 -17.48 35.64 10 28 8 3
+Better: ./tsm-lorenz-dbg NA NA 11 .005000 70000 -15.8 -17.48 35.64 10 28 8 3
+Divergence: ['./divergence.py', '/tmp/dataA', '/tmp/dataB', '3', '0.000000000001', '0.000000001', '0.000001', '0.001', '1.0']
+Threshold: 1.0e-12, t: 0.020
+Threshold: 1.0e-09, t: 3.700
+Threshold: 1.0e-06, t: 9.160
+Threshold: 1.0e-03, t: 20.040
+Threshold: 1.0e+00, t: 24.940
 ```
 (matplotlib plot not shown!)
 
-600 time units
+60 time units
 ```
-$ ./cns both ./tsm-lorenz-dbg 15 240 204 .01 65000 -15.8 -17.48 35.64 10 28 8 3
+$ ./cns both ./tsm-lorenz-dbg NA NA 20 .01 65000 -15.8 -17.48 35.64 10 28 8 3
 ```
 (output not shown)
 
-1500 time units
+150 time units
 ```
-$ ./cns both ./tsm-lorenz-dbg 15 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 3
+$ ./cns both ./tsm-lorenz-dbg NA NA 50 .005 150000 -15.8 -17.48 35.64 10 28 8 3
 ```
 (output not shown)
 
@@ -406,97 +342,3 @@ z+ ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.48 35.641 10 28 8 3
 z- ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.48 35.639 10 28 8 3
 ```
 (3D plot not shown)
-
-## Interactive Function Analysis with Python
-This use case involves calling the Series methods and operators from ad.py, and the functions from plotters.py, from a Python interpreter.
-This is how I like to set things up:
-```
-$ echo '
-from math import *
-from ad import *
-from plotters import *
-' > ipython.py
-$ ipython -i ipython.py
-```
-
-##### Higher level function analysis
-Plotting function and derivatives, together with root and turning point analysis:
-```
-$ ipython -i ipython.py
-Python 3.6.8 (default, Jan 14 2019, 11:02:34)
-Type 'copyright', 'credits' or 'license' for more information
-IPython 7.8.0 -- An enhanced Interactive Python. Type '?' for help.
-ad module loaded
-plotters module loaded
-ode_analysis module loaded
-
-In [1]: f = lambda a: (a.exp + (a.sqr - 4.0).exp).ln
-
-In [2]: scan_s(f)
-NT  x: -1.962e+00  δx: +4.123e-16  f: +1.332e-15  \ ROOT___ 4
-NT  x: -1.312e+00  δx: -0.000e+00  f: +0.000e+00  / MIN_MAX 4
-NT  x: -1.849e-02  δx: -2.714e-13  f: +2.662e-13  / ROOT___ 3
-
-In [3]: mplot_s(f)
-```
-(matplotlib plot not shown!)
-
-##### Square root of two
-Here is a quick example of function inversion.
-There is a choice of analysis (root finding) method:
-```
-$ ipython -i ipython.py
-Python 3.6.8 (default, Jan 14 2019, 11:02:34)
-Type 'copyright', 'credits' or 'license' for more information
-IPython 7.8.0 -- An enhanced Interactive Python. Type '?' for help.
-ad module loaded
-plotters module loaded
-ode_analysis module loaded
-
-In [1]: newton_d(lambda x: x * x - 2.0, x0=1.0)
-Out[1]: Result(method='NT', x=1.414213562373095, f=4.440892098500626e-16, δx=-1.570092458683775e-16, count=6, sense='_', mode='ROOT___')
-
-In [2]: timeit(newton_d(lambda x: x * x - 2.0, x0=1.0))
-25.4 µs ± 1.35 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
-
-In [3]: bisect_d(lambda x: x * x, xa=1.0, xb=2.0)
-Out[3]: Result(method='BI', x=2.0, f=4.0, δx=0.0, count=101, sense='_', mode='ROOT___')
-
-In [4]: timeit(bisect_d(lambda x: x * x, xa=1.0, xb=2.0))
-342 µs ± 7.4 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
-```
-
-##### Automatic Differentiation
-Here we calculate _all_ the derivatives of a simple cubic in x, followed by its sensitivities to each parameter a, b, c.
-```
-$ ipython -i ipython.py
-Python 3.6.8 (default, Jan 14 2019, 11:02:34)
-Type 'copyright', 'credits' or 'license' for more information
-IPython 7.8.0 -- An enhanced Interactive Python. Type '?' for help.
-ad module loaded
-plotters module loaded
-ode_analysis module loaded
-
-In [1]: a = Series.get(5, 3.0)
-
-In [2]: b = Series.get(5, 5.0)
-
-In [3]: c = Series.get(5, 7.0)
-
-In [4]: x = Series.get(5, 2.0)
-
-In [5]: print(a * x**3 - b * x**2 + c * x - 5)
-+1.300e+01 +0.000e+00 +0.000e+00 +0.000e+00 +0.000e+00
-
-In [6]: print(a * x.var**3 - b * x.var**2 + c * x.var - 5)
-+1.300e+01 +2.300e+01 +1.300e+01 +3.000e+00 +0.000e+00
-
-In [7]: print(a.var * x**3 - b * x**2 + c * x - 5)
-+1.300e+01 +8.000e+00 +0.000e+00 +0.000e+00 +0.000e+00
-
-In [8]: print(a * x**3 - b.var * x**2 + c * x - 5)
-+1.300e+01 -4.000e+00 +0.000e+00 +0.000e+00 +0.000e+00
-
-In [9]: print(a * x**3 - b * x**2 + c.var * x - 5)
-+1.300e+01 +2.000e+00 +0.000e+00 +0.000e+00 +0.000e+00
-```
