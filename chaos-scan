@@ -36,6 +36,7 @@ case $ode in
     'sprott')       cmd='./tsm-sprott-minimal-static 18 32 20 .01 $datalines .02 0 0 $x';;
     'halvorsen')    cmd='./tsm-halvorsen-static 18 32 20 .01 $datalines 1 0 0 $x';;
     'rf')           cmd='./tsm-rf-static 18 32 20 .01 $datalines .05 -.05 .3 $x .1';;
+    'bouali')       cmd='./tsm-bouali-dbg 18 32 20 0.01 $datalines 1 1 0 3 2.2 1 $x';;
     *)              echo "Unknown ODE"; exit;;
 esac
 
