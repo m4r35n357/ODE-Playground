@@ -203,7 +203,7 @@ mpfr_t *t_sqrt (series r, series U, int k);
 mpfr_t *t_exp (series E, series U, int k);
 
 /*
- * Returns a pair of pointers to kth elements of the sine and cosine of U, results accumulated in jets S and C
+ * Returns struct of pointers to kth elements of both sine and cosine of U, results accumulated in jets S and C
  *
  *      S' =       C.U'
  *      C' = (+/-) S.U'     + for cosh (g == HYP), - for cos (g == TRIG)
@@ -214,7 +214,7 @@ mpfr_t *t_exp (series E, series U, int k);
 tuple t_sin_cos (series S, series C, series U, int k, geometry g);
 
 /*
- * Returns a pair of pointers to kth elements of the tangent and squared secant of U, results accumulated in jets T and S2
+ * Returns struct of pointers to kth elements of both tangent and squared secant of U, results accumulated in jets T and S2
  *
  *      T' =       S2.U'
  *     S2' = (+/-)2 T.T'    + for sec^2 (g == TRIG), - for sech^2 (g == HYP)
