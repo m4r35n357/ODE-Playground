@@ -20,7 +20,6 @@ rm -f *.o *.so *.gch
 
 build () {
     name=$1
-    ${CC} -O3 -DNDEBUG -o ${name}-dynamic ${name}.c taylor-ode.c -lm -s
     ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c -lm -s
     ${CC} -O0 $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode.c -lm
 }
