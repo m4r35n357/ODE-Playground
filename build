@@ -42,7 +42,7 @@ tsm-lotka-volterra \
 tsm-logistic \
 tsm-constant
 do
-    rm -f ${model}-dynamic ${model}-static ${model}-dbg
+    rm -f ${model}-*
     build ${model} &
 done
 
