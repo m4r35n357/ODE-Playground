@@ -49,8 +49,7 @@ long double t_horner (long double *jet, int n, long double h) {
         sum = sum * h + jet[i];
     }
     if (isnan(sum) || isinf(sum)) { fprintf(stderr, "OVERFLOW !\n"); exit(1); }
-    jet[0] = sum;
-    return sum;
+    return jet[0] = sum;
 }
 
 long double t_abs (long double *u, int k) {
@@ -75,16 +74,14 @@ long double t_quot (long double *q, long double *u, long double *v, int k) {
     assert(v[0] != 0.0);
     assert(q != u && q != v && u != v);
     assert(k >= 0);
-    q[k] = (k == 0 ? u[0] : u[k] - cauchy(q, v, k, 0, k - 1)) / v[0];
-    return q[k];
+    return q[k] = (k == 0 ? u[0] : u[k] - cauchy(q, v, k, 0, k - 1)) / v[0];
 }
 
 long double t_inv (long double *i, long double *v, int k) {
     assert(v[0] != 0.0);
     assert(i != v);
     assert(k >= 0);
-    i[k] = (k == 0 ? 1.0 : - cauchy(i, v, k, 0, k - 1)) / v[0];
-    return i[k];
+    return i[k] = (k == 0 ? 1.0 : - cauchy(i, v, k, 0, k - 1)) / v[0];
 }
 
 long double t_sqr (long double *u, int k) {
@@ -96,8 +93,7 @@ long double t_sqrt (long double *r, long double *u, int k) {
     assert(u[0] > 0.0);
     assert(r != u);
     assert(k >= 0);
-    r[k] = k == 0 ? sqrt(u[0]) : 0.5 * (u[k] - cauchy(r, r, k, 1, k - 1)) / r[0];
-    return r[k];
+    return r[k] = k == 0 ? sqrt(u[0]) : 0.5 * (u[k] - cauchy(r, r, k, 1, k - 1)) / r[0];
 }
 
 static long double d_cauchy (long double *h, long double *u, int k, int lower, int upper, long double factor) {
@@ -111,48 +107,39 @@ static long double d_cauchy (long double *h, long double *u, int k, int lower, i
 long double t_exp (long double *e, long double *u, int k) {
     assert(e != u);
     assert(k >= 0);
-    e[k] = k == 0 ? exp(u[0]) : d_cauchy(e, u, k, 0, k - 1, 1.0);
-    return e[k];
+    return e[k] = k == 0 ? exp(u[0]) : d_cauchy(e, u, k, 0, k - 1, 1.0);
 }
 
-tuple t_sin_cos (long double *s, long double *c, long double *u, int k, geometry g) {
+pair t_sin_cos (long double *s, long double *c, long double *u, int k, geometry g) {
     assert(s != c && s != u && c != u);
     assert(k >= 0);
     if (k == 0) {
-        s[k] = g == TRIG ? sin(u[0]) : sinh(u[0]);
-        c[k] = g == TRIG ? cos(u[0]) : cosh(u[0]);
+        return (pair){s[k] = g == TRIG ? sin(u[0]) : sinh(u[0]), c[k] = g == TRIG ? cos(u[0]) : cosh(u[0])};
     } else {
-        s[k] = d_cauchy(c, u, k, 0, k - 1, 1.0);
-        c[k] = d_cauchy(s, u, k, 0, k - 1, g == TRIG ? - 1.0 : 1.0);
+        return (pair){s[k] = d_cauchy(c, u, k, 0, k - 1, 1.0), c[k] = d_cauchy(s, u, k, 0, k - 1, g == TRIG ? - 1.0 : 1.0)};
     }
-    return (tuple){&s[k], &c[k]};
 }
 
-tuple t_tan_sec2 (long double *t, long double *s, long double *u, int k, geometry g) {
+pair t_tan_sec2 (long double *t, long double *s, long double *u, int k, geometry g) {
     assert(t != s && t != u && s != u);
     assert(k >= 0);
     if (k == 0) {
-        t[k] = g == TRIG ? tan(u[0]) : tanh(u[0]);
-        s[k] = g == TRIG ? 1.0 + t[0] * t[0] : 1.0 - t[0] * t[0];
+        return (pair){t[k] = g == TRIG ? tan(u[0]) : tanh(u[0]), s[k] = g == TRIG ? 1.0 + t[0] * t[0] : 1.0 - t[0] * t[0]};
     } else {
-        t[k] = d_cauchy(s, u, k, 0, k - 1, 1.0);
-        s[k] = d_cauchy(t, t, k, 0, k - 1, g == TRIG ? 2.0 : - 2.0);
+        return (pair){t[k] = d_cauchy(s, u, k, 0, k - 1, 1.0), s[k] = d_cauchy(t, t, k, 0, k - 1, g == TRIG ? 2.0 : - 2.0)};
     }
-    return (tuple){&t[k], &s[k]};
 }
 
 long double t_pwr (long double *p, long double *u, long double a, int k) {
     assert(u[0] > 0.0);
     assert(p != u);
     assert(k >= 0);
-    p[k] = k == 0 ? pow(u[0], a) : (d_cauchy(p, u, k, 0, k - 1, a) - d_cauchy(u, p, k, 1, k - 1, 1.0)) / u[0];
-    return p[k];
+    return p[k] = k == 0 ? pow(u[0], a) : (d_cauchy(p, u, k, 0, k - 1, a) - d_cauchy(u, p, k, 1, k - 1, 1.0)) / u[0];
 }
 
 long double t_ln (long double *l, long double *u, int k) {
     assert(u[0] > 0.0);
     assert(l != u);
     assert(k >= 0);
-    l[k] = k == 0 ? log(u[0]) : (u[k] - d_cauchy(u, l, k, 1, k - 1, 1.0)) / u[0];
-    return l[k];
+    return l[k] = k == 0 ? log(u[0]) : (u[k] - d_cauchy(u, l, k, 1, k - 1, 1.0)) / u[0];
 }

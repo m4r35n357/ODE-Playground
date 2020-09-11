@@ -14,9 +14,9 @@ const int BASE;
  * For returning combined recurrence values
  */
 typedef struct {
-    long double *a;
-    long double *b;
-} tuple;
+    long double a;
+    long double b;
+} pair;
 
 /*
  * Selects either a trigonometric or hyperbolic version of the function
@@ -89,14 +89,14 @@ long double t_sqrt (long double *R, long double *U, int k);
 long double t_exp (long double *E, long double *U, int k);
 
 /*
- * Returns struct of pointers to kth elements of both sine and cosine of U, results accumulated in jets S and C
+ * Returns struct containing kth elements of both sine and cosine of U, results accumulated in jets S and C
  */
-tuple t_sin_cos (long double *S, long double *C, long double *U, int k, geometry g);
+pair t_sin_cos (long double *S, long double *C, long double *U, int k, geometry g);
 
 /*
- * Returns struct of pointers to kth elements of both tangent and squared secant of U, results accumulated in jets T and S2
+ * Returns struct containing kth elements of both tangent and squared secant of U, results accumulated in jets T and S2
  */
-tuple t_tan_sec2 (long double *T, long double *S2, long double *U, int k, geometry g);
+pair t_tan_sec2 (long double *T, long double *S2, long double *U, int k, geometry g);
 
 /*
  * Returns kth element of P = U^a (where a is scalar), results accumulated in jet P, DOMAIN RESTRICTION U[0] > 0.0

@@ -31,9 +31,9 @@ int main (int argc, char **argv) {
             ax[k] = a * x[k];
             ay[k] = a * y[k];
             az[k] = a * z[k];
-            x[k + 1] = (*t_sin_cos(say, cay, ay, k, TRIG).a - b * *t_tan_sec2(tx, s2x, x, k, TRIG).a) / (k + 1);
-            y[k + 1] = (*t_sin_cos(saz, caz, az, k, TRIG).a - b * *t_tan_sec2(ty, s2y, y, k, TRIG).a) / (k + 1);
-            z[k + 1] = (*t_sin_cos(sax, cax, ax, k, TRIG).a - b * *t_tan_sec2(tz, s2z, z, k, TRIG).a) / (k + 1);
+            x[k + 1] = (t_sin_cos(say, cay, ay, k, TRIG).a - b * t_tan_sec2(tx, s2x, x, k, TRIG).a) / (k + 1);
+            y[k + 1] = (t_sin_cos(saz, caz, az, k, TRIG).a - b * t_tan_sec2(ty, s2y, y, k, TRIG).a) / (k + 1);
+            z[k + 1] = (t_sin_cos(sax, cax, ax, k, TRIG).a - b * t_tan_sec2(tz, s2z, z, k, TRIG).a) / (k + 1);
         }
 
         // sum the series using Horner's method and advance one step

@@ -26,9 +26,9 @@ int main (int argc, char **argv) {
     for (long step = 1; step < nsteps + 1; step++) {
         // compute the taylor coefficients
         for (int k = 0; k < n; k++) {
-            x[k + 1] = (*t_sin_cos(sy, cy, y, k, TRIG).a - b * x[k]) / (k + 1);
-            y[k + 1] = (*t_sin_cos(sz, cz, z, k, TRIG).a - b * y[k]) / (k + 1);
-            z[k + 1] = (*t_sin_cos(sx, cx, x, k, TRIG).a - b * z[k]) / (k + 1);
+            x[k + 1] = (t_sin_cos(sy, cy, y, k, TRIG).a - b * x[k]) / (k + 1);
+            y[k + 1] = (t_sin_cos(sz, cz, z, k, TRIG).a - b * y[k]) / (k + 1);
+            z[k + 1] = (t_sin_cos(sx, cx, x, k, TRIG).a - b * z[k]) / (k + 1);
         }
 
         // sum the series using Horner's method and advance one step

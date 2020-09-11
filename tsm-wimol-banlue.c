@@ -26,7 +26,7 @@ int main (int argc, char **argv) {
     for (long step = 1; step < nsteps + 1; step++) {
         // compute the taylor coefficients
         for (int k = 0; k < n; k++) {
-            tx[k] = *t_tan_sec2(tx, s2x, x, k, HYP).a;
+            tx[k] = t_tan_sec2(tx, s2x, x, k, HYP).a;
             x[k + 1] = (y[k] - x[k]) / (k + 1);
             y[k + 1] = - t_prod(z, tx, k) / (k + 1);
             z[k + 1] = (- wa[k] + t_prod(x, y, k) + t_abs(y, k)) / (k + 1);
