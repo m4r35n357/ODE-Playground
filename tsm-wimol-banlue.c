@@ -12,14 +12,14 @@
 
 int main (int argc, char **argv) {
     long n, nsteps;
-    long double h;
+    real h;
 
     // initialize from command arguments
     assert(argc == 10);
     t_stepper(argv, &n, &h, &nsteps);
-    long double *x = t_jet(n + 1), *y = t_jet(n + 1), *z = t_jet(n + 1), *wa = t_jet(n);
+    series x = t_jet(n + 1), y = t_jet(n + 1), z = t_jet(n + 1), wa = t_jet(n);
     t_args(argv, argc, x, y, z, wa);
-    long double *tx = t_jet(n), *s2x = t_jet(n);
+    series tx = t_jet(n), s2x = t_jet(n);
 
     // main loop
     t_xyz_output(x[0], y[0], z[0], 0.0);
