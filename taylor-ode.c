@@ -9,11 +9,11 @@
 #include <math.h>
 #include "taylor-ode.h"
 
-void t_xyz_output (long double x, long double y, long double z, long double t) {
+void t_xyz_output (real x, real y, real z, real t) {
     printf("%+.12Le %+.12Le %+.12Le %+.6Le\n", x, y, z, t);
 }
 
-void t_stepper (char **argv, long *n, long double *h, long *nsteps) {
+void t_stepper (char **argv, long *n, real *h, long *nsteps) {
     *n = strtol(argv[3], NULL, 10);
     *h = strtold(argv[4], NULL);
     *nsteps = strtol(argv[5], NULL, 10);
@@ -23,18 +23,18 @@ void t_args (char **argv, int count, ...) {
     va_list vars;
     va_start(vars, count);
     for (int i = 6; i < count; i++) {
-        *va_arg(vars, long double *) = strtold(argv[i], NULL);
+        *va_arg(vars, real *) = strtold(argv[i], NULL);
     }
     va_end(vars);
 }
 
-long double *t_jet (int n) {
+series t_jet (int n) {
     assert(n > 0);
-    return malloc(sizeof (long double) * n);
+    return malloc(sizeof (real) * n);
 }
 
-long double *t_jet_c (int n, long double value) {
-    long double *jet = t_jet(n);
+series t_jet_c (int n, real value) {
+    series jet = t_jet(n);
     jet[0] = value;
     for (int i = 1; i < n; i++) {
         jet[i] = 0.0;
@@ -42,9 +42,9 @@ long double *t_jet_c (int n, long double value) {
     return jet;
 }
 
-long double t_horner (long double *jet, int n, long double h) {
+real t_horner (series jet, int n, real h) {
     assert(n > 0);
-    long double sum = 0.0;
+    real sum = 0.0;
     for (int i = n; i >= 0; i--) {
         sum = sum * h + jet[i];
     }
@@ -52,65 +52,65 @@ long double t_horner (long double *jet, int n, long double h) {
     return jet[0] = sum;
 }
 
-long double t_abs (long double *u, int k) {
+real t_abs (series u, int k) {
     assert(k >= 0);
     return u[0] < 0.0 ? - u[k] : u[k];
 }
 
-static long double cauchy (long double *a, long double *b, int k, int lower, int upper) {
-    long double c = 0.0;
+static real cauchy (series a, series b, int k, int lower, int upper) {
+    real c = 0.0;
     for (int j = lower; j <= upper; j++) {
         c += a[j] * b[k - j];
     }
     return c;
 }
 
-long double t_prod (long double *u, long double *v, int k) {
+real t_prod (series u, series v, int k) {
     assert(k >= 0);
     return cauchy(u, v, k, 0, k);
 }
 
-long double t_quot (long double *q, long double *u, long double *v, int k) {
+real t_quot (series q, series u, series v, int k) {
     assert(v[0] != 0.0);
     assert(q != u && q != v && u != v);
     assert(k >= 0);
     return q[k] = (k == 0 ? u[0] : u[k] - cauchy(q, v, k, 0, k - 1)) / v[0];
 }
 
-long double t_inv (long double *i, long double *v, int k) {
+real t_inv (series i, series v, int k) {
     assert(v[0] != 0.0);
     assert(i != v);
     assert(k >= 0);
     return i[k] = (k == 0 ? 1.0 : - cauchy(i, v, k, 0, k - 1)) / v[0];
 }
 
-long double t_sqr (long double *u, int k) {
+real t_sqr (series u, int k) {
     assert(k >= 0);
     return cauchy(u, u, k, 0, k);
 }
 
-long double t_sqrt (long double *r, long double *u, int k) {
+real t_sqrt (series r, series u, int k) {
     assert(u[0] > 0.0);
     assert(r != u);
     assert(k >= 0);
     return r[k] = k == 0 ? sqrt(u[0]) : 0.5 * (u[k] - cauchy(r, r, k, 1, k - 1)) / r[0];
 }
 
-static long double d_cauchy (long double *h, long double *u, int k, int lower, int upper, long double factor) {
-    long double f = 0.0;
+static real d_cauchy (series h, series u, int k, int lower, int upper, real factor) {
+    real f = 0.0;
     for (int j = lower; j <= upper; j++) {
         f += h[j] * (k - j) * u[k - j];
     }
     return factor * f / k;
 }
 
-long double t_exp (long double *e, long double *u, int k) {
+real t_exp (series e, series u, int k) {
     assert(e != u);
     assert(k >= 0);
     return e[k] = k == 0 ? exp(u[0]) : d_cauchy(e, u, k, 0, k - 1, 1.0);
 }
 
-pair t_sin_cos (long double *s, long double *c, long double *u, int k, geometry g) {
+pair t_sin_cos (series s, series c, series u, int k, geometry g) {
     assert(s != c && s != u && c != u);
     assert(k >= 0);
     if (k == 0) {
@@ -120,7 +120,7 @@ pair t_sin_cos (long double *s, long double *c, long double *u, int k, geometry 
     }
 }
 
-pair t_tan_sec2 (long double *t, long double *s, long double *u, int k, geometry g) {
+pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
     assert(t != s && t != u && s != u);
     assert(k >= 0);
     if (k == 0) {
@@ -130,14 +130,14 @@ pair t_tan_sec2 (long double *t, long double *s, long double *u, int k, geometry
     }
 }
 
-long double t_pwr (long double *p, long double *u, long double a, int k) {
+real t_pwr (series p, series u, real a, int k) {
     assert(u[0] > 0.0);
     assert(p != u);
     assert(k >= 0);
     return p[k] = k == 0 ? pow(u[0], a) : (d_cauchy(p, u, k, 0, k - 1, a) - d_cauchy(u, p, k, 1, k - 1, 1.0)) / u[0];
 }
 
-long double t_ln (long double *l, long double *u, int k) {
+real t_ln (series l, series u, int k) {
     assert(u[0] > 0.0);
     assert(l != u);
     assert(k >= 0);
