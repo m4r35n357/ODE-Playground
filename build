@@ -25,6 +25,7 @@ build () {
 }
 
 for model in \
+rk4-lorenz \
 tsm-lorenz \
 tsm-rossler \
 tsm-yu-wang \
@@ -44,5 +45,5 @@ do
 done
 
 wait
-ls -lh --color tsm-*
+ls -lh --color tsm-* rk4-*
 
