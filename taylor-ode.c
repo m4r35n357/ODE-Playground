@@ -15,8 +15,11 @@ void t_xyz_output (real x, real y, real z, real t) {
 
 void t_stepper (char **argv, long *n, real *h, long *nsteps) {
     *n = strtol(argv[3], NULL, 10);
+    assert(*n > 0);
     *h = strtold(argv[4], NULL);
+    assert(*h > 0.0);
     *nsteps = strtol(argv[5], NULL, 10);
+    assert(*nsteps > 0);
 }
 
 void t_args (char **argv, int count, ...) {
