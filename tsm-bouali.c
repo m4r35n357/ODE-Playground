@@ -10,31 +10,45 @@
 #include <assert.h>
 #include "taylor-ode.h"
 
+typedef struct {
+    real a;
+    real b;
+    real c;
+    real d;
+} parameters;
+
+typedef struct {
+    series wa;
+    series wb;
+    series w1;
+} intermediates;
+
+static components ode (series x, series y, series z, void *params, void *inters, int k) {
+    parameters *p = (parameters *)params;
+    intermediates *i = (intermediates *)inters;
+    i->wa[k] = i->w1[k] - y[k];
+    i->wb[k] = i->w1[k] - t_sqr(x, k);
+    return (components) {
+        .x = p->a * t_prod(x, i->wa, k) - p->b * z[k],
+        .y = - p->c * t_prod(y, i->wb, k),
+        .z = p->d * x[k]
+    };
+}
+
 int main (int argc, char **argv) {
-    long n, nsteps;
-    real a, b, c, d, h;
+    long order, steps;
+    real x0, y0, z0, stepsize;
 
-    // initialize from command arguments
     assert(argc == 13);
-    t_stepper(argv, &n, &h, &nsteps);
-    series x = t_jet(n + 1), y = t_jet(n + 1), z = t_jet(n + 1);
-    t_args(argv, argc, x, y, z, &a, &b, &c, &d);
-    series wa = t_jet(n), wb = t_jet(n), w1 = t_jet_c(n, 1.0);
+    t_stepper(argv, &order, &stepsize, &steps);
+    parameters p;
+    t_args(argv, argc, &x0, &y0, &z0, &p.a, &p.b, &p.c, &p.d);
+    intermediates i = (intermediates) {
+        .wa = t_jet(order),
+        .wb = t_jet(order),
+        .w1 = t_jet_c(order, 1.0),
+    };
 
-    // main loop
-    t_xyz_output(x[0], y[0], z[0], 0.0);
-    for (long step = 1; step < nsteps + 1; step++) {
-        // compute the taylor coefficients
-        for (int k = 0; k < n; k++) {
-            wa[k] = w1[k] - y[k];
-            wb[k] = w1[k] - t_sqr(x, k);
-            x[k + 1] = (a * t_prod(x, wa, k) - b * z[k]) / (k + 1);
-            y[k + 1] = - c * t_prod(y, wb, k) / (k + 1);
-            z[k + 1] = d * x[k] / (k + 1);
-        }
-
-        // sum the series using Horner's method and advance one step
-        t_xyz_output(t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h), h * step);
-    }
+    taylor(order, steps, stepsize, x0, y0, z0, &p, &i, ode);
     return 0;
 }

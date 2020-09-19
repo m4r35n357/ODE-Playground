@@ -10,29 +10,46 @@
 #include <assert.h>
 #include "taylor-ode.h"
 
+typedef struct {
+    real b;
+} parameters;
+
+typedef struct {
+    series sx;
+    series sy;
+    series sz;
+    series cx;
+    series cy;
+    series cz;
+} intermediates;
+
+static components ode (series x, series y, series z, void *params, void *inters, int k) {
+    parameters *p = (parameters *)params;
+    intermediates *i = (intermediates *)inters;
+    return (components) {
+        .x = t_sin_cos(i->sy, i->cy, y, k, TRIG).a - p->b * x[k],
+        .y = t_sin_cos(i->sz, i->cz, z, k, TRIG).a - p->b * y[k],
+        .z = t_sin_cos(i->sx, i->cx, x, k, TRIG).a - p->b * z[k]
+    };
+}
+
 int main (int argc, char **argv) {
-    long n, nsteps;
-    real b, h;
+    long order, steps;
+    real x0, y0, z0, stepsize;
 
-    // initialize from command arguments
     assert(argc == 10);
-    t_stepper(argv, &n, &h, &nsteps);
-    series x = t_jet(n + 1), y = t_jet(n + 1), z = t_jet(n + 1);
-    t_args(argv, argc, x, y, z, &b);
-    series sx = t_jet(n), sy = t_jet(n), sz = t_jet(n), cx = t_jet(n), cy = t_jet(n), cz = t_jet(n);
+    t_stepper(argv, &order, &stepsize, &steps);
+    parameters p;
+    t_args(argv, argc, &x0, &y0, &z0, &p.b);
+    intermediates i = (intermediates) {
+        .sx = t_jet(order),
+        .sy = t_jet(order),
+        .sz = t_jet(order),
+        .cx = t_jet(order),
+        .cy = t_jet(order),
+        .cz = t_jet(order)
+    };
 
-    // main loop
-    t_xyz_output(x[0], y[0], z[0], 0.0);
-    for (long step = 1; step < nsteps + 1; step++) {
-        // compute the taylor coefficients
-        for (int k = 0; k < n; k++) {
-            x[k + 1] = (t_sin_cos(sy, cy, y, k, TRIG).a - b * x[k]) / (k + 1);
-            y[k + 1] = (t_sin_cos(sz, cz, z, k, TRIG).a - b * y[k]) / (k + 1);
-            z[k + 1] = (t_sin_cos(sx, cx, x, k, TRIG).a - b * z[k]) / (k + 1);
-        }
-
-        // sum the series using Horner's method and advance one step
-        t_xyz_output(t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h), h * step);
-    }
+    taylor(order, steps, stepsize, x0, y0, z0, &p, &i, ode);
     return 0;
 }

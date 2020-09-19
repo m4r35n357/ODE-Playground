@@ -10,30 +10,41 @@
 #include <assert.h>
 #include "taylor-ode.h"
 
+typedef struct {
+    series a;
+} parameters;
+
+typedef struct {
+    series tx;
+    series s2x;
+} intermediates;
+
+static components ode (series x, series y, series z, void *params, void *inters, int k) {
+    parameters *p = (parameters *)params;
+    intermediates *i = (intermediates *)inters;
+    i->tx[k] = t_tan_sec2(i->tx, i->s2x, x, k, HYP).a;
+    return (components) {
+        .x = y[k] - x[k],
+        .y = - t_prod(z, i->tx, k),
+        .z = - p->a[k] + t_prod(x, y, k) + t_abs(y, k)
+    };
+}
+
 int main (int argc, char **argv) {
-    long n, nsteps;
-    real h;
+    long order, steps;
+    real stepsize, x0, y0, z0;
 
-    // initialize from command arguments
     assert(argc == 10);
-    t_stepper(argv, &n, &h, &nsteps);
-    series x = t_jet(n + 1), y = t_jet(n + 1), z = t_jet(n + 1), wa = t_jet(n);
-    t_args(argv, argc, x, y, z, wa);
-    series tx = t_jet(n), s2x = t_jet(n);
+    t_stepper(argv, &order, &stepsize, &steps);
+    parameters p = (parameters) {
+        .a = t_jet(order)
+    };
+    t_args(argv, argc, &x0, &y0, &z0, p.a);
+    intermediates i = (intermediates) {
+        .tx = t_jet(order),
+        .s2x = t_jet(order)
+    };
 
-    // main loop
-    t_xyz_output(x[0], y[0], z[0], 0.0);
-    for (long step = 1; step < nsteps + 1; step++) {
-        // compute the taylor coefficients
-        for (int k = 0; k < n; k++) {
-            tx[k] = t_tan_sec2(tx, s2x, x, k, HYP).a;
-            x[k + 1] = (y[k] - x[k]) / (k + 1);
-            y[k + 1] = - t_prod(z, tx, k) / (k + 1);
-            z[k + 1] = (- wa[k] + t_prod(x, y, k) + t_abs(y, k)) / (k + 1);
-        }
-
-        // sum the series using Horner's method and advance one step
-        t_xyz_output(t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h), h * step);
-    }
+    taylor(order, steps, stepsize, x0, y0, z0, &p, &i, ode);
     return 0;
 }

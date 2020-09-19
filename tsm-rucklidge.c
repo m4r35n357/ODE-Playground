@@ -10,28 +10,29 @@
 #include <assert.h>
 #include "taylor-ode.h"
 
+typedef struct {
+    real alpha;
+    real kappa;
+} parameters;
+
+static components ode (series x, series y, series z, void *params, void *inters, int k) {
+    parameters *p = (parameters *)params;
+    return (components) {
+        .x = p->alpha * y[k] - p->kappa * x[k] - t_prod(y, z, k),
+        .y = x[k],
+        .z = t_sqr(y, k) - z[k]
+    };
+}
+
 int main (int argc, char **argv) {
-    long n, nsteps;
-    real alpha, kappa, h;
+    long order, steps;
+    real x0, y0, z0, stepsize;
 
-    // initialize from command arguments
     assert(argc == 11);
-    t_stepper(argv, &n, &h, &nsteps);
-    series x = t_jet(n + 1), y = t_jet(n + 1), z = t_jet(n + 1);
-    t_args(argv, argc, x, y, z, &alpha, &kappa);
+    t_stepper(argv, &order, &stepsize, &steps);
+    parameters p;
+    t_args(argv, argc, &x0, &y0, &z0, &p.alpha, &p.kappa);
 
-    // main loop
-    t_xyz_output(x[0], y[0], z[0], 0.0);
-    for (long step = 1; step < nsteps + 1; step++) {
-        // compute the taylor coefficients
-        for (int k = 0; k < n; k++) {
-            x[k + 1] = (alpha * y[k] - kappa * x[k] - t_prod(y, z, k)) / (k + 1);
-            y[k + 1] = x[k] / (k + 1);
-            z[k + 1] = (t_sqr(y, k) - z[k]) / (k + 1);
-        }
-
-        // sum the series using Horner's method and advance one step
-        t_xyz_output(t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h), h * step);
-    }
+    taylor(order, steps, stepsize, x0, y0, z0, &p, NULL, ode);
     return 0;
 }
