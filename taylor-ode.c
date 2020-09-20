@@ -9,16 +9,16 @@
 #include <math.h>
 #include "taylor-ode.h"
 
-void t_xyz_output (real x, real y, real z, real t) {
+void t_output (real x, real y, real z, real t) {
     printf("%+.12Le %+.12Le %+.12Le %+.6Le\n", x, y, z, t);
 }
 
 void t_stepper (char **argv, long *n, real *h, long *nsteps) {
-    *n = strtol(argv[3], NULL, 10);
+    *n = strtol(argv[3], NULL, BASE);
     assert(*n > 0);
     *h = strtold(argv[4], NULL);
     assert(*h > 0.0);
-    *nsteps = strtol(argv[5], NULL, 10);
+    *nsteps = strtol(argv[5], NULL, BASE);
     assert(*nsteps > 0);
 }
 
@@ -52,7 +52,8 @@ real t_horner (series jet, int n, real h) {
         sum = sum * h + jet[i];
     }
     if (isnan(sum) || isinf(sum)) {
-        fprintf(stderr, "OVERFLOW !\n"); exit(1);
+        fprintf(stderr, "OVERFLOW !\n");
+        exit(1);
     }
     return jet[0] = sum;
 }
@@ -155,23 +156,23 @@ real t_ln (series l, series u, int k) {
     return l[k] = k == 0 ? log(u[0]) : (u[k] - d_cauchy(u, l, k, 1, k - 1, 1.0)) / u[0];
 }
 
-void taylor (long n, long nsteps, real h, real x0, real y0, real z0, void *p, void *i, t_model ode) {
+void tsm (long n, long steps, real h, real x0, real y0, real z0, void *p, void *i, tsm_model ode) {
     series x = t_jet_c(n + 1, x0), y = t_jet_c(n + 1, y0), z = t_jet_c(n + 1, z0);
-    t_xyz_output(x[0], y[0], z[0], 0.0);
-    for (long step = 1; step < nsteps + 1; step++) {
+    t_output(x[0], y[0], z[0], 0.0);
+    for (long step = 1; step < steps + 1; step++) {
         for (int k = 0; k < n; k++) {
             components c = ode(x, y, z, p, i, k);
             x[k + 1] = c.x / (k + 1);
             y[k + 1] = c.y / (k + 1);
             z[k + 1] = c.z / (k + 1);
         }
-        t_xyz_output(t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h), h * step);
+        t_output(t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h), h * step);
     }
 }
 
-void rk4 (long interval, long nsteps, real h, real x, real y, real z, void *p, r_model ode) {
-    t_xyz_output(x, y, z, 0.0);
-    for (long step = 1; step < nsteps + 1; step++) {
+void rk4 (long interval, long steps, real h, real x, real y, real z, void *p, rk4_model ode) {
+    t_output(x, y, z, 0.0);
+    for (long step = 1; step < steps + 1; step++) {
         components k1 = ode(x, y, z, p);
         components k2 = ode(x + 0.5 * k1.x * h, y + 0.5 * k1.y * h, z + 0.5 * k1.z * h, p);
         components k3 = ode(x + 0.5 * k2.x * h, y + 0.5 * k2.y * h, z + 0.5 * k2.z * h, p);
@@ -180,7 +181,7 @@ void rk4 (long interval, long nsteps, real h, real x, real y, real z, void *p, r
         y += h * (k1.y + 2.0 * (k2.y + k3.y) + k4.y) / 6.0;
         z += h * (k1.z + 2.0 * (k2.z + k3.z) + k4.z) / 6.0;
         if (step % interval == 0) {
-            t_xyz_output(x, y, z, h * step);
+            t_output(x, y, z, h * step);
         }
     }
 }

@@ -46,9 +46,9 @@ int main (int argc, char **argv) {
     intermediates i = (intermediates) {
         .wa = t_jet(order),
         .wb = t_jet(order),
-        .w1 = t_jet_c(order, 1.0),
+        .w1 = t_jet_c(order, 1.0)
     };
 
-    taylor(order, steps, stepsize, x0, y0, z0, &p, &i, ode);
+    tsm(order, steps, stepsize, x0, y0, z0, &p, &i, ode);
     return 0;
 }

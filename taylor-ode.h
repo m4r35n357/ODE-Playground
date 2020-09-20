@@ -41,7 +41,7 @@ typedef enum {TRIG, HYP} geometry;
 /*
  * Prints an index column, and x, y, z columns, into a single line
  */
-void t_xyz_output (real x, real y, real z, real t);
+void t_output (real x, real y, real z, real t);
 
 /*
  * Sets the order, step size, and real of steps for the integration from the command line arguments (1 to 4)
@@ -124,21 +124,21 @@ real t_pwr (series P, series U, real a, int k);
 real t_ln (series L, series U, int k);
 
 /*
- * ODE equation for Taylor
+ * ODE equations for TSM
  */
-typedef components (*t_model)(series, series, series, void *, void *, int);
+typedef components (*tsm_model)(series, series, series, void *, void *, int);
 
 /*
- * Perform nsteps Taylor steps with step size h
+ * Perform nsteps TSM steps with step size h
  */
-void taylor (long n, long nsteps, real h, real x0, real y0, real z0, void *p, void *i, t_model ode);
+void tsm (long n, long nsteps, real h, real x0, real y0, real z0, void *p, void *i, tsm_model ode);
 
 /*
- * ODE equation for RK4
+ * ODE equations for RK4
  */
-typedef components (*r_model)(real, real, real, void *);
+typedef components (*rk4_model)(real, real, real, void *);
 
 /*
  * Perform nsteps RK4 steps with step size h
  */
-void rk4 (long interval, long nsteps, real h, real x, real y, real z, void *p, r_model ode);
+void rk4 (long interval, long nsteps, real h, real x, real y, real z, void *p, rk4_model ode);

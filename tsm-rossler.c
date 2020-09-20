@@ -31,11 +31,11 @@ int main (int argc, char **argv) {
 
     assert(argc == 12);
     t_stepper(argv, &order, &stepsize, &steps);
-    parameters p = (parameters){
+    parameters p = (parameters) {
         .b = t_jet(order)
     };
     t_args(argv, argc, &x0, &y0, &z0, &p.a, p.b, &p.c);
 
-    taylor(order, steps, stepsize, x0, y0, z0, &p, NULL, ode);
+    tsm(order, steps, stepsize, x0, y0, z0, &p, NULL, ode);
     return 0;
 }

@@ -45,6 +45,6 @@ int main (int argc, char **argv) {
         .s2x = t_jet(order)
     };
 
-    taylor(order, steps, stepsize, x0, y0, z0, &p, &i, ode);
+    tsm(order, steps, stepsize, x0, y0, z0, &p, &i, ode);
     return 0;
 }

@@ -34,6 +34,6 @@ int main (int argc, char **argv) {
     parameters p;
     t_args(argv, argc, &x0, &y0, &z0, &p.a);
 
-    taylor(order, steps, stepsize, x0, y0, z0, &p, NULL, ode);
+    tsm(order, steps, stepsize, x0, y0, z0, &p, NULL, ode);
     return 0;
 }
