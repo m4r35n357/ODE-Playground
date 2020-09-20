@@ -15,8 +15,11 @@ void t_xyz_output (real x, real y, real z, real t) {
 
 void t_stepper (char **argv, long *n, real *h, long *nsteps) {
     *n = strtol(argv[3], NULL, 10);
+    assert(*n > 0);
     *h = strtold(argv[4], NULL);
+    assert(*h > 0.0);
     *nsteps = strtol(argv[5], NULL, 10);
+    assert(*nsteps > 0);
 }
 
 void t_args (char **argv, int count, ...) {
@@ -48,7 +51,9 @@ real t_horner (series jet, int n, real h) {
     for (int i = n; i >= 0; i--) {
         sum = sum * h + jet[i];
     }
-    if (isnan(sum) || isinf(sum)) { fprintf(stderr, "OVERFLOW !\n"); exit(1); }
+    if (isnan(sum) || isinf(sum)) {
+        fprintf(stderr, "OVERFLOW !\n"); exit(1);
+    }
     return jet[0] = sum;
 }
 
@@ -113,21 +118,27 @@ real t_exp (series e, series u, int k) {
 pair t_sin_cos (series s, series c, series u, int k, geometry g) {
     assert(s != c && s != u && c != u);
     assert(k >= 0);
-    if (k == 0) {
-        return (pair){s[k] = g == TRIG ? sin(u[0]) : sinh(u[0]), c[k] = g == TRIG ? cos(u[0]) : cosh(u[0])};
-    } else {
-        return (pair){s[k] = d_cauchy(c, u, k, 0, k - 1, 1.0), c[k] = d_cauchy(s, u, k, 0, k - 1, g == TRIG ? - 1.0 : 1.0)};
-    }
+    if (k == 0) return (pair) {
+        .a = s[k] = g == TRIG ? sin(u[0]) : sinh(u[0]),
+        .b = c[k] = g == TRIG ? cos(u[0]) : cosh(u[0])
+    };
+    return (pair) {
+        .a = s[k] = d_cauchy(c, u, k, 0, k - 1, 1.0),
+        .b = c[k] = d_cauchy(s, u, k, 0, k - 1, g == TRIG ? - 1.0 : 1.0)
+    };
 }
 
 pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
     assert(t != s && t != u && s != u);
     assert(k >= 0);
-    if (k == 0) {
-        return (pair){t[k] = g == TRIG ? tan(u[0]) : tanh(u[0]), s[k] = g == TRIG ? 1.0 + t[0] * t[0] : 1.0 - t[0] * t[0]};
-    } else {
-        return (pair){t[k] = d_cauchy(s, u, k, 0, k - 1, 1.0), s[k] = d_cauchy(t, t, k, 0, k - 1, g == TRIG ? 2.0 : - 2.0)};
-    }
+    if (k == 0) return (pair) {
+        .a = t[k] = g == TRIG ? tan(u[0]) : tanh(u[0]),
+        .b = s[k] = g == TRIG ? 1.0 + t[0] * t[0] : 1.0 - t[0] * t[0]
+    };
+    return (pair) {
+        .a = t[k] = d_cauchy(s, u, k, 0, k - 1, 1.0),
+        .b = s[k] = d_cauchy(t, t, k, 0, k - 1, g == TRIG ? 2.0 : - 2.0)
+    };
 }
 
 real t_pwr (series p, series u, real a, int k) {
@@ -142,4 +153,34 @@ real t_ln (series l, series u, int k) {
     assert(l != u);
     assert(k >= 0);
     return l[k] = k == 0 ? log(u[0]) : (u[k] - d_cauchy(u, l, k, 1, k - 1, 1.0)) / u[0];
+}
+
+void taylor (long n, long nsteps, real h, real x0, real y0, real z0, void *p, void *i, t_model ode) {
+    series x = t_jet_c(n + 1, x0), y = t_jet_c(n + 1, y0), z = t_jet_c(n + 1, z0);
+    t_xyz_output(x[0], y[0], z[0], 0.0);
+    for (long step = 1; step < nsteps + 1; step++) {
+        for (int k = 0; k < n; k++) {
+            components c = ode(x, y, z, p, i, k);
+            x[k + 1] = c.x / (k + 1);
+            y[k + 1] = c.y / (k + 1);
+            z[k + 1] = c.z / (k + 1);
+        }
+        t_xyz_output(t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h), h * step);
+    }
+}
+
+void rk4 (long interval, long nsteps, real h, real x, real y, real z, void *p, r_model ode) {
+    t_xyz_output(x, y, z, 0.0);
+    for (long step = 1; step < nsteps + 1; step++) {
+        components k1 = ode(x, y, z, p);
+        components k2 = ode(x + 0.5 * k1.x * h, y + 0.5 * k1.y * h, z + 0.5 * k1.z * h, p);
+        components k3 = ode(x + 0.5 * k2.x * h, y + 0.5 * k2.y * h, z + 0.5 * k2.z * h, p);
+        components k4 = ode(x + k3.x * h, y + k3.y * h, z + k3.z * h, p);
+        x += h * (k1.x + 2.0 * (k2.x + k3.x) + k4.x) / 6.0;
+        y += h * (k1.y + 2.0 * (k2.y + k3.y) + k4.y) / 6.0;
+        z += h * (k1.z + 2.0 * (k2.z + k3.z) + k4.z) / 6.0;
+        if (step % interval == 0) {
+            t_xyz_output(x, y, z, h * step);
+        }
+    }
 }

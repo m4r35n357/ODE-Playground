@@ -25,6 +25,15 @@ typedef struct {
 } pair;
 
 /*
+ * For returning x, y, z values
+ */
+typedef struct {
+    real x;
+    real y;
+    real z;
+} components;
+
+/*
  * Selects either a trigonometric or hyperbolic version of the function
  */
 typedef enum {TRIG, HYP} geometry;
@@ -114,3 +123,22 @@ real t_pwr (series P, series U, real a, int k);
  */
 real t_ln (series L, series U, int k);
 
+/*
+ * ODE equation for Taylor
+ */
+typedef components (*t_model)(series, series, series, void *, void *, int);
+
+/*
+ * Perform nsteps Taylor steps with step size h
+ */
+void taylor (long n, long nsteps, real h, real x0, real y0, real z0, void *p, void *i, t_model ode);
+
+/*
+ * ODE equation for RK4
+ */
+typedef components (*r_model)(real, real, real, void *);
+
+/*
+ * Perform nsteps RK4 steps with step size h
+ */
+void rk4 (long interval, long nsteps, real h, real x, real y, real z, void *p, r_model ode);

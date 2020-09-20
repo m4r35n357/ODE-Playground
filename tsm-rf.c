@@ -11,33 +11,50 @@
 #include <assert.h>
 #include "taylor-ode.h"
 
+typedef struct {
+    series alpha;
+    real gamma;
+} parameters;
+
+typedef struct {
+    series a;
+    series b;
+    series c;
+    series w1;
+    real x2_1;
+} intermediates;
+
+static components ode (series x, series y, series z, void *params, void *inters, int k) {
+    parameters *p = (parameters *)params;
+    intermediates *i = (intermediates *)inters;
+    i->x2_1 = t_sqr(x, k) - i->w1[k];
+    i->a[k] = z[k] + i->x2_1;
+    i->b[k] = 3.0 * z[k] - i->x2_1;
+    i->c[k] = p->alpha[k] + t_prod(x, y, k);
+    return (components) {
+        .x = t_prod(y, i->a, k) + p->gamma * x[k],
+        .y = t_prod(x, i->b, k) + p->gamma * y[k],
+        .z = - 2.0 * t_prod(z, i->c, k)
+    };
+}
+
 int main (int argc, char **argv) {
-    long n, nsteps;
-    real gamma, h, x2_1;
+    long order, steps;
+    real stepsize, x0, y0, z0;
 
-    // initialize from command arguments
     assert(argc == 11);
-    t_stepper(argv, &n, &h, &nsteps);
-    series x = t_jet(n + 1), y = t_jet(n + 1), z = t_jet(n + 1), alpha = t_jet(n);
-    t_args(argv, argc, x, y, z, alpha, &gamma);
-    series a = t_jet(n), b = t_jet(n), c = t_jet(n), w1 = t_jet_c(n, 1.0);
+    t_stepper(argv, &order, &stepsize, &steps);
+    parameters p = (parameters) {
+        .alpha = t_jet(order)
+    };
+    t_args(argv, argc, &x0, &y0, &z0, p.alpha, &p.gamma);
+    intermediates i = (intermediates) {
+        .a = t_jet(order),
+        .b = t_jet(order),
+        .c = t_jet(order),
+        .w1 = t_jet_c(order, 1.0)
+    };
 
-    // main loop
-    t_xyz_output(x[0], y[0], z[0], 0.0);
-    for (long step = 1; step < nsteps + 1; step++) {
-        // compute the taylor coefficients
-        for (int k = 0; k < n; k++) {
-            x2_1 = t_sqr(x, k) - w1[k];
-            a[k] = z[k] + x2_1;
-            b[k] = 3.0 * z[k] - x2_1;
-            c[k] = alpha[k] + t_prod(x, y, k);
-            x[k + 1] = (t_prod(y, a, k) + gamma * x[k]) / (k + 1);
-            y[k + 1] = (t_prod(x, b, k) + gamma * y[k]) / (k + 1);
-            z[k + 1] = - 2.0 * t_prod(z, c, k) / (k + 1);
-        }
-
-        // sum the series using Horner's method and advance one step
-        t_xyz_output(t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h), h * step);
-    }
+    taylor(order, steps, stepsize, x0, y0, z0, &p, &i, ode);
     return 0;
 }
