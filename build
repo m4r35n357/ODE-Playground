@@ -6,13 +6,13 @@
 
 WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra'
 
-CC='/usr/bin/c99'
+CC='/usr/bin/musl-gcc'
 if [ x"$1" = x'clang' ]
 then
     CC='/usr/bin/clang'
-elif [ x"$1" = x'musl' ]
+elif [ x"$1" = x'gcc' ]
 then
-    CC='/usr/bin/musl-gcc'
+    CC='/usr/bin/c99'
 fi
 ${CC} --version
 
