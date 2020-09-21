@@ -35,20 +35,23 @@ static components ode (series x, series y, series z, void *params, void *inters,
     };
 }
 
+static void *get_p (int argc, char **argv, long order) {
+    (void)order;
+    parameters *p = malloc(sizeof (parameters));
+    t_args(argv, argc, &p->a, &p->b, &p->c, &p->d);
+    return p;
+}
+
+static void *get_i (long order) {
+    intermediates *i = malloc(sizeof (intermediates));
+    i->wa = t_jet(order);
+    i->wb = t_jet(order);
+    i->w1 = t_jet_c(order, 1.0);
+    return i;
+}
+
 int main (int argc, char **argv) {
-    long order, steps;
-    real x0, y0, z0, stepsize;
-
     assert(argc == 13);
-    t_stepper(argv, &order, &stepsize, &steps);
-    parameters p;
-    t_args(argv, argc, &x0, &y0, &z0, &p.a, &p.b, &p.c, &p.d);
-    intermediates i = (intermediates) {
-        .wa = t_jet(order),
-        .wb = t_jet(order),
-        .w1 = t_jet_c(order, 1.0)
-    };
-
-    tsm(order, steps, stepsize, x0, y0, z0, &p, &i, ode);
+    tsm(argc, argv, ode, get_p, get_i);
     return 0;
 }

@@ -25,16 +25,17 @@ static components ode (real x, real y, real z, void *params) {
     };
 }
 
+static void *get_p (int argc, char **argv, long order) {
+    (void)order;
+    parameters *p = malloc(sizeof (parameters));
+    real _;
+    t_args(argv, argc, &p->sigma, &p->rho, &p->beta, &_);
+    p->beta /= _;
+    return p;
+}
+
 int main (int argc, char **argv) {
-    long nsteps, interval;
-    real x0, y0, z0, h, _;
-    parameters p;
-
     assert(argc == 13);
-    t_stepper(argv, &interval, &h, &nsteps);
-    t_args(argv, argc, &x0, &y0, &z0, &p.sigma, &p.rho, &p.beta, &_);
-    p.beta /= _;
-
-    rk4(interval, nsteps, h, x0, y0, z0, &p, ode);
+    rk4(argc, argv, ode, get_p);
     return 0;
 }

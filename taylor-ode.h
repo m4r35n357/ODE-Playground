@@ -46,7 +46,7 @@ void t_output (real x, real y, real z, real t);
 /*
  * Sets the order, step size, and real of steps for the integration from the command line arguments (1 to 4)
  */
-void t_stepper (char **argv, long *n, real *h, long *nsteps);
+void t_stepper (char **argv, long *n, real *h, long *nsteps, real *x, real *y, real *z);
 
 /*
  * Bulk set initial conditions and ODE parameters from the command line arguments (5 onwards)
@@ -124,6 +124,14 @@ real t_pwr (series P, series U, real a, int k);
 real t_ln (series L, series U, int k);
 
 /*
+ * getters for parameters and intermediates
+ */
+typedef void *(*ode_params)(int, char **, long);
+
+typedef void *(*ode_inters)(long);
+
+
+/*
  * ODE equations for TSM
  */
 typedef components (*tsm_model)(series, series, series, void *, void *, int);
@@ -131,7 +139,7 @@ typedef components (*tsm_model)(series, series, series, void *, void *, int);
 /*
  * Perform nsteps TSM steps with step size h
  */
-void tsm (long n, long nsteps, real h, real x0, real y0, real z0, void *p, void *i, tsm_model ode);
+void tsm (int argc, char **argv, tsm_model ode, ode_params get_p, ode_inters get_i);
 
 /*
  * ODE equations for RK4
@@ -141,4 +149,4 @@ typedef components (*rk4_model)(real, real, real, void *);
 /*
  * Perform nsteps RK4 steps with step size h
  */
-void rk4 (long interval, long nsteps, real h, real x, real y, real z, void *p, rk4_model ode);
+void rk4 (int argc, char **argv, rk4_model ode, ode_params get_p);
