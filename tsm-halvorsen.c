@@ -16,6 +16,7 @@ typedef struct {
 
 static components ode (series x, series y, series z, void *params, void *inters, int k) {
     parameters *p = (parameters *)params;
+    (void)inters;
     return (components) {
         .x = - p->a * x[k] - 4.0 * (y[k] + z[k]) - t_sqr(y, k),
         .y = - p->a * y[k] - 4.0 * (z[k] + x[k]) - t_sqr(z, k),

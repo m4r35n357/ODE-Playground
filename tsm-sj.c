@@ -17,6 +17,7 @@ typedef struct {
 
 static components ode (series x, series y, series z, void *params, void *inters, int k) {
     parameters *p = (parameters *)params;
+    (void)inters;
     return (components) {
         .x = y[k],
         .y = - x[k] + t_prod(y, z, k),
