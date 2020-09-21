@@ -46,32 +46,35 @@ static components ode (series x, series y, series z, void *params, void *inters,
     };
 }
 
+static void *get_p (int argc, char **argv, long order) {
+    (void)order;
+    parameters *p = malloc(sizeof (parameters));
+    t_args(argv, argc, &p->a, &p->b);
+    return p;
+}
+
+static void *get_i (long order) {
+    intermediates *i = malloc(sizeof (intermediates));
+    i->ax = t_jet(order);
+    i->ay = t_jet(order);
+    i->az = t_jet(order);
+    i->sax = t_jet(order);
+    i->say = t_jet(order);
+    i->saz = t_jet(order);
+    i->cax = t_jet(order);
+    i->cay = t_jet(order);
+    i->caz = t_jet(order);
+    i->tx = t_jet(order);
+    i->ty = t_jet(order);
+    i->tz = t_jet(order);
+    i->s2x = t_jet(order);
+    i->s2y = t_jet(order);
+    i->s2z = t_jet(order);
+    return i;
+}
+
 int main (int argc, char **argv) {
-    long order, steps;
-    real x0, y0, z0, stepsize;
-
     assert(argc == 11);
-    t_stepper(argv, &order, &stepsize, &steps);
-    parameters p;
-    t_args(argv, argc, &x0, &y0, &z0, &p.a, &p.b);
-    intermediates i = (intermediates) {
-        .ax = t_jet(order),
-        .ay = t_jet(order),
-        .az = t_jet(order),
-        .sax = t_jet(order),
-        .say = t_jet(order),
-        .saz = t_jet(order),
-        .cax = t_jet(order),
-        .cay = t_jet(order),
-        .caz = t_jet(order),
-        .tx = t_jet(order),
-        .ty = t_jet(order),
-        .tz = t_jet(order),
-        .s2x = t_jet(order),
-        .s2y = t_jet(order),
-        .s2z = t_jet(order)
-    };
-
-    tsm(order, steps, stepsize, x0, y0, z0, &p, &i, ode);
+    tsm(argc, argv, ode, get_p, get_i);
     return 0;
 }

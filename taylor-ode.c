@@ -13,19 +13,22 @@ void t_output (real x, real y, real z, real t) {
     printf("%+.12Le %+.12Le %+.12Le %+.6Le\n", x, y, z, t);
 }
 
-void t_stepper (char **argv, long *n, real *h, long *nsteps) {
+void t_stepper (char **argv, long *n, real *h, long *nsteps, real *x, real *y, real *z) {
     *n = strtol(argv[3], NULL, BASE);
     assert(*n > 0);
     *h = strtold(argv[4], NULL);
     assert(*h > 0.0);
     *nsteps = strtol(argv[5], NULL, BASE);
     assert(*nsteps > 0);
+    *x = strtold(argv[6], NULL);
+    *y = strtold(argv[7], NULL);
+    *z = strtold(argv[8], NULL);
 }
 
 void t_args (char **argv, int count, ...) {
     va_list vars;
     va_start(vars, count);
-    for (int i = 6; i < count; i++) {
+    for (int i = 9; i < count; i++) {
         *va_arg(vars, real *) = strtold(argv[i], NULL);
     }
     va_end(vars);
@@ -156,8 +159,13 @@ real t_ln (series l, series u, int k) {
     return l[k] = k == 0 ? log(u[0]) : (u[k] - d_cauchy(u, l, k, 1, k - 1, 1.0)) / u[0];
 }
 
-void tsm (long n, long steps, real h, real x0, real y0, real z0, void *p, void *i, tsm_model ode) {
+void tsm (int argc, char **argv, tsm_model ode, ode_params get_p, ode_inters get_i) {
+    long n, steps;
+    real x0, y0, z0, h;
+    t_stepper(argv, &n, &h, &steps, &x0, &y0, &z0);
     series x = t_jet_c(n + 1, x0), y = t_jet_c(n + 1, y0), z = t_jet_c(n + 1, z0);
+    void *p = get_p(argc, argv, n);
+    void *i = get_i == NULL ? NULL : get_i(n);
     t_output(x[0], y[0], z[0], 0.0);
     for (long step = 1; step < steps + 1; step++) {
         for (int k = 0; k < n; k++) {
@@ -170,7 +178,11 @@ void tsm (long n, long steps, real h, real x0, real y0, real z0, void *p, void *
     }
 }
 
-void rk4 (long interval, long steps, real h, real x, real y, real z, void *p, rk4_model ode) {
+void rk4 (int argc, char **argv, rk4_model ode, ode_params get_p) {
+    long interval, steps;
+    real x, y, z, h;
+    t_stepper(argv, &interval, &h, &steps, &x, &y, &z);
+    void *p = get_p(argc, argv, 0);
     t_output(x, y, z, 0.0);
     for (long step = 1; step < steps + 1; step++) {
         components k1 = ode(x, y, z, p);
