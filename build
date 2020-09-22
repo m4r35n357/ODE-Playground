@@ -6,7 +6,7 @@
 
 WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra'
 
-CC='/usr/bin/musl-gcc'
+CC='/usr/bin/musl-gcc -std=c99'
 if [ x"$1" = x'clang' ]
 then
     CC='/usr/bin/clang'
@@ -25,20 +25,29 @@ build () {
 }
 
 for model in \
+rk4-bouali \
+rk4-halvorsen \
 rk4-lorenz \
+rk4-rossler \
+rk4-rucklidge \
+rk4-rf \
+rk4-thomas \
+rk4-sprott-thomas \
+rk4-wimol-banlue \
+rk4-yu-wang \
+tsm-bouali \
+tsm-halvorsen \
 tsm-lorenz \
 tsm-rossler \
-tsm-yu-wang \
 tsm-genesio-tesi \
 tsm-rucklidge \
-tsm-halvorsen \
-tsm-bouali \
 tsm-rf \
-tsm-wimol-banlue \
 tsm-thomas \
 tsm-sprott-minimal \
 tsm-sprott-thomas \
-tsm-sj
+tsm-sj \
+tsm-wimol-banlue \
+tsm-yu-wang
 do
     rm -f ${model}-*
     build ${model} &
