@@ -20,7 +20,7 @@ static components ode (real x, real y, real z, void *params) {
     return (components) {
         .x = y - x,
         .y = - z * tan(x),
-        .z = - p->a + x * y + abs(y)
+        .z = - p->a + x * y + fabsl(y)
     };
 }
 
