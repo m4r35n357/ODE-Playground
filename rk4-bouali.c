@@ -20,8 +20,8 @@ typedef struct {
 static components ode (real x, real y, real z, void *params) {
     parameters *p = (parameters *)params;
     return (components) {
-        .x = p->a * (1.0 - y) - p->b * z,
-        .y = - p->c * (1.0 - x * x),
+        .x = p->a * x * (1.0 - y) - p->b * z,
+        .y = - p->c * y * (1.0 - x * x),
         .z = p->d * x
     };
 }

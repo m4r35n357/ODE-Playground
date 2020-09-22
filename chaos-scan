@@ -1,25 +1,33 @@
 #!/bin/sh
 
 #  Thomas
-#  Example: time -p ./chaos-scan thomas .010 .250 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan thomas tsm .010 .250 2>/dev/null | tee /tmp/results
 #
 #  Lorenz
-#  Example: time -p ./chaos-scan lorenz 180.70 181.00 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan lorenz tsm 180.70 181.00 2>/dev/null | tee /tmp/results
 #
 #  Rossler
-#  Example: time -p ./chaos-scan rossler 0 33 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan rossler tsm 0 33 2>/dev/null | tee /tmp/results
 #
 #  Halvorsen
-#  Example: time -p ./chaos-scan halvorsen 1.240 1.620 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan halvorsen tsm 1.240 1.620 2>/dev/null | tee /tmp/results
 #
 #  Rabinovich–Fabrikant
-#  Example: time -p ./chaos-scan rf .100 .350 50000 .000001 10 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan rf tsm .100 .350 50000 .000001 10 2>/dev/null | tee /tmp/results
 #
 #  filter results:
 #  sed -n '1~10p' </tmp/results
 
 ode=$1
-shift
+method=$2
+case $method in
+    'tsm')       prog='tsm'
+                 param='12';;
+    'rk4')       prog='rk4'
+                 param='1';;
+    *)           echo "Unknown method"; exit;;
+esac
+shift 2
 start=$1
 end=$2
 step=$(echo "scale=15; ($end - $start) / 100;" | bc)
@@ -28,22 +36,20 @@ separation1=${4:-0.000001}
 ratio=${5:-10}
 separation2=$(echo "scale=15; $separation1 / $ratio;" | bc)
 
-# shellcheck disable=SC2016
 case $ode in
-    'thomas')       cmd='./tsm-thomas-static NA NA 12 0.1 $datalines 1 0 0 $x';;
-    'lorenz')       cmd='./tsm-lorenz-static NA NA 12 .01 $datalines -15.8 -17.48 35.64 10 $x 8 3';;
-    'rossler')      cmd='./tsm-rossler-static NA NA 12 .1 $datalines 0.0 -6.78 0.02 0.1 0.1 $x';;
-    'sprott')       cmd='./tsm-sprott-minimal-static NA NA 12 .01 $datalines .02 0 0 $x';;
-    'halvorsen')    cmd='./tsm-halvorsen-static NA NA 12 .01 $datalines 1 0 0 $x';;
-    'rf')           cmd='./tsm-rf-static NA NA 12 .01 $datalines .05 -.05 .3 $x .1';;
-    'bouali')       cmd='./tsm-bouali-dbg NA NA 12 0.01 $datalines 1 1 0 3 2.2 1 $x';;
+    'thomas')       cmd='./$prog-thomas-static NA NA $param 0.1 $datalines 1 0 0 $x';;
+    'lorenz')       cmd='./$prog-lorenz-static NA NA $param .01 $datalines -15.8 -17.48 35.64 10 $x 8 3';;
+    'rossler')      cmd='./$prog-rossler-static NA NA $param .1 $datalines 0.0 -6.78 0.02 0.1 0.1 $x';;
+    'sprott')       cmd='./$prog-sprott-minimal-static NA NA $param .01 $datalines .02 0 0 $x';;
+    'halvorsen')    cmd='./$prog-halvorsen-static NA NA $param .01 $datalines 1 0 0 $x';;
+    'rf')           cmd='./$prog-rf-static NA NA $param .01 $datalines .05 -.05 .3 $x .1';;
+    'bouali')       cmd='./$prog-bouali-dbg NA NA $param 0.01 $datalines 1 1 0 3 2.2 1 $x';;
     *)              echo "Unknown ODE"; exit;;
 esac
 
 x=$start
 while [ 1 -eq "$(echo "$x < $end" | bc)" ]
 do
-    # shellcheck disable=SC2039
     echo -n "$x "
     eval ./ic "$separation1" noplot "$cmd" >/dev/null 2>/dev/null
     mv /tmp/dataA /tmp/data1
