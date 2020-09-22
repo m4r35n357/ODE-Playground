@@ -29,9 +29,12 @@ rk4-bouali \
 rk4-halvorsen \
 rk4-lorenz \
 rk4-rossler \
+rk4-genesio-tesi \
 rk4-rucklidge \
 rk4-rf \
 rk4-thomas \
+rk4-sj \
+rk4-sprott-minimal \
 rk4-sprott-thomas \
 rk4-wimol-banlue \
 rk4-yu-wang \
@@ -43,9 +46,9 @@ tsm-genesio-tesi \
 tsm-rucklidge \
 tsm-rf \
 tsm-thomas \
+tsm-sj \
 tsm-sprott-minimal \
 tsm-sprott-thomas \
-tsm-sj \
 tsm-wimol-banlue \
 tsm-yu-wang
 do
