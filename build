@@ -53,6 +53,13 @@ do
     build ${model} &
 done
 
+echo " Building libODE"
+rm -f libtaylor.so taylor-ode.o
+${CC} -O3 -DNDEBUG -c $WARNINGS -fpic taylor-ode.c && ${CC} -shared -o libode.so taylor-ode.o -s &
+# Example:
+# gcc -O3 -DNDEBUG -L. -Wall -o test tsm-lorenz.c -lode -lm -s
+# LD_LIBRARY_PATH=. ./test 15 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/data; gnuplot -p -e "splot '/tmp/data' with lines"
+
 wait
-ls -lh --color tsm-* rk4-*
+ls -lh --color tsm-* rk4-* lib*.so
 

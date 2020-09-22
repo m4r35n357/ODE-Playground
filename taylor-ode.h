@@ -130,7 +130,6 @@ typedef void *(*ode_params)(int, char **, long);
 
 typedef void *(*ode_inters)(long);
 
-
 /*
  * ODE equations for TSM
  */
