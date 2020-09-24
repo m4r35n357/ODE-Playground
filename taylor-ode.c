@@ -192,6 +192,10 @@ void rk4 (int argc, char **argv, rk4_model ode, ode_params get_p) {
         x += h * (k1.x + 2.0 * (k2.x + k3.x) + k4.x) / 6.0;
         y += h * (k1.y + 2.0 * (k2.y + k3.y) + k4.y) / 6.0;
         z += h * (k1.z + 2.0 * (k2.z + k3.z) + k4.z) / 6.0;
+        if (isnan(x) || isinf(x) || isnan(y) || isinf(y) || isnan(z) || isinf(z)) {
+            fprintf(stderr, "OVERFLOW !\n");
+            exit(1);
+        }
         if (step % interval == 0) {
             t_output(x, y, z, h * step);
         }
