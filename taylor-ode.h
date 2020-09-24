@@ -124,10 +124,9 @@ real t_pwr (series P, series U, real a, int k);
 real t_ln (series L, series U, int k);
 
 /*
- * getters for parameters and intermediates
+ * getters for ODE parameters and intermediate variables
  */
 typedef void *(*ode_params)(int, char **, long);
-
 typedef void *(*ode_inters)(long);
 
 /*
@@ -136,7 +135,7 @@ typedef void *(*ode_inters)(long);
 typedef components (*tsm_model)(series, series, series, void *, void *, int);
 
 /*
- * Perform nsteps TSM steps with step size h
+ * Taylor Series Method (TSM) integrator
  */
 void tsm (int argc, char **argv, tsm_model ode, ode_params get_p, ode_inters get_i);
 
@@ -146,6 +145,6 @@ void tsm (int argc, char **argv, tsm_model ode, ode_params get_p, ode_inters get
 typedef components (*rk4_model)(real, real, real, void *);
 
 /*
- * Perform nsteps RK4 steps with step size h
+ * Runge-Kutta 4 (RK4) integrator
  */
 void rk4 (int argc, char **argv, rk4_model ode, ode_params get_p);
