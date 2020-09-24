@@ -15,12 +15,9 @@ typedef struct {
 } parameters;
 
 typedef struct {
-    series sx;
-    series sy;
-    series sz;
-    series cx;
-    series cy;
-    series cz;
+    series sx; series cx;
+    series sy; series cy;
+    series sz; series cz;
 } intermediates;
 
 static components ode (series x, series y, series z, void *params, void *inters, int k) {
@@ -42,12 +39,9 @@ static void *get_p (int argc, char **argv, long order) {
 
 static void *get_i (long order) {
     intermediates *i = malloc(sizeof (intermediates));
-    i->sx = t_jet(order);
-    i->sy = t_jet(order);
-    i->sz = t_jet(order);
-    i->cx = t_jet(order);
-    i->cy = t_jet(order);
-    i->cz = t_jet(order);
+    i->sx = t_jet(order); i->cx = t_jet(order);
+    i->sy = t_jet(order); i->cy = t_jet(order);
+    i->sz = t_jet(order); i->cz = t_jet(order);
     return i;
 }
 

@@ -16,21 +16,9 @@ typedef struct {
 } parameters;
 
 typedef struct {
-    series ax;
-    series ay;
-    series az;
-    series sax;
-    series say;
-    series saz;
-    series cax;
-    series cay;
-    series caz;
-    series tx;
-    series ty;
-    series tz;
-    series s2x;
-    series s2y;
-    series s2z;
+    series ax; series sax; series cax; series tx; series s2x;
+    series ay; series say; series cay; series ty; series s2y;
+    series az; series saz; series caz; series tz; series s2z;
 } intermediates;
 
 static components ode (series x, series y, series z, void *params, void *inters, int k) {
@@ -55,21 +43,9 @@ static void *get_p (int argc, char **argv, long order) {
 
 static void *get_i (long order) {
     intermediates *i = malloc(sizeof (intermediates));
-    i->ax = t_jet(order);
-    i->ay = t_jet(order);
-    i->az = t_jet(order);
-    i->sax = t_jet(order);
-    i->say = t_jet(order);
-    i->saz = t_jet(order);
-    i->cax = t_jet(order);
-    i->cay = t_jet(order);
-    i->caz = t_jet(order);
-    i->tx = t_jet(order);
-    i->ty = t_jet(order);
-    i->tz = t_jet(order);
-    i->s2x = t_jet(order);
-    i->s2y = t_jet(order);
-    i->s2z = t_jet(order);
+    i->ax = t_jet(order); i->sax = t_jet(order); i->cax = t_jet(order); i->tx = t_jet(order); i->s2x = t_jet(order);
+    i->ay = t_jet(order); i->say = t_jet(order); i->cay = t_jet(order); i->ty = t_jet(order); i->s2y = t_jet(order);
+    i->az = t_jet(order); i->saz = t_jet(order); i->caz = t_jet(order); i->tz = t_jet(order); i->s2z = t_jet(order);
     return i;
 }
 
