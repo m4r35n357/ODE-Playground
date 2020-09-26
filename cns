@@ -49,7 +49,7 @@ case $method in
      'step') quarterstep $original;;
     'order') orderplus2 $original;;
      'both') orderstep $original;;
-     'data') cp d-best $fileA;;
+     'data') cp d-best $fileA; chmod u+w $fileA;;
     'nosim') ;;
           *) echo "CNS: Bad Method"; exit 1;;
 esac

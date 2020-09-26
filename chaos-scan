@@ -5,10 +5,8 @@
 ode=$1
 method=$2
 case $method in
-    'tsm')       prog='tsm'
-                 param='12';;
-    'rk4')       prog='rk4'
-                 param='1';;
+    'tsm')       prog='tsm'; param='12';;
+    'rk4')       prog='rk4'; param='1';;
     *)           echo "Unknown method"; exit;;
 esac
 shift 2
