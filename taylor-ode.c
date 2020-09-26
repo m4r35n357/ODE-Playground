@@ -25,10 +25,10 @@ void t_stepper (char **argv, long *n, real *h, long *nsteps, real *x, real *y, r
     *z = strtold(argv[8], NULL);
 }
 
-void t_args (char **argv, int count, ...) {
+void t_args (char **argv, int argc, ...) {
     va_list vars;
-    va_start(vars, count);
-    for (int i = 9; i < count; i++) {
+    va_start(vars, argc);
+    for (int i = 9; i < argc; i++) {
         *va_arg(vars, real *) = strtold(argv[i], NULL);
     }
     va_end(vars);
