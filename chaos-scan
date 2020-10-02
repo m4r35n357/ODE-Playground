@@ -20,18 +20,18 @@ ratio=${6:-10}
 separation2=$(echo "scale=15; $separation1 / $ratio;" | bc)
 
 case $ode in
-    'thomas')       cmd='./$prog-thomas-static NA NA $param $timestep $datalines 1 0 0  $x';;
-    'lorenz')       cmd='./$prog-lorenz-static NA NA $param $timestep $datalines -15.8 -17.48 35.64  10 $x 8 3';;
-    'rossler')      cmd='./$prog-rossler-static NA NA $param $timestep $datalines 0.0 -6.78 0.02  0.1 0.1 $x';;
-    'sprott')       cmd='./$prog-sprott-minimal-static NA NA $param $timestep $datalines .02 0 0  $x';;
-    'halvorsen')    cmd='./$prog-halvorsen-static NA NA $param $timestep $datalines 1 0 0  $x';;
-    'rucklidge')    cmd='./$prog-rucklidge-static NA NA $param $timestep $datalines 1 0 0  $x 2';;
-    'rf')           cmd='./$prog-rf-static NA NA $param $timestep $datalines .05 -.05 .3  $x .1';;
-    'bouali')       cmd='./$prog-bouali-static NA NA $param $timestep $datalines 1 1 0  3 2.2 1 $x';;
-    'gt')           cmd='./$prog-genesio-tesi-static NA NA $param $timestep $datalines .1 .1 .1  $x 1.1 1';;
-    'wb')           cmd='./$prog-wimol-banlue-static NA NA $param $timestep $datalines 1 0 0  $x';;
-    'yw')           cmd='./$prog-yu-wang-static NA NA $param $timestep $datalines 1 0 0  10 40 2 $x';;
-    'minimal')      cmd='./$prog-sprott-minimal-static NA NA $param $timestep $datalines .02 0 0  $x';;
+    'thomas')       cmd='./$prog-thomas.py NA 15 $param $timestep $datalines 1 0 0  $x';;
+    'lorenz')       cmd='./$prog-lorenz.py NA 15 $param $timestep $datalines -15.8 -17.48 35.64  10 $x 8 3';;
+    'rossler')      cmd='./$prog-rossler.py NA 15 $param $timestep $datalines 0.0 -6.78 0.02  0.1 0.1 $x';;
+    'sprott')       cmd='./$prog-sprott-minimal.py NA 15 $param $timestep $datalines .02 0 0  $x';;
+    'halvorsen')    cmd='./$prog-halvorsen.py NA 15 $param $timestep $datalines 1 0 0  $x';;
+    'rucklidge')    cmd='./$prog-rucklidge.py NA 15 $param $timestep $datalines 1 0 0  $x 2';;
+    'rf')           cmd='./$prog-rf.py NA 15 $param $timestep $datalines .05 -.05 .3  $x .1';;
+    'bouali')       cmd='./$prog-bouali.py NA 15 $param $timestep $datalines 1 1 0  3 2.2 1 $x';;
+    'gt')           cmd='./$prog-genesio-tesi.py NA 15 $param $timestep $datalines .1 .1 .1  $x 1.1 1';;
+    'wb')           cmd='./$prog-wimol-banlue.py NA 15 $param $timestep $datalines 1 0 0  $x';;
+    'yw')           cmd='./$prog-yu-wang.py NA 15 $param $timestep $datalines 1 0 0  10 40 2 $x';;
+    'minimal')      cmd='./$prog-sprott-minimal.py NA 15 $param $timestep $datalines .02 0 0  $x';;
     *)              echo "Unknown ODE"; exit;;
 esac
 
