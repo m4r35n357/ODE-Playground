@@ -12,7 +12,7 @@ esac
 shift 2
 start=$1
 end=$2
-step=$(echo "scale=12; ($end - $start) / 100;" | bc)
+step=$(echo "scale=12; ($end - $start) / 201;" | bc)
 timestep=${3:-0.1}
 datalines=${4:-10000}
 separation1=${5:-0.000001}
