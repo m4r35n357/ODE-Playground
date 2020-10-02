@@ -71,7 +71,7 @@ def scan():
         else:
             print(f'{YELLOW}UNCLASSIFIED{NORMAL} value = {max_s1:.3e} {max_s2:.3e} ratio = {clip(max_s1/max_s2, 1.5*ratio):.3f}')
     elif l_g1 < l_data or l_g2 < l_data:
-        print(f'   {WHITE}UNBOUNDED{NORMAL} value = {ratio:.1f} {ratio:.1f} ratio = {-0.5*ratio:.1f} {l_g1}/{l_g2} of {l_data}')
+        print(f'   {WHITE}UNBOUNDED{NORMAL} value = {-0.5*ratio:.1f} {-0.5*ratio:.1f} ratio = {-0.1*ratio:.1f} {l_g1}/{l_g2} of {l_data}')
     else:
         print(f'INCORRECT DATA SIZE: read {l_g1}/{l_g2} lines, expected {l_data}')
 
