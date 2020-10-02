@@ -63,7 +63,7 @@ def scan():
             s2 = separation(r, t)
             max_s2 = s2 if s2 > max_s2 else max_s2
         if s1 < δ_1 and s2 < δ_2:
-            print(f'   {BLUE}CONVERGED{NORMAL} value = {s1:.3e} {s2:.3e} ratio = {2.0*ratio:.1f}')
+            print(f'   {BLUE}CONVERGED{NORMAL} value = {s1:.3e} {s2:.3e} ratio = {ratio:.1f}')
         elif SLOPE_MIN * ratio <= max_s1 / max_s2 <= SLOPE_MAX * ratio:
             print(f' {GREEN}LIMIT-CYCLE{NORMAL} value = {max_s1:.3e} {max_s2:.3e} ratio = {max_s1/max_s2:.3f}')
         elif SLOPE_MIN <= max_s1 / max_s2 <= SLOPE_MAX:
