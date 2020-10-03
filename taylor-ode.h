@@ -6,9 +6,10 @@
  */
 
 /*
- * Isolate real numbers from jets
+ * Diffentiate real numbers from jets
  */
 typedef long double real;
+
 typedef long double *series;
 
 /*
@@ -17,36 +18,14 @@ typedef long double *series;
 const int BASE;
 
 /*
- * For returning combined recurrence values
- */
-typedef struct {
-    real a;
-    real b;
-} pair;
-
-/*
- * For returning x, y, z values
- */
-typedef struct {
-    real x;
-    real y;
-    real z;
-} components;
-
-/*
- * Selects either a trigonometric or hyperbolic version of the function
- */
-typedef enum {TRIG, HYP} geometry;
-
-/*
  * Prints an index column, and x, y, z columns, into a single line
  */
-void t_output (real x, real y, real z, real t);
+void t_output (long dp, real x, real y, real z, real t);
 
 /*
  * Sets the order, step size, and real of steps for the integration from the command line arguments (1 to 4)
  */
-void t_stepper (char **argv, long *n, real *h, long *nsteps, real *x, real *y, real *z);
+void t_stepper (char **argv, long *dp, long *n, real *h, long *nsteps, real *x, real *y, real *z);
 
 /*
  * Bulk set initial conditions and ODE parameters from the command line arguments (5 onwards)
@@ -104,12 +83,25 @@ real t_sqrt (series R, series U, int k);
 real t_exp (series E, series U, int k);
 
 /*
- * Returns struct containing kth elements of both sine and cosine of U, results accumulated in jets S and C
+ * Selects either a trigonometric or hyperbolic version of the function
+ */
+typedef enum {TRIG, HYP} geometry;
+
+/*
+ * For returning combined recurrence values
+ */
+typedef struct {
+    real a;
+    real b;
+} pair;
+
+/*
+ * Returns kth elements of both sine and cosine of U, results accumulated in jets S and C
  */
 pair t_sin_cos (series S, series C, series U, int k, geometry g);
 
 /*
- * Returns struct containing kth elements of both tangent and squared secant of U, results accumulated in jets T and S2
+ * Returns kth elements of both tangent and squared secant of U, results accumulated in jets T and S2
  */
 pair t_tan_sec2 (series T, series S2, series U, int k, geometry g);
 
@@ -124,27 +116,33 @@ real t_pwr (series P, series U, real a, int k);
 real t_ln (series L, series U, int k);
 
 /*
- * getters for ODE parameters and intermediate variables
+ * Function signatures for ODE parameters and intermediate variables, defined in client code
  */
-typedef void *(*ode_params)(int, char **, long);
-typedef void *(*ode_inters)(long);
+typedef void *(*tsm_params)(int, char **, long);
+
+typedef void *(*tsm_inters)(long);
+
+typedef void *(*rk4_params)(int, char **);
 
 /*
- * ODE equations for TSM
+ * For returning x, y, z values
+ */
+typedef struct {
+    real x;
+    real y;
+    real z;
+} components;
+
+/*
+ * 3D (x, y, z) ODE function signatures, defined in client code
  */
 typedef components (*tsm_model)(series, series, series, void *, void *, int);
 
-/*
- * Taylor Series Method (TSM) integrator
- */
-void tsm (int argc, char **argv, tsm_model ode, ode_params get_p, ode_inters get_i);
-
-/*
- * ODE equations for RK4
- */
 typedef components (*rk4_model)(real, real, real, void *);
 
 /*
- * Runge-Kutta 4 (RK4) integrator
+ * Integrator signatures
  */
-void rk4 (int argc, char **argv, rk4_model ode, ode_params get_p);
+void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get_i);
+
+void rk4 (int argc, char **argv, rk4_model ode, rk4_params get_p);

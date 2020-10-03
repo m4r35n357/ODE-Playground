@@ -1,7 +1,7 @@
 /*
  * Yu-Wang System
  *
- * Example: ./tsm-yu-wang-dbg NA NA 10 .001 50000 1 0 0 10 40 2 2.5
+ * Example: ./tsm-yu-wang-dbg 15 NA 10 .001 50000 1 0 0 10 40 2 2.5
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -17,10 +17,24 @@ typedef struct {
     real d;
 } parameters;
 
+static void *get_p (int argc, char **argv, long order) {
+    (void)order;
+    parameters *p = malloc(sizeof (parameters));
+    t_args(argv, argc, &p->a, &p->b, &p->c, &p->d);
+    return p;
+}
+
 typedef struct {
     series xy;
     series e_xy;
 } intermediates;
+
+static void *get_i (long order) {
+    intermediates *i = malloc(sizeof (intermediates));
+    i->xy = t_jet(order);
+    i->e_xy = t_jet(order);
+    return i;
+}
 
 static components ode (series x, series y, series z, void *params, void *inters, int k) {
     parameters *p = (parameters *)params;
@@ -31,20 +45,6 @@ static components ode (series x, series y, series z, void *params, void *inters,
         .y = p->b * x[k] - p->c * t_prod(x, z, k),
         .z = t_exp(i->e_xy, i->xy, k) - p->d * z[k]
     };
-}
-
-static void *get_p (int argc, char **argv, long order) {
-    (void)order;
-    parameters *p = malloc(sizeof (parameters));
-    t_args(argv, argc, &p->a, &p->b, &p->c, &p->d);
-    return p;
-}
-
-static void *get_i (long order) {
-    intermediates *i = malloc(sizeof (intermediates));
-    i->xy = t_jet(order);
-    i->e_xy = t_jet(order);
-    return i;
 }
 
 int main (int argc, char **argv) {

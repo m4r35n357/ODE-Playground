@@ -1,7 +1,7 @@
 /*
  * Bouali Attractor
  *
- * Example: ./rk4-bouali-dbg NA NA 1 0.01 50000 1 1 0 3 2.2 1 .01
+ * Example: ./rk4-bouali-dbg 15 NA 1 0.01 50000 1 1 0 3 2.2 1 .01
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -17,6 +17,12 @@ typedef struct {
     real d;
 } parameters;
 
+static void *get_p (int argc, char **argv) {
+    parameters *p = malloc(sizeof (parameters));
+    t_args(argv, argc, &p->a, &p->b, &p->c, &p->d);
+    return p;
+}
+
 static components ode (real x, real y, real z, void *params) {
     parameters *p = (parameters *)params;
     return (components) {
@@ -24,13 +30,6 @@ static components ode (real x, real y, real z, void *params) {
         .y = - p->c * y * (1.0 - x * x),
         .z = p->d * x
     };
-}
-
-static void *get_p (int argc, char **argv, long order) {
-    (void)order;
-    parameters *p = malloc(sizeof (parameters));
-    t_args(argv, argc, &p->a, &p->b, &p->c, &p->d);
-    return p;
 }
 
 int main (int argc, char **argv) {

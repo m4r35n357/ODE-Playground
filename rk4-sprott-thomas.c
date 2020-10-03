@@ -1,7 +1,7 @@
 /*
  * Sprott-Thomas' cyclically symmetric attractor
  *
- * Example: ./rk4-sprott-thomas-dbg NA NA 1 0.01 30000 1 0 0 4.75 1
+ * Example: ./rk4-sprott-thomas-dbg 15 NA 1 0.01 30000 1 0 0 4.75 1
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -16,6 +16,12 @@ typedef struct {
     real b;
 } parameters;
 
+static void *get_p (int argc, char **argv) {
+    parameters *p = malloc(sizeof (parameters));
+    t_args(argv, argc, &p->a, &p->b);
+    return p;
+}
+
 static components ode (real x, real y, real z, void *params) {
     parameters *p = (parameters *)params;
     return (components) {
@@ -23,13 +29,6 @@ static components ode (real x, real y, real z, void *params) {
         .y = sin(p->a * z) - p->b * tan(y),
         .z = sin(p->a * x) - p->b * tan(z)
     };
-}
-
-static void *get_p (int argc, char **argv, long order) {
-    (void)order;
-    parameters *p = malloc(sizeof (parameters));
-    t_args(argv, argc, &p->a, &p->b);
-    return p;
 }
 
 int main (int argc, char **argv) {

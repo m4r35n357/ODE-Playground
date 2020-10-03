@@ -1,7 +1,7 @@
 /*
  * Rucklidge Attractor
  *
- * Example: ./tsm-rucklidge-dbg NA NA 10 0.01 15000 1 0 0 6.7 2
+ * Example: ./tsm-rucklidge-dbg 15 NA 10 0.01 15000 1 0 0 6.7 2
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -15,6 +15,13 @@ typedef struct {
     real kappa;
 } parameters;
 
+static void *get_p (int argc, char **argv, long order) {
+    (void)order;
+    parameters *p = malloc(sizeof (parameters));
+    t_args(argv, argc, &p->alpha, &p->kappa);
+    return p;
+}
+
 static components ode (series x, series y, series z, void *params, void *inters, int k) {
     parameters *p = (parameters *)params;
     (void)inters;
@@ -23,13 +30,6 @@ static components ode (series x, series y, series z, void *params, void *inters,
         .y = x[k],
         .z = t_sqr(y, k) - z[k]
     };
-}
-
-static void *get_p (int argc, char **argv, long order) {
-    (void)order;
-    parameters *p = malloc(sizeof (parameters));
-    t_args(argv, argc, &p->alpha, &p->kappa);
-    return p;
 }
 
 int main (int argc, char **argv) {

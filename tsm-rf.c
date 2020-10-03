@@ -1,8 +1,8 @@
 /*
  * Rabinovich–Fabrikant System
  *
- * Example: ./tsm-rf-dbg NA NA 10 .01 50000 .05 -.05 .3 .28713 .1
- *          ./tsm-rf-dbg NA NA 16 .01 50000 .05 -.05 .3 .105 .1 | ./plotPi3d.py
+ * Example: ./tsm-rf-dbg 15 NA 10 .01 50000 .05 -.05 .3 .28713 .1
+ *          ./tsm-rf-dbg 15 NA 16 .01 50000 .05 -.05 .3 .105 .1 | ./plotPi3d.py
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -16,12 +16,28 @@ typedef struct {
     real gamma;
 } parameters;
 
+static void *get_p (int argc, char **argv, long order) {
+    parameters *p = malloc(sizeof (parameters));
+    p->alpha = t_jet(order);
+    t_args(argv, argc, p->alpha, &p->gamma);
+    return p;
+}
+
 typedef struct {
     series a;
     series b;
     series c;
     series w1;
 } intermediates;
+
+static void *get_i (long order) {
+    intermediates *i = malloc(sizeof (intermediates));
+    i->a = t_jet(order);
+    i->b = t_jet(order);
+    i->c = t_jet(order);
+    i->w1 = t_jet_c(order, 1.0);
+    return i;
+}
 
 static components ode (series x, series y, series z, void *params, void *inters, int k) {
     parameters *p = (parameters *)params;
@@ -34,22 +50,6 @@ static components ode (series x, series y, series z, void *params, void *inters,
         .y = t_prod(x, i->b, k) + p->gamma * y[k],
         .z = - 2.0 * t_prod(z, i->c, k)
     };
-}
-
-static void *get_p (int argc, char **argv, long order) {
-    parameters *p = malloc(sizeof (parameters));
-    p->alpha = t_jet(order);
-    t_args(argv, argc, p->alpha, &p->gamma);
-    return p;
-}
-
-static void *get_i (long order) {
-    intermediates *i = malloc(sizeof (intermediates));
-    i->a = t_jet(order);
-    i->b = t_jet(order);
-    i->c = t_jet(order);
-    i->w1 = t_jet_c(order, 1.0);
-    return i;
 }
 
 int main (int argc, char **argv) {

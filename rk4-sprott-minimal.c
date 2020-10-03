@@ -1,7 +1,7 @@
 /*
  * Sprott Minimal System
  *
- * Example: ./rk4-sprott-minimal-dbg NA NA 1 0.01 10000 .02 0 0 2.017
+ * Example: ./rk4-sprott-minimal-dbg 15 NA 1 0.01 10000 .02 0 0 2.017
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -14,6 +14,12 @@ typedef struct {
     real a;
 } parameters;
 
+static void *get_p (int argc, char **argv) {
+    parameters *p = malloc(sizeof (parameters));
+    t_args(argv, argc, &p->a);
+    return p;
+}
+
 static components ode (real x, real y, real z, void *params) {
     parameters *p = (parameters *)params;
     return (components) {
@@ -21,13 +27,6 @@ static components ode (real x, real y, real z, void *params) {
         .y = z,
         .z = - p->a * z + y * y - x
     };
-}
-
-static void *get_p (int argc, char **argv, long order) {
-    (void)order;
-    parameters *p = malloc(sizeof (parameters));
-    t_args(argv, argc, &p->a);
-    return p;
 }
 
 int main (int argc, char **argv) {

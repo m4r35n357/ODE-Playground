@@ -1,7 +1,7 @@
 /*
  * Yu-Wang System
  *
- * Example: ./rk4-yu-wang-dbg NA NA 1 .001 50000 1 0 0 10 40 2 2.5
+ * Example: ./rk4-yu-wang-dbg 15 NA 1 .001 50000 1 0 0 10 40 2 2.5
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -18,6 +18,12 @@ typedef struct {
     real d;
 } parameters;
 
+static void *get_p (int argc, char **argv) {
+    parameters *p = malloc(sizeof (parameters));
+    t_args(argv, argc, &p->a, &p->b, &p->c, &p->d);
+    return p;
+}
+
 static components ode (real x, real y, real z, void *params) {
     parameters *p = (parameters *)params;
     return (components) {
@@ -25,13 +31,6 @@ static components ode (real x, real y, real z, void *params) {
         .y = p->b * x - p->c * x * z,
         .z = exp(x * y) - p->d * z
     };
-}
-
-static void *get_p (int argc, char **argv, long order) {
-    (void)order;
-    parameters *p = malloc(sizeof (parameters));
-    t_args(argv, argc, &p->a, &p->b, &p->c, &p->d);
-    return p;
 }
 
 int main (int argc, char **argv) {

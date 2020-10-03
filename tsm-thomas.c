@@ -1,7 +1,7 @@
 /*
  * Thomas' cyclically symmetric attractor
  *
- * Example: ./tsm-thomas-dbg NA NA 10 0.1 30000 1 0 0 .19
+ * Example: ./tsm-thomas-dbg 15 NA 10 0.1 30000 1 0 0 .19
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -14,11 +14,26 @@ typedef struct {
     real b;
 } parameters;
 
+static void *get_p (int argc, char **argv, long order) {
+    (void)order;
+    parameters *p = malloc(sizeof (parameters));
+    t_args(argv, argc, &p->b);
+    return p;
+}
+
 typedef struct {
     series sx; series cx;
     series sy; series cy;
     series sz; series cz;
 } intermediates;
+
+static void *get_i (long order) {
+    intermediates *i = malloc(sizeof (intermediates));
+    i->sx = t_jet(order); i->cx = t_jet(order);
+    i->sy = t_jet(order); i->cy = t_jet(order);
+    i->sz = t_jet(order); i->cz = t_jet(order);
+    return i;
+}
 
 static components ode (series x, series y, series z, void *params, void *inters, int k) {
     parameters *p = (parameters *)params;
@@ -28,21 +43,6 @@ static components ode (series x, series y, series z, void *params, void *inters,
         .y = t_sin_cos(i->sz, i->cz, z, k, TRIG).a - p->b * y[k],
         .z = t_sin_cos(i->sx, i->cx, x, k, TRIG).a - p->b * z[k]
     };
-}
-
-static void *get_p (int argc, char **argv, long order) {
-    (void)order;
-    parameters *p = malloc(sizeof (parameters));
-    t_args(argv, argc, &p->b);
-    return p;
-}
-
-static void *get_i (long order) {
-    intermediates *i = malloc(sizeof (intermediates));
-    i->sx = t_jet(order); i->cx = t_jet(order);
-    i->sy = t_jet(order); i->cy = t_jet(order);
-    i->sz = t_jet(order); i->cz = t_jet(order);
-    return i;
 }
 
 int main (int argc, char **argv) {

@@ -1,7 +1,7 @@
 /*
  * Rucklidge Attractor
  *
- * Example: ./rk4-rucklidge-dbg NA NA 1 0.01 15000 1 0 0 6.7 2
+ * Example: ./rk4-rucklidge-dbg 15 NA 1 0.01 15000 1 0 0 6.7 2
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -15,6 +15,12 @@ typedef struct {
     real kappa;
 } parameters;
 
+static void *get_p (int argc, char **argv) {
+    parameters *p = malloc(sizeof (parameters));
+    t_args(argv, argc, &p->alpha, &p->kappa);
+    return p;
+}
+
 static components ode (real x, real y, real z, void *params) {
     parameters *p = (parameters *)params;
     return (components) {
@@ -22,13 +28,6 @@ static components ode (real x, real y, real z, void *params) {
         .y = x,
         .z = y * y - z
     };
-}
-
-static void *get_p (int argc, char **argv, long order) {
-    (void)order;
-    parameters *p = malloc(sizeof (parameters));
-    t_args(argv, argc, &p->alpha, &p->kappa);
-    return p;
 }
 
 int main (int argc, char **argv) {

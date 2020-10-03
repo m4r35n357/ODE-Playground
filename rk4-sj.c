@@ -1,7 +1,7 @@
 /*
  * Sprott-Jafari System
  *
- * Example: ./rk4-sj-dbg NA NA 1 .01 10000 0 3.9 .7 8.888 4
+ * Example: ./rk4-sj-dbg 15 NA 1 .01 10000 0 3.9 .7 8.888 4
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -15,6 +15,12 @@ typedef struct {
     real b;
 } parameters;
 
+static void *get_p (int argc, char **argv) {
+    parameters *p = malloc(sizeof (parameters));
+    t_args(argv, argc, &p->a, &p->b);
+    return p;
+}
+
 static components ode (real x, real y, real z, void *params) {
     parameters *p = (parameters *)params;
     return (components) {
@@ -22,13 +28,6 @@ static components ode (real x, real y, real z, void *params) {
         .y = - x + y * z,
         .z = z + p->a * x * x - y * y - p->b
     };
-}
-
-static void *get_p (int argc, char **argv, long order) {
-    (void)order;
-    parameters *p = malloc(sizeof (parameters));
-    t_args(argv, argc, &p->a, &p->b);
-    return p;
 }
 
 int main (int argc, char **argv) {

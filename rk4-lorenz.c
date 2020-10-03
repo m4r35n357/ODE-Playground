@@ -1,7 +1,7 @@
 /*
  * Lorenz System
  *
- * Example: ./rk4-lorenz-dbg NA NA 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+ * Example: ./rk4-lorenz-dbg 15 NA 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -16,6 +16,14 @@ typedef struct {
     real beta;
 } parameters;
 
+static void *get_p (int argc, char **argv) {
+    parameters *p = malloc(sizeof (parameters));
+    real _;
+    t_args(argv, argc, &p->sigma, &p->rho, &p->beta, &_);
+    p->beta /= _;
+    return p;
+}
+
 static components ode (real x, real y, real z, void *params) {
     parameters *p = (parameters *)params;
     return (components) {
@@ -23,15 +31,6 @@ static components ode (real x, real y, real z, void *params) {
         .y = p->rho * x - y - x * z,
         .z = x * y - p->beta * z
     };
-}
-
-static void *get_p (int argc, char **argv, long order) {
-    (void)order;
-    parameters *p = malloc(sizeof (parameters));
-    real _;
-    t_args(argv, argc, &p->sigma, &p->rho, &p->beta, &_);
-    p->beta /= _;
-    return p;
 }
 
 int main (int argc, char **argv) {

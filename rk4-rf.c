@@ -1,8 +1,8 @@
 /*
  * Rabinovich–Fabrikant System
  *
- * Example: ./rk4-rf-dbg NA NA 1 .01 50000 .05 -.05 .3 .28713 .1
- *          ./rk4-rf-dbg NA NA 1 .01 50000 .05 -.05 .3 .105 .1 | ./plotPi3d.py
+ * Example: ./rk4-rf-dbg 15 NA 1 .01 50000 .05 -.05 .3 .28713 .1
+ *          ./rk4-rf-dbg 15 NA 1 .01 50000 .05 -.05 .3 .105 .1 | ./plotPi3d.py
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -16,6 +16,12 @@ typedef struct {
     real gamma;
 } parameters;
 
+static void *get_p (int argc, char **argv) {
+    parameters *p = malloc(sizeof (parameters));
+    t_args(argv, argc, &p->alpha, &p->gamma);
+    return p;
+}
+
 static components ode (real x, real y, real z, void *params) {
     parameters *p = (parameters *)params;
     return (components) {
@@ -23,13 +29,6 @@ static components ode (real x, real y, real z, void *params) {
         .y = x * (3.0 * z + 1.0 - x * x) + p->gamma * y,
         .z = - 2.0 * z * (p->alpha + x * y)
     };
-}
-
-static void *get_p (int argc, char **argv, long order) {
-    (void)order;
-    parameters *p = malloc(sizeof (parameters));
-    t_args(argv, argc, &p->alpha, &p->gamma);
-    return p;
 }
 
 int main (int argc, char **argv) {

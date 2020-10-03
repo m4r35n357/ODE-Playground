@@ -1,7 +1,7 @@
 /*
  * Bouali Attractor
  *
- * Example: ./tsm-bouali-dbg NA NA 10 0.01 50000 1 1 0 3 2.2 1 .01
+ * Example: ./tsm-bouali-dbg 15 NA 10 0.01 50000 1 1 0 3 2.2 1 .01
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -17,11 +17,26 @@ typedef struct {
     real d;
 } parameters;
 
+static void *get_p (int argc, char **argv, long order) {
+    (void)order;
+    parameters *p = malloc(sizeof (parameters));
+    t_args(argv, argc, &p->a, &p->b, &p->c, &p->d);
+    return p;
+}
+
 typedef struct {
     series wa;
     series wb;
     series w1;
 } intermediates;
+
+static void *get_i (long order) {
+    intermediates *i = malloc(sizeof (intermediates));
+    i->wa = t_jet(order);
+    i->wb = t_jet(order);
+    i->w1 = t_jet_c(order, 1.0);
+    return i;
+}
 
 static components ode (series x, series y, series z, void *params, void *inters, int k) {
     parameters *p = (parameters *)params;
@@ -33,21 +48,6 @@ static components ode (series x, series y, series z, void *params, void *inters,
         .y = - p->c * t_prod(y, i->wb, k),
         .z = p->d * x[k]
     };
-}
-
-static void *get_p (int argc, char **argv, long order) {
-    (void)order;
-    parameters *p = malloc(sizeof (parameters));
-    t_args(argv, argc, &p->a, &p->b, &p->c, &p->d);
-    return p;
-}
-
-static void *get_i (long order) {
-    intermediates *i = malloc(sizeof (intermediates));
-    i->wa = t_jet(order);
-    i->wb = t_jet(order);
-    i->w1 = t_jet_c(order, 1.0);
-    return i;
 }
 
 int main (int argc, char **argv) {
