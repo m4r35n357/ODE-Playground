@@ -20,18 +20,18 @@ ratio=${6:-10}
 separation2=$(echo "scale=15; $separation1 / $ratio;" | bc)
 
 case $ode in
-    'thomas')       cmd='./$prog-thomas-static 15 NA $param $timestep $datalines 1 0 0  $x';;
-    'lorenz')       cmd='./$prog-lorenz-static 15 NA $param $timestep $datalines -15.8 -17.48 35.64  10 $x 8 3';;
-    'rossler')      cmd='./$prog-rossler-static 15 NA $param $timestep $datalines 0.0 -6.78 0.02  0.1 0.1 $x';;
-    'sprott')       cmd='./$prog-sprott-minimal-static 15 NA $param $timestep $datalines .02 0 0  $x';;
-    'halvorsen')    cmd='./$prog-halvorsen-static 15 NA $param $timestep $datalines 1 0 0  $x';;
-    'rucklidge')    cmd='./$prog-rucklidge-static 15 NA $param $timestep $datalines 1 0 0  $x 2';;
-    'rf')           cmd='./$prog-rf-static 15 NA $param $timestep $datalines .05 -.05 .3  $x .1';;
-    'bouali')       cmd='./$prog-bouali-static 15 NA $param $timestep $datalines 1 1 0  3 2.2 1 $x';;
-    'gt')           cmd='./$prog-genesio-tesi-static 15 NA $param $timestep $datalines .1 .1 .1  $x 1.1 1';;
-    'wb')           cmd='./$prog-wimol-banlue-static 15 NA $param $timestep $datalines 1 0 0  $x';;
-    'yw')           cmd='./$prog-yu-wang-static 15 NA $param $timestep $datalines 1 0 0  10 40 2 $x';;
-    'minimal')      cmd='./$prog-sprott-minimal-static 15 NA $param $timestep $datalines .02 0 0  $x';;
+    'thomas')       cmd='./$prog-thomas-static 15 _ $param $timestep $datalines 1 0 0  $x';;
+    'lorenz')       cmd='./$prog-lorenz-static 15 _ $param $timestep $datalines -15.8 -17.48 35.64  10 $x 8 3';;
+    'rossler')      cmd='./$prog-rossler-static 15 _ $param $timestep $datalines 0.0 -6.78 0.02  0.1 0.1 $x';;
+    'sprott')       cmd='./$prog-sprott-minimal-static 15 _ $param $timestep $datalines .02 0 0  $x';;
+    'halvorsen')    cmd='./$prog-halvorsen-static 15 _ $param $timestep $datalines 1 0 0  $x';;
+    'rucklidge')    cmd='./$prog-rucklidge-static 15 _ $param $timestep $datalines 1 0 0  $x 2';;
+    'rf')           cmd='./$prog-rf-static 15 _ $param $timestep $datalines .05 -.05 .3  $x .1';;
+    'bouali')       cmd='./$prog-bouali-static 15 _ $param $timestep $datalines 1 1 0  3 2.2 1 $x';;
+    'gt')           cmd='./$prog-genesio-tesi-static 15 _ $param $timestep $datalines .1 .1 .1  $x 1.1 1';;
+    'wb')           cmd='./$prog-wimol-banlue-static 15 _ $param $timestep $datalines 1 0 0  $x';;
+    'yw')           cmd='./$prog-yu-wang-static 15 _ $param $timestep $datalines 1 0 0  10 40 2 $x';;
+    'minimal')      cmd='./$prog-sprott-minimal-static 15 _ $param $timestep $datalines .02 0 0  $x';;
     *)              echo "Unknown ODE"; exit;;
 esac
 

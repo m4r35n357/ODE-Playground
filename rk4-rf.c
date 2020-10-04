@@ -1,8 +1,8 @@
 /*
  * Rabinovich–Fabrikant System
  *
- * Example: ./rk4-rf-dbg 15 NA 1 .01 50000 .05 -.05 .3 .28713 .1
- *          ./rk4-rf-dbg 15 NA 1 .01 50000 .05 -.05 .3 .105 .1 | ./plotPi3d.py
+ * Example: ./rk4-rf-dbg 15 _ 1 .01 50000 .05 -.05 .3 .28713 .1
+ *          ./rk4-rf-dbg 15 _ 1 .01 50000 .05 -.05 .3 .105 .1 | ./plotPi3d.py
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */

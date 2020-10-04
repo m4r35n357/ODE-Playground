@@ -1,7 +1,7 @@
 /*
  * Bouali Attractor
  *
- * Example: ./rk4-bouali-dbg 15 NA 1 0.01 50000 1 1 0 3 2.2 1 .01
+ * Example: ./rk4-bouali-dbg 15 _ 1 0.01 50000 1 1 0 3 2.2 1 .01
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */

@@ -1,7 +1,7 @@
 /*
  * Wimol-Banlue System
  *
- * Example: ./rk4-wimol-banlue-dbg 15 NA 1 0.1 10000 1 0 0 2.0
+ * Example: ./rk4-wimol-banlue-dbg 15 _ 1 0.1 10000 1 0 0 2.0
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */

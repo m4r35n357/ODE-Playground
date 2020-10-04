@@ -1,7 +1,7 @@
 /*
  * Rossler System
  *
- * Example: ./rk4-rossler-dbg 15 NA 1 0.01 50000 0.0 -6.78 0.02 .1 .1 5.7
+ * Example: ./rk4-rossler-dbg 15 _ 1 0.01 50000 0.0 -6.78 0.02 .1 .1 5.7
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */

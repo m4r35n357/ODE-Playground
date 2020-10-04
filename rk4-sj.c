@@ -1,7 +1,7 @@
 /*
  * Sprott-Jafari System
  *
- * Example: ./rk4-sj-dbg 15 NA 1 .01 10000 0 3.9 .7 8.888 4
+ * Example: ./rk4-sj-dbg 15 _ 1 .01 10000 0 3.9 .7 8.888 4
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */

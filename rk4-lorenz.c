@@ -1,7 +1,7 @@
 /*
  * Lorenz System
  *
- * Example: ./rk4-lorenz-dbg 15 NA 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+ * Example: ./rk4-lorenz-dbg 15 _ 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */

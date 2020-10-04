@@ -1,8 +1,8 @@
 /*
  * Rabinovich–Fabrikant System
  *
- * Example: ./tsm-rf-dbg 15 NA 10 .01 50000 .05 -.05 .3 .28713 .1
- *          ./tsm-rf-dbg 15 NA 16 .01 50000 .05 -.05 .3 .105 .1 | ./plotPi3d.py
+ * Example: ./tsm-rf-dbg 15 _ 10 .01 50000 .05 -.05 .3 .28713 .1
+ *          ./tsm-rf-dbg 15 _ 16 .01 50000 .05 -.05 .3 .105 .1 | ./plotPi3d.py
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */

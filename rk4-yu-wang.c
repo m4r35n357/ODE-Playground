@@ -1,7 +1,7 @@
 /*
  * Yu-Wang System
  *
- * Example: ./rk4-yu-wang-dbg 15 NA 1 .001 50000 1 0 0 10 40 2 2.5
+ * Example: ./rk4-yu-wang-dbg 15 _ 1 .001 50000 1 0 0 10 40 2 2.5
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
