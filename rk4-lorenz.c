@@ -19,7 +19,7 @@ typedef struct {
 static void *get_p (int argc, char **argv) {
     parameters *p = malloc(sizeof (parameters));
     real _;
-    t_args(argv, argc, &p->sigma, &p->rho, &p->beta, &_);
+    t_params(argv, argc, &p->sigma, &p->rho, &p->beta, &_);
     p->beta /= _;
     return p;
 }

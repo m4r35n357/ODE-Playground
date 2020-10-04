@@ -23,14 +23,14 @@ const int BASE;
 void t_output (long dp, real x, real y, real z, real t);
 
 /*
- * Sets the order, step size, and real of steps for the integration from the command line arguments (1 to 4)
+ * Sets output precision, integrator parameters and initial conditions from the command line arguments (1 to 4)
  */
-void t_stepper (char **argv, long *dp, long *n, real *h, long *nsteps, real *x, real *y, real *z);
+void t_control (char **argv, long *dp, long *n, real *h, long *nsteps, real *x, real *y, real *z);
 
 /*
- * Bulk set initial conditions and ODE parameters from the command line arguments (5 onwards)
+ * Bulk set ODE parameters from the command line arguments (5 onwards)
  */
-void t_args (char **argv, int count, ...);
+void t_params (char **argv, int count, ...);
 
 /*
  * Creates an initialized jet of the specified size, with no values set

@@ -15,7 +15,7 @@ void t_output (long dp, real x, real y, real z, real t) {
     printf(fs, x, y, z, t);
 }
 
-void t_stepper (char **argv, long *dp, long *n, real *h, long *nsteps, real *x, real *y, real *z) {
+void t_control (char **argv, long *dp, long *n, real *h, long *nsteps, real *x, real *y, real *z) {
     *dp = strtol(argv[1], NULL, BASE);
     *n = strtol(argv[3], NULL, BASE);
     assert(*n > 0);
@@ -28,7 +28,7 @@ void t_stepper (char **argv, long *dp, long *n, real *h, long *nsteps, real *x, 
     *z = strtold(argv[8], NULL);
 }
 
-void t_args (char **argv, int argc, ...) {
+void t_params (char **argv, int argc, ...) {
     va_list vars;
     va_start(vars, argc);
     for (int i = 9; i < argc; i++) {
@@ -162,7 +162,7 @@ real t_ln (series l, series u, int k) {
 void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get_i) {
     long n, steps, dp;
     real x0, y0, z0, h;
-    t_stepper(argv, &dp, &n, &h, &steps, &x0, &y0, &z0);
+    t_control(argv, &dp, &n, &h, &steps, &x0, &y0, &z0);
     series x = t_jet_c(n + 1, x0), y = t_jet_c(n + 1, y0), z = t_jet_c(n + 1, z0);
     void *p = get_p(argc, argv, n);
     void *i = get_i == NULL ? NULL : get_i(n);
@@ -181,7 +181,7 @@ void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get
 void rk4 (int argc, char **argv, rk4_model ode, rk4_params get_p) {
     long interval, steps, dp;
     real x, y, z, h;
-    t_stepper(argv, &dp, &interval, &h, &steps, &x, &y, &z);
+    t_control(argv, &dp, &interval, &h, &steps, &x, &y, &z);
     void *p = get_p(argc, argv);
     t_output(dp, x, y, z, 0.0);
     for (long step = 1; step < steps + 1; step++) {

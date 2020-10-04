@@ -17,7 +17,7 @@ typedef struct {
 static void *get_p (int argc, char **argv, long order) {
     (void)order;
     parameters *p = malloc(sizeof (parameters));
-    t_args(argv, argc, &p->b);
+    t_params(argv, argc, &p->b);
     return p;
 }
 
