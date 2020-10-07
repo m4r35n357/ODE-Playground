@@ -4,13 +4,15 @@
 # All rights reserved.
 # For licencing see LICENCE file
 #
-# for order in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24; do ./cns-test both noplot ./tsm-thomas-static 15 NA $order 0.1 20000 1 0 0 .185 2>/dev/null; done | gnuplot -p -e "plot '<cat' using 1:2 with lines"
+#  ./cns-test both 1 ./tsm-lorenz-dbg 15 _ 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+# | gnuplot -p -e "plot '<cat' using 1:2 with lines"
 
 fileA='/tmp/dataA'  # the "better" simulation, or data file
 fileB='/tmp/dataB'  # the original simulation
 
 method=$1
-shift
+threshold=$2
+shift 2
 original=$*
 
 quarterstep () {
@@ -57,7 +59,6 @@ do
               *) echo "CNS: Bad Method"; exit 1;;
     esac
     $current >$fileB & wait
-    set $(./divergence.py $fileA $fileB 3 1.0)
+    set $(./divergence.py $fileA $fileB 3 $threshold)
     echo $n $4
 done 2>/dev/null
-#| gnuplot -p -e "plot '<cat' using 1:2 with lines"
