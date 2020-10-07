@@ -1,15 +1,9 @@
 #!/bin/sh
 
-#  Example: time -p ./chaos-scan ode method min max 2>/dev/null | tee /tmp/results
+#  Example: time -p ./chaos-scan ode min max 2>/dev/null | tee /tmp/results
 
 ode=$1
-method=$2
-case $method in
-    'tsm')       prog='tsm'; param='12';;
-    'rk4')       prog='rk4'; param='1';;
-    *)           echo "Unknown method"; exit;;
-esac
-shift 2
+shift
 start=$1
 end=$2
 step=$(echo "scale=12; ($end - $start) / 201;" | bc)
@@ -20,18 +14,18 @@ ratio=${6:-10}
 separation2=$(echo "scale=15; $separation1 / $ratio;" | bc)
 
 case $ode in
-    'thomas')       cmd='./$prog-thomas-static 15 _ $param $timestep $datalines  1 0 0  $x';;
-    'lorenz')       cmd='./$prog-lorenz-static 15 _ $param $timestep $datalines  -15.8 -17.48 35.64  10 $x 8 3';;
-    'rossler')      cmd='./$prog-rossler-static 15 _ $param $timestep $datalines  .0 -6.78 .02  .1 .1 $x';;
-    'sprott')       cmd='./$prog-sprott-minimal-static 15 _ $param $timestep $datalines  .02 0 0  $x';;
-    'halvorsen')    cmd='./$prog-halvorsen-static 15 _ $param $timestep $datalines  1 0 0  $x 4';;
-    'rucklidge')    cmd='./$prog-rucklidge-static 15 _ $param $timestep $datalines  1 0 0  $x 2';;
-    'rf')           cmd='./$prog-rf-static 15 _ $param $timestep $datalines  .05 -.05 .3  $x .1';;
-    'bouali')       cmd='./$prog-bouali-static 15 _ $param $timestep $datalines  1 1 0  3 2.2 1 $x';;
-    'gt')           cmd='./$prog-genesio-tesi-static 15 _ $param $timestep $datalines  .1 .1 .1  $x 1.1 1';;
-    'wb')           cmd='./$prog-wimol-banlue-static 15 _ $param $timestep $datalines  1 0 0  $x';;
-    'yw')           cmd='./$prog-yu-wang-static 15 _ $param $timestep $datalines  1 0 0  10 40 2 $x';;
-    'minimal')      cmd='./$prog-sprott-minimal-static 15 _ $param $timestep $datalines  .02 0 0  $x';;
+    'thomas')       cmd='./tsm-thomas-static 15 _ 10 $timestep $datalines  1 0 0  $x';;
+    'lorenz')       cmd='./tsm-lorenz-static 15 _ 10 $timestep $datalines  -15.8 -17.48 35.64  10 $x 8 3';;
+    'rossler')      cmd='./tsm-rossler-static 15 _ 10 $timestep $datalines  .0 -6.78 .02  .1 .1 $x';;
+    'sprott')       cmd='./tsm-sprott-minimal-static 15 _ 10 $timestep $datalines  .02 0 0  $x';;
+    'halvorsen')    cmd='./tsm-halvorsen-static 15 _ 10 $timestep $datalines  1 0 0  $x 4';;
+    'rucklidge')    cmd='./tsm-rucklidge-static 15 _ 10 $timestep $datalines  1 0 0  $x 2';;
+    'rf')           cmd='./tsm-rf-static 15 _ 10 $timestep $datalines  .05 -.05 .3  $x .1';;
+    'bouali')       cmd='./tsm-bouali-static 15 _ 10 $timestep $datalines  1 1 0  3 2.2 1 $x';;
+    'gt')           cmd='./tsm-genesio-tesi-static 15 _ 10 $timestep $datalines  .1 .1 .1  $x 1.1 1';;
+    'wb')           cmd='./tsm-wimol-banlue-static 15 _ 10 $timestep $datalines  1 0 0  $x';;
+    'yw')           cmd='./tsm-yu-wang-static 15 _ 10 $timestep $datalines  1 0 0  10 40 2 $x';;
+    'minimal')      cmd='./tsm-sprott-minimal-static 15 _ 10 $timestep $datalines  .02 0 0  $x';;
     *)              echo "Unknown ODE"; exit;;
 esac
 
