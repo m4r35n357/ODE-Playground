@@ -25,19 +25,6 @@ build () {
 }
 
 for model in \
-rk4-bouali \
-rk4-halvorsen \
-rk4-lorenz \
-rk4-rossler \
-rk4-genesio-tesi \
-rk4-rucklidge \
-rk4-rf \
-rk4-thomas \
-rk4-sj \
-rk4-sprott-minimal \
-rk4-sprott-thomas \
-rk4-wimol-banlue \
-rk4-yu-wang \
 tsm-bouali \
 tsm-halvorsen \
 tsm-lorenz \
@@ -64,5 +51,5 @@ ${CC} -O3 -DNDEBUG -c $WARNINGS -fpic taylor-ode.c && ${CC} -shared -o libode.so
 # LD_LIBRARY_PATH=. ./test 15 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/data; gnuplot -p -e "splot '/tmp/data' with lines"
 
 wait
-ls -lh --color tsm-* rk4-* lib*.so
+ls -lh --color tsm-* lib*.so
 
