@@ -7,27 +7,25 @@ def main():
     print("Chaos Plotter: {}".format(argv), file=stderr)
     if len(argv) > 1:
         raise Exception('>>> ERROR! No parameters, thanks! <<<')
-    coordinate_a, coordinate_b, coordinate_c, coordinate_d = 0, 4, 5, 8
+    coordinate_a, coordinate_b, coordinate_c = 0, 1, 4
     line = stdin.readline()
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')
     ax1.set_xlabel('Parameter', color='g')
-    ax1.set_ylabel('Separations', color='b')
+    ax1.set_ylabel('Separation', color='b')
     ax2 = ax1.twinx()
-    ax2.set_ylabel('Ratio', color='r')
+    ax2.set_ylabel('Result', color='r')
     n = 0
     w, x, y, z = [], [], [], []
     while line:
         p = line.split()
-        w.append(float(p[coordinate_a]))
-        x.append(float(p[coordinate_b]))
+        x.append(float(p[coordinate_a]))
         y.append(float(p[coordinate_c]))
-        z.append(float(p[coordinate_d]))
+        z.append(0.0 if 'CHAOTIC' in str(p[coordinate_b]) else (0.5 if 'UNCLASSIFIED' in str(p[coordinate_b]) else 1.0))
         line = stdin.readline()
         n += 1
-    ax1.plot(w, y, 'co-', markersize=0)
-    ax1.plot(w, x, 'bo-', markersize=0)
-    ax2.plot(w, z, 'ro-', markersize=0)
+    ax1.plot(x, y, 'bo-', markersize=0)
+    ax2.plot(x, z, 'ro-', markersize=0)
     pyplot.show()
 
 if __name__ == "__main__":
