@@ -11,7 +11,7 @@ timestep=${3:-.1}
 datalines=${4:-10000}
 lower=${5:-0.1}
 upper=${6:-1.0}
-order=4
+order=${7:-4}
 
 case $ode in
     'thomas')       cmd='./tsm-thomas-static 15 _ $order $timestep $datalines  1 0 0  $x';;
