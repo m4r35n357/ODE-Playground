@@ -1,5 +1,7 @@
 #!/bin/sh
-
+#
+#  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#
 #  Example: time -p ./chaos-scan ode min max 2>/dev/null | tee /tmp/results
 
 ode=$1

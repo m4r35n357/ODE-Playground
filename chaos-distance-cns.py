@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-
-# Example:
+#
+#  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#
 
 from sys import argv, stderr
 from math import sqrt

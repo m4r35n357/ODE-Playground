@@ -1,8 +1,6 @@
 #!/bin/sh
-
-# Copyright (c) 2018-2020, Ian Smith (m4r35n357)
-# All rights reserved.
-# For licencing see LICENCE file
+#
+#  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 # time -p ./cns data plot ./tsm-lorenz-static 9 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3     # (300 Lorenz time units)
 # time -p ./cns data plot ./tsm-lorenz-static 9 240 204 .01 65000 -15.8 -17.48 35.64 10 28 8 3     # (600 Lorenz time units)
@@ -16,42 +14,14 @@ plot=$2
 shift 2
 original=$*
 
-quarterstep () {
-    start="$1 $2 $3 $4"
-    step=$(echo "scale=6; $5 / 4;" | bc)
-    steps=$(echo "scale=0; $6 * 4;" | bc)
-    shift 6
-    end="$*"
-    echo 'Better:' $start $step $steps $end >&2
-    $start $step $steps $end | sed -n '1~4p' >$fileA &
-}
-
-orderplus2 () {
-    start="$1 $2 $3"
-    order=$(expr $4 + 2)
-    shift 4
-    end="$*"
-    echo 'Better:' $start $order $end >&2
-    $start $order $end >$fileA &
-}
-
-orderstep () {
-    start="$1 $2 $3"
-    order=$(expr $4 + 1)
-    step=$(echo "scale=6; $5 / 2;" | bc)
-    steps=$(echo "scale=0; $6 * 2;" | bc)
-    shift 6
-    end="$*"
-    echo 'Better:' $start $order $step $steps $end >&2
-    $start $order $step $steps $end | sed -n '1~2p' >$fileA &
-}
+. ./cns-functions.sh
 
 case $method in
      'step') quarterstep $original;;
     'order') orderplus2 $original;;
      'both') orderstep $original;;
      'data') cp d-best $fileA; chmod u+w $fileA;;
-    'nosim') ;;
+    'nosim') ;;  # replot existing data
           *) echo "CNS: Bad Method"; exit 1;;
 esac
 case $method in

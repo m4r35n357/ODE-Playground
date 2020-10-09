@@ -1,8 +1,7 @@
 #!/bin/sh
-
-# Copyright (c) 2018-2020, Ian Smith (m4r35n357)
-# All rights reserved.
-# For licencing see LICENCE file
+#
+#  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#
 
 WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra'
 
