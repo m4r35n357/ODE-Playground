@@ -21,7 +21,17 @@ def main():
         p = line.split()
         x.append(float(p[coordinate_a]))
         y.append(float(p[coordinate_c]))
-        z.append(1.0 if 'CHAOTIC' in str(p[coordinate_b]) else (0.5 if 'UNCLASSIFIED' in str(p[coordinate_b]) else (-0.1 if 'UNBOUNDED' in str(p[coordinate_b]) else 0.0)))
+        if 'LIMIT-CYCLE' in str(p[coordinate_b]);
+            classification = 0.0
+        elif 'CHAOTIC' in str(p[coordinate_b]);
+            classification = 1.0
+        elif 'UNCLASSIFIED' in str(p[coordinate_b]);
+            classification = 0.5
+        elif 'UNBOUNDED' in str(p[coordinate_b]);
+            classification = - 0.1
+        else:
+            raise Exception('>>> Classification Error! <<<')
+        z.append(classification)
         line = stdin.readline()
         n += 1
     ax1.plot(x, y, 'bo-', markersize=0)
