@@ -6,7 +6,7 @@ ode=$1
 shift
 start=$1
 end=$2
-step=$(echo "scale=12; ($end - $start) / 201;" | bc)
+step=$(echo "scale=15; ($end - $start) / 201;" | bc)
 timestep=${3:-.1}
 datalines=${4:-10000}
 lower=${5:-0.01}

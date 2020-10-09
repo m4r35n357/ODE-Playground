@@ -21,7 +21,7 @@ def main():
         p = line.split()
         x.append(float(p[coordinate_a]))
         y.append(float(p[coordinate_c]))
-        z.append(1.0 if 'CHAOTIC' in str(p[coordinate_b]) else (0.5 if 'UNCLASSIFIED' in str(p[coordinate_b]) else 0.0))
+        z.append(1.0 if 'CHAOTIC' in str(p[coordinate_b]) else (0.5 if 'UNCLASSIFIED' in str(p[coordinate_b]) else (-0.1 if 'UNBOUNDED' in str(p[coordinate_b]) else 0.0)))
         line = stdin.readline()
         n += 1
     ax1.plot(x, y, 'bo-', markersize=0)
