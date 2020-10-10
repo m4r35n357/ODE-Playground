@@ -2,20 +2,22 @@
 #
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-#  ./cns-scan both 1 ./tsm-lorenz-dbg 15 _ 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+#  ./cns-scan both 24 1 ./tsm-lorenz-dbg 15 _ 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 #  | gnuplot -p -e "plot '<cat' using 1:2 with lines"
 
 fileA='/tmp/dataA'  # the "better" simulation, or data file
 fileB='/tmp/dataB'  # the original simulation
 
 method=$1
-threshold=$2
-shift 2
+max=$2
+threshold=$3
+shift 3
 original=$*
 
 . ./cns-functions.sh
 
-for n in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+n=1
+while [ $n -le $max ]
 do
     set $original
     begin="$1 $2 $3"
@@ -31,4 +33,5 @@ do
     $current >$fileB & wait
     set $(./divergence.py $fileA $fileB 3 $threshold)
     echo $n $4
+    n=$((n + 1))
 done 2>/dev/null
