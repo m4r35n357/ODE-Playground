@@ -24,13 +24,13 @@ def main():
         p = line.split()
         x.append(float(p[coordinate_a]))
         y.append(float(p[coordinate_c]))
-        if 'LIMIT-CYCLE' in str(p[coordinate_b]);
+        if 'LIMIT-CYCLE' in str(p[coordinate_b]):
             classification = 0.0
-        elif 'CHAOTIC' in str(p[coordinate_b]);
+        elif 'CHAOTIC' in str(p[coordinate_b]):
             classification = 1.0
-        elif 'UNCLASSIFIED' in str(p[coordinate_b]);
+        elif 'UNCLASSIFIED' in str(p[coordinate_b]):
             classification = 0.5
-        elif 'UNBOUNDED' in str(p[coordinate_b]);
+        elif 'UNBOUNDED' in str(p[coordinate_b]):
             classification = - 0.1
         else:
             raise Exception('>>> Classification Error! <<<')
