@@ -14,7 +14,7 @@ quarterstep () {
 
 orderplus2 () {
     start="$1 $2 $3"
-    order=$(expr $4 + 2)
+    order=$(($4 + 2))
     shift 4
     end="$*"
     echo 'Better:' $start $order $end >&2
@@ -23,7 +23,7 @@ orderplus2 () {
 
 orderstep () {
     start="$1 $2 $3"
-    order=$(expr $4 + 1)
+    order=$(($4 + 1))
     step=$(echo "scale=6; $5 / 2;" | bc)
     steps=$(echo "scale=0; $6 * 2;" | bc)
     shift 6
