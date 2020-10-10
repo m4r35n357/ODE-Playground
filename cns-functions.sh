@@ -5,7 +5,7 @@
 quarterstep () {
     start="$1 $2 $3 $4"
     step=$(echo "scale=6; $5 / 4;" | bc)
-    steps=$(echo "scale=0; $6 * 4;" | bc)
+    steps=$(($6 * 4))
     shift 6
     end="$*"
     echo 'Better:' $start $step $steps $end >&2
@@ -25,10 +25,9 @@ orderstep () {
     start="$1 $2 $3"
     order=$(($4 + 1))
     step=$(echo "scale=6; $5 / 2;" | bc)
-    steps=$(echo "scale=0; $6 * 2;" | bc)
+    steps=$(($6 * 2))
     shift 6
     end="$*"
     echo 'Better:' $start $order $step $steps $end >&2
     $start $order $step $steps $end | sed -n '1~2p' >$fileA &
 }
-
