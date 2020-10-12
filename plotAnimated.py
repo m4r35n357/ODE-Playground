@@ -39,7 +39,7 @@ def update(data):
 
 if __name__ == "__main__":
     if len(argv) < 2:
-        raise Exception('>>> ERROR! Please supply max and min <<<')
+        raise Exception('>>> ERROR! Please supply min and max <<<')
     minimum, maximum = float(argv[1]), float(argv[2])
     fig, ax = plt.subplots()
     line_x, = ax.plot([], [], 'g', lw=1)
