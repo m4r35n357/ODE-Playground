@@ -2,6 +2,7 @@
 #
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
+
 from sys import stderr, argv, stdin
 from math import sin, cos, radians
 from pi3d import Sphere, Display, Camera, Shader, Keyboard, screenshot, Lines, Font, String, Mouse

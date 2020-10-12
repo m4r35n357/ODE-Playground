@@ -1,56 +1,24 @@
 #!/bin/sh
-
-# Copyright (c) 2018-2020, Ian Smith (m4r35n357)
-# All rights reserved.
-# For licencing see LICENCE file
 #
-# time -p ./cns data ./tsm-lorenz-static 9 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3     # (300 Lorenz time units)
-# time -p ./cns data ./tsm-lorenz-static 9 240 204 .01 65000 -15.8 -17.48 35.64 10 28 8 3     # (600 Lorenz time units)
-# time -p ./cns data ./tsm-lorenz-static 9 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 3   #(1500 Lorenz time units)
+#  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#
 
 fileA='/tmp/dataA'  # the "better" simulation, or data file
 fileB='/tmp/dataB'  # the original simulation
 
 method=$1
-shift
+plot=$2
+shift 2
 original=$*
 
-quarterstep () {
-    start="$1 $2 $3 $4"
-    step=$(echo "scale=6; $5 / 4;" | bc)
-    steps=$(echo "scale=0; $6 * 4;" | bc)
-    shift 6
-    end="$*"
-    echo 'Better:' $start $step $steps $end
-    $start $step $steps $end | sed -n '1~4p' >$fileA &
-}
-
-orderplus2 () {
-    start="$1 $2 $3"
-    order=$(expr $4 + 2)
-    shift 4
-    end="$*"
-    echo 'Better:' $start $order $end
-    $start $order $end >$fileA &
-}
-
-orderstep () {
-    start="$1 $2 $3"
-    order=$(expr $4 + 1)
-    step=$(echo "scale=6; $5 / 2;" | bc)
-    steps=$(echo "scale=0; $6 * 2;" | bc)
-    shift 6
-    end="$*"
-    echo 'Better:' $start $order $step $steps $end
-    $start $order $step $steps $end | sed -n '1~2p' >$fileA &
-}
+. ./cns-functions.sh
 
 case $method in
      'step') quarterstep $original;;
     'order') orderplus2 $original;;
      'both') orderstep $original;;
      'data') cp d-best $fileA; chmod u+w $fileA;;
-    'nosim') ;;
+    'nosim') ;;  # replot existing data
           *) echo "CNS: Bad Method"; exit 1;;
 esac
 case $method in
@@ -58,9 +26,11 @@ case $method in
           *) $original >$fileB & wait;;
 esac
 
-./divergence.py $fileA $fileB 3 0.000000000001 0.000000001 0.000001 0.001 1.0 >/dev/null
+./divergence.py $fileA $fileB 3 0.000000000001 0.000000001 0.000001 0.001 1.0
 
-./compare.py $fileA $fileB 3 >/dev/null &
-
-./plot3d.py $fileA $fileB >/dev/null 2>&1 &
+if [ "x$plot" = "xplot" ]
+then
+    ./compare.py $fileA $fileB 3 >/dev/null &
+    ./plot3d.py $fileA $fileB >/dev/null 2>&1 &
+fi
 

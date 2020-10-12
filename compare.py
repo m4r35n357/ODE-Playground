@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-
+#
+#  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#
 # Example: ./compare.py /tmp/dataA /tmp/dataB 3
 
 from sys import argv, stderr
