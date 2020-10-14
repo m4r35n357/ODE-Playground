@@ -62,7 +62,6 @@ real t_horner (series jet, int n, real h) {
 }
 
 real t_abs (series u, int k) {
-    assert(k >= 0);
     return u[0] < 0.0 ? - u[k] : u[k];
 }
 
@@ -75,12 +74,10 @@ static real cauchy (series a, series b, int k, int lower, int upper) {
 }
 
 real t_prod (series u, series v, int k) {
-    assert(k >= 0);
     return cauchy(u, v, k, 0, k);
 }
 
 real t_sqr (series u, int k) {
-    assert(k >= 0);
     return cauchy(u, u, k, 0, k);
 }
 
@@ -94,13 +91,11 @@ static real d_cauchy (series h, series u, int k, int lower, int upper, real fact
 
 real t_exp (series e, series u, int k) {
     assert(e != u);
-    assert(k >= 0);
     return e[k] = k == 0 ? exp(u[0]) : d_cauchy(e, u, k, 0, k - 1, 1.0);
 }
 
 pair t_sin_cos (series s, series c, series u, int k, geometry g) {
     assert(s != c && s != u && c != u);
-    assert(k >= 0);
     if (k == 0) return (pair) {
         .a = s[k] = g == TRIG ? sin(u[0]) : sinh(u[0]),
         .b = c[k] = g == TRIG ? cos(u[0]) : cosh(u[0])
@@ -113,7 +108,6 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
 
 pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
     assert(t != s && t != u && s != u);
-    assert(k >= 0);
     if (k == 0) return (pair) {
         .a = t[k] = g == TRIG ? tan(u[0]) : tanh(u[0]),
         .b = s[k] = g == TRIG ? 1.0 + t[0] * t[0] : 1.0 - t[0] * t[0]
