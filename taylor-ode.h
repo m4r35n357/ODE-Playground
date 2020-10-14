@@ -63,21 +63,6 @@ real t_sqr (series U, int k);
 real t_prod (series U, series V, int k);
 
 /*
- * Returns kth element of U / V, results accumulated in jet Q, DOMAIN RESTRICTION v[0] != 0.0
- */
-real t_quot (series Q, series U, series V, int k);
-
-/*
- * Returns kth element of 1 / V, results accumulated in jet I, DOMAIN RESTRICTION v[0] != 0.0
- */
-real t_inv (series I, series V, int k);
-
-/*
- * Returns kth element of the square root of U, results accumulated in jet R, DOMAIN RESTRICTION U[0] > 0.0
- */
-real t_sqrt (series R, series U, int k);
-
-/*
  * Returns kth element of the exponential of U, results accumulated in jet E
  */
 real t_exp (series E, series U, int k);
@@ -106,21 +91,13 @@ pair t_sin_cos (series S, series C, series U, int k, geometry g);
 pair t_tan_sec2 (series T, series S2, series U, int k, geometry g);
 
 /*
- * Returns kth element of P = U^a (where a is scalar), results accumulated in jet P, DOMAIN RESTRICTION U[0] > 0.0
- */
-real t_pwr (series P, series U, real a, int k);
-
-/*
- * Returns kth element of the natural logarithm of U, result accumulated in jet L, DOMAIN RESTRICTION U[0] > 0.0
- */
-real t_ln (series L, series U, int k);
-
-/*
  * Function signatures for ODE parameters and intermediate variables, defined in client code
  */
 typedef void *(*tsm_params)(int, char **, long);
 
 typedef void *(*tsm_inters)(long);
+
+typedef void *(*rk4_params)(int, char **);
 
 /*
  * For returning x, y, z values
@@ -136,8 +113,11 @@ typedef struct {
  */
 typedef components (*tsm_model)(series, series, series, void *, void *, int);
 
+typedef components (*rk4_model)(real, real, real, void *);
+
 /*
  * Integrator signatures
  */
 void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get_i);
 
+void rk4 (int argc, char **argv, rk4_model ode, rk4_params get_p);

@@ -79,30 +79,9 @@ real t_prod (series u, series v, int k) {
     return cauchy(u, v, k, 0, k);
 }
 
-real t_quot (series q, series u, series v, int k) {
-    assert(v[0] != 0.0);
-    assert(q != u && q != v && u != v);
-    assert(k >= 0);
-    return q[k] = (k == 0 ? u[0] : u[k] - cauchy(q, v, k, 0, k - 1)) / v[0];
-}
-
-real t_inv (series i, series v, int k) {
-    assert(v[0] != 0.0);
-    assert(i != v);
-    assert(k >= 0);
-    return i[k] = (k == 0 ? 1.0 : - cauchy(i, v, k, 0, k - 1)) / v[0];
-}
-
 real t_sqr (series u, int k) {
     assert(k >= 0);
     return cauchy(u, u, k, 0, k);
-}
-
-real t_sqrt (series r, series u, int k) {
-    assert(u[0] > 0.0);
-    assert(r != u);
-    assert(k >= 0);
-    return r[k] = k == 0 ? sqrt(u[0]) : 0.5 * (u[k] - cauchy(r, r, k, 1, k - 1)) / r[0];
 }
 
 static real d_cauchy (series h, series u, int k, int lower, int upper, real factor) {
@@ -145,20 +124,6 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
     };
 }
 
-real t_pwr (series p, series u, real a, int k) {
-    assert(u[0] > 0.0);
-    assert(p != u);
-    assert(k >= 0);
-    return p[k] = k == 0 ? pow(u[0], a) : (d_cauchy(p, u, k, 0, k - 1, a) - d_cauchy(u, p, k, 1, k - 1, 1.0)) / u[0];
-}
-
-real t_ln (series l, series u, int k) {
-    assert(u[0] > 0.0);
-    assert(l != u);
-    assert(k >= 0);
-    return l[k] = k == 0 ? log(u[0]) : (u[k] - d_cauchy(u, l, k, 1, k - 1, 1.0)) / u[0];
-}
-
 void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get_i) {
     long n, steps, dp;
     real x0, y0, z0, h;
@@ -175,5 +140,24 @@ void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get
             z[k + 1] = c.z / (k + 1);
         }
         t_output(dp, t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h), h * step);
+    }
+}
+
+void rk4 (int argc, char **argv, rk4_model ode, rk4_params get_p) {
+    long interval, steps, dp;
+    real x, y, z, h;
+    t_control(argv, &dp, &interval, &h, &steps, &x, &y, &z);
+    void *p = get_p(argc, argv);
+    t_output(dp, x, y, z, 0.0);
+    for (long step = 1; step < steps + 1; step++) {
+        components k1 = ode(x, y, z, p);
+        components k2 = ode(x + 0.5 * k1.x * h, y + 0.5 * k1.y * h, z + 0.5 * k1.z * h, p);
+        components k3 = ode(x + 0.5 * k2.x * h, y + 0.5 * k2.y * h, z + 0.5 * k2.z * h, p);
+        components k4 = ode(x + k3.x * h, y + k3.y * h, z + k3.z * h, p);
+        x += h * (k1.x + 2.0 * (k2.x + k3.x) + k4.x) / 6.0;
+        y += h * (k1.y + 2.0 * (k2.y + k3.y) + k4.y) / 6.0;
+        z += h * (k1.z + 2.0 * (k2.z + k3.z) + k4.z) / 6.0;
+        if (isnan(x) || isinf(x) || isnan(y) || isinf(y) || isnan(z) || isinf(z)) { fprintf(stderr, "OVERFLOW !\n"); exit(1); }
+        if (step % interval == 0) t_output(dp, x, y, z, h * step);
     }
 }
