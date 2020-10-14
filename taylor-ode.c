@@ -79,30 +79,9 @@ real t_prod (series u, series v, int k) {
     return cauchy(u, v, k, 0, k);
 }
 
-real t_quot (series q, series u, series v, int k) {
-    assert(v[0] != 0.0);
-    assert(q != u && q != v && u != v);
-    assert(k >= 0);
-    return q[k] = (k == 0 ? u[0] : u[k] - cauchy(q, v, k, 0, k - 1)) / v[0];
-}
-
-real t_inv (series i, series v, int k) {
-    assert(v[0] != 0.0);
-    assert(i != v);
-    assert(k >= 0);
-    return i[k] = (k == 0 ? 1.0 : - cauchy(i, v, k, 0, k - 1)) / v[0];
-}
-
 real t_sqr (series u, int k) {
     assert(k >= 0);
     return cauchy(u, u, k, 0, k);
-}
-
-real t_sqrt (series r, series u, int k) {
-    assert(u[0] > 0.0);
-    assert(r != u);
-    assert(k >= 0);
-    return r[k] = k == 0 ? sqrt(u[0]) : 0.5 * (u[k] - cauchy(r, r, k, 1, k - 1)) / r[0];
 }
 
 static real d_cauchy (series h, series u, int k, int lower, int upper, real factor) {
@@ -143,20 +122,6 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
         .a = t[k] = d_cauchy(s, u, k, 0, k - 1, 1.0),
         .b = s[k] = d_cauchy(t, t, k, 0, k - 1, g == TRIG ? 2.0 : - 2.0)
     };
-}
-
-real t_pwr (series p, series u, real a, int k) {
-    assert(u[0] > 0.0);
-    assert(p != u);
-    assert(k >= 0);
-    return p[k] = k == 0 ? pow(u[0], a) : (d_cauchy(p, u, k, 0, k - 1, a) - d_cauchy(u, p, k, 1, k - 1, 1.0)) / u[0];
-}
-
-real t_ln (series l, series u, int k) {
-    assert(u[0] > 0.0);
-    assert(l != u);
-    assert(k >= 0);
-    return l[k] = k == 0 ? log(u[0]) : (u[k] - d_cauchy(u, l, k, 1, k - 1, 1.0)) / u[0];
 }
 
 void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get_i) {
