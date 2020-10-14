@@ -97,6 +97,8 @@ typedef void *(*tsm_params)(int, char **, long);
 
 typedef void *(*tsm_inters)(long);
 
+typedef void *(*rk4_params)(int, char **);
+
 /*
  * For returning x, y, z values
  */
@@ -111,8 +113,11 @@ typedef struct {
  */
 typedef components (*tsm_model)(series, series, series, void *, void *, int);
 
+typedef components (*rk4_model)(real, real, real, void *);
+
 /*
  * Integrator signatures
  */
 void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get_i);
 
+void rk4 (int argc, char **argv, rk4_model ode, rk4_params get_p);
