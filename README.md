@@ -201,7 +201,7 @@ Parameter | Meaning
 
 ##### Big build and test command (recommended):
 ```
-time -p ./build && ./ad-test-dbg 6 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt && ./libad-test-dbg 9 32 20 2 1e-18 && echo OK
+time -p ./build && ./ad-test-dbg 6 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt && ./libad-test-dbg 32 20 1 1e-18 1 && echo OK
 ```
 There is also a sample Git pre-commit script that you might want to copy (and edit) to .git/hooks
 
