@@ -25,9 +25,11 @@ do
     finish="$*"
     current="$begin $n $finish"
     case $method in
-         'step') quarterstep $current;;
+        'step4') quarterstep $current;;
+        'step8') eightthstep $current;;
         'order') orderplus2 $current;;
          'both') orderstep $current;;
+        'both2') orderstep2 $current;;
               *) echo "CNS: Bad Method"; exit 1;;
     esac
     $current >$fileB & wait
