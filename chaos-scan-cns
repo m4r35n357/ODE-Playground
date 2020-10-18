@@ -37,7 +37,7 @@ while [ 1 -eq $(echo "$x < $end" | bc) ]
 do
     echo -n "$x "
     eval ./cns both noplot "$cmd" >/dev/null 2>/dev/null
-    ./chaos-distance-cns.py $((datalines + 1)) $lower $upper
+    ./chaos-distance-cns $((datalines + 1)) $lower $upper
     x=$(echo "$x + $step;" | bc)
 done
 
