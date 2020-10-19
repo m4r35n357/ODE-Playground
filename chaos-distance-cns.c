@@ -28,7 +28,7 @@ static long read_data (FILE *fileA, FILE *fileB, real *xA, real *yA, real *zA, r
 }
 
 int main(int argc, char **argv) {
-    assert(argc = 3);
+    assert(argc == 4);
     long expected = strtol(argv[1], NULL, 10);
     real lower = strtold(argv[2], NULL);
     real upper = strtold(argv[3], NULL);

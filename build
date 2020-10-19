@@ -50,7 +50,7 @@ ${CC} -O3 $WARNINGS -o divergence divergence.c -lm -s &
 echo " Building chaos-distance-cns"
 ${CC} -O3 $WARNINGS -o chaos-distance-cns chaos-distance-cns.c -lm -s &
 
-echo " Building libODE"
+echo " Building libode"
 rm -f libtaylor.so taylor-ode.o
 ${CC} -O3 -DNDEBUG -c $WARNINGS -fpic taylor-ode.c && ${CC} -shared -o libode.so taylor-ode.o -s &
 # Example:
