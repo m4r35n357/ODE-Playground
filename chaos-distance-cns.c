@@ -17,12 +17,13 @@ static real separation (real x1, real y1, real z1, real x2, real y2, real z2) {
     return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2));
 }
 
-static long read_data (FILE *fileA, FILE *fileB, real *xA, real *yA, real *zA, real *xB, real *yB, real *zB) {
+static long read_data (long expected, FILE *fileA, FILE *fileB, real *xA, real *yA, real *zA, real *xB, real *yB, real *zB) {
     real tA, tB;
     long count = 0;
     while( fscanf(fileA, "%Le %Le %Le %Le\n", &xA[count], &yA[count], &zA[count], &tA) != EOF &&
            fscanf(fileB, "%Le %Le %Le %Le\n", &xB[count], &yB[count], &zB[count], &tB) != EOF) {
         count += 1;
+        if (count > expected) { fprintf(stderr, "Too much data!\n"); exit(1); }
     }
     return count;
 }
@@ -37,7 +38,7 @@ int main(int argc, char **argv) {
     FILE *fileA = fopen("/tmp/dataA", "r");
     FILE *fileB = fopen("/tmp/dataB", "r");
     if (fileA == NULL || fileB == NULL) { fprintf(stderr, "Cannot read files!\n"); exit(1); }
-    long count = read_data(fileA, fileB, xA, yA, zA, xB, yB, zB);
+    long count = read_data(expected, fileA, fileB, xA, yA, zA, xB, yB, zB);
     if (count == expected) {
         real max_s1 = -1.0;
         for (int i = 0; i < count; i++) {
