@@ -52,9 +52,7 @@ int main(int argc, char **argv) {
         } else {
             fprintf(stdout, "UNCLASSIFIED value = %.3Le\n", max_s1);
         }
-    } else if (count < expected) {
-        fprintf(stdout, "   UNBOUNDED: value = -1.0\n");
     } else {
-        fprintf(stdout, "INCORRECT DATA SIZE: read %ld lines, expected %ld\n", count, expected);
+        fprintf(stdout, "   UNBOUNDED: value = -1.0\n");
     }
 }
