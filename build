@@ -45,10 +45,10 @@ do
 done
 
 echo " Building divergence"
-${CC} -O3 $WARNINGS -o divergence divergence.c -lm &
+${CC} -O3 $WARNINGS -o divergence divergence.c -lm -s &
 
 echo " Building chaos-distance-cns"
-${CC} -O3 $WARNINGS -o chaos-distance-cns chaos-distance-cns.c -lm &
+${CC} -O3 $WARNINGS -o chaos-distance-cns chaos-distance-cns.c -lm -s &
 
 echo " Building libODE"
 rm -f libtaylor.so taylor-ode.o
