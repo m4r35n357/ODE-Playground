@@ -11,23 +11,24 @@ end=$2
 step=$(echo "scale=15; ($end - $start) / 201;" | bc)
 timestep=${3:-.1}
 datalines=${4:-10000}
-lower=${5:-0.01}
-upper=${6:-0.1}
+lower=${5:-0.000000001}
+upper=${6:-0.01}
 order=${7:-10}
+dp=${8:-16}
 
 case $ode in
-    'thomas')       cmd='./tsm-thomas.py 15 _ $order $timestep $datalines  1 0 0  $x';;
-    'lorenz')       cmd='./tsm-lorenz.py 15 _ $order $timestep $datalines  -15.8 -17.48 35.64  10 $x 8 3';;
-    'rossler')      cmd='./tsm-rossler.py 15 _ $order $timestep $datalines  .0 -6.78 .02  .1 .1 $x';;
-    'sprott')       cmd='./tsm-sprott-minimal.py 15 _ $order $timestep $datalines  .02 0 0  $x';;
-    'halvorsen')    cmd='./tsm-halvorsen.py 15 _ $order $timestep $datalines  1 0 0  $x 4';;
-    'rucklidge')    cmd='./tsm-rucklidge.py 15 _ $order $timestep $datalines  1 0 0  $x 2';;
-    'rf')           cmd='./tsm-rf.py 15 _ $order $timestep $datalines  .05 -.05 .3  $x .1';;
-    'bouali')       cmd='./tsm-bouali.py 15 _ $order $timestep $datalines  1 1 0  3 2.2 1 $x';;
-    'gt')           cmd='./tsm-genesio-tesi.py 15 _ $order $timestep $datalines  .1 .1 .1  $x 1.1 1';;
-    'wb')           cmd='./tsm-wimol-banlue.py 15 _ $order $timestep $datalines  1 0 0  $x';;
-    'yw')           cmd='./tsm-yu-wang.py 15 _ $order $timestep $datalines  1 0 0  10 40 2 $x';;
-    'minimal')      cmd='./tsm-sprott-minimal.py 15 _ $order $timestep $datalines  .02 0 0  $x';;
+    'thomas')       cmd='./tsm-thomas.py $dp _ $order $timestep $datalines  1 0 0  $x';;
+    'lorenz')       cmd='./tsm-lorenz.py $dp _ $order $timestep $datalines  -15.8 -17.48 35.64  10 $x 8 3';;
+    'rossler')      cmd='./tsm-rossler.py $dp _ $order $timestep $datalines  .0 -6.78 .02  .1 .1 $x';;
+    'sprott')       cmd='./tsm-sprott-minimal.py $dp _ $order $timestep $datalines  .02 0 0  $x';;
+    'halvorsen')    cmd='./tsm-halvorsen.py $dp _ $order $timestep $datalines  1 0 0  $x 4';;
+    'rucklidge')    cmd='./tsm-rucklidge.py $dp _ $order $timestep $datalines  1 0 0  $x 2';;
+    'rf')           cmd='./tsm-rf.py $dp _ $order $timestep $datalines  .05 -.05 .3  $x .1';;
+    'bouali')       cmd='./tsm-bouali.py $dp _ $order $timestep $datalines  1 1 0  3 2.2 1 $x';;
+    'gt')           cmd='./tsm-genesio-tesi.py $dp _ $order $timestep $datalines  .1 .1 .1  $x 1.1 1';;
+    'wb')           cmd='./tsm-wimol-banlue.py $dp _ $order $timestep $datalines  1 0 0  $x';;
+    'yw')           cmd='./tsm-yu-wang.py $dp _ $order $timestep $datalines  1 0 0  10 40 2 $x';;
+    'minimal')      cmd='./tsm-sprott-minimal.py $dp _ $order $timestep $datalines  .02 0 0  $x';;
     *)              echo "Unknown ODE"; exit;;
 esac
 
