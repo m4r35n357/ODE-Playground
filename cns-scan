@@ -33,7 +33,7 @@ do
               *) echo "CNS: Bad Method"; exit 1;;
     esac
     $current >$fileB & wait
-    temp=$(./divergence.py $fileA $fileB 3 $threshold)
+    temp=$(./divergence.py $fileA $fileB $threshold)
     if [ x$temp = x'' ]
     then
         echo $n -1

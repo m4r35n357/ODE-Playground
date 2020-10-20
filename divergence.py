@@ -12,16 +12,15 @@ def diverged(x, y, thresh):
 
 def main():
     print(f'Divergence: {argv}', file=stderr)
-    if len(argv) < 5:
-        raise Exception(">>> ERROR! Please supply two file names, a time column, and a list of thresholds <<<")
-    time = int(argv[3])
+    if len(argv) < 4:
+        raise Exception(">>> ERROR! Please supply two file names and a list of thresholds <<<")
     with open(argv[1]) as a, open(argv[2]) as b:
         line_a, line_b = a.readline(), b.readline()
-        for threshold in (float(thresh) for thresh in argv[4:]):
+        for threshold in (float(thresh) for thresh in argv[3:]):
             while line_a and line_b:
                 data_a, data_b = line_a.split(), line_b.split()
                 if diverged(data_a, data_b, threshold):
-                    print(f"Threshold: {threshold:.1e}, t: {float(data_a[time]):.3f}")
+                    print(f"Threshold: {threshold:.1e}, t: {float(data_a[3]):.3f}")
                     break
                 line_a, line_b = a.readline(), b.readline()
 

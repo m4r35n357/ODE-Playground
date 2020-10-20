@@ -27,11 +27,11 @@ case $method in
           *) $original >$fileB & wait;;
 esac
 
-./divergence.py $fileA $fileB 3 0.000000000001 0.000000001 0.000001 0.001 1.0
+./divergence.py $fileA $fileB 0.000000000001 0.000000001 0.000001 0.001 1.0
 
 if [ "x$plot" = "xplot" ]
 then
-    ./compare.py $fileA $fileB 3 >/dev/null &
+    ./compare.py $fileA $fileB >/dev/null &
     ./plot3d.py $fileA $fileB >/dev/null 2>&1 &
 fi
 

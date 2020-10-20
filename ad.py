@@ -2,7 +2,7 @@
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 from sys import argv, stderr
-from math import fsum, sin, cos, sinh, cosh, tan, tanh, exp, log, sqrt
+from math import fsum, sin, cos, sinh, cosh, tan, tanh, exp
 from collections import namedtuple
 
 class Components(namedtuple('ParametersType', ['x', 'y', 'z'])):
@@ -32,17 +32,8 @@ def _cauchy(a, b, k, lower, upper):
 def t_prod(u, v, k):
     return _cauchy(u, v, k, 0, k)
 
-def t_quot(q, u, v, k):
-    return u[0] / v[0] if k == 0 else (u[k] - _cauchy(q, v, k, 0, k - 1)) / v[0]
-
-def t_inv(i, v, k):
-    return 1.0 / v[0] if k == 0 else - _cauchy(i, v, k, 0, k - 1) / v[0]
-
 def t_sqr(u, k):
     return _cauchy(u, u, k, 0, k)
-
-def t_sqrt(r, u, k):
-    return sqrt(u[0]) if k == 0 else 0.5 * (u[k] - _cauchy(r, r, k, 1, k - 1)) / r[0]
 
 def _d_cauchy(h, u, k, lower, upper, factor=1.0):
     return factor * fsum(h[j] * (k - j) * u[k - j] for j in range(lower, upper + 1)) / k
@@ -63,12 +54,6 @@ def t_tan_sec2(t, s, u, k, hyp=False):
     t[k] = _d_cauchy(s, u, k, 0, k - 1)
     s[k] = _d_cauchy(t, t, k, 0, k - 1, 2.0 if not hyp else -2.0)
     return t[k], s[k]
-
-def t_pwr(p, u, a, k):
-    return u[0]**a if k == 0 else (_d_cauchy(p, u, k, 0, k - 1, a) - _d_cauchy(u, p, k, 1, k - 1)) / u[0]
-
-def t_ln(l, u, k):
-    return log(u[0]) if k == 0 else (u[k] - _d_cauchy(u, l, k, 1, k - 1)) / u[0]
 
 def tsm(ode, get_p, get_i):
     Context.places, n, δt, n_steps = argv[1], int(argv[3]), float(argv[4]), int(argv[5])  # controls
