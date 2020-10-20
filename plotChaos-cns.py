@@ -2,6 +2,8 @@
 #
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
+#  Example: ./plotChaos-cns.py </tmp/results
+#
 #  Example basename='images/auto'; t=1000; while [ $t -le 10000 ]; do echo "$basename-$t"; time -p ./chaos-scan-cns thomas .01 .21 .1 $t 2>/dev/null | ./plotChaos-cns.py "$basename-$t"; t=$((t + 1000)); done
 
 from sys import argv, stdin, stderr
