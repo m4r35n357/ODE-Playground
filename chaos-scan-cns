@@ -30,7 +30,7 @@ case $ode in
     'wb')           cmd='./tsm-wimol-banlue-static $dp _ $order $timestep $datalines  1 0 0  $x';;
     'yw')           cmd='./tsm-yu-wang-static $dp _ $order $timestep $datalines  1 0 0  10 40 2 $x';;
     'minimal')      cmd='./tsm-sprott-minimal-static $dp _ $order $timestep $datalines  .02 0 0  $x';;
-    *)              echo "Unknown ODE"; exit;;
+    *)              echo "chaos-scan-cns: Unknown ODE"; exit;;
 esac
 
 x=$start

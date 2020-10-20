@@ -23,7 +23,10 @@ static long read_data (long expected, FILE *fileA, FILE *fileB, real *xA, real *
     while( fscanf(fileA, "%Le %Le %Le %Le\n", &xA[count], &yA[count], &zA[count], &tA) != EOF &&
            fscanf(fileB, "%Le %Le %Le %Le\n", &xB[count], &yB[count], &zB[count], &tB) != EOF) {
         count += 1;
-        if (count > expected) { fprintf(stderr, "Too much data!\n"); exit(1); }
+        if (count > expected) {
+            fprintf(stderr, "chaos-distance-cns: Too much data!\n");
+            exit(2);
+        }
     }
     return count;
 }
@@ -37,7 +40,10 @@ int main(int argc, char **argv) {
     real *xB = get_array(expected), *yB = get_array(expected), *zB = get_array(expected);
     FILE *fileA = fopen("/tmp/dataA", "r");
     FILE *fileB = fopen("/tmp/dataB", "r");
-    if (fileA == NULL || fileB == NULL) { fprintf(stderr, "Cannot read files!\n"); exit(1); }
+    if (fileA == NULL || fileB == NULL) {
+        fprintf(stderr, "chaos-distance-cns: Cannot read data files!\n");
+        exit(1);
+    }
     long count = read_data(expected, fileA, fileB, xA, yA, zA, xB, yB, zB);
     if (count == expected) {
         real max_s1 = -1.0;
