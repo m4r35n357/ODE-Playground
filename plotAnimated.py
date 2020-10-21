@@ -38,6 +38,7 @@ def update(data):
     return line_data()
 
 if __name__ == "__main__":
+    print(f'Animated Plotter: {argv}', file=stderr)
     if len(argv) < 2:
         raise Exception('>>> ERROR! Please supply min and max <<<')
     minimum, maximum = float(argv[1]), float(argv[2])

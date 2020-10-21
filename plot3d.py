@@ -39,7 +39,7 @@ class Body(Sphere):
                 self.track.draw()
 
 def main():
-    print("Multi Plotter: {}".format(argv))
+    print(f'Multi 3D Plotter: {argv}', file=stderr)
     argc = len(argv)
     if argc == 1 or argc == 2:  # second arg is track length!
         file1 = stdin
