@@ -5,6 +5,8 @@
 #  Example: ./chaos-scan-cns thomas .01 .21 .1 10000 .000000001 .01 10 16
 #
 
+echo "Predictability vs Parameter Value: [$*]" >&2
+
 ode=$1
 shift
 start=$1

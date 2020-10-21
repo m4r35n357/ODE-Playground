@@ -5,6 +5,8 @@
 #  Example: ./cns both noplot ./tsm-thomas-dbg 15 _ 10 0.1 30000 1 0 0 .19
 #
 
+echo "Clean Numerical Simulation: [$*]" >&2
+
 method=$1
 plot=$2
 shift 2
@@ -30,7 +32,7 @@ esac
 
 if [ "x$plot" = "xplot" ]
 then
-    ./compare.py $fileA $fileB 2>/dev/null &
-    ./plot3d.py $fileA $fileB >/dev/null 2>&1 &
+    ./compare.py $fileA $fileB &
+    ./plot3d.py $fileA $fileB &
 fi
 

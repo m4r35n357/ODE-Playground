@@ -12,7 +12,7 @@ def position_error(a, b):
     return sqrt((float(a[0]) - float(b[0]))**2 + (float(a[1]) - float(b[1]))**2 + (float(a[2]) - float(b[2]))**2)
 
 def main():
-    print(f'Compare: {argv}', file=stderr)
+    print(f'Compare Simulations: {argv}', file=stderr)
     if len(argv) != 3:
         raise Exception(">>> ERROR! Please supply two file names <<<")
     ax1 = pyplot.figure().add_subplot(111)
