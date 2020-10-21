@@ -46,9 +46,9 @@ int main(int argc, char **argv) {
     }
     long count = read_data(expected, fileA, fileB, xA, yA, zA, xB, yB, zB);
     if (count == expected) {
-        real max_s1 = -1.0;
+        real s1 = -1.0, max_s1 = -1.0;
         for (int i = 0; i < count; i++) {
-            real s1 = separation(xA[i], yA[i], zA[i], xB[i], yB[i], zB[i]);
+            s1 = separation(xA[i], yA[i], zA[i], xB[i], yB[i], zB[i]);
             max_s1 = s1 > max_s1 ? s1 : max_s1;
         }
         if (max_s1 <= lower) {
