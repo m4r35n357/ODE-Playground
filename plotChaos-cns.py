@@ -14,7 +14,7 @@ def main():
     save = False
     if len(argv) == 2:
         save = True
-    coordinate_a, coordinate_b, coordinate_c = 0, 1, 4
+    coordinate_a, coordinate_b, coordinate_c = 0, 4, 7
     line = stdin.readline()
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')
@@ -23,23 +23,12 @@ def main():
     ax2 = ax1.twinx()
     ax2.set_ylabel('Result', color='r')
     n = 0
-    w, x, y, z = [], [], [], []
+    x, y, z = [], [], []
     while line:
         p = line.split()
         x.append(float(p[coordinate_a]))
-        y.append(float(p[coordinate_c]))
-        text = str(p[coordinate_b])
-        if 'LIMIT-CYCLE' in text or 'CONVERGED' in text:
-            classification = 0.0
-        elif 'CHAOTIC' in text:
-            classification = 1.0
-        elif 'UNCLASSIFIED' in text:
-            classification = 0.5
-        elif 'UNBOUNDED' in text:
-            classification = - 0.1
-        else:
-            raise Exception('>>> Classification Error! <<<')
-        z.append(classification)
+        y.append(float(p[coordinate_b]))
+        z.append(float(p[coordinate_c]))
         line = stdin.readline()
         n += 1
     ax1.plot(x, y, 'bo-', markersize=0)

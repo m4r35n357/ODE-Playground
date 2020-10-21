@@ -52,13 +52,13 @@ int main(int argc, char **argv) {
             max_s1 = s1 > max_s1 ? s1 : max_s1;
         }
         if (max_s1 <= lower) {
-            fprintf(stdout, " %sLIMIT-CYCLE%s value = %.3Le\n", "\x1b[1;32m", "\x1B[0m", max_s1);
+            fprintf(stdout, " %sLIMIT-CYCLE%s value = %.3Le classification = 0.0\n", "\x1b[1;32m", "\x1B[0m", max_s1);
         } else if (max_s1 > upper) {
-            fprintf(stdout, "     %sCHAOTIC%s value = %.3Le\n", "\x1b[1;31m", "\x1B[0m", max_s1);
+            fprintf(stdout, "     %sCHAOTIC%s value = %.3Le classification = 1.0\n", "\x1b[1;31m", "\x1B[0m", max_s1);
         } else {
-            fprintf(stdout, "%sUNCLASSIFIED%s value = %.3Le\n", "\x1b[1;33m", "\x1B[0m", max_s1);
+            fprintf(stdout, "%sUNCLASSIFIED%s value = %.3Le classification = 0.5\n", "\x1b[1;33m", "\x1B[0m", max_s1);
         }
     } else {
-        fprintf(stdout, "   %sUNBOUNDED%s value = -1.0\n", "\x1b[1;37m", "\x1B[0m");
+        fprintf(stdout, "   %sUNBOUNDED%s value = -1.0 classification = -0.1\n", "\x1b[1;37m", "\x1B[0m");
     }
 }
