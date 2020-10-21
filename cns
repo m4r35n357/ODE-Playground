@@ -30,7 +30,7 @@ esac
 
 if [ "x$plot" = "xplot" ]
 then
-    ./compare.py $fileA $fileB 3 >/dev/null &
+    ./compare.py $fileA $fileB >/dev/null &
     ./plot3d.py $fileA $fileB >/dev/null 2>&1 &
 fi
 

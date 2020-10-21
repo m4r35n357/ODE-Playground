@@ -13,9 +13,8 @@ def position_error(a, b):
 
 def main():
     print(f'Compare: {argv}', file=stderr)
-    if len(argv) != 4:
-        raise Exception(">>> ERROR! Please supply two file names and a time coordinate column <<<")
-    time = int(argv[3])
+    if len(argv) != 3:
+        raise Exception(">>> ERROR! Please supply two file names <<<")
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')
     ax1.set_xlabel('time', color='b')
@@ -30,7 +29,7 @@ def main():
             if 'nan' in line_a or 'nan' in line_b:
                 break
             data_a, data_b = line_a.split(), line_b.split()
-            s.append(float(data_a[time]))
+            s.append(float(data_a[3]))
             t.append(float(data_a[0]))
             u.append(float(data_b[0]))
             v.append(float(data_a[1]))
