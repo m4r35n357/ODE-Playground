@@ -2,6 +2,9 @@
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
+fileA='/tmp/dataA'  # results of the "better" simulation
+fileB='/tmp/dataB'  # results of the requested simulation
+
 quarterstep () {  # step / 4
     start="$1 $2 $3 $4"
     step=$(echo "scale=6; $5 / 4;" | bc)

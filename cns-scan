@@ -6,9 +6,6 @@
 #           | gnuplot -p -e "plot '<cat' with lines"
 #
 
-fileA='/tmp/dataA'  # the "better" simulation, or data file
-fileB='/tmp/dataB'  # the original simulation
-
 method=$1
 max=$2
 threshold=$3

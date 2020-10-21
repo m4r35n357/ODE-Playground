@@ -5,9 +5,6 @@
 #  Example: ./cns both noplot ./tsm-thomas-dbg 15 _ 10 0.1 30000 1 0 0 .19
 #
 
-fileA='/tmp/dataA'  # the "better" simulation, or data file
-fileB='/tmp/dataB'  # the original simulation
-
 method=$1
 plot=$2
 shift 2
