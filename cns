@@ -2,9 +2,8 @@
 #
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-
-fileA='/tmp/dataA'  # the "better" simulation, or data file
-fileB='/tmp/dataB'  # the original simulation
+#  Example: ./cns both noplot ./tsm-thomas.py 15 _ 10 0.1 30000 1 0 0 .19
+#
 
 method=$1
 plot=$2

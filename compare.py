@@ -24,6 +24,7 @@ def main():
     with open(argv[1]) as a, open(argv[2]) as b:
         line_a, line_b = a.readline(), b.readline()
         s, t, u, v, w, x, y, z = [], [], [], [], [], [], [], []
+        max_error = 0.0
         while line_a and line_b:
             if 'nan' in line_a or 'nan' in line_b:
                 break
@@ -35,7 +36,9 @@ def main():
             w.append(float(data_b[1]))
             x.append(float(data_a[2]))
             y.append(float(data_b[2]))
-            z.append(position_error(data_a, data_b))
+            pos_error = position_error(data_a, data_b)
+            max_error = pos_error if pos_error > max_error else max_error
+            z.append(max_error)
             line_a, line_b = a.readline(), b.readline()
     ax1.plot(s, t, 'ko-', linewidth=1, markersize=0)
     ax1.plot(s, u, 'go-', linewidth=1, markersize=0)
@@ -43,7 +46,7 @@ def main():
     ax1.plot(s, w, 'yo-', linewidth=1, markersize=0)
     ax1.plot(s, x, 'ko-', linewidth=1, markersize=0)
     ax1.plot(s, y, 'co-', linewidth=1, markersize=0)
-    ax2.plot(s, z, 'ro-', linewidth=1, markersize=0)
+    ax2.plot(s, z, 'ro-', linewidth=2, markersize=0)
     pyplot.show()
 
 main()

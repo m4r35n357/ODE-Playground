@@ -44,13 +44,13 @@ def scan():
             s1 = separation(r, t)
             max_s1 = s1 if s1 > max_s1 else max_s1
         if max_s1 <= limit_threshold:
-            print(f' {GREEN}LIMIT-CYCLE{NORMAL} value = {max_s1:.3e}')
+            print(f' {GREEN}LIMIT-CYCLE{NORMAL} value = {max_s1:.3e} classification = 0.0')
         elif max_s1 > chaos_threshold:
-            print(f'     {RED}CHAOTIC{NORMAL} value = {max_s1:.3e}')
+            print(f'     {RED}CHAOTIC{NORMAL} value = {max_s1:.3e} classification = 1.0')
         else:
-            print(f'{YELLOW}UNCLASSIFIED{NORMAL} value = {max_s1:.3e}')
+            print(f'{YELLOW}UNCLASSIFIED{NORMAL} value = {max_s1:.3e} classification = 0.5')
     elif l_g1 < l_data:
-        print(f'   {WHITE}UNBOUNDED{NORMAL} value = {-1.0:.1f}')
+        print(f'   {WHITE}UNBOUNDED{NORMAL} value = {-1.0:.1f} classification = -0.1')
     else:
         print(f'INCORRECT DATA SIZE: read {l_g1} lines, expected {l_data}')
 
