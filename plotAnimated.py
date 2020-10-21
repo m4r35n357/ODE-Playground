@@ -37,19 +37,15 @@ def update(data):
         ax.figure.canvas.draw()
     return line_data()
 
-def main():
-    print(f'Animated Plotter: {argv}', file=stderr)
-    if len(argv) < 2:
-        raise Exception('>>> ERROR! Please supply min and max <<<')
-    minimum, maximum = float(argv[1]), float(argv[2])
-    fig, ax = plt.subplots()
-    line_x, = ax.plot([], [], 'g', lw=1)
-    line_y, = ax.plot([], [], 'y', lw=1)
-    line_z, = ax.plot([], [], 'c', lw=1)
-    ax.grid()
-    t_data, x_data, y_data, z_data = [], [], [], []
-    # noinspection PyTypeChecker
-    _ = animation.FuncAnimation(fig, update, data_gen, blit=True, interval=10, repeat=False, init_func=init)
-    plt.show()
-
-main()
+if len(argv) < 2:
+    raise Exception('>>> ERROR! Please supply max and min <<<')
+minimum, maximum = float(argv[1]), float(argv[2])
+fig, ax = plt.subplots()
+line_x, = ax.plot([], [], 'g', lw=1)
+line_y, = ax.plot([], [], 'y', lw=1)
+line_z, = ax.plot([], [], 'c', lw=1)
+ax.grid()
+t_data, x_data, y_data, z_data = [], [], [], []
+# noinspection PyTypeChecker
+_ = animation.FuncAnimation(fig, update, data_gen, blit=True, interval=10, repeat=False, init_func=init)
+plt.show()
