@@ -37,7 +37,7 @@ def update(data):
         ax.figure.canvas.draw()
     return line_data()
 
-if __name__ == "__main__":
+def main():
     print(f'Animated Plotter: {argv}', file=stderr)
     if len(argv) < 2:
         raise Exception('>>> ERROR! Please supply min and max <<<')
@@ -51,5 +51,5 @@ if __name__ == "__main__":
     # noinspection PyTypeChecker
     _ = animation.FuncAnimation(fig, update, data_gen, blit=True, interval=10, repeat=False, init_func=init)
     plt.show()
-else:
-    print(__name__ + " module loaded", file=stderr)
+
+main()

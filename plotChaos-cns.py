@@ -35,7 +35,4 @@ def main():
     ax2.plot(x, z, 'ro-', markersize=0)
     pyplot.savefig(argv[1]) if save else pyplot.show()
 
-if __name__ == "__main__":
-    main()
-else:
-    print(__name__ + " module loaded", file=stderr)
+main()

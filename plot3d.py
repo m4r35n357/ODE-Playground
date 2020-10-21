@@ -174,7 +174,4 @@ def main():
         if not line1:
             display.stop()
 
-if __name__ == "__main__":
-    main()
-else:
-    print(__name__ + " module loaded", file=stderr)
+main()
