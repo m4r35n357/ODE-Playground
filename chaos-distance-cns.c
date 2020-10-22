@@ -20,8 +20,8 @@ static real separation (real x1, real y1, real z1, real x2, real y2, real z2) {
 static long read_data (long expected, FILE *fileA, FILE *fileB, real *xA, real *yA, real *zA, real *xB, real *yB, real *zB) {
     real tA, tB;
     long count = 0;
-    while( fscanf(fileA, "%Le %Le %Le %Le\n", &xA[count], &yA[count], &zA[count], &tA) != EOF &&
-           fscanf(fileB, "%Le %Le %Le %Le\n", &xB[count], &yB[count], &zB[count], &tB) != EOF) {
+    while(fscanf(fileA, "%Le %Le %Le %Le\n", &xA[count], &yA[count], &zA[count], &tA) != EOF &&
+          fscanf(fileB, "%Le %Le %Le %Le\n", &xB[count], &yB[count], &zB[count], &tB) != EOF) {
         count += 1;
         if (count > expected) {
             fprintf(stderr, "chaos-distance-cns: Too much data!\n");
