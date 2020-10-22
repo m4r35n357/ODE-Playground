@@ -10,7 +10,7 @@ from sys import argv, stdin, stderr
 from matplotlib import pyplot
 
 def main():
-    print(f'Chaos Plotter: {argv}', file=stderr)
+    print(f'Chaos Scan Plotter: {argv}', file=stderr)
     save = False
     if len(argv) == 2:
         save = True

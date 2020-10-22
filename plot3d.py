@@ -2,6 +2,12 @@
 #
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
+#  Example: ./plot3d.py 5000
+#
+#  Example: ./plot3d.py /tmp/dataA /tmp/dataB
+#
+#  Example: ./plot3d.py /tmp/dataA /tmp/dataB /tmp/dataC /tmp/dataD /tmp/dataE /tmp/dataF /tmp/dataG
+#
 
 from sys import stderr, argv, stdin
 from math import sin, cos, radians
@@ -39,7 +45,7 @@ class Body(Sphere):
                 self.track.draw()
 
 def main():
-    print(f'Multi 3D Plotter: {argv}', file=stderr)
+    print(f'Multi 3D ODE Plotter: {argv}', file=stderr)
     argc = len(argv)
     if argc == 1 or argc == 2:  # second arg is track length!
         file1 = stdin

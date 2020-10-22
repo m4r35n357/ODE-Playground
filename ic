@@ -5,6 +5,8 @@
 #  Example: ./ic .001 noplot ./tsm-thomas.py 15 _ 10 0.1 30000 1 0 0 .185
 #
 
+echo "Sensitivity to Initial Conditions: [$*]" >&2
+
 fileA='/tmp/dataA'
 fileB='/tmp/dataB'
 fileC='/tmp/dataC'
@@ -25,31 +27,31 @@ perturb () {
     shift 9
     end="$*"
     echo 'oo' $start $x0 $y0 $z0 $end
-    $start $x0 $y0 $z0 $end >$fileG 2>/dev/null &
+    $start $x0 $y0 $z0 $end >$fileG &
     y=$y0
     z=$z0
     x=$(echo "scale=32; $x0 + $delta;" | bc)
     echo 'x+' $start $x $y $z $end
-    $start $x $y $z $end >$fileA 2>/dev/null &
+    $start $x $y $z $end >$fileA &
     x=$(echo "scale=32; $x0 - $delta;" | bc)
     echo 'x-' $start $x $y $z $end
-    $start $x $y $z $end >$fileB 2>/dev/null &
+    $start $x $y $z $end >$fileB &
     x=$x0
     z=$z0
     y=$(echo "scale=32; $y0 + $delta;" | bc)
     echo 'y+' $start $x $y $z $end
-    $start $x $y $z $end >$fileC 2>/dev/null &
+    $start $x $y $z $end >$fileC &
     y=$(echo "scale=32; $y0 - $delta;" | bc)
     echo 'y-' $start $x $y $z $end
-    $start $x $y $z $end >$fileD 2>/dev/null &
+    $start $x $y $z $end >$fileD &
     x=$x0
     y=$y0
     z=$(echo "scale=32; $z0 + $delta;" | bc)
     echo 'z+' $start $x $y $z $end
-    $start $x $y $z $end >$fileE 2>/dev/null &
+    $start $x $y $z $end >$fileE &
     z=$(echo "scale=32; $z0 - $delta;" | bc)
     echo 'z-' $start $x $y $z $end
-    $start $x $y $z $end >$fileF 2>/dev/null &
+    $start $x $y $z $end >$fileF &
 }
 
 perturb $*
@@ -57,6 +59,6 @@ wait
 
 if [ "x$plot" = "xplot" ]
 then
-    ./plot3d.py $fileA $fileB $fileC $fileD $fileE $fileF $fileG >/dev/null 2>&1 &
+    ./plot3d.py $fileA $fileB $fileC $fileD $fileE $fileF $fileG &
 fi
 
