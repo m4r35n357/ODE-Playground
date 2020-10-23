@@ -20,7 +20,7 @@ const int BASE;
 /*
  * Prints an index column, and x, y, z columns, into a single line
  */
-void t_output (long dp, real x, real y, real z, real t);
+void t_output (long dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label) ;
 
 /*
  * Sets output precision, integrator parameters and initial conditions from the command line arguments (1 to 4)

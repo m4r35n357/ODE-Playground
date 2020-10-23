@@ -20,27 +20,27 @@ order=${7:-10}
 dp=${8:-16}
 
 case $ode in
-    'thomas')       cmd='./tsm-thomas-static $dp _ $order $timestep $datalines  1 0 0  $x';;
-    'lorenz')       cmd='./tsm-lorenz-static $dp _ $order $timestep $datalines  -15.8 -17.48 35.64  10 $x 8 3';;
-    'rossler')      cmd='./tsm-rossler-static $dp _ $order $timestep $datalines  .0 -6.78 .02  .1 .1 $x';;
-    'sprott')       cmd='./tsm-sprott-minimal-static $dp _ $order $timestep $datalines  .02 0 0  $x';;
-    'halvorsen')    cmd='./tsm-halvorsen-static $dp _ $order $timestep $datalines  1 0 0  $x 4';;
-    'rucklidge')    cmd='./tsm-rucklidge-static $dp _ $order $timestep $datalines  1 0 0  $x 2';;
-    'rf')           cmd='./tsm-rf-static $dp _ $order $timestep $datalines  .05 -.05 .3  $x .1';;
-    'bouali')       cmd='./tsm-bouali-static $dp _ $order $timestep $datalines  1 1 0  3 2.2 1 $x';;
-    'gt')           cmd='./tsm-genesio-tesi-static $dp _ $order $timestep $datalines  .1 .1 .1  $x 1.1 1';;
-    'wb')           cmd='./tsm-wimol-banlue-static $dp _ $order $timestep $datalines  1 0 0  $x';;
-    'yw')           cmd='./tsm-yu-wang-static $dp _ $order $timestep $datalines  1 0 0  10 40 2 $x';;
-    'minimal')      cmd='./tsm-sprott-minimal-static $dp _ $order $timestep $datalines  .02 0 0  $x';;
+    'thomas')       cmd='./tsm-thomas-static $dp _ $order $timestep $datalines  1 0 0  $p';;
+    'lorenz')       cmd='./tsm-lorenz-static $dp _ $order $timestep $datalines  -15.8 -17.48 35.64  10 $p 8 3';;
+    'rossler')      cmd='./tsm-rossler-static $dp _ $order $timestep $datalines  .0 -6.78 .02  .1 .1 $p';;
+    'sprott')       cmd='./tsm-sprott-minimal-static $dp _ $order $timestep $datalines  .02 0 0  $p';;
+    'halvorsen')    cmd='./tsm-halvorsen-static $dp _ $order $timestep $datalines  1 0 0  $p 4';;
+    'rucklidge')    cmd='./tsm-rucklidge-static $dp _ $order $timestep $datalines  1 0 0  $p 2';;
+    'rf')           cmd='./tsm-rf-static $dp _ $order $timestep $datalines  .05 -.05 .3  $p .1';;
+    'bouali')       cmd='./tsm-bouali-static $dp _ $order $timestep $datalines  1 1 0  3 2.2 1 $p';;
+    'gt')           cmd='./tsm-genesio-tesi-static $dp _ $order $timestep $datalines  .1 .1 .1  $p 1.1 1';;
+    'wb')           cmd='./tsm-wimol-banlue-static $dp _ $order $timestep $datalines  1 0 0  $p';;
+    'yw')           cmd='./tsm-yu-wang-static $dp _ $order $timestep $datalines  1 0 0  10 40 2 $p';;
+    'minimal')      cmd='./tsm-sprott-minimal-static $dp _ $order $timestep $datalines  .02 0 0  $p';;
     *)              echo "chaos-scan-cns: Unknown ODE"; exit;;
 esac
 
-x=$start
-while [ 1 -eq $(echo "$x < $end" | bc) ]
+p=$start
+while [ 1 -eq $(echo "$p < $end" | bc) ]
 do
-    echo -n "$x "
+    echo -n "$p "
     eval ./cns both noplot "$cmd" >/dev/null 2>/dev/null
     ./chaos-distance-cns $((datalines + 1)) $lower $upper
-    x=$(echo "$x + $step;" | bc)
+    p=$(echo "$p + $step;" | bc)
 done
 
