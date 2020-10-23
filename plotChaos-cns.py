@@ -22,6 +22,7 @@ def main():
     ax1.set_ylabel('Separation', color='b')
     ax2 = ax1.twinx()
     ax2.set_ylabel('Result', color='r')
+    ax2.set_ylim(-0.1, 1.1)
     n = 0
     x, y, z = [], [], []
     while line:
