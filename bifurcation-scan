@@ -23,11 +23,14 @@ tmpfile=/tmp/bifurcation
 GREP='/bin/grep --ignore-case'
 
 p=${start}
+count=0
 while [ $(echo "$p < $end" | /usr/bin/bc) -eq 1 ]
 do
+    p=$(echo "$start + $count * $step;" | /usr/bin/bc)
     eval ${command} 2>/dev/null >${tmpfile}
     if [ $(/usr/bin/wc --lines <$tmpfile) -eq $((datalines + 1)) ]
     then
+        echo "Processing parameter value: $p" >&2
         ${GREP} 'x' ${tmpfile} |\
         while read x y z remainder
         do
@@ -47,5 +50,5 @@ do
     else
         echo "UNBOUNDED for parameter value: $p" >&2
     fi
-    p=$(echo "$p + $step;" | /usr/bin/bc)
+    count=$((count + 1))
 done
