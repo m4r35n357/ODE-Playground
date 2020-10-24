@@ -16,8 +16,7 @@ fileF='/tmp/dataF'
 fileG='/tmp/dataG'
 
 delta=$1
-plot=$2
-shift 2
+shift
 
 perturb () {
     start="$1 $2 $3 $4 $5 $6"
@@ -57,8 +56,7 @@ perturb () {
 perturb $*
 wait
 
-if [ "x$plot" = "xplot" ]
-then
-    ./plot3d.py $fileA $fileB $fileC $fileD $fileE $fileF $fileG &
-fi
+/usr/bin/gnuplot --persist -e "set terminal wxt size 1200,900; splot '$fileG' with lines"
+
+./plot3d.py $fileA $fileB $fileC $fileD $fileE $fileF $fileG
 
