@@ -19,9 +19,10 @@ static real separation (real x1, real y1, real z1, real x2, real y2, real z2) {
 
 static long read_data (long expected, FILE *fileA, FILE *fileB, real *xA, real *yA, real *zA, real *xB, real *yB, real *zB) {
     real tA, tB;
+    char bl[2];
     long count = 0;
-    while(fscanf(fileA, "%Le %Le %Le %Le\n", &xA[count], &yA[count], &zA[count], &tA) != EOF &&
-          fscanf(fileB, "%Le %Le %Le %Le\n", &xB[count], &yB[count], &zB[count], &tB) != EOF) {
+    while(fscanf(fileA, "%Le %Le %Le %Le %s %s %s\n", &xA[count], &yA[count], &zA[count], &tA, bl, bl, bl) != EOF &&
+          fscanf(fileB, "%Le %Le %Le %Le %s %s %s\n", &xB[count], &yB[count], &zB[count], &tB, bl, bl, bl) != EOF) {
         count += 1;
         if (count > expected) {
             fprintf(stderr, "chaos-distance-cns: Too much data!\n");
@@ -34,8 +35,6 @@ static long read_data (long expected, FILE *fileA, FILE *fileB, real *xA, real *
 int main(int argc, char **argv) {
     assert(argc == 4);
     long expected = strtol(argv[1], NULL, 10);
-    real lower = strtold(argv[2], NULL);
-    real upper = strtold(argv[3], NULL);
     real *xA = get_array(expected), *yA = get_array(expected), *zA = get_array(expected);
     real *xB = get_array(expected), *yB = get_array(expected), *zB = get_array(expected);
     FILE *fileA = fopen("/tmp/dataA", "r");
@@ -44,6 +43,8 @@ int main(int argc, char **argv) {
         fprintf(stderr, "chaos-distance-cns: Cannot read data files!\n");
         exit(1);
     }
+    real lower = strtold(argv[2], NULL);
+    real upper = strtold(argv[3], NULL);
     long count = read_data(expected, fileA, fileB, xA, yA, zA, xB, yB, zB);
     if (count == expected) {
         real s1 = -1.0, max_s1 = -1.0;

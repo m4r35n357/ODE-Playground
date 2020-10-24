@@ -1,0 +1,51 @@
+#!/bin/sh
+#
+#  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#
+#  Example: time -p ./bifurcation-scan .01 .35 ./tsm-thomas-static 15 _ 10 0.1 10000 1 0 0 '$p'
+#           gnuplot -p -e "set terminal wxt size 1350,800; set grid back; plot '<cat' with dots" </tmp/bifurcationX
+#
+
+echo "Bifurcation Diagrams: [$*]" >&2
+
+start=$1
+end=$2
+step=$(echo "scale=15; ($end - $start) / 1501;" | bc)
+shift 2
+datalines=$6
+command=$*
+
+tmpfile=/tmp/bifurcation
+>${tmpfile}X
+>${tmpfile}Y
+>${tmpfile}Z
+
+GREP='/bin/grep --ignore-case'
+
+p=${start}
+while [ $(echo "$p < $end" | bc) -eq 1 ]
+do
+    eval ${command} 2>/dev/null >${tmpfile}
+    if [ $(/usr/bin/wc --lines <$tmpfile) -eq $((datalines + 1)) ]
+    then
+        ${GREP} 'x' ${tmpfile} |\
+        while read x y z remainder
+        do
+            echo "$p $x" >>${tmpfile}X
+        done &
+        ${GREP} 'y' ${tmpfile} |\
+        while read x y z remainder
+        do
+            echo "$p $y" >>${tmpfile}Y
+        done &
+        ${GREP} 'z' ${tmpfile} |\
+        while read x y z remainder
+        do
+            echo "$p $z" >>${tmpfile}Z
+        done &
+        wait
+    else
+        echo "UNBOUNDED for parameter value: $p" >&2
+    fi
+    p=$(echo "$p + $step;" | bc)
+done

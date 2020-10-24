@@ -9,9 +9,9 @@
 #include <math.h>
 #include "taylor-ode.h"
 
-void t_output (long dp, real x, real y, real z, real t) {
+void t_output (long dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label) {
     char fs[128];
-    sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le\n", dp, dp, dp);
+    sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le %s %s %s\n", dp, dp, dp, x_label, y_label, z_label);
     printf(fs, x, y, z, t);
 }
 
@@ -128,15 +128,17 @@ void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get
     series x = t_jet_c(n + 1, x0), y = t_jet_c(n + 1, y0), z = t_jet_c(n + 1, z0);
     void *p = get_p(argc, argv, n);
     void *i = get_i == NULL ? NULL : get_i(n);
-    t_output(dp, x[0], y[0], z[0], 0.0);
+    t_output(dp, x[0], y[0], z[0], 0.0, "_", "_", "_");
     for (long step = 1; step < steps + 1; step++) {
+        real xdot = x[1], ydot = y[1], zdot = z[1];
         for (int k = 0; k < n; k++) {
             components c = ode(x, y, z, p, i, k);
             x[k + 1] = c.x / (k + 1);
             y[k + 1] = c.y / (k + 1);
             z[k + 1] = c.z / (k + 1);
         }
-        t_output(dp, t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h), h * step);
+        t_output(dp, t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h), h * step,
+                 x[1] * xdot < 0.0 ? "X" : "_", y[1] * ydot < 0.0 ? "Y" : "_", z[1] * zdot < 0.0 ? "Z" : "_");
     }
 }
 
@@ -145,7 +147,7 @@ void rk4 (int argc, char **argv, rk4_model ode, rk4_params get_p) {
     real x, y, z, h;
     t_control(argv, &dp, &interval, &h, &steps, &x, &y, &z);
     void *p = get_p(argc, argv);
-    t_output(dp, x, y, z, 0.0);
+    t_output(dp, x, y, z, 0.0, "_", "_", "_");
     for (long step = 1; step < steps + 1; step++) {
         components k1 = ode(x, y, z, p);
         components k2 = ode(x + 0.5 * k1.x * h, y + 0.5 * k1.y * h, z + 0.5 * k1.z * h, p);
@@ -158,6 +160,6 @@ void rk4 (int argc, char **argv, rk4_model ode, rk4_params get_p) {
             fprintf(stderr, "OVERFLOW !\n");
             exit(2);
         }
-        if (step % interval == 0) t_output(dp, x, y, z, h * step);
+        if (step % interval == 0) t_output(dp, x, y, z, h * step, "_", "_", "_");
     }
 }
