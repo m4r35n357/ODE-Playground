@@ -7,7 +7,7 @@ fileB='/tmp/dataB'  # results of the requested simulation
 
 quarterstep () {  # step / 4
     start="$1 $2 $3 $4"
-    step=$(echo "scale=6; $5 / 4;" | bc)
+    step=$(echo "scale=6; $5 / 4;" | /usr/bin/bc)
     steps=$(($6 * 4))
     shift 6
     end="$*"
@@ -17,7 +17,7 @@ quarterstep () {  # step / 4
 
 eightthstep () {  # step / 8
     start="$1 $2 $3 $4"
-    step=$(echo "scale=6; $5 / 8;" | bc)
+    step=$(echo "scale=6; $5 / 8;" | /usr/bin/bc)
     steps=$(($6 * 8))
     shift 6
     end="$*"
@@ -37,7 +37,7 @@ orderplus2 () {  # order + 2
 orderstep () {  # order + 1, step / 2
     start="$1 $2 $3"
     order=$(($4 + 1))
-    step=$(echo "scale=6; $5 / 2;" | bc)
+    step=$(echo "scale=6; $5 / 2;" | /usr/bin/bc)
     steps=$(($6 * 2))
     shift 6
     end="$*"
@@ -48,7 +48,7 @@ orderstep () {  # order + 1, step / 2
 orderstep2 () {  # order + 2, step / 4
     start="$1 $2 $3"
     order=$(($4 + 2))
-    step=$(echo "scale=6; $5 / 4;" | bc)
+    step=$(echo "scale=6; $5 / 4;" | /usr/bin/bc)
     steps=$(($6 * 4))
     shift 6
     end="$*"

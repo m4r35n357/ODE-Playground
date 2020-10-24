@@ -10,7 +10,7 @@ echo "Bifurcation Diagrams: [$*]" >&2
 
 start=$1
 end=$2
-step=$(echo "scale=15; ($end - $start) / 1501;" | bc)
+step=$(echo "scale=15; ($end - $start) / 1501;" | /usr/bin/bc)
 shift 2
 datalines=$6
 command=$*
@@ -23,7 +23,7 @@ tmpfile=/tmp/bifurcation
 GREP='/bin/grep --ignore-case'
 
 p=${start}
-while [ $(echo "$p < $end" | bc) -eq 1 ]
+while [ $(echo "$p < $end" | /usr/bin/bc) -eq 1 ]
 do
     eval ${command} 2>/dev/null >${tmpfile}
     if [ $(/usr/bin/wc --lines <$tmpfile) -eq $((datalines + 1)) ]
@@ -47,5 +47,5 @@ do
     else
         echo "UNBOUNDED for parameter value: $p" >&2
     fi
-    p=$(echo "$p + $step;" | bc)
+    p=$(echo "$p + $step;" | /usr/bin/bc)
 done

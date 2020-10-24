@@ -11,7 +11,7 @@ ode=$1
 shift
 start=$1
 end=$2
-step=$(echo "scale=15; ($end - $start) / 201;" | bc)
+step=$(echo "scale=15; ($end - $start) / 201;" | /usr/bin/bc)
 timestep=${3:-.1}
 datalines=${4:-10000}
 lower=${5:-0.000000001}
@@ -36,11 +36,11 @@ case $ode in
 esac
 
 p=$start
-while [ 1 -eq $(echo "$p < $end" | bc) ]
+while [ 1 -eq $(echo "$p < $end" | /usr/bin/bc) ]
 do
     echo -n "$p "
     eval ./cns both noplot "$cmd" >/dev/null 2>/dev/null
     ./chaos-distance-cns $((datalines + 1)) $lower $upper
-    p=$(echo "$p + $step;" | bc)
+    p=$(echo "$p + $step;" | /usr/bin/bc)
 done
 
