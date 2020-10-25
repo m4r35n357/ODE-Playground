@@ -141,25 +141,3 @@ void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get
                  x[1] * xdot < 0.0 ? "X" : "_", y[1] * ydot < 0.0 ? "Y" : "_", z[1] * zdot < 0.0 ? "Z" : "_");
     }
 }
-
-void rk4 (int argc, char **argv, rk4_model ode, rk4_params get_p) {
-    long interval, steps, dp;
-    real x, y, z, h;
-    t_control(argv, &dp, &interval, &h, &steps, &x, &y, &z);
-    void *p = get_p(argc, argv);
-    t_output(dp, x, y, z, 0.0, "_", "_", "_");
-    for (long step = 1; step < steps + 1; step++) {
-        components k1 = ode(x, y, z, p);
-        components k2 = ode(x + 0.5 * k1.x * h, y + 0.5 * k1.y * h, z + 0.5 * k1.z * h, p);
-        components k3 = ode(x + 0.5 * k2.x * h, y + 0.5 * k2.y * h, z + 0.5 * k2.z * h, p);
-        components k4 = ode(x + k3.x * h, y + k3.y * h, z + k3.z * h, p);
-        x += h * (k1.x + 2.0 * (k2.x + k3.x) + k4.x) / 6.0;
-        y += h * (k1.y + 2.0 * (k2.y + k3.y) + k4.y) / 6.0;
-        z += h * (k1.z + 2.0 * (k2.z + k3.z) + k4.z) / 6.0;
-        if (isnan(x) || isinf(x) || isnan(y) || isinf(y) || isnan(z) || isinf(z)) {
-            fprintf(stderr, "OVERFLOW !\n");
-            exit(2);
-        }
-        if (step % interval == 0) t_output(dp, x, y, z, h * step, "_", "_", "_");
-    }
-}
