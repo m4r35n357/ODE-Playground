@@ -27,14 +27,13 @@ build () {
 
 for model in \
 tsm-bouali \
-tsm-kom \
 tsm-genesio-tesi \
 tsm-halvorsen \
+tsm-kom \
 tsm-lorenz \
 tsm-rossler \
 tsm-rucklidge \
 tsm-rf \
-tsm-sj \
 tsm-sprott-minimal \
 tsm-sprott-thomas \
 tsm-thomas \
