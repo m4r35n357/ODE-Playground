@@ -16,12 +16,12 @@ void t_output (long dp, real x, real y, real z, real t, char *x_label, char *y_l
 }
 
 void t_control (char **argv, long *dp, long *n, real *h, long *nsteps, real *x, real *y, real *z) {
-    *dp = strtol(argv[1], NULL, BASE);
-    *n = strtol(argv[3], NULL, BASE);
+    *dp = strtol(argv[1], NULL, 10);
+    *n = strtol(argv[3], NULL, 10);
     assert(*n > 0);
     *h = strtold(argv[4], NULL);
     assert(*h > 0.0);
-    *nsteps = strtol(argv[5], NULL, BASE);
+    *nsteps = strtol(argv[5], NULL, 10);
     assert(*nsteps > 0);
     *x = strtold(argv[6], NULL);
     *y = strtold(argv[7], NULL);
@@ -58,7 +58,7 @@ real t_horner (series jet, int n, real h) {
         sum = sum * h + jet[i];
     }
     if (isnan(sum) || isinf(sum)) {
-        fprintf(stderr, "OVERFLOW !\n");
+        fprintf(stderr, "OVERFLOW!\n");
         exit(1);
     }
     return jet[0] = sum;

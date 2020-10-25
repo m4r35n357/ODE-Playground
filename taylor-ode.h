@@ -13,11 +13,6 @@ typedef long double real;
 typedef long double *series;
 
 /*
- * The numerical base for string IO conversions
- */
-const int BASE;
-
-/*
  * Prints an index column, and x, y, z columns, into a single line
  */
 void t_output (long dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label) ;
