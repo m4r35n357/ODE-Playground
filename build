@@ -49,9 +49,6 @@ done
 echo " Building divergence"
 ${CC} -O3 $WARNINGS -o divergence divergence.c -lm -s &
 
-echo " Building chaos-distance-cns"
-${CC} -O3 $WARNINGS -o chaos-distance-cns chaos-distance-cns.c -lm -s &
-
 echo " Building libode"
 rm -f libtaylor.so taylor-ode.o
 ${CC} -O3 -DNDEBUG -c $WARNINGS -fpic taylor-ode.c && ${CC} -shared -o libode.so taylor-ode.o -s &
@@ -61,5 +58,5 @@ ${CC} -O3 -DNDEBUG -c $WARNINGS -fpic taylor-ode.c && ${CC} -shared -o libode.so
 
 echo ""
 wait
-ls -lh --color tsm-* lib*.so divergence chaos-distance-cns
+ls -lh --color tsm-* lib*.so divergence
 echo ""
