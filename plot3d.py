@@ -47,18 +47,18 @@ class Body(Sphere):
 def main():
     print(f'Multi 3D ODE Plotter: {argv}', file=stderr)
     argc = len(argv)
-    if argc == 1 or argc == 2:  # second arg is track length!
+    if argc == 1 or argc == 2:  # single plot, optional second arg is track length!
         file1 = stdin
-    if argc >= 3:  # CNS script
+    elif argc == 8:  # IC script
         file1 = open(argv[1])
         file2 = open(argv[2])
-    if argc == 8:  # IC script
         file3 = open(argv[3])
         file4 = open(argv[4])
         file5 = open(argv[5])
         file6 = open(argv[6])
         file7 = open(argv[7])
-
+    else:
+        raise Exception('>>> ERROR! Please supply 1, 2 or 7 arguments! <<<')
     # Setup display and initialise pi3d
     display = Display.create(x=0, y=0, frames_per_second=60)
     display.set_background(0, 0, 0, 1)  # r,g,b,alpha
@@ -79,8 +79,6 @@ def main():
     particle1 = Body(Shader('mat_light'), (0.0, 1.0, 1.0), 0.1, track_shader=Shader('mat_flat'))
     if argc == 2:
         particle1 = Body(Shader('mat_light'), (0.0, 1.0, 1.0), 0.05, track_shader=Shader('mat_flat'), track_max=int(argv[1]))
-    if argc == 3:
-        particle2 = Body(Shader('mat_light'), (1.0, 1.0, 0.0), 0.1, track_shader=Shader('mat_flat'))
     if argc == 8:
         particle2 = Body(Shader('mat_light'), (0.0, 1.0, 1.0), 0.1, track_shader=Shader('mat_flat'))
         particle3 = Body(Shader('mat_light'), (1.0, 1.0, 0.0), 0.1, track_shader=Shader('mat_flat'))
@@ -95,9 +93,8 @@ def main():
     omx, omy = mouse.position()
     # Display scene
     line1 = file1.readline()
-    if argc >= 3:
-        line2 = file2.readline()
     if argc == 8:
+        line2 = file2.readline()
         line3 = file3.readline()
         line4 = file4.readline()
         line5 = file5.readline()
@@ -105,9 +102,8 @@ def main():
         line7 = file7.readline()
     while display.loop_running():
         data1 = line1.split()
-        if argc >= 3:
-            data2 = line2.split()
         if argc == 8:
+            data2 = line2.split()
             data3 = line3.split()
             data4 = line4.split()
             data5 = line5.split()
@@ -124,9 +120,6 @@ def main():
         # plot the entities
         particle1.pos = [float(data1[0]), float(data1[1]), float(data1[2])]
         particle1.position_and_draw(trace_material=(0.0, 0.25, 0.0))
-        if argc == 3:
-            particle2.pos = [float(data2[0]), float(data2[1]), float(data2[2])]
-            particle2.position_and_draw(trace_material=(0.4, 0.0, 0.0))
         if argc == 8:
             particle2.pos = [float(data2[0]), float(data2[1]), float(data2[2])]
             particle2.position_and_draw(trace_material=(0.0, 0.25, 0.0))
@@ -169,9 +162,8 @@ def main():
                 break
         # prepare for next iteration
         line1 = file1.readline()
-        if argc >= 3:
-            line2 = file2.readline()
         if argc == 8:
+            line2 = file2.readline()
             line3 = file3.readline()
             line4 = file4.readline()
             line5 = file5.readline()
