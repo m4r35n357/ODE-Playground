@@ -4,8 +4,6 @@
 #
 #  Example: ./plot3d.py 5000
 #
-#  Example: ./plot3d.py /tmp/dataA /tmp/dataB
-#
 #  Example: ./plot3d.py /tmp/dataA /tmp/dataB /tmp/dataC /tmp/dataD /tmp/dataE /tmp/dataF /tmp/dataG
 #
 
