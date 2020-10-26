@@ -20,8 +20,8 @@ n=1
 while [ $n -le $max ]
 do
     set $original
-    begin="$1 $2 $3"
-    shift 4
+    begin="$1 $2"
+    shift 3
     finish="$*"
     current="$begin $n $finish"
     case $method in

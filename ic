@@ -19,11 +19,11 @@ delta=$1
 shift
 
 perturb () {
-    start="$1 $2 $3 $4 $5 $6"
-    x0=$7
-    y0=$8
-    z0=$9
-    shift 9
+    start="$1 $2 $3 $4 $5"
+    x0=$6
+    y0=$7
+    z0=$8
+    shift 8
     end="$*"
     echo 'oo' $start $x0 $y0 $z0 $end
     $start $x0 $y0 $z0 $end >$fileG &

@@ -13,7 +13,7 @@ end=$2
 skip=$3
 step=$(echo "scale=15; ($end - $start) / 1501;" | /usr/bin/bc)
 shift 3
-datalines=$6
+datalines=$5
 command=$*
 
 tmpfile='/tmp/bifurcation'
