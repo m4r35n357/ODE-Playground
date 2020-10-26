@@ -22,21 +22,20 @@ tsm-\*-\* c executable ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
-1 | x, y, z output precision in decimal places (0 for full)
-2 | Not used (used to be MPFR precision), use '_'
-3 | order of Taylor Series (plot interval in RK4 where provided)
-4 | step size
-5 | number of steps
-6,7, 8 | x0, y0, z0
-9+ | ODE parameters
+1 | x, y, z output precision in decimal places
+2 | order of Taylor Series
+3 | time step size
+4 | number of steps
+5,6,7 | initial conditions, x0, y0, z0
+8+ | ODE parameters
 
 #### Run & plot (3D plot using pi3d):
 ```
-./tsm-thomas-dbg 15 _ 10 0.1 30000 1 0 0 .185 | ./plot3d.py
+./tsm-thomas-dbg 15 10 0.1 30000 1 0 0 .185 | ./plot3d.py
 ```
 #### Run & plot (animated matplotlib graph):
 ```
-./tsm-thomas-dbg 15 _ 10 0.1 30000 1 0 0 .185 | ./plotAnimated.py -5 5
+./tsm-thomas-dbg 15 10 0.1 30000 1 0 0 .185 | ./plotAnimated.py -5 5
 ```
 #### Bifurcation Diagrams:
 
@@ -51,7 +50,7 @@ Parameter | Meaning
 
 #### Bifurcation Diagram (gnuplot graph):
 ```
-./bifurcation-scan .1 .25 10 ./tsm-thomas-static 15 _ 10 0.1 10000 1 0 0 '$p'
+./bifurcation-scan .1 .25 10 ./tsm-thomas-static 15 10 0.1 10000 1 0 0 '$p'
 gnuplot -p -e "set terminal wxt size 1350,800; set grid back; plot '<cat' with dots" </tmp/bifurcationX
 ```
 #### Clean Numerical Simulation:
@@ -64,15 +63,15 @@ CNS function | Selects a better integrator for comparison, see below
 
 CNS function Parameter | Meaning
 ----------|-----------
-step4 | The step size is reduced by a quarter (suitable for RK4) comparisons
-step8 | The step size is reduced by an eightth (suitable for RK4) comparisons
+step4 | The step size is reduced by a quarter
+step8 | The step size is reduced by an eightth
 order | The Taylor Series order is increased by two
 both | The order is increased by one, and the step size by one half
 both2 | The order is increased by two, and the step size by one quarter
 
 #### CNS plot (matplotlib diff graph):
 ```
-./cns both ./tsm-thomas-static 15 _ 10 0.1 30000 1 0 0 .185
+./cns both ./tsm-thomas-static 15 10 0.1 30000 1 0 0 .185
 ```
 #### CNS Scan
 
@@ -85,9 +84,9 @@ deviation | threshold value
 
 #### CNS duration vs. Simulation Order (gnuplot graph):
 ```
-./cns-scan both 24 1 ./tsm-thomas-static 15 _ 10 0.1 10000 1 0 0 '$p' | gnuplot -p -e "plot '<cat' with lines"
+./cns-scan both 24 1 ./tsm-thomas-static 15 10 0.1 10000 1 0 0 '$p' | gnuplot -p -e "plot '<cat' with lines"
 ```
-Sensitivity to Initial Conditions:
+#### Sensitivity to Initial Conditions:
 
 ic shell script ||
 ----------|-----------
@@ -97,7 +96,7 @@ separation | Initial separation between "original" trajectory and the additional
 
 #### Sensitivity to Initial Conditions (3D plot using pi3d):
 ```
-./ic .001 ./tsm-thomas-static 15 _ 10 0.1 30000 1 0 0 .185
+./ic .001 ./tsm-thomas-static 15 10 0.1 30000 1 0 0 .185
 ```
 
 For more background see the old README:

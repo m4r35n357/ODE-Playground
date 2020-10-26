@@ -1,8 +1,8 @@
 /*
  * Rabinovich–Fabrikant System
  *
- * Example: ./tsm-rf-dbg 15 _ 10 .01 50000 .05 -.05 .3 .28713 .1
- *          ./tsm-rf-dbg 15 _ 16 .01 50000 .05 -.05 .3 .105 .1 | ./plotPi3d.py
+ * Example: ./tsm-rf-dbg 15 10 .01 50000 .05 -.05 .3 .28713 .1
+ *          ./tsm-rf-dbg 15 16 .01 50000 .05 -.05 .3 .105 .1 | ./plotPi3d.py
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -53,7 +53,7 @@ static components ode (series x, series y, series z, void *params, void *inters,
 }
 
 int main (int argc, char **argv) {
-    assert(argc == 11);
+    assert(argc == 10);
     tsm(argc, argv, ode, get_p, get_i);
     return 0;
 }

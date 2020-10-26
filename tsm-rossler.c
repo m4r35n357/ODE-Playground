@@ -1,7 +1,7 @@
 /*
  * Rossler System
  *
- * Example: ./tsm-rossler-dbg 15 _ 10 0.01 50000 0.0 -6.78 0.02 .2 .2 5.7
+ * Example: ./tsm-rossler-dbg 15 10 0.01 50000 0.0 -6.78 0.02 .2 .2 5.7
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -34,7 +34,7 @@ static components ode (series x, series y, series z, void *params, void *inters,
 }
 
 int main (int argc, char **argv) {
-    assert(argc == 12);
+    assert(argc == 11);
     tsm(argc, argv, ode, get_p, NULL);
     return 0;
 }

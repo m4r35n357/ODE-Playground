@@ -1,7 +1,7 @@
 /*
  * Thomas' cyclically symmetric attractor
  *
- * Example: ./tsm-thomas-dbg 15 _ 10 0.1 30000 1 0 0 .19
+ * Example: ./tsm-thomas-dbg 15 10 0.1 30000 1 0 0 .19
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -46,7 +46,7 @@ static components ode (series x, series y, series z, void *params, void *inters,
 }
 
 int main (int argc, char **argv) {
-    assert(argc == 10);
+    assert(argc == 9);
     tsm(argc, argv, ode, get_p, get_i);
     return 0;
 }

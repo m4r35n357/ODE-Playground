@@ -1,7 +1,7 @@
 /*
  * Wimol-Banlue System
  *
- * Example: ./tsm-wimol-banlue-dbg 15 _ 8 0.1 10000 1 0 0 2.0
+ * Example: ./tsm-wimol-banlue-dbg 15 8 0.1 10000 1 0 0 2.0
  *
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -45,7 +45,7 @@ static components ode (series x, series y, series z, void *params, void *inters,
 }
 
 int main (int argc, char **argv) {
-    assert(argc == 10);
+    assert(argc == 9);
     tsm(argc, argv, ode, get_p, get_i);
     return 0;
 }
