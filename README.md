@@ -2,9 +2,9 @@
 
 #### Debian/Ubuntu packages:
 ```
-sudo apt install bc git build-essential musl-tools pkg-config mesa-utils-extra python3-tk python3-dev libmpc-dev libfreetype6-dev libatlas-base-dev virtualenvwrapper gnuplot-x11
+sudo apt install bc git build-essential musl-tools pkg-config mesa-utils-extra python3-tk python3-dev libfreetype6-dev libatlas-base-dev virtualenvwrapper gnuplot-x11
 ```
-#### Python Packages (for plotting)
+#### Python 3 Packages (for plotting), please use a virtual environment!
 ```
 pip install matplotlib pillow pi3d
 ```
@@ -18,7 +18,7 @@ grep Example *
 ```
 #### Run an ODE simulation:
 
-tsm-\*-\* c executable ||
+tsm-\*-\* (c executables) ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
@@ -39,7 +39,7 @@ Parameter | Meaning
 ```
 #### Bifurcation Diagrams:
 
-bifurcation-scan shell script ||
+bifurcation-scan (shell script) ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
@@ -55,7 +55,7 @@ gnuplot -p -e "set terminal wxt size 1350,800; set grid back; plot '<cat' with d
 ```
 #### Clean Numerical Simulation:
 
-cns shell script ||
+cns (shell script) ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
@@ -73,9 +73,9 @@ both2 | The order is increased by two, and the step size by one quarter
 ```
 ./cns both ./tsm-thomas-static 15 10 0.1 30000 1 0 0 .185
 ```
-#### CNS Scan
+#### CNS Duration Scanning
 
-cns-scan shell script ||
+cns-scan (shell script) ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
@@ -88,7 +88,7 @@ deviation | threshold value
 ```
 #### Sensitivity to Initial Conditions:
 
-ic shell script ||
+ic (shell script) ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
