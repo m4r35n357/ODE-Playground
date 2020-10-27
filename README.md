@@ -84,7 +84,7 @@ deviation | threshold value
 
 #### CNS duration vs. Simulation Order (gnuplot graph):
 ```
-./cns-scan both 24 1 ./tsm-thomas-static 15 10 0.1 10000 1 0 0 '$p' | gnuplot -p -e "plot '<cat' with lines"
+./cns-scan both 24 1 ./tsm-thomas-static 15 10 0.1 10000 1 0 0 .185 | gnuplot -p -e "plot '<cat' with lines"
 ```
 #### Sensitivity to Initial Conditions:
 

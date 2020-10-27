@@ -31,18 +31,18 @@ do
     if [ $(/usr/bin/wc --lines <$tmpfile) -eq $((upper - lower + 1)) ]
     then
         echo "   Processing parameter value: $p" >&2
-        /bin/grep --ignore-case 'x' ${tmpfile} | while read x y z remainder
-                                                 do
-                                                     echo "$p $x" >>${tmpfile}X
-                                                 done &
-        /bin/grep --ignore-case 'y' ${tmpfile} | while read x y z remainder
-                                                 do
-                                                     echo "$p $y" >>${tmpfile}Y
-                                                 done &
-        /bin/grep --ignore-case 'z' ${tmpfile} | while read x y z remainder
-                                                 do
-                                                     echo "$p $z" >>${tmpfile}Z
-                                                 done &
+        /bin/grep 'X' ${tmpfile} | while read x y z remainder
+                                   do
+                                       echo "$p $x" >>${tmpfile}X
+                                   done &
+        /bin/grep 'Y' ${tmpfile} | while read x y z remainder
+                                   do
+                                       echo "$p $y" >>${tmpfile}Y
+                                   done &
+        /bin/grep 'Z' ${tmpfile} | while read x y z remainder
+                                   do
+                                       echo "$p $z" >>${tmpfile}Z
+                                   done &
         wait
     else
         echo "UNBOUNDED for parameter value: $p" >&2
