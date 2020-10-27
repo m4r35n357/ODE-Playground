@@ -2,7 +2,7 @@
 #
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-#  Example: ./tsm-wimol-banlue.py 15 _ 10 0.1 10001 1 0 0 2.0
+#  Example: ./tsm-wimol-banlue.py 15 10 0.1 10001 1 0 0 2.0
 #
 
 from sys import argv
@@ -17,7 +17,7 @@ class Intermediates(namedtuple('IntermediatesType', ['tx', 'sx'])):
     pass
 
 def get_p(order):
-    return Parameters(α = t_jet(order, float(argv[9])))
+    return Parameters(α = t_jet(order, float(argv[8])))
 
 def get_i(order):
     return Intermediates(tx = t_jet(order),

@@ -2,7 +2,7 @@
 #
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-#  Example: ./tsm-thomas.py 15 _ 10 0.1 30000 1 0 0 .19
+#  Example: ./tsm-thomas.py 15 10 0.1 30000 1 0 0 .19
 #
 
 from sys import argv
@@ -16,7 +16,7 @@ class Intermediates(namedtuple('IntermediatesType', ['sx', 'cx', 'sy', 'cy', 'sz
     pass
 
 def get_p(order):
-    return Parameters(b = float(argv[9]))
+    return Parameters(b = float(argv[8]))
 
 def get_i(order):
     return Intermediates(sx = t_jet(order), cx = t_jet(order),

@@ -2,7 +2,7 @@
 #
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-#  Example: ./ic .001 noplot ./tsm-thomas.py 15 _ 10 0.1 30000 1 0 0 .185
+#  Example: ./ic .001 noplot ./tsm-thomas-static 15 10 0.1 30000 1 0 0 .185
 #
 
 echo "Sensitivity to Initial Conditions: [$*]" >&2
@@ -16,40 +16,39 @@ fileF='/tmp/dataF'
 fileG='/tmp/dataG'
 
 delta=$1
-plot=$2
-shift 2
+shift
 
 perturb () {
-    start="$1 $2 $3 $4 $5 $6"
-    x0=$7
-    y0=$8
-    z0=$9
-    shift 9
+    start="$1 $2 $3 $4 $5"
+    x0=$6
+    y0=$7
+    z0=$8
+    shift 8
     end="$*"
     echo 'oo' $start $x0 $y0 $z0 $end
     $start $x0 $y0 $z0 $end >$fileG &
     y=$y0
     z=$z0
-    x=$(echo "scale=32; $x0 + $delta;" | bc)
+    x=$(echo "scale=32; $x0 + $delta;" | /usr/bin/bc)
     echo 'x+' $start $x $y $z $end
     $start $x $y $z $end >$fileA &
-    x=$(echo "scale=32; $x0 - $delta;" | bc)
+    x=$(echo "scale=32; $x0 - $delta;" | /usr/bin/bc)
     echo 'x-' $start $x $y $z $end
     $start $x $y $z $end >$fileB &
     x=$x0
     z=$z0
-    y=$(echo "scale=32; $y0 + $delta;" | bc)
+    y=$(echo "scale=32; $y0 + $delta;" | /usr/bin/bc)
     echo 'y+' $start $x $y $z $end
     $start $x $y $z $end >$fileC &
-    y=$(echo "scale=32; $y0 - $delta;" | bc)
+    y=$(echo "scale=32; $y0 - $delta;" | /usr/bin/bc)
     echo 'y-' $start $x $y $z $end
     $start $x $y $z $end >$fileD &
     x=$x0
     y=$y0
-    z=$(echo "scale=32; $z0 + $delta;" | bc)
+    z=$(echo "scale=32; $z0 + $delta;" | /usr/bin/bc)
     echo 'z+' $start $x $y $z $end
     $start $x $y $z $end >$fileE &
-    z=$(echo "scale=32; $z0 - $delta;" | bc)
+    z=$(echo "scale=32; $z0 - $delta;" | /usr/bin/bc)
     echo 'z-' $start $x $y $z $end
     $start $x $y $z $end >$fileF &
 }
@@ -57,8 +56,7 @@ perturb () {
 perturb $*
 wait
 
-if [ "x$plot" = "xplot" ]
-then
-    ./plot3d.py $fileA $fileB $fileC $fileD $fileE $fileF $fileG &
-fi
+/usr/bin/gnuplot --persist -e "set terminal wxt size 1200,900; splot '$fileG' with lines"
+
+./plot3d.py $fileA $fileB $fileC $fileD $fileE $fileF $fileG
 

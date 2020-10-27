@@ -2,7 +2,7 @@
 #
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-#  Example: ./cns-scan both 24 1 ./tsm-lorenz-dbg 15 _ 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+#  Example: ./cns-scan both 24 1 ./tsm-lorenz.py 15 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 #           | gnuplot -p -e "plot '<cat' with lines"
 #
 
@@ -20,8 +20,8 @@ n=1
 while [ $n -le $max ]
 do
     set $original
-    begin="$1 $2 $3"
-    shift 4
+    begin="$1 $2"
+    shift 3
     finish="$*"
     current="$begin $n $finish"
     case $method in
@@ -33,7 +33,7 @@ do
               *) echo "CNS: Bad Method"; exit 1;;
     esac
     $current >$fileB & wait
-    temp=$(./divergence.py $fileA $fileB $threshold)
+    temp=$(./divergence $fileA $fileB $threshold)
     if [ x$temp = x'' ]
     then
         echo $n -1

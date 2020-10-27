@@ -13,9 +13,9 @@ class Parameters(namedtuple('ParametersType', ['σ', 'ρ', 'β'])):
     pass
 
 def get_p(order):
-    return Parameters(σ = float(argv[9]),
-                      ρ = float(argv[10]),
-                      β = float(argv[11]) / float(argv[12]))
+    return Parameters(σ = float(argv[8]),
+                      ρ = float(argv[9]),
+                      β = float(argv[10]) / float(argv[11]))
 
 def ode(x, y, z, p, i, k):
     return Components(x = p.σ * (y[k] - x[k]),

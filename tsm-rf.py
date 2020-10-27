@@ -14,8 +14,8 @@ class Intermediates(namedtuple('IntermediatesType', ['jet1', 'a', 'b', 'c'])):
     pass
 
 def get_p(order):
-    return Parameters(α = t_jet(order, float(argv[9])),
-                      γ = float(argv[10]))
+    return Parameters(α = t_jet(order, float(argv[8])),
+                      γ = float(argv[9]))
 
 def get_i(order):
     return Intermediates(jet1 = t_jet(order, 1.0),

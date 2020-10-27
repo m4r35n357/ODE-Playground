@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-#  Example: ./tsm-halvorsen.py 15 _ 10 .01 100001 1 0 0 1.4
+#  Example: ./tsm-halvorsen.py 15 10 .01 100001 1 0 0 1.4
 #
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
@@ -14,7 +14,7 @@ class Parameters(namedtuple('ParametersType', ['α'])):
 
 def get_p(order):
     α = float(argv[9])
-    return Parameters(α = float(argv[9]))
+    return Parameters(α = float(argv[8]))
 
 def ode(x, y, z, p, i, k):
     return Components(x = - p.α * x[k] - 4.0 * (y[k] + z[k]) - t_sqr(y, k),

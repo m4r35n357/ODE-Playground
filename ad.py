@@ -11,8 +11,8 @@ class Components(namedtuple('ParametersType', ['x', 'y', 'z'])):
 class Context:
     places = 3
 
-def output(x, y, z, t):
-    print(f'{x:+.{Context.places}e} {y:+.{Context.places}e} {z:+.{Context.places}e} {t:.5e}')
+def output(x, y, z, t, x_label="_", y_label="_", z_label="_"):
+    print(f'{x:+.{Context.places}e} {y:+.{Context.places}e} {z:+.{Context.places}e} {t:.5e} {x_label} {y_label} {z_label}')
 
 def t_jet(n, value=0.0):
     return [value if isinstance(value, float) else float(value)] + [0.0] * (n - 1)
@@ -56,34 +56,20 @@ def t_tan_sec2(t, s, u, k, hyp=False):
     return t[k], s[k]
 
 def tsm(ode, get_p, get_i):
-    Context.places, n, δt, n_steps = argv[1], int(argv[3]), float(argv[4]), int(argv[5])  # controls
-    x, y, z = t_jet(n + 1, float(argv[6])), t_jet(n + 1, float(argv[7])), t_jet(n + 1, float(argv[8]))  # initial values
+    Context.places, n, δt, n_steps = argv[1], int(argv[2]), float(argv[3]), int(argv[4])  # controls
+    x, y, z = t_jet(n + 1, float(argv[5])), t_jet(n + 1, float(argv[6])), t_jet(n + 1, float(argv[7]))  # initial values
     p = get_p(n)
     i = None if get_i is None else get_i(n)
     output(x[0], y[0], z[0], 0.0)
     for step in range(1, n_steps + 1):
+        xdot, ydot, zdot = x[1], y[1], z[1]
         for k in range(n):
             c = ode(x, y, z, p, i, k)
             x[k + 1] = c.x / (k + 1)
             y[k + 1] = c.y / (k + 1)
             z[k + 1] = c.z / (k + 1)
         x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
-        output(x[0], y[0], z[0], step * δt)
-
-def rk4(ode, get_p):
-    Context.places, interval, δt, n_steps = argv[1], int(argv[3]), float(argv[4]), int(argv[5])  # controls
-    x, y, z = float(argv[6]), float(argv[7]), float(argv[8])  # initial values
-    p = get_p()
-    output(x, y, z, 0.0)
-    for step in range(1, n_steps + 1):
-        k1 = ode(x, y, z, p)
-        k2 = ode(x + 0.5 * k1.x * δt, y + 0.5 * k1.y * δt, z + 0.5 * k1.z * δt, p)
-        k3 = ode(x + 0.5 * k2.x * δt, y + 0.5 * k2.y * δt, z + 0.5 * k2.z * δt, p)
-        k4 = ode(x + k3.x * δt, y + k3.y * δt, z + k3.z * δt, p)
-        x += δt * (k1.x + 2.0 * (k2.x + k3.x) + k4.x) / 6.0
-        y += δt * (k1.y + 2.0 * (k2.y + k3.y) + k4.y) / 6.0
-        z += δt * (k1.z + 2.0 * (k2.z + k3.z) + k4.z) / 6.0
-        if step % interval == 0:
-            output(x, y, z, δt * step)
+        output(x[0], y[0], z[0], step * δt,
+               "X" if x[1] * xdot < 0.0 else "_", "Y" if y[1] * ydot < 0.0 else "_", "Z" if z[1] * zdot < 0.0 else "_")
 
 print(f'{__name__} module loaded', file=stderr)
