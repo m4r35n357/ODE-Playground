@@ -2,8 +2,9 @@
 #
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-#  Example: time -p ./bifurcation-scan .01 .35 10 ./tsm-thomas-static 15 10 0.1 10000 1 0 0 '$p'
+#  Example: time -p ./bifurcation-scan .01 .35 10 ./tsm-thomas-static 6 10 0.1 10000 1 0 0 '$p'
 #  Example: gnuplot -p -e "set terminal wxt size 1350,800; set grid back; plot '<cat' with dots" </tmp/bifurcationX
+#  Example: gnuplot -p -e "set terminal png size 1350,800; set grid back; plot '<cat' with dots" </tmp/bifurcationX >X.png
 #
 
 echo "Bifurcation Diagrams: [$*]" >&2

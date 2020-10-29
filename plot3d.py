@@ -2,8 +2,8 @@
 #
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
+#  Example: ./plot3d.py
 #  Example: ./plot3d.py 5000
-#
 #  Example: ./plot3d.py /tmp/dataA /tmp/dataB /tmp/dataC /tmp/dataD /tmp/dataE /tmp/dataF /tmp/dataG
 #
 
