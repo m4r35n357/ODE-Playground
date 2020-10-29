@@ -27,7 +27,7 @@ upper=$((datalines + 1))
 p=${start}
 while [ $(echo "$p < $end" | /usr/bin/bc) -eq 1 ]
 do
-    eval ${command} 2>/dev/null | /bin/sed --quiet "$lower,$upper p" >${tmpfile}
+    eval ${command} 2>/dev/null | /bin/sed --quiet "$lower,$ p" >${tmpfile}
     if [ $(/usr/bin/wc --lines <$tmpfile) -eq $((upper - lower + 1)) ]
     then
         echo "   Processing parameter value: $p" >&2
