@@ -2,7 +2,7 @@
 #
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-#  Example: ./ic .001 noplot ./tsm-thomas-static 15 10 0.1 30000 1 0 0 .185
+#  Example: ./ic .001 ./tsm-thomas-static 15 10 0.1 30000 1 0 0 .185
 #
 
 echo "Sensitivity to Initial Conditions: [$*]" >&2
@@ -56,7 +56,7 @@ perturb () {
 perturb $*
 wait
 
-/usr/bin/gnuplot --persist -e "set terminal wxt size 1200,900; splot '$fileG' with lines"
+/usr/bin/gnuplot -e "set title \"$*\"; set terminal png size 1200,900; splot '$fileG' with lines" >ic.png
 
 ./plot3d.py $fileA $fileB $fileC $fileD $fileE $fileF $fileG
 
