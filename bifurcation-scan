@@ -43,6 +43,6 @@ do
 done
 
 common='set terminal png size 1350,800 background rgb "grey85"; set grid back;'
-/usr/bin/gnuplot -e "set title \"$*\"; $common plot \"${filtered}X\" linetype rgb 'dark-blue' with dots" >X.png
-/usr/bin/gnuplot -e "set title \"$*\"; $common plot \"${filtered}Y\" linetype rgb 'dark-green' with dots" >Y.png
-/usr/bin/gnuplot -e "set title \"$*\"; $common plot \"${filtered}Z\" linetype rgb 'dark-red' with dots" >Z.png
+/usr/bin/gnuplot -e "set title '$*'; $common plot '${filtered}X' linetype rgb 'dark-blue' with dots" >X.png
+/usr/bin/gnuplot -e "set title '$*'; $common plot '${filtered}Y' linetype rgb 'dark-green' with dots" >Y.png
+/usr/bin/gnuplot -e "set title '$*'; $common plot '${filtered}Z' linetype rgb 'dark-red' with dots" >Z.png
