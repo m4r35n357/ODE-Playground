@@ -2,8 +2,8 @@
 #
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-#  Example: time -p ./bifurcation-scan .01 .35 10 ./tsm-thomas-static 15 10 0.1 10000 1 0 0 '$p'
-#  Example: gnuplot -p -e "set terminal wxt size 1350,800; set grid back; plot '<cat' with dots" </tmp/bifurcationX
+#  Example: time -p ./bifurcation-scan .01 .35 10 ./tsm-thomas.py 6 10 0.1 10000 1 0 0 '$p'
+#  Example: gnuplot -p -e "set t wxt size 1350,800 background rgb 'grey85'; set grid back; plot '<cat' lt rgb 'grey10' w dots" </tmp/bifurcationX
 #
 
 echo "Bifurcation Diagrams: [$*]" >&2
@@ -16,10 +16,11 @@ shift 3
 datalines=$5
 command=$*
 
-tmpfile='/tmp/bifurcation'
->${tmpfile}X
->${tmpfile}Y
->${tmpfile}Z
+tmpfile='/tmp/data'
+filtered='/tmp/bifurcation'
+>${filtered}X
+>${filtered}Y
+>${filtered}Z
 
 [ $skip -eq 0 ] && lower=1 || lower=$((datalines / skip + 1))
 upper=$((datalines + 1))
@@ -27,25 +28,22 @@ upper=$((datalines + 1))
 p=${start}
 while [ $(echo "$p < $end" | /usr/bin/bc) -eq 1 ]
 do
-    eval ${command} 2>/dev/null | /bin/sed --quiet "$lower,$upper p" >${tmpfile}
+    eval ${command} 2>/dev/null | /bin/sed --quiet "$lower,$ p" >${tmpfile}
     if [ $(/usr/bin/wc --lines <$tmpfile) -eq $((upper - lower + 1)) ]
     then
         echo "   Processing parameter value: $p" >&2
-        /bin/grep 'X' ${tmpfile} | while read x y z remainder
-                                   do
-                                       echo "$p $x" >>${tmpfile}X
-                                   done &
-        /bin/grep 'Y' ${tmpfile} | while read x y z remainder
-                                   do
-                                       echo "$p $y" >>${tmpfile}Y
-                                   done &
-        /bin/grep 'Z' ${tmpfile} | while read x y z remainder
-                                   do
-                                       echo "$p $z" >>${tmpfile}Z
-                                   done &
+        /bin/grep 'X' ${tmpfile} | sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \1/" >>${filtered}X &
+        /bin/grep 'Y' ${tmpfile} | sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \2/" >>${filtered}Y &
+        /bin/grep 'Z' ${tmpfile} | sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \3/" >>${filtered}Z &
         wait
     else
         echo "UNBOUNDED for parameter value: $p" >&2
     fi
     p=$(echo "$p + $step;" | /usr/bin/bc)
 done
+
+common='set terminal png size 1350,800 background rgb "grey85"; set grid back;'
+/usr/bin/gnuplot -e "set title '$*'; $common plot '${filtered}X' linetype rgb 'dark-blue' with dots" >X.png &
+/usr/bin/gnuplot -e "set title '$*'; $common plot '${filtered}Y' linetype rgb 'dark-green' with dots" >Y.png &
+/usr/bin/gnuplot -e "set title '$*'; $common plot '${filtered}Z' linetype rgb 'dark-red' with dots" >Z.png &
+wait

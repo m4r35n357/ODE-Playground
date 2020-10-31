@@ -12,7 +12,9 @@ pip install matplotlib pillow pi3d
 ```
 grep Example *
 ```
-#### Run an ODE simulation:
+#### Run an ODE simulation (ODE call):
+
+Runs a named simulation, and prints results to stdout
 
 tsm-\*.py (Python scripts) ||
 ----------|-----------
@@ -35,27 +37,34 @@ Parameter | Meaning
 ```
 #### Bifurcation Diagrams:
 
+Runs a simulation many times for different values of a single parameter, produces turning point data for plotting bifurcation diagrams in X, Y and Z, and saves plots to PNG files.
+
+Optionally, skips initial transient by dropping first (datalines / value) results (10 is usually a good value).
+
 bifurcation-scan (shell script) ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
 1 | start of parameter range
 2 | end of parameter range
-3 | "transient skip" value (skip first 1/value lines, or 0)
-4+ | ODE parameters with variable parameter replaced by ['$p']
+3 | "transient skip" value (skip first lines / value, or 0)
+4+ | ODE call with variable parameter replaced by ['$p']
 
-#### Bifurcation Diagram (gnuplot graph):
+#### Bifurcation Diagram (manual gnuplot graph):
 ```
 ./bifurcation-scan .1 .25 10 ./tsm-thomas.py 15 10 0.1 10000 1 0 0 '$p'
 gnuplot -p -e "set terminal wxt size 1350,800; set grid back; plot '<cat' with dots" </tmp/bifurcationX
 ```
 #### Clean Numerical Simulation:
 
+Runs a simulation twice, once with a "better" integrator, and shows the differences graphically.
+
 cns (shell script) ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
-CNS function | Selects a better integrator for comparison, see below
+1 | CNS function, Selects a better integrator for comparison, see below
+2+ | ODE call
 
 CNS function Parameter | Meaning
 ----------|-----------
@@ -71,12 +80,15 @@ both2 | The order is increased by two, and the step size by one quarter
 ```
 #### CNS Duration Scanning
 
+Runs a simulation repeatedly with increasing order of integration, for each order showing the simulation time when the deviation threshold is exceeded.
+
 cns-scan (shell script) ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
-CNS function | Selects a better integrator for comparison
-deviation | threshold value
+1 | Maximum order for Taylor integrator (minimum is 1)
+2 | deviation threshold
+3+ | ODE call
 
 #### CNS duration vs. Simulation Order (gnuplot graph):
 ```
@@ -84,11 +96,14 @@ deviation | threshold value
 ```
 #### Sensitivity to Initial Conditions:
 
+Runs a simulation together with six additional ones (+- deviations in X, Y and Z axes)
+
 ic (shell script) ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
-separation | Initial separation between "original" trajectory and the additional ones
+1 | Initial separation between "original" trajectory and the extra ones
+2+ | ODE call
 
 #### Sensitivity to Initial Conditions (3D plot using pi3d):
 ```
