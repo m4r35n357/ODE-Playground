@@ -16,7 +16,7 @@ pip install matplotlib pillow pi3d
 ```
 grep Example *
 ```
-#### Run an ODE simulation:
+#### Run an ODE simulation (ODE call):
 
 tsm-\*-\* (c executables) ||
 ----------|-----------
@@ -46,7 +46,7 @@ Parameter | Meaning
 1 | start of parameter range
 2 | end of parameter range
 3 | "transient skip" value (skip first 1/value lines, or 0)
-4+ | ODE parameters with variable parameter replaced by ['$p']
+4+ | ODE call with variable parameter replaced by ['$p']
 
 #### Bifurcation Diagram (gnuplot graph):
 ```
@@ -59,7 +59,8 @@ cns (shell script) ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
-CNS function | Selects a better integrator for comparison, see below
+1 | CNS function, Selects a better integrator for comparison, see below
+2+ | ODE call
 
 CNS function Parameter | Meaning
 ----------|-----------
@@ -79,8 +80,9 @@ cns-scan (shell script) ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
-CNS function | Selects a better integrator for comparison
-deviation | threshold value
+1 | Maximum order for Taylor integrator (minimum is 1)
+2 | deviation threshold
+3+ | ODE call
 
 #### CNS duration vs. Simulation Order (gnuplot graph):
 ```
@@ -92,7 +94,8 @@ ic (shell script) ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
-separation | Initial separation between "original" trajectory and the additional ones
+1 | Initial separation between "original" trajectory and the additional ones
+2+ | ODE call
 
 #### Sensitivity to Initial Conditions (3D plot using pi3d):
 ```
