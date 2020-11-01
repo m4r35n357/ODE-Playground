@@ -138,6 +138,8 @@ void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get
             z[k + 1] = c.z / (k + 1);
         }
         t_output(dp, t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h), h * step,
-                 x[1] * xdot < 0.0 ? "X" : "_", y[1] * ydot < 0.0 ? "Y" : "_", z[1] * zdot < 0.0 ? "Z" : "_");
+                 x[1] * xdot < 0.0 ? (x[2] > 0.0 ? "x" : "X") : "_",
+                 y[1] * ydot < 0.0 ? (y[2] > 0.0 ? "y" : "Y") : "_",
+                 z[1] * zdot < 0.0 ? (z[2] > 0.0 ? "z" : "Z") : "_");
     }
 }
