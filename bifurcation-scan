@@ -19,8 +19,11 @@ command=$*
 tmpfile='/tmp/data'
 filtered='/tmp/bifurcation'
 >${filtered}X
+>${filtered}x
 >${filtered}Y
+>${filtered}y
 >${filtered}Z
+>${filtered}z
 
 [ $skip -eq 0 ] && lower=1 || lower=$((datalines / skip + 1))
 upper=$((datalines + 1))
@@ -33,8 +36,11 @@ do
     then
         echo "   Processing parameter value: $p" >&2
         /bin/grep 'X' ${tmpfile} | sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \1/" >>${filtered}X &
+        /bin/grep 'x' ${tmpfile} | sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \1/" >>${filtered}x &
         /bin/grep 'Y' ${tmpfile} | sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \2/" >>${filtered}Y &
+        /bin/grep 'y' ${tmpfile} | sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \2/" >>${filtered}y &
         /bin/grep 'Z' ${tmpfile} | sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \3/" >>${filtered}Z &
+        /bin/grep 'z' ${tmpfile} | sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \3/" >>${filtered}z &
         wait
     else
         echo "UNBOUNDED for parameter value: $p" >&2
@@ -42,8 +48,11 @@ do
     p=$(echo "$p + $step;" | /usr/bin/bc)
 done
 
-common='set terminal png size 1350,800 background rgb "grey85"; set grid back;'
-/usr/bin/gnuplot -e "set title '$*'; $common plot '${filtered}X' linetype rgb 'dark-blue' with dots" >X.png &
-/usr/bin/gnuplot -e "set title '$*'; $common plot '${filtered}Y' linetype rgb 'dark-green' with dots" >Y.png &
-/usr/bin/gnuplot -e "set title '$*'; $common plot '${filtered}Z' linetype rgb 'dark-red' with dots" >Z.png &
+base='set terminal png size 1350,800 background rgb "grey85"; set grid back;'
+/usr/bin/gnuplot -e "set title '$*'; $base plot '${filtered}X' lt rgb '#000080' w dots, '${filtered}x' lt rgb '#004040' w dots" \
+    >X.png &
+/usr/bin/gnuplot -e "set title '$*'; $base plot '${filtered}Y' lt rgb '#008000' w dots, '${filtered}y' lt rgb '#404000' w dots" \
+    >Y.png &
+/usr/bin/gnuplot -e "set title '$*'; $base plot '${filtered}Z' lt rgb '#800000' w dots, '${filtered}z' lt rgb '#400040' w dots" \
+    >Z.png &
 wait

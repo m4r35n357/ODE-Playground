@@ -70,6 +70,8 @@ def tsm(ode, get_p, get_i):
             z[k + 1] = c.z / (k + 1)
         x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
         output(x[0], y[0], z[0], step * δt,
-               "X" if x[1] * xdot < 0.0 else "_", "Y" if y[1] * ydot < 0.0 else "_", "Z" if z[1] * zdot < 0.0 else "_")
+               ("x" if x[2] > 0.0 else "X") if x[1] * xdot < 0.0 else "_",
+               ("y" if y[2] > 0.0 else "Y") if y[1] * ydot < 0.0 else "_",
+               ("z" if z[2] > 0.0 else "Z") if z[1] * zdot < 0.0 else "_")
 
 print(f'{__name__} module loaded', file=stderr)
