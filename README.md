@@ -6,6 +6,7 @@ sudo apt install bc git build-essential musl-tools pkg-config mesa-utils-extra p
 ```
 #### Python 3 Packages (for plotting), please use a virtual environment!
 ```
+mkvirtualenv -p /usr/bin/python3 taylor
 pip install matplotlib pillow pi3d
 ```
 #### Build (MUSL by default):
