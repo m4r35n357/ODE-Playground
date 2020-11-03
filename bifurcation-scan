@@ -50,9 +50,10 @@ done
 
 base='set terminal png size 1350,800 background rgb "grey85"; set grid back;'
 /usr/bin/gnuplot -e "set title '$*'; $base plot '${filtered}X' lt rgb '#000080' w dots, '${filtered}x' lt rgb '#004040' w dots" \
-    >X.png &
+    >/tmp/X.png &
 /usr/bin/gnuplot -e "set title '$*'; $base plot '${filtered}Y' lt rgb '#008000' w dots, '${filtered}y' lt rgb '#404000' w dots" \
-    >Y.png &
+    >/tmp/Y.png &
 /usr/bin/gnuplot -e "set title '$*'; $base plot '${filtered}Z' lt rgb '#800000' w dots, '${filtered}z' lt rgb '#400040' w dots" \
-    >Z.png &
+    >/tmp/Z.png &
 wait
+
