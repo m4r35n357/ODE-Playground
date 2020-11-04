@@ -3,7 +3,7 @@
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 #  Example: time -p ./bifurcation-scan .01 .35 10 ./tsm-thomas.py 6 10 0.1 10000 1 0 0 '$p'
-#  Example: gnuplot -p -e "set t wxt size 1350,800 background rgb 'grey85'; set grid back; plot '<cat' lt rgb 'grey10' w dots" </tmp/bifurcationX
+#  Example: gnuplot -p -e "set t wxt size 1350,800 background rgb 'grey85'; set grid back; plot '/tmp/bifurcationX' lt rgb 'dark-blue' w dots, '/tmp/bifurcationx' lt rgb 'dark-green' w dots"
 #
 
 echo "Bifurcation Diagrams: [$*]" >&2
@@ -50,9 +50,9 @@ done
 
 base='set terminal png size 1350,800 background rgb "grey85"; set grid back;'
 /usr/bin/gnuplot -e "set title '$*'; $base plot '${filtered}X' lt rgb '#000080' w dots, '${filtered}x' lt rgb '#004040' w dots" \
-    >X.png &
+    >/tmp/X.png &
 /usr/bin/gnuplot -e "set title '$*'; $base plot '${filtered}Y' lt rgb '#008000' w dots, '${filtered}y' lt rgb '#404000' w dots" \
-    >Y.png &
+    >/tmp/Y.png &
 /usr/bin/gnuplot -e "set title '$*'; $base plot '${filtered}Z' lt rgb '#800000' w dots, '${filtered}z' lt rgb '#400040' w dots" \
-    >Z.png &
+    >/tmp/Z.png &
 wait

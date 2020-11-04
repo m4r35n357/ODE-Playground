@@ -56,7 +56,7 @@ perturb () {
 perturb $*
 wait
 
-/usr/bin/gnuplot -e "set title \"$*\"; set terminal png size 1200,900; splot '$fileG' with lines" >ic.png
+/usr/bin/gnuplot -e "set title \"$*\"; set terminal png size 1200,900; splot '$fileG' with lines" >/tmp/ic.png
 
 ./plot3d.py $fileA $fileB $fileC $fileD $fileE $fileF $fileG
 

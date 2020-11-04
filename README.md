@@ -27,14 +27,19 @@ Parameter | Meaning
 5,6,7 | initial conditions, x0, y0, z0
 8+ | ODE parameters
 
-#### Run & plot (3D plot using pi3d):
+##### Run & plot (3D plot using pi3d):
 ```
 ./tsm-thomas.py 15 10 0.1 30000 1 0 0 .185 | ./plot3d.py
 ```
-#### Run & plot (animated matplotlib graph):
+##### Run & plot (animated matplotlib graph):
 ```
 ./tsm-thomas.py 15 10 0.1 30000 1 0 0 .185 | ./plotAnimated.py -5 5
 ```
+##### Run & plot (gnuplot graph):
+```
+./tsm-thomas.py 15 10 0.1 30000 1 0 0 .185 | gnuplot -p -e "set terminal wxt size 1200,900; splot '<cat' with lines"
+```
+
 #### Bifurcation Diagrams:
 
 Runs a simulation many times for different values of a single parameter, produces turning point data for plotting bifurcation diagrams in X, Y and Z, and saves plots to PNG files.
@@ -50,11 +55,16 @@ Parameter | Meaning
 3 | "transient skip" value (skip first lines / value, or 0)
 4+ | ODE call with variable parameter replaced by ['$p']
 
-#### Bifurcation Diagram (manual gnuplot graph):
+##### Bifurcation Diagram (manual gnuplot graph):
 ```
 ./bifurcation-scan .1 .25 10 ./tsm-thomas.py 15 10 0.1 10000 1 0 0 '$p'
-gnuplot -p -e "set terminal wxt size 1350,800; set grid back; plot '<cat' with dots" </tmp/bifurcationX
 ```
+This produces three PNG files, one for each coordinate.
+If you want to interact with actual plots (e.g. to read off parameter values for simulation), use a command like (for x):
+```
+gnuplot -p -e "set t wxt size 1350,800 background rgb 'grey85'; set grid back; plot '/tmp/bifurcationX' lt rgb 'dark-blue' w dots, '/tmp/bifurcationx' lt rgb 'dark-green' w dots"
+```
+
 #### Clean Numerical Simulation:
 
 Runs a simulation twice, once with a "better" integrator, and shows the differences graphically.
@@ -74,10 +84,11 @@ order | The Taylor Series order is increased by two
 both | The order is increased by one, and the step size by one half
 both2 | The order is increased by two, and the step size by one quarter
 
-#### CNS plot (matplotlib diff graph):
+##### CNS plot (matplotlib diff graph):
 ```
 ./cns both ./tsm-thomas.py 15 10 0.1 30000 1 0 0 .185
 ```
+
 #### CNS Duration Scanning
 
 Runs a simulation repeatedly with increasing order of integration, for each order showing the simulation time when the deviation threshold is exceeded.
@@ -90,10 +101,11 @@ Parameter | Meaning
 2 | deviation threshold
 3+ | ODE call
 
-#### CNS duration vs. Simulation Order (gnuplot graph):
+##### CNS duration vs. Simulation Order (gnuplot graph):
 ```
 ./cns-scan both 24 1 ./tsm-thomas.py 15 10 0.1 10000 1 0 0 .185 | gnuplot -p -e "plot '<cat' with lines"
 ```
+
 #### Sensitivity to Initial Conditions:
 
 Runs a simulation together with six additional ones (+- deviations in X, Y and Z axes)
@@ -105,7 +117,7 @@ Parameter | Meaning
 1 | Initial separation between "original" trajectory and the extra ones
 2+ | ODE call
 
-#### Sensitivity to Initial Conditions (3D plot using pi3d):
+##### Sensitivity to Initial Conditions (3D plot using pi3d):
 ```
 ./ic .001 ./tsm-thomas.py 15 10 0.1 30000 1 0 0 .185
 ```
