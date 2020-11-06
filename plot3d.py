@@ -143,18 +143,6 @@ def main():
         if key > -1:
             if key == 112:  # 'p'
                 screenshot('trajectory.jpg')
-            elif key == 119:  # 'w' rotate camera up
-                tilt += 2.0
-            elif key == 115:  # 's' down
-                tilt -= 2.0
-            elif key == 97:  # 'a' left
-                rot -= 2.0
-            elif key == 100:  # 'd' right
-                rot += 2.0
-            elif key == 61:  # '-' zoom in
-                cam_rad -= 0.5
-            elif key == 45:  # '=' zoom out
-                cam_rad += 0.5
             elif key == 27:  # 'ESC'
                 keys.close()
                 mouse.stop()
