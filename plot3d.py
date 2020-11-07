@@ -44,10 +44,10 @@ class Body(Sphere):
 
 def main():
     print(f'Multi 3D ODE Plotter: {argv}', file=stderr)
-    argc = len(argv)
-    if argc == 1 or argc == 2:  # single plot, optional second arg is track length!
+    argc = len(argv) - 1
+    if argc == 0 or argc == 1:  # single particle plot from stdin, optional arg is track length
         files = [stdin]
-    elif argc == 8:  # called by IC script
+    elif argc == 7:  # called by IC script, 1 + 6 particle file names
         files = []
         for arg in argv[1:]:
             files.append(open(arg))
@@ -69,13 +69,12 @@ def main():
     (lt, bm, ft, rt, tp, bk) = hud_string.get_bounds()
     hud_string.position((-display.width + rt - lt) / 2.0, (0.9 * display.height - tp + bm) / 2.0, 1.0)
     hud_string.draw()  # NB has to be drawn before quick_change() is called as buffer needs to exist
-
     particles = []
-    if argc == 1:
+    if argc == 0:
         particles.append(Body(Shader('mat_light'), (0.0, 1.0, 1.0), 0.1, track_shader=Shader('mat_flat')))
-    elif argc == 2:
+    elif argc == 1:
         particles.append(Body(Shader('mat_light'), (0.0, 1.0, 1.0), 0.05, track_shader=Shader('mat_flat'), track_max=int(argv[1])))
-    elif argc == 8:
+    elif argc == 7:
         particles.append(Body(Shader('mat_light'), (0.0, 1.0, 1.0), 0.1, track_shader=Shader('mat_flat')))
         particles.append(Body(Shader('mat_light'), (0.0, 1.0, 1.0), 0.1, track_shader=Shader('mat_flat')))
         particles.append(Body(Shader('mat_light'), (1.0, 1.0, 0.0), 0.1, track_shader=Shader('mat_flat')))
@@ -94,7 +93,8 @@ def main():
         lines.append(file.readline())
     while display.loop_running():
         data = [lines[0].split()]
-        if argc == 8:
+        if argc == 7:
+            data = []
             for line in lines:
                 data.append(line.split())
         hud_string.quick_change(
@@ -108,7 +108,7 @@ def main():
         # plot the entities
         particles[0].pos = [float(data[0][0]), float(data[0][1]), float(data[0][2])]
         particles[0].position_and_draw(trace_material=(0.0, 0.25, 0.0))
-        if argc == 8:
+        if argc == 7:
             particles[1].pos = [float(data[1][0]), float(data[1][1]), float(data[1][2])]
             particles[1].position_and_draw(trace_material=(0.0, 0.25, 0.0))
             particles[2].pos = [float(data[2][0]), float(data[2][1]), float(data[2][2])]
@@ -117,7 +117,7 @@ def main():
             particles[3].position_and_draw(trace_material=(0.4, 0.0, 0.0))
             particles[4].pos = [float(data[4][0]), float(data[4][1]), float(data[4][2])]
             particles[4].position_and_draw(trace_material=(0.0, 0.0, 0.5))
-            particles[5].pos = [float(data[5][0]), float(data[5][1]), float(data[7][2])]
+            particles[5].pos = [float(data[5][0]), float(data[5][1]), float(data[5][2])]
             particles[5].position_and_draw(trace_material=(0.0, 0.0, 0.5))
             particles[6].pos = [float(data[6][0]), float(data[6][1]), float(data[6][2])]
             particles[6].position_and_draw(trace_material=(0.25, 0.25, 0.25))
