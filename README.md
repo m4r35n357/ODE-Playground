@@ -5,6 +5,7 @@
 sudo apt install bc git build-essential musl-tools pkg-config mesa-utils-extra python3-tk python3-dev libfreetype6-dev libatlas-base-dev virtualenvwrapper gnuplot-x11
 ```
 #### Python 3 Packages (for plotting), please use a virtual environment!
+IMPORTANT - If virtualenvwrapper is newly installed, you need a fresh login to set up its environment.
 ```
 mkvirtualenv -p /usr/bin/python3 taylor
 pip install matplotlib pillow pi3d
@@ -34,15 +35,15 @@ Parameter | Meaning
 
 ##### Run & plot (3D plot using pi3d):
 ```
-./tsm-thomas-dbg 15 10 0.1 30000 1 0 0 .185 | ./plot3d.py
+./tsm-thomas-dbg 6 10 0.1 30000 1 0 0 .185 | ./plot3d.py
 ```
 ##### Run & plot (animated matplotlib graph):
 ```
-./tsm-thomas-dbg 15 10 0.1 30000 1 0 0 .185 | ./plotAnimated.py -5 5
+./tsm-thomas-dbg 6 10 0.1 30000 1 0 0 .185 | ./plotAnimated.py -5 5
 ```
 ##### Run & plot (gnuplot graph):
 ```
-./tsm-thomas-dbg 15 10 0.1 30000 1 0 0 .185 | gnuplot -p -e "set terminal wxt size 1200,900; splot '<cat' with lines"
+./tsm-thomas-dbg 6 10 0.1 30000 1 0 0 .185 | gnuplot -p -e "set terminal wxt size 1200,900; splot '<cat' with lines"
 ```
 
 #### Bifurcation Diagrams:
@@ -62,7 +63,7 @@ Parameter | Meaning
 
 ##### Bifurcation Diagram (manual gnuplot graph):
 ```
-./bifurcation-scan .1 .25 10 ./tsm-thomas-static 15 10 0.1 10000 1 0 0 '$p'
+./bifurcation-scan .1 .23 10 ./tsm-thomas-static 6 10 0.1 10000 1 0 0 '$p'
 ```
 This produces three PNG files, one for each coordinate.
 If you want to interact with actual plots (e.g. to read off parameter values for simulation), use a command like (for x):
@@ -124,7 +125,7 @@ Parameter | Meaning
 
 ##### Sensitivity to Initial Conditions (3D plot using pi3d):
 ```
-./ic .001 ./tsm-thomas-static 15 10 0.1 30000 1 0 0 .185
+./ic .001 ./tsm-thomas-static 6 10 0.1 30000 1 0 0 .185
 ```
 
 For more background see the old README:
