@@ -16,8 +16,10 @@ shift 3
 datalines=$5
 command=$*
 
-tmpfile='/tmp/data'
-filtered='/tmp/bifurcation'
+tmpdir=${TMP_TAYLOR:-/tmp/$USER}
+[ -d ${tmpdir} ] || mkdir $tmpdir
+tmpfile=${tmpdir}/data
+filtered=${tmpdir}/bifurcation
 >${filtered}X
 >${filtered}x
 >${filtered}Y
@@ -50,9 +52,9 @@ done
 
 base='set terminal png size 1350,800 background rgb "grey85"; set grid back;'
 /usr/bin/gnuplot -e "set title '$*'; $base plot '${filtered}X' lt rgb '#000080' w dots, '${filtered}x' lt rgb '#004040' w dots" \
-    >/tmp/X.png &
+    >${tmpdir}/X.png &
 /usr/bin/gnuplot -e "set title '$*'; $base plot '${filtered}Y' lt rgb '#008000' w dots, '${filtered}y' lt rgb '#404000' w dots" \
-    >/tmp/Y.png &
+    >${tmpdir}/Y.png &
 /usr/bin/gnuplot -e "set title '$*'; $base plot '${filtered}Z' lt rgb '#800000' w dots, '${filtered}z' lt rgb '#400040' w dots" \
-    >/tmp/Z.png &
+    >${tmpdir}/Z.png &
 wait

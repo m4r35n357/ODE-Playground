@@ -7,13 +7,15 @@
 
 echo "Sensitivity to Initial Conditions: [$*]" >&2
 
-fileA='/tmp/dataA'
-fileB='/tmp/dataB'
-fileC='/tmp/dataC'
-fileD='/tmp/dataD'
-fileE='/tmp/dataE'
-fileF='/tmp/dataF'
-fileG='/tmp/dataG'
+tmpdir=${TMP_TAYLOR:-/tmp/$USER}
+[ -d ${tmpdir} ] || mkdir $tmpdir
+fileA=${tmpdir}/dataA
+fileB=${tmpdir}/dataB
+fileC=${tmpdir}/dataC
+fileD=${tmpdir}/dataD
+fileE=${tmpdir}/dataE
+fileF=${tmpdir}/dataF
+fileG=${tmpdir}/dataG
 
 delta=$1
 shift
@@ -56,7 +58,7 @@ perturb () {
 perturb $*
 wait
 
-/usr/bin/gnuplot -e "set title \"$*\"; set terminal png size 1200,900; splot '$fileG' with lines" >/tmp/ic.png
+/usr/bin/gnuplot -e "set title '$*'; set terminal png size 1200,900; splot '$fileG' with lines" >${tmpdir}/ic.png
 
 ./plot3d.py $fileA $fileB $fileC $fileD $fileE $fileF $fileG
 
