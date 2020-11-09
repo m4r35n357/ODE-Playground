@@ -1,3 +1,6 @@
+## Important
+This branch is pretty much "finished", or "abandoned", current work (double precision, bifurcation diagrams, no function analysis) is happening  on the tiny branch here: https://github.com/m4r35n357/ODE-Playground/tree/tiny
+
 ## Background
 
 This project is mainly a collection of programs in c and Python for evolving systems of ODEs using the Taylor Series Method (TSM), a rather old but poorly acknowledged technique based on forward mode Automatic Differentiation (AD).
