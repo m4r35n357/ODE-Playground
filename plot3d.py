@@ -60,15 +60,13 @@ def main():
     camera = Camera()
     rot = tilt = 0
     cam_rad = 50.0
-    hud_font = Font('/usr/share/fonts/truetype/liberation2/LiberationMono-Regular.ttf', color='green',
-                    codepoints='-0123456789. txyz:=+', font_size=18)
-    hud_font.blend = True
-    hud_data = f' t {0.0:-5.1f}  x {0.0:-5.1f}  y {0.0:-5.1f}  z {0.0:-5.1f} '
-    hud_string = String(camera=Camera(is_3d=False), font=hud_font, is_3d=False, string=hud_data)
-    hud_string.set_shader(Shader('uv_flat'))
-    (lt, bm, ft, rt, tp, bk) = hud_string.get_bounds()
-    hud_string.position((-display.width + rt - lt) / 2.0, (0.9 * display.height - tp + bm) / 2.0, 1.0)
-    hud_string.draw()  # NB has to be drawn before quick_change() is called as buffer needs to exist
+    font = Font('/usr/share/fonts/truetype/liberation2/LiberationMono-Regular.ttf', color='green', codepoints='-0123456789. txyz:=+', font_size=18)
+    font.blend = True
+    hud = String(camera=Camera(is_3d=False), font=font, is_3d=False, string=f' t {0.0:-5.1f}  x {0.0:-5.1f}  y {0.0:-5.1f}  z {0.0:-5.1f}')
+    hud.set_shader(Shader('uv_flat'))
+    (lt, bm, ft, rt, tp, bk) = hud.get_bounds()
+    hud.position((-display.width + rt - lt) / 2.0, (0.9 * display.height - tp + bm) / 2.0, 1.0)
+    hud.draw()  # NB has to be drawn before quick_change() is called as buffer needs to exist
     particles = []
     if argc == 0:
         particles.append(Body(Shader('mat_light'), (0.0, 1.0, 1.0), 0.1, track_shader=Shader('mat_flat')))
@@ -88,38 +86,40 @@ def main():
     mouse.start()
     omx, omy = mouse.position()
     # Display scene
-    lines = []
-    for file in files:
-        lines.append(file.readline())
     while display.loop_running():
-        data = [lines[0].split()]
+        # prepare for next iteration
+        lines = []
+        for file in files:
+            lines.append(file.readline())
+        if not lines[0]:
+            display.stop()
+        data = [[float(item) for item in lines[0].split()[:4]]]
         if argc == 7:
             data = []
             for line in lines:
-                data.append(line.split())
-        hud_string.quick_change(
-            f' t {float(data[0][3]):-5.1f}  x {float(data[0][0]):-5.1f}  y {float(data[0][1]):-5.1f}  z {float(data[0][2]):-5.1f} ')
-        hud_string.draw()
+                data.append([float(item) for item in line.split()[:4]])
+        hud.quick_change(f' t{data[0][3]:-5.1f}  x{data[0][0]:-5.1f}  y{data[0][1]:-5.1f}  z{data[0][2]:-5.1f}')
+        hud.draw()
         # camera control
         camera.reset()
         camera.rotate(-tilt, rot, 0)
         r_rot, r_tilt = radians(rot), radians(tilt)
         camera.position((cam_rad * sin(r_rot) * cos(r_tilt), cam_rad * sin(r_tilt), - cam_rad * cos(r_rot) * cos(r_tilt)))
         # plot the entities
-        particles[0].pos = [float(data[0][0]), float(data[0][1]), float(data[0][2])]
+        particles[0].pos = [data[0][0], data[0][1], data[0][2]]
         particles[0].position_and_draw(trace_material=(0.0, 0.25, 0.0))
         if argc == 7:
-            particles[1].pos = [float(data[1][0]), float(data[1][1]), float(data[1][2])]
+            particles[1].pos = [data[1][0], data[1][1], data[1][2]]
             particles[1].position_and_draw(trace_material=(0.0, 0.25, 0.0))
-            particles[2].pos = [float(data[2][0]), float(data[2][1]), float(data[2][2])]
+            particles[2].pos = [data[2][0], data[2][1], data[2][2]]
             particles[2].position_and_draw(trace_material=(0.4, 0.0, 0.0))
-            particles[3].pos = [float(data[3][0]), float(data[3][1]), float(data[3][2])]
+            particles[3].pos = [data[3][0], data[3][1], data[3][2]]
             particles[3].position_and_draw(trace_material=(0.4, 0.0, 0.0))
-            particles[4].pos = [float(data[4][0]), float(data[4][1]), float(data[4][2])]
+            particles[4].pos = [data[4][0], data[4][1], data[4][2]]
             particles[4].position_and_draw(trace_material=(0.0, 0.0, 0.5))
-            particles[5].pos = [float(data[5][0]), float(data[5][1]), float(data[5][2])]
+            particles[5].pos = [data[5][0], data[5][1], data[5][2]]
             particles[5].position_and_draw(trace_material=(0.0, 0.0, 0.5))
-            particles[6].pos = [float(data[6][0]), float(data[6][1]), float(data[6][2])]
+            particles[6].pos = [data[6][0], data[6][1], data[6][2]]
             particles[6].position_and_draw(trace_material=(0.25, 0.25, 0.25))
         # process mouse input
         mx, my = mouse.position()
@@ -139,11 +139,5 @@ def main():
                 mouse.stop()
                 display.stop()
                 break
-        # prepare for next iteration
-        lines = []
-        for file in files:
-            lines.append(file.readline())
-        if not lines[0]:
-            display.stop()
 
 main()
