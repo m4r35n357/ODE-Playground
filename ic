@@ -8,7 +8,7 @@
 echo "Sensitivity to Initial Conditions: [$*]" >&2
 
 tmpdir=${TMP_TAYLOR:-/tmp/$USER}
-[ -d ${tmpdir} ] || mkdir $tmpdir
+[ -d ${tmpdir} ] || mkdir ${tmpdir}
 fileA=${tmpdir}/dataA
 fileB=${tmpdir}/dataB
 fileC=${tmpdir}/dataC
