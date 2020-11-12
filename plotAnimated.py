@@ -3,7 +3,6 @@
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 #  Example: ./tsm-lorenz-dbg 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
-#
 
 from sys import argv, stdin, stderr
 import matplotlib.pyplot as plt
@@ -44,9 +43,7 @@ if len(argv) < 2:
     raise Exception('>>> ERROR! Please supply min and max <<<')
 minimum, maximum = float(argv[1]), float(argv[2])
 fig, ax = plt.subplots()
-line_x, = ax.plot([], [], 'g', lw=1)
-line_y, = ax.plot([], [], 'y', lw=1)
-line_z, = ax.plot([], [], 'c', lw=1)
+(line_x,), (line_y,), (line_z,) = ax.plot([], [], 'g', lw=1), ax.plot([], [], 'y', lw=1), ax.plot([], [], 'c', lw=1)
 ax.grid()
 t_data, x_data, y_data, z_data = [], [], [], []
 _ = animation.FuncAnimation(fig, update, data_gen, blit=True, interval=10, repeat=False, init_func=init)
