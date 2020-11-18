@@ -3,7 +3,7 @@
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 #  Example: time -p ./bifurcation-scan .01 .35 10 ./tsm-thomas.py 6 10 0.1 10000 1 0 0 '$p'
-#  Example: gnuplot -p -e "set t wxt size 1350,800 background rgb 'grey85'; set grid back; plot '/tmp/bifurcationX' lt rgb 'dark-blue' w dots, '/tmp/bifurcationx' lt rgb 'dark-green' w dots"
+#  Example: gnuplot -p -e "set t wxt size 1350,800 background rgb 'grey85'; set grid back; plot '/tmp/$USER/bifurcationX' lt rgb 'dark-blue' w dots, '/tmp/$USER/bifurcationx' lt rgb 'dark-green' w dots"
 #
 
 echo "Bifurcation Diagrams: [$*]" >&2
@@ -36,7 +36,7 @@ do
     eval ${command} 2>/dev/null | /bin/sed --quiet "$lower,$ p" >${tmpfile}
     if [ $(/usr/bin/wc --lines <$tmpfile) -eq $((upper - lower + 1)) ]
     then
-        echo "   Processing parameter value: $p" >&2
+        echo "   Processing parameter value: $p"
         /bin/grep 'X' ${tmpfile} | sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \1/" >>${filtered}X &
         /bin/grep 'x' ${tmpfile} | sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \1/" >>${filtered}x &
         /bin/grep 'Y' ${tmpfile} | sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \2/" >>${filtered}Y &
@@ -45,7 +45,7 @@ do
         /bin/grep 'z' ${tmpfile} | sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \3/" >>${filtered}z &
         wait
     else
-        echo "UNBOUNDED for parameter value: $p" >&2
+        echo "UNBOUNDED for parameter value: $p"
     fi
     p=$(echo "$p + $step;" | /usr/bin/bc)
 done

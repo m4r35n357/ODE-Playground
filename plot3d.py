@@ -5,7 +5,6 @@
 #  Example: ./plot3d.py
 #  Example: ./plot3d.py 5000
 #  Example: ./plot3d.py /tmp/dataA /tmp/dataB /tmp/dataC /tmp/dataD /tmp/dataE /tmp/dataF /tmp/dataG
-#
 
 from sys import stderr, argv, stdin
 from math import sin, cos, radians
