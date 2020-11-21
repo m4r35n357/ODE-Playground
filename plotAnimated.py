@@ -55,9 +55,9 @@ if len(argv) < 2:
     raise Exception('>>> ERROR! Please supply min and max <<<')
 minimum, maximum = float(argv[1]), float(argv[2])
 fig, ax = plt.subplots()
-(line_x,), (line_xm,), = ax.plot([], [], 'g', linewidth=1, markersize=0), ax.plot([], [], 'g', linewidth=0, marker='.', markersize=5)
-(line_y,), (line_ym,), = ax.plot([], [], 'c', linewidth=1, markersize=0), ax.plot([], [], 'c', linewidth=0, marker='.', markersize=5)
-(line_z,), (line_zm,), = ax.plot([], [], 'y', linewidth=1, markersize=0), ax.plot([], [], 'y', linewidth=0, marker='.', markersize=5)
+(line_x,), (line_xm,), = ax.plot([], [], 'g', lw=1, ms=0), ax.plot([], [], 'g', lw=0, marker='.', ms=5)
+(line_y,), (line_ym,), = ax.plot([], [], 'y', lw=1, ms=0), ax.plot([], [], 'y', lw=0, marker='.', ms=5)
+(line_z,), (line_zm,), = ax.plot([], [], 'c', lw=1, ms=0), ax.plot([], [], 'c', lw=0, marker='.', ms=5)
 ax.grid()
 t_data, x_data, y_data, z_data, txm_data, tym_data, tzm_data, xm_data, ym_data, zm_data = [], [], [], [], [], [], [], [], [], []
 _ = animation.FuncAnimation(fig, update, data_gen, blit=True, interval=10, repeat=False, init_func=init)
