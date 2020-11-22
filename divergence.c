@@ -15,9 +15,8 @@ static int diverged (real x1, real y1, real z1, real x2, real y2, real z2, real 
 
 int main(int argc, char **argv) {
     assert(argc >= 4);
-    FILE *fileA = fopen(argv[1], "r");
-    FILE *fileB = fopen(argv[2], "r");
-    if (fileA == NULL || fileB == NULL) {
+    FILE *fileA, *fileB;
+    if ((fileA = fopen(argv[1], "r")) == NULL || (fileB = fopen(argv[2], "r")) == NULL) {
         fprintf(stderr, "divergence: Cannot read data files!\n");
         exit(1);
     }
