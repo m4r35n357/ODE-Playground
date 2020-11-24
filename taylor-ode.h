@@ -30,12 +30,12 @@ void t_params (char **argv, int count, ...);
 /*
  * Creates an initialized jet of the specified size, with no values set
  */
-series t_jet (int size);
+series t_jet (long size);
 
 /*
  * Returns a jet of the specified size, with element zero set to value and the rest zeroed (represents a constant in an ODE)
  */
-series t_jet_c (int size, real value);
+series t_jet_c (long size, real value);
 
 /*
  * Sums a Taylor series safely and efficiently.  Result is BOTH returned and stored in jet[0]

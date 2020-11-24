@@ -37,17 +37,14 @@ void t_params (char **argv, int argc, ...) {
     va_end(vars);
 }
 
-series t_jet (int n) {
+series t_jet (long n) {
     assert(n > 0);
-    return malloc(sizeof (real) * n);
+    return calloc(n, sizeof (real));
 }
 
-series t_jet_c (int n, real value) {
+series t_jet_c (long n, real value) {
     series jet = t_jet(n);
     jet[0] = value;
-    for (int i = 1; i < n; i++) {
-        jet[i] = 0.0;
-    }
     return jet;
 }
 
