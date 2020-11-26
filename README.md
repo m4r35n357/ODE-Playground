@@ -35,9 +35,14 @@ Parameter | Meaning
 ```
 ./tsm-thomas.py 6 10 0.1 30000 1 0 0 .185 | ./plotAnimated.py -5 5
 ```
-##### Run & plot (gnuplot graph):
+##### Run & plot (3D gnuplot graph):
 ```
 ./tsm-thomas.py 6 10 0.1 30000 1 0 0 .185 | gnuplot -p -e "set terminal wxt size 1200,900; splot '<cat' with lines"
+```
+##### Run & plot (2D gnuplot graph):
+```
+./tsm-thomas.py 6 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
+gnuplot -p -e "set terminal wxt size 1200,900; plot '/tmp/$USER/data' using 4:1 with lines, '/tmp/$USER/data' using 4:2 with lines, '/tmp/$USER/data' using 4:3 with lines"
 ```
 
 #### Bifurcation Diagrams:

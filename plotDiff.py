@@ -2,7 +2,7 @@
 #
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-# Example: ./plotDiff.py /tmp/dataA /tmp/dataB
+# Example: ./plotDiff.py /tmp/$USER/dataA /tmp/$USER/dataB
 
 from sys import argv, stderr
 from math import sqrt

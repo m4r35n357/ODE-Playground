@@ -3,6 +3,7 @@
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 #  Example: time -p ./bifurcation-scan .01 .35 10 ./tsm-thomas.py 6 10 0.1 10000 1 0 0 '$p'
+#  Example: display /tmp/$USER/X.png
 #  Example: gnuplot -p -e "set t wxt size 1350,800 background rgb 'grey85'; set grid back; plot '/tmp/$USER/bifurcationX' lt rgb 'dark-blue' w dots, '/tmp/$USER/bifurcationx' lt rgb 'dark-green' w dots"
 #
 
