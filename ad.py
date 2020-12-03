@@ -296,29 +296,29 @@ class Dual:
 
     def __init__(self, value, derivative):
         self.val = value
-        self.der = derivative
+        self.dot = derivative
 
     @classmethod
     def get(cls, value=0.0):
         return cls(value if isinstance(value, float) else float(value), 0.0)
 
     def __str__(self):
-        return f'{self.val:+.{Context.places}e} {self.der:+.{Context.places}e}'
+        return f'{self.val:+.{Context.places}e} {self.dot:+.{Context.places}e}'
 
     def __abs__(self):
         return - self if self.val < 0.0 else + self
 
     def __pos__(self):
-        return Dual(self.val, self.der)
+        return Dual(self.val, self.dot)
 
     def __neg__(self):
-        return Dual(- self.val, - self.der)
+        return Dual(- self.val, - self.dot)
 
     def __add__(self, o):
         if isinstance(o, Dual):
-            return Dual(self.val + o.val, self.der + o.der)
+            return Dual(self.val + o.val, self.dot + o.dot)
         elif isinstance(o, (float, int)):
-            return Dual(self.val + o, self.der)
+            return Dual(self.val + o, self.dot)
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __radd__(self, o):
@@ -332,9 +332,9 @@ class Dual:
 
     def __mul__(self, o):
         if isinstance(o, Dual):
-            return Dual(self.val * o.val, self.der * o.val + self.val * o.der)
+            return Dual(self.val * o.val, self.dot * o.val + self.val * o.dot)
         elif isinstance(o, (float, int)):
-            return Dual(self.val * o, self.der * o)
+            return Dual(self.val * o, self.dot * o)
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __rmul__(self, o):
@@ -343,25 +343,25 @@ class Dual:
     def __truediv__(self, o):
         if isinstance(o, Dual):
             assert abs(o.val) != 0.0, f"other.val = {o.val}"
-            return Dual(self.val / o.val, (self.der * o.val - self.val * o.der) / o.val**2)
+            return Dual(self.val / o.val, (self.dot * o.val - self.val * o.dot) / o.val ** 2)
         elif isinstance(o, (float, int)):
             assert abs(o) != 0.0, f"other = {o}"
-            return Dual(self.val / o, self.der / o)
+            return Dual(self.val / o, self.dot / o)
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __rtruediv__(self, o):
         assert self.val != 0.0, f"self.val = {self.val}"
-        return Dual(o / self.val, - self.der * o / self.val**2)
+        return Dual(o / self.val, - self.dot * o / self.val ** 2)
 
     def __pow__(self, o):
         if isinstance(o, int):
-            i_pow = Dual(self.val, self.der)
+            i_pow = Dual(self.val, self.dot)
             for _ in range(abs(o) - 1):
                 i_pow = i_pow * self
             return i_pow if o > 0 else (1.0 / i_pow if o < 0 else Dual(1.0, 0.0))
         elif isinstance(o, float):
             assert self.val > 0.0, f"self.val = {self.val}"  # pragma: no mutate
-            return Dual(self.val**o, self.der * o * self.val**(o - 1))
+            return Dual(self.val ** o, self.dot * o * self.val ** (o - 1))
         elif isinstance(o, Dual):
             return (self.ln * o).exp
         raise RuntimeError(f"Incompatible Type: {type(o)}")
@@ -373,66 +373,66 @@ class Dual:
     @property
     def exp(self):
         exp_val = exp(self.val)
-        return Dual(exp_val, self.der * exp_val)
+        return Dual(exp_val, self.dot * exp_val)
 
     @property
     def ln(self):
         assert self.val > 0.0, f"self.val = {self.val}"
-        return Dual(log(self.val), self.der / self.val)
+        return Dual(log(self.val), self.dot / self.val)
 
     @property
     def sin(self):
-        return Dual(sin(self.val), self.der * cos(self.val))
+        return Dual(sin(self.val), self.dot * cos(self.val))
 
     @property
     def cos(self):
-        return Dual(cos(self.val), - self.der * sin(self.val))
+        return Dual(cos(self.val), - self.dot * sin(self.val))
 
     @property
     def tan(self):
         t = tan(self.val)
-        return Dual(t, self.der * (1.0 + t**2))
+        return Dual(t, self.dot * (1.0 + t ** 2))
 
     @property
     def sinh(self):
-        return Dual(sinh(self.val), self.der * cosh(self.val))
+        return Dual(sinh(self.val), self.dot * cosh(self.val))
 
     @property
     def cosh(self):
-        return Dual(cosh(self.val), self.der * sinh(self.val))
+        return Dual(cosh(self.val), self.dot * sinh(self.val))
 
     @property
     def tanh(self):
         t = tanh(self.val)
-        return Dual(t, self.der * (1.0 - t**2))
+        return Dual(t, self.dot * (1.0 - t ** 2))
 
     @property
     def asin(self):
         assert abs(self.val) < 1.0, f"self.val = {self.val}"
-        return Dual(asin(self.val), self.der / sqrt(1.0 - self.val * self.val))
+        return Dual(asin(self.val), self.dot / sqrt(1.0 - self.val * self.val))
 
     @property
     def acos(self):
         assert abs(self.val) < 1.0, f"self.val = {self.val}"
-        return Dual(acos(self.val), - self.der / sqrt(1.0 - self.val * self.val))
+        return Dual(acos(self.val), - self.dot / sqrt(1.0 - self.val * self.val))
 
     @property
     def atan(self):
-        return Dual(atan(self.val), self.der / (1.0 + self.val * self.val))
+        return Dual(atan(self.val), self.dot / (1.0 + self.val * self.val))
 
     @property
     def asinh(self):
-        return Dual(asinh(self.val), self.der / sqrt(self.val * self.val + 1.0))
+        return Dual(asinh(self.val), self.dot / sqrt(self.val * self.val + 1.0))
 
     @property
     def acosh(self):
         assert self.val > 1.0, f"self.val = {self.val}"
-        return Dual(acosh(self.val), self.der / sqrt(self.val * self.val - 1.0))
+        return Dual(acosh(self.val), self.dot / sqrt(self.val * self.val - 1.0))
 
     @property
     def atanh(self):
         assert abs(self.val) < 1.0, f"self.val = {self.val}"
-        return Dual(atanh(self.val), self.der / (1.0 - self.val * self.val))
+        return Dual(atanh(self.val), self.dot / (1.0 - self.val * self.val))
 
     @property
     def sqr(self):
@@ -442,7 +442,7 @@ class Dual:
     def sqrt(self):
         assert self.val > 0.0, f"self.val = {self.val}"  # pragma: no mutate
         r = sqrt(self.val)
-        return Dual(r, self.der * 0.5 / r)
+        return Dual(r, self.dot * 0.5 / r)
 
     @property
     def var(self):
@@ -561,7 +561,7 @@ def newton_d(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug
     δx = i = 1
     while i <= limit and (abs(f.val) > εf or abs(δx) > εx):
         f = model(x)
-        δx = - f.val / f.der
+        δx = - f.val / f.dot
         x += δx
         i += 1
         if debug:

@@ -54,7 +54,7 @@ def _plot_d(model, x_min, x_max, steps, y_min, y_max):
     for k in range(steps):
         x = Dual.get(x_min + k * step).var
         y = model(x)
-        for d_term, p_term in zip(data, [x.val] + [y.val] + [y.der]):
+        for d_term, p_term in zip(data, [x.val] + [y.val] + [y.dot]):
             d_term.append(p_term)
     for c in reversed(range(1, 3)):
         ax1.plot(data[0], data[c], f'{colour[c - 1]}', linewidth=2 if c == 1 else 1, markersize=0, label=c-1)
