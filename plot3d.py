@@ -104,7 +104,7 @@ def main():
         camera.rotate(-tilt, rot, 0)
         r_rot, r_tilt = radians(rot), radians(tilt)
         camera.position((cam_rad * sin(r_rot) * cos(r_tilt), cam_rad * sin(r_tilt), - cam_rad * cos(r_rot) * cos(r_tilt)))
-        # plot the entities
+        # plot the particles
         particles[0].pos = [data[0][0], data[0][1], data[0][2]]
         particles[0].position_and_draw(trace_material=(0.0, 0.25, 0.0))
         if argc == 7:
@@ -120,7 +120,7 @@ def main():
             particles[5].position_and_draw(trace_material=(0.0, 0.0, 0.5))
             particles[6].pos = [data[6][0], data[6][1], data[6][2]]
             particles[6].position_and_draw(trace_material=(0.25, 0.25, 0.25))
-        # process mouse input
+        # process mouse & keyboard input
         mx, my = mouse.position()
         if mouse.button_status() == mouse.LEFT_BUTTON:
             rot += (mx - omx) * 0.2
@@ -128,7 +128,6 @@ def main():
         elif mouse.button_status() == mouse.RIGHT_BUTTON:
             cam_rad += (my - omy) * 0.2
         omx, omy = mx, my
-        # process keyboard input
         key = keys.read()
         if key > -1:
             if key == 112:  # 'p'
