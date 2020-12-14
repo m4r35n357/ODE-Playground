@@ -39,7 +39,7 @@ void t_params (char **argv, int argc, ...) {
 
 series t_jet (long n) {
     assert(n > 0);
-    return calloc(n, sizeof (real));
+    return calloc((size_t)n, sizeof (real));
 }
 
 series t_jet_c (long n, real value) {
@@ -48,10 +48,10 @@ series t_jet_c (long n, real value) {
     return jet;
 }
 
-real t_horner (series jet, int n, real h) {
+real t_horner (series jet, long n, real h) {
     assert(n > 0);
     real sum = 0.0;
-    for (int i = n; i >= 0; i--) {
+    for (long i = n; i >= 0; i--) {
         sum = sum * h + jet[i];
     }
     if (isnan(sum) || isinf(sum)) {

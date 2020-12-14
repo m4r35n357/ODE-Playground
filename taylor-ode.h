@@ -40,7 +40,7 @@ series t_jet_c (long size, real value);
 /*
  * Sums a Taylor series safely and efficiently.  Result is BOTH returned and stored in jet[0]
  */
-real t_horner (series jet, int n, real h);
+real t_horner (series jet, long n, real h);
 
 /*
  * Returns kth element of the absolute value of U, NO JET STORAGE

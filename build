@@ -7,7 +7,7 @@
 #  Example: time -p ./build clang && echo OK
 #
 
-WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra'
+WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra -Wconversion'
 
 CC='/usr/bin/musl-gcc -std=c99'
 if [ x"$1" = x'clang' ]
