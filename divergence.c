@@ -10,7 +10,7 @@
 typedef long double real;
 
 static int diverged (real x1, real y1, real z1, real x2, real y2, real z2, real threshold) {
-    return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2)) > threshold;
+    return sqrtl((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2)) > threshold;
 }
 
 int main(int argc, char **argv) {

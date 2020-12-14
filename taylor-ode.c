@@ -91,14 +91,14 @@ static real d_cauchy (series h, series u, int k, int lower, int upper, real fact
 
 real t_exp (series e, series u, int k) {
     assert(e != u);
-    return e[k] = k == 0 ? exp(u[0]) : d_cauchy(e, u, k, 0, k - 1, 1.0);
+    return e[k] = k == 0 ? expl(u[0]) : d_cauchy(e, u, k, 0, k - 1, 1.0);
 }
 
 pair t_sin_cos (series s, series c, series u, int k, geometry g) {
     assert(s != c && s != u && c != u);
     if (k == 0) return (pair) {
-        .a = s[k] = g == TRIG ? sin(u[0]) : sinh(u[0]),
-        .b = c[k] = g == TRIG ? cos(u[0]) : cosh(u[0])
+        .a = s[k] = g == TRIG ? sinl(u[0]) : sinhl(u[0]),
+        .b = c[k] = g == TRIG ? cosl(u[0]) : coshl(u[0])
     };
     return (pair) {
         .a = s[k] = d_cauchy(c, u, k, 0, k - 1, 1.0),
@@ -109,7 +109,7 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
 pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
     assert(t != s && t != u && s != u);
     if (k == 0) return (pair) {
-        .a = t[k] = g == TRIG ? tan(u[0]) : tanh(u[0]),
+        .a = t[k] = g == TRIG ? tanl(u[0]) : tanhl(u[0]),
         .b = s[k] = g == TRIG ? 1.0 + t[0] * t[0] : 1.0 - t[0] * t[0]
     };
     return (pair) {
