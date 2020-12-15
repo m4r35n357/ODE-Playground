@@ -42,7 +42,7 @@ static void *get_i (long order) {
 static components ode (series x, series y, series z, void *params, void *inters, int k) {
     parameters *p = (parameters *)params;
     intermediates *i = (intermediates *)inters;
-    i->a[k] = z[k] + t_sqr(x, k) - i->w1[k];
+    i->a[k] = z[k] + t_prod(x, x, k) - i->w1[k];
     i->b[k] = 4.0L * z[k] - i->a[k];
     i->c[k] = p->alpha[k] + t_prod(x, y, k);
     return (components) {

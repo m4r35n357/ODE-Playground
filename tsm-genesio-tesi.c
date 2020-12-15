@@ -29,7 +29,7 @@ static components ode (series x, series y, series z, void *params, void *inters,
     return (components) {
         .x = y[k],
         .y = z[k],
-        .z = t_sqr(x, k) - p->c * x[k] - p->b * y[k] - p->a * z[k]
+        .z = t_prod(x, x, k) - p->c * x[k] - p->b * y[k] - p->a * z[k]
     };
 }
 

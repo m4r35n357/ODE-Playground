@@ -48,11 +48,6 @@ real t_horner (series jet, long n, real h);
 real t_abs (series u, int k);
 
 /*
- * Returns kth element of the square of U, NO JET STORAGE
- */
-real t_sqr (series U, int k);
-
-/*
  * Returns kth element of the product of U and V, NO JET STORAGE
  */
 real t_prod (series U, series V, int k);

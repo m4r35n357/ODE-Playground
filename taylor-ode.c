@@ -38,7 +38,6 @@ void t_params (char **argv, int argc, ...) {
 }
 
 series t_jet (long n) {
-    assert(n > 0);
     return calloc((size_t)n, sizeof (real));
 }
 
@@ -49,15 +48,11 @@ series t_jet_c (long n, real value) {
 }
 
 real t_horner (series jet, long n, real h) {
-    assert(n > 0);
     real sum = 0.0L;
     for (long i = n; i >= 0; i--) {
         sum = sum * h + jet[i];
     }
-    if (isnan(sum) || isinf(sum)) {
-        fprintf(stderr, "OVERFLOW!\n");
-        exit(1);
-    }
+    if (isnan(sum) || isinf(sum)) exit(1);
     return jet[0] = sum;
 }
 
@@ -65,25 +60,17 @@ real t_abs (series u, int k) {
     return u[0] < 0.0L ? - u[k] : u[k];
 }
 
-static real cauchy (series a, series b, int k, int lower, int upper) {
-    real c = 0.0L;
-    for (int j = lower; j <= upper; j++) {
-        c += a[j] * b[k - j];
+real t_prod (series a, series b, int k) {
+    real p = 0.0L;
+    for (int j = 0; j <= k; j++) {
+        p += a[j] * b[k - j];
     }
-    return c;
+    return p;
 }
 
-real t_prod (series u, series v, int k) {
-    return cauchy(u, v, k, 0, k);
-}
-
-real t_sqr (series u, int k) {
-    return cauchy(u, u, k, 0, k);
-}
-
-static real d_cauchy (series h, series u, int k, int lower, int upper, real factor) {
+static real cauchy (series h, series u, int k, real factor) {
     real f = 0.0L;
-    for (int j = lower; j <= upper; j++) {
+    for (int j = 0; j < k; j++) {
         f += h[j] * (k - j) * u[k - j];
     }
     return factor * f / k;
@@ -91,7 +78,7 @@ static real d_cauchy (series h, series u, int k, int lower, int upper, real fact
 
 real t_exp (series e, series u, int k) {
     assert(e != u);
-    return e[k] = k == 0 ? expl(u[0]) : d_cauchy(e, u, k, 0, k - 1, 1.0L);
+    return e[k] = k == 0 ? expl(u[0]) : cauchy(e, u, k, 1.0L);
 }
 
 pair t_sin_cos (series s, series c, series u, int k, geometry g) {
@@ -101,8 +88,8 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
         .b = c[k] = g == TRIG ? cosl(u[0]) : coshl(u[0])
     };
     return (pair) {
-        .a = s[k] = d_cauchy(c, u, k, 0, k - 1, 1.0L),
-        .b = c[k] = d_cauchy(s, u, k, 0, k - 1, g == TRIG ? - 1.0L : 1.0L)
+        .a = s[k] = cauchy(c, u, k, 1.0L),
+        .b = c[k] = cauchy(s, u, k, g == TRIG ? - 1.0L : 1.0L)
     };
 }
 
@@ -113,8 +100,8 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
         .b = s[k] = g == TRIG ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]
     };
     return (pair) {
-        .a = t[k] = d_cauchy(s, u, k, 0, k - 1, 1.0L),
-        .b = s[k] = d_cauchy(t, t, k, 0, k - 1, g == TRIG ? 2.0L : - 2.0L)
+        .a = t[k] = cauchy(s, u, k, 1.0L),
+        .b = s[k] = cauchy(t, t, k, g == TRIG ? 2.0L : - 2.0L)
     };
 }
 

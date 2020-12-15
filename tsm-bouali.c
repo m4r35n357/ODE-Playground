@@ -42,7 +42,7 @@ static components ode (series x, series y, series z, void *params, void *inters,
     parameters *p = (parameters *)params;
     intermediates *i = (intermediates *)inters;
     i->wa[k] = i->w1[k] - y[k];
-    i->wb[k] = i->w1[k] - t_sqr(x, k);
+    i->wb[k] = i->w1[k] - t_prod(x, x, k);
     return (components) {
         .x = p->a * t_prod(x, i->wa, k) - p->b * z[k],
         .y = - p->c * t_prod(y, i->wb, k),
