@@ -18,7 +18,7 @@ void t_output (long dp, real x, real y, real z, real t, char *x_label, char *y_l
 void t_control (char **argv, long *dp, long *n, real *h, long *nsteps, real *x, real *y, real *z) {
     *dp = strtol(argv[1], NULL, 10);
     *n = strtol(argv[2], NULL, 10);
-    assert(*n >= 2 && *n <= 26);
+    assert(*n >= 2 && *n <= 34);
     *h = strtold(argv[3], NULL);
     assert(*h > 0.0L && *h <= 1.0L);
     *nsteps = strtol(argv[4], NULL, 10);
