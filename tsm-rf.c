@@ -35,7 +35,7 @@ static void *get_i (long order) {
     i->a = t_jet(order);
     i->b = t_jet(order);
     i->c = t_jet(order);
-    i->w1 = t_jet_c(order, 1.0);
+    i->w1 = t_jet_c(order, 1.0L);
     return i;
 }
 
@@ -43,12 +43,12 @@ static components ode (series x, series y, series z, void *params, void *inters,
     parameters *p = (parameters *)params;
     intermediates *i = (intermediates *)inters;
     i->a[k] = z[k] + t_sqr(x, k) - i->w1[k];
-    i->b[k] = 4.0 * z[k] - i->a[k];
+    i->b[k] = 4.0L * z[k] - i->a[k];
     i->c[k] = p->alpha[k] + t_prod(x, y, k);
     return (components) {
         .x = t_prod(y, i->a, k) + p->gamma * x[k],
         .y = t_prod(x, i->b, k) + p->gamma * y[k],
-        .z = - 2.0 * t_prod(z, i->c, k)
+        .z = - 2.0L * t_prod(z, i->c, k)
     };
 }
 

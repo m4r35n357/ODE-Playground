@@ -34,7 +34,7 @@ static void *get_i (long order) {
     intermediates *i = malloc(sizeof (intermediates));
     i->wa = t_jet(order);
     i->wb = t_jet(order);
-    i->w1 = t_jet_c(order, 1.0);
+    i->w1 = t_jet_c(order, 1.0L);
     return i;
 }
 
