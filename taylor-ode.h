@@ -176,7 +176,7 @@ mpfr_t *t_sqrt (series r, series U, int k);
 /*
  * Applying the chain rule for the derivative of a composed function f(u) creates another Cauchy product:
  *
- *           F' = (df/du).U' = H.U'    where H = df/du
+ *           F' = (df/du).U' = dFdU.U'
  *
  *  Using F'[k] = (k+1) F[k+1]   (THE IDENTITY from earlier)
  *
@@ -184,13 +184,13 @@ mpfr_t *t_sqrt (series r, series U, int k);
  *
  * Starting from the Cauchy product above, first rewrite it in terms of [k-1], then make the substitutions:
  *
- *        F'[k] = sum{j=0->k} H[j].U'[k-j]
+ *        F'[k] = sum{j=0->k} dFdU[j].U'[k-j]
  *
- *      F'[k-1] = sum{j=0->k-1} H[j].U'[k-1-j]
+ *      F'[k-1] = sum{j=0->k-1} dFdU[j].U'[k-1-j]
  *
- *        kF[k] = sum{j=0->k-1} H[j].(k-j)U[k-j]       if k > 0, need a mathematical function call for k == 0
+ *        kF[k] = sum{j=0->k-1} dFdU[j].(k-j)U[k-j]      if k > 0, need a mathematical function call for k == 0
  *
- *     ==> F[k] = sum{j=0->k-1} H[j].(k-j)U[k-j]/k     perhaps implemented by a static/private function d_cauchy(H, U, k, ...)
+ *     ==> F[k] = sum{j=0->k-1} dFdU[j].(k-j)U[k-j]/k    perhaps implemented by a static/private function d_cauchy(dFdU, U, k, ...)
  */
 
 /*
