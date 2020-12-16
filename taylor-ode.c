@@ -61,24 +61,24 @@ real t_abs (series u, int k) {
 }
 
 real t_prod (series a, series b, int k) {
-    real p = 0.0L;
+    real sum = 0.0L;
     for (int j = 0; j <= k; j++) {
-        p += a[j] * b[k - j];
+        sum += a[j] * b[k - j];
     }
-    return p;
+    return sum;
 }
 
-static real cauchy (series h, series u, int k, real factor) {
-    real f = 0.0L;
+static real f_k (series df_du, series u, int k, real factor) {
+    real sum = 0.0L;
     for (int j = 0; j < k; j++) {
-        f += h[j] * (k - j) * u[k - j];
+        sum += df_du[j] * (k - j) * u[k - j];
     }
-    return factor * f / k;
+    return factor * sum / k;
 }
 
 real t_exp (series e, series u, int k) {
     assert(e != u);
-    return e[k] = k == 0 ? expl(u[0]) : cauchy(e, u, k, 1.0L);
+    return e[k] = k == 0 ? expl(u[0]) : f_k(e, u, k, 1.0L);
 }
 
 pair t_sin_cos (series s, series c, series u, int k, geometry g) {
@@ -88,8 +88,8 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
         .b = c[k] = g == TRIG ? cosl(u[0]) : coshl(u[0])
     };
     return (pair) {
-        .a = s[k] = cauchy(c, u, k, 1.0L),
-        .b = c[k] = cauchy(s, u, k, g == TRIG ? - 1.0L : 1.0L)
+        .a = s[k] = f_k(c, u, k, 1.0L),
+        .b = c[k] = f_k(s, u, k, g == TRIG ? -1.0L : 1.0L)
     };
 }
 
@@ -100,8 +100,8 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
         .b = s[k] = g == TRIG ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]
     };
     return (pair) {
-        .a = t[k] = cauchy(s, u, k, 1.0L),
-        .b = s[k] = cauchy(t, t, k, g == TRIG ? 2.0L : - 2.0L)
+        .a = t[k] = f_k(s, u, k, 1.0L),
+        .b = s[k] = f_k(t, t, k, g == TRIG ? 2.0L : -2.0L)
     };
 }
 
