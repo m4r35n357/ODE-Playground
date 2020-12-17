@@ -2,7 +2,6 @@
 #
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-#  Example: ./tsm-lorenz-dbg 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 
 from sys import argv, stdin, stderr
 import matplotlib.pyplot as plt

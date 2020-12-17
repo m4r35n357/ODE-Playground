@@ -2,9 +2,6 @@
 #
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-#  Example: ./plot3d.py
-#  Example: ./plot3d.py 5000
-#  Example: ./plot3d.py /tmp/$USER/dataA /tmp/$USER/dataB /tmp/$USER/dataC /tmp/$USER/dataD /tmp/$USER/dataE /tmp/$USER/dataF /tmp/$USER/dataG
 
 from sys import stderr, argv, stdin
 from math import sin, cos, radians

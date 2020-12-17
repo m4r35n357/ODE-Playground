@@ -5,15 +5,15 @@
 sudo apt install bc git build-essential musl-tools pkg-config mesa-utils-extra python3-tk python3-dev libfreetype6-dev libatlas-base-dev virtualenvwrapper gnuplot-x11
 ```
 #### Python 3 Packages (for plotting), please use a virtual environment!
-IMPORTANT - If virtualenvwrapper is newly installed, you need a fresh login to set up its environment.
 ```
 mkvirtualenv -p /usr/bin/python3 taylor
 pip install matplotlib pillow pi3d
 ```
 #### Build (MUSL by default):
-```
-./build
-```
+`./build && echo OK` or `./build gcc && echo OK` or `./build clang && echo OK`
+
+There should be NO errors or warnings.
+
 #### Find examples for ODE parameters and other things:
 ```
 grep Example *
@@ -39,7 +39,7 @@ Parameter | Meaning
 ```
 ##### Run & plot (animated matplotlib graph):
 ```
-./tsm-thomas-dbg 6 10 0.1 30000 1 0 0 .185 | ./plotAnimated.py -5 5
+./tsm-lorenz-dbg 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 ```
 ##### Run & plot (3D gnuplot graph):
 ```
@@ -47,14 +47,13 @@ Parameter | Meaning
 ```
 ##### Run & plot (2D gnuplot graph):
 ```
-./tsm-thomas-dbg 6 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
+./tsm-lorenz-dbg 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
 gnuplot -p -e "set terminal wxt size 1200,900; plot '/tmp/$USER/data' using 4:1 with lines, '/tmp/$USER/data' using 4:2 with lines, '/tmp/$USER/data' using 4:3 with lines"
 ```
 
 #### Bifurcation Diagrams:
 
 Runs a simulation many times for different values of a single parameter, produces turning point data for plotting bifurcation diagrams in X, Y and Z, and saves plots to PNG files.
-
 Optionally, skips initial transient by dropping first (datalines / value) results (10 is usually a good value).
 
 bifurcation-scan (shell script) ||
@@ -71,9 +70,13 @@ Parameter | Meaning
 ./bifurcation-scan .1 .23 10 ./tsm-thomas-static 6 10 0.1 10000 1 0 0 '$p'
 ```
 This produces three PNG files, one for each coordinate.
+You can see them using any image viewer e.g. ImageMagick:
+```
+display /tmp/$USER/X.png
+```
 If you want to interact with actual plots (e.g. to read off parameter values for simulation), use a command like (for x):
 ```
-gnuplot -p -e "set t wxt size 1350,800 background rgb 'grey85'; set grid back; plot '/tmp/bifurcationX' lt rgb 'dark-blue' w dots, '/tmp/bifurcationx' lt rgb 'dark-green' w dots"
+gnuplot -p -e "set t wxt size 1350,800 background rgb 'grey85'; set grid back; plot '/tmp/$USER/bifurcationX' lt rgb 'dark-blue' w dots, '/tmp/$USER/bifurcationx' lt rgb 'dark-green' w dots"
 ```
 
 #### Clean Numerical Simulation:
@@ -97,7 +100,7 @@ both2 | The order is increased by two, and the step size quartered
 
 ##### CNS plot (matplotlib diff graph):
 ```
-./cns both ./tsm-thomas-static 15 10 0.1 30000 1 0 0 .185
+./cns both ./tsm-lorenz-static 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 ```
 
 #### CNS Duration Scanning
@@ -132,6 +135,6 @@ Parameter | Meaning
 ```
 ./ic .001 ./tsm-thomas-static 6 10 0.1 30000 1 0 0 .185
 ```
-
-For more background see the old README:
+For more background on the Taylor Series Method for solving ODEs, see the old README:
 https://github.com/m4r35n357/ODE-Playground/blob/master/README.md
+and the old taylor-ode.h
