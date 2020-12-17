@@ -89,11 +89,11 @@ Parameter | Meaning
 
 CNS function Parameter | Meaning
 ----------|-----------
-step4 | The step size is reduced by a quarter
-step8 | The step size is reduced by an eightth
-order | The Taylor Series order is increased by two
-both | The order is increased by one, and the step size by one half
-both2 | The order is increased by two, and the step size by one quarter
+step4 | The step size is quartered
+step8 | The step size is eightthed
+order | The order is increased by two
+both | The order is increased by one, and the step size halved
+both2 | The order is increased by two, and the step size quartered
 
 ##### CNS plot (matplotlib diff graph):
 ```
@@ -114,7 +114,7 @@ Parameter | Meaning
 
 ##### CNS duration vs. Simulation Order (gnuplot graph):
 ```
-./cns-scan both 24 1 ./tsm-thomas-static 15 10 0.1 10000 1 0 0 .185 | gnuplot -p -e "plot '<cat' with lines"
+./cns-scan both 28 1 ./tsm-lorenz-static 6 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3  | gnuplot -p -e "plot '<cat' with boxes"
 ```
 
 #### Sensitivity to Initial Conditions:

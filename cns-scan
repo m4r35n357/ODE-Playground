@@ -2,9 +2,6 @@
 #
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-#  Example: ./cns-scan both 24 1 ./tsm-lorenz-dbg 15 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3
-#           | gnuplot -p -e "plot '<cat' with lines"
-#
 
 echo "CNS duration vs Integrator Order: [$*]" >&2
 
