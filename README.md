@@ -54,17 +54,6 @@ The list includes systems due to Lorenz, Rossler, Thomas, Bouali, Rabinovitch-Fa
 Rather than estimating local error using the usual Taylor Series method, I have provided a clean numerical simulation (CNS) shell script, that makes it easy to run a "better" simulation alongside.
 The differences can be plotted for easy visual comparison.
 
-## Scanning for chaos the simple way
-
-There have been significant recent developments in automated testing for chaos, in particular from Gottwald & Melbourne http://www.maths.usyd.edu.au/u/gottwald/preprints/testforchaos_MPI.pdf and Wernecke, https://arxiv.org/abs/1605.05616.
-
-These tend to be fairly involved techniques using various transforms and statistical methods against ensembles of nearby trajectories.
-The method presented here is a very basic and literal approach based on deviations from a nominal trajectory, using a technique very similar to what is already used in the **Clean Numerical Simulation** shell script described below.
-
-It was motivated by the first part of the Wernecke paper, but does not attempt the full method, nor use any statistical tools such as ensemble average, or correlation.
-It should be seen as a solution fingerprinting tool for identifying regions of interest rather than a strict '0-1' test, which considering the fractal nature of the results (amongst other factors), is probably an unattainable objective.
-As well as distinguishing between limit cycles and chaos, the method used here also identifies unbounded and converged solutions.
-
 ## Function Analysis (Python)
 
 Partly to verify my own implementation of the Taylor recurrence rules, I have added a demonstration of using series arithmetic to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
@@ -283,68 +272,6 @@ $ gnuplot -p -e "splot '/tmp/data' with lines"
 $ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 ```
 
-## Scanning for chaos
-
-This is now a bit easier to use, with a small collection of pre-supplied ODE models.
-
-The chaos-scan shell script calls the ic shell script to generate six "nearby" trajectories over a range of a chosen ODE parameter.
-These trajectories are then processed in the following order by chaos-distance.py to generate a colour-coded text summary, with embedded data suitable for plotting.
-* Unbounded solutions are identified by length of the truncated results file
-* Converged solutions are identified by the final separation being *smaller* than the initial separation
-* Limit cycles are identified by *proportionality* of final to to initial separation over two different runs at different separations
-* Chaotic solutions are identified by final separation being *independent* of the initial separation
-* Remaining solutions are marked as UNCLASSIFIED for further investigation
-
-chaos-scan shell script ||
-----------|-----------
-Parameter | Meaning
-----------|-----------
-model | [ thomas lorenz rossler sprott halvorsen rf ]
-start | Start of parameter range
-end | End of parameter range
-step | Step in parameter value
-datalines | Number of time values to expect (for detecting unbounded solutions)
-separation | Initial separation of the six main perturbed values
-ratio | Relative separation of the six smaller deviation values
-
-```
-$ time -p ./chaos-scan thomas .010 .250 .01 10000 .000001 10 2>/dev/null | tee /tmp/results
-.010      CHAOTIC value = 4.636e+01 5.579e+01 ratio = 0.8
-.020      CHAOTIC value = 3.581e+01 3.288e+01 ratio = 1.1
-.030      CHAOTIC value = 2.978e+01 2.960e+01 ratio = 1.0
-.040      CHAOTIC value = 2.555e+01 2.613e+01 ratio = 1.0
-.050      CHAOTIC value = 2.330e+01 2.119e+01 ratio = 1.1
-.060      CHAOTIC value = 1.926e+01 1.936e+01 ratio = 1.0
-.070      CHAOTIC value = 1.809e+01 1.850e+01 ratio = 1.0
-.080      CHAOTIC value = 1.749e+01 1.778e+01 ratio = 1.0
-.090      CHAOTIC value = 1.412e+01 1.416e+01 ratio = 1.0
-.100      CHAOTIC value = 1.218e+01 1.286e+01 ratio = 0.9
-.110  LIMIT-CYCLE value = 1.942e-04 1.941e-05 ratio = 10.0
-.120  LIMIT-CYCLE value = 4.863e-05 4.863e-06 ratio = 10.0
-.130  LIMIT-CYCLE value = 1.088e-05 1.088e-06 ratio = 10.0
-.140  LIMIT-CYCLE value = 3.069e-05 3.069e-06 ratio = 10.0
-.150  LIMIT-CYCLE value = 2.293e-04 2.293e-05 ratio = 10.0
-.160  LIMIT-CYCLE value = 4.952e-05 4.952e-06 ratio = 10.0
-.170  LIMIT-CYCLE value = 1.245e-04 1.245e-05 ratio = 10.0
-.180      CHAOTIC value = 9.226e+00 9.279e+00 ratio = 1.0
-.190  LIMIT-CYCLE value = 1.935e-05 1.935e-06 ratio = 10.0
-.200 UNCLASSIFIED value = 6.425e+00 3.639e-02 ratio = 15.0
-.210  LIMIT-CYCLE value = 1.535e-04 1.535e-05 ratio = 10.0
-.220  LIMIT-CYCLE value = 1.309e-05 1.309e-06 ratio = 10.0
-.230  LIMIT-CYCLE value = 3.292e-05 3.292e-06 ratio = 10.0
-.240  LIMIT-CYCLE value = 6.118e-06 6.118e-07 ratio = 10.0
-real 131.14
-user 456.76
-sys 1.93
-```
-The data file can be plotted using plotChaos.py.
-```
-./plotChaos.py </tmp/results
-```
-Plot every tenth line, to simulate a lower resolution run without regenerating data set
-```
-cat /tmp/results | sed -n '1~10p' | ./plotChaos.py &
-```
 ## cns script - Clean Numerical Simulation
 
 This is a relatively new approach to dealing with the global error of ODE simulations, described in detail here: https://arxiv.org/abs/1109.0130.
