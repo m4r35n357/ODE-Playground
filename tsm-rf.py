@@ -5,7 +5,7 @@
 
 from sys import argv
 from collections import namedtuple
-from ad import tsm, t_prod, Components, t_jet, t_sqr
+from ad import tsm, t_prod, Components, t_jet
 
 class Parameters(namedtuple('ParametersType', ['α', 'γ'])):
     pass
@@ -24,7 +24,7 @@ def get_i(order):
                          c = t_jet(order))
 
 def ode(x, y, z, p, i, k):
-    i.a[k] = z[k] + t_sqr(x, k) - i.jet1[k]
+    i.a[k] = z[k] + t_prod(x, x, k) - i.jet1[k]
     i.b[k] = 4.0 * z[k] - i.a[k]
     i.c[k] = p.α[k] + t_prod(x, y, k)
     return Components(x = t_prod(y, i.a, k) + p.γ * x[k],

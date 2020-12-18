@@ -7,7 +7,7 @@
 
 from sys import argv
 from collections import namedtuple
-from ad import tsm, t_prod, t_sqr, Components
+from ad import tsm, t_prod, Components
 
 
 class Parameters(namedtuple('ParametersType', ['alpha', 'kappa'])):
@@ -20,6 +20,6 @@ def get_p(order):
 def ode(x, y, z, p, i, k):
     return Components(x = p.alpha * y[k] - p.kappa * x[k] - t_prod(y, z, k),
                       y = x[k],
-                      z = t_sqr(y, k) - z[k])
+                      z = t_prod(y, y, k) - z[k])
 
 tsm(ode, get_p, None)

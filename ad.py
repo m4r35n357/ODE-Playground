@@ -26,33 +26,27 @@ def t_horner(jet, h):
 def t_abs(u, k):
     return - u[k] if u[0] < 0.0 else u[k]
 
-def _cauchy(a, b, k, lower, upper):
-    return fsum(a[j] * b[k - j] for j in range(lower, upper + 1))
-
 def t_prod(u, v, k):
-    return _cauchy(u, v, k, 0, k)
+    return fsum(u[j] * v[k - j] for j in range(k + 1))
 
-def t_sqr(u, k):
-    return _cauchy(u, u, k, 0, k)
-
-def _d_cauchy(h, u, k, lower, upper, factor=1.0):
-    return factor * fsum(h[j] * (k - j) * u[k - j] for j in range(lower, upper + 1)) / k
+def f_k(df_du, u, k, factor=1.0):
+    return factor * fsum(df_du[j] * (k - j) * u[k - j] for j in range(k)) / k
 
 def t_exp(e, u, k):
-    return exp(u[0]) if k == 0 else _d_cauchy(e, u, k, 0, k - 1)
+    return exp(u[0]) if k == 0 else f_k(e, u, k)
 
 def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
         return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
-    s[k] = _d_cauchy(c, u, k, 0, k - 1)
-    c[k] = _d_cauchy(s, u, k, 0, k - 1, -1.0 if not hyp else 1.0)
+    s[k] = f_k(c, u, k)
+    c[k] = f_k(s, u, k, -1.0 if not hyp else 1.0)
     return s[k], c[k]
 
 def t_tan_sec2(t, s, u, k, hyp=False):
     if k == 0:
         return (tanh(u[0]), 1.0 - tanh(u[0])**2) if hyp else (tan(u[0]), 1.0 + tan(u[0])**2)
-    t[k] = _d_cauchy(s, u, k, 0, k - 1)
-    s[k] = _d_cauchy(t, t, k, 0, k - 1, 2.0 if not hyp else -2.0)
+    t[k] = f_k(s, u, k)
+    s[k] = f_k(t, t, k, 2.0 if not hyp else -2.0)
     return t[k], s[k]
 
 def tsm(ode, get_p, get_i):
