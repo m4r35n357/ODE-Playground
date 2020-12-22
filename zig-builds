@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+#  Example: ./zig-builds arm-linux-musleabihf ReleaseFast tsm-*.c
+#  Example: ./zig-builds aarch64-linux-musl ReleaseFast tsm-*.c
+#  Example: ./zig-builds x86_64-linux-musl ReleaseFast tsm-*.c
+
+target=$1
+opt=$2
+shift 2
+
+rm -f tsm-*-dbg tsm-*-static
+
+for source in $*
+do
+    ./zig build-exe $source taylor-ode.c -O $opt --single-threaded --strip --library c -target $target
+done
+
