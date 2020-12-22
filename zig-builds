@@ -10,8 +10,10 @@ shift 2
 
 rm -f tsm-*-dbg tsm-*-static
 
+CCOPTS="-O $opt --single-threaded --strip --library c -target $target"
+
+./zig build-exe divergence.c $CCOPTS
 for source in $*
 do
-    ./zig build-exe $source taylor-ode.c -O $opt --single-threaded --strip --library c -target $target
+    ./zig build-exe $source taylor-ode.c $CCOPTS
 done
-
