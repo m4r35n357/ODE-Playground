@@ -14,7 +14,6 @@ datalines=$5
 command=$*
 
 tmpdir=${TMP_TAYLOR:-/tmp/$USER}
-[ -d ${tmpdir} ] || mkdir ${tmpdir}
 tmpfile=${tmpdir}/data
 filtered=${tmpdir}/bifurcation
 >${filtered}X
