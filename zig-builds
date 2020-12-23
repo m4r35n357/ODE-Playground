@@ -17,3 +17,6 @@ for source in $*
 do
     ./zig build-exe $source taylor-ode.c $CCOPTS
 done
+
+ls -lh --color divergence* tsm-*
+
