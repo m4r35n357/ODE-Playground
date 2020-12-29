@@ -16,12 +16,10 @@ command=$*
 tmpdir=${TMP_TAYLOR:-/tmp/$USER}
 tmpfile=${tmpdir}/data
 filtered=${tmpdir}/bifurcation
->${filtered}X
->${filtered}x
->${filtered}Y
->${filtered}y
->${filtered}Z
->${filtered}z
+for item in X x Y y Z z
+do
+    >${filtered}${item}
+done
 
 [ $skip -eq 0 ] && lower=1 || lower=$((datalines / skip + 1))
 upper=$((datalines + 1))
