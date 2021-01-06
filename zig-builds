@@ -13,6 +13,8 @@ rm -f tsm-*-dbg tsm-*-static
 
 CCOPTS="-O $opt --single-threaded --strip --library c -target $target"
 
+echo Zig version $(./zig version)
+
 ./zig build-exe divergence.c $CCOPTS
 for source in $*
 do

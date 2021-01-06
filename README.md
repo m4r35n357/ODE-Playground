@@ -135,6 +135,7 @@ Parameter | Meaning
 ```
 ./ic .001 ./tsm-thomas-static 6 10 0.1 30000 1 0 0 .185
 ```
+##Finally
 For more background on the Taylor Series Method for solving ODEs, see the old README:
 https://github.com/m4r35n357/ODE-Playground/blob/master/README.md
-and the old taylor-ode.h
+and the taylor-ode.h in that branch.
