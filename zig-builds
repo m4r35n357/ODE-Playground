@@ -4,6 +4,7 @@ set -e
 #  Example: ./zig-builds arm-linux-musleabihf ReleaseFast tsm-*.c
 #  Example: ./zig-builds aarch64-linux-musl ReleaseFast tsm-*.c
 #  Example: ./zig-builds x86_64-linux-musl ReleaseFast tsm-*.c
+#  Example: ./zig-builds i386-linux-musl ReleaseFast tsm-*.c
 
 target=$1
 opt=$2
