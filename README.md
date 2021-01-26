@@ -53,7 +53,7 @@ gnuplot -p -e "set terminal wxt size 1200,900; plot '/tmp/$USER/data' using 4:1 
 
 #### Bifurcation Diagrams:
 
-Runs a simulation many times for different values of a single parameter, produces turning point data for plotting bifurcation diagrams in X, Y and Z, and saves plots to PNG files.
+Runs a simulation many times for different values of a single parameter, uses turning point markers for plotting bifurcation diagrams in X, Y and Z, and saves plots to PNG files.
 Optionally, skips initial transient by dropping first (datalines / value) results (10 is usually a good value).
 
 bifurcation-scan (shell script) ||
