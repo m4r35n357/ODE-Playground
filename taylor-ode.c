@@ -107,14 +107,13 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
 
 void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get_i) {
     long n, steps, dp;
-    real x0, y0, z0, h;
+    real x0, y0, z0, h, xdot = 0.0L, ydot = 0.0L, zdot = 0.0L;
     t_control(argv, &dp, &n, &h, &steps, &x0, &y0, &z0);
     series x = t_jet_c(n + 1, x0), y = t_jet_c(n + 1, y0), z = t_jet_c(n + 1, z0);
     void *p = get_p(argc, argv, n);
     void *i = get_i == NULL ? NULL : get_i(n);
     t_output(dp, x[0], y[0], z[0], 0.0L, "_", "_", "_");
     for (long step = 1; step <= steps; step++) {
-        real xdot = x[1], ydot = y[1], zdot = z[1];
         for (int k = 0; k < n; k++) {
             components c = ode(x, y, z, p, i, k);
             x[k + 1] = c.x / (k + 1);
@@ -125,5 +124,6 @@ void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get
                  x[1] * xdot < 0.0L ? (x[2] > 0.0L ? "x" : "X") : "_",
                  y[1] * ydot < 0.0L ? (y[2] > 0.0L ? "y" : "Y") : "_",
                  z[1] * zdot < 0.0L ? (z[2] > 0.0L ? "z" : "Z") : "_");
+        xdot = x[1], ydot = y[1], zdot = z[1];
     }
 }
