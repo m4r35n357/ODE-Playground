@@ -31,12 +31,12 @@ do
     if [ $(/usr/bin/wc --lines <$tmpfile) -eq $((upper - lower + 1)) ]
     then
         echo "   Processing parameter value: $p"
-        /bin/grep 'X' ${tmpfile} | sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \1/" >>${filtered}X &
-        /bin/grep 'x' ${tmpfile} | sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \1/" >>${filtered}x &
-        /bin/grep 'Y' ${tmpfile} | sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \2/" >>${filtered}Y &
-        /bin/grep 'y' ${tmpfile} | sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \2/" >>${filtered}y &
-        /bin/grep 'Z' ${tmpfile} | sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \3/" >>${filtered}Z &
-        /bin/grep 'z' ${tmpfile} | sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \3/" >>${filtered}z &
+        /bin/grep 'X' ${tmpfile} | /bin/sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \1/" >>${filtered}X &
+        /bin/grep 'x' ${tmpfile} | /bin/sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \1/" >>${filtered}x &
+        /bin/grep 'Y' ${tmpfile} | /bin/sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \2/" >>${filtered}Y &
+        /bin/grep 'y' ${tmpfile} | /bin/sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \2/" >>${filtered}y &
+        /bin/grep 'Z' ${tmpfile} | /bin/sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \3/" >>${filtered}Z &
+        /bin/grep 'z' ${tmpfile} | /bin/sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \3/" >>${filtered}z &
         wait
     else
         echo "UNBOUNDED for parameter value: $p"
