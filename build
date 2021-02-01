@@ -15,7 +15,7 @@ then
 fi
 ${CC} --version
 
-rm -f *.o *.so *.gch
+rm -f *.o *.so *.gch tsm-*[^.][^c]
 
 build () {
     name=$1
