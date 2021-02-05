@@ -36,6 +36,7 @@ tsm-rf \
 tsm-sprott-minimal \
 tsm-sprott-thomas \
 tsm-thomas \
+tsm-van-der-pol \
 tsm-wimol-banlue \
 tsm-yu-wang
 do
