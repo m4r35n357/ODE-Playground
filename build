@@ -17,7 +17,22 @@ ${CC} --version
 
 rm -f *.o *.so *.gch tsm-*[^.][^c]
 
-build () {
+build_symp () {
+    name=$1
+    ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c dual.c -lm -s
+    ${CC} -O0 $WARNINGS -g -o ${name}-dbg ${name}.c dual.c -lm
+}
+
+for model in \
+h-newton \
+h-kerr
+do
+    rm -f ${model}-*
+    echo " Building ${model}"
+    build_symp ${model} &
+done
+
+build_tsm () {
     name=$1
     ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c -lm -s
     ${CC} -O0 $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode.c -lm
@@ -42,7 +57,7 @@ tsm-yu-wang
 do
     rm -f ${model}-*
     echo " Building ${model}"
-    build ${model} &
+    build_tsm ${model} &
 done
 
 echo " Building divergence"
@@ -56,5 +71,5 @@ ${CC} -O3 -DNDEBUG -c $WARNINGS -fpic taylor-ode.c && ${CC} -shared -o libode.so
 
 echo ""
 wait
-ls -lh --color tsm-* lib*.so divergence
+ls -lh --color tsm-* h-* lib*.so divergence
 echo ""
