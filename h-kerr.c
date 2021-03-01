@@ -88,10 +88,6 @@ static void update_p (void *params, real d) {
     p->p_theta += 0.5L * d * p->THETA.dot;
 }
 
-static real error (real e) {
-    return 10.0L * log10l(fabsl(e) >= 1e-36L ? fabsl(e) : 1e-36L);
-}
-
 static void plot (long dp, void *params, real t) {
     parameters *p = (parameters *)params;
     real e4v = error(p->mu2 + four_V(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2.val, p->sth2.val, p->rho2, p->delta.val));

@@ -66,6 +66,8 @@ void t_stepper (char **argv, long *dp, long *method, real *h, long *nsteps);
  */
 void t_variables (char **argv, int count, ...);
 
+real error (real e);
+
 typedef void (*updater)(void *, real cd);
 
 typedef void (*plotter)(long dp, void *, real h);

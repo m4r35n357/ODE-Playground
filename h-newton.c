@@ -57,8 +57,7 @@ static void plot (long dp, void *params, real t) {
     char fs[128];
     sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le %%+.3Le %%+.3Le\n", dp, dp, dp);
     real h_now = h(p->m, p->gm, d_dual(p->q_r), d_dual(p->p_r), d_dual(p->p_phi)).val;
-    real log_error = 10.0L * log10l(fabsl(h_now - p->h0));
-    printf(fs, p->q_r * sinl(p->q_phi), p->q_r * cosl(p->q_phi), 0.0L, t, log_error > -360.0L ? log_error : -360.0L, h_now);
+    printf(fs, p->q_r * sinl(p->q_phi), p->q_r * cosl(p->q_phi), 0.0L, t, error(h_now - p->h0), h_now);
 }
 
 int main (int argc, char **argv) {

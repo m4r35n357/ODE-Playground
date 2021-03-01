@@ -115,6 +115,10 @@ void t_variables (char **argv, int argc, ...) {
     va_end(vars);
 }
 
+real error (real e) {
+    return 10.0L * log10l(fabsl(e) >= 1e-36L ? fabsl(e) : 1e-36L);
+}
+
 static void cromer (void *p, long size, real cd[], updater uq, updater up) {
     (void)size;
     uq(p, cd[0]);
