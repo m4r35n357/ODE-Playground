@@ -34,7 +34,7 @@ static void refresh (parameters *p) {
     dual r = d_var(p->q_r);
     dual r2 = d_sqr(r);
     p->ra2 = d_shift(r2, p->a2);
-    p->delta = d_add(p->ra2, d_scale(r,- 2.0L * p->m));
+    p->delta = d_sub(p->ra2, d_scale(r, 2.0L * p->m));
     dual P = d_shift(d_scale(p->ra2, p->E), - p->aL);
     p->R = d_sub(d_sqr(P), d_mul(p->delta, d_shift(d_scale(r2, p->mu2), p->K)));
     dual theta = d_var(p->q_theta);
@@ -91,8 +91,8 @@ static void update_p (void *params, real d) {  // dp / dt = - dH / dq = - (- 0.5
 static void plot (long dp, void *params, real t) {
     parameters *p = (parameters *)params;
     real e4v = error(p->mu2 + four_V(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2.val, p->sth2.val, p->rho2, p->delta.val));
-    real eR = error((p->p_r * p->p_r - p->R.val) / (p->rho2 * p->rho2));  // "H" = p_r^2 / 2 + (- R(q_r) / 2) = 0
-    real eTHETA = error((p->p_theta * p->p_theta - p->THETA.val) / (p->rho2 * p->rho2));  // "H" = p_th^2 / 2 + (- TH(q_th) / 2) = 0
+    real eR = error(0.5L * (p->p_r * p->p_r - p->R.val) / (p->rho2 * p->rho2));  // "H" = p_r^2 / 2 + (- R(q_r) / 2) = 0
+    real eTHETA = error(0.5L * (p->p_theta * p->p_theta - p->THETA.val) / (p->rho2 * p->rho2)); // similar to above
     real ra = sqrtl(p->ra2.val);
     char fs[128];
     sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le %%+.3Le %%+.3Le %%+.3Le\n", dp, dp, dp);
