@@ -1,3 +1,8 @@
+## NEWS: Symplectic integrators using dual numbers for automatic differentiation
+
+Two examples; Newton orbits and Kerr (black hole) orbits.
+See c files for example usage.  They can also be piped to ./plot3d.py
+
 ## Quick Start
 
 #### Debian/Ubuntu packages:

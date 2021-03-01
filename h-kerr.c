@@ -12,7 +12,7 @@
 #include <assert.h>
 #include "dual.h"
 
-static real four_V (real Ut, real Ur, real Uth, real Uph, real a, real ra2, real sth2, real rho2, real delta) {
+static real four_V (real Ut, real Ur, real Uth, real Uph, real a, real ra2, real sth2, real rho2, real delta) {  // conserved
     real U1 = a * Ut / rho2 - ra2 * Uph / rho2;
     real U4 = Ut / rho2 - a * sth2 * Uph / rho2;
     return sth2 / rho2 * U1 * U1 + Ur * Ur / delta / rho2 + Uth * Uth / rho2 - delta / rho2 * U4 * U4;
@@ -73,7 +73,7 @@ static parameters *get_p (int argc, char **argv) {
     return p;
 }
 
-static void update_q (void *params, real c) {
+static void update_q (void *params, real c) {  // dq / dt = dH / dp
     parameters *p = (parameters *)params;
     p->q_t += c * p->p_t;
     p->q_r += c * p->p_r;
@@ -82,7 +82,7 @@ static void update_q (void *params, real c) {
     refresh(p);
 }
 
-static void update_p (void *params, real d) {
+static void update_p (void *params, real d) {  // dp / dt = - dH / dq = - (- 0.5 dX / dq) where X is R or THETA
     parameters *p = (parameters *)params;
     p->p_r += 0.5L * d * p->R.dot;
     p->p_theta += 0.5L * d * p->THETA.dot;
@@ -91,8 +91,8 @@ static void update_p (void *params, real d) {
 static void plot (long dp, void *params, real t) {
     parameters *p = (parameters *)params;
     real e4v = error(p->mu2 + four_V(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2.val, p->sth2.val, p->rho2, p->delta.val));
-    real eR = error((p->p_r * p->p_r - p->R.val) / (p->rho2 * p->rho2));
-    real eTHETA = error((p->p_theta * p->p_theta - p->THETA.val) / (p->rho2 * p->rho2));
+    real eR = error((p->p_r * p->p_r - p->R.val) / (p->rho2 * p->rho2));  // "H" = p_r^2 / 2 + (- R(q_r) / 2) = 0
+    real eTHETA = error((p->p_theta * p->p_theta - p->THETA.val) / (p->rho2 * p->rho2));  // "H" = p_th^2 / 2 + (- TH(q_th) / 2) = 0
     real ra = sqrtl(p->ra2.val);
     char fs[128];
     sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le %%+.3Le %%+.3Le %%+.3Le\n", dp, dp, dp);
