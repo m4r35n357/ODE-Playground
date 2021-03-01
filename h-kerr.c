@@ -12,10 +12,10 @@
 #include <assert.h>
 #include "dual.h"
 
-static real four_V (real Ut, real Ur, real Uth, real Uph, real a, real ra2, real sth2, real rho2, real delta) {  // conserved
-    real U1 = a * Ut / rho2 - ra2 * Uph / rho2;
-    real U4 = Ut / rho2 - a * sth2 * Uph / rho2;
-    return sth2 / rho2 * U1 * U1 + Ur * Ur / delta / rho2 + Uth * Uth / rho2 - delta / rho2 * U4 * U4;
+static real four_V (real Ut, real Ur, real Uth, real Uph, real a, real ra2, real sth2, real sigma, real delta) {  // conserved
+    real U1 = a * Ut / sigma - ra2 * Uph / sigma;
+    real U4 = Ut / sigma - a * sth2 * Uph / sigma;
+    return sth2 / sigma * U1 * U1 + Ur * Ur / delta / sigma + Uth * Uth / sigma - delta / sigma * U4 * U4;
 }
 
 typedef struct {
@@ -25,7 +25,7 @@ typedef struct {
     real a, a2, L2, aL, aE, a2xmu2_E2;  // global constants
     real q_t, q_r, q_theta, q_phi;  // coordinates
     dual ra2, delta, sth, sth2;  // global variables
-    real rho2;  // global variables
+    real sigma;  // global variables
     real p_t, p_r, p_theta, p_phi;  // velocities
     dual R, THETA;  // potentials
 } parameters;
@@ -44,7 +44,7 @@ static void refresh (parameters *p) {
     p->THETA = d_shift(d_neg(d_mul(d_shift(d_scale(d_inv(p->sth2), p->L2), p->a2xmu2_E2), cth2)), p->Q);
     p->p_t = p->a * (p->L - p->aE * p->sth2.val) + p->ra2.val * P.val / p->delta.val;
     p->p_phi = (p->L / p->sth2.val - p->aE) + p->a * P.val / p->delta.val;
-    p->rho2 = r2.val + p->a2 * cth2.val;
+    p->sigma = r2.val + p->a2 * cth2.val;
 }
 
 static parameters *get_p (int argc, char **argv) {
@@ -68,8 +68,8 @@ static parameters *get_p (int argc, char **argv) {
     p->q_theta = (90.0L - theta_0) * M_PI  / 180.0L;
     p->q_phi = 0.0L;
     refresh(p);  // variables, t & phi velocities
-    p->p_r = - sqrtl(p->R.val >= 0.0L ? p->R.val : - p->R.val);
-    p->p_theta = - sqrtl(p->THETA.val >= 0.0L ? p->THETA.val : - p->THETA.val);
+    p->p_r = sqrtl(p->R.val >= 0.0L ? p->R.val : - p->R.val);
+    p->p_theta = sqrtl(p->THETA.val >= 0.0L ? p->THETA.val : - p->THETA.val);
     return p;
 }
 
@@ -90,9 +90,9 @@ static void update_p (void *params, real d) {  // dp / dt = - dH / dq = - (- 0.5
 
 static void plot (long dp, void *params, real t) {
     parameters *p = (parameters *)params;
-    real e4v = error(p->mu2 + four_V(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2.val, p->sth2.val, p->rho2, p->delta.val));
-    real eR = error(0.5L * (p->p_r * p->p_r - p->R.val) / (p->rho2 * p->rho2));  // "H" = p_r^2 / 2 + (- R(q_r) / 2) = 0
-    real eTHETA = error(0.5L * (p->p_theta * p->p_theta - p->THETA.val) / (p->rho2 * p->rho2)); // similar to above
+    real e4v = error(p->mu2 + four_V(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2.val, p->sth2.val, p->sigma, p->delta.val));
+    real eR = error(0.5L * (p->p_r * p->p_r - p->R.val) / (p->sigma * p->sigma));  // "H" = p_r^2 / 2 + (- R(q_r) / 2) = 0
+    real eTHETA = error(0.5L * (p->p_theta * p->p_theta - p->THETA.val) / (p->sigma * p->sigma)); // similar to above
     real ra = sqrtl(p->ra2.val);
     char fs[128];
     sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le %%+.3Le %%+.3Le %%+.3Le\n", dp, dp, dp);
