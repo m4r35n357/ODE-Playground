@@ -180,9 +180,7 @@ void solve (char **argv, void *p, updater uq, updater up, plotter output) {
                 h * z1 * y1,
                 0.5L * h * (z1 + z0) * y1, h * z0 * y1, 0.5L * h * (z1 + z0) * y1,
                 h * z1 * y1,
-                0.5L * h * z1 * (y1 + y0),
-                h * z1 * y0,
-                0.5L * h * (z1 + z0) * y0, h * z0 * y0
+                0.5L * h * z1 * (y1 + y0), h * z1 * y0, 0.5L * h * (z1 + z0) * y0, h * z0 * y0
             };
             break;
         case 6:  // Higher order Suzuki
@@ -197,9 +195,7 @@ void solve (char **argv, void *p, updater uq, updater up, plotter output) {
                 h * z1 * y1, h * z1 * y1, h * z1 * y1,
                 0.5L * h * (z1 + z0) * y1, h * z0 * y1, 0.5L * h * (z0 + z1) * y1,
                 h * z1 * y1, h * z1 * y1, h * z1 * y1,
-                0.5L * h * z1 * (y1 + y0),
-                h * z1 * y0, h * z1 * y0, h * z1 * y0,
-                0.5L * h * (z1 + z0) * y0, h * z0 * y0
+                0.5L * h * z1 * (y1 + y0), h * z1 * y0, h * z1 * y0, h * z1 * y0, 0.5L * h * (z1 + z0) * y0, h * z0 * y0
             };
             break;
         case 8:  // Higher order Suzuki
@@ -260,7 +256,7 @@ void solve (char **argv, void *p, updater uq, updater up, plotter output) {
             };
             break;
         default:
-            printf("Method parameter is {%ld} but should be 1, 2, 4, 6, 8 or -4\n", method);
+            printf("Method parameter is {%ld} but should be 1, 2, 4, 6, 8, -4 or -6\n", method);
             exit(1);
     }
     for (long step = 1; step <= steps; step++) {

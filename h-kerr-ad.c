@@ -1,7 +1,7 @@
 /*
  * Kerr metric geodesics using Wilkins' equations with a "pseudo-Hamiltonian" approach with automatic differentiation
  *
- * Example:  ./h-kerr-dbg  6 4 .01 10000  .8 1 1 0.94550509567490792 1.4343745095317371 7.9787599589278697 12 .001 >/tmp/$USER/data
+ * Example:  ./h-kerr-ad-dbg  6 4 .01 10000  .8 1 1 0.94550509567490792 1.4343745095317371 7.9787599589278697 12 .001 >/tmp/$USER/data
  * Example:  gnuplot -p -e "set terminal wxt size 600,450; set yrange [-240:0]; plot '/tmp/$USER/data' using 4:5 with lines, '/tmp/$USER/data' using 4:6 with lines, '/tmp/$USER/data' using 4:7 with lines"
  *
  * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
