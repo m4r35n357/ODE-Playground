@@ -168,6 +168,23 @@ void solve (char **argv, void *p, updater uq, updater up, plotter output) {
             size = 6;
             cd = (real[]){0.5L * h * z1, h * z1, h * z1, h * z1, 0.5L * h * (z1 + z0), h * z0};
             break;
+        case -6:  // Higher order Yoshida
+            i = symplectic;
+            size = 10;
+            z1 = 1.0L / (2.0L - powl(2.0L, (1.0L / 3.0L)));
+            z0 = 1.0L - 2.0L * z1;
+            y1 = 1.0L / (2.0L - powl(2.0L, (1.0L / 5.0L)));
+            y0 = 1.0L - 2.0L * y1;
+            cd = (real[]){
+                0.5L * h * z1 * y1,
+                h * z1 * y1,
+                0.5L * h * (z1 + z0) * y1, h * z0 * y1, 0.5L * h * (z1 + z0) * y1,
+                h * z1 * y1,
+                0.5L * h * z1 * (y1 + y0),
+                h * z1 * y0,
+                0.5L * h * (z1 + z0) * y0, h * z0 * y0
+            };
+            break;
         case 6:  // Higher order Suzuki
             i = symplectic;
             size = 26;
