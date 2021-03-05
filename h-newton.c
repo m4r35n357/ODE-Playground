@@ -17,13 +17,9 @@ static dual h (real m, real gm, dual q_r, dual p_r, dual p_phi) {
 }
 
 typedef struct {
-    real m;
-    real gm;
-    real q_r;
-    real p_r;
-    real q_phi;
-    real p_phi;
-    real h0;
+    real m, gm;  // central mass, m X g
+    real q_r, p_r, q_phi, p_phi;  // coordinates & momenta
+    real h0;  // stored initial value of Hamiltonian
 } parameters;
 
 static parameters *get_p (int argc, char **argv) {

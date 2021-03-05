@@ -1,7 +1,7 @@
 /*
- * Kerr metric geodesics using Wilkins' equations with a "pseudo-Hamiltonian" approach with automatic differentiation
+ * Kerr metric geodesics using Wilkins' equations with a "pseudo-Hamiltonian" approach
  *
- * Example:  ./h-kerr-ad-dbg 6 8 .01 10000 0.8 1.0 1.0 0.9455050956749083 1.434374509531738 1.0 7.978759958927879 12.0 63.0 0 >/tmp/$USER/data
+ * Example:  ./h-kerr-sd-dbg 6 8 .01 10000 0.8 1.0 1.0 0.9455050956749083 1.434374509531738 1.0 7.978759958927879 12.0 63.0 0 >/tmp/$USER/data
  *
  * Example:  gnuplot -p -e "set terminal wxt size 600,450; splot '<cat' with lines" </tmp/$USER/data
  *
@@ -15,32 +15,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "dual.h"
+#include "symplectic.h"
 
 typedef struct {
     real M, mu2;  // central mass & particle mass (squared)
     real E, L, Q, K;  // constants of motion
     real a, a2, L2, aL, aE, a2xmu2_E2;  // global constants
     real q_t, q_r, q_theta, q_phi, p_t, p_r, p_theta, p_phi;  // coordinates & velocities
-    dual ra2, delta, sth, sth2, R, THETA;  // global variables & potentials
-    real sigma;  // global variable
+    real r2, ra2, delta, sth, sth2, cth, cth2, sigma;  // global variables
+    real P, R, THETA;  // potentials
 } parameters;
 
 static void refresh (parameters *p) {
-    dual r = d_var(p->q_r);
-    dual r2 = d_sqr(r);
-    p->ra2 = d_shift(r2, p->a2);
-    p->delta = d_sub(p->ra2, d_scale(r, 2.0L * p->M));
-    dual P = d_shift(d_scale(p->ra2, p->E), - p->aL);
-    p->R = d_sub(d_sqr(P), d_mul(p->delta, d_shift(d_scale(r2, p->mu2), p->K)));
-    dual theta = d_var(p->q_theta);
-    p->sth = d_sin(theta);
-    p->sth2 = d_sqr(p->sth);
-    dual cth2 = d_shift(d_neg(p->sth2), 1.0L);
-    p->THETA = d_shift(d_neg(d_mul(d_shift(d_scale(d_inv(p->sth2), p->L2), p->a2xmu2_E2), cth2)), p->Q);
-    p->p_t = p->a * (p->L - p->aE * p->sth2.val) + p->ra2.val * P.val / p->delta.val;
-    p->p_phi = (p->L / p->sth2.val - p->aE) + p->a * P.val / p->delta.val;
-    p->sigma = r2.val + p->a2 * cth2.val;
+    p->r2 = p->q_r * p->q_r;
+    p->ra2 = p->r2 + p->a2;
+    p->delta = p->ra2 - 2.0L * p->M * p->q_r;
+    p->P = p->E * p->ra2 - p->aL;
+    p->R = p->P * p->P - p->delta * (p->r2 * p->mu2 + p->K);
+    p->sth = sinl(p->q_theta);
+    p->sth2 = p->sth * p->sth;
+    p->cth = cosl(p->q_theta);
+    p->cth2 = 1.0L - p->sth2;
+    p->THETA = p->Q - p->cth2 * (p->a2xmu2_E2 + p->L2 / p->sth2);
+    p->p_t = p->a * (p->L - p->aE * p->sth2) + p->ra2 * p->P / p->delta;
+    p->p_phi = (p->L / p->sth2 - p->aE) + p->a * p->P / p->delta;
 }
 
 static parameters *get_p (int argc, char **argv) {
@@ -64,8 +62,8 @@ static parameters *get_p (int argc, char **argv) {
     p->q_theta = (90.0L - theta_0) * M_PI  / 180.0L;
     p->q_phi = 0.0L;
     refresh(p);  // variables, t & phi velocities
-    p->p_r = - sqrtl(p->R.val >= 0.0L ? p->R.val : - p->R.val);
-    p->p_theta = - sqrtl(p->THETA.val >= 0.0L ? p->THETA.val : - p->THETA.val);
+    p->p_r = - sqrtl(p->R >= 0.0L ? p->R : - p->R);
+    p->p_theta = - sqrtl(p->THETA >= 0.0L ? p->THETA : - p->THETA);
     return p;
 }
 
@@ -80,8 +78,8 @@ static void update_q (void *params, real c) {  // dq / dt = dH / dp
 
 static void update_p (void *params, real d) {  // dp / dt = - dH / dq = - (- 0.5 dX / dq) where X is R or THETA
     parameters *p = (parameters *)params;
-    p->p_r += 0.5L * d * p->R.dot;
-    p->p_theta += 0.5L * d * p->THETA.dot;
+    p->p_r += d * (2.0L * p->E * p->q_r * p->P - (p->q_r - p->M) * (p->mu2 * p->r2 + p->K) - p->mu2 * p->q_r * p->delta);
+    p->p_theta += d * (p->cth * p->sth * (p->a2xmu2_E2 + p->L2 / p->sth2) + p->cth * p->cth2 * p->L2 / (p->sth * p->sth2));
 }
 
 static real v_dot_v (real vt, real vr, real vth, real vph, real a, real ra2, real sth2, real sigma, real delta) {  // conserved
@@ -92,14 +90,15 @@ static real v_dot_v (real vt, real vr, real vth, real vph, real a, real ra2, rea
 
 static void plot_path (long dp, void *params, real t) {
     parameters *p = (parameters *)params;
-    real e4v = error(1.0 + v_dot_v(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2.val, p->sth2.val, p->sigma, p->delta.val));
-    real eR = error(0.5L * (p->p_r * p->p_r - p->R.val));                  // "H" = p_r^2 / 2 + (- R(q_r) / 2) = 0
-    real eTHETA = error(0.5L * (p->p_theta * p->p_theta - p->THETA.val));  // "H" = p_theta^2 / 2 + (- THETA(q_theta) / 2) = 0
-    real ra = sqrtl(p->ra2.val);
+    p->sigma = p->r2 + p->a2 * p->cth2;
+    real e4v = error(1.0 + v_dot_v(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2, p->sth2, p->sigma, p->delta));
+    real eR = error(0.5L * (p->p_r * p->p_r - p->R));                  // "H" = p_r^2 / 2 + (- R(q_r) / 2) = 0
+    real eTHETA = error(0.5L * (p->p_theta * p->p_theta - p->THETA));  // "H" = p_theta^2 / 2 + (- THETA(q_theta) / 2) = 0
+    real ra = sqrtl(p->ra2);
     real gamma = p->p_t / p->sigma;
     char fs[128];
     sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le %%+.3Le %%+.3Le %%+.3Le %%+.3Le %%+.3Le\n", dp, dp, dp);
-    printf(fs, ra * p->sth.val * cosl(p->q_phi), ra * p->sth.val * sinl(p->q_phi), p->q_r * cosl(p->q_theta), t, e4v, eR, eTHETA,
+    printf(fs, ra * p->sth * cosl(p->q_phi), ra * p->sth * sinl(p->q_phi), p->q_r * cosl(p->q_theta), t, e4v, eR, eTHETA,
            gamma, sqrtl(1.0L - 1.0L / (gamma * gamma)));
 }
 
