@@ -172,7 +172,7 @@ int main (int argc, char **argv) {
     fprintf(stderr, "%.ld iterations, precision %.1Le %s\n",
             count, p->epsilon, valid ? (p->spin * p->L < 0.0L ? "RETROGRADE" : "PROGRADE") : "INVALID");
     fprintf(stderr, "./h-kerr-sd-dbg 6 8 .01 10000 %.3Lf 1.0 1.0 %.18Lf %.18Lf 1.0 %.18Lf %.3Lf %.3Lf 0 >/tmp/$USER/data\n",
-            p->spin, p->E, p->L, p->Q, circular ? p->rmin : p->rmax, 90.0L - p->thmax * 180.0L / M_PI);
+            p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax), 0.0L);
 
     real r_range = (circular ? p->rmin + 1L : p->rmax + 1);
     real theta_range = M_PI;
