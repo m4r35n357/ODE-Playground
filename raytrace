@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# Example:  time -p <kerr-image-input ./raytrace
+# Example:  ffmpeg -y -i RaytracingOutput/%04d.png -c:v libx264 -crf 1 raytrace.mp4
+# Example:  mplayer raytrace.mp4 -fps 10
+
+lines=${1:-480}
+
+raytracer='nice -n 10 ./kerr-image'
+
+outputDir='RaytracingOutput'
+[ ! -d $outputDir ] && mkdir $outputDir
+
+tmp1="/tmp/$USER/raytracer-tmp-1"
+tmp2="/tmp/$USER/raytracer-tmp-2"
+tmp3="/tmp/$USER/raytracer-tmp-3"
+tmp4="/tmp/$USER/raytracer-tmp-4"
+
+GREY='\033[1;30m'
+CYAN='\033[0;36m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Colour
+
+fragment () {
+    { echo -n $line | $raytracer $1 $2 >$3 2>/dev/null; } &
+}
+
+assemble () {
+    wait
+    cat $tmp1 $tmp2 $tmp3 $tmp4 | convert - $filename
+    echo "${GREEN}${1}${NC}"
+}
+
+b1=$((lines / 4))
+b2=$((lines / 2))
+b3=$((3 * b1))
+
+n=0
+while read line
+do
+    filename=$outputDir/$(printf "%04d.png" $n)
+    if [ ! -f $filename ]
+    then
+        trap 'echo ""; echo -n "${CYAN}Finishing $filename . . . ${NC}"; assemble "Done!"; exit' INT
+        fragment $b3 $lines $tmp4
+        fragment $b2 $b3 $tmp3
+        fragment $b1 $b2 $tmp2
+        fragment   0 $b1 $tmp1
+        assemble "Written   $filename"
+        trap - INT
+    else
+        echo "${GREY}Skipping  $filename${NC}"
+    fi
+    n=$((n + 1))
+done

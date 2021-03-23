@@ -17,10 +17,34 @@ ${CC} --version
 
 rm -f *.o *.so *.gch tsm-*[^.][^c]
 
-build_symp () {
+name='h-kerr-gen-particle'
+echo " Building ${name}"
+${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c dual.c -lm -s &
+${CC} -O0 $WARNINGS -g -o ${name}-dbg ${name}.c dual.c -lm &
+
+name='h-kerr-gen-light'
+echo " Building ${name}"
+${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c -lm -s &
+${CC} -O0 $WARNINGS -g -o ${name}-dbg ${name}.c -lm &
+
+build_symp_symb () {
     name=$1
-    ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c dual.c -lm -s
-    ${CC} -O0 $WARNINGS -g -o ${name}-dbg ${name}.c dual.c -lm
+    ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c symplectic.c -lm -s
+    ${CC} -O0 $WARNINGS -g -o ${name}-dbg ${name}.c symplectic.c -lm
+}
+
+for model in \
+h-kerr-sd
+do
+    rm -f ${model}-*
+    echo " Building ${model}"
+    build_symp_symb ${model} &
+done
+
+build_symp_auto () {
+    name=$1
+    ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c symplectic.c dual.c -lm -s
+    ${CC} -O0 $WARNINGS -g -o ${name}-dbg ${name}.c symplectic.c dual.c -lm
 }
 
 for model in \
@@ -29,7 +53,7 @@ h-kerr-ad
 do
     rm -f ${model}-*
     echo " Building ${model}"
-    build_symp ${model} &
+    build_symp_auto ${model} &
 done
 
 build_tsm () {
@@ -69,7 +93,12 @@ ${CC} -O3 -DNDEBUG -c $WARNINGS -fpic taylor-ode.c && ${CC} -shared -o libode.so
 #  Example: musl-gcc -O3 -DNDEBUG -L. -Wall -Wextra -o test tsm-lorenz.c -lode -lm -s
 #  Example: LD_LIBRARY_PATH=. ./test 15 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | gnuplot -p -e "splot '<cat' with lines"
 
+echo " Building kerr-image"
+gcc -o kerr-image kerr-image.c -O6 -Wall -std=c99 -pedantic -Wextra -Wno-unused-result -lm
+gcc -g -o kerr-image-dbg kerr-image.c -O0 -Wall -std=c99 -pedantic -Wextra -Wno-unused-result -lm
+
 echo ""
 wait
-ls -lh --color tsm-* h-* lib*.so divergence
+
+ls -lh --color tsm-* h-* lib*.so divergence kerr-image*
 echo ""
