@@ -6,5 +6,8 @@
 tsm-*-dbg
 tsm-*-static
 
+h-*-dbg
+h-*-static
+
 divergence
 chaos-distance-cns

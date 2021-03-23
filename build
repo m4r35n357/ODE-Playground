@@ -15,7 +15,7 @@ then
 fi
 ${CC} --version
 
-rm -f *.o *.so *.gch tsm-*[^.][^c]
+rm -f *.o *.so *.gch tsm-*[^.][^c] h-*[^.][^c]
 
 name='h-kerr-gen-particle'
 echo " Building ${name}"
