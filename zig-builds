@@ -1,27 +1,32 @@
 #!/bin/sh
 set -e
 #
-#  Example: ./zig-builds arm-linux-musleabihf ReleaseFast tsm-*.c
-#  Example: ./zig-builds aarch64-linux-musl ReleaseFast tsm-*.c
-#  Example: ./zig-builds x86_64-linux-musl ReleaseFast tsm-*.c
-#  Example: ./zig-builds i386-linux-musl ReleaseFast tsm-*.c
+#  Example: ./zig-builds arm-linux-musleabihf ReleaseFast
+#  Example: ./zig-builds aarch64-linux-musl ReleaseFast
+#  Example: ./zig-builds x86_64-linux-musl ReleaseFast
+#  Example: ./zig-builds i386-linux-musl ReleaseFast
 
 target=$1
 opt=$2
-shift 2
 
-rm -f tsm-*-dbg tsm-*-static
+rm -f tsm-*-dbg tsm-*-static h-*-dbg h-*-static
 
 CCOPTS="-O $opt --single-threaded --strip --library c -target $target"
 
 echo Zig version $(./zig version)
 
 ./zig build-exe divergence.c $CCOPTS
-for source in $*
+for source in tsm-*.c
 do
     ./zig build-exe $source taylor-ode.c $CCOPTS
 done
 
-ls -lh --color divergence* tsm-*
+./zig build-exe h-kerr-sd.c symplectic.c $CCOPTS
+./zig build-exe h-kerr-ad.c symplectic.c dual.c $CCOPTS
+./zig build-exe h-newton.c symplectic.c dual.c $CCOPTS
+./zig build-exe h-kerr-gen-particle.c dual.c $CCOPTS
+./zig build-exe h-kerr-gen-light.c $CCOPTS
+
+ls -lh --color divergence* tsm-* h-*
 
 echo OK
