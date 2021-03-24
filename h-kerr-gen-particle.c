@@ -181,7 +181,7 @@ int main (int argc, char **argv) {
         real R_plot = R(r_plot, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).val;
         real theta_plot = theta_range * i / 1000.0L;
         real THETA_plot = THETA(theta_plot, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->pmass2, p->spin).val;
-        fprintf(stdout, "%.6Lf %.12Lf %.6Lf %.12Lf\n", r_plot, -0.5 * R_plot, theta_plot, -0.5 * THETA_plot);
+        fprintf(stdout, "%.6Lf %.12Lf %.6Lf %.12Lf\n", r_plot, -0.5L * R_plot, theta_plot, -0.5L * THETA_plot);
     }
     return 0;
 }
