@@ -174,7 +174,7 @@ int main (int argc, char **argv) {
     fprintf(stderr, "./h-kerr-sd-dbg 6 8 .01 10000 %.3Lf 1.0 1.0 %.18Lf %.18Lf 1.0 %.18Lf %.3Lf %.3Lf 0 >/tmp/$USER/data\n",
             p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax), 0.0L);
 
-    real r_range = (circular ? p->rmin + 1L : p->rmax + 1);
+    real r_range = (circular ? p->rmin + 1.0L : p->rmax + 1.0L);
     real theta_range = M_PI;
     for (int i = 1; i < 1000; i += 1) {
         real r_plot = r_range * i / 1000.0L;
