@@ -1,7 +1,12 @@
 
 #include <assert.h>
 #include <math.h>
-#include "symplectic.h"
+
+typedef long double real;
+
+real get_PI (void);
+
+real elevation_to_colatitude (real elevation);
 
 /*
  * For returning dual numbers

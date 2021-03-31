@@ -6,6 +6,16 @@
 #include <math.h>
 #include "dual.h"
 
+static const real MY_PI = 3.1415926535897932384626433832795029L;
+
+real get_PI (void) {
+    return MY_PI;
+}
+
+real elevation_to_colatitude (real elevation) {
+    return (90.0L - elevation) * MY_PI  / 180.0L;
+}
+
 dual d_dual (real a) {
     return (dual) { .val = a, .dot = 0.0L };
 }
@@ -68,7 +78,7 @@ dual d_log (dual a) {
 
 dual d_pow (dual a, real b) {
     assert(a.val > 0.0L);
-    return (dual) { .val = powl(a.val, b), .dot = a.dot * b * powl(a.val, (b - 1)) };
+    return (dual) { .val = powl(a.val, b), .dot = a.dot * b * powl(a.val, (b - 1.0L)) };
 }
 
 dual d_sin (dual a) {
