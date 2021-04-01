@@ -1,7 +1,7 @@
 /*
  * Kerr metric geodesics using Wilkins' equations with a "pseudo-Hamiltonian" approach
  *
- * Example:  ./h-kerr-sd-dbg 6 8 .01 10000 0.8 1.0 1.0 0.9455050956749083 1.434374509531738 1.0 7.978759958927879 12.0 63.0 0 >/tmp/$USER/data
+ * Example:  ./h-kerr-sd-dbg 6 8 .01 10000 0 0.8 1.0 1.0 0.9455050956749083 1.434374509531738 1.0 7.978759958927879 12.0 63.0 >/tmp/$USER/data
  *
  * Example:  gnuplot -p -e "set terminal wxt size 600,450; splot '<cat' with lines" </tmp/$USER/data
  *
@@ -41,10 +41,10 @@ static void refresh (parameters *p) {
     p->p_phi = (p->L / p->sth2 - p->aE) + p->a * p->P / p->delta;
 }
 
-static parameters *get_p (int argc, char **argv) {
+static parameters *get_p (int argc, char **argv, int va_begin) {
     parameters *p = malloc(sizeof (parameters));
     real spin, bh_mass, p_mass2, energy, momentum, m_factor, carter, r_0, theta_0;
-    t_variables(argv, argc, &spin, &bh_mass, &p_mass2, &energy, &momentum, &m_factor, &carter, &r_0, &theta_0);
+    t_variables(argv, va_begin, argc, &spin, &bh_mass, &p_mass2, &energy, &momentum, &m_factor, &carter, &r_0, &theta_0);
     p->M = bh_mass;  // constants
     p->mu2 = p_mass2;
     p->E = energy;
@@ -59,7 +59,7 @@ static parameters *get_p (int argc, char **argv) {
     p->a2xmu2_E2 = p->a2 * (p->mu2 - p->E * p->E);
     p->q_t = 0.0L;  // coordinates
     p->q_r = r_0;
-    p->q_theta = (90.0L - theta_0) * M_PI  / 180.0L;
+    p->q_theta = elevation_to_colatitude(theta_0);
     p->q_phi = 0.0L;
     refresh(p);  // variables, t & phi velocities
     p->p_r = - sqrtl(p->R >= 0.0L ? p->R : - p->R);
@@ -67,7 +67,7 @@ static parameters *get_p (int argc, char **argv) {
     return p;
 }
 
-static void update_q (void *params, real c) {  // dq / dt = dH / dp
+void update_q (void *params, real c) {  // dq / dt = dH / dp
     parameters *p = (parameters *)params;
     p->q_t += c * p->p_t;
     p->q_r += c * p->p_r;
@@ -76,7 +76,7 @@ static void update_q (void *params, real c) {  // dq / dt = dH / dp
     refresh(p);
 }
 
-static void update_p (void *params, real d) {  // dp / dt = - dH / dq = - (- 0.5 dX / dq) where X is R or THETA
+void update_p (void *params, real d) {  // dp / dt = - dH / dq = - (- 0.5 dX / dq) where X is R or THETA
     parameters *p = (parameters *)params;
     p->p_r += d * (2.0L * p->E * p->q_r * p->P - (p->q_r - p->M) * (p->mu2 * p->r2 + p->K) - p->mu2 * p->q_r * p->delta);
     p->p_theta += d * (p->cth * p->sth * (p->a2xmu2_E2 + p->L2 / p->sth2) + p->cth * p->cth2 * p->L2 / (p->sth * p->sth2));
@@ -91,7 +91,7 @@ static real v_dot_v (real vt, real vr, real vth, real vph, real a, real ra2, rea
 static void plot_path (long dp, void *params, real t) {
     parameters *p = (parameters *)params;
     p->sigma = p->r2 + p->a2 * p->cth2;
-    real e4v = error(1.0 + v_dot_v(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2, p->sth2, p->sigma, p->delta));
+    real e4v = error(1.0L + v_dot_v(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2, p->sth2, p->sigma, p->delta));
     real eR = error(0.5L * (p->p_r * p->p_r - p->R));                  // "H" = p_r^2 / 2 + (- R(q_r) / 2) = 0
     real eTHETA = error(0.5L * (p->p_theta * p->p_theta - p->THETA));  // "H" = p_theta^2 / 2 + (- THETA(q_theta) / 2) = 0
     real ra = sqrtl(p->ra2);
@@ -113,7 +113,8 @@ static void plot_view (long dp, void *params, real t) {
 
 int main (int argc, char **argv) {
     assert(argc == 15);
-    long plot_type = strtol(argv[14], NULL, 10);
+    int plot_type_position = 5;
+    long plot_type = strtol(argv[plot_type_position], NULL, 10);
     plotter plot;
     switch (plot_type) {
         case 0:
@@ -126,6 +127,6 @@ int main (int argc, char **argv) {
             printf("Plot type is {%ld} but should be 0 (geodesic) or 1 (view)\n", plot_type);
             exit(1);
     }
-    solve(argv, get_p(argc, argv), update_q, update_p, plot);
+    solve(argv, get_p(argc, argv, plot_type_position + 1), update_q, update_p, plot);
     return 0;
 }

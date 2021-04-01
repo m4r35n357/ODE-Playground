@@ -15,10 +15,10 @@ void t_stepper (char **argv, long *dp, long *method, real *h, long *nsteps) {
     assert(*nsteps >= 1 && *nsteps <= 1000000);
 }
 
-void t_variables (char **argv, int argc, ...) {
+void t_variables (char **argv, int begin, int argc, ...) {
     va_list vars;
     va_start(vars, argc);
-    for (int i = 5; i < argc - 1; i++) {
+    for (int i = begin; i < argc; i++) {
         *va_arg(vars, real *) = strtold(argv[i], NULL);
     }
     va_end(vars);

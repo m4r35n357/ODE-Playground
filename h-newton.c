@@ -2,6 +2,9 @@
  * Newtonian central value problem using Hamilton's equations with automatic differentiation
  *
  * Example:  ./h-newton-dbg  6 8 1 10000  1 12 .6 >/tmp/$USER/data
+ *
+ * Example:  gnuplot -p -e "set terminal wxt size 600,450; splot '<cat' with lines" </tmp/$USER/data
+ *
  * Example:  gnuplot -p -e "set terminal wxt size 600,450; set yrange [-240:0]; plot '/tmp/$USER/data' using 4:5 with lines"
  *
  * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
@@ -10,7 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "dual.h"
+#include "symplectic.h"
 
 static dual h (real m, real gm, dual q_r, dual p_r, dual p_phi) {
     return d_sub(d_scale(d_add(d_sqr(p_r), d_div(d_sqr(p_phi), d_sqr(q_r))), 0.5L / m), d_scale(d_inv(q_r), gm));
@@ -22,10 +25,10 @@ typedef struct {
     real h0;  // stored initial value of Hamiltonian
 } parameters;
 
-static parameters *get_p (int argc, char **argv) {
+static parameters *get_p (int argc, char **argv, int va_begin) {
     parameters *p = malloc(sizeof (parameters));
     real r0, l_fac;
-    t_variables(argv, argc, &p->m, &r0, &l_fac);
+    t_variables(argv, va_begin, argc, &p->m, &r0, &l_fac);
     p->gm = p->m;  //p->gm = 6.6743e-11L * p->m;
     p->q_r = r0;
     p->p_r = 0.0L;
@@ -35,7 +38,7 @@ static parameters *get_p (int argc, char **argv) {
     return p;
 }
 
-static void update_q (void *params, real c) {
+void update_q (void *params, real c) {
     parameters *p = (parameters *)params;
     real q_r = c * h(p->m, p->gm, d_dual(p->q_r), d_var(p->p_r), d_dual(p->p_phi)).dot;
     real q_phi = c * h(p->m, p->gm, d_dual(p->q_r), d_dual(p->p_r), d_var(p->p_phi)).dot;
@@ -43,7 +46,7 @@ static void update_q (void *params, real c) {
     p->q_phi += q_phi;
 }
 
-static void update_p (void *params, real d) {
+void update_p (void *params, real d) {
     parameters *p = (parameters *)params;
     p->p_r -= d * h(p->m, p->gm, d_var(p->q_r), d_dual(p->p_r), d_dual(p->p_phi)).dot;
 }
@@ -58,6 +61,6 @@ static void plot (long dp, void *params, real t) {
 
 int main (int argc, char **argv) {
     assert(argc == 8);
-    solve(argv, get_p(argc, argv), update_q, update_p, plot);
+    solve(argv, get_p(argc, argv, 5), update_q, update_p, plot);
     return 0;
 }

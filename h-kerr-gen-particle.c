@@ -16,8 +16,6 @@
 #include <assert.h>
 #include "dual.h"
 
-#define M_PI 3.14159265358979323846
-
 typedef struct {
     real a; real b; real c;
 } vector3;
@@ -95,7 +93,7 @@ static parameters *get_p (char **argv) {
     p->epsilon = strtold(argv[1], NULL);
     p->rmin = strtold(argv[2], NULL);
     p->rmax = strtold(argv[3], NULL);
-    p->thmax = (90.0L - strtold(argv[4], NULL)) * M_PI / 180.0L;
+    p->thmax = elevation_to_colatitude(strtold(argv[4], NULL));
     p->bh_mass = strtold(argv[5], NULL);
     p->pmass2 = strtold(argv[6], NULL);
     p->spin = strtold(argv[7], NULL);
@@ -171,11 +169,11 @@ int main (int argc, char **argv) {
     }
     fprintf(stderr, "%.ld iterations, precision %.1Le %s\n",
             count, p->epsilon, valid ? (p->spin * p->L < 0.0L ? "RETROGRADE" : "PROGRADE") : "INVALID");
-    fprintf(stderr, "./h-kerr-sd-dbg 6 8 .01 10000 %.3Lf 1.0 1.0 %.18Lf %.18Lf 1.0 %.18Lf %.3Lf %.3Lf 0 >/tmp/$USER/data\n",
+    fprintf(stderr, "./h-kerr-sd-dbg 6 8 .01 10000 0 %.3Lf 1.0 1.0 %.18Lf %.18Lf 1.0 %.18Lf %.3Lf %.3Lf >/tmp/$USER/data\n",
             p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax), 0.0L);
 
     real r_range = (circular ? p->rmin + 1.0L : p->rmax + 1.0L);
-    real theta_range = M_PI;
+    real theta_range = get_PI();
     for (int i = 1; i < 1000; i += 1) {
         real r_plot = r_range * i / 1000.0L;
         real R_plot = R(r_plot, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).val;

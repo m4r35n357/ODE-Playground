@@ -30,6 +30,6 @@ int main(int argc, char **argv) {
     if (r < r_min || r > r_max) {
         fprintf(stdout, "r is out of range!\n");
     } else {
-        fprintf(stdout, "./h-kerr-sd-dbg 6 4 .01 10000 .8 1.0 0.0 1.0 %.18Lf 1.0 %.18Lf %.3Lf 0.0 0\n", L, Q, r);
+        fprintf(stdout, "./h-kerr-sd-dbg 6 4 .01 10000 0 .8 1.0 0.0 1.0 %.18Lf 1.0 %.18Lf %.3Lf 0.0\n", L, Q, r);
     }
 }
