@@ -49,7 +49,7 @@ static parameters *get_p (int argc, char **argv, int va_begin) {
     p->mu2 = p_mass2;
     p->E = energy;
     p->L = momentum * m_factor;
-    p->Q = carter;
+    p->Q = carter * m_factor;
     p->a = spin;
     p->a2 = p->a * p->a;
     p->L2 = p->L * p->L;
