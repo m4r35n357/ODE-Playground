@@ -76,6 +76,12 @@ dual d_log (dual a) {
     return (dual) { .val = logl(a.val), .dot = a.dot / a.val };
 }
 
+dual d_sqrt (dual a) {
+    assert(a.val > 0.0L);
+    real root_val = sqrtl(a.val);
+    return (dual) { .val = root_val, .dot = a.dot * 0.5L / root_val };
+}
+
 dual d_pow (dual a, real b) {
     assert(a.val > 0.0L);
     return (dual) { .val = powl(a.val, b), .dot = a.dot * b * powl(a.val, (b - 1.0L)) };
