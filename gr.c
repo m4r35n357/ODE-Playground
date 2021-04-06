@@ -23,11 +23,11 @@ void t_control (char **argv, long *dp, long *n, real *h, long *nsteps,
 void mm_mult (matrix4x4 c, matrix4x4 a, matrix4x4 b) {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            real tmp = 0.0L;
+            real sum = 0.0L;
             for (int k = 0; k < 4; k++) {
-                tmp += a[i][k] * b[k][j];
+                sum += a[i][k] * b[k][j];
             }
-            c[i][j] = tmp;
+            c[i][j] = sum;
         }
     }
 }
@@ -110,22 +110,22 @@ void geodesic (vector4 acclereration, matrix4x4 inverse, vector4 v1, vector4 v2,
     for (int i = 0; i < 4; i++) {
         for (int k = 0; k < 4; k++) {
             for (int l = 0; l < 4; l++) {
-                real tmp = 0.0L;
+                real sum = 0.0L;
                 for (int m = 0; m < 4; m++) {
-                    tmp += 0.5L * inverse[i][m] * (derivatives[m][k][l] + derivatives[m][l][k] - derivatives[k][l][m]);
+                    sum += 0.5L * inverse[i][m] * (derivatives[m][k][l] + derivatives[m][l][k] - derivatives[k][l][m]);
                 }
-                symbols[i][k][l] = tmp;
+                symbols[i][k][l] = sum;
             }
         }
     }
     for (int mu = 0; mu < 4; mu++) {
-        real tmp = 0.0L;
+        real sum = 0.0L;
         for (int a = 0; a < 4; a++) {
             for (int b = 0; b < 4; b++) {
-                tmp -= symbols[mu][a][b] * v1[a] * v2[b];
+                sum -= symbols[mu][a][b] * v1[a] * v2[b];
             }
         }
-        acclereration[mu] = tmp;
+        acclereration[mu] = sum;
     }
 }
 
@@ -172,13 +172,18 @@ void euler (int argc, char **argv) {
     }
 }
 /*
-void rk4 (int argc, char **argv, rk4_model ode, rk4_params get_p) {
+void rk4 (int argc, char **argv) {
     long interval, steps, dp;
-    real x, y, z, h, xdot = 0.0L, ydot = 0.0L, zdot = 0.0L, kx = 0.0L, ky = 0.0L, kz = 0.0L;
-    t_control(argv, &dp, &interval, &h, &steps, &x, &y, &z);
-    void *p = get_p(argc, argv);
-    t_output(dp, x, y, z, 0.0, "_", "_", "_");
+    real h;
+    vector4 x, v, xdot, vdot;
+    t_control(argv, &dp, &interval, &h, &steps, &x[0], &x[1], &x[2], &x[3], &v[0], &v[1], &v[2], &v[3]);
+    parameters p = (parameters) {
+        .m = strtold(argv[13], NULL),
+        .a = strtold(argv[14], NULL)
+    };
+    t_output(dp, x, v, 0.0, p);
     for (long step = 1; step < steps + 1; step++) {
+        ode(xdot, vdot, x, v, p);
         components k1 = ode(x, y, z, p);
         components k2 = ode(x + 0.5 * k1.x * h, y + 0.5 * k1.y * h, z + 0.5 * k1.z * h, p);
         components k3 = ode(x + 0.5 * k2.x * h, y + 0.5 * k2.y * h, z + 0.5 * k2.z * h, p);
@@ -186,13 +191,8 @@ void rk4 (int argc, char **argv, rk4_model ode, rk4_params get_p) {
         x += h * (kx = (k1.x + 2.0 * (k2.x + k3.x) + k4.x) / 6.0);
         y += h * (ky = (k1.y + 2.0 * (k2.y + k3.y) + k4.y) / 6.0);
         z += h * (kz = (k1.z + 2.0 * (k2.z + k3.z) + k4.z) / 6.0);
-        if (isnan(x) || isinf(x) || isnan(y) || isinf(y) || isnan(z) || isinf(z)) exit(2);
         if (step % interval == 0) {
-            t_output(dp, x, y, z, h * step,
-                     kx * xdot < 0.0L ? "X" : "_",
-                     ky * ydot < 0.0L ? "Y" : "_",
-                     kz * zdot < 0.0L ? "Z" : "_");
-            xdot = kx, ydot = ky, zdot = kz;
+            t_output(dp, x, v, h * step, p);
         }
     }
 }
