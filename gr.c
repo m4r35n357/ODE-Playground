@@ -119,15 +119,28 @@ void christoffel (matrix4x4x4 symbols, matrix4x4 inverse, real m, real a, real r
     }
 }
 
+static real error (real e) {
+    return 10.0L * log10l(fabsl(e) >= 1e-36L ? fabsl(e) : 1e-36L);
+}
+
 static void t_output (long dp, vector4 x, vector4 v, real t, parameters p) {
     char fs[256];
     //sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le\n",
             //dp, dp, dp, dp, dp, dp, dp, dp);
     //printf(fs, x[0], x[1], x[2], x[3], v[0], v[1], v[2], v[3], t);
+    matrix4x4 metric;
+    real_metric (metric, p.m, p.a, x[1], x[2]);
+    real v_dot_v;
+    for (int mu = 0; mu < 4; mu++) {
+        for (int nu = 0; nu < 4; nu++) {
+            v_dot_v += metric[mu][nu] * v[mu] * v[nu];
+        }
+    }
+    real ev_dot_v = error(1.0L + v_dot_v);
     real ra = sqrtl(x[1] * x[1] + p.a * p.a);
     real sth = sinl(x[2]);
-    sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le\n", dp, dp, dp);
-    printf(fs, ra * sth * cosl(x[3]), ra * sth * sinl(x[3]), x[1] * cosl(x[2]), t);
+    sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le %%+.3Le\n", dp, dp, dp);
+    printf(fs, ra * sth * cosl(x[3]), ra * sth * sinl(x[3]), x[1] * cosl(x[2]), t, ev_dot_v);
 }
 
 void ode (vector4 x_dot, vector4 v_dot, vector4 x, vector4 v, parameters p) {
