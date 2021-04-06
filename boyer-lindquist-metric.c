@@ -87,15 +87,18 @@ real i_phi_phi (real m, real a, real r, real theta) {
 }
 
 int main (int argc, char **argv) {
-    (void) argc;
-    (void) argv;
+    assert(argc == 15);
+    euler(argc, argv);
+
     real m = 1.0L;
     real a = 0.8L;
     real r = 12.0L;
     real theta = 0.5L;
+
     matrix4x4 metric, inverse, result;
     real_metric (metric, m, a, r, theta);
     real_inverse (inverse, m, a, r, theta);
     mm_mult(result, metric, inverse);
+
     return 0;
 }

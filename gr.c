@@ -129,11 +129,15 @@ void geodesic (vector4 acclereration, matrix4x4 inverse, vector4 v1, vector4 v2,
     }
 }
 
-static void t_output (long dp, vector4 x, vector4 v, real t) {
+static void t_output (long dp, vector4 x, vector4 v, real t, parameters p) {
     char fs[256];
-    sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le\n",
-            dp, dp, dp, dp, dp, dp, dp, dp);
-    printf(fs, x[0], x[1], x[2], x[3], v[0], v[1], v[2], v[3], t);
+    //sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le\n",
+            //dp, dp, dp, dp, dp, dp, dp, dp);
+    //printf(fs, x[0], x[1], x[2], x[3], v[0], v[1], v[2], v[3], t);
+    real ra = sqrtl(x[1] * x[1] + p.a * p.a);
+    real sth = sinl(x[2]);
+    sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le\n", dp, dp, dp);
+    printf(fs, ra * sth * cosl(x[3]), ra * sth * sinl(x[3]), x[1] * cosl(x[2]), t);
 }
 
 void ode (vector4 x_dot, vector4 v_dot, vector4 x, vector4 v, parameters p) {
@@ -155,7 +159,7 @@ void euler (int argc, char **argv) {
         .m = strtold(argv[13], NULL),
         .a = strtold(argv[14], NULL)
     };
-    t_output(dp, x, v, 0.0);
+    t_output(dp, x, v, 0.0, p);
     for (long step = 1; step < steps + 1; step++) {
         ode(xdot, vdot, x, v, p);
         for (int i = 0; i < 4; i++) {
@@ -163,7 +167,7 @@ void euler (int argc, char **argv) {
             v[i] += h * vdot[i];
         }
         if (step % interval == 0) {
-            t_output(dp, x, v, h * step);
+            t_output(dp, x, v, h * step, p);
         }
     }
 }
