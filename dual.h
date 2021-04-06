@@ -1,8 +1,7 @@
 
 #include <assert.h>
 #include <math.h>
-
-typedef long double real;
+#include "real.h"
 
 real get_PI (void);
 

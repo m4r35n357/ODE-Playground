@@ -1,5 +1,5 @@
 /*
- *  Compile: c99 -g -O0 -o schwarzschild-metric schwarzschild-metric.c gr.c dual.c -lm
+ *  Compile: c99 -g -O0 -o schwarzschild-metric schwarzschild-metric.c gr.c dual.c taylor-ode.c -lm
  *
  *  Execute: ./schwarzschild-metric 15 10 0.01 10000  0.0 12.0 1.57079632679 0.0  1.0 0.0 0.0 0.0  1.0 0.8
  */
@@ -90,7 +90,7 @@ real i_phi_phi (real m, real a, real r, real theta) {
 
 int main (int argc, char **argv) {
     assert(argc == 15);
-    euler(argc, argv);
+    tsm4(argc, argv);
 
     real m = 1.0L;
     real a = 0.8L;

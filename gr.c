@@ -1,11 +1,11 @@
 
 #include "gr.h"
 
-void t_control (char **argv, long *dp, long *n, real *h, long *nsteps,
+void gr_control (char **argv, long *dp, long *n, real *h, long *nsteps,
                 real *t, real *r, real *theta, real *phi, real *t_dot, real *r_dot, real *theta_dot, real *phi_dot) {
     *dp = strtol(argv[1], NULL, 10);
     *n = strtol(argv[2], NULL, 10);
-    assert(*n >= 2 && *n <= 34);
+    assert(*n >= 1 && *n <= 34);
     *h = strtold(argv[3], NULL);
     assert(*h > 0.0L && *h <= 1.0L);
     *nsteps = strtol(argv[4], NULL, 10);
@@ -32,15 +32,27 @@ void mm_mult (matrix4x4 c, matrix4x4 a, matrix4x4 b) {
     }
 }
 
-dual ra2 (real a, dual r) {
+real r_ra2 (real a, real r) {
+    return r * r + a * a;
+}
+
+real r_delta (real m, real a, real r) {
+    return r * r - 2.0L * m * r + a * a;
+}
+
+real r_sigma (real a, real r, real theta) {
+    return r * r + cosl(theta) * cosl(theta) * a * a;
+}
+
+dual d_ra2 (real a, dual r) {
     return d_shift(d_sqr(r), a * a);
 }
 
-dual delta (real m, real a, dual r) {
+dual d_delta (real m, real a, dual r) {
     return d_add(d_sqr(r), d_shift(d_scale(r, - 2.0L * m), a * a));
 }
 
-dual sigma (real a, dual r, dual theta) {
+dual d_sigma (real a, dual r, dual theta) {
     return d_add(d_sqr(r), d_scale(d_sqr(d_cos(theta)), a * a));
 }
 
@@ -119,116 +131,84 @@ void christoffel (matrix4x4x4 symbols, matrix4x4 inverse, real m, real a, real r
     }
 }
 
-static real error (real e) {
+real error (real e) {
     return 10.0L * log10l(fabsl(e) >= 1e-36L ? fabsl(e) : 1e-36L);
 }
 
-static void t_output (long dp, vector4 x, vector4 v, real t, parameters p) {
+real mod2_v (series4 x, series4 v, parameters p) {
+    matrix4x4 g;
+    real_metric (g, p.m, p.a, x[1][0], x[2][0]);
+    real v_dot_v = 0.0L;
+    for (int mu = 0; mu < 4; mu++) {
+        for (int nu = 0; nu < 4; nu++) {
+            v_dot_v += g[mu][nu] * v[mu][0] * v[nu][0];
+        }
+    }
+    return v_dot_v;
+}
+
+void gr_output (long dp, series4 x, series4 v, real t, parameters p) {
     char fs[256];
     //sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le\n",
             //dp, dp, dp, dp, dp, dp, dp, dp);
     //printf(fs, x[0], x[1], x[2], x[3], v[0], v[1], v[2], v[3], t);
-    matrix4x4 g;
-    real_metric (g, p.m, p.a, x[1], x[2]);
-    real v_dot_v = 0.0L;
-    for (int mu = 0; mu < 4; mu++) {
-        for (int nu = 0; nu < 4; nu++) {
-            v_dot_v += g[mu][nu] * v[mu] * v[nu];
-        }
-    }
-    real ev_dot_v = error(1.0L + v_dot_v);
-    real ra = sqrtl(x[1] * x[1] + p.a * p.a);
-    real sth = sinl(x[2]);
+    real v_dot_v = mod2_v(x, v, p);
+    real ev_dot_v = error(p.v0 - v_dot_v);
+    real ra = sqrtl(x[1][0] * x[1][0] + p.a * p.a);
+    real sth = sinl(x[2][0]);
     sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le %%+.3Le %%+.3Le\n", dp, dp, dp);
-    printf(fs, ra * sth * cosl(x[3]), ra * sth * sinl(x[3]), x[1] * cosl(x[2]), t, v_dot_v, ev_dot_v);
+    printf(fs, ra * sth * cosl(x[3][0]), ra * sth * sinl(x[3][0]), x[1][0] * cosl(x[2][0]), t, v_dot_v, ev_dot_v);
 }
 
-void ode (vector4 x_dot, vector4 v_dot, vector4 x, vector4 v, parameters p) {
+void ode (series4 x_dot, series4 v_dot, series4 x, series4 v, parameters p, int k) {
     matrix4x4 inverse;
-    real_inverse(inverse, p.m, p.a, x[1], x[2]);
+    real_inverse(inverse, p.m, p.a, x[1][0], x[2][0]);
     matrix4x4x4 symbols;
-    christoffel(symbols, inverse, p.m, p.a, x[1], x[2]);
+    christoffel(symbols, inverse, p.m, p.a, x[1][0], x[2][0]);
     for (int mu = 0; mu < 4; mu++) {
         real sum = 0.0L;
         for (int a = 0; a < 4; a++) {
             for (int b = 0; b < 4; b++) {
-                sum -= symbols[mu][a][b] * v[a] * v[b];
+                sum -= symbols[mu][a][b] * t_prod(v[a], v[b], k);
             }
         }
-        v_dot[mu] = sum;
-        x_dot[mu] = v[mu];
+        v_dot[mu][k] = sum;
+        x_dot[mu][k] = v[mu][k];
     }
 }
 
-void euler (int argc, char **argv) {
-    (void)argc;
-    long interval, steps, dp;
+series *t_jet4 (long n, vector4 a) {
+    series *jet4 = calloc(4, sizeof (series));
+    for (int mu = 0; mu < 4; mu++) {
+        jet4[mu] = t_jet_c(n + 1, a[mu]);
+    }
+    return jet4;
+}
+
+void tsm4 (int argc, char **argv) {
+    long n, steps, dp;
     real h;
     vector4 x, v, xdot, vdot;
-    t_control(argv, &dp, &interval, &h, &steps, &x[0], &x[1], &x[2], &x[3], &v[0], &v[1], &v[2], &v[3]);
+    gr_control(argv, &dp, &n, &h, &steps, &x[0], &x[1], &x[2], &x[3], &v[0], &v[1], &v[2], &v[3]);
+    series4 x4 = t_jet4(n, x), v4 = t_jet4(n, v), xdot4 = t_jet4(n, xdot), vdot4 = t_jet4(n, vdot);
     parameters p = (parameters) {
         .m = strtold(argv[13], NULL),
         .a = strtold(argv[14], NULL)
     };
-    t_output(dp, x, v, 0.0, p);
-    for (long step = 1; step < steps + 1; step++) {
-        ode(xdot, vdot, x, v, p);
-        for (int i = 0; i < 4; i++) {
-            x[i] += h * xdot[i];
-            v[i] += h * vdot[i];
-        }
-        if (step % interval == 0) {
-            t_output(dp, x, v, h * step, p);
-        }
-    }
-}
-/*
-void tsm (int argc, char **argv) {
-    long n, steps, dp;
-    real x0, y0, z0, h, xdot = 0.0L, ydot = 0.0L, zdot = 0.0L;
-    t_control(argv, &dp, &n, &h, &steps, &x0, &y0, &z0);
-    series x = t_jet_c(n + 1, x0), y = t_jet_c(n + 1, y0), z = t_jet_c(n + 1, z0);
-    void *p = get_p(argc, argv, n);
-    void *i = get_i == NULL ? NULL : get_i(n);
-    t_output(dp, x[0], y[0], z[0], 0.0L, "_", "_", "_");
+    p.v0 = mod2_v(x4, v4, p);
+    gr_output(dp, x4, v4, 0.0, p);
     for (long step = 1; step <= steps; step++) {
         for (int k = 0; k < n; k++) {
-            components c = ode(x, y, z, p, i, k);
-            x[k + 1] = c.x / (k + 1);
-            y[k + 1] = c.y / (k + 1);
-            z[k + 1] = c.z / (k + 1);
+            ode(xdot4, vdot4, x4, v4, p, k);
+            for (int mu = 0; mu < 4; mu++) {
+                x4[mu][k + 1] = xdot4[mu][k] / (k + 1);
+                v4[mu][k + 1] = vdot4[mu][k] / (k + 1);
+            }
         }
-        t_output(dp, t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h), h * step,
-                 x[1] * xdot < 0.0L ? (x[2] > 0.0L ? "x" : "X") : "_",
-                 y[1] * ydot < 0.0L ? (y[2] > 0.0L ? "y" : "Y") : "_",
-                 z[1] * zdot < 0.0L ? (z[2] > 0.0L ? "z" : "Z") : "_");
-        xdot = x[1], ydot = y[1], zdot = z[1];
+        for (int mu = 0; mu < 4; mu++) {
+            *x4[mu] = t_horner(x4[mu], n, h);
+            *v4[mu] = t_horner(v4[mu], n, h);
+        }
+        gr_output(dp, x4, v4, h * step, p);
     }
 }
-*/
-/*
-void rk4 (int argc, char **argv) {
-    long interval, steps, dp;
-    real h;
-    vector4 x, v, xdot, vdot;
-    t_control(argv, &dp, &interval, &h, &steps, &x[0], &x[1], &x[2], &x[3], &v[0], &v[1], &v[2], &v[3]);
-    parameters p = (parameters) {
-        .m = strtold(argv[13], NULL),
-        .a = strtold(argv[14], NULL)
-    };
-    t_output(dp, x, v, 0.0, p);
-    for (long step = 1; step < steps + 1; step++) {
-        ode(xdot, vdot, x, v, p);
-        components k1 = ode(x, y, z, p);
-        components k2 = ode(x + 0.5 * k1.x * h, y + 0.5 * k1.y * h, z + 0.5 * k1.z * h, p);
-        components k3 = ode(x + 0.5 * k2.x * h, y + 0.5 * k2.y * h, z + 0.5 * k2.z * h, p);
-        components k4 = ode(x + k3.x * h, y + k3.y * h, z + k3.z * h, p);
-        x += h * (kx = (k1.x + 2.0 * (k2.x + k3.x) + k4.x) / 6.0);
-        y += h * (ky = (k1.y + 2.0 * (k2.y + k3.y) + k4.y) / 6.0);
-        z += h * (kz = (k1.z + 2.0 * (k2.z + k3.z) + k4.z) / 6.0);
-        if (step % interval == 0) {
-            t_output(dp, x, v, h * step, p);
-        }
-    }
-}
-*/
