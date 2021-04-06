@@ -71,9 +71,9 @@ void real_inverse (matrix4x4 inverse, real m, real a, real r, real theta) {
 }
 
 void christoffel (matrix4x4x4 symbols, matrix4x4 inverse, real m, real a, real r, real theta) {
+    matrix4x4 dr;
     dual r_dual = d_var(r);
     dual theta_dual = d_dual(theta);
-    matrix4x4 dr;
     dr[0][0] = g_t_t(m, a, r_dual, theta_dual).dot;
     dr[0][1] = dr[1][0] = g_t_r(m, a, r_dual, theta_dual).dot;
     dr[0][2] = dr[2][0] = g_t_theta(m, a, r_dual, theta_dual).dot;
@@ -84,9 +84,9 @@ void christoffel (matrix4x4x4 symbols, matrix4x4 inverse, real m, real a, real r
     dr[2][2] = g_theta_theta(m, a, r_dual, theta_dual).dot;
     dr[2][3] = dr[3][2] = g_theta_phi(m, a, r_dual, theta_dual).dot;
     dr[3][3] = g_phi_phi(m, a, r_dual, theta_dual).dot;
+    matrix4x4 dtheta;
     r_dual = d_dual(r);
     theta_dual = d_var(theta);
-    matrix4x4 dtheta;
     dtheta[0][0] = g_t_t(m, a, r_dual, theta_dual).dot;
     dtheta[0][1] = dtheta[1][0] = g_t_r(m, a, r_dual, theta_dual).dot;
     dtheta[0][2] = dtheta[2][0] = g_t_theta(m, a, r_dual, theta_dual).dot;
@@ -97,13 +97,13 @@ void christoffel (matrix4x4x4 symbols, matrix4x4 inverse, real m, real a, real r
     dtheta[2][2] = g_theta_theta(m, a, r_dual, theta_dual).dot;
     dtheta[2][3] = dtheta[3][2] = g_theta_phi(m, a, r_dual, theta_dual).dot;
     dtheta[3][3] = g_phi_phi(m, a, r_dual, theta_dual).dot;
-    matrix4x4x4 derivatives;
+    matrix4x4x4 d_g;
     for (int j = 0; j < 4; j++) {
         for (int k = 0; k < 4; k++) {
-            derivatives[j][k][0] = 0.0L;
-            derivatives[j][k][1] = dr[j][k];
-            derivatives[j][k][2] = dtheta[j][k];
-            derivatives[j][k][3] = 0.0L;
+            d_g[j][k][0] = 0.0L;
+            d_g[j][k][1] = dr[j][k];
+            d_g[j][k][2] = dtheta[j][k];
+            d_g[j][k][3] = 0.0L;
         }
     }
     for (int i = 0; i < 4; i++) {
@@ -111,7 +111,7 @@ void christoffel (matrix4x4x4 symbols, matrix4x4 inverse, real m, real a, real r
             for (int l = 0; l < 4; l++) {
                 real sum = 0.0L;
                 for (int m = 0; m < 4; m++) {
-                    sum += 0.5L * inverse[i][m] * (derivatives[m][k][l] + derivatives[m][l][k] - derivatives[k][l][m]);
+                    sum += 0.5L * inverse[i][m] * (d_g[m][k][l] + d_g[m][l][k] - d_g[k][l][m]);
                 }
                 symbols[i][k][l] = sum;
             }
@@ -128,19 +128,19 @@ static void t_output (long dp, vector4 x, vector4 v, real t, parameters p) {
     //sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le\n",
             //dp, dp, dp, dp, dp, dp, dp, dp);
     //printf(fs, x[0], x[1], x[2], x[3], v[0], v[1], v[2], v[3], t);
-    matrix4x4 metric;
-    real_metric (metric, p.m, p.a, x[1], x[2]);
-    real v_dot_v;
+    matrix4x4 g;
+    real_metric (g, p.m, p.a, x[1], x[2]);
+    real v_dot_v = 0.0L;
     for (int mu = 0; mu < 4; mu++) {
         for (int nu = 0; nu < 4; nu++) {
-            v_dot_v += metric[mu][nu] * v[mu] * v[nu];
+            v_dot_v += g[mu][nu] * v[mu] * v[nu];
         }
     }
     real ev_dot_v = error(1.0L + v_dot_v);
     real ra = sqrtl(x[1] * x[1] + p.a * p.a);
     real sth = sinl(x[2]);
-    sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le %%+.3Le\n", dp, dp, dp);
-    printf(fs, ra * sth * cosl(x[3]), ra * sth * sinl(x[3]), x[1] * cosl(x[2]), t, ev_dot_v);
+    sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le %%+.3Le %%+.3Le\n", dp, dp, dp);
+    printf(fs, ra * sth * cosl(x[3]), ra * sth * sinl(x[3]), x[1] * cosl(x[2]), t, v_dot_v, ev_dot_v);
 }
 
 void ode (vector4 x_dot, vector4 v_dot, vector4 x, vector4 v, parameters p) {
@@ -182,6 +182,30 @@ void euler (int argc, char **argv) {
         }
     }
 }
+/*
+void tsm (int argc, char **argv) {
+    long n, steps, dp;
+    real x0, y0, z0, h, xdot = 0.0L, ydot = 0.0L, zdot = 0.0L;
+    t_control(argv, &dp, &n, &h, &steps, &x0, &y0, &z0);
+    series x = t_jet_c(n + 1, x0), y = t_jet_c(n + 1, y0), z = t_jet_c(n + 1, z0);
+    void *p = get_p(argc, argv, n);
+    void *i = get_i == NULL ? NULL : get_i(n);
+    t_output(dp, x[0], y[0], z[0], 0.0L, "_", "_", "_");
+    for (long step = 1; step <= steps; step++) {
+        for (int k = 0; k < n; k++) {
+            components c = ode(x, y, z, p, i, k);
+            x[k + 1] = c.x / (k + 1);
+            y[k + 1] = c.y / (k + 1);
+            z[k + 1] = c.z / (k + 1);
+        }
+        t_output(dp, t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h), h * step,
+                 x[1] * xdot < 0.0L ? (x[2] > 0.0L ? "x" : "X") : "_",
+                 y[1] * ydot < 0.0L ? (y[2] > 0.0L ? "y" : "Y") : "_",
+                 z[1] * zdot < 0.0L ? (z[2] > 0.0L ? "z" : "Z") : "_");
+        xdot = x[1], ydot = y[1], zdot = z[1];
+    }
+}
+*/
 /*
 void rk4 (int argc, char **argv) {
     long interval, steps, dp;
