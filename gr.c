@@ -70,7 +70,7 @@ void real_inverse (matrix4x4 inverse, real m, real a, real r, real theta) {
     inverse[3][3] = i_phi_phi(m, a, r, theta);
 }
 
-void geodesic (vector4 acclereration, matrix4x4 inverse, vector4 v1, vector4 v2, real m, real a, real r, real theta) {
+void christoffel (matrix4x4x4 symbols, matrix4x4 inverse, real m, real a, real r, real theta) {
     dual r_dual = d_var(r);
     dual theta_dual = d_dual(theta);
     matrix4x4 dr;
@@ -106,7 +106,6 @@ void geodesic (vector4 acclereration, matrix4x4 inverse, vector4 v1, vector4 v2,
             derivatives[j][k][3] = 0.0L;
         }
     }
-    matrix4x4x4 symbols;
     for (int i = 0; i < 4; i++) {
         for (int k = 0; k < 4; k++) {
             for (int l = 0; l < 4; l++) {
@@ -117,15 +116,6 @@ void geodesic (vector4 acclereration, matrix4x4 inverse, vector4 v1, vector4 v2,
                 symbols[i][k][l] = sum;
             }
         }
-    }
-    for (int mu = 0; mu < 4; mu++) {
-        real sum = 0.0L;
-        for (int a = 0; a < 4; a++) {
-            for (int b = 0; b < 4; b++) {
-                sum -= symbols[mu][a][b] * v1[a] * v2[b];
-            }
-        }
-        acclereration[mu] = sum;
     }
 }
 
@@ -143,9 +133,17 @@ static void t_output (long dp, vector4 x, vector4 v, real t, parameters p) {
 void ode (vector4 x_dot, vector4 v_dot, vector4 x, vector4 v, parameters p) {
     matrix4x4 inverse;
     real_inverse(inverse, p.m, p.a, x[1], x[2]);
-    geodesic(v_dot, inverse, v, v, p.m, p.a, x[1], x[2]);
-    for (int i = 0; i < 4; i++) {
-        x_dot[i] = v[i];
+    matrix4x4x4 symbols;
+    christoffel(symbols, inverse, p.m, p.a, x[1], x[2]);
+    for (int mu = 0; mu < 4; mu++) {
+        real sum = 0.0L;
+        for (int a = 0; a < 4; a++) {
+            for (int b = 0; b < 4; b++) {
+                sum -= symbols[mu][a][b] * v[a] * v[b];
+            }
+        }
+        v_dot[mu] = sum;
+        x_dot[mu] = v[mu];
     }
 }
 

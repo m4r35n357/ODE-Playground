@@ -73,9 +73,9 @@ void dg_dr (matrix4x4 dr, real m, real a, real r, real theta);
 
 void dg_dtheta (matrix4x4 dtheta, real m, real a, real r, real theta);
 
-//void christoffel (matrix4x4x4 symbols, matrix4x4 inverse, real m, real a, real r, real theta);
+void christoffel (matrix4x4x4 symbols, matrix4x4 inverse, real m, real a, real r, real theta);
 
-void geodesic (vector4 acclereration, matrix4x4 inverse, vector4 v1, vector4 v2, real m, real a, real r, real theta);
+//void geodesic (vector4 acclereration, matrix4x4 inverse, vector4 v1, vector4 v2, real m, real a, real r, real theta);
 
 //typedef void *(*tsm_params)(int, char **, long);
 
