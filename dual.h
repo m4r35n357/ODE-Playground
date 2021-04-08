@@ -44,6 +44,8 @@ dual d_exp (dual a);
 
 dual d_log (dual a);
 
+dual d_sqrt (dual a);
+
 dual d_pow (dual a, real b);
 
 dual d_sin (dual a);
