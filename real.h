@@ -1,0 +1,3 @@
+
+typedef long double real;
+

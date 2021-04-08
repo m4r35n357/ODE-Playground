@@ -3,10 +3,12 @@
 #include <stdlib.h>
 #include <math.h>
 #include "dual.h"
+#include "taylor-ode.h"
 
 typedef struct {
     real m;
     real a;
+    real v0;
 } parameters;
 
 typedef real vector4[4];
@@ -15,13 +17,21 @@ typedef real matrix4x4[4][4];
 
 typedef real matrix4x4x4[4][4][4];
 
+typedef series *series4;
+
 void t_input (char **argv, long *dp, long *n, real *h, long *nsteps, real *x, real *y, real *z);
 
-dual ra2 (real a, dual r);
+real r_ra2 (real a, real r);
 
-dual delta (real m, real a, dual r);
+real r_delta (real m, real a, real r);
 
-dual sigma (real a, dual r, dual theta);
+real r_sigma (real a, real r, real theta);
+
+dual d_ra2 (real a, dual r);
+
+dual d_delta (real m, real a, dual r);
+
+dual d_sigma (real a, dual r, dual theta);
 
 dual g_t_t (real m, real a, dual r, dual theta);
 
@@ -75,20 +85,18 @@ void dg_dtheta (matrix4x4 dtheta, real m, real a, real r, real theta);
 
 void christoffel (matrix4x4x4 symbols, matrix4x4 inverse, real m, real a, real r, real theta);
 
-//void geodesic (vector4 acclereration, matrix4x4 inverse, vector4 v1, vector4 v2, real m, real a, real r, real theta);
-
-//typedef void *(*tsm_params)(int, char **, long);
-
-//typedef void *(*tsm_inters)(long);
-
 typedef void *(*rk4_params)(int, char **);
 
-//typedef components (*tsm_model)(series, series, series, void *, void *, int);
+real error (real e);
 
-//typedef void (*rk4_model)(vector4, vector4, vector4, vector4, void *);
+real mod2_v (series4 x, series4 v, parameters p);
 
-void ode (vector4 x_dot, vector4 v_dot, vector4 x, vector4 v, parameters p);
+void gr_output (long dp, series4 x, series4 v, real t, parameters p);
+
+void ode (series4 x_dot, series4 v_dot, series4 x, series4 v, parameters p, int k);
 
 void euler (int argc, char **argv);
 
-//void rk4 (int argc, char **argv, rk4_model ode, rk4_params get_p);
+series *t_jet4 (long n, vector4 a);
+
+void tsm4 (int argc, char **argv);

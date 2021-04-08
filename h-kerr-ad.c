@@ -112,6 +112,14 @@ static void plot_view (long dp, void *params, real t) {
     printf("  -1 0 0 0  0 0 0 1  0 1 0 0\n");
 }
 
+static void plot_raw (long dp, void *params, real time) {
+    parameters *p = (parameters *)params;
+    char fs[256];
+    sprintf(fs, "%%+.6Le %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe\n",
+            dp, dp, dp, dp, dp, dp, dp, dp);
+    printf(fs, time, p->q_t, p->q_r, p->q_theta, p->q_phi, p->p_t, p->p_r, p->p_theta, p->p_phi);
+}
+
 int main (int argc, char **argv) {
     assert(argc == 15);
     int plot_type_position = 5;
@@ -124,8 +132,11 @@ int main (int argc, char **argv) {
         case 1:
             plot = plot_view;
             break;
+        case 2:
+            plot = plot_raw;
+            break;
         default:
-            printf("Plot type is {%ld} but should be 0 (geodesic) or 1 (view)\n", plot_type);
+            printf("Plot type is {%ld} but should be 0 (x,y,z,error,speed), 1 (view), or 2 (raw)\n", plot_type);
             exit(1);
     }
     solve(argv, get_p(argc, argv, plot_type_position + 1), update_q, update_p, plot);

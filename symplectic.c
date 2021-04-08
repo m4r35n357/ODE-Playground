@@ -12,7 +12,7 @@ void t_stepper (char **argv, long *dp, long *method, real *h, long *nsteps) {
     *h = strtold(argv[3], NULL);
     assert(*h > 0.0L && *h <= 10.0L);
     *nsteps = strtol(argv[4], NULL, 10);
-    assert(*nsteps >= 1 && *nsteps <= 1000000);
+    assert(*nsteps >= 0 && *nsteps <= 1000000);
 }
 
 void t_variables (char **argv, int begin, int argc, ...) {

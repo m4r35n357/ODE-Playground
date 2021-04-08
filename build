@@ -17,6 +17,22 @@ ${CC} --version
 
 rm -f *.o *.so *.gch tsm-*[^.][^c] h-*[^.][^c]
 
+build_geodesic () {
+    name=$1
+    ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c gr.c dual.c taylor-ode.c -lm -s
+    ${CC} -O0 $WARNINGS -g -o ${name}-dbg ${name}.c gr.c dual.c taylor-ode.c -lm
+}
+
+for model in \
+schwarzschild-metric \
+boyer-lindquist-metric \
+doran-metric
+do
+    rm -f ${model}-*
+    echo " Building ${model}"
+    build_geodesic ${model} &
+done
+
 name='h-kerr-gen-particle'
 echo " Building ${name}"
 ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c dual.c -lm -s &
@@ -87,5 +103,5 @@ gcc -g -o kerr-image-dbg kerr-image.c -O0 -Wall -std=c99 -pedantic -Wextra -Wno-
 echo ""
 wait
 
-ls -lh --color tsm-* h-* lib*.so divergence kerr-image*
+ls -lh --color tsm-* h-* *-metric-* lib*.so divergence kerr-image*
 echo ""
