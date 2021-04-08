@@ -41,7 +41,7 @@ real r_delta (real m, real a, real r) {
 }
 
 real r_sigma (real a, real r, real theta) {
-    return r * r + cosl(theta) * cosl(theta) * a * a;
+    return r * r + a * a * cosl(theta) * cosl(theta);
 }
 
 dual d_ra2 (real a, dual r) {
