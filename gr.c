@@ -1,3 +1,8 @@
+/*
+ * GR Geodesic equations, solved using Taylor Series integration
+ *
+ * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ */
 
 #include "gr.h"
 
@@ -123,9 +128,9 @@ void christoffel (matrix4x4x4 symbols, matrix4x4 inverse, real m, real a, real r
             for (int l = 0; l < 4; l++) {
                 real sum = 0.0L;
                 for (int m = 0; m < 4; m++) {
-                    sum += 0.5L * inverse[i][m] * (d_g[m][k][l] + d_g[m][l][k] - d_g[k][l][m]);
+                    sum += inverse[i][m] * (d_g[m][k][l] + d_g[m][l][k] - d_g[k][l][m]);
                 }
-                symbols[i][k][l] = sum;
+                symbols[i][k][l] = 0.5L * sum;
             }
         }
     }
@@ -160,11 +165,7 @@ void gr_output (long dp, series4 x, series4 v, real t, parameters p) {
     printf(fs, ra * sth * cosl(x[3][0]), ra * sth * sinl(x[3][0]), x[1][0] * cosl(x[2][0]), t, v_dot_v, ev_dot_v);
 }
 
-void ode (series4 x_dot, series4 v_dot, series4 x, series4 v, parameters p, int k) {
-    matrix4x4 inverse;
-    real_inverse(inverse, p.m, p.a, x[1][0], x[2][0]);
-    matrix4x4x4 symbols;
-    christoffel(symbols, inverse, p.m, p.a, x[1][0], x[2][0]);
+void ode (matrix4x4x4 symbols, series4 x_dot, series4 v_dot, series4 v, int k) {
     for (int mu = 0; mu < 4; mu++) {
         real sum = 0.0L;
         for (int a = 0; a < 4; a++) {
@@ -198,8 +199,12 @@ void tsm4 (int argc, char **argv) {
     p.v0 = mod2_v(x4, v4, p);
     gr_output(dp, x4, v4, 0.0, p);
     for (long step = 1; step <= steps; step++) {
+        matrix4x4 inverse;
+        real_inverse(inverse, p.m, p.a, x4[1][0], x4[2][0]);
+        matrix4x4x4 symbols;
+        christoffel(symbols, inverse, p.m, p.a, x4[1][0], x4[2][0]);
         for (int k = 0; k < n; k++) {
-            ode(xdot4, vdot4, x4, v4, p, k);
+            ode(symbols, xdot4, vdot4, v4, k);
             for (int mu = 0; mu < 4; mu++) {
                 x4[mu][k + 1] = xdot4[mu][k] / (k + 1);
                 v4[mu][k + 1] = vdot4[mu][k] / (k + 1);

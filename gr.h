@@ -93,7 +93,7 @@ real mod2_v (series4 x, series4 v, parameters p);
 
 void gr_output (long dp, series4 x, series4 v, real t, parameters p);
 
-void ode (series4 x_dot, series4 v_dot, series4 x, series4 v, parameters p, int k);
+void ode (matrix4x4x4 symbols, series4 x_dot, series4 v_dot, series4 v, int k);
 
 void euler (int argc, char **argv);
 
