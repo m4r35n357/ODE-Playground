@@ -5,6 +5,8 @@
 #include "dual.h"
 #include "taylor-ode.h"
 
+typedef enum {T = 0, R = 1, THETA = 2, PHI = 3} coordinate;
+
 typedef struct {
     real m;
     real a;
