@@ -75,7 +75,8 @@ real i_theta_phi (real m, real a, real r, real theta);
 
 real i_phi_phi (real m, real a, real r, real theta);
 
-void mm_mult (matrix4x4 c, matrix4x4 a, matrix4x4 b);
+void gr_control (char **argv, long *dp, long *n, real *h, long *nsteps,
+                real *t, real *r, real *theta, real *phi, real *t_dot, real *r_dot, real *theta_dot, real *phi_dot);
 
 void real_metric (matrix4x4 metric, dual r, dual theta, parameters p);
 

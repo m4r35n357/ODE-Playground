@@ -14,18 +14,6 @@ series *t_jet4 (long n, vector4 a) {
     return jet4;
 }
 
-void mm_mult (matrix4x4 c, matrix4x4 a, matrix4x4 b) {
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            real sum = 0.0L;
-            for (int k = 0; k < 4; k++) {
-                sum += a[i][k] * b[k][j];
-            }
-            c[i][j] = sum;
-        }
-    }
-}
-
 real r_ra2 (real a, real r) {
     return r * r + a * a;
 }
@@ -147,13 +135,13 @@ void christoffel (matrix4x4x4 symbols, matrix4x4 inverse, dual r, dual theta, pa
     dg_dtheta[THETA][THETA] = g_theta_theta(p.m, p.a, r, theta).dot;
     dg_dtheta[THETA][PHI] = dg_dtheta[PHI][THETA] = g_theta_phi(p.m, p.a, r, theta).dot;
     dg_dtheta[PHI][PHI] = g_phi_phi(p.m, p.a, r, theta).dot;
-    matrix4x4x4 d_g;
+    matrix4x4x4 dg_dx;
     for (int j = 0; j < 4; j++) {
         for (int k = 0; k < 4; k++) {
-            d_g[j][k][T] = 0.0L;
-            d_g[j][k][R] = dg_dr[j][k];
-            d_g[j][k][THETA] = dg_dtheta[j][k];
-            d_g[j][k][PHI] = 0.0L;
+            dg_dx[j][k][T] = 0.0L;
+            dg_dx[j][k][R] = dg_dr[j][k];
+            dg_dx[j][k][THETA] = dg_dtheta[j][k];
+            dg_dx[j][k][PHI] = 0.0L;
         }
     }
     for (int i = 0; i < 4; i++) {
@@ -161,7 +149,7 @@ void christoffel (matrix4x4x4 symbols, matrix4x4 inverse, dual r, dual theta, pa
             for (int l = 0; l < 4; l++) {
                 real sum = 0.0L;
                 for (int m = 0; m < 4; m++) {
-                    sum += inverse[i][m] * (d_g[m][k][l] + d_g[m][l][k] - d_g[k][l][m]);
+                    sum += inverse[i][m] * (dg_dx[m][k][l] + dg_dx[m][l][k] - dg_dx[k][l][m]);
                 }
                 symbols[i][k][l] = 0.5L * sum;
             }
