@@ -30,6 +30,9 @@ int main(int argc, char **argv) {
     if (r < r_min || r > r_max) {
         fprintf(stdout, "r is out of range!\n");
     } else {
-        fprintf(stdout, "./h-kerr-sd-dbg 6 4 .01 10000 0 .8 1.0 0.0 1.0 %.18Lf 1.0 %.18Lf %.3Lf 0.0\n", L, Q, r);
+        fprintf(stdout, "Simulate:\n");
+        fprintf(stdout, "./h-kerr-sd-dbg 6 8 .01 10000 0 .8 1.0 0.0 1.0 %.18Lf 1.0 %.18Lf %.3Lf 0.0\n", L, Q, r);
+        fprintf(stdout, "Generate ICs:\n");
+        fprintf(stdout, "./h-kerr-sd-dbg 15 8 .01 0 2 .8 1.0 0.0 1.0 %.18Lf 1.0 %.18Lf %.3Lf 0.0\n", L, Q, r);
     }
 }
