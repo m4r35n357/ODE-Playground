@@ -87,9 +87,6 @@ real error (real e) {
 
 void gr_output (long dp, series4 x, series4 v, real t, parameters p) {
     char fs[256];
-    //sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le\n",
-            //dp, dp, dp, dp, dp, dp, dp, dp);
-    //printf(fs, x[0], x[1], x[2], x[3], v[0], v[1], v[2], v[3], t);
     real v_dot_v = mod2_v(x, v, p);
     real ev_dot_v = error(p.v0 - v_dot_v);
     real ra = sqrtl(x[R][0] * x[R][0] + p.a * p.a);
