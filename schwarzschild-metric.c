@@ -102,7 +102,7 @@ int main (int argc, char **argv) {
     real theta = 0.5L * get_PI();
 
     matrix4x4 metric, inverse, result;
-    real_metric (metric, m, a, r, theta);
+    real_metric (metric, m, a, d_dual(r), d_dual(theta));
     real_inverse (inverse, m, a, r, theta);
     mm_mult(result, metric, inverse);
 

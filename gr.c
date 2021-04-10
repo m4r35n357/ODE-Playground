@@ -71,7 +71,7 @@ void gr_control (char **argv, long *dp, long *n, real *h, long *nsteps,
 
 real mod2_v (series4 x, series4 v, parameters p) {
     matrix4x4 g;
-    real_metric (g, p.m, p.a, x[R][0], x[THETA][0]);
+    real_metric (g, d_dual(x[R][0]), d_dual(x[THETA][0]), p);
     real v_dot_v = 0.0L;
     for (int mu = 0; mu < 4; mu++) {
         for (int nu = 0; nu < 4; nu++) {
@@ -95,65 +95,64 @@ void gr_output (long dp, series4 x, series4 v, real t, parameters p) {
     printf(fs, ra * sth * cosl(x[PHI][0]), ra * sth * sinl(x[PHI][0]), x[R][0] * cosl(x[THETA][0]), t, v_dot_v, ev_dot_v);
 }
 
-void real_metric (matrix4x4 metric, real m, real a, real r, real theta) {
-    metric[T][T] = g_t_t(m, a, d_dual(r), d_dual(theta)).val;
-    metric[T][R] = metric[R][T] = g_t_r(m, a, d_dual(r), d_dual(theta)).val;
-    metric[T][THETA] = metric[THETA][T] = g_t_theta(m, a, d_dual(r), d_dual(theta)).val;
-    metric[T][PHI] = metric[PHI][T] = g_t_phi(m, a, d_dual(r), d_dual(theta)).val;
-    metric[R][R] = g_r_r(m, a, d_dual(r), d_dual(theta)).val;
-    metric[R][THETA] = metric[THETA][R] = g_r_theta(m, a, d_dual(r), d_dual(theta)).val;
-    metric[R][PHI] = metric[PHI][R] = g_r_phi(m, a, d_dual(r), d_dual(theta)).val;
-    metric[THETA][THETA] = g_theta_theta(m, a, d_dual(r), d_dual(theta)).val;
-    metric[THETA][PHI] = metric[PHI][THETA] = g_theta_phi(m, a, d_dual(r), d_dual(theta)).val;
-    metric[PHI][PHI] = g_phi_phi(m, a, d_dual(r), d_dual(theta)).val;
+void real_metric (matrix4x4 metric, dual r, dual theta, parameters p) {
+    metric[T][T] = g_t_t(p.m, p.a, r, theta).val;
+    metric[T][R] = metric[R][T] = g_t_r(p.m, p.a, r, theta).val;
+    metric[T][THETA] = metric[THETA][T] = g_t_theta(p.m, p.a, r, theta).val;
+    metric[T][PHI] = metric[PHI][T] = g_t_phi(p.m, p.a, r, theta).val;
+    metric[R][R] = g_r_r(p.m, p.a, r, theta).val;
+    metric[R][THETA] = metric[THETA][R] = g_r_theta(p.m, p.a, r, theta).val;
+    metric[R][PHI] = metric[PHI][R] = g_r_phi(p.m, p.a, r, theta).val;
+    metric[THETA][THETA] = g_theta_theta(p.m, p.a, r, theta).val;
+    metric[THETA][PHI] = metric[PHI][THETA] = g_theta_phi(p.m, p.a, r, theta).val;
+    metric[PHI][PHI] = g_phi_phi(p.m, p.a, r, theta).val;
 }
 
-void real_inverse (matrix4x4 inverse, real m, real a, real r, real theta) {
-    inverse[T][T] = i_t_t(m, a, r, theta);
-    inverse[T][R] = inverse[R][T] = i_t_r(m, a, r, theta);
-    inverse[T][THETA] = inverse[THETA][T] = i_t_theta(m, a, r, theta);
-    inverse[T][PHI] = inverse[PHI][T] = i_t_phi(m, a, r, theta);
-    inverse[R][R] = i_r_r(m, a, r, theta);
-    inverse[R][THETA] = inverse[THETA][R] = i_r_theta(m, a, r, theta);
-    inverse[R][PHI] = inverse[PHI][R] = i_r_phi(m, a, r, theta);
-    inverse[THETA][THETA] = i_theta_theta(m, a, r, theta);
-    inverse[THETA][PHI] = inverse[PHI][THETA] = i_theta_phi(m, a, r, theta);
-    inverse[PHI][PHI] = i_phi_phi(m, a, r, theta);
+void real_inverse (matrix4x4 inverse, real r, real theta, parameters p) {
+    inverse[T][T] = i_t_t(p.m, p.a, r, theta);
+    inverse[T][R] = inverse[R][T] = i_t_r(p.m, p.a, r, theta);
+    inverse[T][THETA] = inverse[THETA][T] = i_t_theta(p.m, p.a, r, theta);
+    inverse[T][PHI] = inverse[PHI][T] = i_t_phi(p.m, p.a, r, theta);
+    inverse[R][R] = i_r_r(p.m, p.a, r, theta);
+    inverse[R][THETA] = inverse[THETA][R] = i_r_theta(p.m, p.a, r, theta);
+    inverse[R][PHI] = inverse[PHI][R] = i_r_phi(p.m, p.a, r, theta);
+    inverse[THETA][THETA] = i_theta_theta(p.m, p.a, r, theta);
+    inverse[THETA][PHI] = inverse[PHI][THETA] = i_theta_phi(p.m, p.a, r, theta);
+    inverse[PHI][PHI] = i_phi_phi(p.m, p.a, r, theta);
 }
 
-void christoffel (matrix4x4x4 symbols, matrix4x4 inverse, real m, real a, real r, real theta) {
-    matrix4x4 dr;
-    dual r_dual = d_var(r);
-    dual theta_dual = d_dual(theta);
-    dr[T][T] = g_t_t(m, a, r_dual, theta_dual).dot;
-    dr[T][R] = dr[R][T] = g_t_r(m, a, r_dual, theta_dual).dot;
-    dr[T][THETA] = dr[THETA][T] = g_t_theta(m, a, r_dual, theta_dual).dot;
-    dr[T][PHI] = dr[PHI][T] = g_t_phi(m, a, r_dual, theta_dual).dot;
-    dr[R][R] = g_r_r(m, a, r_dual, theta_dual).dot;
-    dr[R][THETA] = dr[THETA][R] = g_r_theta(m, a, r_dual, theta_dual).dot;
-    dr[R][PHI] = dr[PHI][R] = g_r_phi(m, a, r_dual, theta_dual).dot;
-    dr[THETA][THETA] = g_theta_theta(m, a, r_dual, theta_dual).dot;
-    dr[THETA][PHI] = dr[PHI][THETA] = g_theta_phi(m, a, r_dual, theta_dual).dot;
-    dr[PHI][PHI] = g_phi_phi(m, a, r_dual, theta_dual).dot;
-    matrix4x4 dtheta;
-    r_dual = d_dual(r);
-    theta_dual = d_var(theta);
-    dtheta[T][T] = g_t_t(m, a, r_dual, theta_dual).dot;
-    dtheta[T][R] = dtheta[R][T] = g_t_r(m, a, r_dual, theta_dual).dot;
-    dtheta[T][THETA] = dtheta[THETA][T] = g_t_theta(m, a, r_dual, theta_dual).dot;
-    dtheta[T][PHI] = dtheta[PHI][T] = g_t_phi(m, a, r_dual, theta_dual).dot;
-    dtheta[R][R] = g_r_r(m, a, r_dual, theta_dual).dot;
-    dtheta[R][THETA] = dtheta[THETA][R] = g_r_theta(m, a, r_dual, theta_dual).dot;
-    dtheta[R][PHI] = dtheta[PHI][R] = g_r_phi(m, a, r_dual, theta_dual).dot;
-    dtheta[THETA][THETA] = g_theta_theta(m, a, r_dual, theta_dual).dot;
-    dtheta[THETA][PHI] = dtheta[PHI][THETA] = g_theta_phi(m, a, r_dual, theta_dual).dot;
-    dtheta[PHI][PHI] = g_phi_phi(m, a, r_dual, theta_dual).dot;
+void christoffel (matrix4x4x4 symbols, matrix4x4 inverse, dual r, dual theta, parameters p) {
+    matrix4x4 dg_dr;
+    r = d_var(r.val);
+    dg_dr[T][T] = g_t_t(p.m, p.a, r, theta).dot;
+    dg_dr[T][R] = dg_dr[R][T] = g_t_r(p.m, p.a, r, theta).dot;
+    dg_dr[T][THETA] = dg_dr[THETA][T] = g_t_theta(p.m, p.a, r, theta).dot;
+    dg_dr[T][PHI] = dg_dr[PHI][T] = g_t_phi(p.m, p.a, r, theta).dot;
+    dg_dr[R][R] = g_r_r(p.m, p.a, r, theta).dot;
+    dg_dr[R][THETA] = dg_dr[THETA][R] = g_r_theta(p.m, p.a, r, theta).dot;
+    dg_dr[R][PHI] = dg_dr[PHI][R] = g_r_phi(p.m, p.a, r, theta).dot;
+    dg_dr[THETA][THETA] = g_theta_theta(p.m, p.a, r, theta).dot;
+    dg_dr[THETA][PHI] = dg_dr[PHI][THETA] = g_theta_phi(p.m, p.a, r, theta).dot;
+    dg_dr[PHI][PHI] = g_phi_phi(p.m, p.a, r, theta).dot;
+    matrix4x4 dg_dtheta;
+    r = d_dual(r.val);
+    theta = d_var(theta.val);
+    dg_dtheta[T][T] = g_t_t(p.m, p.a, r, theta).dot;
+    dg_dtheta[T][R] = dg_dtheta[R][T] = g_t_r(p.m, p.a, r, theta).dot;
+    dg_dtheta[T][THETA] = dg_dtheta[THETA][T] = g_t_theta(p.m, p.a, r, theta).dot;
+    dg_dtheta[T][PHI] = dg_dtheta[PHI][T] = g_t_phi(p.m, p.a, r, theta).dot;
+    dg_dtheta[R][R] = g_r_r(p.m, p.a, r, theta).dot;
+    dg_dtheta[R][THETA] = dg_dtheta[THETA][R] = g_r_theta(p.m, p.a, r, theta).dot;
+    dg_dtheta[R][PHI] = dg_dtheta[PHI][R] = g_r_phi(p.m, p.a, r, theta).dot;
+    dg_dtheta[THETA][THETA] = g_theta_theta(p.m, p.a, r, theta).dot;
+    dg_dtheta[THETA][PHI] = dg_dtheta[PHI][THETA] = g_theta_phi(p.m, p.a, r, theta).dot;
+    dg_dtheta[PHI][PHI] = g_phi_phi(p.m, p.a, r, theta).dot;
     matrix4x4x4 d_g;
     for (int j = 0; j < 4; j++) {
         for (int k = 0; k < 4; k++) {
             d_g[j][k][T] = 0.0L;
-            d_g[j][k][R] = dr[j][k];
-            d_g[j][k][THETA] = dtheta[j][k];
+            d_g[j][k][R] = dg_dr[j][k];
+            d_g[j][k][THETA] = dg_dtheta[j][k];
             d_g[j][k][PHI] = 0.0L;
         }
     }
@@ -184,6 +183,7 @@ void geodesic (matrix4x4x4 symbols, series4 x_dot, series4 v_dot, series4 v, int
 }
 
 void tsm4 (int argc, char **argv) {
+    (void)argc;
     long n, steps, dp;
     real h;
     vector4 x, v, xdot, vdot;
@@ -197,9 +197,9 @@ void tsm4 (int argc, char **argv) {
     gr_output(dp, x4, v4, 0.0, p);
     for (long step = 1; step <= steps; step++) {
         matrix4x4 inverse;
-        real_inverse(inverse, p.m, p.a, x4[R][0], x4[THETA][0]);
+        real_inverse(inverse, x4[R][0], x4[THETA][0], p);
         matrix4x4x4 symbols;
-        christoffel(symbols, inverse, p.m, p.a, x4[R][0], x4[THETA][0]);
+        christoffel(symbols, inverse, d_dual(x4[R][0]), d_dual(x4[THETA][0]), p);
         for (int k = 0; k < n; k++) {
             geodesic(symbols, xdot4, vdot4, v4, k);
             for (int mu = 0; mu < 4; mu++) {

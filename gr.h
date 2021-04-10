@@ -77,15 +77,11 @@ real i_phi_phi (real m, real a, real r, real theta);
 
 void mm_mult (matrix4x4 c, matrix4x4 a, matrix4x4 b);
 
-void real_metric (matrix4x4 metric, real m, real a, real r, real theta);
+void real_metric (matrix4x4 metric, dual r, dual theta, parameters p);
 
-void real_inverse (matrix4x4 inverse, real m, real a, real r, real theta);
+void real_inverse (matrix4x4 inverse, real r, real theta, parameters p);
 
-void dg_dr (matrix4x4 dr, real m, real a, real r, real theta);
-
-void dg_dtheta (matrix4x4 dtheta, real m, real a, real r, real theta);
-
-void christoffel (matrix4x4x4 symbols, matrix4x4 inverse, real m, real a, real r, real theta);
+void christoffel (matrix4x4x4 symbols, matrix4x4 inverse, dual r, dual theta, parameters p);
 
 typedef void *(*rk4_params)(int, char **);
 
