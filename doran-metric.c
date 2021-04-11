@@ -15,10 +15,12 @@ dual g_t_t (real m, real a, dual r, dual theta) {
 }
 
 dual g_t_r (real m, real a, dual r, dual theta) {
+    (void)theta;
     return d_sqrt(d_div(d_scale(r, 2.0L * m), d_ra2(a, r)));
 }
 
 dual g_t_theta (real m, real a, dual r, dual theta) {
+    (void)m; (void)a; (void)r; (void)theta;
     return d_dual(0.0L);
 }
 
@@ -27,10 +29,12 @@ dual g_t_phi (real m, real a, dual r, dual theta) {
 }
 
 dual g_r_r (real m, real a, dual r, dual theta) {
+    (void)m;
     return d_div(d_sigma(a, r, theta), d_ra2(a, r));
 }
 
 dual g_r_theta (real m, real a, dual r, dual theta) {
+    (void)m; (void)a; (void)r; (void)theta;
     return d_dual(0.0L);
 }
 
@@ -39,10 +43,12 @@ dual g_r_phi (real m, real a, dual r, dual theta) {
 }
 
 dual g_theta_theta (real m, real a, dual r, dual theta) {
+    (void)m;
     return d_sigma(a, r, theta);
 }
 
 dual g_theta_phi (real m, real a, dual r, dual theta) {
+    (void)m; (void)a; (void)r; (void)theta;
     return d_dual(0.0L);
 }
 
@@ -52,6 +58,7 @@ dual g_phi_phi (real m, real a, dual r, dual theta) {
 }
 
 real i_t_t (real m, real a, real r, real theta) {
+    (void)m; (void)a; (void)r; (void)theta;
     return - 1.0L;
 }
 
@@ -60,10 +67,12 @@ real i_t_r (real m, real a, real r, real theta) {
 }
 
 real i_t_theta (real m, real a, real r, real theta) {
+    (void)m; (void)a; (void)r; (void)theta;
     return 0.0L;
 }
 
 real i_t_phi (real m, real a, real r, real theta) {
+    (void)m; (void)a; (void)r; (void)theta;
     return 0.0L;
 }
 
@@ -72,6 +81,7 @@ real i_r_r (real m, real a, real r, real theta) {
 }
 
 real i_r_theta (real m, real a, real r, real theta) {
+    (void)m; (void)a; (void)r; (void)theta;
     return 0.0L;
 }
 
@@ -80,14 +90,17 @@ real i_r_phi (real m, real a, real r, real theta) {
 }
 
 real i_theta_theta (real m, real a, real r, real theta) {
+    (void)m;
     return 1.0L / r_sigma(a, r, theta);
 }
 
 real i_theta_phi (real m, real a, real r, real theta) {
+    (void)m; (void)a; (void)r; (void)theta;
     return 0.0L;
 }
 
 real i_phi_phi (real m, real a, real r, real theta) {
+    (void)m;
     return 1.0L / (r_ra2(a, r) * sinl(theta) * sinl(theta));
 }
 
