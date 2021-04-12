@@ -103,5 +103,5 @@ gcc -g -o kerr-image-dbg kerr-image.c -O0 -Wall -std=c99 -pedantic -Wextra -Wno-
 echo ""
 wait
 
-ls -lh --color tsm-* h-* *-metric-* lib*.so divergence kerr-image*
+ls -lh --color tsm-* h-* *-metric* lib*.so divergence kerr-image*
 echo ""

@@ -27,7 +27,7 @@ dual g_t_theta (real m, real a, dual r, dual theta) {
 }
 
 dual g_t_phi (real m, real a, dual r, dual theta) {
-    return d_scale(d_div(d_mul(d_scale(r, 2.0L * m), d_sqr(d_sin(theta))), d_sigma(a, r, theta)), -a);
+    return d_scale(d_div(d_mul(d_scale(r, 2.0L * m), d_sqr(d_sin(theta))), d_sigma(a, r, theta)), - a);
 }
 
 dual g_r_r (real m, real a, dual r, dual theta) {
