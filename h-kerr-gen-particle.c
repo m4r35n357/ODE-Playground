@@ -173,7 +173,7 @@ int main (int argc, char **argv) {
     fprintf(stderr, "./h-kerr-sd-dbg 6 8 .01 10000 0 %.3Lf 1.0 1.0 %.18Lf %.18Lf 1.0 %.18Lf %.3Lf %.3Lf >/tmp/$USER/data\n",
             p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax), 0.0L);
     fprintf(stderr, "Generate ICs:\n");
-    fprintf(stderr, "./h-kerr-sd-dbg 15 8 .01 0 2 %.3Lf 1.0 1.0 %.18Lf %.18Lf 1.0 %.18Lf %.3Lf %.3Lf >/tmp/$USER/data\n",
+    fprintf(stderr, "./h-kerr-sd-dbg 15 8 .01 0 2 %.3Lf 1.0 1.0 %.18Lf %.18Lf 1.0 %.18Lf %.3Lf %.3Lf\n",
             p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax), 0.0L);
 
     real r_range = (circular ? p->rmin + 1.0L : p->rmax + 1.0L);

@@ -3,7 +3,7 @@
  *
  *  Compile: c99 -g -O0 -o boyer-lindquist-metric boyer-lindquist-metric.c gr.c dual.c taylor-ode.c -lm
  *
- *  Execute: ./boyer-lindquist-metric 15 10 0.01 10000  0.0 12.0 1.57079632679 0.0  1.0 0.0 0.0 0.0  1.0 0.8
+ *  Execute: ./boyer-lindquist-metric-dbg 15 10 0.01 10000  0.0 12.0 1.57079632679 0.0  1.0 0.0 0.0 0.0  1.0 0.8
  *
  * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
