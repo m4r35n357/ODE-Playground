@@ -1,0 +1,533 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 15.08.2 ] */
+
+/* [wxMaxima: input   start ] */
+("RUN THIS FIRST !!!")$
+kill(all);
+if get('ctensor,'version)=false then load(ctensor)$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("Polar Coordinates");
+init_ctensor()$
+dim: 2$
+ct_coords: [phi, r];
+("Metric tensor");
+lg: matrix([(r^2),0],[0,1]);
+cmetric()$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("2-Sphere");
+init_ctensor()$
+dim: 2$
+ct_coords: [theta, phi];
+("Metric tensor");
+lg: matrix([r^2,0],[0,(r*sin(theta))^2]);
+cmetric()$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("3-Sphere");
+init_ctensor()$
+dim: 3$
+ct_coords: [phi, theta, psi];
+("Metric tensor");
+lg: matrix([(r^2),0,0],[0,(r*sin(phi))^2,0],[0,0,(r*sin(phi)*sin(theta))^2]);
+cmetric()$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("Hyperbolic 3-space");
+init_ctensor()$
+dim: 3$
+ct_coords: [phi, theta, psi];
+("Metric tensor");
+lg: matrix([(r^2),0,0],[0,(r*sinh(phi))^2,0],[0,0,(r*sinh(phi)*sin(theta))^2]);
+cmetric()$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("Spacetime 3-Sphere");
+init_ctensor()$
+dim: 4$
+ct_coords: [t, phi, theta, psi];
+("Metric tensor");
+lg: matrix([1,0,0,0],[0,-(r^2),0,0],[0,0,-(r*sin(phi))^2,0],[0,0,0,-(r*sin(phi)*sin(theta))^2]);
+cmetric()$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("Minkowski Space");
+init_ctensor()$
+dim: 4$
+ct_coords: [t, x, y, z];
+("Metric tensor");
+lg: matrix([1,0,0,0],[0,-1,0,0],[0,0,-1,0],[0,0,0,-1]);
+cmetric()$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("Polar Minkowski Space");
+init_ctensor()$
+dim: 4$
+ct_coords: [t, r, theta, phi];
+("Metric tensor");
+lg: matrix([-1,0,0,0],[0,1,0,0],[0,0,r^2,0],[0,0,0,r^2*sin(theta)^2]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("Oblate Polar Minkowski Space");
+R: sqrt(r^2+a^2)$
+%rho: sqrt(r^2+a^2*cos(theta)^2)$
+%beta: sqrt(r*Rs/R^2)$
+init_ctensor()$
+dim: 4$
+ct_coords: [t, r, theta, phi];
+("Metric tensor");
+lg: matrix([-1,0,0,0],[0,%rho^2/R^2,0,0],[0,0,%rho^2,0],[0,0,0,R^2*sin(theta)^2]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("Uniform gravity");
+init_ctensor()$
+dim: 2$
+ct_coords: [t, x];
+("Metric tensor");
+lg: matrix([e^(2*g*x),0],[0,-1]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("Accelerated frame");
+init_ctensor()$
+dim: 4$
+ct_coords: [t, x, y, z];
+("Metric tensor");
+lg: matrix([-(1 + a * x)^2, 0, 0, 0],[0, 1, 0, 0],[0, 0, 1, 0],[0, 0, 0, 1]);
+ug: trigsimp(invert(lg));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("Schwarzschild");
+
+xtheta: %pi / 2$
+%beta: sqrt(2*M/r)$
+
+init_ctensor()$
+dim: 4$
+ct_coords: [t, r, theta, phi];
+("Metric tensor");
+lg: matrix([-(1-%beta^2),0,0,0],[0,1/(1-%beta^2),0,0],[0,0,r^2,0],[0,0,0,r^2*sin(theta)^2]);
+ug: trigsimp(invert(lg));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("Schwarzschild Rectangular");
+
+%beta: sqrt(Rs/sqrt(x^2+y^2+z^2))$
+
+init_ctensor()$
+dim: 4$
+ct_coords: [t, x, y, z];
+("Metric tensor");
+lg: matrix([-(1-%beta^2),0,0,0],[0,1/(1-%beta^2),0,0],[0,0,1/(1-%beta^2),0],[0,0,0,1/(1-%beta^2)]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+("Gullstrand Painleve Coordinates");
+
+%beta: sqrt(Rs/r)$
+
+init_ctensor()$
+dim: 4$
+ct_coords: [T, r, theta, phi];
+("Metric tensor");
+lg: matrix([-(1-%beta^2),%beta,0,0],[%beta,1,0,0],[0,0,r^2,0],[0,0,0,r^2*sin(theta)^2]);
+ug: trigsimp(invert(lg));
+test: ug . lg$
+test2: zeromatrix(4,4)$
+for _a thru 4 do for _b thru 4 do test2[_a,_b]: trigsimp(test[_a,_b])$
+test3: test2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("Gullstrand Painleve Rectangular");
+
+%beta: sqrt(Rs/sqrt(x^2+y^2+z^2))$
+
+init_ctensor()$
+dim: 4$
+ct_coords: [T, r, theta, phi];
+("Metric tensor");
+lg: matrix([-(1-%beta^2),%beta,0,0],[%beta,1,0,0],[0,0,r^2,0],[0,0,0,r^2*sin(theta)^2]);
+ug: trigsimp(invert(lg));
+test: ug . lg$
+test2: zeromatrix(4,4)$
+for _a thru 4 do for _b thru 4 do test2[_a,_b]: trigsimp(test[_a,_b])$
+test3: test2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+/********************************
+Kerr spacetime in Boyer-Lindquist coords
+
+***************************/
+ratflag:true;
+ratricci:true;
+ratriemann:true;
+ct_coords:[t,r,theta,phi];
+lg:matrix([(2*m*r)/(a^2*cos(theta)^2+r^2)-1,0,0,(-2*a*m*r*sin(theta)^2)/(a^2*cos(theta)^2+r^2)],[0,(a^2*cos(theta)^2+r^2)/(r^2-2*m*r+a^2),0,0],[0,0,a^2*cos(theta)^2+r^2,0],[(-2*a*m*r*sin(theta)^2)/(a^2*cos(theta)^2+r^2),0,0,sin(theta)^2*((2*a^2*m*r*sin(theta)^2)/(a^2*cos(theta)^2+r^2)+r^2+a^2)])$
+ug:trigsimp(invert(lg));
+ricci(false);
+Ric:zeromatrix(4,4)$
+for _a thru 4 do for _b thru 4 do Ric[_a,_b]:trigsimp(ric[_a,_b]);
+Ric;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+("BL Coordinates, new");
+
+init_ctensor()$
+dim: 4$
+ct_coords: [t, r, theta, phi];
+
+M: 1$
+xa: 0$
+xtheta: %pi / 2$
+RA2: r^2 + a^2$
+Rs: 2 * M$
+%Delta: RA2 - Rs * r;
+%Sigma: r^2 + a^2 * cos(theta)^2;
+
+("Metric tensor");
+gtt: -(1 - r * Rs / %Sigma)$
+grr: %Sigma / %Delta$
+gthth: %Sigma$
+gphph: (RA2 + a^2 * r * Rs * sin(theta)^2 / %Sigma) * sin(theta)^2$
+gtph: - Rs * r * a * sin(theta)^2 / %Sigma$
+lg: matrix([gtt,0,0,gtph],[0,grr,0,0],[0,0,gthth,0],[gtph,0,0,gphph]);
+
+("Inverse Metric tensor");
+gutt: - (RA2**2 - a**2 * %Delta * sin(theta)**2) / (%Sigma * %Delta)$
+gurr: %Delta / %Sigma$
+guthth: 1 / %Sigma$
+guphph: (%Sigma - Rs * r) / (%Delta * %Sigma * sin(theta)**2)$
+gutph: - Rs * r * a / (%Delta * %Sigma)$
+ug: matrix([gutt,0,0,gutph],[0,gurr,0,0],[0,0,guthth,0],[gutph,0,0,guphph]);
+
+product: ug . lg$
+product2: zeromatrix(4,4)$
+for _a thru 4 do for _b thru 4 do product2[_a,_b]: trigsimp(product[_a,_b])$
+product2;
+determinant(lg);
+determinant(ug);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("BL Coordinates");
+
+xa: 1$
+xtheta: %pi / 2$
+R: sqrt(r^2+a^2)$
+%rho: sqrt(r^2+a^2*cos(theta)^2)$
+Rs: 2 * M$
+
+gtt: -(1 - r * Rs / %rho^2)$
+grr: %rho^2 / (R^2 - r * Rs)$
+gthth: %rho^2$
+gphph: (R^2 + a^2 * r * Rs * sin(theta)^2 / %rho^2) * sin(theta)^2$
+gtph: - Rs * r * a * sin(theta)^2 / %rho^2$
+init_ctensor()$
+dim: 4$
+ct_coords: [t, r, theta, phi];
+("Metric tensor");
+lg: matrix([gtt,0,0,gtph],[0,grr,0,0],[0,0,gthth,0],[gtph,0,0,gphph]);
+/*
+igtt: 
+*/
+ug: trigsimp(invert(lg));
+inv: invert(lg)$
+inv2: zeromatrix(4,4)$
+for _a thru 4 do for _b thru 4 do inv2[_a,_b]: trigsimp(inv[_a,_b])$
+inv2;
+test: ug . lg$
+test2: zeromatrix(4,4)$
+for _a thru 4 do for _b thru 4 do test2[_a,_b]: trigsimp(test[_a,_b])$
+test2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("BL Coordinates (3D)");
+
+xa: 1$
+theta: %pi / 2$
+R: sqrt(r^2+a^2)$
+%rho: sqrt(r^2+a^2*cos(theta)^2)$
+
+gtt: -(1 - r * Rs / %rho^2)$
+grr: %rho^2 / (R^2 - r * Rs)$
+gphph: (R^2 + a^2 * r * Rs * sin(theta)^2 / %rho^2) * sin(theta)^2$
+gtph: - Rs * r * a * sin(theta)^2 / %rho^2$
+init_ctensor()$
+dim: 4$
+ct_coords: [t, r, phi];
+("Metric tensor");
+lg: matrix([gtt,0,gtph],[0,grr,0],[gtph,0,gphph]);
+ug: trigsimp(invert(lg));
+inv: invert(lg)$
+inv2: zeromatrix(3,3)$
+for _a thru 3 do for _b thru 3 do inv2[_a,_b]: trigsimp(inv[_a,_b])$
+inv2;
+test: ug . lg$
+test2: zeromatrix(3,3)$
+for _a thru 3 do for _b thru 3 do test2[_a,_b]: trigsimp(test[_a,_b])$
+test2;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("BL Coordinates (simple)");
+gtt: -(1 - %beta^2 * R^2 / %rho^2)$
+grr: %rho^2 / (R^2 * (1 - %beta^2))$
+gthth: %rho^2$
+gphph: (1 + a^2 * %beta^2 * sin(theta)^2 / %rho^2) * R^2 * sin(theta)^2$
+gtph: - R^2 * %beta^2 * a * sin(theta)^2 / %rho^2$
+init_ctensor()$
+dim: 4$
+ct_coords: [t, r, theta, phi];
+("Metric tensor");
+lg: matrix([gtt,0,0,gtph],[0,grr,0,0],[0,0,gthth,0],[gtph,0,0,gphph]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("Doran Coordinates");
+
+Rs: 2;
+xa: 1$
+xtheta: %pi / 2$
+R: sqrt(r^2+a^2)$
+%rho: sqrt(r^2+a^2*cos(theta)^2)$
+%beta: sqrt(r*Rs/R^2)$
+
+("Metric");
+gtt: %beta^2*R^2/%rho^2-1$
+grr: %rho^2/R^2$
+gthth: %rho^2$
+gphph: R^2*sin(theta)^2+R^2*sin(theta)^2 *%beta^2/%rho^2*a^2*sin(theta)^2$
+gtr: %beta$
+gtph: -%beta^2*R^2/%rho^2*a*sin(theta)^2$
+grph: -%beta*a*sin(theta)^2$
+init_ctensor()$
+dim: 4$
+ct_coords: [T, r, theta, phi];
+("Metric tensor");
+lg: matrix([gtt,gtr,0,gtph],[gtr,grr,0,grph],[0,0,gthth,0],[gtph,grph,0,gphph]);
+
+("Metric inverse");
+igtt: -1$
+igrr: (R^2-r*Rs)/%rho^2$
+igthth: 1/%rho^2$
+igphph: 1/(R^2*sin(theta)^2)$
+igtr: %beta*R^2/%rho^2$
+igrph: a*%beta/%rho^2$
+ug: matrix([igtt,igtr,0,0],[igtr,igrr,0,igrph],[0,0,igthth,0],[0,igrph,0,igphph]);
+/*
+lg:trigsimp(lg);
+ug:trigsimp(ug);
+*/
+test: ug . lg$
+test2: zeromatrix(4,4)$
+for _a thru 4 do for _b thru 4 do test2[_a,_b]: trigsimp(test[_a,_b])$
+test3: test2;
+/*
+("Transformation from BL t coordinate");
+dTff: factor(%beta/(1-%beta^2))$
+tD = tBL - integrate (dTff, r, r, inf);
+("Transformation from BL phi coordinate");
+dPhiff: factor(a/R^2*dTff)$
+phiD = phiBL - integrate (dPhiff, r, r, inf);
+*/
+("--------------------------------------------------------------------------------");
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("Doran Coordinates (simple)");
+gtt: %beta^2*R^2/%rho^2-1$
+grr: %rho^2/R^2$
+gthth: %rho^2$
+gphph: sin(theta)^2*R^2*(1+%beta^2/%rho^2*a^2*sin(theta)^2)$
+gtr: %beta$
+gtph: -%beta^2*R^2/%rho^2*a*sin(theta)^2$
+grph: -%beta*a*sin(theta)^2$
+init_ctensor()$
+dim: 4$
+ct_coords: [T, r, theta, phi];
+("Metric tensor");
+lg: matrix([gtt,gtr,0,gtph],[gtr,grr,0,grph],[0,0,gthth,0],[gtph,grph,0,gphph]);
+("--------------------------------------------------------------------------------");
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("General Metric");
+depends(Gtr, r)$
+depends([Gtt, Grr, Gthth, Gphph, Gtph, Grph], [r, theta])$
+/*
+Gtr: 0;
+Grph: 0;
+*/
+dim: 4$
+ct_coords: [T, r, theta, phi];
+("Metric tensor");
+lg: matrix([Gtt,Gtr,0,Gtph],[Gtr,Grr,0,Grph],[0,0,Gthth,0],[Gtph,Grph,0,Gphph]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+("Metric analysis");
+("Determinant");
+det(g) = trigsimp(determinant(lg));
+dt: 'diff(t)$
+dr: 'diff(r)$
+dTheta: 'diff(%theta)$
+dPhi: 'diff(%Phi)$
+Ut: 'diff(dt, %lambda)$
+Ur: 'diff(dr, %lambda)$
+UTheta: 'diff(dTheta, %lambda)$
+UPhi: 'diff(dPhi, %lambda)$
+("Line element");
+ds^2 = lg[1,1] * dt^2 + lg[2,2] * dr^2 + lg[3,3] * dTheta^2 + lg[4,4] * dPhi^2 + 2 * lg[1,2] * dt * dr + 2 * lg[1,3] * dt * dTheta + 2 * lg[1,4] * dt * dPhi + 2 * lg[2,3] * dr * dTheta + lg[2,4] * dr * dPhi + lg[3,4] * dTheta * dPhi;
+("Conserved Quantities");
+("Energy");
+E = lg[1,1] * Ut + lg[1,2] * Ur + lg[1,3] * UTheta + lg[1,4] * UPhi;
+("Angular Momentum");
+L = lg[4,1] * Ut + lg[4,2] * Ur + lg[4,3] * UTheta + lg[4,4] * UPhi;
+("Invariant 4-velocity norm (K = -1, 0 or 1)");
+K = lg[1,1] * Ut^2 + lg[2,2] * Ur^2 + lg[3,3] * UTheta^2 + lg[4,4] * UPhi^2 + 2 * lg[1,2] * Ut * Ur + 2 * lg[1,3] * Ut * UTheta + 2 * lg[1,4] * Ut * UPhi + 2 * lg[2,3] * Ur * UTheta + lg[2,4] * Ur * UPhi + lg[3,4] * UTheta * UPhi;
+("c (radial)");
+crout: -lg[1,1]/lg[2,2]+sqrt((lg[1,2]/lg[2,2])^2-lg[1,1]/lg[2,2])$
+ratsimp(%);
+("c (latitudinal)");
+cthplus: -lg[1,1]/lg[3,3]+sqrt((lg[1,3]/lg[3,3])^2-lg[1,1]/lg[3,3])$
+ratsimp(%);
+("c (longitudinal)");
+cphplus: -lg[1,4]/lg[4,4]+sqrt((lg[1,4]/lg[4,4])^2-lg[1,1]/lg[4,4])$
+ratsimp(%);
+("--------------------------------------------------------------------------------");
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+("Symbols to Einstein . . .");
+
+tDiff: zeromatrix(4,4)$
+rDiff: zeromatrix(4,4)$
+thetaDiff: zeromatrix(4,4)$
+phiDiff: zeromatrix(4,4)$
+for _a thru 4 do for _b thru 4 do tDiff[_a,_b]: factor(diff(lg[_a,_b], t))$
+for _a thru 4 do for _b thru 4 do rDiff[_a,_b]: factor(diff(lg[_a,_b], r))$
+for _a thru 4 do for _b thru 4 do thetaDiff[_a,_b]: factor(diff(lg[_a,_b], theta))$
+for _a thru 4 do for _b thru 4 do phiDiff[_a,_b]: factor(diff(lg[_a,_b], phi))$
+g[t]= tDiff;
+g[r] = rDiff;
+g[theta] = thetaDiff;
+g[phi] = phiDiff;
+
+christof(false)$
+tSym: zeromatrix(4,4)$
+rSym: zeromatrix(4,4)$
+thetaSym: zeromatrix(4,4)$
+phiSym: zeromatrix(4,4)$
+for _a thru 4 do for _b thru 4 do tSym[_a,_b]: factor(mcs[_a,_b,1])$
+for _a thru 4 do for _b thru 4 do rSym[_a,_b]: factor(mcs[_a,_b,2])$
+for _a thru 4 do for _b thru 4 do thetaSym[_a,_b]: factor(mcs[_a,_b,3])$
+for _a thru 4 do for _b thru 4 do phiSym[_a,_b]: factor(mcs[_a,_b,4])$
+%Gamma^t= tSym;
+%Gamma^r = rSym;
+%Gamma^%theta = thetaSym;
+%Gamma^%phi = phiSym;
+
+riemann(false)$
+lriemann(false)$
+uriemann(false)$
+
+ricci(false)$
+Ric: zeromatrix(4,4)$
+for _a thru 4 do for _b thru 4 do Ric[_a,_b]: trigsimp(ric[_a,_b])$
+Ricci = Ric;
+
+leinstein(false)$
+Ein: zeromatrix(4,4)$
+for _a thru 4 do for _b thru 4 do Ein[_a,_b]: trigsimp(lein[_a,_b])$
+Einstein = Ein;
+
+("Kretchmann Invariant");
+rinvariant()$
+trigsimp(%);
+factor(%);
+
+("Scalar Curvature");
+scurvature()$
+trigsimp(%);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("All Tensors:");
+ug: trigsimp(invert(lg))$
+("Christoffel Symbols");
+christof(false)$
+trigsimp(%);
+("Riemann Curvature Tensor");
+riemann(false)$
+trigsimp(%);
+lriemann(false)$
+trigsimp(%);
+uriemann(false)$
+trigsimp(%);
+("Kretchmann Invariant");
+rinvariant()$
+trigsimp(%);
+("Weyl Tensor");
+weyl(false)$
+trigsimp(%);
+("Ricci Tensor");
+ricci(true)$
+trigsimp(ricci(false));
+("Scalar Curvature");
+scurvature();
+trigsimp(%);
+
+("Einstein Tensor");
+leinstein(true);
+
+("--------------------------------------------------------------------------------");
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+("Geodesic Equations");
+cgeodesic(true)$
+ratsimp(true);
+("Christoffel Symbols");
+christof(mcs)$
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
