@@ -17,7 +17,7 @@ pip install matplotlib pillow pi3d
 #### Build (MUSL by default):
 `./build && echo OK` or `./build gcc && echo OK` or `./build clang && echo OK`
 
-There should be NO errors or warnings.
+There should be NO errors or warnings.  [UPDATE: kerr-image.c shows warnings on arm64; it is 3rd party code]
 
 #### Find examples for ODE parameters and other things:
 ```
