@@ -98,7 +98,7 @@ static void plot_path (long dp, void *params, real t) {
     real ra = sqrtl(p->ra2.val);
     real gamma = p->p_t / p->sigma;
     char fs[128];
-    sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le %%+.3Le %%+.3Le %%+.3Le %%+.3Le %%+.3Le\n", dp, dp, dp);
+    sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le  %%+.3Le %%+.3Le %%+.3Le  %%+.3Le %%+.3Le\n", dp, dp, dp);
     printf(fs, ra * p->sth.val * cosl(p->q_phi), ra * p->sth.val * sinl(p->q_phi), p->q_r * cosl(p->q_theta), t,
            e4v, eR, eTHETA, gamma, sqrtl(1.0L - 1.0L / (gamma * gamma)));
 }
@@ -106,7 +106,7 @@ static void plot_path (long dp, void *params, real t) {
 static void plot_view (long dp, void *params, real t) {
     parameters *p = (parameters *)params;
     char fs[256];
-    sprintf(fs, "%%+.6Le 2 %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe",
+    sprintf(fs, "%%+.6Le 2  %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe  %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe",
             dp, dp, dp, dp, dp, dp, dp, dp);
     printf(fs, t, p->q_r, cosl(p->q_theta), p->q_t, p->q_phi, p->p_r, - sinl(p->q_theta) * p->p_theta, p->p_t, p->p_phi);
     printf("  -1 0 0 0  0 0 0 1  0 1 0 0\n");
