@@ -124,15 +124,9 @@ int main (int argc, char **argv) {
     long plot_type = strtol(argv[plot_type_position], NULL, 10);
     plotter plot;
     switch (plot_type) {
-        case 0:
-            plot = plot_path;
-            break;
-        case 1:
-            plot = plot_view;
-            break;
-        case 2:
-            plot = plot_raw;
-            break;
+        case 0: plot = plot_path; break;
+        case 1: plot = plot_view; break;
+        case 2: plot = plot_raw; break;
         default:
             printf("Plot type is {%ld} but should be 0 (x,y,z,error,speed), 1 (view), or 2 (raw)\n", plot_type);
             exit(1);
