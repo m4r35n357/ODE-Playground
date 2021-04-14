@@ -26,13 +26,17 @@ int main(int argc, char **argv) {
     real Q = - r3 * (r3 - 6.0L * m * r2 + 9.0L * m * r - 4.0L * a2 * m) / (a2 * (r - m) * (r - m));
     real r_min = 2.0L * m * (1.0L + cosl(2.0L / 3.0L * acosl(- fabsl(a) / m)));
     real r_max = 2.0L * m * (1.0L + cosl(2.0L / 3.0L * acosl(fabsl(a) / m)));
-    fprintf(stdout, "%s %.3Lf %s %.3Lf %s %.3Lf %s %.3Lf\n", "a:", a, " M:", m, " min R =", r_min, " max R =", r_max);
+    fprintf(stdout, "\n");
+    fprintf(stdout, "a: %.3Lf M: %.3Lf  min R = %.3Lf  max R = %.3Lf\nL = %.18Lf  Q = %.18Lf\n", a, m, r_min, r_max, L, Q);
     if (r < r_min || r > r_max) {
         fprintf(stdout, "r is out of range!\n");
     } else {
+        fprintf(stdout, "\n");
         fprintf(stdout, "Simulate:\n");
-        fprintf(stdout, "./h-kerr-sd-dbg 6 8 .01 10000 0 .8 1.0 0.0 1.0 %.18Lf 1.0 %.18Lf %.3Lf 0.0 >/tmp/$USER/data\n", L, Q, r);
+        fprintf(stdout, "./h-kerr-sd-dbg 6 8 .01 10000 0 .8 1.0 0.0 1.0 %La 1.0 %La %.3Lf 0.0 >/tmp/$USER/data\n", L, Q, r);
+        fprintf(stdout, "\n");
         fprintf(stdout, "Generate ICs:\n");
-        fprintf(stdout, "./h-kerr-sd-dbg 15 8 .01 0 2 .8 1.0 0.0 1.0 %.18Lf 1.0 %.18Lf %.3Lf 0.0\n", L, Q, r);
+        fprintf(stdout, "./h-kerr-sd-dbg 15 8 .01 0 2 .8 1.0 0.0 1.0 %La 1.0 %La %.3Lf 0.0\n", L, Q, r);
+        fprintf(stdout, "\n");
     }
 }

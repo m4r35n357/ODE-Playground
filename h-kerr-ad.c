@@ -113,11 +113,10 @@ static void plot_view (long dp, void *params, real t) {
 }
 
 static void plot_raw (long dp, void *params, real time) {
+    (void)dp;
     parameters *p = (parameters *)params;
-    char fs[256];
-    sprintf(fs, "%%+.6Le %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe\n",
-            dp, dp, dp, dp, dp, dp, dp, dp);
-    printf(fs, time, p->q_t, p->q_r, p->q_theta, p->q_phi, p->p_t, p->p_r, p->p_theta, p->p_phi);
+    printf("%+.6Le  %La %La %La %La  %La %La %La %La\n",
+           time, p->q_t, p->q_r, p->q_theta, p->q_phi, p->p_t, p->p_r, p->p_theta, p->p_phi);
 }
 
 int main (int argc, char **argv) {
