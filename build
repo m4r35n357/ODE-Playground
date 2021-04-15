@@ -52,7 +52,8 @@ build_symp () {
 for model in \
 h-newton \
 h-kerr-ad \
-h-kerr-sd
+h-kerr-sd \
+h-analysis
 do
     rm -f ${model}-*
     echo " Building ${model}"
