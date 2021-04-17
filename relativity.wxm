@@ -1,11 +1,11 @@
 /* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
-/* [ Created with wxMaxima version 15.08.2 ] */
-
+/* [ Created with wxMaxima version 19.01.2x ] */
 /* [wxMaxima: input   start ] */
 ("RUN THIS FIRST !!!")$
 kill(all);
 if get('ctensor,'version)=false then load(ctensor)$
 /* [wxMaxima: input   end   ] */
+
 
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
@@ -18,6 +18,7 @@ lg: matrix([(r^2),0],[0,1]);
 cmetric()$
 /* [wxMaxima: input   end   ] */
 
+
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
 ("2-Sphere");
@@ -28,6 +29,7 @@ ct_coords: [theta, phi];
 lg: matrix([r^2,0],[0,(r*sin(theta))^2]);
 cmetric()$
 /* [wxMaxima: input   end   ] */
+
 
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
@@ -40,6 +42,7 @@ lg: matrix([(r^2),0,0],[0,(r*sin(phi))^2,0],[0,0,(r*sin(phi)*sin(theta))^2]);
 cmetric()$
 /* [wxMaxima: input   end   ] */
 
+
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
 ("Hyperbolic 3-space");
@@ -50,6 +53,7 @@ ct_coords: [phi, theta, psi];
 lg: matrix([(r^2),0,0],[0,(r*sinh(phi))^2,0],[0,0,(r*sinh(phi)*sin(theta))^2]);
 cmetric()$
 /* [wxMaxima: input   end   ] */
+
 
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
@@ -62,6 +66,7 @@ lg: matrix([1,0,0,0],[0,-(r^2),0,0],[0,0,-(r*sin(phi))^2,0],[0,0,0,-(r*sin(phi)*
 cmetric()$
 /* [wxMaxima: input   end   ] */
 
+
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
 ("Minkowski Space");
@@ -73,7 +78,7 @@ lg: matrix([1,0,0,0],[0,-1,0,0],[0,0,-1,0],[0,0,0,-1]);
 cmetric()$
 /* [wxMaxima: input   end   ] */
 
-/* [wxMaxima: hide output   ] */
+
 /* [wxMaxima: input   start ] */
 ("Polar Minkowski Space");
 init_ctensor()$
@@ -81,7 +86,9 @@ dim: 4$
 ct_coords: [t, r, theta, phi];
 ("Metric tensor");
 lg: matrix([-1,0,0,0],[0,1,0,0],[0,0,r^2,0],[0,0,0,r^2*sin(theta)^2]);
+ug: trigsimp(invert(lg));
 /* [wxMaxima: input   end   ] */
+
 
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
@@ -96,6 +103,7 @@ ct_coords: [t, r, theta, phi];
 lg: matrix([-1,0,0,0],[0,%rho^2/R^2,0,0],[0,0,%rho^2,0],[0,0,0,R^2*sin(theta)^2]);
 /* [wxMaxima: input   end   ] */
 
+
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
 ("Uniform gravity");
@@ -106,7 +114,7 @@ ct_coords: [t, x];
 lg: matrix([e^(2*g*x),0],[0,-1]);
 /* [wxMaxima: input   end   ] */
 
-/* [wxMaxima: hide output   ] */
+
 /* [wxMaxima: input   start ] */
 ("Accelerated frame");
 init_ctensor()$
@@ -116,6 +124,7 @@ ct_coords: [t, x, y, z];
 lg: matrix([-(1 + a * x)^2, 0, 0, 0],[0, 1, 0, 0],[0, 0, 1, 0],[0, 0, 0, 1]);
 ug: trigsimp(invert(lg));
 /* [wxMaxima: input   end   ] */
+
 
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
@@ -132,6 +141,7 @@ lg: matrix([-(1-%beta^2),0,0,0],[0,1/(1-%beta^2),0,0],[0,0,r^2,0],[0,0,0,r^2*sin
 ug: trigsimp(invert(lg));
 /* [wxMaxima: input   end   ] */
 
+
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
 ("Schwarzschild Rectangular");
@@ -145,6 +155,8 @@ ct_coords: [t, x, y, z];
 lg: matrix([-(1-%beta^2),0,0,0],[0,1/(1-%beta^2),0,0],[0,0,1/(1-%beta^2),0],[0,0,0,1/(1-%beta^2)]);
 /* [wxMaxima: input   end   ] */
 
+
+/* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
 ("Gullstrand Painleve Coordinates");
 
@@ -161,6 +173,7 @@ test2: zeromatrix(4,4)$
 for _a thru 4 do for _b thru 4 do test2[_a,_b]: trigsimp(test[_a,_b])$
 test3: test2;
 /* [wxMaxima: input   end   ] */
+
 
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
@@ -180,6 +193,7 @@ for _a thru 4 do for _b thru 4 do test2[_a,_b]: trigsimp(test[_a,_b])$
 test3: test2;
 /* [wxMaxima: input   end   ] */
 
+
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
 /********************************
@@ -198,6 +212,7 @@ for _a thru 4 do for _b thru 4 do Ric[_a,_b]:trigsimp(ric[_a,_b]);
 Ric;
 /* [wxMaxima: input   end   ] */
 
+
 /* [wxMaxima: input   start ] */
 ("BL Coordinates, new");
 
@@ -205,7 +220,7 @@ init_ctensor()$
 dim: 4$
 ct_coords: [t, r, theta, phi];
 
-M: 1$
+xM: 1$
 xa: 0$
 xtheta: %pi / 2$
 RA2: r^2 + a^2$
@@ -236,6 +251,7 @@ product2;
 determinant(lg);
 determinant(ug);
 /* [wxMaxima: input   end   ] */
+
 
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
@@ -271,6 +287,7 @@ for _a thru 4 do for _b thru 4 do test2[_a,_b]: trigsimp(test[_a,_b])$
 test2;
 /* [wxMaxima: input   end   ] */
 
+
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
 ("BL Coordinates (3D)");
@@ -300,6 +317,7 @@ for _a thru 3 do for _b thru 3 do test2[_a,_b]: trigsimp(test[_a,_b])$
 test2;
 /* [wxMaxima: input   end   ] */
 
+
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
 ("BL Coordinates (simple)");
@@ -314,6 +332,7 @@ ct_coords: [t, r, theta, phi];
 ("Metric tensor");
 lg: matrix([gtt,0,0,gtph],[0,grr,0,0],[0,0,gthth,0],[gtph,0,0,gphph]);
 /* [wxMaxima: input   end   ] */
+
 
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
@@ -367,6 +386,7 @@ phiD = phiBL - integrate (dPhiff, r, r, inf);
 ("--------------------------------------------------------------------------------");
 /* [wxMaxima: input   end   ] */
 
+
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
 ("Doran Coordinates (simple)");
@@ -385,6 +405,7 @@ lg: matrix([gtt,gtr,0,gtph],[gtr,grr,0,grph],[0,0,gthth,0],[gtph,grph,0,gphph]);
 ("--------------------------------------------------------------------------------");
 /* [wxMaxima: input   end   ] */
 
+
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
 ("General Metric");
@@ -399,6 +420,7 @@ ct_coords: [T, r, theta, phi];
 ("Metric tensor");
 lg: matrix([Gtt,Gtr,0,Gtph],[Gtr,Grr,0,Grph],[0,0,Gthth,0],[Gtph,Grph,0,Gphph]);
 /* [wxMaxima: input   end   ] */
+
 
 /* [wxMaxima: input   start ] */
 ("Metric analysis");
@@ -432,6 +454,7 @@ cphplus: -lg[1,4]/lg[4,4]+sqrt((lg[1,4]/lg[4,4])^2-lg[1,1]/lg[4,4])$
 ratsimp(%);
 ("--------------------------------------------------------------------------------");
 /* [wxMaxima: input   end   ] */
+
 
 /* [wxMaxima: input   start ] */
 ("Symbols to Einstein . . .");
@@ -487,6 +510,7 @@ scurvature()$
 trigsimp(%);
 /* [wxMaxima: input   end   ] */
 
+
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
 ("All Tensors:");
@@ -520,6 +544,7 @@ leinstein(true);
 ("--------------------------------------------------------------------------------");
 /* [wxMaxima: input   end   ] */
 
+
 /* [wxMaxima: hide output   ] */
 /* [wxMaxima: input   start ] */
 ("Geodesic Equations");
@@ -529,5 +554,7 @@ ratsimp(true);
 christof(mcs)$
 /* [wxMaxima: input   end   ] */
 
-/* Maxima can't load/batch files which end with a comment! */
-"Created with wxMaxima"$
+
+
+/* Old versions of Maxima abort on loading files that end in a comment. */
+"Created with wxMaxima 19.01.2x"$
