@@ -3,7 +3,7 @@
  *
  * Example:  ./h-analysis-dbg  6 8 1 1 >/tmp/$USER/data
  *
- * Example:  gnuplot -p -e "set terminal wxt size 600,450; set xrange [-0.1:1.1]; set yrange [-0.1:1.1]; plot '/tmp/$USER/data' using 2:3 with lines"
+ * Example:  gnuplot -p -e "set terminal wxt size 600,450; set xrange [-0.1:1.1]; set yrange [-0.1:1.1]; plot '/tmp/$USER/data' using 2:3 with linespoints pt 7"
  *
  * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
