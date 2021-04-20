@@ -27,20 +27,6 @@ def _plot_s(model, order, x_min, x_max, steps, y_min, y_max):
         ax1.plot(data[0], data[c], f'{colour[c - 1]}', linewidth=2 if c == 1 else 1, markersize=0, label=c-1)
     ax1.legend(loc='lower right')
 
-def scan_s(model, x_min=-8.0, x_max=8.0, steps=1000, εf=1e-9, εx=1e-9, limit=101, newton=True, mode=Mode.ALL, console=True, debug=False):
-    #  Find roots, turning points and inflections of the model function
-    for result in analyze_s(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, mode, console, debug):
-        if result.count < 101:
-            print(result, file=stderr)
-
-def mplot_s(model, order=12, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
-    _plot_s(model, order, x_min, x_max, steps, y_min, y_max)
-    pyplot.show()
-
-def msave_s(filename, model, order=12, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
-    _plot_s(model, order, x_min, x_max, steps, y_min, y_max)
-    pyplot.savefig(filename)
-
 def _plot_d(model, x_min, x_max, steps, y_min, y_max):
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')
@@ -60,17 +46,29 @@ def _plot_d(model, x_min, x_max, steps, y_min, y_max):
         ax1.plot(data[0], data[c], f'{colour[c - 1]}', linewidth=2 if c == 1 else 1, markersize=0, label=c-1)
     ax1.legend(loc='lower right')
 
-def scan_d(model, x_min=-8.0, x_max=8.0, steps=1000, εf=1e-9, εx=1e-9, limit=101, newton=True, console=True, debug=False):
-    for result in analyze_d(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, console, debug):
-        if result.count < 101:
-            print(result, file=stderr)
+def scan(model, variable, x_min=-8.0, x_max=8.0, steps=1000, εf=1e-9, εx=1e-9, limit=101, newton=True, mode=Mode.ALL, console=True, debug=False):
+    if isinstance(variable, Series):
+        for result in analyze_s(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, mode, console, debug):
+            if result.count < 101:
+                print(result, file=stderr)
+    else:
+        for result in analyze_d(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, console, debug):
+            if result.count < 101:
+                print(result, file=stderr)
 
-def mplot_d(model, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
-    _plot_d(model, x_min, x_max, steps, y_min, y_max)
+
+def mplot(model, variable, order=12, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
+    if isinstance(variable, Series):
+        _plot_s(model, order, x_min, x_max, steps, y_min, y_max)
+    else:
+        _plot_d(model, x_min, x_max, steps, y_min, y_max)
     pyplot.show()
 
-def msave_d(filename, model, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
-    _plot_d(model, x_min, x_max, steps, y_min, y_max)
+def msave(filename, model, variable, order=12, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
+    if isinstance(variable, Series):
+        _plot_s(model, order, x_min, x_max, steps, y_min, y_max)
+    else:
+        _plot_d(model, x_min, x_max, steps, y_min, y_max)
     pyplot.savefig(filename)
 
 if __name__ == "__main__":  # hard-coded example
@@ -88,10 +86,14 @@ from ad import *
 from plotters import *
 
 f = lambda a: a * a * a + 2.0 * a * a - 3.0 * a +1.0
+
 x = Series.get(5, 1.0).var
-print(~f(x))
-scan_s(f)
-mplot_s(f)
+scan(f, x)
+mplot(f, x)
+
+y = Dual.get(1.0).var
+scan(f, y)
+mplot(f, y)
 
 f = lambda a: (a.exp + (a.sqr - 4.0).exp).ln - value
 f = lambda a: (a.sqr + (a.exp - 4).sqr).sqrt - value
