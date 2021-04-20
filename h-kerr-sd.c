@@ -3,7 +3,7 @@
  *
  * Example:  ./h-kerr-sd-dbg 6 8 .01 10000 0 0.8 1.0 1.0 0.9455050956749083 1.434374509531738 1.0 7.978759958927879 12.0 63.0 >/tmp/$USER/data
  *
- * Example:  gnuplot -p -e "set terminal wxt size 600,450; splot '<cat' with lines" </tmp/$USER/data
+ * Example:  gnuplot -p -e "set terminal wxt size 600,450; splot '/tmp/$USER/data' with lines"
  *
  * Example:  gnuplot -p -e "set terminal wxt size 600,450; set yrange [-240:0]; plot '/tmp/$USER/data' using 4:5 with lines, '/tmp/$USER/data' using 4:6 with lines, '/tmp/$USER/data' using 4:7 with lines"
  *

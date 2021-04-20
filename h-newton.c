@@ -3,7 +3,7 @@
  *
  * Example:  ./h-newton-dbg  6 8 1 10000  1 12 .6 >/tmp/$USER/data
  *
- * Example:  gnuplot -p -e "set terminal wxt size 600,450; splot '<cat' with lines" </tmp/$USER/data
+ * Example:  gnuplot -p -e "set terminal wxt size 600,450; splot '/tmp/$USER/data' with lines"
  *
  * Example:  gnuplot -p -e "set terminal wxt size 600,450; set yrange [-240:0]; plot '/tmp/$USER/data' using 4:5 with lines"
  *
