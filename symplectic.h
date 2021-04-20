@@ -13,9 +13,9 @@ void t_variables (char **argv, int start, int count, ...);
 
 real error (real e);
 
-typedef void (*updater)(void *, real cd);
+typedef void (*updater)(void *, real);
 
-typedef void (*plotter)(long dp, void *, real h);
+typedef void (*plotter)(long, void *, real);
 
 void update_q (void *params, real c);
 
