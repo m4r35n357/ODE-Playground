@@ -84,7 +84,14 @@ else:
     print(__name__ + " module loaded", file=stderr)
 
 '''
+from ad import *
 from plotters import *
+
+f = lambda a: a * a * a + 2.0 * a * a - 3.0 * a +1.0
+x = Series.get(5, 1.0).var
+print(~f(x))
+scan_s(f)
+mplot_s(f)
 
 f = lambda a: (a.exp + (a.sqr - 4.0).exp).ln - value
 f = lambda a: (a.sqr + (a.exp - 4).sqr).sqrt - value
