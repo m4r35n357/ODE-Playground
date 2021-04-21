@@ -198,27 +198,28 @@ def scan(model, variable, x_min=-8.0, x_max=8.0, steps=1000, εf=1e-9, εx=1e-9,
                 print(result, file=stderr)
 
 
-def mplot(model, variable, order=12, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
+def mplot(model, variable, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
     if isinstance(variable, Series):
-        _plot_s(model, order, x_min, x_max, steps, y_min, y_max)
+        _plot_s(model, variable.n - 1, x_min, x_max, steps, y_min, y_max)
     else:
         _plot_d(model, x_min, x_max, steps, y_min, y_max)
     pyplot.show()
 
-def msave(filename, model, variable, order=12, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
+def msave(filename, model, variable, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
     if isinstance(variable, Series):
-        _plot_s(model, order, x_min, x_max, steps, y_min, y_max)
+        _plot_s(model, variable.n, x_min, x_max, steps, y_min, y_max)
     else:
         _plot_d(model, x_min, x_max, steps, y_min, y_max)
     pyplot.savefig(filename)
 
 if __name__ == "__main__":  # hard-coded example
-    f = lambda a: (a - 1)**2 / (a.cosh + 1).ln - 1
+    l = lambda a: (a - 1)**2 / (a.cosh + 1).ln - 1
     print(f'Multi Scan (Series)')
-    scan_s(f)
-    mplot_s(f)
+    s = Series.get(8).var
+    scan(l, s)
+    mplot(l, s)
     print(f'Root Scan (Dual)')
-    mplot_d(f)
+    mplot(l, Dual.get().var)
 else:
     print(__name__ + " module loaded", file=stderr)
 
@@ -226,13 +227,21 @@ else:
 from ad import *
 from plotters import *
 
-f = lambda a: a * a * a + 2.0 * a * a - 3.0 * a +1.0
+a = Series.get(4, 3.0).var
+print(a)
+print(~(a * a))
 
-x = Series.get(5, 1.0).var
+b = Dual.get(3.0).var
+print(b)
+print(b * b)
+
+f = lambda a: a * a * a + 2.0 * a * a - 3.0 * a + 1.0
+
+x = Series.get(5).var
 scan(f, x)
 mplot(f, x)
 
-y = Dual.get(1.0).var
+y = Dual.get().var
 scan(f, y)
 mplot(f, y)
 
