@@ -245,6 +245,14 @@ y = Dual.get().var
 scan(f, y)
 mplot(f, y)
 
+
+bisect_d(f, -4.0, -2.0)
+newton_d(f, -4.0)
+
+bisect_s(f, -4.0, -2.0)
+newton_s(f, -4.0)
+
+
 f = lambda a: (a.exp + (a.sqr - 4.0).exp).ln - value
 f = lambda a: (a.sqr + (a.exp - 4).sqr).sqrt - value
 f = lambda a: (2 * a).sin - 2 * a.sin * a.cos - value
