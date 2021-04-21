@@ -97,9 +97,10 @@ ${CC} -O3 -DNDEBUG -c $WARNINGS -fpic taylor-ode.c && ${CC} -shared -o libode.so
 #  Example: musl-gcc -O3 -DNDEBUG -L. -Wall -Wextra -o test tsm-lorenz.c -lode -lm -s
 #  Example: LD_LIBRARY_PATH=. ./test 15 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | gnuplot -p -e "splot '<cat' with lines"
 
-echo " Building kerr-image"
-gcc -o kerr-image kerr-image.c -O6 -Wall -std=c99 -pedantic -Wextra -Wno-unused-result -lm
-gcc -g -o kerr-image-dbg kerr-image.c -O0 -Wall -std=c99 -pedantic -Wextra -Wno-unused-result -lm
+# ftp://ftp.madore.org/pub/madore/misc/kerr-image.c
+# echo " Building kerr-image"
+# gcc -o kerr-image kerr-image.c -O6 -Wall -std=c99 -pedantic -Wextra -Wno-unused-result -lm
+# gcc -g -o kerr-image-dbg kerr-image.c -O0 -Wall -std=c99 -pedantic -Wextra -Wno-unused-result -lm
 
 echo ""
 wait
