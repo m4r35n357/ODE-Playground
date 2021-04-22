@@ -34,38 +34,7 @@ class Result(namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', 'sens
         return f'{self.method}  x: {self.x:+.{Context.places}e}  δx: {self.δx:+.{Context.places}e}  ' \
                f'f: {self.f:+.{Context.places}e}  {self.sense} {self.mode} {self.count}'
 
-def bisect_s(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
-    a, b, c = Series.get(3, xa).var, Series.get(3, xb).var, Series.get(3)
-    f_sign = model(a).jet[mode.value]
-    fc = δx = i = 1
-    while i <= limit and (abs(fc) > εf or abs(δx) > εx):
-        c = 0.5 * (a + b)
-        fc = (~ model(c)).jet[mode.value]
-        if f_sign * fc < 0.0:
-            b = c
-        elif f_sign * fc > 0.0:
-            a = c
-        else:
-            b, a = c, c
-        δx = b.val - a.val
-        i += 1
-        if debug:
-            print(Result(method=Solver.BI.name, count=i-1, sense=sense.value, mode=mode.name, x=c.val, f=fc, δx=δx), file=stderr)
-    return Result(method=Solver.BI.name, count=i-1, sense=sense.value, mode=mode.name, x=c.val, f=fc, δx=δx)
-
-def newton_s(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
-    x, f = Series.get(2 + mode.value, x0).var, [1.0, 0.0]
-    δx = i = 1
-    while i <= limit and (abs(f[0]) > εf or abs(δx) > εx):
-        f = (~ model(x)).jet[mode.value : 2 + mode.value]
-        δx = - f[0] / f[1]
-        x += δx
-        i += 1
-        if debug:
-            print(Result(method=Solver.NT.name, count=i-1, sense=sense.value, mode=mode.name, x=x.val, f=f[0], δx=δx), file=stderr)
-    return Result(method=Solver.NT.name, count=i-1, sense=sense.value, mode=mode.name, x=x.val, f=f[0], δx=δx)
-
-def analyze_s(model, method, x0, x1, steps, εf, εx, limit, mode, console, debug):
+def _analyze_s(model, method, x0, x1, steps, εf, εx, limit, mode, console, debug):
     x_prev = f0_prev = f1_prev = f2_prev = None
     step = (x1 - x0) / (steps - 1)
     for k in range(steps):
@@ -98,38 +67,7 @@ def analyze_s(model, method, x0, x1, steps, εf, εx, limit, mode, console, debu
         f1_prev = f.jet[Mode.MIN_MAX.value]
         f2_prev = f.jet[Mode.INFLECT.value]
 
-def bisect_d(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug=False):
-    a, b, c = Dual.get(xa), Dual.get(xb), Dual.get(3)
-    f_sign = model(Dual.get(xa)).val
-    δx = fc = i = 1
-    while i <= limit and (abs(fc) > εf or abs(δx) > εx):
-        c = 0.5 * (a + b)
-        fc = model(c).val
-        if f_sign * fc < 0.0:
-            b = c
-        elif f_sign * fc > 0.0:
-            a = c
-        else:
-            b, a = c, c
-        δx = b.val - a.val
-        i += 1
-        if debug:
-            print(Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=fc, δx=δx, mode=Mode.ROOT___.name), file=stderr)
-    return Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=fc, δx=δx, mode=Mode.ROOT___.name)
-
-def newton_d(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug=False):
-    x, f = Dual.get(x0).var, Dual.get(1)
-    δx = i = 1
-    while i <= limit and (abs(f.val) > εf or abs(δx) > εx):
-        f = model(x)
-        δx = - f.val / f.dot
-        x += δx
-        i += 1
-        if debug:
-            print(Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=x.val, f=f.val, δx=δx, mode=Mode.ROOT___.name), file=stderr)
-    return Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=x.val, f=f.val, δx=δx, mode=Mode.ROOT___.name)
-
-def analyze_d(model, method, x0, x1, steps, εf, εx, limit, console, debug):
+def _analyze_d(model, method, x0, x1, steps, εf, εx, limit, console, debug):
     x_prev = f0_prev = None
     step = (x1 - x0) / (steps - 1)
     for k in range(steps):
@@ -187,13 +125,75 @@ def _plot_d(model, x_min, x_max, steps, y_min, y_max):
         ax1.plot(data[0], data[c], f'{colour[c - 1]}', linewidth=2 if c == 1 else 1, markersize=0, label=c-1)
     ax1.legend(loc='lower right')
 
+def bisect_s(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
+    a, b, c = Series.get(3, xa).var, Series.get(3, xb).var, Series.get(3)
+    f_sign = model(a).jet[mode.value]
+    fc = δx = i = 1
+    while i <= limit and (abs(fc) > εf or abs(δx) > εx):
+        c = 0.5 * (a + b)
+        fc = (~ model(c)).jet[mode.value]
+        if f_sign * fc < 0.0:
+            b = c
+        elif f_sign * fc > 0.0:
+            a = c
+        else:
+            b, a = c, c
+        δx = b.val - a.val
+        i += 1
+        if debug:
+            print(Result(method=Solver.BI.name, count=i-1, sense=sense.value, mode=mode.name, x=c.val, f=fc, δx=δx), file=stderr)
+    return Result(method=Solver.BI.name, count=i-1, sense=sense.value, mode=mode.name, x=c.val, f=fc, δx=δx)
+
+def bisect_d(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug=False):
+    a, b, c = Dual.get(xa), Dual.get(xb), Dual.get(3)
+    f_sign = model(Dual.get(xa)).val
+    δx = fc = i = 1
+    while i <= limit and (abs(fc) > εf or abs(δx) > εx):
+        c = 0.5 * (a + b)
+        fc = model(c).val
+        if f_sign * fc < 0.0:
+            b = c
+        elif f_sign * fc > 0.0:
+            a = c
+        else:
+            b, a = c, c
+        δx = b.val - a.val
+        i += 1
+        if debug:
+            print(Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=fc, δx=δx, mode=Mode.ROOT___.name), file=stderr)
+    return Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=fc, δx=δx, mode=Mode.ROOT___.name)
+
+def newton_s(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
+    x, f = Series.get(2 + mode.value, x0).var, [1.0, 0.0]
+    δx = i = 1
+    while i <= limit and (abs(f[0]) > εf or abs(δx) > εx):
+        f = (~ model(x)).jet[mode.value : 2 + mode.value]
+        δx = - f[0] / f[1]
+        x += δx
+        i += 1
+        if debug:
+            print(Result(method=Solver.NT.name, count=i-1, sense=sense.value, mode=mode.name, x=x.val, f=f[0], δx=δx), file=stderr)
+    return Result(method=Solver.NT.name, count=i-1, sense=sense.value, mode=mode.name, x=x.val, f=f[0], δx=δx)
+
+def newton_d(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug=False):
+    x, f = Dual.get(x0).var, Dual.get(1)
+    δx = i = 1
+    while i <= limit and (abs(f.val) > εf or abs(δx) > εx):
+        f = model(x)
+        δx = - f.val / f.dot
+        x += δx
+        i += 1
+        if debug:
+            print(Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=x.val, f=f.val, δx=δx, mode=Mode.ROOT___.name), file=stderr)
+    return Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=x.val, f=f.val, δx=δx, mode=Mode.ROOT___.name)
+
 def scan(model, variable, x_min=-8.0, x_max=8.0, steps=1000, εf=1e-9, εx=1e-9, limit=101, newton=True, mode=Mode.ALL, console=True, debug=False):
     if isinstance(variable, Series):
-        for result in analyze_s(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, mode, console, debug):
+        for result in _analyze_s(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, mode, console, debug):
             if result.count < 101:
                 print(result, file=stderr)
     else:
-        for result in analyze_d(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, console, debug):
+        for result in _analyze_d(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, console, debug):
             if result.count < 101:
                 print(result, file=stderr)
 
