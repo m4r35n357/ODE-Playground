@@ -187,39 +187,41 @@ def newton_d(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug
             print(Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=x.val, f=f.val, δx=δx, mode=Mode.ROOT___.name), file=stderr)
     return Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=x.val, f=f.val, δx=δx, mode=Mode.ROOT___.name)
 
-def scan(model, variable, x_min=-8.0, x_max=8.0, steps=1000, εf=1e-9, εx=1e-9, limit=101, newton=True, mode=Mode.ALL, console=True, debug=False):
-    if isinstance(variable, Series):
-        for result in _analyze_s(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, mode, console, debug):
-            if result.count < 101:
-                print(result, file=stderr)
-    else:
-        for result in _analyze_d(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, console, debug):
-            if result.count < 101:
-                print(result, file=stderr)
+def scan_s(model, x_min=-8.0, x_max=8.0, steps=1000, εf=1e-9, εx=1e-9, limit=101, newton=True, mode=Mode.ALL, console=True, debug=False):
+    for result in _analyze_s(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, mode, console, debug):
+        if result.count < 101:
+            print(result, file=stderr)
+
+def scan_d(model, x_min=-8.0, x_max=8.0, steps=1000, εf=1e-9, εx=1e-9, limit=101, newton=True, mode=Mode.ALL, console=True, debug=False):
+    for result in _analyze_d(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, console, debug):
+        if result.count < 101:
+            print(result, file=stderr)
 
 
-def mplot(model, variable, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
-    if isinstance(variable, Series):
-        _plot_s(model, variable.n - 1, x_min, x_max, steps, y_min, y_max)
-    else:
-        _plot_d(model, x_min, x_max, steps, y_min, y_max)
+def mplot_s(model, order=12, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
+    _plot_s(model, order, x_min, x_max, steps, y_min, y_max)
     pyplot.show()
 
-def msave(filename, model, variable, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
-    if isinstance(variable, Series):
-        _plot_s(model, variable.n, x_min, x_max, steps, y_min, y_max)
-    else:
-        _plot_d(model, x_min, x_max, steps, y_min, y_max)
+def mplot_d(model, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
+    _plot_d(model, x_min, x_max, steps, y_min, y_max)
+    pyplot.show()
+
+def msave_s(filename, model, order=12, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
+    _plot_s(model, order, x_min, x_max, steps, y_min, y_max)
+    pyplot.savefig(filename)
+
+def msave_d(filename, model, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
+    _plot_d(model, x_min, x_max, steps, y_min, y_max)
     pyplot.savefig(filename)
 
 if __name__ == "__main__":  # hard-coded example
     l = lambda a: (a - 1)**2 / (a.cosh + 1).ln - 1
     print(f'Multi Scan (Series)')
-    s = Series.get(8).var
-    scan(l, s)
-    mplot(l, s)
+    scan_s(l)
+    mplot_s(l)
     print(f'Root Scan (Dual)')
-    mplot(l, Dual.get().var)
+    scan_d(l)
+    mplot_d(l)
 else:
     print(__name__ + " module loaded", file=stderr)
 
@@ -237,13 +239,11 @@ print(b * b)
 
 f = lambda a: a * a * a + 2.0 * a * a - 3.0 * a + 1.0
 
-x = Series.get(5).var
-scan(f, x)
-mplot(f, x)
+scan_s(f)
+mplot_s(f)
 
-y = Dual.get().var
-scan(f, y)
-mplot(f, y)
+scan_d(f)
+mplot_d(f)
 
 
 bisect_d(f, -4.0, -2.0)
