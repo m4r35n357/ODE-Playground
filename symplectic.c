@@ -48,6 +48,12 @@ void solve (char **argv, void *p, updater uq, updater up, plotter output) {
             size = 2;
             cd = (real[]){ 0.5L * h, h };
             break;
+        case -4:  // Forest-Ruth
+            size = 4;
+            z1 = 1.0L / (2.0L - powl(2.0L, (1.0L / 3.0L)));
+            z0 = 1.0L - 2.0L * z1;
+            cd = (real[]){0.5L * h * z1, h * z1, 0.5L * h * (z1 + z0), h * z0};
+            break;
         case 4:  // Like Forest-Ruth but with Suzuki-style composition
             size = 6;
             cd = (real[]){0.5L * h * z1, h * z1, h * z1, h * z1, 0.5L * h * (z1 + z0), h * z0};
@@ -123,7 +129,7 @@ void solve (char **argv, void *p, updater uq, updater up, plotter output) {
             };
             break;
         default:
-            printf("Method parameter is {%ld} but should be 2, 4, 6, or 8\n", method);
+            printf("Method parameter is {%ld} but should be 2, -4, 4, 6, or 8\n", method);
             exit(1);
     }
     output(dp, p, 0.0L);
