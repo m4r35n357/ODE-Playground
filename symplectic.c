@@ -52,44 +52,6 @@ static void second_order (void *p, updater uq, updater up, real h) {
     base2(p, uq, up, h);
 }
 
-static void yoshida (void *p, base b, updater uq, updater up, real cd, real forward, real back) {
-    b(p, uq, up, cd * forward);
-    b(p, uq, up, cd * back);
-    b(p, uq, up, cd * forward);
-}
-
-static void base4_yoshida (void *p, updater uq, updater up, real cd) {
-    yoshida(p, base2, uq, up, cd, s.z1, s.z0);
-}
-
-static void fourth_order_yoshida (void *p, updater uq, updater up, real h) {
-    base4_yoshida(p, uq, up, h);
-}
-
-static void base6_yoshida (void *p, updater uq, updater up, real cd) {
-    yoshida(p, base4_yoshida, uq, up, cd, s.y1, s.y0);
-}
-
-static void sixth_order_yoshida (void *p, updater uq, updater up, real h) {
-    base6_yoshida(p, uq, up, h);
-}
-
-static void base8_yoshida (void *p, updater uq, updater up, real cd) {
-    yoshida(p, base6_yoshida, uq, up, cd, s.x1, s.x0);
-}
-
-static void eightth_order_yoshida (void *p, updater uq, updater up, real h) {
-    base8_yoshida(p, uq, up, h);
-}
-
-static void base10_yoshida (void *p, updater uq, updater up, real cd) {
-    yoshida(p, base8_yoshida, uq, up, cd, s.w1, s.w0);
-}
-
-static void tenth_order_yoshida (void *p, updater uq, updater up, real h) {
-    base10_yoshida(p, uq, up, h);
-}
-
 static void suzuki (void *p, base b, updater uq, updater up, real cd, real forward, real back) {
     b(p, uq, up, cd * forward);
     b(p, uq, up, cd * forward);
@@ -135,64 +97,36 @@ void solve (char **argv, void *p, updater uq, updater up, plotter output) {
     real h;
     t_stepper(argv, &dp, &method, &h, &steps);
     integrator composer = NULL;
-    if (method < 0L) {
-        s.z1 = 1.0L / (2.0L - powl(2.0L, (1.0L / 3.0L)));
-        s.y1 = 1.0L / (2.0L - powl(2.0L, (1.0L / 5.0L)));
-        s.x1 = 1.0L / (2.0L - powl(2.0L, (1.0L / 7.0L)));
-        s.w1 = 1.0L / (2.0L - powl(2.0L, (1.0L / 9.0L)));
-        s.z0 = 1.0L - 2.0L * s.z1;
-        s.y0 = 1.0L - 2.0L * s.y1;
-        s.x0 = 1.0L - 2.0L * s.x1;
-        s.w0 = 1.0L - 2.0L * s.w1;
-        switch (method) {
-            case -4:  // Composed Forest-Ruth
-                composer = fourth_order_yoshida;
-                break;
-            case -6:  // Higher order Yoshida
-                composer = sixth_order_yoshida;
-                break;
-            case -8:  // Higher order Yoshida
-                composer = eightth_order_yoshida;
-                break;
-            case -10:  // Higher order Yoshida
-                composer = tenth_order_yoshida;
-                break;
-            default:
-                printf("Method parameter is {%ld} but should be -4, -6, -8, or -10\n", method);
-                exit(1);
-        }
-    } else {
-        s.z1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 3.0L)));
-        s.y1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 5.0L)));
-        s.x1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 7.0L)));
-        s.w1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 9.0L)));
-        s.z0 = 1.0L - 4.0L * s.z1;
-        s.y0 = 1.0L - 4.0L * s.y1;
-        s.x0 = 1.0L - 4.0L * s.x1;
-        s.w0 = 1.0L - 4.0L * s.w1;
-        switch (method) {
-            case 1:  // Euler-Cromer
-                composer = euler_cromer;
-                break;
-            case 2:  // Stormer-Verlet
-                composer = second_order;
-                break;
-            case 4:  // Like composed Forest-Ruth but with Suzuki-style composition
-                composer = fourth_order_suzuki;
-                break;
-            case 6:  // Higher order Suzuki
-                composer = sixth_order_suzuki;
-                break;
-            case 8:  // Higher order Suzuki
-                composer = eightth_order_suzuki;
-                break;
-            case 10:  // Higher order Suzuki
-                composer = tenth_order_suzuki;
-                break;
-            default:
-                printf("Method parameter is {%ld} but should be 1, 2, 4, 6, 8, or 10 \n", method);
-                exit(1);
-        }
+    s.z1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 3.0L)));
+    s.y1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 5.0L)));
+    s.x1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 7.0L)));
+    s.w1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 9.0L)));
+    s.z0 = 1.0L - 4.0L * s.z1;
+    s.y0 = 1.0L - 4.0L * s.y1;
+    s.x0 = 1.0L - 4.0L * s.x1;
+    s.w0 = 1.0L - 4.0L * s.w1;
+    switch (method) {
+        case 1:  // Euler-Cromer
+            composer = euler_cromer;
+            break;
+        case 2:  // Stormer-Verlet
+            composer = second_order;
+            break;
+        case 4:
+            composer = fourth_order_suzuki;
+            break;
+        case 6:
+            composer = sixth_order_suzuki;
+            break;
+        case 8:
+            composer = eightth_order_suzuki;
+            break;
+        case 10:
+            composer = tenth_order_suzuki;
+            break;
+        default:
+            printf("Method parameter is {%ld} but should be 1, 2, 4, 6, 8, or 10 \n", method);
+            exit(1);
     }
     output(dp, p, 0.0L);
     for (long step = 1; step <= steps; step++) {
