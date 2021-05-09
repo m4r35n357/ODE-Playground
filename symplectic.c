@@ -33,113 +33,170 @@ real error (real e) {
     return 10.0L * log10l(fabsl(e) >= 1e-36L ? fabsl(e) : 1e-36L);
 }
 
+struct stage {
+    real w0, x0, y0, z0, w1, x1, y1, z1;
+} s;
+
+static void euler_cromer (void *p, updater uq, updater up, real cd) {
+    uq(p, cd);
+    up(p, cd);
+}
+
+static void base2 (void *p, updater uq, updater up, real cd) {
+    uq(p, cd * 0.5L);
+    up(p, cd);
+    uq(p, cd * 0.5L);
+}
+
+static void second_order (void *p, updater uq, updater up, real h) {
+    base2(p, uq, up, h);
+}
+
+static void yoshida (void *p, base b, updater uq, updater up, real cd, real forward, real back) {
+    b(p, uq, up, cd * forward);
+    b(p, uq, up, cd * back);
+    b(p, uq, up, cd * forward);
+}
+
+static void base4_yoshida (void *p, updater uq, updater up, real cd) {
+    yoshida(p, base2, uq, up, cd, s.z1, s.z0);
+}
+
+static void fourth_order_yoshida (void *p, updater uq, updater up, real h) {
+    base4_yoshida(p, uq, up, h);
+}
+
+static void base6_yoshida (void *p, updater uq, updater up, real cd) {
+    yoshida(p, base4_yoshida, uq, up, cd, s.y1, s.y0);
+}
+
+static void sixth_order_yoshida (void *p, updater uq, updater up, real h) {
+    base6_yoshida(p, uq, up, h);
+}
+
+static void base8_yoshida (void *p, updater uq, updater up, real cd) {
+    yoshida(p, base6_yoshida, uq, up, cd, s.x1, s.x0);
+}
+
+static void eightth_order_yoshida (void *p, updater uq, updater up, real h) {
+    base8_yoshida(p, uq, up, h);
+}
+
+static void base10_yoshida (void *p, updater uq, updater up, real cd) {
+    yoshida(p, base8_yoshida, uq, up, cd, s.w1, s.w0);
+}
+
+static void tenth_order_yoshida (void *p, updater uq, updater up, real h) {
+    base10_yoshida(p, uq, up, h);
+}
+
+static void suzuki (void *p, base b, updater uq, updater up, real cd, real forward, real back) {
+    b(p, uq, up, cd * forward);
+    b(p, uq, up, cd * forward);
+    b(p, uq, up, cd * back);
+    b(p, uq, up, cd * forward);
+    b(p, uq, up, cd * forward);
+}
+
+static void base4_suzuki (void *p, updater uq, updater up, real cd) {
+    suzuki(p, base2, uq, up, cd, s.z1, s.z0);
+}
+
+static void fourth_order_suzuki (void *p, updater uq, updater up, real h) {
+    base4_suzuki(p, uq, up, h);
+}
+
+static void base6_suzuki (void *p, updater uq, updater up, real cd) {
+    suzuki(p, base4_suzuki, uq, up, cd, s.y1, s.y0);
+}
+
+static void sixth_order_suzuki (void *p, updater uq, updater up, real h) {
+    base6_suzuki(p, uq, up, h);
+}
+
+static void base8_suzuki (void *p, updater uq, updater up, real cd) {
+    suzuki(p, base6_suzuki, uq, up, cd, s.x1, s.x0);
+}
+
+static void eightth_order_suzuki (void *p, updater uq, updater up, real h) {
+    base8_suzuki(p, uq, up, h);
+}
+
+static void base10_suzuki (void *p, updater uq, updater up, real cd) {
+    suzuki(p, base8_suzuki, uq, up, cd, s.w1, s.w0);
+}
+
+static void tenth_order_suzuki (void *p, updater uq, updater up, real h) {
+    base10_suzuki(p, uq, up, h);
+}
+
 void solve (char **argv, void *p, updater uq, updater up, plotter output) {
-    long method, steps, dp, size;
-    real h, x0, x1, y0, y1, z0, z1, *cd = (real[]){ 0.0L };
+    long method, steps, dp;
+    real h;
     t_stepper(argv, &dp, &method, &h, &steps);
-    z1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 3.0L)));
-    y1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 5.0L)));
-    x1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 7.0L)));
-    z0 = 1.0L - 4.0L * z1;
-    y0 = 1.0L - 4.0L * y1;
-    x0 = 1.0L - 4.0L * x1;
-    switch (method) {
-        case 2:  // Stormer-Verlet
-            size = 2;
-            cd = (real[]){ 0.5L * h, h };
-            break;
-        case -4:  // Forest-Ruth
-            size = 4;
-            z1 = 1.0L / (2.0L - powl(2.0L, (1.0L / 3.0L)));
-            z0 = 1.0L - 2.0L * z1;
-            cd = (real[]){0.5L * h * z1, h * z1, 0.5L * h * (z1 + z0), h * z0};
-            break;
-        case 4:  // Like Forest-Ruth but with Suzuki-style composition
-            size = 6;
-            cd = (real[]){0.5L * h * z1, h * z1, h * z1, h * z1, 0.5L * h * (z1 + z0), h * z0};
-            break;
-        case 6:  // Higher order Suzuki
-            size = 26;
-            cd = (real[]){
-                0.5L * h * z1 * y1,
-                h * z1 * y1, h * z1 * y1, h * z1 * y1,
-                0.5L * h * (z1 + z0) * y1, h * z0 * y1, 0.5L * h * (z0 + z1) * y1,
-                h * z1 * y1, h * z1 * y1, h * z1 * y1,
-                h * z1 * y1,
-                h * z1 * y1, h * z1 * y1, h * z1 * y1,
-                0.5L * h * (z1 + z0) * y1, h * z0 * y1, 0.5L * h * (z0 + z1) * y1,
-                h * z1 * y1, h * z1 * y1, h * z1 * y1,
-                0.5L * h * z1 * (y1 + y0), h * z1 * y0, h * z1 * y0, h * z1 * y0, 0.5L * h * (z1 + z0) * y0, h * z0 * y0
-            };
-            break;
-        case 8:  // Higher order Suzuki
-            size = 126;
-            cd = (real[]){
-                0.5L * h * z1 * y1 * x1,
-                h * z1 * y1 * x1, h * z1 * y1 * x1, h * z1 * y1 * x1,
-                0.5L * h * (z1 + z0) * y1 * x1, h * z0 * y1 * x1, 0.5L * h * (z0 + z1) * y1 * x1,
-                h * z1 * y1 * x1, h * z1 * y1 * x1, h * z1 * y1 * x1,
-                h * z1 * y1 * x1,
-                h * z1 * y1 * x1, h * z1 * y1 * x1, h * z1 * y1 * x1,
-                0.5L * h * (z1 + z0) * y1 * x1, h * z0 * y1 * x1, 0.5L * h * (z0 + z1) * y1 * x1,
-                h * z1 * y1 * x1, h * z1 * y1 * x1, h * z1 * y1 * x1,
-                0.5L * h * z1 * (y1 + y0) * x1,
-                h * z1 * y0 * x1, h * z1 * y0 * x1, h * z1 * y0 * x1,
-                0.5L * h * (z1 + z0) * y0 * x1, h * z0 * y0 * x1, 0.5L * h * (z0 + z1) * y0 * x1,
-                h * z1 * y0 * x1, h * z1 * y0 * x1, h * z1 * y0 * x1,
-                0.5L * h * z1 * (y1 + y0) * x1,
-                h * z1 * y1 * x1, h * z1 * y1 * x1, h * z1 * y1 * x1,
-                0.5L * h * (z1 + z0) * y1 * x1, h * z0 * y1 * x1, 0.5L * h * (z0 + z1) * y1 * x1,
-                h * z1 * y1 * x1, h * z1 * y1 * x1, h * z1 * y1 * x1,
-                h * z1 * y1 * x1,
-                h * z1 * y1 * x1, h * z1 * y1 * x1, h * z1 * y1 * x1,
-                0.5L * h * (z1 + z0) * y1 * x1, h * z0 * y1 * x1, 0.5L * h * (z0 + z1) * y1 * x1,
-                h * z1 * y1 * x1, h * z1 * y1 * x1, h * z1 * y1 * x1,
-                h * z1 * y1 * x1,
-                h * z1 * y1 * x1, h * z1 * y1 * x1, h * z1 * y1 * x1,
-                0.5L * h * (z1 + z0) * y1 * x1, h * z0 * y1 * x1, 0.5L * h * (z0 + z1) * y1 * x1,
-                h * z1 * y1 * x1, h * z1 * y1 * x1, h * z1 * y1 * x1,
-                h * z1 * y1 * x1,
-                h * z1 * y1 * x1, h * z1 * y1 * x1, h * z1 * y1 * x1,
-                0.5L * h * (z1 + z0) * y1 * x1, h * z0 * y1 * x1, 0.5L * h * (z0 + z1) * y1 * x1,
-                h * z1 * y1 * x1, h * z1 * y1 * x1, h * z1 * y1 * x1,
-                0.5L * h * z1 * (y1 + y0) * x1,
-                h * z1 * y0 * x1, h * z1 * y0 * x1, h * z1 * y0 * x1,
-                0.5L * h * (z1 + z0) * y0 * x1, h * z0 * y0 * x1, 0.5L * h * (z0 + z1) * y0 * x1,
-                h * z1 * y0 * x1, h * z1 * y0 * x1, h * z1 * y0 * x1,
-                0.5L * h * z1 * (y1 + y0) * x1,
-                h * z1 * y1 * x1, h * z1 * y1 * x1, h * z1 * y1 * x1,
-                0.5L * h * (z1 + z0) * y1 * x1, h * z0 * y1 * x1, 0.5L * h * (z0 + z1) * y1 * x1,
-                h * z1 * y1 * x1, h * z1 * y1 * x1, h * z1 * y1 * x1,
-                h * z1 * y1 * x1,
-                h * z1 * y1 * x1, h * z1 * y1 * x1, h * z1 * y1 * x1,
-                0.5L * h * (z1 + z0) * y1 * x1, h * z0 * y1 * x1, 0.5L * h * (z0 + z1) * y1 * x1,
-                h * z1 * y1 * x1, h * z1 * y1 * x1, h * z1 * y1 * x1,
-                0.5L * h * z1 * y1 * (x1 + x0),
-                h * z1 * y1 * x0, h * z1 * y1 * x0, h * z1 * y1 * x0,
-                0.5L * h * (z1 + z0) * y1 * x0, h * z0 * y1 * x0, 0.5L * h * (z0 + z1) * y1 * x0,
-                h * z1 * y1 * x0, h * z1 * y1 * x0, h * z1 * y1 * x0,
-                h * z1 * y1 * x0,
-                h * z1 * y1 * x0, h * z1 * y1 * x0, h * z1 * y1 * x0,
-                0.5L * h * (z1 + z0) * y1 * x0, h * z0 * y1 * x0, 0.5L * h * (z0 + z1) * y1 * x0,
-                h * z1 * y1 * x0, h * z1 * y1 * x0, h * z1 * y1 * x0,
-                0.5L * h * z1 * (y1 + y0) * x0,
-                h * z1 * y0 * x0, h * z1 * y0 * x0, h * z1 * y0 * x0,
-                0.5L * h * (z1 + z0) * y0 * x0, h * z0 * y0 * x0
-            };
-            break;
-        default:
-            printf("Method parameter is {%ld} but should be 2, -4, 4, 6, or 8\n", method);
-            exit(1);
+    integrator composer = NULL;
+    if (method < 0L) {
+        s.z1 = 1.0L / (2.0L - powl(2.0L, (1.0L / 3.0L)));
+        s.y1 = 1.0L / (2.0L - powl(2.0L, (1.0L / 5.0L)));
+        s.x1 = 1.0L / (2.0L - powl(2.0L, (1.0L / 7.0L)));
+        s.w1 = 1.0L / (2.0L - powl(2.0L, (1.0L / 9.0L)));
+        s.z0 = 1.0L - 2.0L * s.z1;
+        s.y0 = 1.0L - 2.0L * s.y1;
+        s.x0 = 1.0L - 2.0L * s.x1;
+        s.w0 = 1.0L - 2.0L * s.w1;
+        switch (method) {
+            case -4:  // Composed Forest-Ruth
+                composer = fourth_order_yoshida;
+                break;
+            case -6:  // Higher order Yoshida
+                composer = sixth_order_yoshida;
+                break;
+            case -8:  // Higher order Yoshida
+                composer = eightth_order_yoshida;
+                break;
+            case -10:  // Higher order Yoshida
+                composer = tenth_order_yoshida;
+                break;
+            default:
+                printf("Method parameter is {%ld} but should be -4, -6, -8, or -10\n", method);
+                exit(1);
+        }
+    } else {
+        s.z1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 3.0L)));
+        s.y1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 5.0L)));
+        s.x1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 7.0L)));
+        s.w1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 9.0L)));
+        s.z0 = 1.0L - 4.0L * s.z1;
+        s.y0 = 1.0L - 4.0L * s.y1;
+        s.x0 = 1.0L - 4.0L * s.x1;
+        s.w0 = 1.0L - 4.0L * s.w1;
+        switch (method) {
+            case 1:  // Euler-Cromer
+                composer = euler_cromer;
+                break;
+            case 2:  // Stormer-Verlet
+                composer = second_order;
+                break;
+            case 4:  // Like composed Forest-Ruth but with Suzuki-style composition
+                composer = fourth_order_suzuki;
+                break;
+            case 6:  // Higher order Suzuki
+                composer = sixth_order_suzuki;
+                break;
+            case 8:  // Higher order Suzuki
+                composer = eightth_order_suzuki;
+                break;
+            case 10:  // Higher order Suzuki
+                composer = tenth_order_suzuki;
+                break;
+            default:
+                printf("Method parameter is {%ld} but should be 1, 2, 4, 6, 8, or 10 \n", method);
+                exit(1);
+        }
     }
     output(dp, p, 0.0L);
     for (long step = 1; step <= steps; step++) {
-        for (long i = 0; i < size; i++) {
-            i % 2 == 0 ? uq(p, cd[i]) : up(p, cd[i]);  // 0 -> size -1
-        }
-        for (long i = size - 2; i > -1; i--) {
-            i % 2 == 0 ? uq(p, cd[i]) : up(p, cd[i]);  // size -2 -> 0
-        }
+        composer(p, uq, up, h);
         output(dp, p, step * h);
     }
 }

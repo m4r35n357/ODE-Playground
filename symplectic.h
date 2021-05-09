@@ -15,7 +15,11 @@ real error (real e);
 
 typedef void (*updater)(void *, real);
 
+typedef void (*base)(void *, updater, updater, real);
+
 typedef void (*plotter)(long, void *, real);
+
+typedef void (*integrator)(void *, updater, updater, real);
 
 void update_q (void *params, real c);
 
