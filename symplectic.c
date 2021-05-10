@@ -33,35 +33,31 @@ real error (real e) {
     return 10.0L * log10l(fabsl(e) >= 1e-36L ? fabsl(e) : 1e-36L);
 }
 
-struct stage {
+static struct {
     real w0, x0, y0, z0, w1, x1, y1, z1;
-} s;
+} weight;
 
 static void euler_cromer (void *p, updater uq, updater up, real cd) {
     uq(p, cd);
     up(p, cd);
 }
 
-static void base2 (void *p, updater uq, updater up, real cd) {
+static void stormer_verlet (void *p, updater uq, updater up, real cd) {
     uq(p, cd * 0.5L);
     up(p, cd);
     uq(p, cd * 0.5L);
 }
 
-static void second_order (void *p, updater uq, updater up, real h) {
-    base2(p, uq, up, h);
-}
-
-static void suzuki (void *p, base b, updater uq, updater up, real cd, real forward, real back) {
-    b(p, uq, up, cd * forward);
-    b(p, uq, up, cd * forward);
-    b(p, uq, up, cd * back);
-    b(p, uq, up, cd * forward);
-    b(p, uq, up, cd * forward);
+static void suzuki (void *p, integrator base, updater uq, updater up, real cd, real forward, real back) {
+    base(p, uq, up, cd * forward);
+    base(p, uq, up, cd * forward);
+    base(p, uq, up, cd * back);
+    base(p, uq, up, cd * forward);
+    base(p, uq, up, cd * forward);
 }
 
 static void base4_suzuki (void *p, updater uq, updater up, real cd) {
-    suzuki(p, base2, uq, up, cd, s.z1, s.z0);
+    suzuki(p, stormer_verlet, uq, up, cd, weight.z1, weight.z0);
 }
 
 static void fourth_order_suzuki (void *p, updater uq, updater up, real h) {
@@ -69,7 +65,7 @@ static void fourth_order_suzuki (void *p, updater uq, updater up, real h) {
 }
 
 static void base6_suzuki (void *p, updater uq, updater up, real cd) {
-    suzuki(p, base4_suzuki, uq, up, cd, s.y1, s.y0);
+    suzuki(p, base4_suzuki, uq, up, cd, weight.y1, weight.y0);
 }
 
 static void sixth_order_suzuki (void *p, updater uq, updater up, real h) {
@@ -77,7 +73,7 @@ static void sixth_order_suzuki (void *p, updater uq, updater up, real h) {
 }
 
 static void base8_suzuki (void *p, updater uq, updater up, real cd) {
-    suzuki(p, base6_suzuki, uq, up, cd, s.x1, s.x0);
+    suzuki(p, base6_suzuki, uq, up, cd, weight.x1, weight.x0);
 }
 
 static void eightth_order_suzuki (void *p, updater uq, updater up, real h) {
@@ -85,7 +81,7 @@ static void eightth_order_suzuki (void *p, updater uq, updater up, real h) {
 }
 
 static void base10_suzuki (void *p, updater uq, updater up, real cd) {
-    suzuki(p, base8_suzuki, uq, up, cd, s.w1, s.w0);
+    suzuki(p, base8_suzuki, uq, up, cd, weight.w1, weight.w0);
 }
 
 static void tenth_order_suzuki (void *p, updater uq, updater up, real h) {
@@ -97,20 +93,20 @@ void solve (char **argv, void *p, updater uq, updater up, plotter output) {
     real h;
     t_stepper(argv, &dp, &method, &h, &steps);
     integrator composer = NULL;
-    s.z1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 3.0L)));
-    s.y1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 5.0L)));
-    s.x1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 7.0L)));
-    s.w1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 9.0L)));
-    s.z0 = 1.0L - 4.0L * s.z1;
-    s.y0 = 1.0L - 4.0L * s.y1;
-    s.x0 = 1.0L - 4.0L * s.x1;
-    s.w0 = 1.0L - 4.0L * s.w1;
+    weight.z1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 3.0L)));
+    weight.y1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 5.0L)));
+    weight.x1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 7.0L)));
+    weight.w1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 9.0L)));
+    weight.z0 = 1.0L - 4.0L * weight.z1;
+    weight.y0 = 1.0L - 4.0L * weight.y1;
+    weight.x0 = 1.0L - 4.0L * weight.x1;
+    weight.w0 = 1.0L - 4.0L * weight.w1;
     switch (method) {
-        case 1:  // Euler-Cromer
+        case 1:
             composer = euler_cromer;
             break;
-        case 2:  // Stormer-Verlet
-            composer = second_order;
+        case 2:
+            composer = stormer_verlet;
             break;
         case 4:
             composer = fourth_order_suzuki;
