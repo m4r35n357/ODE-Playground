@@ -78,7 +78,7 @@ static dual dR_dr (real r, dual E, dual L, dual Q, real M, real a, real mu2) {
 
 static dual THETA (real theta, dual E, dual L, dual Q, real mu2, real a) {
     real sth2 = sinl(theta) * sinl(theta);
-    return d_sub(Q, d_scale(d_add(d_scale(d_shift(d_neg(d_sqr(E)), mu2), a * a), d_scale(d_sqr(L), 1.0L / sth2)), 1.0L - sth2));
+    return d_sub(Q, d_scale(d_add(d_scale(d_shift(d_sqr(E), - mu2), - a * a), d_scale(d_sqr(L), 1.0L / sth2)), 1.0L - sth2));
 }
 
 typedef struct {

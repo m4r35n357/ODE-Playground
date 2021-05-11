@@ -34,7 +34,7 @@ dual g_t_phi (real m, real a, dual r, dual theta) {
 
 dual g_r_r (real m, real a, dual r, dual theta) {
     (void)a; (void)theta;
-    return d_inv(d_shift(d_neg(d_scale(d_inv(r), 2.0L * m)), 1.0L));
+    return d_inv(d_shift(d_scale(d_inv(r), - 2.0L * m), 1.0L));
 }
 
 dual g_r_theta (real m, real a, dual r, dual theta) {

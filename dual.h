@@ -21,8 +21,6 @@ dual d_var (real a);
 
 dual d_abs (dual a);
 
-dual d_neg (dual b);
-
 dual d_inv (dual a);
 
 dual d_sqr (dual a);

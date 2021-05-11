@@ -28,10 +28,6 @@ dual d_abs (dual a) {
     return (dual) { .val = a.val < 0.0L ? - a.val : a.val, .dot = a.val < 0.0L ? - a.dot : a.dot };
 }
 
-dual d_neg (dual b) {
-    return (dual) { .val = - b.val, .dot = - b.dot };
-}
-
 dual d_inv (dual b) {
     assert(b.val != 0.0L);
     return (dual) { .val = 1.0L / b.val, .dot = - b.dot / (b.val * b.val) };
