@@ -5,6 +5,8 @@
  * Example:  ./h-kerr-gen-particle-dbg 1e-9 3 12 63 1 1 .8 >/tmp/$USER/data
  * Example:  ./h-kerr-gen-particle-dbg 1e-9 12 -1 63 1 1 .8 >/tmp/$USER/data
  *
+ * Potential plots:
+ *
  * Example:  gnuplot -p -e "set terminal wxt size 600,450; set yrange [*:10]; plot 0.0, '/tmp/$USER/data' using 1:2 with lines"
  * Example:  gnuplot -p -e "set terminal wxt size 600,450; set yrange [*:1]; plot 0.0, '/tmp/$USER/data' using 3:4 with lines"
  *
