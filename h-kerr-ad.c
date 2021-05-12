@@ -93,13 +93,12 @@ static real v_dot_v (real vt, real vr, real vth, real vph, real a, real ra2, rea
 
 static void plot_path (long dp, void *params, real t) {
     parameters *p = (parameters *)params;
-    real cth = cosl(p->q_theta);
-    real sigma = p->q_r * p->q_r + p->a * p->a * cth * cth;
+    real sigma = p->q_r * p->q_r + p->a * p->a * (1.0L - p->sth2.val);
     real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_theta);
     real gamma = p->p_t / sigma;
     char fs[128];
     sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%.6Le  %%.3Le %%.3Le %%.3Le  %%.3Le %%.3Le\n", dp, dp, dp);
-    printf(fs, ra_sth * cosl(p->q_phi), ra_sth * sinl(p->q_phi), p->q_r * cth, t,
+    printf(fs, ra_sth * cosl(p->q_phi), ra_sth * sinl(p->q_phi), p->q_r * cosl(p->q_theta), t,
            error(1.0L + v_dot_v(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2.val, p->sth2.val, sigma, p->delta.val)),
            error(0.5L * (p->p_r * p->p_r - p->R.val)), error(0.5L * (p->p_theta * p->p_theta - p->THETA.val)),
            gamma, sqrtl(1.0L - 1.0L / (gamma * gamma)));
