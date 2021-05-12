@@ -87,7 +87,6 @@ void solve (char **argv, void *p, updater uq, updater up, plotter output) {
     long method, steps, dp;
     real h;
     t_stepper(argv, &dp, &method, &h, &steps);
-    integrator composer = NULL;
     weight.z1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 3.0L)));
     weight.y1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 5.0L)));
     weight.x1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 7.0L)));
@@ -96,22 +95,13 @@ void solve (char **argv, void *p, updater uq, updater up, plotter output) {
     weight.y0 = 1.0L - 4.0L * weight.y1;
     weight.x0 = 1.0L - 4.0L * weight.x1;
     weight.w0 = 1.0L - 4.0L * weight.w1;
+    integrator composer = NULL;
     switch (method) {
-        case 2:
-            composer = stormer_verlet;
-            break;
-        case 4:
-            composer = fourth_order_suzuki;
-            break;
-        case 6:
-            composer = sixth_order_suzuki;
-            break;
-        case 8:
-            composer = eightth_order_suzuki;
-            break;
-        case 10:
-            composer = tenth_order_suzuki;
-            break;
+        case 2: composer = stormer_verlet; break;
+        case 4: composer = fourth_order_suzuki; break;
+        case 6: composer = sixth_order_suzuki; break;
+        case 8: composer = eightth_order_suzuki; break;
+        case 10: composer = tenth_order_suzuki; break;
         default:
             printf("Method parameter is {%ld} but should be 2, 4, 6, 8, or 10 \n", method);
             exit(1);
