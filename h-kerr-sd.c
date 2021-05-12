@@ -97,15 +97,14 @@ static real v_dot_v (real vt, real vr, real vth, real vph, real a, real ra2, rea
 static void plot_path (long dp, void *params, real t) {
     parameters *p = (parameters *)params;
     real sigma = p->r2 + p->a2 * p->cth2;
-    real e4v = error(1.0L + v_dot_v(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2, p->sth2, sigma, p->delta));
-    real eR = error(0.5L * (p->p_r * p->p_r - p->R));                  // "H" = p_r^2 / 2 + (- R(q_r) / 2) = 0
-    real eTHETA = error(0.5L * (p->p_theta * p->p_theta - p->THETA));  // "H" = p_theta^2 / 2 + (- THETA(q_theta) / 2) = 0
     real ra_sth = sqrtl(p->ra2) * p->sth;
     real gamma = p->p_t / sigma;
     char fs[128];
     sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%.6Le  %%.3Le %%.3Le %%.3Le  %%.3Le %%.3Le\n", dp, dp, dp);
     printf(fs, ra_sth * cosl(p->q_phi), ra_sth * sinl(p->q_phi), p->q_r * p->cth, t,
-           e4v, eR, eTHETA, gamma, sqrtl(1.0L - 1.0L / (gamma * gamma)));
+           error(1.0L + v_dot_v(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2, p->sth2, sigma, p->delta)),
+           error(0.5L * (p->p_r * p->p_r - p->R)), error(0.5L * (p->p_theta * p->p_theta - p->THETA)),
+           gamma, sqrtl(1.0L - 1.0L / (gamma * gamma)));
 }
 
 static void plot_view (long dp, void *params, real t) {
