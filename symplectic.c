@@ -37,11 +37,6 @@ static struct {
     real w0, x0, y0, z0, w1, x1, y1, z1;
 } weight;
 
-static void euler_cromer (void *p, updater uq, updater up, real cd) {
-    uq(p, cd);
-    up(p, cd);
-}
-
 static void stormer_verlet (void *p, updater uq, updater up, real cd) {
     uq(p, cd * 0.5L);
     up(p, cd);
@@ -102,9 +97,6 @@ void solve (char **argv, void *p, updater uq, updater up, plotter output) {
     weight.x0 = 1.0L - 4.0L * weight.x1;
     weight.w0 = 1.0L - 4.0L * weight.w1;
     switch (method) {
-        case 1:
-            composer = euler_cromer;
-            break;
         case 2:
             composer = stormer_verlet;
             break;
@@ -121,7 +113,7 @@ void solve (char **argv, void *p, updater uq, updater up, plotter output) {
             composer = tenth_order_suzuki;
             break;
         default:
-            printf("Method parameter is {%ld} but should be 1, 2, 4, 6, 8, or 10 \n", method);
+            printf("Method parameter is {%ld} but should be 2, 4, 6, 8, or 10 \n", method);
             exit(1);
     }
     output(dp, p, 0.0L);
