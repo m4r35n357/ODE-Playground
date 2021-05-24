@@ -28,8 +28,7 @@ typedef struct {
     real E, L, Q, K;  // constants of motion
     real a, a2, L2, aL, aE, a2xmu2_E2;  // global constants
     real q_t, q_r, q_theta, q_phi, p_t, p_r, p_theta, p_phi;  // coordinates & velocities
-    real r2, ra2, delta, sth, sth2, cth, cth2;  // global variables
-    real P, R, THETA;  // potentials
+    real r2, ra2, delta, sth, sth2, cth, cth2, P, R, THETA;  // global variables & potentials
 } parameters;
 
 static void refresh (parameters *p) {
