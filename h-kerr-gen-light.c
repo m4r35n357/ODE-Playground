@@ -33,10 +33,10 @@ int main(int argc, char **argv) {
     } else {
         fprintf(stdout, "\n");
         fprintf(stdout, "Simulate:\n");
-        fprintf(stdout, "./h-kerr-sd-dbg 6 8 .01 10000 0 .8 1.0 0.0 1.0 %La 1.0 %La %.3Lf 0.0 >/tmp/$USER/data\n", L, Q, r);
+        fprintf(stdout, "./h-kerr-dbg 6 8 .01 10000 0 .8 1.0 0.0 1.0 %La 1.0 %La %.3Lf 0.0 >/tmp/$USER/data\n", L, Q, r);
         fprintf(stdout, "\n");
         fprintf(stdout, "Generate ICs:\n");
-        fprintf(stdout, "./h-kerr-sd-dbg 15 8 .01 0 2 .8 1.0 0.0 1.0 %La 1.0 %La %.3Lf 0.0\n", L, Q, r);
+        fprintf(stdout, "./h-kerr-dbg 15 8 .01 0 2 .8 1.0 0.0 1.0 %La 1.0 %La %.3Lf 0.0\n", L, Q, r);
         fprintf(stdout, "\n");
     }
 }
