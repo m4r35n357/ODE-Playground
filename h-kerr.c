@@ -1,7 +1,7 @@
 /*
- * Kerr metric geodesics using Wilkins' equations with a "pseudo-Hamiltonian" approach
+ * Kerr metric geodesics using Wilkins' equations with a "pseudo-Hamiltonian" approach with automatic differentiation
  *
- * Example:  ./h-kerr-sd-dbg 6 8 .01 10000 0 0.8 1.0 1.0 0.9455050956749083 1.434374509531738 1.0 7.978759958927879 12.0 63.0 >/tmp/$USER/data
+ * Example:  ./h-kerr-dbg 6 8 .01 10000 0 0.8 1.0 1.0 0.9455050956749083 1.434374509531738 1.0 7.978759958927879 12.0 63.0 >/tmp/$USER/data
  *
  * Example:  gnuplot -p -e "set terminal wxt size 600,450; splot '/tmp/$USER/data' with lines"
  *
@@ -26,22 +26,20 @@ typedef struct {
     real E, L, Q, K;  // constants of motion
     real a, a2, L2, aL, aE, a2xmu2_E2;  // global constants
     real q_t, q_r, q_theta, q_phi, p_t, p_r, p_theta, p_phi;  // coordinates & velocities
-    real r2, ra2, delta, sth, sth2, cth, cth2, P, R, THETA;  // global variables & potentials
+    dual ra2, delta, sth2, R, THETA;  // global variables & potentials
 } parameters;
 
 static void refresh (parameters *p) {
-    p->r2 = p->q_r * p->q_r;
-    p->ra2 = p->r2 + p->a2;
-    p->delta = p->ra2 - 2.0L * p->M * p->q_r;
-    p->P = p->E * p->ra2 - p->aL;
-    p->R = p->P * p->P - p->delta * (p->r2 * p->mu2 + p->K);
-    p->sth = sinl(p->q_theta);
-    p->sth2 = p->sth * p->sth;
-    p->cth = cosl(p->q_theta);
-    p->cth2 = 1.0L - p->sth2;
-    p->THETA = p->Q - p->cth2 * (p->a2xmu2_E2 + p->L2 / p->sth2);
-    p->p_t = p->a * (p->L - p->aE * p->sth2) + p->ra2 * p->P / p->delta;
-    p->p_phi = (p->L / p->sth2 - p->aE) + p->a * p->P / p->delta;
+    dual r = d_var(p->q_r);
+    dual r2 = d_sqr(r);
+    p->ra2 = d_shift(r2, p->a2);
+    p->delta = d_sub(p->ra2, d_scale(r, 2.0L * p->M));
+    dual P = d_shift(d_scale(p->ra2, p->E), - p->aL);
+    p->R = d_sub(d_sqr(P), d_mul(p->delta, d_shift(d_scale(r2, p->mu2), p->K)));
+    p->sth2 = d_sqr(d_sin(d_var(p->q_theta)));
+    p->THETA = d_shift(d_mul(d_shift(d_scale(d_inv(p->sth2), p->L2), p->a2xmu2_E2), d_shift(p->sth2, - 1.0L)), p->Q);
+    p->p_t = p->a * (p->L - p->aE * p->sth2.val) + p->ra2.val * P.val / p->delta.val;
+    p->p_phi = (p->L / p->sth2.val - p->aE) + p->a * P.val / p->delta.val;
 }
 
 static parameters *get_p (int argc, char **argv, int va_begin) {
@@ -65,8 +63,8 @@ static parameters *get_p (int argc, char **argv, int va_begin) {
     p->q_theta = elevation_to_colatitude(theta_0);
     p->q_phi = 0.0L;
     refresh(p);  // variables, t & phi velocities
-    p->p_r = - sqrtl(p->R >= 0.0L ? p->R : - p->R);
-    p->p_theta = - sqrtl(p->THETA >= 0.0L ? p->THETA : - p->THETA);
+    p->p_r = - sqrtl(p->R.val >= 0.0L ? p->R.val : - p->R.val);
+    p->p_theta = - sqrtl(p->THETA.val >= 0.0L ? p->THETA.val : - p->THETA.val);
     return p;
 }
 
@@ -81,8 +79,8 @@ void update_q (void *params, real c) {  // dq / dt = dH / dp
 
 void update_p (void *params, real d) {  // dp / dt = - dH / dq = - (- 0.5 dX / dq) where X is R or THETA
     parameters *p = (parameters *)params;
-    p->p_r += d * (2.0L * p->E * p->q_r * p->P - (p->q_r - p->M) * (p->mu2 * p->r2 + p->K) - p->mu2 * p->q_r * p->delta);
-    p->p_theta += d * (p->cth * p->sth * (p->a2xmu2_E2 + p->L2 / p->sth2) + p->cth * p->cth2 * p->L2 / (p->sth * p->sth2));
+    p->p_r += 0.5L * d * p->R.dot;
+    p->p_theta += 0.5L * d * p->THETA.dot;
 }
 
 static real v_dot_v (real vt, real vr, real vth, real vph, real a, real ra2, real sth2, real sigma, real delta) {  // conserved
@@ -93,14 +91,14 @@ static real v_dot_v (real vt, real vr, real vth, real vph, real a, real ra2, rea
 
 static void plot_path (long dp, void *params, real t) {
     parameters *p = (parameters *)params;
-    real sigma = p->r2 + p->a2 * p->cth2;
-    real ra_sth = sqrtl(p->ra2) * p->sth;
+    real sigma = p->q_r * p->q_r + p->a * p->a * (1.0L - p->sth2.val);
+    real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_theta);
     real gamma = p->p_t / sigma;
     char fs[128];
     sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%.6Le  %%.3Le %%.3Le %%.3Le  %%.3Le %%.3Le\n", dp, dp, dp);
-    printf(fs, ra_sth * cosl(p->q_phi), ra_sth * sinl(p->q_phi), p->q_r * p->cth, t,
-           error(1.0L + v_dot_v(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2, p->sth2, sigma, p->delta)),
-           error(0.5L * (p->p_r * p->p_r - p->R)), error(0.5L * (p->p_theta * p->p_theta - p->THETA)),
+    printf(fs, ra_sth * cosl(p->q_phi), ra_sth * sinl(p->q_phi), p->q_r * cosl(p->q_theta), t,
+           error(1.0L + v_dot_v(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2.val, p->sth2.val, sigma, p->delta.val)),
+           error(0.5L * (p->p_r * p->p_r - p->R.val)), error(0.5L * (p->p_theta * p->p_theta - p->THETA.val)),
            gamma, sqrtl(1.0L - 1.0L / (gamma * gamma)));
 }
 
@@ -109,7 +107,7 @@ static void plot_view (long dp, void *params, real t) {
     char fs[256];
     sprintf(fs, "%%.6Le 2  %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe  %%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.%ldLe",
             dp, dp, dp, dp, dp, dp, dp, dp);
-    printf(fs, t, p->q_r, p->cth, p->q_t, p->q_phi, p->p_r, - p->sth * p->p_theta, p->p_t, p->p_phi);
+    printf(fs, t, p->q_r, cosl(p->q_theta), p->q_t, p->q_phi, p->p_r, - sinl(p->q_theta) * p->p_theta, p->p_t, p->p_phi);
     printf("  -1 0 0 0  0 0 0 1  0 1 0 0\n");
 }
 

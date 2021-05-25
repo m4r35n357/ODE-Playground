@@ -35,11 +35,9 @@ build_symp () {
 
 for model in \
 h-newton \
-h-kerr-ad \
-h-kerr-sd \
+h-kerr \
 h-analysis
 do
-    rm -f ${model}-*
     echo " Building ${model}"
     build_symp ${model} &
 done
@@ -67,7 +65,6 @@ tsm-van-der-pol \
 tsm-wimol-banlue \
 tsm-yu-wang
 do
-    rm -f ${model}-*
     echo " Building ${model}"
     build_tsm ${model} &
 done
