@@ -5,14 +5,10 @@
  *
  * Example:  gnuplot -p -e "set terminal wxt size 600,450; splot '/tmp/$USER/data' with lines"
  *
- * Example:  gnuplot -p -e "set terminal wxt size 600,450; plot '/tmp/$USER/data' using 1:2 with lines"
- *
  * Errors:
- *
  * Example:  gnuplot -p -e "set terminal wxt size 600,450; set yrange [-240:0]; plot '/tmp/$USER/data' using 4:5 with lines, '/tmp/$USER/data' using 4:6 with lines, '/tmp/$USER/data' using 4:7 with lines"
  *
  * Gamma, speed:
- *
  * Example:  gnuplot -p -e "set terminal wxt size 600,450; plot '/tmp/$USER/data' using 4:8 with lines, '/tmp/$USER/data' using 4:9 with lines"
  *
  * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
