@@ -17,7 +17,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <math.h>
 #include "symplectic.h"
+#include "dual.h"
 
 typedef struct {
     real M, mu2;  // central mass & particle mass (squared)

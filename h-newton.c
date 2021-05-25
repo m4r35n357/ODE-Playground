@@ -15,7 +15,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <math.h>
 #include "symplectic.h"
+#include "dual.h"
 
 static dual h (real m, real gm, dual q_r, dual p_r, dual p_phi) {
     return d_sub(d_scale(d_add(d_sqr(p_r), d_div(d_sqr(p_phi), d_sqr(q_r))), 0.5L / m), d_scale(d_inv(q_r), gm));

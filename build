@@ -89,5 +89,5 @@ ${CC} -O3 -DNDEBUG -c $WARNINGS -fpic taylor-ode.c && ${CC} -shared -o libode.so
 echo ""
 wait
 
-ls -lh --color tsm-* h-* *-metric* lib*.so divergence kerr-image*
+ls -lh --color tsm-* h-* lib*.so divergence kerr-image*
 echo ""

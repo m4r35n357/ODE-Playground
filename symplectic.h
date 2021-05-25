@@ -1,5 +1,5 @@
 
-#include "dual.h"
+#include "real.h"
 
 /*
  * Sets control parameters from the command line arguments (1 to 4)

@@ -1,6 +1,4 @@
 
-#include <assert.h>
-#include <math.h>
 #include "real.h"
 
 real get_PI (void);
