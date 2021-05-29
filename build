@@ -72,11 +72,19 @@ done
 echo " Building divergence"
 ${CC} -O3 $WARNINGS -o divergence divergence.c -lm -s &
 
-echo " Building libode"
+echo " Building libtaylor"
 rm -f libtaylor.so taylor-ode.o
-${CC} -O3 -DNDEBUG -c $WARNINGS -fpic taylor-ode.c && ${CC} -shared -o libode.so taylor-ode.o -s &
-#  Example: musl-gcc -O3 -DNDEBUG -L. -Wall -Wextra -o test tsm-lorenz.c -lode -lm -s
+${CC} -O3 -DNDEBUG -c $WARNINGS -fpic taylor-ode.c && ${CC} -shared -o libtaylor.so taylor-ode.o -s &
+#  Example: musl-gcc -O3 -DNDEBUG -L. -Wall -Wextra -o test tsm-lorenz.c -ltaylor -lm -s
 #  Example: LD_LIBRARY_PATH=. ./test 15 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | gnuplot -p -e "splot '<cat' with lines"
+
+echo " Building libdual"
+rm -f libdual.so dual.o
+${CC} -O3 -DNDEBUG -c $WARNINGS -fpic dual.c && ${CC} -shared -o libdual.so dual.o -s &
+
+echo " Building libsymp"
+rm -f libsymp.so symp.o
+${CC} -O3 -DNDEBUG -c $WARNINGS -fpic symplectic.c && ${CC} -shared -o libsymp.so symplectic.o -s &
 
 # wget -c ftp://ftp.madore.org/pub/madore/misc/kerr-image.c
 # echo " Building kerr-image"
