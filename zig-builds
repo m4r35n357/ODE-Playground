@@ -21,8 +21,8 @@ do
     ./zig build-exe $source taylor-ode.c $CCOPTS
 done
 
-./zig build-exe h-kerr-sd.c symplectic.c $CCOPTS
-./zig build-exe h-kerr-ad.c symplectic.c dual.c $CCOPTS
+./zig build-exe h-analysis.c symplectic.c $CCOPTS
+./zig build-exe h-kerr.c symplectic.c dual.c $CCOPTS
 ./zig build-exe h-newton.c symplectic.c dual.c $CCOPTS
 ./zig build-exe h-kerr-gen-particle.c dual.c $CCOPTS
 ./zig build-exe h-kerr-gen-light.c $CCOPTS
