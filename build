@@ -42,6 +42,7 @@ do
     build_symp ${model} &
 done
 
+echo ""
 build_tsm () {
     name=$1
     ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c -lm -s
@@ -69,9 +70,11 @@ do
     build_tsm ${model} &
 done
 
+echo ""
 echo " Building divergence"
 ${CC} -O3 $WARNINGS -o divergence divergence.c -lm -s &
 
+echo ""
 echo " Building libtaylor"
 rm -f libtaylor.so taylor-ode.o
 ${CC} -O3 -DNDEBUG -c $WARNINGS -fpic taylor-ode.c && ${CC} -shared -o libtaylor.so taylor-ode.o -s &
