@@ -50,6 +50,7 @@ build_tsm () {
 }
 
 for model in \
+tsm-cosmology \
 tsm-bouali \
 tsm-genesio-tesi \
 tsm-halvorsen \
