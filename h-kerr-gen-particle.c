@@ -194,11 +194,10 @@ int main (int argc, char **argv) {
     fprintf(stderr, "\n");
 
     real r_range = (circular ? p->rmin + 1.0L : p->rmax + 1.0L);
-    real theta_range = get_PI();
     for (int i = 1; i < 1000; i += 1) {
         real r_plot = r_range * i / 1000.0L;
         real R_plot = R(r_plot, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).val;
-        real theta_plot = theta_range * i / 1000.0L;
+        real theta_plot = MY_PI * i / 1000.0L;
         real THETA_plot = THETA(theta_plot, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->pmass2, p->spin).val;
         fprintf(stdout, "%.6Lf %.12Lf %.6Lf %.12Lf\n", r_plot, -0.5L * R_plot, theta_plot, -0.5L * THETA_plot);
     }

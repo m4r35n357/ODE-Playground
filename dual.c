@@ -6,12 +6,6 @@
 #include <math.h>
 #include "dual.h"
 
-static const real MY_PI = 3.1415926535897932384626433832795029L;
-
-real get_PI (void) {
-    return MY_PI;
-}
-
 real elevation_to_colatitude (real elevation) {
     return (90.0L - elevation) * MY_PI  / 180.0L;
 }

@@ -10,8 +10,6 @@
 #include <assert.h>
 #include "taylor-ode.h"
 
-static const real MY_PI = 3.1415926535897932384626433832795029L;
-
 typedef struct {
     real w;
 } parameters;

@@ -1,8 +1,6 @@
 
 #include "real.h"
 
-real get_PI (void);
-
 real elevation_to_colatitude (real elevation);
 
 /*
