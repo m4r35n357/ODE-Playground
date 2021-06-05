@@ -17,17 +17,19 @@ CCOPTS="-O $opt --single-threaded --strip --library c -target $target"
 
 echo Zig version $(./zig version)
 
-./zig build-exe divergence.c $CCOPTS
+zig_build_exe="./zig build-exe -fno-lto"
+
+$zig_build_exe divergence.c $CCOPTS
 for source in tsm-*.c
 do
-    ./zig build-exe $source taylor-ode.c $CCOPTS
+    $zig_build_exe $source taylor-ode.c $CCOPTS
 done
 
-./zig build-exe h-analysis.c symplectic.c $CCOPTS
-./zig build-exe h-kerr.c symplectic.c dual.c $CCOPTS
-./zig build-exe h-newton.c symplectic.c dual.c $CCOPTS
-./zig build-exe h-kerr-gen-particle.c dual.c $CCOPTS
-./zig build-exe h-kerr-gen-light.c $CCOPTS
+$zig_build_exe h-analysis.c symplectic.c $CCOPTS
+$zig_build_exe h-kerr.c symplectic.c dual.c $CCOPTS
+$zig_build_exe h-newton.c symplectic.c dual.c $CCOPTS
+$zig_build_exe h-kerr-gen-particle.c dual.c $CCOPTS
+$zig_build_exe h-kerr-gen-light.c $CCOPTS
 
 ls -lh --color divergence* tsm-* h-*
 
