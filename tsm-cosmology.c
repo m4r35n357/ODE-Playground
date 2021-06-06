@@ -25,9 +25,9 @@ static components ode (series x, series y, series z, void *params, void *inters,
     parameters *p = (parameters *)params;
     (void)inters;
     (void)z;
-    return (components) {
+    return (components) {  // .x maps to rho, .y to theta
         .x = - (1.0L + p->w) * t_prod(x, y, k),
-        .y = - t_prod(y, y, k) / 3.0L - 4.0L * MY_PI * (1.0 + 3.0 * p->w) * x[k]
+        .y = - t_prod(y, y, k) / 3.0L - 4.0L * MY_PI * (1.0L + 3.0L * p->w) * x[k]
     };
 }
 
