@@ -44,10 +44,10 @@ static void refresh (parameters *p) {
 
 static parameters *get_p (int argc, char **argv, int va_begin) {
     parameters *p = malloc(sizeof (parameters));
-    real spin, bh_mass, p_mass2, energy, momentum, m_factor, carter, r_0, theta_0;
-    t_variables(argv, va_begin, argc, &spin, &bh_mass, &p_mass2, &energy, &momentum, &m_factor, &carter, &r_0, &theta_0);
+    real spin, bh_mass, p_mass, energy, momentum, m_factor, carter, r_0, theta_0;
+    t_variables(argv, va_begin, argc, &spin, &bh_mass, &p_mass, &energy, &momentum, &m_factor, &carter, &r_0, &theta_0);
     p->M = bh_mass;  // constants
-    p->mu2 = p_mass2;
+    p->mu2 = p_mass * p_mass;
     p->E = energy;
     p->L = momentum * m_factor;
     p->Q = carter * m_factor;
