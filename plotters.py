@@ -192,7 +192,7 @@ def scan_s(model, x_min=-8.0, x_max=8.0, steps=1000, εf=1e-9, εx=1e-9, limit=1
         if result.count < 101:
             print(result, file=stderr)
 
-def scan_d(model, x_min=-8.0, x_max=8.0, steps=1000, εf=1e-9, εx=1e-9, limit=101, newton=True, mode=Mode.ALL, console=True, debug=False):
+def scan_d(model, x_min=-8.0, x_max=8.0, steps=1000, εf=1e-9, εx=1e-9, limit=101, newton=True, console=True, debug=False):
     for result in _analyze_d(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, console, debug):
         if result.count < 101:
             print(result, file=stderr)

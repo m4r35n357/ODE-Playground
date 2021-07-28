@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for file in tsm-* h-*
+for file in $(ls tsm-* h-* | grep -v '\.py$')
 do
     [ -x $file ] && rm -f $file
 done
