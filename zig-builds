@@ -11,7 +11,10 @@
 target=$1
 opt=$2
 
-rm -f tsm-*-dbg tsm-*-static h-*-dbg h-*-static
+for file in tsm-* h-*
+do
+    [ -x $file ] && rm -f $file
+done
 
 CCOPTS="-O $opt --single-threaded --strip --library c -target $target"
 

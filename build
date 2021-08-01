@@ -15,7 +15,10 @@ then
 fi
 ${CC} --version
 
-rm -f *.o *.so *.gch tsm-*[^.][^c] h-*[^.][^c]
+for file in tsm-* h-*
+do
+    [ -x $file ] && rm -f $file
+done
 
 name='h-kerr-gen-particle'
 echo " Building ${name}"
