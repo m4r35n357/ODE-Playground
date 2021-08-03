@@ -15,11 +15,6 @@ then
 fi
 ${CC} --version
 
-for file in tsm-* h-*
-do
-    [ -x $file ] && rm -f $file
-done
-
 name='h-kerr-gen-particle'
 echo " Building ${name}"
 ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c dual.c -lm -s &

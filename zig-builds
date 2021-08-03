@@ -11,11 +11,6 @@
 target=$1
 opt=$2
 
-for file in tsm-* h-*
-do
-    [ -x $file ] && rm -f $file
-done
-
 CCOPTS="-O $opt --single-threaded --strip --library c -target $target"
 
 echo Zig version $(./zig version)

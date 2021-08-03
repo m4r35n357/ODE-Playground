@@ -1,0 +1,11 @@
+#!/bin/sh
+
+for file in tsm-* h-*
+do
+    [ -x $file ] && rm -f $file
+done
+
+rm -f lib*.so
+
+echo OK
+
