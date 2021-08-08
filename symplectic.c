@@ -11,15 +11,6 @@
 #include <math.h>
 #include "symplectic.h"
 
-void t_stepper (char **argv, long *dp, long *method, real *h, long *nsteps) {
-    *dp = strtol(argv[1], NULL, 10);
-    *method = strtol(argv[2], NULL, 10);
-    *h = strtold(argv[3], NULL);
-    assert(*h > 0.0L && *h <= 10.0L);
-    *nsteps = strtol(argv[4], NULL, 10);
-    assert(*nsteps >= 0 && *nsteps <= 1000000);
-}
-
 void t_variables (char **argv, int begin, int argc, ...) {
     va_list vars;
     va_start(vars, argc);
@@ -84,9 +75,10 @@ static void tenth_order_suzuki (void *p, updater uq, updater up, real h) {
 }
 
 void solve (char **argv, void *p, updater uq, updater up, plotter output) {
-    long method, steps, dp;
-    real h;
-    t_stepper(argv, &dp, &method, &h, &steps);
+    long dp = strtol(argv[1], NULL, 10), method = strtol(argv[2], NULL, 10), steps = strtol(argv[4], NULL, 10);
+    real h = strtold(argv[3], NULL);
+    assert(h > 0.0L && h <= 10.0L);
+    assert(steps >= 0 && steps <= 1000000);
     weight.z1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 3.0L)));
     weight.y1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 5.0L)));
     weight.x1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 7.0L)));

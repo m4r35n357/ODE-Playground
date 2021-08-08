@@ -15,19 +15,6 @@ void t_output (long dp, real x, real y, real z, real t, char *x_label, char *y_l
     printf(fs, x, y, z, t);
 }
 
-void t_control (char **argv, long *dp, long *n, real *h, long *nsteps, real *x, real *y, real *z) {
-    *dp = strtol(argv[1], NULL, 10);
-    *n = strtol(argv[2], NULL, 10);
-    assert(*n >= 2 && *n <= 34);
-    *h = strtold(argv[3], NULL);
-    assert(*h > 0.0L && *h <= 1.0L);
-    *nsteps = strtol(argv[4], NULL, 10);
-    assert(*nsteps >= 1 && *nsteps <= 100000);
-    *x = strtold(argv[5], NULL);
-    *y = strtold(argv[6], NULL);
-    *z = strtold(argv[7], NULL);
-}
-
 void t_params (char **argv, int argc, ...) {
     va_list vars;
     va_start(vars, argc);
@@ -106,10 +93,16 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
 }
 
 void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get_i) {
-    long n, steps, dp;
-    real x0, y0, z0, h, xdot = 0.0L, ydot = 0.0L, zdot = 0.0L;
-    t_control(argv, &dp, &n, &h, &steps, &x0, &y0, &z0);
-    series x = t_jet_c(n + 1, x0), y = t_jet_c(n + 1, y0), z = t_jet_c(n + 1, z0);
+    long dp = strtol(argv[1], NULL, 10); assert(dp >= 1 && dp <= 99);
+    long n = strtol(argv[2], NULL, 10); assert(n >= 2 && n <= 64);
+    real h = strtold(argv[3], NULL); assert(h > 0.0L);
+    long steps = strtol(argv[4], NULL, 10); assert(steps >= 1 && steps <= 1000000);
+    series x = t_jet_c(n + 1, strtold(argv[5], NULL));
+    series y = t_jet_c(n + 1, strtold(argv[6], NULL));
+    series z = t_jet_c(n + 1, strtold(argv[7], NULL));
+    real xdot = 0.0L;
+    real ydot = 0.0L;
+    real zdot = 0.0L;
     void *p = get_p(argc, argv, n);
     void *i = get_i == NULL ? NULL : get_i(n);
     t_output(dp, x[0], y[0], z[0], 0.0L, "_", "_", "_");
@@ -124,6 +117,8 @@ void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get
                  x[1] * xdot < 0.0L ? (x[2] > 0.0L ? "x" : "X") : "_",
                  y[1] * ydot < 0.0L ? (y[2] > 0.0L ? "y" : "Y") : "_",
                  z[1] * zdot < 0.0L ? (z[2] > 0.0L ? "z" : "Z") : "_");
-        xdot = x[1], ydot = y[1], zdot = z[1];
+        xdot = x[1];
+        ydot = y[1];
+        zdot = z[1];
     }
 }

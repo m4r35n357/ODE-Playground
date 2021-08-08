@@ -18,11 +18,6 @@ typedef long double *series;
 void t_output (long dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label) ;
 
 /*
- * Sets output precision, integrator parameters and initial conditions from the command line arguments (1 to 4)
- */
-void t_control (char **argv, long *dp, long *n, real *h, long *nsteps, real *x, real *y, real *z);
-
-/*
  * Bulk set ODE parameters from the command line arguments (5 onwards)
  */
 void t_params (char **argv, int count, ...);
