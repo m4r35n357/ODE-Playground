@@ -1,8 +1,9 @@
 #
 #  (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-from sys import stderr
+from sys import stderr, argv
 from math import fsum, sin, cos, sinh, cosh, tan, tanh, exp, log, asinh, asin, acosh, acos, atanh, atan, sqrt
+from collections import namedtuple
 
 
 def t_jet(n, value=0.0):
@@ -84,6 +85,35 @@ def t_atan(h, g, u, k, hyp=False):
     h[k] = _i_cauchy(g, u, h, k)
     g[k] = 2.0 * _d_cauchy(u, u, k, 0, k - 1)
     return (h[k], - g[k]) if hyp else (h[k], g[k])
+
+
+class Components(namedtuple('ParametersType', ['x', 'y', 'z'])):
+    pass
+
+def output(x, y, z, t):
+    print(f'{x:+.{Context.places}e} {y:+.{Context.places}e} {z:+.{Context.places}e} {t:.5e}')
+
+def tsm(ode, get_p, get_i):
+    Context.places, n, δt, n_steps = int(argv[1]), int(argv[2]), float(argv[3]), int(argv[4])  # controls
+    x, y, z = t_jet(n + 1), t_jet(n + 1), t_jet(n + 1)  # coordinate jets
+    x[0], y[0], z[0] = float(argv[6]), float(argv[7]), float(argv[8])  # initial values
+    steps = range(1, n_steps + 1)
+    index = range(n)
+    p = get_p(n)
+    i = None if get_i is None else get_i(n)
+    output(x[0], y[0], z[0], 0.0)
+    for step in steps:
+        for k in index:
+            c = ode(x, y, z, p, i, k)
+            x[k + 1] = c.x / (k + 1)
+            y[k + 1] = c.y / (k + 1)
+            z[k + 1] = c.z / (k + 1)
+        x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
+        output(x[0], y[0], z[0], step * δt)
+
+
+class Context:
+    places = 3
 
 
 class Series:
@@ -441,10 +471,6 @@ class Dual:
     @property
     def var(self):
         return Dual(self.val, 1.0)
-
-
-class Context:
-    places = 3
 
 
 print(f'{__name__} module loaded', file=stderr)
