@@ -1,7 +1,7 @@
 /*
  * Kerr metric geodesics using Wilkins' equations with a "pseudo-Hamiltonian" approach with automatic differentiation
  *
- * Example:  ./h-kerr-dbg 6 8 .01 10000 0 0.8 1.0 1.0 0.9455050956749083 1.434374509531738 1.0 7.978759958927879 12.0 63.0 >/tmp/$USER/data
+ * Example:  ./h-kerr-dbg 6 8 .01 10000 0 0.8 1.0 0.9455050956749083 1.434374509531738 1.0 7.978759958927879 12.0 63.0 >/tmp/$USER/data
  *
  * Example:  gnuplot -p -e "set terminal wxt size 600,450; splot '/tmp/$USER/data' with lines"
  *
@@ -22,7 +22,7 @@
 #include "dual.h"
 
 typedef struct {
-    real M, mu2;  // central mass & particle mass (squared)
+    real mu2;  // central mass & particle mass (squared)
     real E, L, Q, K;  // constants of motion
     real a, a2, L2, aL, aE, a2xmu2_E2;  // global constants
     real q_t, q_r, q_theta, q_phi, p_t, p_r, p_theta, p_phi;  // coordinates & velocities
@@ -33,7 +33,7 @@ static void refresh (parameters *p) {
     dual r = d_var(p->q_r);
     dual r2 = d_sqr(r);
     p->ra2 = d_shift(r2, p->a2);
-    p->delta = d_sub(p->ra2, d_scale(r, 2.0L * p->M));
+    p->delta = d_sub(p->ra2, d_scale(r, 2.0L));
     dual P = d_shift(d_scale(p->ra2, p->E), - p->aL);
     p->R = d_sub(d_sqr(P), d_mul(p->delta, d_shift(d_scale(r2, p->mu2), p->K)));
     p->sth2 = d_sqr(d_sin(d_var(p->q_theta)));
@@ -44,10 +44,9 @@ static void refresh (parameters *p) {
 
 static parameters *get_p (int argc, char **argv, int va_begin) {
     parameters *p = malloc(sizeof (parameters));
-    real spin, bh_mass, p_mass, energy, momentum, m_factor, carter, r_0, theta_0;
-    t_variables(argv, va_begin, argc, &spin, &bh_mass, &p_mass, &energy, &momentum, &m_factor, &carter, &r_0, &theta_0);
-    p->M = bh_mass;  // constants
-    p->mu2 = p_mass * p_mass;
+    real spin, p_mass, energy, momentum, m_factor, carter, r_0, theta_0;
+    t_variables(argv, va_begin, argc, &spin, &p_mass, &energy, &momentum, &m_factor, &carter, &r_0, &theta_0);
+    p->mu2 = p_mass * p_mass;  // constants
     p->E = energy;
     p->L = momentum * m_factor;
     p->Q = carter * m_factor;
@@ -119,7 +118,7 @@ static void plot_raw (long dp, void *params, real time) {
 }
 
 int main (int argc, char **argv) {
-    assert(argc == 15);
+    assert(argc == 14);
     int plot_type_position = 5;
     long plot_type = strtol(argv[plot_type_position], NULL, 10);
     plotter plot;
