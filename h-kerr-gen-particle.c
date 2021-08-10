@@ -185,6 +185,8 @@ int main (int argc, char **argv) {
             count, p->epsilon, valid ? (p->spin * p->L < 0.0L ? "RETROGRADE" : "PROGRADE") : "INVALID");
     fprintf(stderr, "\n");
     fprintf(stderr, "Simulate:\n");
+    fprintf(stderr, "./h-kerr-dbg 6 8 .01 10000 0 %.3Lf 1.0 %.9Le %.9Le 1.0 %.9Le %.3Lf %.3Lf >/tmp/$USER/data\n",
+            p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax), 0.0L);
     fprintf(stderr, "./h-kerr-dbg 6 8 .01 10000 0 %.3Lf 1.0 %La %La 1.0 %La %.3Lf %.3Lf >/tmp/$USER/data\n",
             p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax), 0.0L);
     fprintf(stderr, "\n");
