@@ -34,7 +34,7 @@ series t_jet_c (long n, real value) {
     return jet;
 }
 
-real t_horner (series jet, long n, real h) {
+static real t_horner (series jet, long n, real h) {
     real sum = 0.0L;
     for (long i = n; i >= 0; i--) {
         sum = sum * h + jet[i];
@@ -100,9 +100,7 @@ void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get
     series x = t_jet_c(n + 1, strtold(argv[5], NULL));
     series y = t_jet_c(n + 1, strtold(argv[6], NULL));
     series z = t_jet_c(n + 1, strtold(argv[7], NULL));
-    real xdot = 0.0L;
-    real ydot = 0.0L;
-    real zdot = 0.0L;
+    real xdot = 0.0L, ydot = 0.0L, zdot = 0.0L;
     void *p = get_p(argc, argv, n);
     void *i = get_i == NULL ? NULL : get_i(n);
     t_output(dp, x[0], y[0], z[0], 0.0L, "_", "_", "_");
@@ -117,8 +115,6 @@ void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get
                  x[1] * xdot < 0.0L ? (x[2] > 0.0L ? "x" : "X") : "_",
                  y[1] * ydot < 0.0L ? (y[2] > 0.0L ? "y" : "Y") : "_",
                  z[1] * zdot < 0.0L ? (z[2] > 0.0L ? "z" : "Z") : "_");
-        xdot = x[1];
-        ydot = y[1];
-        zdot = z[1];
+        xdot = x[1], ydot = y[1], zdot = z[1];
     }
 }
