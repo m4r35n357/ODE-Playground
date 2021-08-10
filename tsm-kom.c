@@ -15,38 +15,24 @@ typedef struct {
     real rho;
     real mu;
     series epsilon;
+    series e_y;
 } parameters;
 
-static void *get_p (int argc, char **argv, long order) {
+void *get_p (int argc, char **argv, long order) {
+    assert(argc == 12);
     parameters *p = malloc(sizeof (parameters));
     p->epsilon = t_jet(order);
     t_params(argv, argc, &p->alpha, &p->rho, &p->mu, p->epsilon);
+    p->e_y = t_jet(order);
     return p;
 }
 
-typedef struct {
-    series e_y;
-} intermediates;
-
-static void *get_i (long order) {
-    intermediates *i = malloc(sizeof (intermediates));
-    i->e_y = t_jet(order);
-    return i;
-}
-
-static components ode (series x, series y, series z, void *params, void *inters, int k) {
+components ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
-    intermediates *i = (intermediates *)inters;
-    i->e_y[k] = t_exp(i->e_y, y, k);
+    p->e_y[k] = t_exp(p->e_y, y, k);
     return (components) {
         .x = y[k],
         .y = p->alpha * z[k],
-        .z = - p->rho * x[k] - p->mu * z[k] - p->epsilon[0] * i->e_y[k] + p->epsilon[k]
+        .z = - p->rho * x[k] - p->mu * z[k] - p->epsilon[0] * p->e_y[k] + p->epsilon[k]
     };
-}
-
-int main (int argc, char **argv) {
-    assert(argc == 12);
-    tsm(argc, argv, ode, get_p, get_i);
-    return 0;
 }

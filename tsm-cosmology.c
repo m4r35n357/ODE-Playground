@@ -14,25 +14,19 @@ typedef struct {
     real w;
 } parameters;
 
-static void *get_p (int argc, char **argv, long order) {
+void *get_p (int argc, char **argv, long order) {
+    assert(argc == 11);
     (void)order;
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->w);
     return p;
 }
 
-static components ode (series x, series y, series z, void *params, void *inters, int k) {
+components ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
-    (void)inters;
     (void)z;
     return (components) {  // .x maps to rho, .y to theta
         .x = - (1.0L + p->w) * t_prod(x, y, k),
         .y = - t_prod(y, y, k) / 3.0L - 4.0L * MY_PI * (1.0L + 3.0L * p->w) * x[k]
     };
-}
-
-int main (int argc, char **argv) {
-    assert(argc == 9);
-    tsm(argc, argv, ode, get_p, NULL);
-    return 0;
 }

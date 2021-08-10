@@ -71,13 +71,6 @@ pair t_sin_cos (series S, series C, series U, int k, geometry g);
 pair t_tan_sec2 (series T, series S2, series U, int k, geometry g);
 
 /*
- * Function signatures for ODE parameters and intermediate variables, defined in client code
- */
-typedef void *(*tsm_params)(int, char **, long);
-
-typedef void *(*tsm_inters)(long);
-
-/*
  * For returning x, y, z values
  */
 typedef struct {
@@ -87,11 +80,8 @@ typedef struct {
 } components;
 
 /*
- * 3D (x, y, z) ODE function signatures, defined in client code
+ * Client method signatures
  */
-typedef components (*tsm_model)(series, series, series, void *, void *, int);
+void *get_p (int argc, char **argv, long order);
 
-/*
- * Integrator signatures
- */
-void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get_i);
+components ode (series x, series y, series z, void *params, int k);

@@ -14,25 +14,19 @@ typedef struct {
     real a;
 } parameters;
 
-static void *get_p (int argc, char **argv, long order) {
+void *get_p (int argc, char **argv, long order) {
+    assert(argc == 9);
     (void)order;
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->a);
     return p;
 }
 
-static components ode (series x, series y, series z, void *params, void *inters, int k) {
+components ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
-    (void)inters;
     return (components) {
         .x = y[k],
         .y = z[k],
         .z = - p->a * z[k] + t_prod(y, y, k) - x[k]
     };
-}
-
-int main (int argc, char **argv) {
-    assert(argc == 9);
-    tsm(argc, argv, ode, get_p, NULL);
-    return 0;
 }

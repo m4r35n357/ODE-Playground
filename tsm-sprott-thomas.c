@@ -13,44 +13,30 @@
 typedef struct {
     real a;
     real b;
-} parameters;
-
-static void *get_p (int argc, char **argv, long order) {
-    (void)order;
-    parameters *p = malloc(sizeof (parameters));
-    t_params(argv, argc, &p->a, &p->b);
-    return p;
-}
-
-typedef struct {
     series ax; series sax; series cax; series tx; series s2x;
     series ay; series say; series cay; series ty; series s2y;
     series az; series saz; series caz; series tz; series s2z;
-} intermediates;
+} parameters;
 
-static void *get_i (long order) {
-    intermediates *i = malloc(sizeof (intermediates));
-    i->ax = t_jet(order); i->sax = t_jet(order); i->cax = t_jet(order); i->tx = t_jet(order); i->s2x = t_jet(order);
-    i->ay = t_jet(order); i->say = t_jet(order); i->cay = t_jet(order); i->ty = t_jet(order); i->s2y = t_jet(order);
-    i->az = t_jet(order); i->saz = t_jet(order); i->caz = t_jet(order); i->tz = t_jet(order); i->s2z = t_jet(order);
-    return i;
-}
-
-static components ode (series x, series y, series z, void *params, void *inters, int k) {
-    parameters *p = (parameters *)params;
-    intermediates *i = (intermediates *)inters;
-    i->ax[k] = p->a * x[k];
-    i->ay[k] = p->a * y[k];
-    i->az[k] = p->a * z[k];
-    return (components) {
-        .x = t_sin_cos(i->say, i->cay, i->ay, k, TRIG).a - p->b * t_tan_sec2(i->tx, i->s2x, x, k, TRIG).a,
-        .y = t_sin_cos(i->saz, i->caz, i->az, k, TRIG).a - p->b * t_tan_sec2(i->ty, i->s2y, y, k, TRIG).a,
-        .z = t_sin_cos(i->sax, i->cax, i->ax, k, TRIG).a - p->b * t_tan_sec2(i->tz, i->s2z, z, k, TRIG).a
-    };
-}
-
-int main (int argc, char **argv) {
+void *get_p (int argc, char **argv, long order) {
     assert(argc == 10);
-    tsm(argc, argv, ode, get_p, get_i);
-    return 0;
+    (void)order;
+    parameters *p = malloc(sizeof (parameters));
+    t_params(argv, argc, &p->a, &p->b);
+    p->ax = t_jet(order); p->sax = t_jet(order); p->cax = t_jet(order); p->tx = t_jet(order); p->s2x = t_jet(order);
+    p->ay = t_jet(order); p->say = t_jet(order); p->cay = t_jet(order); p->ty = t_jet(order); p->s2y = t_jet(order);
+    p->az = t_jet(order); p->saz = t_jet(order); p->caz = t_jet(order); p->tz = t_jet(order); p->s2z = t_jet(order);
+    return p;
+}
+
+components ode (series x, series y, series z, void *params, int k) {
+    parameters *p = (parameters *)params;
+    p->ax[k] = p->a * x[k];
+    p->ay[k] = p->a * y[k];
+    p->az[k] = p->a * z[k];
+    return (components) {
+        .x = t_sin_cos(p->say, p->cay, p->ay, k, TRIG).a - p->b * t_tan_sec2(p->tx, p->s2x, x, k, TRIG).a,
+        .y = t_sin_cos(p->saz, p->caz, p->az, k, TRIG).a - p->b * t_tan_sec2(p->ty, p->s2y, y, k, TRIG).a,
+        .z = t_sin_cos(p->sax, p->cax, p->ax, k, TRIG).a - p->b * t_tan_sec2(p->tz, p->s2z, z, k, TRIG).a
+    };
 }

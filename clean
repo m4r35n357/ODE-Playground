@@ -5,7 +5,7 @@ do
     [ -x $file ] && rm -f $file
 done
 
-rm -f lib*.so
+rm -f lib*.so *.o
 
 echo OK
 
