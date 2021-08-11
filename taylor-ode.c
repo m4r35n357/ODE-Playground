@@ -100,9 +100,9 @@ int main (int argc, char **argv) {
     series x = t_jet_c(n + 1, strtold(argv[5], NULL));
     series y = t_jet_c(n + 1, strtold(argv[6], NULL));
     series z = t_jet_c(n + 1, strtold(argv[7], NULL));
-    real xdot = 0.0L, ydot = 0.0L, zdot = 0.0L;
     void *p = get_p(argc, argv, n);
     t_output(dp, x[0], y[0], z[0], 0.0L, "_", "_", "_");
+    components cdot = ode(x, y, z, p, 0);
     for (long step = 1; step <= steps; step++) {
         for (int k = 0; k < n; k++) {
             components c = ode(x, y, z, p, k);
@@ -111,10 +111,10 @@ int main (int argc, char **argv) {
             z[k + 1] = c.z / (k + 1);
         }
         t_output(dp, t_horner(x, n, h), t_horner(y, n, h), t_horner(z, n, h), h * step,
-                 x[1] * xdot < 0.0L ? (x[2] > 0.0L ? "x" : "X") : "_",
-                 y[1] * ydot < 0.0L ? (y[2] > 0.0L ? "y" : "Y") : "_",
-                 z[1] * zdot < 0.0L ? (z[2] > 0.0L ? "z" : "Z") : "_");
-        xdot = x[1], ydot = y[1], zdot = z[1];
+                 x[1] * cdot.x < 0.0L ? (x[2] > 0.0L ? "x" : "X") : "_",
+                 y[1] * cdot.y < 0.0L ? (y[2] > 0.0L ? "y" : "Y") : "_",
+                 z[1] * cdot.z < 0.0L ? (z[2] > 0.0L ? "z" : "Z") : "_");
+        cdot.x = x[1], cdot.y = y[1], cdot.z = z[1];
     }
     return 0;
 }
