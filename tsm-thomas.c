@@ -12,41 +12,27 @@
 
 typedef struct {
     real b;
-} parameters;
-
-static void *get_p (int argc, char **argv, long order) {
-    (void)order;
-    parameters *p = malloc(sizeof (parameters));
-    t_params(argv, argc, &p->b);
-    return p;
-}
-
-typedef struct {
     series sx; series cx;
     series sy; series cy;
     series sz; series cz;
-} intermediates;
+} parameters;
 
-static void *get_i (long order) {
-    intermediates *i = malloc(sizeof (intermediates));
-    i->sx = t_jet(order); i->cx = t_jet(order);
-    i->sy = t_jet(order); i->cy = t_jet(order);
-    i->sz = t_jet(order); i->cz = t_jet(order);
-    return i;
-}
-
-static components ode (series x, series y, series z, void *params, void *inters, int k) {
-    parameters *p = (parameters *)params;
-    intermediates *i = (intermediates *)inters;
-    return (components) {
-        .x = t_sin_cos(i->sy, i->cy, y, k, TRIG).a - p->b * x[k],
-        .y = t_sin_cos(i->sz, i->cz, z, k, TRIG).a - p->b * y[k],
-        .z = t_sin_cos(i->sx, i->cx, x, k, TRIG).a - p->b * z[k]
-    };
-}
-
-int main (int argc, char **argv) {
+void *get_p (int argc, char **argv, long order) {
     assert(argc == 9);
-    tsm(argc, argv, ode, get_p, get_i);
-    return 0;
+    (void)order;
+    parameters *p = malloc(sizeof (parameters));
+    t_params(argv, argc, &p->b);
+    p->sx = t_jet(order); p->cx = t_jet(order);
+    p->sy = t_jet(order); p->cy = t_jet(order);
+    p->sz = t_jet(order); p->cz = t_jet(order);
+    return p;
+}
+
+components ode (series x, series y, series z, void *params, int k) {
+    parameters *p = (parameters *)params;
+    return (components) {
+        .x = t_sin_cos(p->sy, p->cy, y, k, TRIG).a - p->b * x[k],
+        .y = t_sin_cos(p->sz, p->cz, z, k, TRIG).a - p->b * y[k],
+        .z = t_sin_cos(p->sx, p->cx, x, k, TRIG).a - p->b * z[k]
+    };
 }

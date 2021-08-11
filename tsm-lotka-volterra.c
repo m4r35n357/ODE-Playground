@@ -17,26 +17,20 @@ typedef struct {
     real d;
 } parameters;
 
-static void *get_p (int argc, char **argv, long order) {
+void *get_p (int argc, char **argv, long order) {
+    assert(argc == 12);
     (void)order;
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->a, &p->b, &p->c, &p->d);
     return p;
 }
 
-static components ode (series x, series y, series z, void *params, void *inters, int k) {
+components ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
-    (void)inters;
     (void)z;
     real xy = t_prod(x, y, k);
     return (components) {
         .x = p->a * x[k] - p->c * xy,
         .y = p->d * xy - p->b * y[k]
     };
-}
-
-int main (int argc, char **argv) {
-    assert(argc == 12);
-    tsm(argc, argv, ode, get_p, NULL);
-    return 0;
 }

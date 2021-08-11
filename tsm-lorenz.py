@@ -10,7 +10,7 @@ from ad import tsm, t_prod, Components
 class Parameters(namedtuple('ParametersType', ['σ', 'ρ', 'β'])):
     pass
 
-def ode(x, y, z, p, i, k):
+def ode(x, y, z, p, k):
     return Components(x = p.σ * (y[k] - x[k]),
                       y = p.ρ * x[k] - y[k] - t_prod(x, z, k),
                       z = t_prod(x, y, k) - p.β * z[k])
@@ -20,4 +20,4 @@ def get_p():
                       ρ = float(argv[9]),
                       β = float(argv[10]) / float(argv[11]))
 
-tsm(ode, get_p, None)
+tsm(ode, get_p)

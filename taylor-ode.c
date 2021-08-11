@@ -92,7 +92,7 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
     };
 }
 
-void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get_i) {
+int main (int argc, char **argv) {
     long dp = strtol(argv[1], NULL, 10); assert(dp >= 1 && dp <= 99);
     long n = strtol(argv[2], NULL, 10); assert(n >= 2 && n <= 64);
     real h = strtold(argv[3], NULL); assert(h > 0.0L);
@@ -102,11 +102,10 @@ void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get
     series z = t_jet_c(n + 1, strtold(argv[7], NULL));
     real xdot = 0.0L, ydot = 0.0L, zdot = 0.0L;
     void *p = get_p(argc, argv, n);
-    void *i = get_i == NULL ? NULL : get_i(n);
     t_output(dp, x[0], y[0], z[0], 0.0L, "_", "_", "_");
     for (long step = 1; step <= steps; step++) {
         for (int k = 0; k < n; k++) {
-            components c = ode(x, y, z, p, i, k);
+            components c = ode(x, y, z, p, k);
             x[k + 1] = c.x / (k + 1);
             y[k + 1] = c.y / (k + 1);
             z[k + 1] = c.z / (k + 1);
@@ -117,4 +116,5 @@ void tsm (int argc, char **argv, tsm_model ode, tsm_params get_p, tsm_inters get
                  z[1] * zdot < 0.0L ? (z[2] > 0.0L ? "z" : "Z") : "_");
         xdot = x[1], ydot = y[1], zdot = z[1];
     }
+    return 0;
 }

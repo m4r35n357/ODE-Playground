@@ -15,43 +15,29 @@ typedef struct {
     real b;
     real c;
     real d;
-} parameters;
-
-static void *get_p (int argc, char **argv, long order) {
-    (void)order;
-    parameters *p = malloc(sizeof (parameters));
-    t_params(argv, argc, &p->a, &p->b, &p->c, &p->d);
-    return p;
-}
-
-typedef struct {
     series wa;
     series wb;
     series w1;
-} intermediates;
+} parameters;
 
-static void *get_i (long order) {
-    intermediates *i = malloc(sizeof (intermediates));
-    i->wa = t_jet(order);
-    i->wb = t_jet(order);
-    i->w1 = t_jet_c(order, 1.0L);
-    return i;
+void *get_p (int argc, char **argv, long order) {
+    assert(argc == 12);
+    (void)order;
+    parameters *p = malloc(sizeof (parameters));
+    t_params(argv, argc, &p->a, &p->b, &p->c, &p->d);
+    p->wa = t_jet(order);
+    p->wb = t_jet(order);
+    p->w1 = t_jet_c(order, 1.0L);
+    return p;
 }
 
-static components ode (series x, series y, series z, void *params, void *inters, int k) {
+components ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
-    intermediates *i = (intermediates *)inters;
-    i->wa[k] = i->w1[k] - y[k];
-    i->wb[k] = i->w1[k] - t_prod(x, x, k);
+    p->wa[k] = p->w1[k] - y[k];
+    p->wb[k] = p->w1[k] - t_prod(x, x, k);
     return (components) {
-        .x = p->a * t_prod(x, i->wa, k) - p->b * z[k],
-        .y = - p->c * t_prod(y, i->wb, k),
+        .x = p->a * t_prod(x, p->wa, k) - p->b * z[k],
+        .y = - p->c * t_prod(y, p->wb, k),
         .z = p->d * x[k]
     };
-}
-
-int main (int argc, char **argv) {
-    assert(argc == 12);
-    tsm(argc, argv, ode, get_p, get_i);
-    return 0;
 }

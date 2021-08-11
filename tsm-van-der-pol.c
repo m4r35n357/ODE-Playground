@@ -12,38 +12,24 @@
 
 typedef struct {
     real mu;
+    series x2;
 } parameters;
 
-static void *get_p (int argc, char **argv, long order) {
+void *get_p (int argc, char **argv, long order) {
+    assert(argc == 9);
     (void)order;
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->mu);
+    p->x2 = t_jet(order);
     return p;
 }
 
-typedef struct {
-    series x2;
-} intermediates;
-
-static void *get_i (long order) {
-    intermediates *i = malloc(sizeof (intermediates));
-    i->x2 = t_jet(order);
-    return i;
-}
-
-static components ode (series x, series y, series z, void *params, void *inters, int k) {
+components ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
-    intermediates *i = (intermediates *)inters;
     (void)z;
-    i->x2[k] = t_prod(x, x, k);
+    p->x2[k] = t_prod(x, x, k);
     return (components) {
         .x = y[k],
-        .y = p->mu * (y[k] - t_prod(i->x2, y, k)) - x[k]
+        .y = p->mu * (y[k] - t_prod(p->x2, y, k)) - x[k]
     };
-}
-
-int main (int argc, char **argv) {
-    assert(argc == 9);
-    tsm(argc, argv, ode, get_p, get_i);
-    return 0;
 }

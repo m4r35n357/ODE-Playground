@@ -7,28 +7,22 @@ from sys import argv
 from collections import namedtuple
 from ad import tsm, t_prod, Components, t_jet, t_sqr
 
-class Parameters(namedtuple('ParametersType', ['α', 'γ'])):
+class Parameters(namedtuple('ParametersType', ['α', 'γ', 'jet1', 'a', 'b', 'c'])):
     pass
 
-class Intermediates(namedtuple('IntermediatesType', ['jet1', 'a', 'b', 'c'])):
+class Intermediates(namedtuple('IntermediatesType', [])):
     pass
 
-def ode(x, y, z, p, i, k):
-    i.a[k] = z[k] + t_sqr(x, k) - i.jet1[k]
-    i.b[k] = 4.0 * z[k] - i.a[k]
-    i.c[k] = p.α[k] + t_prod(x, y, k)
-    return Components(x = t_prod(y, i.a, k) + p.γ * x[k],
-                      y = t_prod(x, i.b, k) + p.γ * y[k],
-                      z = - 2.0 * t_prod(z, i.c, k))
+def ode(x, y, z, p, k):
+    p.a[k] = z[k] + t_sqr(x, k) - p.jet1[k]
+    p.b[k] = 4.0 * z[k] - p.a[k]
+    p.c[k] = p.α[k] + t_prod(x, y, k)
+    return Components(x = t_prod(y, p.a, k) + p.γ * x[k],
+                      y = t_prod(x, p.b, k) + p.γ * y[k],
+                      z = - 2.0 * t_prod(z, p.c, k))
 
 def get_p(order):
-    return Parameters(α = t_jet(order, float(argv[9])),
-                      γ = float(argv[10]))
+    return Parameters(α = t_jet(order, float(argv[9])), γ = float(argv[10]),
+                      jet1=t_jet(order, 1.0), a=t_jet(order), b=t_jet(order), c=t_jet(order))
 
-def get_i(order):
-    return Intermediates(jet1 = t_jet(order, 1.0),
-                         a = t_jet(order),
-                         b = t_jet(order),
-                         c = t_jet(order))
-
-tsm(ode, get_p, get_i)
+tsm(ode, get_p)

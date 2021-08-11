@@ -93,18 +93,17 @@ class Components(namedtuple('ParametersType', ['x', 'y', 'z'])):
 def output(x, y, z, t):
     print(f'{x:+.{Context.places}e} {y:+.{Context.places}e} {z:+.{Context.places}e} {t:.5e}')
 
-def tsm(ode, get_p, get_i):
+def tsm(ode, get_p):
     Context.places, n, δt, n_steps = int(argv[1]), int(argv[2]), float(argv[3]), int(argv[4])  # controls
     x, y, z = t_jet(n + 1), t_jet(n + 1), t_jet(n + 1)  # coordinate jets
     x[0], y[0], z[0] = float(argv[6]), float(argv[7]), float(argv[8])  # initial values
     steps = range(1, n_steps + 1)
     index = range(n)
     p = get_p(n)
-    i = None if get_i is None else get_i(n)
     output(x[0], y[0], z[0], 0.0)
     for step in steps:
         for k in index:
-            c = ode(x, y, z, p, i, k)
+            c = ode(x, y, z, p, k)
             x[k + 1] = c.x / (k + 1)
             y[k + 1] = c.y / (k + 1)
             z[k + 1] = c.z / (k + 1)
