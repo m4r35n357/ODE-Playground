@@ -101,8 +101,8 @@ int main (int argc, char **argv) {
     series y = t_jet_c(n + 1, strtold(argv[6], NULL));
     series z = t_jet_c(n + 1, strtold(argv[7], NULL));
     void *p = get_p(argc, argv, n);
-    t_output(dp, x[0], y[0], z[0], 0.0L, "_", "_", "_");
     components cdot = ode(x, y, z, p, 0);
+    t_output(dp, x[0], y[0], z[0], 0.0L, "_", "_", "_");
     for (long step = 1; step <= steps; step++) {
         for (int k = 0; k < n; k++) {
             components c = ode(x, y, z, p, k);
