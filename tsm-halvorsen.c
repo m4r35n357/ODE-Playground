@@ -1,51 +1,45 @@
 /*
  * Halvorsen Cyclic Attractor
  *
- * Example: ./tsm-halvorsen-dbg 9 32 10 .01 10000 1 0 0 1.4
+ * Example: ./tsm-halvorsen-dbg 9 32 10 .01 10000 1 0 0 1.4 4
  *
- * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
+#include <stdlib.h>
 #include <assert.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-int main (int argc, char **argv) {
-    long n, nsteps;
-    mpfr_t a, h, _, w4x, w4y, w4z;
+typedef struct { mpfr_t a, b, w4x, w4y, w4z, _; } parameters;
 
-    // initialize from command arguments
-    assert(argc == 10);
-    t_stepper(argv, &n, &h, &nsteps);
-    mpfr_inits(a, w4x, w4y, w4z, _, NULL);
-    series x = t_series(n + 1), y = t_series(n + 1), z = t_series(n + 1);
-    t_args(argv, argc, x.jet, y.jet, z.jet, &a);
+void *get_p (int argc, char **argv, long n) {
+    assert(argc == 11);
+    (void)n;
+    parameters *p = malloc(sizeof (parameters));
+    t_params(argv, argc, &p->a, &p->b);
+    mpfr_inits(p->w4x, p->w4y, p->w4z, p->_, NULL);
+    return p;
+}
 
-    t_output(x.jet[0], y.jet[0], z.jet[0], h, 0);
-    for (long step = 1; step <= nsteps; step++) {
-        // build the jet of taylor coefficients
-        for (int k = 0; k < n; k++) {
-            mpfr_mul_2ui(w4x, x.jet[k], 2, RND);
-            mpfr_mul_2ui(w4y, y.jet[k], 2, RND);
-            mpfr_mul_2ui(w4z, z.jet[k], 2, RND);
-            //  x' = - Ax - 4y - 4z - y^2
-            mpfr_fma(_, a, x.jet[k], *t_sqr(y, k), RND);
-            mpfr_add(_, w4y, _, RND);
-            mpfr_add(_, w4z, _, RND);
-            t_next(x, _, k, NEG);
-            //  y' = - Ay - 4z - 4x - z^2
-            mpfr_fma(_, a, y.jet[k], *t_sqr(z, k), RND);
-            mpfr_add(_, w4z, _, RND);
-            mpfr_add(_, w4x, _, RND);
-            t_next(y, _, k, NEG);
-            //  z' = - Az - 4x - 4y - x^2
-            mpfr_fma(_, a, z.jet[k], *t_sqr(x, k), RND);
-            mpfr_add(_, w4x, _, RND);
-            mpfr_add(_, w4y, _, RND);
-            t_next(z, _, k, NEG);
-        }
-        // sum the series using Horner's method and advance one step
-        t_output(*t_horner(x, h), *t_horner(y, h), *t_horner(z, h), h, step);
-    }
-    return 0;
+void ode (series x, series y, series z, components *c, void *params, int k) {
+    parameters *p = (parameters *)params;
+    mpfr_mul(p->w4x, x[k], p->b, RND);
+    mpfr_mul(p->w4y, y[k], p->b, RND);
+    mpfr_mul(p->w4z, z[k], p->b, RND);
+    //  x' = - Ax - 4y - 4z - y^2
+    mpfr_fma(p->_, p->a, x[k], *t_sqr(y, k), RND);
+    mpfr_add(p->_, p->w4y, p->_, RND);
+    mpfr_add(p->_, p->w4z, p->_, RND);
+    mpfr_neg(c->x, p->_, RND);
+    //  y' = - Ay - 4z - 4x - z^2
+    mpfr_fma(p->_, p->a, y[k], *t_sqr(z, k), RND);
+    mpfr_add(p->_, p->w4z, p->_, RND);
+    mpfr_add(p->_, p->w4x, p->_, RND);
+    mpfr_neg(c->y, p->_, RND);
+    //  z' = - Az - 4x - 4y - x^2
+    mpfr_fma(p->_, p->a, z[k], *t_sqr(x, k), RND);
+    mpfr_add(p->_, p->w4x, p->_, RND);
+    mpfr_add(p->_, p->w4y, p->_, RND);
+    mpfr_neg(c->z, p->_, RND);
 }

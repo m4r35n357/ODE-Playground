@@ -3,42 +3,33 @@
  *
  * Example: ./tsm-lorenz-dbg 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3
  *
- * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
+#include <stdlib.h>
 #include <assert.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-int main (int argc, char **argv) {
-    long n, nsteps;
-    mpfr_t sigma, rho, beta, h, _;
+typedef struct { mpfr_t sigma, rho, beta, _; } parameters;
 
-    // initialize from command arguments
+void *get_p (int argc, char **argv, long n) {
     assert(argc == 13);
-    t_stepper(argv, &n, &h, &nsteps);
-    mpfr_inits(sigma, rho, beta, _, NULL);
-    series x = t_series(n + 1), y = t_series(n + 1), z = t_series(n + 1);
-    t_args(argv, argc, x.jet, y.jet, z.jet, &sigma, &rho, &beta, &_);
-    mpfr_div(beta, beta, _, RND);
+    (void)n;
+    parameters *p = malloc(sizeof (parameters));
+    t_params(argv, argc, &p->sigma, &p->rho, &p->beta, &p->_);
+    mpfr_div(p->beta, p->beta, p->_, RND);
+    return p;
+}
 
-    t_output(x.jet[0], y.jet[0], z.jet[0], h, 0);
-    for (long step = 1; step <= nsteps; step++) {
-        // build the jet of taylor coefficients
-        for (int k = 0; k < n; k++) {
-            //  x' = S(y - x)
-            mpfr_fmms(_, sigma, y.jet[k], sigma, x.jet[k], RND);
-            t_next(x, _, k, POS);
-            //  y' = x(R - z) - y
-            mpfr_fms(_, x.jet[k], rho, *t_prod(x, z, k), RND);
-            mpfr_sub(_, _, y.jet[k], RND);
-            t_next(y, _, k, POS);
-            //  z' = xy - Bz
-            mpfr_fms(_, beta, z.jet[k], *t_prod(x, y, k), RND);
-            t_next(z, _, k, NEG);
-        }
-        // sum the series using Horner's method and advance one step
-        t_output(*t_horner(x, h), *t_horner(y, h), *t_horner(z, h), h, step);
-    }
-    return 0;
+void ode (series x, series y, series z, components *c, void *params, int k) {
+    parameters *p = (parameters *)params;
+    //  x' = S(y - x)
+    mpfr_fmms(c->x, p->sigma, y[k], p->sigma, x[k], RND);
+    //  y' = x(R - z) - y
+    mpfr_fms(c->y, x[k], p->rho, *t_prod(x, z, k), RND);
+    mpfr_sub(c->y, c->y, y[k], RND);
+    //  z' = xy - Bz
+    mpfr_fms(c->z, p->beta, z[k], *t_prod(x, y, k), RND);
+    mpfr_neg(c->z, c->z, RND);
 }
