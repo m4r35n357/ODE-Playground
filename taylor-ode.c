@@ -28,12 +28,6 @@ series t_jet (long n) {
     return calloc((size_t)n, sizeof (real));
 }
 
-series t_jet_c (long n, real value) {
-    series jet = t_jet(n);
-    jet[0] = value;
-    return jet;
-}
-
 static real t_horner (series jet, long n, real h) {
     real sum = 0.0L;
     for (long i = n; i >= 0; i--) {
@@ -97,9 +91,10 @@ int main (int argc, char **argv) {
     long n = strtol(argv[2], NULL, 10); assert(n >= 2 && n <= 64);
     real h = strtold(argv[3], NULL); assert(h > 0.0L);
     long steps = strtol(argv[4], NULL, 10); assert(steps >= 1 && steps <= 1000000);
-    series x = t_jet_c(n + 1, strtold(argv[5], NULL));
-    series y = t_jet_c(n + 1, strtold(argv[6], NULL));
-    series z = t_jet_c(n + 1, strtold(argv[7], NULL));
+    series x = t_jet(n + 1), y = t_jet(n + 1), z = t_jet(n + 1);
+    x[0] = strtold(argv[5], NULL);
+    y[0] = strtold(argv[6], NULL);
+    z[0] = strtold(argv[7], NULL);
     void *p = get_p(argc, argv, n);
     components cdot = ode(x, y, z, p, 0);
     t_output(dp, x[0], y[0], z[0], 0.0L, "_", "_", "_");

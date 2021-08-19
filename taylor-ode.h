@@ -28,11 +28,6 @@ void t_params (char **argv, int count, ...);
 series t_jet (long size);
 
 /*
- * Returns a jet of the specified size, with element zero set to value and the rest zeroed (represents a constant in an ODE)
- */
-series t_jet_c (long size, real value);
-
-/*
  * Returns kth element of the absolute value of U, no user-supplied jet storage needed
  */
 real t_abs (series u, int k);

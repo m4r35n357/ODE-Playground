@@ -26,7 +26,8 @@ void *get_p (int argc, char **argv, long order) {
     t_params(argv, argc, &p->a, &p->b, &p->c, &p->d);
     p->wa = t_jet(order);
     p->wb = t_jet(order);
-    p->w1 = t_jet_c(order, 1.0L);
+    p->w1 = t_jet(order);
+    p->w1[0] = 1.0L;
     return p;
 }
 
