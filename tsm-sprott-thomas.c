@@ -20,7 +20,6 @@ typedef struct {
 
 void *get_p (int argc, char **argv, long order) {
     assert(argc == 10);
-    (void)order;
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->a, &p->b);
     p->ax = t_jet(order); p->sax = t_jet(order); p->cax = t_jet(order); p->tx = t_jet(order); p->s2x = t_jet(order);

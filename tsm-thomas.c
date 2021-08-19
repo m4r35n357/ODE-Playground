@@ -19,7 +19,6 @@ typedef struct {
 
 void *get_p (int argc, char **argv, long order) {
     assert(argc == 9);
-    (void)order;
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->b);
     p->sx = t_jet(order); p->cx = t_jet(order);
