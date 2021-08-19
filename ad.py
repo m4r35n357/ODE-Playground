@@ -59,8 +59,8 @@ def t_tan_sec2(t, s, u, k, hyp=False):
 def t_pwr(p, u, a, k):
     return u[0]**a if k == 0 else (_d_cauchy(p, u, k, 0, k - 1, a) - _d_cauchy(u, p, k, 1, k - 1)) / u[0]
 
-def t_ln(l, u, k):
-    return log(u[0]) if k == 0 else (u[k] - _d_cauchy(u, l, k, 1, k - 1)) / u[0]
+def t_ln(ln, u, k):
+    return log(u[0]) if k == 0 else (u[k] - _d_cauchy(u, ln, k, 1, k - 1)) / u[0]
 
 def _i_cauchy(g, u, f, k, sign=True):
     return ((u[k] if sign else - u[k]) - _d_cauchy(g, f, k, 1, k - 1)) / g[0]
@@ -93,6 +93,8 @@ class Components(namedtuple('ParametersType', ['x', 'y', 'z'])):
 def output(x, y, z, t):
     print(f'{x:+.{Context.places}e} {y:+.{Context.places}e} {z:+.{Context.places}e} {t:.5e}')
 
+
+# noinspection NonAsciiCharacters
 def tsm(ode, get_p):
     Context.places, n, δt, n_steps = int(argv[1]), int(argv[2]), float(argv[3]), int(argv[4])  # controls
     x, y, z = t_jet(n + 1), t_jet(n + 1), t_jet(n + 1)  # coordinate jets

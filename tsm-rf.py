@@ -13,16 +13,17 @@ class Parameters(namedtuple('ParametersType', ['α', 'γ', 'jet1', 'a', 'b', 'c'
 class Intermediates(namedtuple('IntermediatesType', [])):
     pass
 
+def get_p(order):
+    return Parameters(α=t_jet(order, float(argv[9])), γ=float(argv[10]),
+                      jet1=t_jet(order, 1.0), a=t_jet(order), b=t_jet(order), c=t_jet(order))
+
 def ode(x, y, z, p, k):
     p.a[k] = z[k] + t_sqr(x, k) - p.jet1[k]
     p.b[k] = 4.0 * z[k] - p.a[k]
     p.c[k] = p.α[k] + t_prod(x, y, k)
-    return Components(x = t_prod(y, p.a, k) + p.γ * x[k],
-                      y = t_prod(x, p.b, k) + p.γ * y[k],
-                      z = - 2.0 * t_prod(z, p.c, k))
+    return Components(x=t_prod(y, p.a, k) + p.γ * x[k],
+                      y=t_prod(x, p.b, k) + p.γ * y[k],
+                      z=- 2.0 * t_prod(z, p.c, k))
 
-def get_p(order):
-    return Parameters(α = t_jet(order, float(argv[9])), γ = float(argv[10]),
-                      jet1=t_jet(order, 1.0), a=t_jet(order), b=t_jet(order), c=t_jet(order))
 
 tsm(ode, get_p)
