@@ -27,6 +27,6 @@ components ode (series x, series y, series z, void *params, int k) {
     return (components) {
         .x = y[k],
         .y = z[k],
-        .z = - p->a * z[k] + t_prod(y, y, k) - x[k]
+        .z = - p->a * z[k] + t_sqr(y, k) - x[k]
     };
 }
