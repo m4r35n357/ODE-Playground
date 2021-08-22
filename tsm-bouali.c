@@ -17,7 +17,6 @@ typedef struct {
     real d;
     series wa;
     series wb;
-    series w1;
 } parameters;
 
 void *get_p (int argc, char **argv, long order) {
@@ -26,15 +25,13 @@ void *get_p (int argc, char **argv, long order) {
     t_params(argv, argc, &p->a, &p->b, &p->c, &p->d);
     p->wa = t_jet(order);
     p->wb = t_jet(order);
-    p->w1 = t_jet(order);
-    p->w1[0] = 1.0L;
     return p;
 }
 
 components ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
-    p->wa[k] = p->w1[k] - y[k];
-    p->wb[k] = p->w1[k] - t_prod(x, x, k);
+    p->wa[k] = (k == 0 ? 1.0L : 0.0L) - y[k];
+    p->wb[k] = (k == 0 ? 1.0L : 0.0L) - t_prod(x, x, k);
     return (components) {
         .x = p->a * t_prod(x, p->wa, k) - p->b * z[k],
         .y = - p->c * t_prod(y, p->wb, k),

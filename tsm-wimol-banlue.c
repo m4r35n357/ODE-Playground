@@ -11,7 +11,7 @@
 #include "taylor-ode.h"
 
 typedef struct {
-    series a;
+    real a;
     series tx;
     series s2x;
 } parameters;
@@ -19,8 +19,7 @@ typedef struct {
 void *get_p (int argc, char **argv, long order) {
     assert(argc == 9);
     parameters *p = malloc(sizeof (parameters));
-    p->a = t_jet(order);
-    t_params(argv, argc, p->a);
+    t_params(argv, argc, &p->a);
     p->tx = t_jet(order);
     p->s2x = t_jet(order);
     return p;
@@ -32,6 +31,6 @@ components ode (series x, series y, series z, void *params, int k) {
     return (components) {
         .x = y[k] - x[k],
         .y = - t_prod(z, p->tx, k),
-        .z = - p->a[k] + t_prod(x, y, k) + t_abs(y, k)
+        .z = - (k == 0 ? p->a : 0.0L) + t_prod(x, y, k) + t_abs(y, k)
     };
 }
