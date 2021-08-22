@@ -12,15 +12,15 @@
 
 typedef struct {
     real a;
-    series b;
+    real b;
     real c;
 } parameters;
 
 void *get_p (int argc, char **argv, long order) {
     assert(argc == 11);
+    (void)order;
     parameters *p = malloc(sizeof (parameters));
-    p->b = t_jet(order);
-    t_params(argv, argc, &p->a, p->b, &p->c);
+    t_params(argv, argc, &p->a, &p->b, &p->c);
     return p;
 }
 
@@ -29,6 +29,6 @@ components ode (series x, series y, series z, void *params, int k) {
     return (components) {
         .x = - y[k] - z[k],
         .y = x[k] + p->a * y[k],
-        .z = p->b[k] + t_prod(x, z, k) - p->c * z[k]
+        .z = (k == 0 ? p->b : 0.0L) + t_prod(x, z, k) - p->c * z[k]
     };
 }

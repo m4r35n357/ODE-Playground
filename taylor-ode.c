@@ -25,7 +25,11 @@ void t_params (char **argv, int argc, ...) {
 }
 
 series t_jet (long n) {
-    return calloc((size_t)n, sizeof (real));
+    series s = calloc((size_t)n, sizeof (real));
+    for (long i = 0; i < n; i++) {
+        s[i] = 0.0L;
+    }
+    return s;
 }
 
 static real t_horner (series jet, long n, real h) {
