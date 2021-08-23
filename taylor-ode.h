@@ -47,6 +47,8 @@ series t_jet (long size);
  * 2. Apply Horner's method to each jet to calculate the next set of coordinates
  */
 
+real t_horner (series jet, long n, real h);
+
 /*
  * Returns kth element of the absolute value of U, no user-supplied jet storage needed
  */
@@ -227,16 +229,11 @@ typedef struct {
     real z;
 } components;
 
-/*
- * Obligatory client (model) method signatures
- */
+void tsm (int argc, char **argv);
 
 /*
- * Get model-specific parameters from the command
+ * Obligatory client method signatures
  */
 void *get_p (int argc, char **argv, long order);
 
-/*
- * Return kth element of an ODE written in Taylor Series form
- */
 components ode (series x, series y, series z, void *params, int k);
