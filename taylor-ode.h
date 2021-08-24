@@ -28,31 +28,38 @@ void t_params (char **argv, int count, ...);
 series t_jet (long size);
 
 /*
+ * Safely and efficiently evaluate a polynomial of length n, with the coefficients in S, and the variable in h
+ */
+real t_horner (series S, long n, real h);
+
+/*
  * The Taylor Series Method (TSM) in brief:
  *
- *              x(t0 + h) = x(t) = sum{k=0->inf} X[k] h^k,    where X[0] = x(t0), X[k] = (d/dt)^k x(t0) / k! and h = t - t0
+ *              x(t0 + h) = x(t) = sum{k=0->inf} X[k] h^k     where X[0] = x(t0), X[k] = (d/dt)^k x(t0) / k! and h = t - t0  (A)
  *
- *                         x'(t) = sum{k=0->inf} X'[k] h^k,   where x'(t) = dx/dt, the ODE equations   (A)
+ * Similarly, the time derivative of x(t) can be represented as:
  *
+ *                         x'(t) = sum{k=0->inf} X'[k] h^k                                                                   (B)
+ *
+ * B says that X'[k] is the ODE equation for x'(t) expressed as a Taylor Series.  Now, by differentiating (A):
+ * 
  *                     d/dt x(t) = sum{k=1->inf} k X[k] h^(k-1)
  *
- *                               = sum{k=0->inf} (k+1) X[k+1] h^k                                      (B)
+ *                               = sum{k=0->inf} (k+1) X[k+1] h^k                                                            (C)
  *
- * Comparing (A) and (B),  X'[k] = (k+1) X[k+1]    *** this is THE IDENTITY (also used in recurrences below) ***
+ * Comparing (B) and (C),  X'[k] = (k+1) X[k+1]    *** this is THE IDENTITY (also used in recurrences below) ***
  *
  *                   ==>  X[k+1] = X'[k] / (k + 1)
  *
- * 1. Build up a coefficient jet for each x(t) using the ODEs, x'(t), and Taylor recurrences where needed, then divide by k + 1
+ * 1. Build up a coefficient jet for each X[k] using the X'[k], and recurrence relations where needed, then divide by k + 1
  *
  * 2. Apply Horner's method to each jet to calculate the next set of coordinates
  */
 
-real t_horner (series jet, long n, real h);
-
 /*
  * Returns kth element of the absolute value of U, no user-supplied jet storage needed
  */
-real t_abs (series u, int k);
+real t_abs (series U, int k);
 
 /*
  * Cauchy product for C = A.B
@@ -229,6 +236,9 @@ typedef struct {
     real z;
 } components;
 
+/*
+ * For performing a simulation
+ */
 void tsm (int argc, char **argv);
 
 /*
