@@ -43,8 +43,8 @@ done
 echo ""
 build_tsm () {
     name=$1
-    ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c -lm -s
-    ${CC} -O0 $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode.c -lm
+    ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c main.c -lm -s
+    ${CC} -O0 $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode.c main.c -lm
 }
 
 for model in \
