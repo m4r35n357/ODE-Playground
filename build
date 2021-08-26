@@ -71,7 +71,7 @@ done
 
 echo ""
 echo " Building tests"
-${CC} -O3 $WARNINGS -o tsm-test tsm-test.c taylor-ode.c -lm -s &
+${CC} -O3 $WARNINGS -o taylor-test taylor-test.c taylor-ode.c -lm -s &
 
 echo ""
 echo " Building divergence"
@@ -100,5 +100,5 @@ ${CC} -O3 -DNDEBUG -c $WARNINGS -fpic symplectic.c && ${CC} -shared -o libsymp.s
 echo ""
 wait
 
-ls -lh --color tsm-* h-* lib*.so divergence kerr-image*
+ls -lh --color taylor-test* tsm-* h-* lib*.so divergence kerr-image*
 echo ""

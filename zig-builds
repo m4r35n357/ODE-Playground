@@ -20,8 +20,10 @@ zig_build_exe="./zig build-exe -fno-lto"
 $zig_build_exe divergence.c $CCOPTS
 for source in tsm-*.c
 do
-    $zig_build_exe $source taylor-ode.c $CCOPTS
+    $zig_build_exe $source taylor-ode.c main.c $CCOPTS
 done
+
+$zig_build_exe taylor-test.c taylor-ode.c $CCOPTS
 
 $zig_build_exe h-analysis.c symplectic.c $CCOPTS
 $zig_build_exe h-kerr.c symplectic.c dual.c $CCOPTS
@@ -29,6 +31,6 @@ $zig_build_exe h-newton.c symplectic.c dual.c $CCOPTS
 $zig_build_exe h-kerr-gen-particle.c dual.c $CCOPTS
 $zig_build_exe h-kerr-gen-light.c $CCOPTS
 
-ls -lh --color divergence* tsm-* h-*
+ls -lh --color divergence* taylor-test* tsm-* h-*
 
 echo OK
