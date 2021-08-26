@@ -18,13 +18,7 @@ pip install matplotlib pillow pi3d pytest pytest_cov
 
 #### Running Python Tests
 ```
-$ pytest --cov=ad --cov-report html:cov_html ad_test.py solver_test.py -q
-.......................................................................... [ 24%]
-.......................................................................... [ 48%]
-.......................................................................... [ 73%]
-.......................................................................... [ 97%]
-........                                                                   [100%]
-
+$ pytest --cov=ad --cov=plotters --cov-report html:cov_html ad_test.py solver_test.py -q
 ```
 
 #### c Build (MUSL by default, glibc with GCC or Clang optional)

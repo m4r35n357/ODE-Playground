@@ -5,6 +5,7 @@
 #  pytest --cov=ad --cov-report html:cov_html ad_test.py -v
 #  Mutation Testing
 #  rm -f .mutmut-cache; mutmut --test-time-base 10.0 --paths-to-mutate ad.py run --runner 'pytest ad_test.py'
+
 from math import pi, exp, log, sin, cos, tan, sinh, cosh, tanh, factorial
 from ad import t_jet, t_horner, t_abs, t_prod, t_quot, t_pwr, t_exp, t_ln, t_sin_cos, t_tan_sec2, Series, Dual, t_asin, t_acos, t_atan
 from pytest import mark, raises, approx

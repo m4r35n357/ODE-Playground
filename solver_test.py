@@ -2,7 +2,8 @@
 #  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 #  Unit Testing
-#  pytest --cov=ad --cov=ad --cov-report html:cov_html ad_test.py solver_test.py -v
+#  pytest --cov=ad --cov=plotters --cov-report html:cov_html ad_test.py solver_test.py -v
+
 from math import sqrt
 from plotters import Solver, Mode, Sense, bisect_s, newton_s, _analyze_s, bisect_d, newton_d, _analyze_d
 import pytest

@@ -1,7 +1,7 @@
 /*
  *  c99 -g -O3 -Wall  -o test test.c taylor-ode.c -lm
  *
- *  ./tsm-test 6 6 4 -3
+ *  ./taylor-test 6 6 4 -3
  */
 
 #include <stdio.h>
