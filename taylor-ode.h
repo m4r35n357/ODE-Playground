@@ -239,7 +239,7 @@ typedef struct {
 /*
  * For performing a simulation
  */
-void tsm (int argc, char **argv);
+void tsm (int argc, char **argv, long dp, long n, real h, long steps, real x0, real y0, real z0);
 
 /*
  * Obligatory client method signatures
