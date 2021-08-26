@@ -26,7 +26,7 @@ void *get_p (int argc, char **argv, long order) {
 components ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
     (void)z;
-    p->x2[k] = t_prod(x, x, k);
+    p->x2[k] = t_sqr(x, k);
     return (components) {
         .x = y[k],
         .y = p->mu * (y[k] - t_prod(p->x2, y, k)) - x[k]
