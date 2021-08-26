@@ -9,15 +9,35 @@ See c files for example usage.  They can also be piped to ./plot3d.py
 ```
 sudo apt install bc git build-essential musl-tools pkg-config mesa-utils-extra python3-tk python3-dev libfreetype6-dev libatlas-base-dev virtualenvwrapper gnuplot-x11
 ```
+
 #### Python 3 Packages (for plotting), please use a virtual environment!
 ```
 mkvirtualenv -p /usr/bin/python3 taylor
-pip install matplotlib pillow pi3d
+pip install matplotlib pillow pi3d pytest pytest_cov
 ```
-#### Build (MUSL by default):
-`./build && echo OK` or `./build gcc && echo OK` or `./build clang && echo OK`
 
+#### Running Python Tests
+```
+$ pytest --cov=ad --cov-report html:cov_html ad_test.py solver_test.py -q
+.......................................................................... [ 24%]
+.......................................................................... [ 48%]
+.......................................................................... [ 73%]
+.......................................................................... [ 97%]
+........                                                                   [100%]
+
+```
+
+#### c Build (MUSL by default, glibc with GCC or Clang optional)
+```
+$ ./clean
+$ ./build [gcc|clang]
+```
 There should be NO errors or warnings.  [UPDATE: kerr-image.c shows warnings on arm64; it is 3rd party code]
+
+#### Running c Tests
+```
+$ ./tsm-test 6 6 4 -3
+```
 
 #### Find examples for ODE parameters and other things:
 ```
