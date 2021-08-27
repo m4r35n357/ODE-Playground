@@ -120,7 +120,7 @@ def main():
         # process mouse & keyboard input
         mx, my = mouse.position()
         if mouse.button_status() == mouse.LEFT_BUTTON:
-            rot += (mx - omx) * 0.2
+            rot -= (mx - omx) * 0.2
             tilt -= (my - omy) * 0.2
         elif mouse.button_status() == mouse.RIGHT_BUTTON:
             cam_rad += (my - omy) * 0.1

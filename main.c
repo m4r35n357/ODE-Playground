@@ -20,7 +20,7 @@ void tsm (int argc, char **argv, long dp, long n, real h, long steps, real x0, r
                  x[1] * cdot.x < 0.0L ? (x[2] > 0.0L ? "x" : "X") : "_",
                  y[1] * cdot.y < 0.0L ? (y[2] > 0.0L ? "y" : "Y") : "_",
                  z[1] * cdot.z < 0.0L ? (z[2] > 0.0L ? "z" : "Z") : "_");
-        cdot.x = x[1], cdot.y = y[1], cdot.z = z[1];
+        cdot.x = x[1]; cdot.y = y[1]; cdot.z = z[1];
     }
 }
 
@@ -32,6 +32,8 @@ int main (int argc, char **argv) {
     real x0 = strtold(argv[5], NULL);
     real y0 = strtold(argv[6], NULL);
     real z0 = strtold(argv[7], NULL);
+
     tsm(argc, argv, dp, n, h, steps, x0, y0, z0);
+
     return 0;
 }
