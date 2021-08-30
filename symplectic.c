@@ -24,9 +24,9 @@ real error (real e) {
     return 10.0L * log10l(fabsl(e) >= 1e-36L ? fabsl(e) : 1e-36L);
 }
 
-static struct {
-    real w0, x0, y0, z0, w1, x1, y1, z1;
-} weight;
+static struct weight {
+    real fwd, rev;
+} w_w, w_x, w_y, w_z;
 
 static void stormer_verlet (void *p, updater uq, updater up, real cd) {
     uq(p, cd * 0.5L);
@@ -34,44 +34,44 @@ static void stormer_verlet (void *p, updater uq, updater up, real cd) {
     uq(p, cd * 0.5L);
 }
 
-static void suzuki (void *p, integrator base, updater uq, updater up, real cd, real forward, real back) {
-    base(p, uq, up, cd * forward);
-    base(p, uq, up, cd * forward);
-    base(p, uq, up, cd * back);
-    base(p, uq, up, cd * forward);
-    base(p, uq, up, cd * forward);
+static void suzuki (void *p, integrator base, updater uq, updater up, real cd, struct weight w) {
+    base(p, uq, up, cd * w.fwd);
+    base(p, uq, up, cd * w.fwd);
+    base(p, uq, up, cd * w.rev);
+    base(p, uq, up, cd * w.fwd);
+    base(p, uq, up, cd * w.fwd);
 }
 
-static void base4_suzuki (void *p, updater uq, updater up, real cd) {
-    suzuki(p, stormer_verlet, uq, up, cd, weight.z1, weight.z0);
+static void base4 (void *p, updater uq, updater up, real cd) {
+    suzuki(p, stormer_verlet, uq, up, cd, w_z);
 }
 
-static void fourth_order_suzuki (void *p, updater uq, updater up, real h) {
-    base4_suzuki(p, uq, up, h);
+static void fourth_order (void *p, updater uq, updater up, real h) {
+    base4(p, uq, up, h);
 }
 
-static void base6_suzuki (void *p, updater uq, updater up, real cd) {
-    suzuki(p, base4_suzuki, uq, up, cd, weight.y1, weight.y0);
+static void base6 (void *p, updater uq, updater up, real cd) {
+    suzuki(p, base4, uq, up, cd, w_y);
 }
 
-static void sixth_order_suzuki (void *p, updater uq, updater up, real h) {
-    base6_suzuki(p, uq, up, h);
+static void sixth_order (void *p, updater uq, updater up, real h) {
+    base6(p, uq, up, h);
 }
 
-static void base8_suzuki (void *p, updater uq, updater up, real cd) {
-    suzuki(p, base6_suzuki, uq, up, cd, weight.x1, weight.x0);
+static void base8 (void *p, updater uq, updater up, real cd) {
+    suzuki(p, base6, uq, up, cd, w_x);
 }
 
-static void eightth_order_suzuki (void *p, updater uq, updater up, real h) {
-    base8_suzuki(p, uq, up, h);
+static void eightth_order (void *p, updater uq, updater up, real h) {
+    base8(p, uq, up, h);
 }
 
-static void base10_suzuki (void *p, updater uq, updater up, real cd) {
-    suzuki(p, base8_suzuki, uq, up, cd, weight.w1, weight.w0);
+static void base10 (void *p, updater uq, updater up, real cd) {
+    suzuki(p, base8, uq, up, cd, w_w);
 }
 
-static void tenth_order_suzuki (void *p, updater uq, updater up, real h) {
-    base10_suzuki(p, uq, up, h);
+static void tenth_order (void *p, updater uq, updater up, real h) {
+    base10(p, uq, up, h);
 }
 
 void solve (char **argv, void *p, updater uq, updater up, plotter output) {
@@ -79,21 +79,21 @@ void solve (char **argv, void *p, updater uq, updater up, plotter output) {
     real h = strtold(argv[3], NULL);
     assert(h > 0.0L && h <= 10.0L);
     assert(steps >= 0 && steps <= 1000000);
-    weight.z1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 3.0L)));
-    weight.y1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 5.0L)));
-    weight.x1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 7.0L)));
-    weight.w1 = 1.0L / (4.0L - powl(4.0L, (1.0L / 9.0L)));
-    weight.z0 = 1.0L - 4.0L * weight.z1;
-    weight.y0 = 1.0L - 4.0L * weight.y1;
-    weight.x0 = 1.0L - 4.0L * weight.x1;
-    weight.w0 = 1.0L - 4.0L * weight.w1;
+    w_z.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 3.0L));
+    w_y.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 5.0L));
+    w_x.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 7.0L));
+    w_w.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 9.0L));
+    w_z.rev = 1.0L - 4.0L * w_z.fwd;
+    w_y.rev = 1.0L - 4.0L * w_y.fwd;
+    w_x.rev = 1.0L - 4.0L * w_x.fwd;
+    w_w.rev = 1.0L - 4.0L * w_w.fwd;
     integrator composer = NULL;
     switch (method) {
         case 2: composer = stormer_verlet; break;
-        case 4: composer = fourth_order_suzuki; break;
-        case 6: composer = sixth_order_suzuki; break;
-        case 8: composer = eightth_order_suzuki; break;
-        case 10: composer = tenth_order_suzuki; break;
+        case 4: composer = fourth_order; break;
+        case 6: composer = sixth_order; break;
+        case 8: composer = eightth_order; break;
+        case 10: composer = tenth_order; break;
         default:
             printf("Method parameter is {%ld} but should be 2, 4, 6, 8, or 10 \n", method);
             exit(1);
