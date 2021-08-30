@@ -1,6 +1,6 @@
 /*
- *  c99 -g -O3 -Wall  -o test test.c taylor-ode.c -lm
- *
+ * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * 
  *  ./dual-test 6 _ 4 -3
  */
 
@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "dual.h"
-#include "taylor-ode.h"
 
 #define BBLK "\x1B[0;40m"
 #define KNRM "\x1B[0;37m"

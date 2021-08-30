@@ -1,6 +1,6 @@
 /*
- *  c99 -g -O3 -Wall  -o test test.c taylor-ode.c -lm
- *
+ * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * 
  *  ./taylor-test 6 6 4 -3
  */
 
