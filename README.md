@@ -1,7 +1,8 @@
 ## NEWS: Symplectic integrators using dual numbers for automatic differentiation
 
 Two examples; Newton orbits and Kerr (black hole) orbits.
-See c files for example usage.  They can also be piped to ./plot3d.py
+No formal documentation yet, see the c files for example usage.
+They can also be piped to ./plot3d.py if you have set up your virtual environment correctly as below.
 
 ## Quick Start
 
@@ -21,7 +22,7 @@ pip install matplotlib pillow pi3d pytest pytest_cov
 $ pytest --cov=ad --cov=plotters --cov-report html:cov_html ad_test.py solver_test.py -q
 ```
 
-#### c Build (MUSL by default, glibc with GCC or Clang optional)
+#### c Build (MUSL with GCC by default, glibc with GCC or Clang optional)
 ```
 $ ./clean
 $ ./build [gcc|clang]
@@ -30,7 +31,7 @@ There should be NO errors or warnings.  [UPDATE: kerr-image.c shows warnings on 
 
 #### Running c Tests
 ```
-$ ./tsm-test 6 6 4 -3
+$ ./taylor-test 6 6 4 -3
 ```
 
 #### Find examples for ODE parameters and other things:
