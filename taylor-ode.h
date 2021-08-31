@@ -33,27 +33,38 @@ series t_jet (long size);
 real t_horner (series S, long n, real h);
 
 /*
- * The Taylor Series Method (TSM) in brief:
+ * The Taylor Series Method (TSM) in brief; to solve a system of Ordinary Differential Equations defined by:
  *
- *              x(t0 + h) = x(t) = sum{k=0->inf} X[k] h^k     where X[0] = x(t0), X[k] = (d/dt)^k x(t0) / k! and h = t - t0  (A)
+ *                         x'(t) = ode(x(t))
  *
- * Similarly, the time derivative of x(t) can be represented as:
- *
- *                         x'(t) = sum{k=0->inf} X'[k] h^k                                                                   (B)
- *
- * B says that X'[k] is the ODE equation for x'(t) expressed as a Taylor Series.  Now, by differentiating (A):
+ * We plug x(t) into the equations, then somehow use the value of x'(t) to estimate the next x value in the sequence.
  * 
- *                     d/dt x(t) = sum{k=1->inf} k X[k] h^(k-1)
+ * Now, evolution of a time-varying quantity can be represented as a Taylor Series:
  *
- *                               = sum{k=0->inf} (k+1) X[k+1] h^k                                                            (C)
+ *                     x(t0 + h) = sum{k=0->inf} X[k].h^k     where X[0] = x(t0), X[k] = (d/dt)^k x(t0) / k! and h = t - t0  (A)
  *
- * Comparing (B) and (C),  X'[k] = (k+1) X[k+1]    *** this is THE IDENTITY (also used in recurrences below) ***
+ * This calculation is best performed using Horner's method. Similarly, the time derivative of x(t) can be represented as:
+ *
+ *                         x'(t) = sum{k=0->inf} X'[k].h^k                                                                   (B)
+ *
+ * So, X'[k] is the result of evaluating the ODE equation, but with all variables expressed as their Taylor Series.
+ *
+ *                              X'[k] = ODE(X[k])
+ *
+ * Furthermore, by differentiating (A) we obtain an additional and very useful IDENTITY:
+ * 
+ *                     d/dt x(t) = sum{k=1->inf} k.X[k].h^(k-1)
+ *
+ *                               = sum{k=0->inf} (k+1).X[k+1].h^k                                                            (C)
+ *
+ * Comparing (B) and (C),  X'[k] = (k+1).X[k+1]             *** this IDENTITY is also used in deriving the recurrences below ***
  *
  *                   ==>  X[k+1] = X'[k] / (k + 1)
  *
- * 1. Build up a coefficient jet for each X[k] using the X'[k], and recurrence relations where needed, then divide by k + 1
+ * 1. Starting with initial values X[0], evaluate the ODE equations (X'[k]) using X[k], and recurrence relations where needed,
+ *    then generate the next Taylor Series coefficient X[k+1] using the IDENTITY
  *
- * 2. Apply Horner's method to each jet to calculate the next set of coordinates
+ * 2. Apply Horner's method to calculate the new values x(t0 + h), which become X[0] for the next time step.
  */
 
 /*
@@ -64,13 +75,13 @@ real t_abs (series U, int k);
 /*
  * Cauchy product for C = A.B
  *
- *   if c(t) = a(t) b(t)
+ *   if c(t) = a(t).b(t)
  *
- * then c(t) = sum{k=0->inf} C(k) h^k
+ * then c(t) = sum{k=0->inf} C(k).h^k
  *
- *           = sum{j=0->inf} A(j) h^j sum{i=0->inf} B(i) h^i
+ *           = sum{j=0->inf} A(j).h^j sum{i=0->inf} B(i).h^i
  *
- *           = sum{k=0->inf} sum{j=0->k} A[j]B[k - j] h^k     where k = i + j  ==>  i = k - j
+ *           = sum{k=0->inf} sum{j=0->k} A[j].B[k - j].h^k     where k = i + j  ==>  i = k - j
  *
  *  ==> C[k] = sum{j=0->k} A[j].B[k-j]     perhaps implemented by a static/private function cauchy(A, B, k, ...)
  */
@@ -137,7 +148,7 @@ real t_sqrt (series R, series U, int k);
  *
  *           F' = (df/du).U' = dFdU.U'
  *
- *  Using F'[k] = (k+1) F[k+1]   (THE IDENTITY from earlier)
+ *  Using F'[k] = (k+1).F[k+1]   (the IDENTITY from earlier)
  *
  * ==>  F'[k-1] = k F[k], because we WANT F[k], and we can now replace F' with F, and U' with U as follows:
  *
@@ -147,9 +158,9 @@ real t_sqrt (series R, series U, int k);
  *
  *      F'[k-1] = sum{j=0->k-1} dFdU[j].U'[k-1-j]
  *
- *        kF[k] = sum{j=0->k-1} dFdU[j].(k-j)U[k-j]      if k > 0, need a mathematical function call for k == 0
+ *        kF[k] = sum{j=0->k-1} dFdU[j].(k-j).U[k-j]      if k > 0, need a mathematical function call for k == 0
  *
- *     ==> F[k] = sum{j=0->k-1} dFdU[j].(k-j)U[k-j]/k    perhaps implemented by a static/private function d_cauchy(dFdU, U, k, ...)
+ *     ==> F[k] = sum{j=0->k-1} dFdU[j].(k-j).U[k-j]/k    perhaps implemented by a static/private function d_cauchy(dFdU, U, k, ...)
  */
 
 /*
@@ -157,7 +168,7 @@ real t_sqrt (series R, series U, int k);
  *
  *      E' = E.U'
  *
- *    E[k] = sum{j=0->k-1} E[j].(k-j)U[k-j]/k
+ *    E[k] = sum{j=0->k-1} E[j].(k-j).U[k-j]/k
  */
 real t_exp (series E, series U, int k);
 
@@ -180,8 +191,8 @@ typedef struct {
  *      S' =       C.U'
  *      C' = (+/-) S.U'     + for cosh (g == HYP), - for cos (g == TRIG)
  *
- *    S[k] = sum{j=0->k-1}       C[j].(k-j)U[k-j]/k
- *    C[k] = sum{j=0->k-1} (+/-) S[j].(k-j)U[k-j]/k
+ *    S[k] = sum{j=0->k-1}       C[j].(k-j).U[k-j]/k
+ *    C[k] = sum{j=0->k-1} (+/-) S[j].(k-j).U[k-j]/k
  */
 pair t_sin_cos (series S, series C, series U, int k, geometry g);
 
@@ -189,27 +200,27 @@ pair t_sin_cos (series S, series C, series U, int k, geometry g);
  * Returns kth elements of both tangent and squared secant of U, results stored in user-supplied jets T and S2
  *
  *      T' =       S2.U'
- *     S2' = (+/-)2 T.T'    + for sec^2 (g == TRIG), - for sech^2 (g == HYP)
+ *     S2' = (+/-)2.T.T'    + for sec^2 (g == TRIG), - for sech^2 (g == HYP)
  *
- *    T[k] = sum{j=0->k-1}       S2[j].(k-j)U[k-j]/k
- *   S2[k] = sum{j=0->k-1} (+/-)2 T[j].(k-j)T[k-j]/k
+ *    T[k] = sum{j=0->k-1}       S2[j].(k-j).U[k-j]/k
+ *   S2[k] = sum{j=0->k-1} (+/-)2 T[j].(k-j).T[k-j]/k
  */
 pair t_tan_sec2 (series T, series S2, series U, int k, geometry g);
 
 /*
  * Returns kth element of P = U^a (where a is scalar), results stored in user-supplied jet P, DOMAIN RESTRICTION U[0] > 0.0
  *
- *                                    P'= U^a' = a U^(a-1).U'
- *                                      U.U^a' = a U^a.U'
- *                                        U.P' = a P.U'
+ *                                    P'= U^a' = a.U^(a-1).U'
+ *                                      U.U^a' = a.U^a.U'
+ *                                        U.P' = a.P.U'
  *
- *              sum{j=0->k-1} U[j].(k-j)P[k-j] =  a sum{j=0->k-1} P[j].(k-j)U[k-j]
+ *              sum{j=0->k-1} U[j].(k-j)P[k-j] =  a.sum{j=0->k-1} P[j].(k-j).U[k-j]
  *
- * U[0].kP[k] + sum{j=1->k-1} U[j].(k-j)P[k-j] =  a sum{j=0->k-1} P[j].(k-j)U[k-j]
+ * U[0].kP[k] + sum{j=1->k-1} U[j].(k-j)P[k-j] =  a.sum{j=0->k-1} P[j].(k-j).U[k-j]
  *
- *                                  U[0].kP[k] =  a sum{j=0->k-1} P[j].(k-j)U[k-j]   - sum{j=1->k-1} U[j].(k-j)P[k-j]
+ *                                  U[0].kP[k] =  a.sum{j=0->k-1} P[j].(k-j).U[k-j]   - sum{j=1->k-1} U[j].(k-j).P[k-j]
  *
- *                                        P[k] = (a sum{j=0->k-1} P[j].(k-j)U[k-j]/k - sum{j=1->k-1} U[j].(k-j)P[k-j]/k) / U[0]
+ *                                        P[k] = (a.sum{j=0->k-1} P[j].(k-j).U[k-j]/k - sum{j=1->k-1} U[j].(k-j).P[k-j]/k) / U[0]
  */
 real t_pwr (series P, series U, real a, int k);
 
@@ -219,11 +230,11 @@ real t_pwr (series P, series U, real a, int k);
  *                     L' = U' / U
  *                     U' = U.L'
  *
- *                 k.U[k] = sum{j=0->k-1} U[j].(k-j)L[k-j]
+ *                 k.U[k] = sum{j=0->k-1} U[j].(k-j).L[k-j]
  *
- *                        = sum{j=1->k-1} U[j].(k-j)L[k-j] + U[0].kL[k]
+ *                        = sum{j=1->k-1} U[j].(k-j).L[k-j] + U[0].kL[k]
  *
- *                   L[k] = (U[k] - sum{j=1->k-1} U[j].(k-j)L[k-j]/k) / U[0]
+ *                   L[k] = (U[k] - sum{j=1->k-1} U[j].(k-j).L[k-j]/k) / U[0]
  */
 real t_ln (series L, series U, int k);
 
