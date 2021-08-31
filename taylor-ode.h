@@ -47,11 +47,11 @@ real t_horner (series S, long n, real h);
  *
  *                         x'(t) = sum{k=0->inf} X'[k].h^k                                                                   (B)
  *
- * So, X'[k] is the result of evaluating the ODE equation, but with all variables expressed as their Taylor Series.
+ * So, X'[k] is the result of evaluating the ODE equation, but with all variables expressed as Taylor Series, X[k].
  *
  *                              X'[k] = ODE(X[k])
  *
- * Furthermore, by differentiating (A) we obtain an additional and very useful IDENTITY:
+ * Furthermore, by differentiating (A) and equating it to (B) we obtain an additional and very useful IDENTITY:
  * 
  *                     d/dt x(t) = sum{k=1->inf} k.X[k].h^(k-1)
  *
