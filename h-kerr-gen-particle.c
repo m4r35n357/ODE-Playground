@@ -29,15 +29,9 @@ parameters=$(yad --title="Generate Parameters" --form --separator=" " \
 #include <math.h>
 #include "dual.h"
 
-typedef struct {
-    real a; real b; real c;
-} vector3;
+typedef struct { real a, b, c; } vector3;
 
-typedef struct {
-    real a; real b; real c;
-    real d; real e; real f;
-    real g; real h; real i;
-} matrix3x3;
+typedef struct { real a, b, c, d, e, f, g, h, i; } matrix3x3;
 
 static matrix3x3 invert (matrix3x3 m) {
     matrix3x3 c = (matrix3x3) {
@@ -120,54 +114,34 @@ int main (int argc, char **argv) {
     assert(argc == 8);
     parameters *p = get_p(argv);
     matrix3x3 J;
-    vector3 x = (vector3) {
-        .a = p->E,
-        .b = p->L,
-        .c = p->Q
-    };
-    vector3 f = (vector3) {
-        .a = 1.0L,
-        .b = 1.0L,
-        .c = 1.0L
-    };
+    vector3 x = (vector3) {.a = p->E, .b = p->L, .c = p->Q};
+    vector3 f = (vector3) {.a = 1.0L, .b = 1.0L, .c = 1.0L};
     fprintf(stderr, "\n");
     long count = 0L;
     _Bool circular = p->rmin * p->rmax < 0.0L;
     while (! converged(f, p->epsilon)) {
+		J = (matrix3x3) {
+			.a = R(p->rmin,  d_var(p->E), d_dual(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).dot,
+			.b = R(p->rmin, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).dot,
+			.c = R(p->rmin, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->bh_mass, p->spin, p->pmass2).dot,
+			.g = THETA(p->thmax,  d_var(p->E), d_dual(p->L), d_dual(p->Q), p->pmass2, p->spin).dot,
+			.h = THETA(p->thmax, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->pmass2, p->spin).dot,
+			.i = THETA(p->thmax, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->pmass2, p->spin).dot
+		};
+		f = (vector3) {
+			.a = R(p->rmin, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).val,
+			.c = THETA(p->thmax, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->pmass2, p->spin).val
+		};
         if (! circular) {
-            J = (matrix3x3) {
-                .a = R(p->rmin,  d_var(p->E), d_dual(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).dot,
-                .b = R(p->rmin, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).dot,
-                .c = R(p->rmin, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->bh_mass, p->spin, p->pmass2).dot,
-                .d = R(p->rmax,  d_var(p->E), d_dual(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).dot,
-                .e = R(p->rmax, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).dot,
-                .f = R(p->rmax, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->bh_mass, p->spin, p->pmass2).dot,
-                .g = THETA(p->thmax,  d_var(p->E), d_dual(p->L), d_dual(p->Q), p->pmass2, p->spin).dot,
-                .h = THETA(p->thmax, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->pmass2, p->spin).dot,
-                .i = THETA(p->thmax, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->pmass2, p->spin).dot
-            };
-            f = (vector3) {
-                .a = R(p->rmin, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).val,
-                .b = R(p->rmax, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).val,
-                .c = THETA(p->thmax, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->pmass2, p->spin).val
-            };
+			J.d = R(p->rmax,  d_var(p->E), d_dual(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).dot;
+			J.e = R(p->rmax, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).dot;
+			J.f = R(p->rmax, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->bh_mass, p->spin, p->pmass2).dot;
+			f.b = R(p->rmax, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).val;
         } else {
-            J = (matrix3x3) {
-                .a = R(p->rmin,  d_var(p->E), d_dual(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).dot,
-                .b = R(p->rmin, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).dot,
-                .c = R(p->rmin, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->bh_mass, p->spin, p->pmass2).dot,
-                .d = dR_dr(p->rmin,  d_var(p->E), d_dual(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).dot,
-                .e = dR_dr(p->rmin, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).dot,
-                .f = dR_dr(p->rmin, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->bh_mass, p->spin, p->pmass2).dot,
-                .g = THETA(p->thmax,  d_var(p->E), d_dual(p->L), d_dual(p->Q), p->pmass2, p->spin).dot,
-                .h = THETA(p->thmax, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->pmass2, p->spin).dot,
-                .i = THETA(p->thmax, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->pmass2, p->spin).dot
-            };
-            f = (vector3) {
-                .a = R(p->rmin, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).val,
-                .b = dR_dr(p->rmin, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).val,
-                .c = THETA(p->thmax, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->pmass2, p->spin).val
-            };
+			J.d = dR_dr(p->rmin,  d_var(p->E), d_dual(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).dot;
+			J.e = dR_dr(p->rmin, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).dot;
+			J.f = dR_dr(p->rmin, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->bh_mass, p->spin, p->pmass2).dot;
+			f.b = dR_dr(p->rmin, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).val;
         }
         x = v_sub(x, mv_mult(invert(J), f));
         fprintf(stderr, "%.18Lf %.18Lf %.18Lf\n", x.a, x.b, x.c);
