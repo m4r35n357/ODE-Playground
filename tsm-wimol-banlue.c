@@ -23,7 +23,7 @@ void *get_p (int argc, char **argv, long order) {
 
 components ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
-    p->tx[k] = t_tan_sec2(p->tx, p->s2x, x, k, HYP).a;
+    t_tan_sec2(p->tx, p->s2x, x, k, HYP);
     return (components) {
         .x = y[k] - x[k],
         .y = - t_prod(z, p->tx, k),
