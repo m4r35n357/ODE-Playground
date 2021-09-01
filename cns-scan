@@ -34,7 +34,6 @@ do
     if [ x$temp = x'' ]
     then
         echo $n -1
-        exit 0
     else
         set $temp
         echo $n $4
