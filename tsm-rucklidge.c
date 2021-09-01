@@ -10,10 +10,7 @@
 #include <assert.h>
 #include "taylor-ode.h"
 
-typedef struct {
-    real alpha;
-    real kappa;
-} parameters;
+typedef struct { real alpha, kappa; } parameters;
 
 void *get_p (int argc, char **argv, long order) {
     assert(argc == 10);

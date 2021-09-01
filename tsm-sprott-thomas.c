@@ -10,13 +10,7 @@
 #include <assert.h>
 #include "taylor-ode.h"
 
-typedef struct {
-    real a;
-    real b;
-    series ax; series sax; series cax; series tx; series s2x;
-    series ay; series say; series cay; series ty; series s2y;
-    series az; series saz; series caz; series tz; series s2z;
-} parameters;
+typedef struct { real a, b; series ax, ay, az, sax, say, saz, cax, cay, caz, tx, ty, tz, s2x, s2y, s2z; } parameters;
 
 void *get_p (int argc, char **argv, long order) {
     assert(argc == 10);
