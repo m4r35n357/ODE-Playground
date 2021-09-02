@@ -10,7 +10,7 @@ from ad import tsm, t_prod, Components
 class Parameters(namedtuple('ParametersType', ['σ', 'ρ', 'β'])):
     pass
 
-def get_p():
+def get_p(order):
     return Parameters(σ=float(argv[8]),
                       ρ=float(argv[9]),
                       β=float(argv[10]) / float(argv[11]))
