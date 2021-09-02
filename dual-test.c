@@ -1,7 +1,9 @@
 /*
  * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  * 
- *  ./dual-test 6 _ 4 -3
+ * Example:  ./dual-test 6 _ 4 -3
+ *
+ * Example:  grep -n '[^a-zA-Z]d_[a-z0-9_]*' dual-test.c
  */
 
 #include <stdio.h>

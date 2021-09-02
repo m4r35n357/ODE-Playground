@@ -1,7 +1,9 @@
 /*
  * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  * 
- *  ./taylor-test 6 6 4 -3
+ * Example:  ./taylor-test 6 6 4 -3
+ *
+ * Example:  grep -n '[^a-zA-Z]t_[a-z0-9_]*' taylor-test.c
  */
 
 #include <stdio.h>

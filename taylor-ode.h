@@ -157,15 +157,19 @@ real t_sqrt (series R, series U, int k);
  *
  * ==>  F'[k-1] = k F[k], because we WANT F[k], and we can now replace F' with F, and U' with U as follows:
  *
- * Starting from the Cauchy product above, first rewrite it in terms of [k-1], then make the substitutions:
+ * Starting from the Cauchy product:
  *
  *        F'[k] = sum{j=0->k} dFdU[j].U'[k-j]
  *
- *      F'[k-1] = sum{j=0->k-1} dFdU[j].U'[k-1-j]
+ *  rewrite it in terms of [k-1]:
  *
- *        kF[k] = sum{j=0->k-1} dFdU[j].(k-j).U[k-j]      if k > 0, need a mathematical function call for k == 0
+ *      F'[k-1] = sum{j=0->k-1} dFdU[j].U'[k-1-j]            obviously does not work for k = 0 !
  *
- *     ==> F[k] = sum{j=0->k-1} dFdU[j].(k-j).U[k-j]/k    perhaps implemented by a static/private function d_cauchy(dFdU, U, k, ...)
+ * then make the IDENTITY substitutions
+ *
+ *        kF[k] = sum{j=0->k-1} dFdU[j].(k-j).U[k-j]         only if k > 0.  Use a mathematical function call for dFdU[0]
+ *
+ *     ==> F[k] = sum{j=0->k-1} dFdU[j].(k-j).U[k-j] / k     can be implemented by a static function f_k(dFdU, U, k, ...)
  */
 
 /*
@@ -215,24 +219,24 @@ pair t_tan_sec2 (series T, series S2, series U, int k, geometry g);
 /*
  * Returns kth element of P = U^a (where a is scalar), results stored in user-supplied jet P, DOMAIN RESTRICTION U[0] > 0.0
  *
- *                                    P'= U^a' = a.U^(a-1).U'
- *                                      U.U^a' = a.U^a.U'
- *                                        U.P' = a.P.U'
+ *                                      P'= U^a' = a.U^(a-1).U'
+ *                                        U.U^a' = a.U^a.U'
+ *                                          U.P' = a.P.U'
  *
- *              sum{j=0->k-1} U[j].(k-j)P[k-j] =  a.sum{j=0->k-1} P[j].(k-j).U[k-j]
+ *               sum{j=0->k-1} U[j].(k-j).P[k-j] =  a.sum{j=0->k-1} P[j].(k-j).U[k-j]
  *
- * U[0].kP[k] + sum{j=1->k-1} U[j].(k-j)P[k-j] =  a.sum{j=0->k-1} P[j].(k-j).U[k-j]
+ * U[0].k.P[k] + sum{j=1->k-1} U[j].(k-j).P[k-j] =  a.sum{j=0->k-1} P[j].(k-j).U[k-j]
  *
- *                                  U[0].kP[k] =  a.sum{j=0->k-1} P[j].(k-j).U[k-j]   - sum{j=1->k-1} U[j].(k-j).P[k-j]
+ *                                   U[0].k.P[k] =  a.sum{j=0->k-1} P[j].(k-j).U[k-j]   - sum{j=1->k-1} U[j].(k-j).P[k-j]
  *
- *                                        P[k] = (a.sum{j=0->k-1} P[j].(k-j).U[k-j]/k - sum{j=1->k-1} U[j].(k-j).P[k-j]/k) / U[0]
+ *                                          P[k] = (a.sum{j=0->k-1} P[j].(k-j).U[k-j]/k - sum{j=1->k-1} U[j].(k-j).P[k-j]/k) / U[0]
  */
 real t_pwr (series P, series U, real a, int k);
 
 /*
  * Returns kth element of the natural logarithm of U, results stored in user-supplied jet L, DOMAIN RESTRICTION U[0] > 0.0
  *
- *                     L' = U' / U
+ *                     L' = (1/U).U'
  *                     U' = U.L'
  *
  *                 k.U[k] = sum{j=0->k-1} U[j].(k-j).L[k-j]
