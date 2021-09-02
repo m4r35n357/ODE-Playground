@@ -24,7 +24,7 @@ void *get_p (int argc, char **argv, long order) {
 components ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
     p->wa[k] = (k == 0 ? 1.0L : 0.0L) - y[k];
-    p->wb[k] = (k == 0 ? 1.0L : 0.0L) - t_prod(x, x, k);
+    p->wb[k] = (k == 0 ? 1.0L : 0.0L) - t_sqr(x, k);
     return (components) {
         .x = p->a * t_prod(x, p->wa, k) - p->b * z[k],
         .y = - p->c * t_prod(y, p->wb, k),
