@@ -68,6 +68,11 @@ real t_horner (series S, long n, real h);
  */
 
 /*
+ * Returns the value of a if k is 0, and zero otherwise.  For handling _additive_ constants.
+ */
+real t_const (real a, int k);
+
+/*
  * Returns kth element of the absolute value of U, no user-supplied jet storage needed
  */
 real t_abs (series U, int k);
