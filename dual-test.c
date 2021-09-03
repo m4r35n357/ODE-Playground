@@ -1,9 +1,13 @@
 /*
  * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
- * 
- * Example:  ./dual-test 6 _ 4 -3
  *
  * Example:  grep -n '[^a-zA-Z]d_[a-z0-9_]*' dual-test.c
+ *
+ * Example:  c99 --coverage -O0 -o dual-test dual-test.c dual.c -lm
+ * 
+ * Example:  ./dual-test 6 _ 4 -3
+ * 
+ * Example:  gcov -k dual.c
  */
 
 #include <stdio.h>
@@ -31,7 +35,7 @@ int main (int argc, char **argv) {
     real y = strtold(argv[4], NULL); assert(y != 0.0L);
     dual in_X = d_var(x);
     dual in_Y = d_var(y);
-    dual out1, out2, out3;
+    dual out1, out2;
 
     printf("%s%.1Lf * %.1Lf = %.1Lf%s\n", KCYN, x, y, x * y, KNRM);
     output(dp, in_X, in_Y, d_mul(in_X, in_Y));
@@ -91,27 +95,23 @@ int main (int argc, char **argv) {
     printf("%sSIN_COS(%.3Lf)%s\n", KCYN, in_TRIG.val, KNRM);
     out1 = d_sin(in_TRIG);
     out2 = d_cos(in_TRIG);
-    out3 = d_add(d_sqr(out1), d_sqr(out2));
-    output(dp, out1, out2, out3);
+    output(dp, out1, out2, d_add(d_sqr(out1), d_sqr(out2)));
 
     printf("%sSINH_COSH(%.1Lf)%s\n", KCYN, x, KNRM);
     out1 = d_sinh(in_X);
     out2 = d_cosh(in_X);
-    out3 = d_sub(d_sqr(out2), d_sqr(out1));
-    output(dp, out1, out2, out3);
+    output(dp, out1, out2, d_sub(d_sqr(out2), d_sqr(out1)));
 
     in_TRIG = d_var(MY_PI / x);
     printf("%sTAN_SEC2(%.3Lf)%s\n", KCYN, in_TRIG.val, KNRM);
     out1 = d_tan(in_TRIG);
     out2 = d_shift(d_sqr(out1), 1.0L);
-    out3 = d_sub(out2, d_sqr(out1));
-    output(dp, out1, out2, out3);
+    output(dp, out1, out2, d_sub(out2, d_sqr(out1)));
 
     printf("%sTANH_SECH2(%.1Lf)%s\n", KCYN, y, KNRM);
     out1 = d_tanh(in_Y);
     out2 = d_scale(d_shift(d_sqr(out1), -1.0L), -1.0L);
-    out3 = d_add(d_sqr(out1), out2);
-    output(dp, out1, out2, out3);
+    output(dp, out1, out2, d_add(d_sqr(out1), out2));
 
     return 0;
 }

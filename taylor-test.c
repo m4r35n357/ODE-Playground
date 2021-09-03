@@ -1,9 +1,13 @@
 /*
  * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  * 
+ * Example:  grep -n '[^a-zA-Z]t_[a-z0-9_]*' taylor-test.c
+ *
+ * Example:  c99 --coverage -O0 -o taylor-test taylor-test.c taylor-ode.c -lm
+ *
  * Example:  ./taylor-test 6 6 4 -3
  *
- * Example:  grep -n '[^a-zA-Z]t_[a-z0-9_]*' taylor-test.c
+ * Example:  gcov -k taylor-ode.c
  */
 
 #include <stdio.h>
@@ -56,6 +60,14 @@ int main (int argc, char **argv) {
     series d1 = t_jet(n + 1);
     series d2 = t_jet(n + 1);
     series d3 = t_jet(n + 1);
+
+    printf("%s%s%s\n", KCYN, "Horner", KNRM);
+    out1[0] = -19.0L;
+    out1[1] = 7.0L;
+    out1[2] = -4.0L;
+    out1[3] = 6.0L;
+    t_horner(out1, 3, 3.0L);
+    printf("%.0Lf\n",  out1[0]);
 
     printf("%s%.1Lf * %.1Lf = %.1Lf%s\n", KCYN, x, y, x * y, KNRM);
     for (int k = 0; k <= n; k++) {
