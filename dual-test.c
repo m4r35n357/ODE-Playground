@@ -49,6 +49,9 @@ int main (int argc, char **argv) {
     out2 = d_abs(in_Y);
     output(dp, out1, out2, d_div(out1, out2));
 
+    printf("%s%.1Lf / %.1Lf = 1%s\n", KCYN, y, y, KNRM);
+    output(dp, in_Y, in_Y, d_div(in_Y, in_Y));
+
     printf("%s%.1Lf * (1 / %.1Lf) = 1%s\n", KCYN, x, x, KNRM);
     out1 = d_inv(in_X);
     out2 = d_mul(in_X, out1);
@@ -74,10 +77,15 @@ int main (int argc, char **argv) {
     out2 = d_inv(out1);
     output(dp, in_X, out1, out2);
 
+    printf("%sEXP(LN(%.1Lf) = %.1Lf%s\n", KCYN, x, x, KNRM);
+    out1 = d_log(in_X);
+    out2 = d_exp(out1);
+    output(dp, in_X, out1, out2);
+
     printf("%sLN(EXP(%.1Lf) = %.1Lf%s\n", KCYN, y, y, KNRM);
     out1 = d_exp(in_Y);
     out2 = d_log(out1);
-    output(dp, in_X, out1, out2);
+    output(dp, in_Y, out1, out2);
 
     dual in_TRIG = d_var(MY_PI / y);
     printf("%sSIN_COS(%.3Lf)%s\n", KCYN, in_TRIG.val, KNRM);

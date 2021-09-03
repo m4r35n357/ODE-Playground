@@ -85,6 +85,12 @@ int main (int argc, char **argv) {
     }
     output(dp, n, d1, d2, d3, out1, out2, out3);
 
+    printf("%s%.1Lf / %.1Lf = 1%s\n", KCYN, y, y, KNRM);
+    for (int k = 0; k <= n; k++) {
+        t_quot(out1, in_Y, in_Y, k);
+    }
+    output(dp, n, d1, d2, d3, in_Y, in_Y, out1);
+
     printf("%s%.1Lf * (1 / %.1Lf) = 1%s\n", KCYN, x, x, KNRM);
     for (int k = 0; k <= n; k++) {
         t_inv(out1, in_X, k);
@@ -117,6 +123,13 @@ int main (int argc, char **argv) {
     for (int k = 0; k <= n; k++) {
         t_pwr(out1, in_X, -1.0L, k);
         t_inv(out2, out1, k);
+    }
+    output(dp, n, d1, d2, d3, in_X, out1, out2);
+
+    printf("%sEXP(LN(%.1Lf) = %.1Lf%s\n", KCYN, x, x, KNRM);
+    for (int k = 0; k <= n; k++) {
+        t_ln(out1, in_X, k);
+        t_exp(out2, out1, k);
     }
     output(dp, n, d1, d2, d3, in_X, out1, out2);
 

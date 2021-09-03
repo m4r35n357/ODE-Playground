@@ -68,7 +68,7 @@ real t_sqr (series u, int k) {
 
 real t_quot (series q, series u, series v, int k) {
     assert(v[0] != 0.0L);
-    assert(q != u && q != v && u != v);
+    assert(q != u && q != v);
     return q[k] = (k == 0 ? u[0] : u[k] - cauchy(q, v, k, 0, k - 1)) / v[0];
 }
 
