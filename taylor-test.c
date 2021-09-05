@@ -61,13 +61,10 @@ int main (int argc, char **argv) {
     series d2 = t_jet(n + 1);
     series d3 = t_jet(n + 1);
 
-    printf("%s%s%s\n", KCYN, "Horner", KNRM);
-    out1[0] = -19.0L;
-    out1[1] = 7.0L;
-    out1[2] = -4.0L;
-    out1[3] = 6.0L;
+    printf("%s%s%s\n", KCYN, "Horner's Method, should = 128.000", KNRM);
+    out1[0] = -19.0L; out1[1] = 7.0L; out1[2] = -4.0L; out1[3] = 6.0L;
     t_horner(out1, 3, 3.0L);
-    printf("%.0Lf\n",  out1[0]);
+    printf("%.3Lf\n",  out1[0]);
 
     printf("%s%.1Lf * %.1Lf = %.1Lf%s\n", KCYN, x, y, x * y, KNRM);
     for (int k = 0; k <= n; k++) {
