@@ -16,12 +16,12 @@ void t_output (long dp, real x, real y, real z, real t, char *x_label, char *y_l
 }
 
 void t_params (char **argv, int argc, ...) {
-    va_list vars;
-    va_start(vars, argc);
+    va_list model_params;
+    va_start(model_params, argc);
     for (int i = 8; i < argc; i++) {
-        *va_arg(vars, real *) = strtold(argv[i], NULL);
+        *va_arg(model_params, real *) = strtold(argv[i], NULL);
     }
-    va_end(vars);
+    va_end(model_params);
 }
 
 series t_jet (long n) {
