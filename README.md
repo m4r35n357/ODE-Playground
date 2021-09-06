@@ -31,7 +31,8 @@ There should be NO errors or warnings.  [UPDATE: kerr-image.c shows warnings on 
 
 #### Running c Tests
 ```
-$ ./taylor-test 6 6 4 -3
+$ ./dual-test 6 _ 4 -3
+$ ./taylor-test 6 8 4 -3
 ```
 
 #### Find examples for ODE parameters and other things:

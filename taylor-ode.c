@@ -43,7 +43,7 @@ real t_horner (series jet, long n, real h) {
 }
 
 real t_const (real a, int k) {
-	return k == 0 ? a : 0.0L;
+    return k == 0 ? a : 0.0L;
 }
 
 real t_abs (series u, int k) {
