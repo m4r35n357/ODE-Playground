@@ -1,0 +1,24 @@
+/*
+ * Example: bc -q taylor.bc tsm-constant.bc | ./plotAnimated.py 1 0 10
+ */
+ 
+scale=16
+n=10
+h=0.01
+steps=10000
+x=10.0
+a=-1.0
+
+t_print(x, 0.0, 0.0, 0.0)
+
+for (step = 1; step < steps + 1; step++) {
+    x[0] = x
+    for (k = 0; k < n; k++) {
+        x[k + 1] = a * x[k] / (k + 1)
+    }
+    x = t_horner(n, x[], h)
+    t_print(x, 0.0, 0.0, h * step)
+}
+
+quit
+
