@@ -13,22 +13,22 @@
 typedef long double *series;
 
 /*
- * Prints an index column, and x, y, z columns, into a single line
+ * Prints x, y, z, t values, followed by turning point markers, to stdout
  */
 void t_output (long dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label) ;
 
 /*
- * Bulk set ODE parameters from the command line arguments (5 onwards)
+ * Sets a variable number of model-specific parameters from the tail of the command
  */
 void t_params (char **argv, int count, ...);
 
 /*
- * Creates a jet of the specified size
+ * Creates a zeroed jet of the specified size
  */
 series t_jet (long size);
 
 /*
- * Safely and efficiently evaluate a polynomial of length n, with the coefficients in S, and the variable in h
+ * Safely and efficiently evaluates a polynomial of length n, with the coefficients in S, and the variable in h
  */
 real t_horner (series S, long n, real h);
 
@@ -248,7 +248,7 @@ real t_pwr (series P, series U, real a, int k);
 real t_ln (series L, series U, int k);
 
 /*
- * For returning x, y, z values
+ * For returning x, y, z values from a model
  */
 typedef struct {
     real x;
@@ -257,13 +257,13 @@ typedef struct {
 } components;
 
 /*
- * For performing a simulation
- */
-void tsm (int argc, char **argv, long dp, long n, real h, long steps, real x0, real y0, real z0);
-
-/*
- * Obligatory client method signatures
+ * Obligatory model function signatures
  */
 void *get_p (int argc, char **argv, long order);
 
 components ode (series x, series y, series z, void *params, int k);
+
+/*
+ * For performing a simulation
+ */
+void tsm (int argc, char **argv, long dp, long n, real h, long steps, real x0, real y0, real z0);

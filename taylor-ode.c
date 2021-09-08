@@ -120,6 +120,7 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
         .b = s[k] = f_k(t, t, k, 0, k - 1, g == TRIG ? 2.0L : - 2.0L)
     };
 }
+
 real t_pwr (series p, series u, real a, int k) {
     assert(u[0] > 0.0L);
     assert(p != u);
