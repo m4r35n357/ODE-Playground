@@ -18,7 +18,7 @@ typedef long double *series;
 void t_output (long dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label) ;
 
 /*
- * Sets a variable number of model-specific parameters from the tail of the command
+ * Assigns a variable number of model-specific long double values from the tail of the command
  */
 void t_params (char **argv, int count, ...);
 
@@ -62,6 +62,7 @@ real t_horner (series S, long n, real h);
  *                   ==>  X[k+1] = X'[k] / (k + 1)
  *
  * 1. Starting with initial values X[0], evaluate the ODE equations (X'[k]) using X[k], and recurrence relations where needed,
+ * 
  *    then generate the next Taylor Series coefficient X[k+1] using the IDENTITY
  *
  * 2. Apply Horner's method to calculate the new values x(t0 + h), which become X[0] for the next time step.

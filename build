@@ -4,14 +4,15 @@
 #
 
 WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra -Wconversion'
+STD='c99'
 
-CC='/usr/bin/musl-gcc -std=c99'
+CC="/usr/bin/musl-gcc -std=$STD"
 if [ x"$1" = x'clang' ]
 then
-    CC='/usr/bin/clang'
+    CC="/usr/bin/clang -std=$STD"
 elif [ x"$1" = x'gcc' ]
 then
-    CC='/usr/bin/c99'
+    CC="/usr/bin/gcc -std=$STD"
 fi
 ${CC} --version
 
