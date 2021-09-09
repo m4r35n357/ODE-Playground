@@ -1,4 +1,3 @@
-
 /*
  * Command generation for Kerr spacetime particle simulations
  *
@@ -33,7 +32,7 @@ typedef struct { real a, b, c; } vector3;
 
 typedef struct { real a, b, c, d, e, f, g, h, i; } matrix3x3;
 
-static matrix3x3 invert (matrix3x3 m) {
+static matrix3x3 m_invert (matrix3x3 m) {
     matrix3x3 c = (matrix3x3) {
         .a =  (m.e * m.i - m.f * m.h), .b = -(m.d * m.i - m.f * m.g), .c =  (m.d * m.h - m.e * m.g),
         .d = -(m.b * m.i - m.c * m.h), .e =  (m.a * m.i - m.c * m.g), .f = -(m.a * m.h - m.b * m.g),
@@ -143,7 +142,7 @@ int main (int argc, char **argv) {
             J.f = dR_dr(p->rmin, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->bh_mass, p->spin, p->pmass2).dot;
             f.b = dR_dr(p->rmin, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->bh_mass, p->spin, p->pmass2).val;
         }
-        x = v_sub(x, mv_mult(invert(J), f));
+        x = v_sub(x, mv_mult(m_invert(J), f));
         fprintf(stderr, "%.18Lf %.18Lf %.18Lf\n", x.a, x.b, x.c);
         p->E = x.a;
         p->L = x.b;

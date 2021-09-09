@@ -1,4 +1,3 @@
-
 /*
  * Parameter (L, Q) generation for Kerr spacetime
  *
