@@ -1,13 +1,32 @@
 
+# Defaults
 *.[oa]
 *.so
 *~
 
+# TSM artifacts
 tsm-*-dbg
 tsm-*-static
+divergence
+dual-test
+taylor-test
 
+# Symplectic artifacts
 h-*-dbg
 h-*-static
 
-divergence
-chaos-distance-cns
+# C coverage artifacts
+*.gcov
+*.gcda
+*.gcno
+*.gch
+
+# Optional
+zig
+kerr-image.c
+
+# Python/Pycharm stuff
+.idea/
+__pycache__/
+.coverage
+cov_html/
