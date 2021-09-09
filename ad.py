@@ -15,6 +15,9 @@ def t_horner(jet, h):
         result = result * h + term
     return result
 
+def t_const(a, k):
+    return a if k == 0 else 0.0
+
 def t_abs(u, k):
     return - u[k] if u[0] < 0.0 else u[k]
 
