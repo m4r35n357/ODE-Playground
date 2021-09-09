@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <math.h>
 #include "taylor-ode.h"
 
 #define BBLK "\x1B[0;40m"
@@ -26,6 +27,30 @@
 #define KCYN "\x1B[36m"
 #define KGRY "\x1B[2;37m"
 #define KBLD "\x1B[1;37m"
+
+static const real P_A = 1.0L, P_B = 0.0L, P_C = -1.0L, X0 = 1.0L, Y0 = 1.0L, Z0 = 1.0L;
+
+typedef struct { real a, b, c; } parameters;
+
+void *get_p (int argc, char **argv, long order) {
+    (void)argc;
+    (void)argv;
+    (void)order;
+    parameters *p = malloc(sizeof (parameters));
+    p->a = P_A;
+    p->b = P_B;
+    p->c = P_C;
+    return p;
+}
+
+components ode (series x, series y, series z, void *params, int k) {
+    parameters *p = (parameters *)params;
+    return (components) {
+        .x = p->a * x[k],
+        .y = p->b * y[k],
+        .z = p->c * z[k]
+    };
+}
 
 static void output (long dp, long n, series x, series y, series z) {
     char fs[128];
@@ -65,6 +90,12 @@ int main (int argc, char **argv) {
     out1[0] = -19.0L; out1[1] = 7.0L; out1[2] = -4.0L; out1[3] = 6.0L;
     t_horner(out1, 3, 3.0L);
     printf("%.3Lf\n",  out1[0]);
+    printf("\n");
+
+    printf("%s%s%s\n", KCYN, "Taylor Series Method, should be e^1.0, e^0.0, e^-1.0", KNRM);
+    tsm(argc, argv, 12, 10, 0.1L, 10, X0, Y0, Z0);
+    printf("%s%s+%.12Le %+.12Le %+.12Le%s\n", KBLD, KGRY, expl(P_A), expl(P_B), expl(P_C), KNRM);
+    printf("\n");
 
     printf("%s%.1Lf * %.1Lf = %.1Lf%s\n", KCYN, in_X[0], in_Y[0], in_X[0] * in_Y[0], KNRM);
     for (int k = 0; k <= n; k++) {

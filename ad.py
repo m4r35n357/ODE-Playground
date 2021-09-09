@@ -106,6 +106,7 @@ def tsm(ode, get_p):
     index = range(n)
     p = get_p(n)
     output(x[0], y[0], z[0], 0.0)
+    yield x[0], y[0], z[0], 0.0
     for step in steps:
         for k in index:
             c = ode(x, y, z, p, k)
@@ -114,6 +115,7 @@ def tsm(ode, get_p):
             z[k + 1] = c.z / (k + 1)
         x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
         output(x[0], y[0], z[0], step * δt)
+        yield x[0], y[0], z[0], step * δt
 
 
 class Context:
