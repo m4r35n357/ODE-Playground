@@ -18,12 +18,12 @@ echo Zig version $(./zig version)
 
 zig_build_exe="./zig build-exe -fno-lto"
 
-$zig_build_exe divergence.c $CCOPTS
 for source in tsm-*.c
 do
     $zig_build_exe $source taylor-ode.c main.c $CCOPTS
 done
 
+$zig_build_exe divergence.c $CCOPTS
 $zig_build_exe taylor-test.c taylor-ode.c $CCOPTS
 $zig_build_exe dual-test.c dual.c $CCOPTS
 

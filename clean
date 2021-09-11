@@ -8,6 +8,8 @@ do
     [ -x $file ] && rm -f $file
 done
 
+rm -f divergence taylor-test dual-test
+
 rm -f lib*.so *.o
 
 echo OK
