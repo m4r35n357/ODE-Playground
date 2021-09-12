@@ -77,7 +77,8 @@ dual d_sqrt (dual a) {
 
 dual d_pow (dual a, real b) {
     assert(a.val > 0.0L);
-    return (dual) { .val = powl(a.val, b), .dot = a.dot * b * powl(a.val, (b - 1.0L)) };
+    real pow_val = powl(a.val, b);
+    return (dual) { .val = pow_val, .dot = a.dot * b * pow_val / a.val };
 }
 
 dual d_sin (dual a) {
