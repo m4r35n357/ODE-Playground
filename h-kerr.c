@@ -98,7 +98,7 @@ static void plot_path (long dp, void *params, real t) {
     printf(fs, ra_sth * cosl(p->q_phi), ra_sth * sinl(p->q_phi), p->q_r * cosl(p->q_theta), t,
            error(1.0L + v_dot_v(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2.val, p->sth2.val, sigma, p->delta.val)),
            error(0.5L * (p->p_r * p->p_r - p->R.val)), error(0.5L * (p->p_theta * p->p_theta - p->THETA.val)),
-           gamma, sqrtl(1.0L - 1.0L / (gamma * gamma)));
+           gamma, sqrtl(1.0L - 1.0L / (gamma * gamma)));  // "Hamiltonian" = p_r^2 / 2 + (- R(q_r) / 2) = 0, similar for THETA
 }
 
 static void plot_view (long dp, void *params, real t) {
