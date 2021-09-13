@@ -84,17 +84,17 @@ real t_sqrt (series r, series u, int k) {
     return r[k] = k == 0 ? sqrtl(u[0]) : 0.5L * (u[k] - cauchy(r, r, k, 1, k - 1)) / r[0];
 }
 
-static real f_k (series df_du, series u, int k, int lower, int upper, real factor) {
+static real f_k (series df_du, series u, int k, int lower, int upper) {
     real sum = 0.0L;
     for (int j = lower; j <= upper; j++) {
         sum += df_du[j] * (k - j) * u[k - j];
     }
-    return factor * sum / k;
+    return sum / k;
 }
 
 real t_exp (series e, series u, int k) {
     assert(e != u);
-    return e[k] = k == 0 ? expl(u[0]) : f_k(e, u, k, 0, k - 1, 1.0L);
+    return e[k] = k == 0 ? expl(u[0]) : f_k(e, u, k, 0, k - 1);
 }
 
 pair t_sin_cos (series s, series c, series u, int k, geometry g) {
@@ -104,8 +104,8 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
         .b = c[k] = g == TRIG ? cosl(u[0]) : coshl(u[0])
     };
     return (pair) {
-        .a = s[k] = f_k(c, u, k, 0, k - 1, 1.0L),
-        .b = c[k] = f_k(s, u, k, 0, k - 1, g == TRIG ? - 1.0L : 1.0L)
+        .a = s[k] = f_k(c, u, k, 0, k - 1),
+        .b = c[k] = f_k(s, u, k, 0, k - 1) * (g == TRIG ? - 1.0L : 1.0L)
     };
 }
 
@@ -116,19 +116,19 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
         .b = s[k] = g == TRIG ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]
     };
     return (pair) {
-        .a = t[k] = f_k(s, u, k, 0, k - 1, 1.0L),
-        .b = s[k] = f_k(t, t, k, 0, k - 1, g == TRIG ? 2.0L : - 2.0L)
+        .a = t[k] = f_k(s, u, k, 0, k - 1),
+        .b = s[k] = f_k(t, t, k, 0, k - 1) * (g == TRIG ? 2.0L : - 2.0L)
     };
 }
 
 real t_pwr (series p, series u, real a, int k) {
     assert(u[0] > 0.0L);
     assert(p != u);
-    return p[k] = k == 0 ? powl(u[0], a) : (f_k(p, u, k, 0, k - 1, a) - f_k(u, p, k, 1, k - 1, 1.0L)) / u[0];
+    return p[k] = k == 0 ? powl(u[0], a) : (f_k(p, u, k, 0, k - 1) * a - f_k(u, p, k, 1, k - 1)) / u[0];
 }
 
 real t_ln (series l, series u, int k) {
     assert(u[0] > 0.0L);
     assert(l != u);
-    return l[k] = k == 0 ? logl(u[0]) : (u[k] - f_k(u, l, k, 1, k - 1, 1.0L)) / u[0];
+    return l[k] = k == 0 ? logl(u[0]) : (u[k] - f_k(u, l, k, 1, k - 1)) / u[0];
 }
