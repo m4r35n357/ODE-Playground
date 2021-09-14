@@ -1,6 +1,6 @@
 /*
  * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
- * 
+ *
  * Example:  grep -n '[^a-zA-Z]t_[a-z0-9_]*' taylor-test.c
  *
  * Example:  c99 --coverage -O0 -o taylor-test taylor-test.c taylor-ode.c -lm
@@ -8,6 +8,12 @@
  * Example:  ./taylor-test 6 6 4 -3
  *
  * Example:  gcov -k taylor-ode.c
+ *
+ * Example:  f_list='t_const t_abs t_prod t_sqr t_quot t_inv t_sqrt t_exp t_sin_cos t_tan_sec2 t_pwr t_ln'
+ *
+ * Example:  for f in $f_list; do echo $f; grep -n $f tsm-*.c; done
+ *
+ * Example:  for f in $f_list; do echo $f; grep -n $f taylor-test.c; done
  */
 
 #include <stdio.h>
