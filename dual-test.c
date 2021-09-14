@@ -4,9 +4,9 @@
  * Example:  grep -n '[^a-zA-Z]d_[a-z0-9_]*' dual-test.c
  *
  * Example:  c99 --coverage -O0 -o dual-test dual-test.c dual.c -lm
- * 
+ *
  * Example:  ./dual-test 6 _ 4 -3
- * 
+ *
  * Example:  gcov -k dual.c
  *
  * Example:  f_list='d_abs d_inv d_sqr d_shift d_scale d_add d_sub d_mul d_div d_exp d_log d_sqrt d_pow d_sin d_cos d_tan d_sinh d_cosh d_tanh'
@@ -99,25 +99,25 @@ int main (int argc, char **argv) {
 
     dual in_TRIG = d_var(MY_PI / y);
     printf("%ssin^2(%.3Lf) + cos^2(%.3Lf) = 1.0%s\n", KCYN, in_TRIG.val, in_TRIG.val, KNRM);
-    out1 = d_sin(in_TRIG);
-    out2 = d_cos(in_TRIG);
-    output(dp, out1, out2, d_add(d_sqr(out1), d_sqr(out2)));
+    out1 = d_sqr(d_sin(in_TRIG));
+    out2 = d_sqr(d_cos(in_TRIG));
+    output(dp, out1, out2, d_add(out1, out2));
 
     printf("%scosh^2(%.3Lf) - sinh^2(%.3Lf) = 1.0%s\n", KCYN, x, x, KNRM);
-    out1 = d_sinh(in_X);
-    out2 = d_cosh(in_X);
-    output(dp, out2, out1, d_sub(d_sqr(out2), d_sqr(out1)));
+    out1 = d_sqr(d_sinh(in_X));
+    out2 = d_sqr(d_cosh(in_X));
+    output(dp, out2, out1, d_sub(out2, out1));
 
     in_TRIG = d_var(MY_PI / x);
     printf("%ssec^2(%.3Lf) - tanh^2(%.3Lf) = 1.0%s\n", KCYN, in_TRIG.val, in_TRIG.val, KNRM);
-    out1 = d_tan(in_TRIG);
-    out2 = d_shift(d_sqr(out1), 1.0L);
-    output(dp, out2, out1, d_sub(out2, d_sqr(out1)));
+    out1 = d_sqr(d_tan(in_TRIG));
+    out2 = d_shift(out1, 1.0L);
+    output(dp, out2, out1, d_sub(out2, out1));
 
     printf("%stanh^2(%.1Lf) + sech^2(%.1Lf) = 1.0%s\n", KCYN, y, y, KNRM);
-    out1 = d_tanh(in_Y);
-    out2 = d_scale(d_shift(d_sqr(out1), -1.0L), -1.0L);
-    output(dp, out1, out2, d_add(d_sqr(out1), out2));
+    out1 = d_sqr(d_tanh(in_Y));
+    out2 = d_scale(d_shift(out1, -1.0L), -1.0L);
+    output(dp, out1, out2, d_add(out1, out2));
 
     dual out3, out4;
     in_TRIG = d_var(MY_PI / y);
