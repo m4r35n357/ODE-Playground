@@ -8,6 +8,12 @@
  * Example:  ./dual-test 6 _ 4 -3
  * 
  * Example:  gcov -k dual.c
+ *
+ * Example:  f_list='d_abs d_inv d_sqr d_shift d_scale d_add d_sub d_mul d_div d_exp d_log d_sqrt d_pow d_sin d_cos d_tan d_sinh d_cosh d_tanh'
+ *
+ * Example:  for f in $f_list; do echo $f; grep -n $f h-*.c; done
+ *
+ * Example:  for f in $f_list; do echo $f; grep -n $f dual-test.c; done
  */
 
 #include <stdio.h>
@@ -66,12 +72,12 @@ int main (int argc, char **argv) {
     out2 = d_mul(in_X, out1);
     output(dp, in_X, out1, out2);
 
-    printf("%s(SQR(%.1Lf))^0.5 = |%.1Lf|%s\n", KCYN, y, y, KNRM);
+    printf("%s(sqr(%.1Lf))^0.5 = |%.1Lf|%s\n", KCYN, y, y, KNRM);
     out1 = d_sqr(in_Y);
     out2 = d_pow(out1, 0.5L);
     output(dp, in_Y, out1, out2);
 
-    printf("%sSQRT(%.1Lf^2) = |%.1Lf|%s\n", KCYN, x, x, KNRM);
+    printf("%ssqrt(%.1Lf^2) = |%.1Lf|%s\n", KCYN, x, x, KNRM);
     out1 = d_pow(in_X, 2.0L);
     out2 = d_sqrt(out1);
     output(dp, in_X, out1, out2);
@@ -81,37 +87,65 @@ int main (int argc, char **argv) {
     out2 = d_inv(out1);
     output(dp, in_X, out1, out2);
 
-    printf("%sEXP(LN(%.1Lf) = %.1Lf%s\n", KCYN, x, x, KNRM);
+    printf("%sexp(ln(%.1Lf) = %.1Lf%s\n", KCYN, x, x, KNRM);
     out1 = d_log(in_X);
     out2 = d_exp(out1);
     output(dp, in_X, out1, out2);
 
-    printf("%sLN(EXP(%.1Lf) = %.1Lf%s\n", KCYN, y, y, KNRM);
+    printf("%sln(exp(%.1Lf) = %.1Lf%s\n", KCYN, y, y, KNRM);
     out1 = d_exp(in_Y);
     out2 = d_log(out1);
     output(dp, in_Y, out1, out2);
 
     dual in_TRIG = d_var(MY_PI / y);
-    printf("%sSIN_COS(%.3Lf)%s\n", KCYN, in_TRIG.val, KNRM);
+    printf("%ssin^2(%.3Lf) + cos^2(%.3Lf) = 1.0%s\n", KCYN, in_TRIG.val, in_TRIG.val, KNRM);
     out1 = d_sin(in_TRIG);
     out2 = d_cos(in_TRIG);
     output(dp, out1, out2, d_add(d_sqr(out1), d_sqr(out2)));
 
-    printf("%sSINH_COSH(%.1Lf)%s\n", KCYN, x, KNRM);
+    printf("%scosh^2(%.3Lf) - sinh^2(%.3Lf) = 1.0%s\n", KCYN, x, x, KNRM);
     out1 = d_sinh(in_X);
     out2 = d_cosh(in_X);
-    output(dp, out1, out2, d_sub(d_sqr(out2), d_sqr(out1)));
+    output(dp, out2, out1, d_sub(d_sqr(out2), d_sqr(out1)));
 
     in_TRIG = d_var(MY_PI / x);
-    printf("%sTAN_SEC2(%.3Lf)%s\n", KCYN, in_TRIG.val, KNRM);
+    printf("%ssec^2(%.3Lf) - tanh^2(%.3Lf) = 1.0%s\n", KCYN, in_TRIG.val, in_TRIG.val, KNRM);
     out1 = d_tan(in_TRIG);
     out2 = d_shift(d_sqr(out1), 1.0L);
-    output(dp, out1, out2, d_sub(out2, d_sqr(out1)));
+    output(dp, out2, out1, d_sub(out2, d_sqr(out1)));
 
-    printf("%sTANH_SECH2(%.1Lf)%s\n", KCYN, y, KNRM);
+    printf("%stanh^2(%.1Lf) + sech^2(%.1Lf) = 1.0%s\n", KCYN, y, y, KNRM);
     out1 = d_tanh(in_Y);
     out2 = d_scale(d_shift(d_sqr(out1), -1.0L), -1.0L);
     output(dp, out1, out2, d_add(d_sqr(out1), out2));
+
+    dual out3, out4;
+    in_TRIG = d_var(MY_PI / y);
+    printf("%ssin(%.3Lf) / cos(%.3Lf) - tan(%.3Lf) = 0.0%s\n", KCYN, in_TRIG.val, in_TRIG.val, in_TRIG.val, KNRM);
+    out1 = d_sin(in_TRIG);
+    out2 = d_cos(in_TRIG);
+    out3 = d_div(out1, out2);
+    out4 = d_tan(in_TRIG);
+    output(dp, out3, out4, d_sub(out3, out4));
+
+    printf("%ssinh(%.3Lf) / cosh(%.3Lf) - tanh(%.3Lf) = 0.0%s\n", KCYN, x, x, x, KNRM);
+    out1 = d_sinh(in_X);
+    out2 = d_cosh(in_X);
+    out3 = d_div(out1, out2);
+    out4 = d_tanh(in_X);
+    output(dp, out3, out4, d_sub(out3, out4));
+
+    printf("%s1.0 / cos(%.3Lf) - sqrt(sec^2(%.3Lf)) = 0.0%s\n", KCYN, in_TRIG.val, in_TRIG.val, KNRM);
+    out2 = d_cos(in_TRIG);
+    out3 = d_inv(out2);
+    out4 = d_sqrt(d_shift(d_sqr(d_tan(in_TRIG)), 1.0L));
+    output(dp, out3, out4, d_sub(out3, out4));
+
+    printf("%s1.0 / cosh(%.3Lf) - sqrt(sech^2(%.3Lf)) = 0.0%s\n", KCYN, x, x, KNRM);
+    out2 = d_cosh(in_X);
+    out3 = d_inv(out2);
+    out4 = d_sqrt(d_shift(d_scale(d_sqr(d_tanh(in_X)), -1.0L), 1.0L));
+    output(dp, out3, out4, d_sub(out3, out4));
 
     return 0;
 }
