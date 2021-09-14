@@ -62,6 +62,10 @@ int main (int argc, char **argv) {
     in_Y[1] = 1.0L;
     series out1 = t_jet(n + 1);
     series out2 = t_jet(n + 1);
+    series out3 = t_jet(n + 1);
+    series out4 = t_jet(n + 1);
+    series out5 = t_jet(n + 1);
+    series out6 = t_jet(n + 1);
     series target = t_jet(n + 1);
     series d1 = t_jet(n + 1);
     series d2 = t_jet(n + 1);
@@ -161,36 +165,38 @@ int main (int argc, char **argv) {
     printf("%ssin^2(%.3Lf) + cos^2(%.3Lf) = 1.0%s\n", KCYN, in_TRIG[0], in_TRIG[0], KNRM);
     for (int k = 0; k <= n; k++) {
         t_sin_cos(out1, out2, in_TRIG, k, TRIG);
-        target[k] = t_prod(out1, out1, k) + t_sqr(out2, k);
+        out3[k] = t_prod(out1, out1, k);
+        out4[k] = t_sqr(out2, k);
+        target[k] = out3[k] + out4[k];
     }
-    output(dp, n, d1, d2, d3, out1, out2, target);
+    output(dp, n, d1, d2, d3, out3, out4, target);
 
     printf("%scosh^2(%.3Lf) - sinh^2(%.3Lf) = 1.0%s\n", KCYN, x, x, KNRM);
     for (int k = 0; k <= n; k++) {
         t_sin_cos(out1, out2, in_X, k, HYP);
-        target[k] = - t_prod(out1, out1, k) + t_sqr(out2, k);
+        out3[k] = t_prod(out1, out1, k);
+        out4[k] = t_sqr(out2, k);
+        target[k] = out4[k] - out3[k];
     }
-    output(dp, n, d1, d2, d3, out2, out1, target);
+    output(dp, n, d1, d2, d3, out4, out3, target);
 
     in_TRIG[0] = MY_PI / x;
     printf("%ssec^2(%.3Lf) - tanh^2(%.3Lf) = 1.0%s\n", KCYN, in_TRIG[0], in_TRIG[0], KNRM);
     for (int k = 0; k <= n; k++) {
         t_tan_sec2(out1, out2, in_TRIG, k, TRIG);
-        target[k] = - t_sqr(out1, k) + out2[k];
+        out3[k] = t_sqr(out1, k);
+        target[k] = out2[k] - out3[k];
     }
-    output(dp, n, d1, d2, d3, out2, out1, target);
+    output(dp, n, d1, d2, d3, out2, out3, target);
 
     printf("%stanh^2(%.1Lf) + sech^2(%.1Lf) = 1.0%s\n", KCYN, y, y, KNRM);
     for (int k = 0; k <= n; k++) {
         t_tan_sec2(out1, out2, in_Y, k, HYP);
-        target[k] = t_sqr(out1, k) + out2[k];
+        out3[k] = t_sqr(out1, k);
+        target[k] = out3[k] + out2[k];
     }
-    output(dp, n, d1, d2, d3, out1, out2, target);
+    output(dp, n, d1, d2, d3, out3, out2, target);
 
-    series out3 = t_jet(n + 1);
-    series out4 = t_jet(n + 1);
-    series out5 = t_jet(n + 1);
-    series out6 = t_jet(n + 1);
     in_TRIG[0] = MY_PI / y;
     printf("%ssin(%.3Lf) / cos(%.3Lf) - tan(%.3Lf) = 0.0%s\n", KCYN, in_TRIG[0], in_TRIG[0], in_TRIG[0], KNRM);
     for (int k = 0; k <= n; k++) {
