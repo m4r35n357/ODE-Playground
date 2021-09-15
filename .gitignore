@@ -25,7 +25,8 @@ h-*-static
 zig
 kerr-image.c
 
-# Python/Pycharm stuff
+# Vim/Python/Pycharm stuff
+tags
 .idea/
 __pycache__/
 .coverage

@@ -15,7 +15,7 @@ typedef long double *series;
 /*
  * Prints x, y, z, t values, followed by turning point markers, to stdout
  */
-void t_output (long dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label) ;
+void t_output (long dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label);
 
 /*
  * Assigns a variable number of model-specific long double values from the tail of the command
@@ -38,7 +38,7 @@ real t_horner (series S, long n, real h);
  *                         x'(t) = ode(x(t))
  *
  * We plug x(t) into the equations, then somehow use the value of x'(t) to estimate the next x value in the sequence.
- * 
+ *
  * Now, evolution of a time-varying quantity can be represented as a Taylor Series:
  *
  *                     x(t0 + h) = sum{k=0->inf} X[k].h^k     where X[0] = x(t0), X[k] = (d/dt)^k x(t0) / k! and h = t - t0  (A)
@@ -52,7 +52,7 @@ real t_horner (series S, long n, real h);
  *                              X'[k] = ODE(X[k])
  *
  * Furthermore, by differentiating (A) and equating it to (B) we obtain an additional and very useful IDENTITY:
- * 
+ *
  *                     d/dt x(t) = sum{k=1->inf} k.X[k].h^(k-1)
  *
  *                               = sum{k=0->inf} (k+1).X[k+1].h^k                                                            (C)
@@ -62,7 +62,7 @@ real t_horner (series S, long n, real h);
  *                   ==>  X[k+1] = X'[k] / (k + 1)
  *
  * 1. Starting with initial values X[0], evaluate the ODE equations (X'[k]) using X[k], and recurrence relations where needed,
- * 
+ *
  *    then generate the next Taylor Series coefficient X[k+1] using the IDENTITY
  *
  * 2. Apply Horner's method to calculate the new values x(t0 + h), which become X[0] for the next time step.
