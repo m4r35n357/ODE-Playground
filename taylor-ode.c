@@ -99,11 +99,10 @@ real t_exp (series e, series u, int k) {
 
 pair t_sin_cos (series s, series c, series u, int k, geometry g) {
     assert(s != c && s != u && c != u);
-    if (k == 0) return (pair) {
+    return k == 0 ? (pair) {
         .a = s[k] = g == TRIG ? sinl(u[0]) : sinhl(u[0]),
         .b = c[k] = g == TRIG ? cosl(u[0]) : coshl(u[0])
-    };
-    return (pair) {
+    } : (pair) {
         .a = s[k] = f_k(c, u, k, 0, k - 1),
         .b = c[k] = f_k(s, u, k, 0, k - 1) * (g == TRIG ? - 1.0L : 1.0L)
     };
@@ -111,11 +110,10 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
 
 pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
     assert(t != s && t != u && s != u);
-    if (k == 0) return (pair) {
+    return k == 0 ? (pair) {
         .a = t[k] = g == TRIG ? tanl(u[0]) : tanhl(u[0]),
         .b = s[k] = g == TRIG ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]
-    };
-    return (pair) {
+    } : (pair) {
         .a = t[k] = f_k(s, u, k, 0, k - 1),
         .b = s[k] = f_k(t, t, k, 0, k - 1) * (g == TRIG ? 2.0L : - 2.0L)
     };
