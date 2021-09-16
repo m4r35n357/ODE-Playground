@@ -50,9 +50,9 @@ real t_abs (series u, int k) {
     return u[0] < 0.0L ? - u[k] : u[k];
 }
 
-static real cauchy (series a, series b, int k, int lower, int upper) {
+static real cauchy (series a, series b, int k, int j_lower, int j_upper) {
     real sum = 0.0L;
-    for (int j = lower; j <= upper; j++) {
+    for (int j = j_lower; j <= j_upper; j++) {
         sum += a[j] * b[k - j];
     }
     return sum;
@@ -84,9 +84,9 @@ real t_sqrt (series r, series u, int k) {
     return r[k] = k == 0 ? sqrtl(u[0]) : 0.5L * (u[k] - cauchy(r, r, k, 1, k - 1)) / r[0];
 }
 
-static real f_k (series df_du, series u, int k, int lower, int upper) {
+static real f_k (series df_du, series u, int k, int j_lower, int j_upper) {
     real sum = 0.0L;
-    for (int j = lower; j <= upper; j++) {
+    for (int j = j_lower; j <= j_upper; j++) {
         sum += df_du[j] * (k - j) * u[k - j];
     }
     return sum / k;
