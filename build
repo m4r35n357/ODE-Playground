@@ -47,7 +47,7 @@ echo ""
 build_tsm () {
     name=$1
     ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c main.c -lm -s
-    ${CC} -O0 $WARNINGS -g -o ${name}-dbg ${name}.c taylor-ode.c main.c -lm
+    ${CC} -O0 -g $WARNINGS -o ${name}-dbg ${name}.c taylor-ode.c main.c -lm
 }
 
 for model in \
@@ -75,8 +75,8 @@ done
 
 echo ""
 echo " Building tests"
-${CC} -O3 $WARNINGS -o taylor-test taylor-test.c taylor-ode.c -lm -s &
-${CC} -O3 $WARNINGS -o dual-test dual-test.c dual.c -lm -s &
+${CC} -O0 -g $WARNINGS -o taylor-test taylor-test.c taylor-ode.c -lm &
+${CC} -O0 -g $WARNINGS -o dual-test dual-test.c dual.c -lm &
 
 echo ""
 echo " Building divergence"
