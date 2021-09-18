@@ -47,6 +47,12 @@ int main (int argc, char **argv) {
     series in_Y = t_jet(n + 1);
     in_Y[0] = y;
     in_Y[1] = 1.0L;
+    series in_HYP = t_jet(n + 1);
+    in_HYP[0] = MY_PI / x;
+    in_HYP[1] = 1.0L;
+    series in_TRIG = t_jet(n + 1);
+    in_TRIG[0] = MY_PI / y;
+    in_TRIG[1] = 1.0L;
     series out1 = t_jet(n + 1);
     series out2 = t_jet(n + 1);
     series out3 = t_jet(n + 1);
@@ -60,19 +66,19 @@ int main (int argc, char **argv) {
     t_horner(out1, 3, 3.0L);
     printf("%.3Lf\n",  out1[0]);
 
-    printf("%s%.1Lf * %.1Lf = %.1Lf%s\n", KCYN, x, y, x * y, KNRM);
+    printf("%s%.1Lf * %.1Lf = %.1Lf%s\n", KCYN, in_X[0], in_Y[0], in_X[0] * in_Y[0], KNRM);
     for (int k = 0; k <= n; k++) {
         target[k] = t_prod(in_X, in_Y, k);
     }
     output(dp, n, in_X, in_Y, target);
 
-    printf("%s%.1Lf / %.1Lf = %.1Lf%s\n", KCYN, x, y, x / y, KNRM);
+    printf("%s%.1Lf / %.1Lf = %.1Lf%s\n", KCYN, in_X[0], in_Y[0], in_X[0] / in_Y[0], KNRM);
     for (int k = 0; k <= n; k++) {
         t_quot(target, in_X, in_Y, k);
     }
     output(dp, n, in_X, in_Y, target);
 
-    printf("%s|%.1Lf| * |%.1Lf| = |%.1Lf * %.1Lf|%s\n", KCYN, x, y, x, y, KNRM);
+    printf("%s|%.1Lf| * |%.1Lf| = |%.1Lf * %.1Lf|%s\n", KCYN, in_X[0], in_Y[0], in_X[0], in_Y[0], KNRM);
     for (int k = 0; k <= n; k++) {
         out1[k] = t_abs(in_X, k);
         out2[k] = t_abs(in_Y, k);
@@ -80,7 +86,7 @@ int main (int argc, char **argv) {
     }
     output(dp, n, out1, out2, target);
 
-    printf("%s|%.1Lf| / |%.1Lf| = |%.1Lf / %.1Lf|%s\n", KCYN, x, y, x, y, KNRM);
+    printf("%s|%.1Lf| / |%.1Lf| = |%.1Lf / %.1Lf|%s\n", KCYN, in_X[0], in_Y[0], in_X[0], in_Y[0], KNRM);
     for (int k = 0; k <= n; k++) {
         out1[k] = t_abs(in_X, k);
         out2[k] = t_abs(in_Y, k);
@@ -88,64 +94,61 @@ int main (int argc, char **argv) {
     }
     output(dp, n, out1, out2, target);
 
-    printf("%s%.1Lf / %.1Lf = 1%s\n", KCYN, y, y, KNRM);
+    printf("%s%.1Lf / %.1Lf = 1%s\n", KCYN, in_Y[0], in_Y[0], KNRM);
     for (int k = 0; k <= n; k++) {
         t_quot(target, in_Y, in_Y, k);
     }
     output(dp, n, in_Y, in_Y, target);
 
-    printf("%s%.1Lf * (1 / %.1Lf) = 1%s\n", KCYN, x, x, KNRM);
+    printf("%s%.1Lf * (1 / %.1Lf) = 1%s\n", KCYN, in_X[0], in_X[0], KNRM);
     for (int k = 0; k <= n; k++) {
         t_inv(out1, in_X, k);
         target[k] = t_prod(in_X, out1, k);
     }
     output(dp, n, in_X, out1, target);
 
-    printf("%s%.1Lf * (%.1Lf / %.1Lf) = %.1Lf%s\n", KCYN, x, y, x, y, KNRM);
+    printf("%s%.1Lf * (%.1Lf / %.1Lf) = %.1Lf%s\n", KCYN, in_X[0], in_Y[0], in_X[0], in_Y[0], KNRM);
     for (int k = 0; k <= n; k++) {
         t_quot(out1, in_Y, in_X, k);
         target[k] = t_prod(in_X, out1, k);
     }
     output(dp, n, in_X, out1, target);
 
-    printf("%s(sqr(%.1Lf))^0.5 = |%.1Lf|%s\n", KCYN, y, y, KNRM);
+    printf("%s(sqr(%.1Lf))^0.5 = |%.1Lf|%s\n", KCYN, in_Y[0], in_Y[0], KNRM);
     for (int k = 0; k <= n; k++) {
         out1[k] = t_sqr(in_Y, k);
         t_pwr(target, out1, 0.5L, k);
     }
     output(dp, n, in_Y, out1, target);
 
-    printf("%ssqrt(%.1Lf^2) = |%.1Lf|%s\n", KCYN, x, x, KNRM);
+    printf("%ssqrt(%.1Lf^2) = |%.1Lf|%s\n", KCYN, in_X[0], in_X[0], KNRM);
     for (int k = 0; k <= n; k++) {
         t_pwr(out1, in_X, 2.0L, k);
         t_sqrt(target, out1, k);
     }
     output(dp, n, in_X, out1, target);
 
-    printf("%s1 / (%.1Lf^-1) = %.1Lf%s\n", KCYN, x, x, KNRM);
+    printf("%s1 / (%.1Lf^-1) = %.1Lf%s\n", KCYN, in_X[0], in_X[0], KNRM);
     for (int k = 0; k <= n; k++) {
         t_pwr(out1, in_X, -1.0L, k);
         t_inv(target, out1, k);
     }
     output(dp, n, in_X, out1, target);
 
-    printf("%sexp(ln(%.1Lf) = %.1Lf%s\n", KCYN, x, x, KNRM);
+    printf("%sexp(ln(%.1Lf) = %.1Lf%s\n", KCYN, in_X[0], in_X[0], KNRM);
     for (int k = 0; k <= n; k++) {
         t_ln(out1, in_X, k);
         t_exp(target, out1, k);
     }
     output(dp, n, in_X, out1, target);
 
-    printf("%sln(exp(%.1Lf) = %.1Lf%s\n", KCYN, y, y, KNRM);
+    printf("%sln(exp(%.1Lf) = %.1Lf%s\n", KCYN, in_Y[0], in_Y[0], KNRM);
     for (int k = 0; k <= n; k++) {
         t_exp(out1, in_Y, k);
         t_ln(target, out1, k);
     }
     output(dp, n, in_Y, out1, target);
 
-    series in_TRIG = t_jet(n + 1);
-    in_TRIG[0] = MY_PI / y;
-    in_TRIG[1] = 1.0L;
     printf("%ssin^2(%.3Lf) + cos^2(%.3Lf) = 1.0%s\n", KCYN, in_TRIG[0], in_TRIG[0], KNRM);
     for (int k = 0; k <= n; k++) {
         t_sin_cos(out1, out2, in_TRIG, k, TRIG);
@@ -155,16 +158,15 @@ int main (int argc, char **argv) {
     }
     output(dp, n, out3, out4, target);
 
-    printf("%scosh^2(%.3Lf) - sinh^2(%.3Lf) = 1.0%s\n", KCYN, x, x, KNRM);
+    printf("%scosh^2(%.3Lf) - sinh^2(%.3Lf) = 1.0%s\n", KCYN, in_HYP[0], in_HYP[0], KNRM);
     for (int k = 0; k <= n; k++) {
-        t_sin_cos(out1, out2, in_X, k, HYP);
+        t_sin_cos(out1, out2, in_HYP, k, HYP);
         out3[k] = t_prod(out1, out1, k);
         out4[k] = t_sqr(out2, k);
         target[k] = out4[k] - out3[k];
     }
     output(dp, n, out4, out3, target);
 
-    in_TRIG[0] = MY_PI / x;
     printf("%ssec^2(%.3Lf) - tanh^2(%.3Lf) = 1.0%s\n", KCYN, in_TRIG[0], in_TRIG[0], KNRM);
     for (int k = 0; k <= n; k++) {
         t_tan_sec2(out1, out2, in_TRIG, k, TRIG);
@@ -173,15 +175,14 @@ int main (int argc, char **argv) {
     }
     output(dp, n, out2, out3, target);
 
-    printf("%stanh^2(%.1Lf) + sech^2(%.1Lf) = 1.0%s\n", KCYN, y, y, KNRM);
+    printf("%stanh^2(%.3Lf) + sech^2(%.3Lf) = 1.0%s\n", KCYN, in_HYP[0], in_HYP[0], KNRM);
     for (int k = 0; k <= n; k++) {
-        t_tan_sec2(out1, out2, in_Y, k, HYP);
+        t_tan_sec2(out1, out2, in_HYP, k, HYP);
         out3[k] = t_sqr(out1, k);
         target[k] = out3[k] + out2[k];
     }
     output(dp, n, out3, out2, target);
 
-    in_TRIG[0] = MY_PI / y;
     printf("%ssin(%.3Lf) / cos(%.3Lf) - tan(%.3Lf) = 0.0%s\n", KCYN, in_TRIG[0], in_TRIG[0], in_TRIG[0], KNRM);
     for (int k = 0; k <= n; k++) {
         t_sin_cos(out1, out2, in_TRIG, k, TRIG);
@@ -191,10 +192,10 @@ int main (int argc, char **argv) {
     }
     output(dp, n, out5, out3, target);
 
-    printf("%ssinh(%.3Lf) / cosh(%.3Lf) - tanh(%.3Lf) = 0.0%s\n", KCYN, in_X[0], in_X[0], in_X[0], KNRM);
+    printf("%ssinh(%.3Lf) / cosh(%.3Lf) - tanh(%.3Lf) = 0.0%s\n", KCYN, in_HYP[0], in_HYP[0], in_HYP[0], KNRM);
     for (int k = 0; k <= n; k++) {
-        t_sin_cos(out1, out2, in_X, k, HYP);
-        t_tan_sec2(out3, out4, in_X, k, HYP);
+        t_sin_cos(out1, out2, in_HYP, k, HYP);
+        t_tan_sec2(out3, out4, in_HYP, k, HYP);
         t_quot(out5, out1, out2, k);
         target[k] = out5[k] - out3[k];
     }
@@ -210,10 +211,10 @@ int main (int argc, char **argv) {
     }
     output(dp, n, out5, out6, target);
 
-    printf("%s1.0 / cosh(%.3Lf) - sqrt(sech^2(%.3Lf)) = 0.0%s\n", KCYN, in_X[0], in_X[0], KNRM);
+    printf("%s1.0 / cosh(%.3Lf) - sqrt(sech^2(%.3Lf)) = 0.0%s\n", KCYN, in_HYP[0], in_HYP[0], KNRM);
     for (int k = 0; k <= n; k++) {
-        t_sin_cos(out1, out2, in_X, k, HYP);
-        t_tan_sec2(out3, out4, in_X, k, HYP);
+        t_sin_cos(out1, out2, in_HYP, k, HYP);
+        t_tan_sec2(out3, out4, in_HYP, k, HYP);
         t_inv(out5, out2, k);
         t_sqrt(out6, out4, k);
         target[k] = out5[k] - out6[k];
