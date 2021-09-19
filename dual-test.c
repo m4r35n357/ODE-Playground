@@ -41,8 +41,8 @@ int main (int argc, char **argv) {
     real y = strtold(argv[4], NULL); assert(y != 0.0L);
     dual in_X = d_var(x);
     dual in_Y = d_var(y);
-    dual in_TRIG = d_var(MY_PI / x);
-    dual in_HYP = d_var(MY_PI / y);
+    dual in_HYP = d_var(MY_PI / x);
+    dual in_TRIG = d_var(MY_PI / y);
     dual out1, out2;
 
     printf("%s%.1Lf * %.1Lf = %.1Lf%s\n", KCYN, in_X.val, in_Y.val, in_X.val * in_Y.val, KNRM);
@@ -109,7 +109,6 @@ int main (int argc, char **argv) {
     out2 = d_sqr(d_cosh(in_HYP));
     output(dp, out2, out1, d_sub(out2, out1));
 
-    in_TRIG = d_var(MY_PI / x);
     printf("%ssec^2(%.3Lf) - tanh^2(%.3Lf) = 1.0%s\n", KCYN, in_TRIG.val, in_TRIG.val, KNRM);
     out1 = d_sqr(d_tan(in_TRIG));
     out2 = d_shift(out1, 1.0L);
