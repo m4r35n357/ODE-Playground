@@ -20,10 +20,8 @@ h-*-static
 *.gcda
 *.gcno
 *.gch
-
-# Optional
-zig
-kerr-image.c
+coverage.info
+coverage-out/
 
 # Vim/Python/Pycharm stuff
 tags
@@ -31,3 +29,7 @@ tags
 __pycache__/
 .coverage
 cov_html/
+
+# Optional
+zig
+kerr-image.c

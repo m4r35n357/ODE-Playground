@@ -3,12 +3,6 @@
  *
  * Example:  grep -n '[^a-zA-Z]d_[a-z0-9_]*' dual-test.c
  *
- * Example:  c99 --coverage -O0 -o dual-test dual-test.c dual.c -lm
- *
- * Example:  ./dual-test 6 _ 4 -3
- *
- * Example:  gcov -k dual.c
- *
  * Example:  f_list='d_abs d_inv d_sqr d_shift d_scale d_add d_sub d_mul d_div d_exp d_log d_sqrt d_pow d_sin d_cos d_tan d_sinh d_cosh d_tanh'
  *
  * Example:  for f in $f_list; do echo $f; grep -n $f h-*.c; done

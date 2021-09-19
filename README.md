@@ -8,7 +8,7 @@ They can also be piped to ./plot3d.py if you have set up your virtual environmen
 
 #### Debian/Ubuntu packages:
 ```
-sudo apt install bc git build-essential musl-tools pkg-config mesa-utils-extra python3-tk python3-dev libfreetype6-dev libatlas-base-dev virtualenvwrapper gnuplot-x11
+sudo apt install bc git build-essential musl-tools pkg-config mesa-utils-extra python3-tk python3-dev libfreetype6-dev libatlas-base-dev virtualenvwrapper gnuplot-x11 lcov
 ```
 
 #### Python 3 Packages (for plotting), please use a virtual environment!
