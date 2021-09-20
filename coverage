@@ -1,6 +1,10 @@
 #!/bin/sh
 
-pytest --cov=ad --cov=plotters --cov-report html:cov_html ad_test.py solver_test.py -q
+PYTHON_OUT='cov_html'
+C_OUT_DIR='coverage-out'
+C_OUT_FILE='coverage.info'
+
+pytest --cov=ad --cov=plotters --cov-report html:$PYTHON_OUT ad_test.py solver_test.py -q
 echo ""
 
 c99 --coverage -O0 -o taylor-test taylor-test.c taylor-ode.c -lm
@@ -9,9 +13,8 @@ c99 --coverage -O0 -o taylor-test taylor-test.c taylor-ode.c -lm
 c99 --coverage -O0 -o dual-test dual-test.c dual.c -lm
 ./dual-test 6 _ 4 -3
 
-lcov --capture --directory . --output-file coverage.info
-genhtml coverage.info --output-directory coverage-out
+lcov --capture --directory . --output-file $C_OUT_FILE
+genhtml $C_OUT_FILE --output-directory $C_OUT_DIR
 
-echo "C:      file:///home/$USER/projects/ODE-Playground/coverage-out/index.html"
-echo "Python: file:///home/$USER/projects/ODE-Playground/cov_html/index.html"
-
+echo "C:      file://$(pwd)/$C_OUT_DIR/index.html"
+echo "Python: file://$(pwd)/$PYTHON_OUT/index.html"
