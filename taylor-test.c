@@ -89,6 +89,15 @@ int main (int argc, char **argv) {
     printf("%s%s+%.12Le %+.12Le %+.12Le%s\n", KBLD, KGRY, expl(P_A), expl(P_B), expl(P_C), KNRM);
     printf("\n");
 
+    printf("%s%s%s\n", KCYN, "Additive constant", KNRM);
+    for (int k = 0; k <= n; k++) {
+        out1[k] = t_const(y, k);
+        out2[k] = t_const(-y, k);
+        target[k] = out1[k] + out2[k];
+    }
+    output(dp, n, out1, out2, target);
+    printf("\n");
+
     printf("%s%.1Lf * %.1Lf = %.1Lf%s\n", KCYN, in_X[0], in_Y[0], in_X[0] * in_Y[0], KNRM);
     for (int k = 0; k <= n; k++) {
         target[k] = t_prod(in_X, in_Y, k);
