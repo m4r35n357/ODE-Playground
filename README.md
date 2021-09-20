@@ -19,7 +19,7 @@ pip install matplotlib pillow pi3d pytest pytest_cov
 
 #### Running Python Tests
 ```
-$ pytest --cov=ad --cov=plotters --cov-report html:cov_html ad_test.py solver_test.py -q
+$ pytest ad_test.py solver_test.py -v
 ```
 
 #### c Build (MUSL with GCC by default, glibc with GCC or Clang optional)
@@ -34,6 +34,11 @@ There should be NO errors or warnings.  [UPDATE: kerr-image.c shows warnings on 
 $ ./dual-test 6 _ 4 -3
 $ ./taylor-test 6 8 4 -3
 ```
+#### Code coverage
+```
+$ ./coverage
+```
+The output contains file system links to the HTML results
 
 #### Find examples for ODE parameters and other things:
 ```
