@@ -5,9 +5,7 @@
  *
  * Example:  f_list='d_abs d_inv d_sqr d_shift d_scale d_add d_sub d_mul d_div d_exp d_log d_sqrt d_pow d_sin d_cos d_tan d_sinh d_cosh d_tanh'
  *
- * Example:  for f in $f_list; do echo $f; grep -n $f h-*.c; done
- *
- * Example:  for f in $f_list; do echo $f; grep -n $f dual-test.c; done
+ * Example:  for f in $f_list; do echo $f; grep -n $f dual-test.c h-*.c; done
  */
 
 #include <stdio.h>

@@ -5,9 +5,7 @@
  *
  * Example:  f_list='t_const t_abs t_prod t_sqr t_quot t_inv t_sqrt t_exp t_sin_cos t_tan_sec2 t_pwr t_ln'
  *
- * Example:  for f in $f_list; do echo $f; grep -n $f tsm-*.c; done
- *
- * Example:  for f in $f_list; do echo $f; grep -n $f taylor-test.c; done
+ * Example:  for f in $f_list; do echo $f; grep -n $f taylor-test.c tsm-*.c; done
  */
 
 #include <stdio.h>
