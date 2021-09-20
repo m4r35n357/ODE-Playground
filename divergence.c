@@ -1,5 +1,7 @@
 /*
  * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ *
+ * Example:  ./divergence /tmp/$USER/dataA /tmp/$USER/dataB 0.000000000001 0.000000001 0.000001 0.001 1.0
  */
 
 #include <stdio.h>
@@ -8,10 +10,6 @@
 #include <math.h>
 
 typedef long double real;
-
-static int diverged (real x1, real y1, real z1, real x2, real y2, real z2, real threshold) {
-    return sqrtl((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2)) > threshold;
-}
 
 int main(int argc, char **argv) {
     assert(argc >= 4);
@@ -26,7 +24,7 @@ int main(int argc, char **argv) {
         real threshold = strtold(argv[i], NULL);
         while(fscanf(fileA, "%Le %Le %Le %Le %s %s %s", &xA, &yA, &zA, &t, bl, bl, bl) != EOF &&
               fscanf(fileB, "%Le %Le %Le %Le %s %s %s", &xB, &yB, &zB, &t, bl, bl, bl) != EOF) {
-            if (diverged(xA, yA, zA, xB, yB, zB, threshold)) {
+            if (sqrtl((xA - xB) * (xA - xB) + (yA - yB) * (yA - yB) + (zA - zB) * (zA - zB)) > threshold) {
                 fprintf(stdout, "%s %.1Le %s %.3Lf\n", "Threshold:", threshold, "t:", t);
                 break;
             }
