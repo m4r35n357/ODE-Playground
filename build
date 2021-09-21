@@ -35,6 +35,7 @@ build_symp () {
 }
 
 for model in \
+h-spring \
 h-newton \
 h-kerr \
 h-analysis
