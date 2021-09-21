@@ -1,8 +1,27 @@
-## NEWS: Symplectic integrators using dual numbers for automatic differentiation
 
-Two examples; Newton orbits and Kerr (black hole) orbits.
+## ODE/Hamiltonian Playground
+
+All programs are written in pure C or Python, apart from the plotting utilities.
+Sources and Executables are tiny; the default build is against MUSL libc.
+
+### ODE analysis using arbitrary-order Taylor Series Integration
+
+Plot trajectories, including multi-body
+
+Good selection of models included
+
+Investigate validity of solutions wrt integrator order
+
+Plot bifurcation diagrams
+
+### Hamiltonian analysis with Symplectic Integrators, using Dual Numbers for Automatic Differentiation
+
+2nd to 10th order integrators, with visualization of the time stepping structure
+
+Three examples; Mass-spring system, Newton orbits and Kerr (black hole) orbits.
+
 No formal documentation yet, see the c files for example usage.
-They can also be piped to ./plot3d.py if you have set up your virtual environment correctly as below.
+
 
 ## Quick Start
 
