@@ -219,25 +219,24 @@ In [3]: mplot_s(f)
 Here is a quick example of function inversion.
 There is a choice of analysis (root finding) method:
 ```
-$ ipython -i ipython.py
-Python 3.6.8 (default, Jan 14 2019, 11:02:34)
+$ ipython3 -i ipython.py 
+Python 3.9.2 (default, Feb 28 2021, 17:03:44) 
 Type 'copyright', 'credits' or 'license' for more information
-IPython 7.8.0 -- An enhanced Interactive Python. Type '?' for help.
+IPython 7.20.0 -- An enhanced Interactive Python. Type '?' for help.
 ad module loaded
 plotters module loaded
-ode_analysis module loaded
 
 In [1]: newton_d(lambda x: x * x - 2.0, x0=1.0)
 Out[1]: Result(method='NT', x=1.414213562373095, f=4.440892098500626e-16, δx=-1.570092458683775e-16, count=6, sense='_', mode='ROOT___')
 
 In [2]: timeit(newton_d(lambda x: x * x - 2.0, x0=1.0))
-25.4 µs ± 1.35 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
+19 µs ± 93 ns per loop (mean ± std. dev. of 7 runs, 100000 loops each)
 
-In [3]: bisect_d(lambda x: x * x, xa=1.0, xb=2.0)
-Out[3]: Result(method='BI', x=2.0, f=4.0, δx=0.0, count=101, sense='_', mode='ROOT___')
+In [3]: bisect_d(lambda x: x * x - 2.0, xa=1.0, xb=2.0)
+Out[3]: Result(method='BI', x=1.414213562372879, f=-6.108447081487611e-13, δx=4.547473508864641e-13, count=41, sense='_', mode='ROOT___')
 
 In [4]: timeit(bisect_d(lambda x: x * x, xa=1.0, xb=2.0))
-342 µs ± 7.4 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+258 µs ± 2.02 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
 ```
 
 ##### Automatic Differentiation
