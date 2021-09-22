@@ -193,7 +193,7 @@ from plotters import *
 $ ipython -i ipython.py
 ```
 
-##### Higher level function analysis
+### Higher level function analysis
 Plotting function and derivatives, together with root and turning point analysis:
 ```
 $ ipython -i ipython.py
@@ -215,7 +215,7 @@ In [3]: mplot_s(f)
 ```
 (matplotlib plot not shown!)
 
-##### Square root of two
+### Square root of two
 Here is a quick example of function inversion.
 There is a choice of analysis (root finding) method:
 ```
@@ -239,7 +239,7 @@ In [4]: timeit(bisect_d(lambda x: x * x, xa=1.0, xb=2.0))
 258 µs ± 2.02 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
 ```
 
-##### Automatic Differentiation
+### Automatic Differentiation
 Here we calculate _all_ the derivatives of a simple cubic in x, followed by its sensitivities to each parameter a, b, c.
 ```
 $ ipython -i ipython.py
