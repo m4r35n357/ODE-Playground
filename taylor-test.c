@@ -25,9 +25,7 @@ static const real P_A = 1.0L, P_B = 0.0L, P_C = -1.0L, X0 = 1.0L, Y0 = 1.0L, Z0 
 typedef struct { real a, b, c; } parameters;
 
 void *get_p (int argc, char **argv, long order) {
-    (void)argc;
-    (void)argv;
-    (void)order;
+    (void)argc; (void)argv; (void)order;
     parameters *p = malloc(sizeof (parameters));
     p->a = P_A;
     p->b = P_B;
@@ -80,8 +78,7 @@ int main (int argc, char **argv) {
 
     printf("%s%s%s\n", KCYN, "Horner's Method, should = 128.000", KNRM);
     out1[0] = -19.0L; out1[1] = 7.0L; out1[2] = -4.0L; out1[3] = 6.0L;
-    t_horner(out1, 3, 3.0L);
-    printf("%.3Lf\n",  out1[0]);
+    printf("%.3Lf\n", t_horner(out1, 3, 3.0L));
     printf("\n");
 
     printf("%s%s%s\n", KCYN, "Taylor Series Method, should be e^1.0, e^0.0, e^-1.0", KNRM);
