@@ -248,6 +248,7 @@ In [4]: timeit(bisect_d(lambda x: x * x - 2.0, xa=1.0, xb=2.0))
 
 ### Automatic Differentiation
 Here we calculate the value of a simple cubic in x(5), _all_ its derivatives wrt x(6), followed by the sensitivities to each parameter a(7), b(8), c(9).
+Note that the function value is the same in each case, as you would expect!
 ```
 $ ipython3 -i ipython.py 
 Python 3.9.2 (default, Feb 28 2021, 17:03:44) 
