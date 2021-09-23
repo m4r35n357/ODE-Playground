@@ -230,13 +230,13 @@ In [1]: newton_d(lambda x: x * x - 2.0, x0=1.0)
 Out[1]: Result(method='NT', x=1.414213562373095, f=4.440892098500626e-16, δx=-1.570092458683775e-16, count=6, sense='_', mode='ROOT___')
 
 In [2]: timeit(newton_d(lambda x: x * x - 2.0, x0=1.0))
-19 µs ± 93 ns per loop (mean ± std. dev. of 7 runs, 100000 loops each)
+19.2 µs ± 118 ns per loop (mean ± std. dev. of 7 runs, 100000 loops each)
 
 In [3]: bisect_d(lambda x: x * x - 2.0, xa=1.0, xb=2.0)
 Out[3]: Result(method='BI', x=1.414213562372879, f=-6.108447081487611e-13, δx=4.547473508864641e-13, count=41, sense='_', mode='ROOT___')
 
-In [4]: timeit(bisect_d(lambda x: x * x, xa=1.0, xb=2.0))
-258 µs ± 2.02 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+In [4]: timeit(bisect_d(lambda x: x * x - 2.0, xa=1.0, xb=2.0))
+140 µs ± 691 ns per loop (mean ± std. dev. of 7 runs, 10000 loops each)
 ```
 
 ### Automatic Differentiation
