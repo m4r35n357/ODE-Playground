@@ -33,7 +33,7 @@ sudo apt install bc git build-essential musl-tools pkg-config mesa-utils-extra p
 #### Python 3 Packages (for plotting), please use a virtual environment!
 ```
 mkvirtualenv -p /usr/bin/python3 taylor
-pip install matplotlib pillow pi3d pytest pytest_cov
+pip install matplotlib pillow pi3d pytest pytest_cov ipython
 ```
 
 #### Running Python Tests
@@ -182,27 +182,32 @@ Parameter | Meaning
 ```
 
 ## Interactive Function Analysis with Python
-This use case involves calling the Series methods and operators from ad.py, and the functions from plotters.py, from a Python interpreter.
-This is how I like to set things up:
+This use case involves calling the Dual and Series methods and operators from ad.py, together with the functions from plotters.py, from a Python interpreter.
+This is how I like to set things up (pip installed ipython recommended!):
 ```
 $ echo '
 from math import *
 from ad import *
 from plotters import *
 ' > ipython.py
-$ ipython -i ipython.py
+$ ipython3 -i ipython.py
 ```
 
 ### Higher level function analysis
-Plotting function and derivatives, together with root and turning point analysis:
+Plotting function and derivatives, together with root and turning point analysis.
+Scanning and plotting range is -8.0 to 8.0 by default.
+Roots are found via zeros of f[0], turning points by zeros of f[1], and inflections via zeros of f[2].
+scan_d() finds roots only.
+mplot_d() plots the function and its first derivative.
+scan_s() finds roots, turning points and inflections.
+mplot_s() plots the function and its first 12 derivatives by default; 
 ```
-$ ipython -i ipython.py
-Python 3.6.8 (default, Jan 14 2019, 11:02:34)
+$ ipython3 -i ipython.py 
+Python 3.9.2 (default, Feb 28 2021, 17:03:44) 
 Type 'copyright', 'credits' or 'license' for more information
-IPython 7.8.0 -- An enhanced Interactive Python. Type '?' for help.
+IPython 7.20.0 -- An enhanced Interactive Python. Type '?' for help.
 ad module loaded
 plotters module loaded
-ode_analysis module loaded
 
 In [1]: f = lambda a: (a.exp + (a.sqr - 4.0).exp).ln
 
@@ -216,8 +221,10 @@ In [3]: mplot_s(f)
 (matplotlib plot not shown!)
 
 ### Square root of two
-Here is a quick example of function inversion.
+Here is a quick example of using root finding to invert a function.
+The problem is set up as: [function] - [target value] = 0.
 There is a choice of analysis (root finding) method:
+You need to provide an initial estimate for the Newton solver, or an initial bracket for Bisection.
 ```
 $ ipython3 -i ipython.py 
 Python 3.9.2 (default, Feb 28 2021, 17:03:44) 
@@ -240,15 +247,14 @@ In [4]: timeit(bisect_d(lambda x: x * x - 2.0, xa=1.0, xb=2.0))
 ```
 
 ### Automatic Differentiation
-Here we calculate _all_ the derivatives of a simple cubic in x, followed by its sensitivities to each parameter a, b, c.
+Here we calculate the value of a simple cubic in x(5), _all_ its derivatives wrt x(6), followed by the sensitivities to each parameter a(7), b(8), c(9).
 ```
-$ ipython -i ipython.py
-Python 3.6.8 (default, Jan 14 2019, 11:02:34)
+$ ipython3 -i ipython.py 
+Python 3.9.2 (default, Feb 28 2021, 17:03:44) 
 Type 'copyright', 'credits' or 'license' for more information
-IPython 7.8.0 -- An enhanced Interactive Python. Type '?' for help.
+IPython 7.20.0 -- An enhanced Interactive Python. Type '?' for help.
 ad module loaded
 plotters module loaded
-ode_analysis module loaded
 
 In [1]: a = Series.get(5, 3.0)
 
@@ -259,19 +265,19 @@ In [3]: c = Series.get(5, 7.0)
 In [4]: x = Series.get(5, 2.0)
 
 In [5]: print(a * x**3 - b * x**2 + c * x - 5)
-+1.300e+01 +0.000e+00 +0.000e+00 +0.000e+00 +0.000e+00
++1.300e+01 +0.000e+00 +0.000e+00 +0.000e+00 +0.000e+00 
 
 In [6]: print(a * x.var**3 - b * x.var**2 + c * x.var - 5)
-+1.300e+01 +2.300e+01 +1.300e+01 +3.000e+00 +0.000e+00
++1.300e+01 +2.300e+01 +1.300e+01 +3.000e+00 +0.000e+00 
 
 In [7]: print(a.var * x**3 - b * x**2 + c * x - 5)
-+1.300e+01 +8.000e+00 +0.000e+00 +0.000e+00 +0.000e+00
++1.300e+01 +8.000e+00 +0.000e+00 +0.000e+00 +0.000e+00 
 
 In [8]: print(a * x**3 - b.var * x**2 + c * x - 5)
-+1.300e+01 -4.000e+00 +0.000e+00 +0.000e+00 +0.000e+00
++1.300e+01 -4.000e+00 +0.000e+00 +0.000e+00 +0.000e+00 
 
 In [9]: print(a * x**3 - b * x**2 + c.var * x - 5)
-+1.300e+01 +2.000e+00 +0.000e+00 +0.000e+00 +0.000e+00
++1.300e+01 +2.000e+00 +0.000e+00 +0.000e+00 +0.000e+00 
 ```
 
 ##Finally
