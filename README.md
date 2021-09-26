@@ -59,6 +59,12 @@ $ ./coverage
 ```
 The output contains file system links to the HTML results
 
+#### C Code profiling
+```
+$ ./profile
+```
+The results are printed to stdout
+
 #### Find examples for ODE parameters and other things:
 ```
 grep Example *

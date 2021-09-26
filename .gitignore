@@ -23,6 +23,10 @@ h-*-static
 coverage.info
 coverage-out/
 
+# C profiling artifacts
+*_gprof
+gmon.out
+
 # Vim/Python/Pycharm stuff
 tags
 .idea/
@@ -32,4 +36,7 @@ cov_html/
 
 # Optional
 zig
+zig-cache/
 kerr-image.c
+
+a.out

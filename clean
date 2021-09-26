@@ -11,5 +11,6 @@ done
 rm -f divergence taylor-test dual-test
 
 rm -f lib*.so *.o
+rm -f coverage.info *.gcov *.gcda *.gcno *.gch *_gprof gmon.out
 
 echo OK
