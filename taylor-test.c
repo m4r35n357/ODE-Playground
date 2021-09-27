@@ -20,7 +20,7 @@
 #define KGRY "\x1B[2;37m"
 #define KBLD "\x1B[1;37m"
 
-static const real P_A = 1.0L, P_B = 0.0L, P_C = -1.0L, X0 = 1.0L, Y0 = 1.0L, Z0 = 1.0L;
+static const real P_A = 1.0L, P_B = 0.0L, P_C = -1.0L;
 
 typedef struct { real a, b, c; } parameters;
 
@@ -82,14 +82,14 @@ int main (int argc, char **argv) {
     printf("\n");
 
     printf("%s%s%s\n", KCYN, "Taylor Series Method, should be e^1.0, e^0.0, e^-1.0", KNRM);
-    tsm(argc, argv, 12, 10, 0.1L, 10, X0, Y0, Z0);
+    tsm(argc, argv, 12, 10, 0.1L, 10, 1.0L, 1.0L, 1.0L);
     printf("%s%s+%.12Le %+.12Le %+.12Le%s\n", KBLD, KGRY, expl(P_A), expl(P_B), expl(P_C), KNRM);
     printf("\n");
 
     printf("%s%s%s\n", KCYN, "Additive constant", KNRM);
     for (int k = 0; k <= n; k++) {
-        out1[k] = t_const(y, k);
-        out2[k] = t_const(-y, k);
+        out1[k] = t_const(x, k);
+        out2[k] = t_const(y, k);
         target[k] = out1[k] + out2[k];
     }
     output(dp, n, out1, out2, target);

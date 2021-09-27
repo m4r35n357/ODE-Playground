@@ -1,5 +1,7 @@
 
-## ODE/Hamiltonian Playground
+## ODE/Hamiltonian Playground, Now feature-complete
+
+No planned new features, and no known bugs ;)
 
 All programs are written in pure C or Python, apart from the plotting utilities.
 Sources and Executables are tiny; the default build is against MUSL libc.
