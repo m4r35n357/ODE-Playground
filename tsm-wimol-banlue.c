@@ -6,40 +6,31 @@
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
+#include <stdlib.h>
 #include <assert.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-int main (int argc, char **argv) {
-    long n, nsteps;
-    mpfr_t h, _;
+typedef struct { mpfr_t a, d0; series tx, s2x; } parameters;
 
-    // initialize from command arguments
+void *get_p (int argc, char **argv, long n) {
     assert(argc == 10);
-    t_stepper(argv, &n, &h, &nsteps);
-    mpfr_init(_);
-    series x = t_series(n + 1), y = t_series(n + 1), z = t_series(n + 1);
-    series wa = t_series(n);
-    t_args(argv, argc,x.jet, y.jet, z.jet, wa.jet);
-    series tx = t_series(n), s2x = t_series(n);
+    parameters *p = malloc(sizeof (parameters));
+    t_params(argv, argc, &p->a);
+    mpfr_init(p->d0);
+    mpfr_set_ui(p->d0, 0, RND);
+    p->tx = t_jet(n); p->s2x = t_jet(n);
+    return p;
+}
 
-    t_output(x.jet[0], y.jet[0], z.jet[0], h, 0);
-    for (long step = 1; step <= nsteps; step++) {
-        // build the jet of taylor coefficients
-        for (int k = 0; k < n; k++) {
-            //  x' = y - x
-            mpfr_sub(_, y.jet[k], x.jet[k], RND);
-            t_next(x, _, k, POS);
-            //  y' = - z * tan(x)
-            t_tan_sec2(tx, s2x, x, k, HYP);
-            t_next(y, *t_prod(z, tx, k), k, NEG);
-            //  z' = - A + xy + |y|
-            mpfr_add(_, *t_prod(x, y, k), *t_abs(y, k), RND);
-            mpfr_sub(_, _, wa.jet[k], RND);
-            t_next(z, _, k, POS);
-        }
-        // sum the series using Horner's method and advance one step
-        t_output(*t_horner(x, h), *t_horner(y, h), *t_horner(z, h), h, step);
-    }
-    return 0;
+void ode (series x, series y, series z, components *c, void *params, int k) {
+    parameters *p = (parameters *)params;
+	//  x' = y - x
+	mpfr_sub(c->x, y[k], x[k], RND);
+	//  y' = - z * tan(x)
+	t_tan_sec2(p->tx, p->s2x, x, k, HYP);
+    mpfr_neg(c->y, *t_prod(z, p->tx, k), RND);
+	//  z' = - A + xy + |y|
+	mpfr_add(c->z, *t_prod(x, y, k), *t_abs(y, k), RND);
+	mpfr_sub(c->z, c->z, k == 0 ? p->a : p->d0, RND);
 }

@@ -29,7 +29,8 @@ for model in \
 tsm-halvorsen \
 tsm-lorenz \
 tsm-rf \
-tsm-thomas
+tsm-thomas \
+tsm-wimol-banlue
 do
     rm -f ${model}-*
     build ${model} &
