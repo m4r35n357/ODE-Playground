@@ -7,44 +7,38 @@
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
+#include <stdlib.h>
 #include <assert.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-int main (int argc, char **argv) {
-    long n, nsteps;
-    mpfr_t gamma, h, d4, _;
+typedef struct { mpfr_t alpha, gamma, d0, d1, d4; series a, b, c; } parameters;
 
-    // initialize from command arguments
+void *get_p (int argc, char **argv, long n) {
     assert(argc == 11);
-    t_stepper(argv, &n, &h, &nsteps);
-    mpfr_inits(gamma, d4, _, NULL);
-    series x = t_series(n + 1), y = t_series(n + 1), z = t_series(n + 1), alpha = t_series(n);
-    t_args(argv, argc, x.jet, y.jet, z.jet, alpha.jet, &gamma);
-    series a = t_series(n), b = t_series(n), c = t_series(n), w1 = t_series(n);
-    mpfr_set_ui(w1.jet[0], 1, RND);
-    mpfr_set_ui(d4, 4, RND);
+    parameters *p = malloc(sizeof (parameters));
+    t_params(argv, argc, &p->alpha, &p->gamma);
+    mpfr_inits(p->d0, p->d1, p->d4, NULL);
+    mpfr_set_ui(p->d0, 0, RND);
+    mpfr_set_ui(p->d1, 1, RND);
+    mpfr_set_ui(p->d4, 4, RND);
+    p->a = t_jet(n);
+    p->b = t_jet(n);
+    p->c = t_jet(n);
+    return p;
+}
 
-    t_output(x.jet[0], y.jet[0], z.jet[0], h, 0);
-    for (long step = 1; step <= nsteps; step++) {
-        // build the jet of taylor coefficients
-        for (int k = 0; k < n; k++) {
-            //  x' = y(z - 1 + x^2) + Gx
-            mpfr_sub(a.jet[k], *t_sqr(x, k), w1.jet[k], RND);
-            mpfr_add(a.jet[k], z.jet[k], a.jet[k], RND);
-            mpfr_fma(_, gamma, x.jet[k], *t_prod(y, a, k), RND);
-            t_next(x, _, k, POS);
-            //  y' = x(3z + 1 - x^2) + Gy
-            mpfr_fms(b.jet[k], d4, z.jet[k], a.jet[k], RND);
-            mpfr_fma(_, gamma, y.jet[k], *t_prod(x, b, k), RND);
-            t_next(y, _, k, POS);
-            //  z' = -2z(A + xy)
-            mpfr_add(c.jet[k], *t_prod(x, y, k), alpha.jet[k], RND);
-            mpfr_mul_2ui(_, *t_prod(z, c, k), 1, RND);
-            t_next(z, _, k, NEG);
-        }
-        // sum the series using Horner's method and advance one step
-        t_output(*t_horner(x, h), *t_horner(y, h), *t_horner(z, h), h, step);
-    }
-    return 0;
+void ode (series x, series y, series z, components *c, void *params, int k) {
+    parameters *p = (parameters *)params;
+    //  x' = y(z - 1 + x^2) + Gx
+    mpfr_sub(p->a[k], *t_sqr(x, k), k == 0 ? p->d1 : p->d0, RND);
+    mpfr_add(p->a[k], z[k], p->a[k], RND);
+    mpfr_fma(c->x, p->gamma, x[k], *t_prod(y, p->a, k), RND);
+    //  y' = x(3z + 1 - x^2) + Gy
+    mpfr_fms(p->b[k], p->d4, z[k], p->a[k], RND);
+    mpfr_fma(c->y, p->gamma, y[k], *t_prod(x, p->b, k), RND);
+    //  z' = -2z(A + xy)
+    mpfr_add(p->c[k], *t_prod(x, y, k), k == 0 ? p->alpha : p->d0, RND);
+    mpfr_mul_2ui(c->z, *t_prod(z, p->c, k), 1, RND);
+    mpfr_neg(c->z, c->z, RND);
 }

@@ -28,6 +28,7 @@ build () {
 for model in \
 tsm-halvorsen \
 tsm-lorenz \
+tsm-rf \
 tsm-thomas
 do
     rm -f ${model}-*
