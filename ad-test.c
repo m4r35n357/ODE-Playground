@@ -38,17 +38,17 @@ static void ad_test_tempvars (void) {
 
 static void septic (series f, series value) {
     ad_set(f, value);
-    mpfr_add_ui(f.jet[0], f.jet[0], 4, RND);
+    mpfr_add_ui(f[0], f[0], 4, RND);
     ad_prod(___, value, f);
-    mpfr_sub_ui(___.jet[0], ___.jet[0], 54, RND);
+    mpfr_sub_ui(___[0], ___[0], 54, RND);
     ad_prod(f, value, ___);
-    mpfr_sub_ui(f.jet[0], f.jet[0], 160, RND);
+    mpfr_sub_ui(f[0], f[0], 160, RND);
     ad_prod(___, value, f);
-    mpfr_add_ui(___.jet[0], ___.jet[0], 641, RND);
+    mpfr_add_ui(___[0], ___[0], 641, RND);
     ad_prod(f, value, ___);
-    mpfr_add_ui(f.jet[0], f.jet[0], 828, RND);
+    mpfr_add_ui(f[0], f[0], 828, RND);
     ad_prod(___, value, f);
-    mpfr_sub_ui(___.jet[0], ___.jet[0], 1260, RND);
+    mpfr_sub_ui(___[0], ___[0], 1260, RND);
     ad_prod(f, value, ___);
 }
 
@@ -65,7 +65,7 @@ int main (int argc, char **argv) {
     mpfr_init_set_str(y, argv[3], BASE, RND);
     mpfr_init(_);
 
-    ___ = t_series(n);
+    ___ = t_jet(n);
 
     series cx = ad_series_v(n, x);
     series cx0 = ad_series_v(n, D0);
@@ -79,28 +79,28 @@ int main (int argc, char **argv) {
     mpfr_div_ui(_, _, 4, RND);
     series PI_4 = ad_series_v(n, _);
 
-    series wsqr = t_series(n);
-    series wabs = t_series(n);
-    series wsqrt = t_series(n);
-    series wsum = t_series(n);
-    series wprod = t_series(n);
-    series wquot = t_series(n);
-    series wpwr = t_series(n);
-    series we = t_series(n);
-    series wl = t_series(n);
-    series ws = t_series(n);
-    series wc = t_series(n);
-    series wt = t_series(n);
-    series ws2 = t_series(n);
+    series wsqr = t_jet(n);
+    series wabs = t_jet(n);
+    series wsqrt = t_jet(n);
+    series wsum = t_jet(n);
+    series wprod = t_jet(n);
+    series wquot = t_jet(n);
+    series wpwr = t_jet(n);
+    series we = t_jet(n);
+    series wl = t_jet(n);
+    series ws = t_jet(n);
+    series wc = t_jet(n);
+    series wt = t_jet(n);
+    series ws2 = t_jet(n);
     series __ = ad_series_c(n, D0);
 
     printf("%s%s%s\n", KCYN, "Horner", KNRM);
-    mpfr_set_si(__.jet[0], -19, RND);
-    mpfr_set_ui(__.jet[1], 7, RND);
-    mpfr_set_si(__.jet[2], -4, RND);
-    mpfr_set_ui(__.jet[3], 6, RND);
-    t_horner(__, D3);
-    mpfr_printf(" %7.3RNf\n", __.jet[0]);
+    mpfr_set_si(__[0], -19, RND);
+    mpfr_set_ui(__[1], 7, RND);
+    mpfr_set_si(__[2], -4, RND);
+    mpfr_set_ui(__[3], 6, RND);
+    t_horner(__, 3, D3);
+    mpfr_printf(" %7.3RNf\n", __[0]);
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "x", KNRM);

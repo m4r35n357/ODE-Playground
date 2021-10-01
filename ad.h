@@ -116,12 +116,12 @@ series ad_exp (series E, series U);
 /*
  * Calculates Taylor Series for the trigonometric sine and cosine of U, results stored in jets S and C
  */
-tuple ad_sin_cos (series S, series C, series U, geometry g);
+pair ad_sin_cos (series S, series C, series U, geometry g);
 
 /*
  * Calculates Taylor Series for the trigonometric tangent and squared secant of U, results stored in jets T and S2
  */
-tuple ad_tan_sec2 (series T, series S2, series U, geometry g);
+pair ad_tan_sec2 (series T, series S2, series U, geometry g);
 
 /*
  * Calculates Taylor Series for U^a, results stored in jet P
