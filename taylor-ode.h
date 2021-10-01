@@ -82,6 +82,11 @@ mpfr_t *t_horner (series S, long n, mpfr_t h);
  */
 
 /*
+ * Returns value if k is 0, and zero otherwise.  For handling _additive_ constants.
+ */
+mpfr_t *t_const (mpfr_t *value, mpfr_t *zero, int k);
+
+/*
  * Returns a pointer to kth element of the absolute value of U, result stored and returned in variable A, NO JET STORAGE
  */
 mpfr_t *t_abs (series U, int k);

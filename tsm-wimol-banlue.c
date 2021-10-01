@@ -25,12 +25,12 @@ void *get_p (int argc, char **argv, long n) {
 
 void ode (series x, series y, series z, components *c, void *params, int k) {
     parameters *p = (parameters *)params;
-	//  x' = y - x
-	mpfr_sub(c->x, y[k], x[k], RND);
-	//  y' = - z * tan(x)
-	t_tan_sec2(p->tx, p->s2x, x, k, HYP);
+    //  x' = y - x
+    mpfr_sub(c->x, y[k], x[k], RND);
+    //  y' = - z * tan(x)
+    t_tan_sec2(p->tx, p->s2x, x, k, HYP);
     mpfr_neg(c->y, *t_prod(z, p->tx, k), RND);
-	//  z' = - A + xy + |y|
-	mpfr_add(c->z, *t_prod(x, y, k), *t_abs(y, k), RND);
-	mpfr_sub(c->z, c->z, k == 0 ? p->a : p->d0, RND);
+    //  z' = - A + xy + |y|
+    mpfr_add(c->z, *t_prod(x, y, k), *t_abs(y, k), RND);
+    mpfr_sub(c->z, c->z, *t_const(&p->a, &p->d0, k), RND);
 }

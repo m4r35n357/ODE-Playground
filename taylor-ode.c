@@ -59,6 +59,10 @@ mpfr_t *t_horner (series s, long n, mpfr_t h) {
     return &_;
 }
 
+mpfr_t *t_const (mpfr_t *value, mpfr_t *zero, int k){
+    return k == 0 ? value : zero;
+}
+
 mpfr_t *t_abs (series u, int k) {
     mpfr_sgn(u[0]) < 0 ? mpfr_neg(_, u[k], RND) : mpfr_set(_, u[k], RND);
     return &_;

@@ -29,14 +29,14 @@ void *get_p (int argc, char **argv, long n) {
 void ode (series x, series y, series z, components *c, void *params, int k) {
     parameters *p = (parameters *)params;
     //  x' = y(z - 1 + x^2) + Gx
-    mpfr_sub(p->a[k], *t_sqr(x, k), k == 0 ? p->d1 : p->d0, RND);
+    mpfr_sub(p->a[k], *t_sqr(x, k), *t_const(&p->d1, &p->d0, k), RND);
     mpfr_add(p->a[k], z[k], p->a[k], RND);
     mpfr_fma(c->x, p->gamma, x[k], *t_prod(y, p->a, k), RND);
     //  y' = x(3z + 1 - x^2) + Gy
     mpfr_fms(p->b[k], p->d4, z[k], p->a[k], RND);
     mpfr_fma(c->y, p->gamma, y[k], *t_prod(x, p->b, k), RND);
     //  z' = -2z(A + xy)
-    mpfr_add(p->c[k], *t_prod(x, y, k), k == 0 ? p->alpha : p->d0, RND);
+    mpfr_add(p->c[k], *t_prod(x, y, k), *t_const(&p->alpha, &p->d0, k), RND);
     mpfr_mul_2ui(c->z, *t_prod(z, p->c, k), 1, RND);
     mpfr_neg(c->z, c->z, RND);
 }
