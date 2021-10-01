@@ -35,6 +35,10 @@ do
     build ${model} &
 done
 
+echo ""
+echo " Building divergence"
+${CC} -O3 $WARNINGS -o divergence divergence.c -lm -s &
+
 #echo " Building ad-test-dbg"
 #rm -f ad-test-dbg
 #${CC} -O0 $WARNINGS -g -o ad-test-dbg taylor-ode.c ad.c ad-test.c -lmpfr &
@@ -42,4 +46,4 @@ done
 wait
 
 echo ""
-ls -lh --color *ad-* tsm-* rk4-*
+ls -lh --color *ad-* tsm-* rk4-* divergence
