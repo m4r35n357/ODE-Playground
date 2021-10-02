@@ -6,38 +6,30 @@
  * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
+#include <stdlib.h>
 #include <assert.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-int main (int argc, char **argv) {
-    long n, nsteps;
-    mpfr_t a, c, h, _;
+typedef struct { mpfr_t a, b, c, d0; } parameters;
 
-    // initialize from command arguments
+void *get_p (int argc, char **argv, long n) {
     assert(argc == 12);
-    t_stepper(argv, &n, &h, &nsteps);
-    mpfr_inits(a, c, _, NULL);
-    series x = t_series(n + 1), y = t_series(n + 1), z = t_series(n + 1), b = t_series(n);
-    t_args(argv, argc, x.jet, y.jet, z.jet, &a, b.jet, &c);
+    (void)n;
+    parameters *p = malloc(sizeof (parameters));
+    t_params(argv, argc, &p->a, &p->b, &p->c);
+    mpfr_init_set_ui(p->d0, 0, RND);
+    return p;
+}
 
-    t_output(x.jet[0], y.jet[0], z.jet[0], h, 0);
-    for (long step = 1; step <= nsteps; step++) {
-        // build the jet of taylor coefficients
-        for (int k = 0; k < n; k++) {
-            //  x' = - y - z
-            mpfr_add(_, y.jet[k], z.jet[k], RND);
-            t_next(x, _, k, NEG);
-            //  y' = x + Ay
-            mpfr_fma(_, a, y.jet[k], x.jet[k], RND);
-            t_next(y, _, k, POS);
-            //  z' = B + z(x - C)
-            mpfr_fms(_, c, z.jet[k], *t_prod(z, x, k), RND);
-            mpfr_sub(_, b.jet[k], _, RND);
-            t_next(z, _, k, POS);
-        }
-        // sum the series using Horner's method and advance one step
-        t_output(*t_horner(x, h), *t_horner(y, h), *t_horner(z, h), h, step);
-    }
-    return 0;
+void ode (series x, series y, series z, components *c, void *params, int k) {
+    parameters *p = (parameters *)params;
+    //  x' = - y - z
+    mpfr_add(c->x, y[k], z[k], RND);
+    mpfr_neg(c->x, c->x, RND);
+    //  y' = x + Ay
+    mpfr_fma(c->y, p->a, y[k], x[k], RND);
+    //  z' = B + z(x - C)
+    mpfr_fms(c->z, p->c, z[k], *t_prod(z, x, k), RND);
+    mpfr_sub(c->z, *t_const(&p->b, &p->d0, k), c->z, RND);
 }

@@ -18,10 +18,9 @@ void *get_p (int argc, char **argv, long n) {
     assert(argc == 11);
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->alpha, &p->gamma);
-    mpfr_inits(p->d0, p->d1, p->d4, NULL);
-    mpfr_set_ui(p->d0, 0, RND);
-    mpfr_set_ui(p->d1, 1, RND);
-    mpfr_set_ui(p->d4, 4, RND);
+    mpfr_init_set_ui(p->d0, 0, RND);
+    mpfr_init_set_ui(p->d1, 1, RND);
+    mpfr_init_set_ui(p->d4, 4, RND);
     p->a = t_jet(n); p->b = t_jet(n); p->c = t_jet(n);
     return p;
 }
