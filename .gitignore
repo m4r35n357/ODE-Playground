@@ -1,21 +1,43 @@
 
+# Defaults
 *.[oa]
+*.so
 *~
 
+# TSM artifacts
 tsm-*-dbg
 tsm-*-static
 tsm-*-dynamic
+divergence
+dual-test
+taylor-test
 
 rk4-*-dbg
 rk4-*-static
 rk4-*-dynamic
 
-solver-dbg
+# C coverage artifacts
+*.gcov
+*.gcda
+*.gcno
+*.gch
+coverage.info
+coverage-out/
 
-ad-test-dbg
+# C profiling artifacts
+*_gprof
+gmon.out
 
-libad-test
-libad-test-dbg
+# Vim/Python/Pycharm stuff
+tags
+.idea/
+__pycache__/
+.coverage
+cov_html/
 
-lib*.so
+# Optional
+zig
+zig-cache/
+kerr-image.c
 
+a.out

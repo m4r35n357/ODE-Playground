@@ -1,10 +1,9 @@
 #
-#  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#  (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-from sys import stderr
+from sys import stderr, argv
 from math import fsum, sin, cos, sinh, cosh, tan, tanh, exp, log, asinh, asin, acosh, acos, atanh, atan, sqrt
 from collections import namedtuple
-from enum import Enum, unique
 
 
 def t_jet(n, value=0.0):
@@ -15,6 +14,9 @@ def t_horner(jet, h):
     for term in reversed(jet):
         result = result * h + term
     return result
+
+def t_const(a, k):
+    return a if k == 0 else 0.0
 
 def t_abs(u, k):
     return - u[k] if u[0] < 0.0 else u[k]
@@ -60,8 +62,8 @@ def t_tan_sec2(t, s, u, k, hyp=False):
 def t_pwr(p, u, a, k):
     return u[0]**a if k == 0 else (_d_cauchy(p, u, k, 0, k - 1, a) - _d_cauchy(u, p, k, 1, k - 1)) / u[0]
 
-def t_ln(l, u, k):
-    return log(u[0]) if k == 0 else (u[k] - _d_cauchy(u, l, k, 1, k - 1)) / u[0]
+def t_ln(ln, u, k):
+    return log(u[0]) if k == 0 else (u[k] - _d_cauchy(u, ln, k, 1, k - 1)) / u[0]
 
 def _i_cauchy(g, u, f, k, sign=True):
     return ((u[k] if sign else - u[k]) - _d_cauchy(g, f, k, 1, k - 1)) / g[0]
@@ -86,6 +88,32 @@ def t_atan(h, g, u, k, hyp=False):
     h[k] = _i_cauchy(g, u, h, k)
     g[k] = 2.0 * _d_cauchy(u, u, k, 0, k - 1)
     return (h[k], - g[k]) if hyp else (h[k], g[k])
+
+
+class Components(namedtuple('ParametersType', ['x', 'y', 'z'])):
+    pass
+
+def output(x, y, z, t):
+    print(f'{x:+.{Context.places}e} {y:+.{Context.places}e} {z:+.{Context.places}e} {t:.5e}')
+
+
+# noinspection NonAsciiCharacters
+def tsm(ode, get_p):
+    Context.places, n, δt, n_steps = int(argv[1]), int(argv[2]), float(argv[3]), int(argv[4])  # controls
+    x, y, z = t_jet(n + 1), t_jet(n + 1), t_jet(n + 1)  # coordinate jets
+    x[0], y[0], z[0] = float(argv[5]), float(argv[6]), float(argv[7])  # initial values
+    steps = range(1, n_steps + 1)
+    index = range(n)
+    p = get_p(n)
+    output(x[0], y[0], z[0], 0.0)
+    for step in steps:
+        for k in index:
+            c = ode(x, y, z, p, k)
+            x[k + 1] = c.x / (k + 1)
+            y[k + 1] = c.y / (k + 1)
+            z[k + 1] = c.z / (k + 1)
+        x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
+        output(x[0], y[0], z[0], step * δt)
 
 
 class Context:
@@ -447,145 +475,6 @@ class Dual:
     @property
     def var(self):
         return Dual(self.val, 1.0)
-
-
-@unique
-class Solver(Enum):
-    NA = "No analysis, or all"
-    BI = "Bisection method"
-    NT = "Newton-Raphson method"
-
-@unique
-class Sense(Enum):
-    INCREASING = '/'
-    DECREASING = '\\'
-    FLAT = '_'
-
-@unique
-class Mode(Enum):
-    ROOT___ = 0
-    MIN_MAX = 1
-    INFLECT = 2
-    ALL = 3
-
-class Result(namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', 'sense', 'mode'])):
-    def __str__(self):
-        return f'{self.method}  x: {self.x:+.{Context.places}e}  δx: {self.δx:+.{Context.places}e}  ' \
-               f'f: {self.f:+.{Context.places}e}  {self.sense} {self.mode} {self.count}'
-
-def bisect_s(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
-    a, b, c = Series.get(3, xa).var, Series.get(3, xb).var, Series.get(3)
-    f_sign = model(a).jet[mode.value]
-    fc = δx = i = 1
-    while i <= limit and (abs(fc) > εf or abs(δx) > εx):
-        c = 0.5 * (a + b)
-        fc = (~ model(c)).jet[mode.value]
-        if f_sign * fc < 0.0:
-            b = c
-        elif f_sign * fc > 0.0:
-            a = c
-        else:
-            b, a = c, c
-        δx = b.val - a.val
-        i += 1
-        if debug:
-            print(Result(method=Solver.BI.name, count=i-1, sense=sense.value, mode=mode.name, x=c.val, f=fc, δx=δx), file=stderr)
-    return Result(method=Solver.BI.name, count=i-1, sense=sense.value, mode=mode.name, x=c.val, f=fc, δx=δx)
-
-def newton_s(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
-    x, f = Series.get(2 + mode.value, x0).var, [1.0, 0.0]
-    δx = i = 1
-    while i <= limit and (abs(f[0]) > εf or abs(δx) > εx):
-        f = (~ model(x)).jet[mode.value : 2 + mode.value]
-        δx = - f[0] / f[1]
-        x += δx
-        i += 1
-        if debug:
-            print(Result(method=Solver.NT.name, count=i-1, sense=sense.value, mode=mode.name, x=x.val, f=f[0], δx=δx), file=stderr)
-    return Result(method=Solver.NT.name, count=i-1, sense=sense.value, mode=mode.name, x=x.val, f=f[0], δx=δx)
-
-def analyze_s(model, method, x0, x1, steps, εf, εx, limit, mode, console, debug):
-    x_prev = f0_prev = f1_prev = f2_prev = None
-    step = (x1 - x0) / (steps - 1)
-    for k in range(steps):
-        x = Series.get(3, x0 + k * step).var
-        f = ~ model(x)
-        if not console:
-            print(f'{x.val:.{Context.places}e} {f}')
-        if method != Solver.NA:
-            if k > 0:
-                if (mode == Mode.ROOT___ or mode == Mode.ALL) and f0_prev * f.val < 0.0:
-                    sense = Sense.DECREASING if f0_prev > f.val else Sense.INCREASING
-                    if method == Solver.BI:
-                        yield bisect_s(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=sense, debug=debug)
-                    if method == Solver.NT:
-                        yield newton_s(model, x.val, εf=εf, εx=εx, limit=limit, sense=sense, debug=debug)
-                if (mode == Mode.MIN_MAX or mode == Mode.ALL) and f1_prev * f.jet[Mode.MIN_MAX.value] < 0.0:
-                    sense = Sense.DECREASING if f1_prev > f.jet[Mode.MIN_MAX.value] else Sense.INCREASING
-                    if method == Solver.BI:
-                        yield bisect_s(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=sense, mode=Mode.MIN_MAX, debug=debug)
-                    if method == Solver.NT:
-                        yield newton_s(model, x.val, εf=εf, εx=εx, limit=limit, sense=sense, mode=Mode.MIN_MAX, debug=debug)
-                if (mode == Mode.INFLECT or mode == Mode.ALL) and f2_prev * f.jet[Mode.INFLECT.value] < 0.0:
-                    sense = Sense.DECREASING if f2_prev > f.jet[Mode.INFLECT.value] else Sense.INCREASING
-                    if method == Solver.BI:
-                        yield bisect_s(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=sense, mode=Mode.INFLECT, debug=debug)
-                    if method == Solver.NT:
-                        yield newton_s(model, x.val, εf=εf, εx=εx, limit=limit, sense=sense, mode=Mode.INFLECT, debug=debug)
-        x_prev = x.val
-        f0_prev = f.val
-        f1_prev = f.jet[Mode.MIN_MAX.value]
-        f2_prev = f.jet[Mode.INFLECT.value]
-
-def bisect_d(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug=False):
-    a, b, c = Dual.get(xa), Dual.get(xb), Dual.get(3)
-    f_sign = model(Dual.get(xa)).val
-    δx = fc = i = 1
-    while i <= limit and (abs(fc) > εf or abs(δx) > εx):
-        c = 0.5 * (a + b)
-        fc = model(c).val
-        if f_sign * fc < 0.0:
-            b = c
-        elif f_sign * fc > 0.0:
-            a = c
-        else:
-            b, a = c, c
-        δx = b.val - a.val
-        i += 1
-        if debug:
-            print(Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=fc, δx=δx, mode=Mode.ROOT___.name), file=stderr)
-    return Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=fc, δx=δx, mode=Mode.ROOT___.name)
-
-def newton_d(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug=False):
-    x, f = Dual.get(x0).var, Dual.get(1)
-    δx = i = 1
-    while i <= limit and (abs(f.val) > εf or abs(δx) > εx):
-        f = model(x)
-        δx = - f.val / f.dot
-        x += δx
-        i += 1
-        if debug:
-            print(Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=x.val, f=f.val, δx=δx, mode=Mode.ROOT___.name), file=stderr)
-    return Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=x.val, f=f.val, δx=δx, mode=Mode.ROOT___.name)
-
-def analyze_d(model, method, x0, x1, steps, εf, εx, limit, console, debug):
-    x_prev = f0_prev = None
-    step = (x1 - x0) / (steps - 1)
-    for k in range(steps):
-        x = Dual.get(x0 + k * step).var
-        f = model(x)
-        if not console:
-            print(f'{x.val:.{Context.places}e} {f}')
-        if method != Solver.NA:
-            if k > 0:
-                if f0_prev * f.val < 0.0:
-                    sense = Sense.DECREASING if f0_prev > f.val else Sense.INCREASING
-                    if method == Solver.BI:
-                        yield bisect_d(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=sense, debug=debug)
-                    if method == Solver.NT:
-                        yield newton_d(model, x.val, εf=εf, εx=εx, limit=limit, sense=sense, debug=debug)
-        x_prev = x.val
-        f0_prev = f.val
 
 
 print(f'{__name__} module loaded', file=stderr)
