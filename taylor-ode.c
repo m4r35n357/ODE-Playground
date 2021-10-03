@@ -59,8 +59,9 @@ mpfr_t *t_horner (series s, long n, mpfr_t h) {
     return &_;
 }
 
-mpfr_t *t_const (mpfr_t *value, mpfr_t *zero, int k){
-    return k == 0 ? value : zero;
+mpfr_t *t_const (mpfr_t *value, int k){
+    mpfr_set_zero(_, 1);
+    return k == 0 ? value : &_;
 }
 
 mpfr_t *t_abs (series u, int k) {
@@ -114,7 +115,6 @@ mpfr_t *t_sqrt (series r, series u, int k) {
 }
 
 static mpfr_t *f_k (mpfr_t *fk, series df_du, series u, int k, int j_lower, int j_upper, mpfr_t factor) {
-    assert(fk != &_ && df_du != &_ && u != &_);  // _ is used internally so it cannot be a parameter
     mpfr_set_zero(*fk, 1);
     for (int j = j_lower; j <= j_upper; j++) {
         mpfr_mul_si(_, u[k - j], k - j, RND);
