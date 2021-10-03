@@ -60,8 +60,12 @@ mpfr_t *t_horner (series s, long n, mpfr_t h) {
 }
 
 mpfr_t *t_const (mpfr_t *value, int k){
-    mpfr_set_zero(_, 1);
-    return k == 0 ? value : &_;
+    if (k == 0) {
+		mpfr_set(_, *value, RND);
+	} else {
+		mpfr_set_zero(_, 1);
+	}
+    return &_;
 }
 
 mpfr_t *t_abs (series u, int k) {
