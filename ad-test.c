@@ -111,7 +111,7 @@ int main (int argc, char **argv) {
     mpfr_set_si(__[2], -4, RND);
     mpfr_set_ui(__[3], 6, RND);
     t_horner(__, 3, D3);
-    mpfr_printf(" %7.3RNf\n", __[0]);
+    mpfr_printf(" %7.3RNf\n", *t_horner(__, 3, D3));
     printf("%s\n", KNRM);
 
     printf("%s%s%s\n", KCYN, "x", KNRM);
