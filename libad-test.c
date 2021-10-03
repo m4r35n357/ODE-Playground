@@ -23,12 +23,13 @@ typedef enum {PASSED, SKIPPED, FAILED} result;
 
 static int debug = 0, total = 0, passed = 0, skipped = 0;
 
-static mpfr_t x0, delta, tolerance, D0, D05, D_05, D1, D_1, D2, D_2, D_3;
+static mpfr_t x0, delta, tolerance, D0, D01, D05, D_05, D1, D_1, D2, D_2, D_3;
 
 static void ad_lib_test_tempvars (void) {
     ad_tempvars();
     mpfr_init(delta);
     mpfr_init_set_ui(D0, 0, RND);
+    mpfr_init_set_str(D01, "0.1", BASE, RND);
     mpfr_init_set_str(D05, "0.5", BASE, RND);
     mpfr_init_set_str(D_05, "-0.5", BASE, RND);
     mpfr_init_set_ui(D1, 1, RND);
@@ -38,15 +39,22 @@ static void ad_lib_test_tempvars (void) {
     mpfr_init_set_si(D_3, -3, RND);
 }
 
-typedef struct { mpfr_t a; } parameters;
+typedef struct { mpfr_t a, b, c; } parameters;
 
-void *get_p (int argc, char **argv, long n) {
-    (void)n;
+void *get_p (int argc, char **argv, long order) {
+    (void)argc; (void)argv; (void)order;
     parameters *p = malloc(sizeof (parameters));
+    mpfr_init_set(p->a, D1, RND);
+    mpfr_init_set(p->b, D0, RND);
+    mpfr_init_set(p->c, D_1, RND);
     return p;
 }
 
 void ode (series x, series y, series z, components *c, void *params, int k) {
+    parameters *p = (parameters *)params;
+	mpfr_mul(c->x, p->a, x[k], RND);
+	mpfr_mul(c->y, p->b, y[k], RND);
+	mpfr_mul(c->z, p->c, z[k], RND);
 }
 
 static result skip (char* name) {
@@ -122,6 +130,8 @@ int main (int argc, char **argv) {
     int x_positive = mpfr_sgn(x[0]) > 0;
     int x_non_zero = mpfr_zero_p(x[0]) == 0;
     int x_lt_pi_2 = mpfr_cmpabs(x[0], PI_2) < 0;
+
+    tsm(argc, argv, 10, D01, 10, D1, D1, D1);
 
     printf("\n");
     ad_sqr(sqr_x, x, n);
