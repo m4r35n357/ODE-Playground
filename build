@@ -29,6 +29,7 @@ for model in \
 tsm-bouali \
 tsm-halvorsen \
 tsm-lorenz \
+tsm-lotka-volterra \
 tsm-rf \
 tsm-rossler \
 tsm-thomas \
