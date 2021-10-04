@@ -54,7 +54,7 @@ static void septic (series f, series value, int n) {
 
 typedef struct { mpfr_t a; } parameters;
 
-void *get_p (int argc, char **argv, long n) {
+void *get_p (int argc, char **argv, int n) {
     (void)argc, (void)argv, (void)n;
     parameters *p = malloc(sizeof (parameters));
     return p;

@@ -14,7 +14,7 @@
 
 typedef struct { mpfr_t alpha, gamma, d0, d1, d4; series a, b, c; } parameters;
 
-void *get_p (int argc, char **argv, long n) {
+void *get_p (int argc, char **argv, int n) {
     assert(argc == 11);
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->alpha, &p->gamma);

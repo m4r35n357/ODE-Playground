@@ -13,7 +13,7 @@
 
 typedef struct { mpfr_t a, b, _; } parameters;
 
-void *get_p (int argc, char **argv, long n) {
+void *get_p (int argc, char **argv, int n) {
     assert(argc == 11);
     (void)n;
     parameters *p = malloc(sizeof (parameters));

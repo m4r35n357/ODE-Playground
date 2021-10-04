@@ -29,7 +29,7 @@ series ad_series_v (int n, mpfr_t value) {
     return s;
 }
 
-void jet_output (series s, long n, char* f_colour, char *fk_colour) {
+void jet_output (series s, int n, char* f_colour, char *fk_colour) {
     mpfr_printf("%s%9.6RNf ", f_colour, s[0]);
     for (int i = 1; i < n; i++) {
         mpfr_printf("%s%9.6RNf ", fk_colour, s[i]);
@@ -37,14 +37,14 @@ void jet_output (series s, long n, char* f_colour, char *fk_colour) {
     printf("%s\n", f_colour);
 }
 
-void jet_to_derivs (series s, long n) {
-    for (long i = 1, fac = 1; i < n; i++) {
+void jet_to_derivs (series s, int n) {
+    for (int i = 1, fac = 1; i < n; i++) {
         fac *= i;
         mpfr_mul_si(s[i], s[i], fac, RND);
     }
 }
 
-void derivative_output (series jet, long n, char* f_colour, char *fk_colour) {
+void derivative_output (series jet, int n, char* f_colour, char *fk_colour) {
     jet_to_derivs(jet, n);
     jet_output(jet, n, f_colour, fk_colour);
 }

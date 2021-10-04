@@ -39,17 +39,17 @@ series ad_series_v (int size, mpfr_t value);
 /*
  * Prints a Taylor coefficient jet to order n
  */
-void jet_output (series jet, long n, char* f_colour, char *fk_colour);
+void jet_output (series jet, int n, char* f_colour, char *fk_colour);
 
 /*
  * Applies factorials to convert Taylor coefficients to actual derivative values
  */
-void jet_to_derivs (series jet, long n);
+void jet_to_derivs (series jet, int n);
 
 /*
  * Prints a derivative jet to order n
  */
-void derivative_output (series jet, long n, char* f_colour, char *fk_colour);
+void derivative_output (series jet, int n, char* f_colour, char *fk_colour);
 
 /*
  * Finds a root of fn(f, x) by Newton's method, where f and x are Taylor Series

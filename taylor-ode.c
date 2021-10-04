@@ -17,8 +17,8 @@ static char fs[42];
 
 static mpfr_t D0, D1, D_1, D2, D_2, _fk, _;
 
-void t_tempvars (long dp) {
-    dp == 0 ? sprintf(fs, "%%.RNe %%.RNe %%.RNe %%.9RNe\n") : sprintf(fs, "%%+.%luRNe %%+.%luRNe %%+.%luRNe %%+.9RNe\n", dp, dp, dp);
+void t_tempvars (int dp) {
+    dp == 0 ? sprintf(fs, "%%.RNe %%.RNe %%.RNe %%.9RNe\n") : sprintf(fs, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe\n", dp, dp, dp);
     mpfr_inits(_fk, _, NULL);
     mpfr_init_set_ui(D0, 0, RND);
     mpfr_init_set_ui(D1, 1, RND);
@@ -27,7 +27,7 @@ void t_tempvars (long dp) {
     mpfr_init_set_si(D_2, -2, RND);
 }
 
-void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, long step) {
+void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step) {
     mpfr_mul_si(_, h, step, RND);
     mpfr_printf(fs, x, y, z, _);
 }
@@ -41,18 +41,18 @@ void t_params (char **argv, int argc, ...) {
     va_end(model_params);
 }
 
-series t_jet (long n) {
+series t_jet (int n) {
     mpfr_t *s = calloc((size_t)n, sizeof (mpfr_t));
     if (s == NULL) exit(2);
-    for (long i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++) {
         mpfr_init_set_ui(s[i], 0, RND);
     }
     return s;
 }
 
-mpfr_t *t_horner (series s, long n, mpfr_t h) {
+mpfr_t *t_horner (series s, int n, mpfr_t h) {
     mpfr_set_zero(_, 1);
-    for (long i = n; i >= 0; i--) {
+    for (int i = n; i >= 0; i--) {
         mpfr_fma(_, _, h, s[i], RND);
     }
     if (mpfr_number_p(_) == 0) exit(1);
@@ -188,14 +188,14 @@ mpfr_t *t_ln (series l, series u, int k) {
     return &l[k];
 }
 
-void tsm (int argc, char **argv, long n, mpfr_t h, long steps, mpfr_t x0, mpfr_t y0, mpfr_t z0) {
+void tsm (int argc, char **argv, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0) {
     series x = t_jet(n + 1); mpfr_set(x[0], x0, RND);
     series y = t_jet(n + 1); mpfr_set(y[0], y0, RND);
     series z = t_jet(n + 1); mpfr_set(z[0], z0, RND);
     void *p = get_p(argc, argv, n);
     components *c_dot = malloc(sizeof (components));
     mpfr_inits(c_dot->x, c_dot->y, c_dot->z, NULL);
-    for (long step = 0; step < steps; step++) {
+    for (int step = 0; step < steps; step++) {
         for (int k = 0; k < n; k++) {
             ode(x, y, z, c_dot, p, k);
             mpfr_div_si(x[k + 1], c_dot->x, k + 1, RND);

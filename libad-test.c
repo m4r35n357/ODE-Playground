@@ -41,7 +41,7 @@ static void ad_lib_test_tempvars (void) {
 
 typedef struct { mpfr_t a, b, c; } parameters;
 
-void *get_p (int argc, char **argv, long order) {
+void *get_p (int argc, char **argv, int order) {
     (void)argc; (void)argv; (void)order;
     parameters *p = malloc(sizeof (parameters));
     mpfr_init_set(p->a, D1, RND);

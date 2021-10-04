@@ -23,7 +23,7 @@ typedef mpfr_t *series;
 /*
  * Creates a zeroed jet of the specified size
  */
-void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, long step);
+void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step);
 
 /*
  * Bulk set initial coordinate values and ODE parameters from the command line arguments (6 onwards)
@@ -33,17 +33,17 @@ void t_params (char **argv, int count, ...);
 /*
  * Pre-allocate some MPFR variables
  */
-void t_tempvars (long dp);
+void t_tempvars (int dp);
 
 /*
  * Creates a zeroed Taylor Series of the specified size
  */
-series t_jet (long size);
+series t_jet (int size);
 
 /*
  * Safely and efficiently evaluates a polynomial of length n, with the coefficients in S, and the variable in h
  */
-mpfr_t *t_horner (series S, long n, mpfr_t h);
+mpfr_t *t_horner (series S, int n, mpfr_t h);
 
 /*
  * The Taylor Series Method (TSM) in brief; to solve a system of Ordinary Differential Equations defined by:
@@ -273,11 +273,11 @@ typedef struct {
 /*
  * Obligatory client method signatures
  */
-void *get_p (int argc, char **argv, long order);
+void *get_p (int argc, char **argv, int order);
 
 void ode (series x, series y, series z, components *c, void *params, int k);
 
 /*
  * For performing a simulation
  */
-void tsm (int argc, char **argv, long n, mpfr_t h, long steps, mpfr_t x0, mpfr_t y0, mpfr_t z0);
+void tsm (int argc, char **argv, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0);
