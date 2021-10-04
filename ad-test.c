@@ -55,12 +55,13 @@ static void septic (series f, series value, int n) {
 typedef struct { mpfr_t a; } parameters;
 
 void *get_p (int argc, char **argv, long n) {
-    (void)n;
+    (void)argc, (void)argv, (void)n;
     parameters *p = malloc(sizeof (parameters));
     return p;
 }
 
 void ode (series x, series y, series z, components *c, void *params, int k) {
+    (void)x, (void)y, (void)z, (void)c, (void)params, (void)k;
 }
 
 int main (int argc, char **argv) {

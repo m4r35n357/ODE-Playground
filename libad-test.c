@@ -86,7 +86,8 @@ int main (int argc, char **argv) {
     mpfr_t PI_2;
 
     assert(argc == 5 || argc == 6);
-    mpfr_set_default_prec(strtod(argv[1], NULL) * 3.322);
+    double precision = strtod(argv[1], NULL) * 3.322;
+    mpfr_set_default_prec((int)precision);
     ad_lib_test_tempvars();
     long n = strtol(argv[2], NULL, BASE) + 1;
     assert(n > 1);

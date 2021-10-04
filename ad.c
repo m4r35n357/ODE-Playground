@@ -38,9 +38,9 @@ void jet_output (series s, long n, char* f_colour, char *fk_colour) {
 }
 
 void jet_to_derivs (series s, long n) {
-    for (int i = 1, fac = 1; i < n; i++) {
+    for (long i = 1, fac = 1; i < n; i++) {
         fac *= i;
-        mpfr_mul_ui(s[i], s[i], fac, RND);
+        mpfr_mul_si(s[i], s[i], fac, RND);
     }
 }
 
