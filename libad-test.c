@@ -1,5 +1,5 @@
 /*
- * Automatic Differentiation of Taylor Series, newest validation checks
+ * Automatic Differentiation of Taylor Seriesewest validation checks
  *
  * Example: ./libad-test-dbg 32 20 1 1e-18 [ 0 | 1 | 2 ]
  *
@@ -21,12 +21,12 @@
 
 typedef enum {PASSED, SKIPPED, FAILED} result;
 
-static int debug = 0, total = 0, passed = 0, skipped = 0;
+static int n, debug = 0, total = 0, passed = 0, skipped = 0;
 
 static mpfr_t x0, delta, tolerance, D0, D01, D05, D_05, D1, D_1, D2, D_2, D_3;
 
 static void ad_lib_test_tempvars (void) {
-    ad_tempvars();
+    ad_tempvars(n);
     mpfr_init(delta);
     mpfr_init_set_ui(D0, 0, RND);
     mpfr_init_set_str(D01, "0.1", BASE, RND);
@@ -64,7 +64,7 @@ static result skip (char* name) {
     return SKIPPED;
 }
 
-static result compare (char* name, series a, series b, int n) {
+static result compare (char* name, series a, series b) {
     total++;
     for (int k = 0; k < n; k++) {
         mpfr_sub(delta, a[k], b[k], RND);
@@ -88,9 +88,9 @@ int main (int argc, char **argv) {
     assert(argc == 5 || argc == 6);
     double precision = strtod(argv[1], NULL) * 3.322;
     mpfr_set_default_prec((int)precision);
-    ad_lib_test_tempvars();
-    int n = (int)strtol(argv[2], NULL, BASE) + 1;
+    n = (int)strtol(argv[2], NULL, BASE) + 1;
     assert(n > 1);
+    ad_lib_test_tempvars();
     mpfr_init_set_str(x0, argv[3], BASE, RND);
     mpfr_init_set_str(tolerance, argv[4], BASE, RND);
     if (argc == 6) debug = (int)strtol(argv[5], NULL, BASE);
@@ -135,95 +135,95 @@ int main (int argc, char **argv) {
     tsm(argc, argv, 10, D01, 10, D1, D1, D1);
 
     printf("\n");
-    ad_sqr(sqr_x, x, n);
-    if (x_non_zero) ad_inv(inv_x, x, n);
-    if (x_positive) ad_sqrt(sqrt_x, x, n);
+    ad_sqr(sqr_x, x);
+    if (x_non_zero) ad_inv(inv_x, x);
+    if (x_positive) ad_sqrt(sqrt_x, x);
     char* name = "x * x == sqr(x)";
-    compare(name, ad_prod(prod, x, x, n), sqr_x, n);
+    compare(name, ad_prod(prod, x, x), sqr_x);
     name = "sqr(x) / x == x";
-    x_non_zero ? compare(name, ad_quot(quot, sqr_x, x, n), x, n) : skip(name);
+    x_non_zero ? compare(name, ad_quot(quot, sqr_x, x), x) : skip(name);
     name = "x * 1 / x == 1";
-    x_non_zero ? compare(name, ad_prod(prod, x, inv_x, n), c1, n) : skip(name);
+    x_non_zero ? compare(name, ad_prod(prod, x, inv_x), c1) : skip(name);
     name = "sqrt(x) * sqrt(x) == x";
-    x_positive ? compare(name, ad_prod(prod, sqrt_x, sqrt_x, n), x, n) : skip(name);
+    x_positive ? compare(name, ad_prod(prod, sqrt_x, sqrt_x), x) : skip(name);
     name = "x / sqrt(x) == sqrt(x)";
-    x_positive ? compare(name, ad_quot(quot, x, sqrt_x, n), sqrt_x, n) : skip(name);
+    x_positive ? compare(name, ad_quot(quot, x, sqrt_x), sqrt_x) : skip(name);
 
     name = "x^2 == sqr(x)";
-    x_positive ? compare(name, ad_pwr(pow, x, D2, n), sqr_x, n) : skip(name);
+    x_positive ? compare(name, ad_pwr(pow, x, D2), sqr_x) : skip(name);
     name = "x^1 == x";
-    x_positive ? compare(name, ad_pwr(pow, x, D1, n), x, n) : skip(name);
+    x_positive ? compare(name, ad_pwr(pow, x, D1), x) : skip(name);
     name = "x^0.5 == sqrt(x)";
-    x_positive ? compare(name, ad_pwr(pow, x, D05, n), sqrt_x, n): skip(name);
+    x_positive ? compare(name, ad_pwr(pow, x, D05), sqrt_x): skip(name);
     name = "x^0 == 1";
-    x_positive ? compare(name, ad_pwr(pow, x, D0, n), c1, n) : skip(name);
+    x_positive ? compare(name, ad_pwr(pow, x, D0), c1) : skip(name);
     name = "x^-0.5 == 1 / sqrt(x)";
-    x_positive ? compare(name, ad_pwr(pow, x, D_05, n), ad_inv(inv, sqrt_x, n), n) : skip(name);
+    x_positive ? compare(name, ad_pwr(pow, x, D_05), ad_inv(inv, sqrt_x)) : skip(name);
     name = "x^-1 == 1 / x";
-    x_positive ? compare(name, ad_pwr(pow, x, D_1, n), inv_x, n) : skip(name);
+    x_positive ? compare(name, ad_pwr(pow, x, D_1), inv_x) : skip(name);
     name = "x^-2 == 1 / sqr(x)";
-    x_positive ? compare(name, ad_pwr(pow, x, D_2, n), ad_inv(inv, sqr_x, n), n) : skip(name);
+    x_positive ? compare(name, ad_pwr(pow, x, D_2), ad_inv(inv, sqr_x)) : skip(name);
 
     name = "sqr(x) * x^-3 == 1 / x";
-    x_positive ? compare(name, ad_prod(prod, sqr_x, ad_pwr(pow, x, D_3, n), n), inv_x, n) : skip(name);
+    x_positive ? compare(name, ad_prod(prod, sqr_x, ad_pwr(pow, x, D_3)), inv_x) : skip(name);
 
     name = "sqr(x)^0.5 == |x|";
-    x_non_zero ? compare(name, ad_pwr(pow, sqr_x, D05, n), ad_abs(abs, x, n), n) : skip(name);
+    x_non_zero ? compare(name, ad_pwr(pow, sqr_x, D05), ad_abs(abs, x)) : skip(name);
 
     name = "log(e^x) == x";
-    compare(name, ad_ln(ln, ad_exp(exp_x, x, n), n), x, n);
+    compare(name, ad_ln(ln, ad_exp(exp_x, x)), x);
     name = "log(sqr(x)) == 2 * log(x)";
-    if (x_positive) ad_ln(ln_x, x, n);
-    x_positive ? compare(name, ad_ln(ln, sqr_x, n), ad_scale(scale, ln_x, D2, n), n) : skip(name);
+    if (x_positive) ad_ln(ln_x, x);
+    x_positive ? compare(name, ad_ln(ln, sqr_x), ad_scale(scale, ln_x, D2)) : skip(name);
     name = "log(sqrt(x)) == 0.5 * log(x)";
-    x_positive ? compare(name, ad_ln(ln, sqrt_x, n), ad_scale(scale, ln_x, D05, n), n) : skip(name);
+    x_positive ? compare(name, ad_ln(ln, sqrt_x), ad_scale(scale, ln_x, D05)) : skip(name);
     name = "log(1 / x) == - log(x)";
-    x_positive ? compare(name, ad_ln(ln, inv_x, n), ad_neg(neg, ln_x, n), n) : skip(name);
+    x_positive ? compare(name, ad_ln(ln, inv_x), ad_neg(neg, ln_x)) : skip(name);
     name = "log(x^-3) == - 3 * log(x)";
-    x_positive ? compare(name, ad_ln(ln, ad_pwr(pow, x, D_3, n), n), ad_scale(scale, ln_x, D_3, n), n) : skip(name);
+    x_positive ? compare(name, ad_ln(ln, ad_pwr(pow, x, D_3)), ad_scale(scale, ln_x, D_3)) : skip(name);
 
-    ad_sin_cos(sin, cos, x, HYP, n);
-    ad_tan_sec2(tan, sec2, x, HYP, n);
-    ad_sqr(sqr_sin_x, sin, n);
-    ad_sqr(sqr_cos_x, cos, n);
-    ad_sin_cos(sin_2x, cos_2x, ad_scale(scale, x, D2, n), HYP, n);
+    ad_sin_cos(sin, cos, x, HYP);
+    ad_tan_sec2(tan, sec2, x, HYP);
+    ad_sqr(sqr_sin_x, sin);
+    ad_sqr(sqr_cos_x, cos);
+    ad_sin_cos(sin_2x, cos_2x, ad_scale(scale, x, D2), HYP);
     name = "cosh^2(x) - sinh^2(x) == 1";
-    compare(name, ad_minus(diff, sqr_cos_x, sqr_sin_x, n), c1, n);
+    compare(name, ad_minus(diff, sqr_cos_x, sqr_sin_x), c1);
     name = "sech^2(x) + tanh^2(x) == 1";
-    compare(name, ad_plus(sum, sec2, ad_sqr(sqr_tan_x, tan, n), n), c1, n);
+    compare(name, ad_plus(sum, sec2, ad_sqr(sqr_tan_x, tan)), c1);
     name = "tanh(x) == sinh(x) / cosh(x)";
-    compare(name, tan, ad_quot(quot, sin, cos, n), n);
+    compare(name, tan, ad_quot(quot, sin, cos));
     name = "sech^2(x) == 1 / cosh^2(x)";
-    compare(name, sec2, ad_inv(inv, sqr_cos_x, n), n);
+    compare(name, sec2, ad_inv(inv, sqr_cos_x));
     name = "sinh(2x) == 2 * sinh(x) * cosh(x)";
-    compare(name, sin_2x, ad_scale(scale, ad_prod(prod, sin, cos, n), D2, n), n);
+    compare(name, sin_2x, ad_scale(scale, ad_prod(prod, sin, cos), D2));
     name = "cosh(2x) == cosh^2(x) + sinh^2(x)";
-    compare(name, cos_2x, ad_plus(sum, sqr_cos_x, sqr_sin_x, n), n);
+    compare(name, cos_2x, ad_plus(sum, sqr_cos_x, sqr_sin_x));
 
-    ad_exp(exp_x, x, n);
-    ad_exp(neg_exp_x, ad_neg(neg, x, n), n);
+    ad_exp(exp_x, x);
+    ad_exp(neg_exp_x, ad_neg(neg, x));
     name = "sinh(x) == 0.5 * (e^x - e^-x)";
-    compare(name, sin, ad_scale(scale, ad_minus(diff, exp_x, neg_exp_x, n), D05, n), n);
+    compare(name, sin, ad_scale(scale, ad_minus(diff, exp_x, neg_exp_x), D05));
     name = "cosh(x) == 0.5 * (e^x + e^-x)";
-    compare(name, cos, ad_scale(scale, ad_plus(sum, exp_x, neg_exp_x, n), D05, n), n);
+    compare(name, cos, ad_scale(scale, ad_plus(sum, exp_x, neg_exp_x), D05));
 
-    ad_sin_cos(sin, cos, x, TRIG, n);
-    ad_tan_sec2(tan, sec2, x, TRIG, n);
-    ad_sqr(sqr_sin_x, sin, n);
-    ad_sqr(sqr_cos_x, cos, n);
-    ad_sin_cos(sin_2x, cos_2x, ad_scale(scale, x, D2, n), TRIG, n);
+    ad_sin_cos(sin, cos, x, TRIG);
+    ad_tan_sec2(tan, sec2, x, TRIG);
+    ad_sqr(sqr_sin_x, sin);
+    ad_sqr(sqr_cos_x, cos);
+    ad_sin_cos(sin_2x, cos_2x, ad_scale(scale, x, D2), TRIG);
     name = "cos^2(x) + sin^2(x) == 1";
-    compare(name, ad_plus(sum, sqr_cos_x, sqr_sin_x, n), c1, n);
+    compare(name, ad_plus(sum, sqr_cos_x, sqr_sin_x), c1);
     name = "sec^2(x) - tan^2(x) == 1";
-    x_lt_pi_2 ? compare(name, ad_minus(diff, sec2, ad_sqr(sqr_tan_x, tan, n), n), c1, n) : skip(name);
+    x_lt_pi_2 ? compare(name, ad_minus(diff, sec2, ad_sqr(sqr_tan_x, tan)), c1) : skip(name);
     name = "tan(x) == sin(x) / cos(x)";
-    x_lt_pi_2 ? compare(name, tan, ad_quot(quot, sin, cos, n), n) : skip(name);
+    x_lt_pi_2 ? compare(name, tan, ad_quot(quot, sin, cos)) : skip(name);
     name = "sec^2(x) == 1 / cos^2(x)";
-    x_lt_pi_2 ? compare(name, sec2, ad_inv(inv, sqr_cos_x, n), n) : skip(name);
+    x_lt_pi_2 ? compare(name, sec2, ad_inv(inv, sqr_cos_x)) : skip(name);
     name = "sin(2x) == 2 * sin(x) * cos(x)";
-    compare(name, sin_2x, ad_scale(scale, ad_prod(prod, sin, cos, n), D2, n), n);
+    compare(name, sin_2x, ad_scale(scale, ad_prod(prod, sin, cos), D2));
     name = "cos(2x) == cos^2(x) - sin^2(x)";
-    compare(name, cos_2x, ad_minus(diff, sqr_cos_x, sqr_sin_x, n), n);
+    compare(name, cos_2x, ad_minus(diff, sqr_cos_x, sqr_sin_x));
 
     printf("%sTotal%s: %d, %sPASSED%s %d", KWHT, KNRM, total, KGRN, KNRM, passed);
     if (skipped > 0) {
