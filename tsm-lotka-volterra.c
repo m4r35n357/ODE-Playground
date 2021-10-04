@@ -3,38 +3,33 @@
  *
  * Example: ./tsm-lotka-volterra-dbg 9 32 10 .01 2000 10 10 0 1 .5 .05 .02
  *
- * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
+#include <stdlib.h>
 #include <assert.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-int main (int argc, char **argv) {
-    long n, nsteps;
-    mpfr_t a, b, c, d, h, _, xy;
+typedef struct { mpfr_t a, b, c, d, xy; } parameters;
 
-    // initialize from command arguments
+void *get_p (int argc, char **argv, int n) {
     assert(argc == 13);
-    t_stepper(argv, &n, &h, &nsteps);
-    mpfr_inits(a, b, c, d, xy, _, NULL);
-    series x = t_series(n + 1), y = t_series(n + 1);
-    t_args(argv, argc, x.jet, y.jet, &_, &a, &b, &c, &d);
+    (void)n;
+    parameters *p = malloc(sizeof (parameters));
+    t_params(argv, argc, &p->a, &p->b, &p->c, &p->d);
+    mpfr_init(p->xy);
+    return p;
+}
 
-    t_output(x.jet[0], y.jet[0], _, h, 0);
-    for (long step = 1; step <= nsteps; step++) {
-        // build the jet of taylor coefficients
-        for (int k = 0; k < n; k++) {
-            mpfr_set(xy, *t_prod(x, y, k), RND);
-            //  x' = Ax - Cxy
-            mpfr_fmms(_, a, x.jet[k], c, xy, RND);
-            t_next(x, _, k, POS);
-            //  y' = Dxy - By
-            mpfr_fmms(_, d, xy, b, y.jet[k], RND);
-            t_next(y, _, k, POS);
-        }
-        // sum the series using Horner's method and advance one step
-        t_output(*t_horner(x, h), *t_horner(y, h), _, h, step);
-    }
-    return 0;
+void ode (series x, series y, series z, components *c, void *params, int k) {
+    (void)z;
+    parameters *p = (parameters *)params;
+    mpfr_set(p->xy, *t_prod(x, y, k), RND);
+    //  x' = Ax - Cxy
+    mpfr_fmms(c->x, p->a, x[k], p->c, p->xy, RND);
+    //  y' = Dxy - By
+    mpfr_fmms(c->y, p->d, p->xy, p->b, y[k], RND);
+    // not used
+    mpfr_set_zero(c->z, 1);
 }

@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+#  (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#
+
+for file in $(ls tsm-* | grep -v '\.py$')
+do
+    [ -x $file ] && rm -f $file
+done
+
+rm -f divergence
+
+rm -f lib*.so *.o
+rm -f coverage.info *.gcov *.gcda *.gcno *.gch *_gprof gmon.out
+
+echo OK

@@ -3,41 +3,35 @@
  *
  * Example: ./tsm-thomas-dbg 9 32 10 0.1 30000 1 0 0 .19
  *
- * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
+#include <stdlib.h>
 #include <assert.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-int main (int argc, char **argv) {
-    long n, nsteps;
-    mpfr_t b, h, _;
+typedef struct { mpfr_t b; series sx, sy, sz, cx, cy, cz; } parameters;
 
-    // initialize from command arguments
+void *get_p (int argc, char **argv, int n) {
     assert(argc == 10);
-    t_stepper(argv, &n, &h, &nsteps);
-    mpfr_inits(b, _, NULL);
-    series x = t_series(n + 1), y = t_series(n + 1), z = t_series(n + 1);
-    t_args(argv, argc, x.jet, y.jet, z.jet, &b);
-    series sx = t_series(n), sy = t_series(n), sz = t_series(n), cx = t_series(n), cy = t_series(n), cz = t_series(n);
+    parameters *p = malloc(sizeof (parameters));
+    t_params(argv, argc, &p->b);
+    p->sx = t_jet(n); p->cx = t_jet(n);
+    p->sy = t_jet(n); p->cy = t_jet(n);
+    p->sz = t_jet(n); p->cz = t_jet(n);
+    return p;
+}
 
-    t_output(x.jet[0], y.jet[0], z.jet[0], h, 0);
-    for (long step = 1; step <= nsteps; step++) {
-        // build the jet of taylor coefficients
-        for (int k = 0; k < n; k++) {
-            //  x' = sin(y) - Bx
-            mpfr_fms(_, b, x.jet[k], *t_sin_cos(sy, cy, y, k, TRIG).a, RND);
-            t_next(x, _, k, NEG);
-            //  y' = sin(z) - By
-            mpfr_fms(_, b, y.jet[k], *t_sin_cos(sz, cz, z, k, TRIG).a, RND);
-            t_next(y, _, k, NEG);
-            //  z' = sin(x) - Bz
-            mpfr_fms(_, b, z.jet[k], *t_sin_cos(sx, cx, x, k, TRIG).a, RND);
-            t_next(z, _, k, NEG);
-        }
-        // sum the series using Horner's method and advance one step
-        t_output(*t_horner(x, h), *t_horner(y, h), *t_horner(z, h), h, step);
-    }
-    return 0;
+void ode (series x, series y, series z, components *c, void *params, int k) {
+    parameters *p = (parameters *)params;
+    //  x' = sin(y) - Bx
+    mpfr_fms(c->x, p->b, x[k], *t_sin_cos(p->sy, p->cy, y, k, TRIG).a, RND);
+    mpfr_neg(c->x, c->x, RND);
+    //  y' = sin(z) - By
+    mpfr_fms(c->y, p->b, y[k], *t_sin_cos(p->sz, p->cz, z, k, TRIG).a, RND);
+    mpfr_neg(c->y, c->y, RND);
+    //  z' = sin(x) - Bz
+    mpfr_fms(c->z, p->b, z[k], *t_sin_cos(p->sx, p->cx, x, k, TRIG).a, RND);
+    mpfr_neg(c->z, c->z, RND);
 }

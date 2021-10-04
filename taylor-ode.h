@@ -2,100 +2,89 @@
  * Interface for solving systems of Ordinary Differential Equations
  * using the Taylor Series Method (TSM)
  *
- * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
 /*
  * The numerical base for string IO conversions
  */
-const int BASE;
+extern const int BASE;
 
 /*
  * Global rounding strategy for MPFR
  */
-const mpfr_rnd_t RND;
+extern const mpfr_rnd_t RND;
 
 /*
- * Wrap coefficient "jets" in a structure
+ * Diffentiate real numbers from jets
  */
-typedef struct {
-    mpfr_t *jet;
-    int size;
-} series;
+typedef mpfr_t *series;
 
 /*
- * For returning "paired" recurrence values
+ * Creates a zeroed jet of the specified size
  */
-typedef struct {
-    mpfr_t *a;
-    mpfr_t *b;
-    int size;
-} tuple;
-
-/*
- * Sign of a number
- */
-typedef enum {POS, NEG} sign;
-
-/*
- * Selects the trigonometric or hyperbolic version of a function
- */
-typedef enum {TRIG, HYP} geometry;
-
-/*
- * Pre-allocate some MPFR variaboles
- */
-void t_tempvars (void);
-
-/*
- * Prints x, y, z, t values in a single line of output
- */
-void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, long step);
-
-/*
- * Sets the (precision,) order, step size, and number of steps for the integration from the command line arguments (1 to 5)
- */
-void t_stepper (char **argv, long *ts_order, mpfr_t *step_size, long *n_steps);
+void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step);
 
 /*
  * Bulk set initial coordinate values and ODE parameters from the command line arguments (6 onwards)
  */
-void t_args (char **argv, int count, ...);
+void t_params (char **argv, int count, ...);
+
+/*
+ * Pre-allocate some MPFR variables
+ */
+void t_tempvars (int dp);
 
 /*
  * Creates a zeroed Taylor Series of the specified size
  */
-series t_series (int size);
+series t_jet (int size);
 
 /*
- * The Taylor Series Method (TSM) in brief:
+ * Safely and efficiently evaluates a polynomial of length n, with the coefficients in S, and the variable in h
+ */
+mpfr_t *t_horner (series S, int n, mpfr_t h);
+
+/*
+ * The Taylor Series Method (TSM) in brief; to solve a system of Ordinary Differential Equations defined by:
  *
- *              x(t0 + h) = x(t) = sum{k=0->inf} X[k] h^k,    where X[0] = x(t0), X[k] = (d/dt)^k x(t0) / k! and h = t - t0
+ *                         x'(t) = ode(x(t))
  *
- *                         x'(t) = sum{k=0->inf} X'[k] h^k,   where x'(t) = dx/dt, the ODE equations   (A)
+ * We plug x(t) into the equations, then somehow use the value of x'(t) to estimate the next x value in the sequence.
  *
- *                     d/dt x(t) = sum{k=1->inf} k X[k] h^(k-1)
+ * Now, evolution of a time-varying quantity can be represented as a Taylor Series:
  *
- *                               = sum{k=0->inf} (k+1) X[k+1] h^k                                      (B)
+ *                     x(t0 + h) = sum{k=0->inf} X[k].h^k     where X[0] = x(t0), X[k] = (d/dt)^k x(t0) / k! and h = t - t0  (A)
  *
- * Comparing (A) and (B),  X'[k] = (k+1) X[k+1]    *** this is THE IDENTITY (also used in recurrences below) ***
+ * This calculation is best performed using Horner's method. Similarly, the time derivative of x(t) can be represented as:
+ *
+ *                         x'(t) = sum{k=0->inf} X'[k].h^k                                                                   (B)
+ *
+ * So, X'[k] is the result of evaluating the ODE equation, but with all variables expressed as Taylor Series, X[k].
+ *
+ *                              X'[k] = ODE(X[k])
+ *
+ * Furthermore, by differentiating (A) and equating it to (B) we obtain an additional and very useful IDENTITY:
+ *
+ *                     d/dt x(t) = sum{k=1->inf} k.X[k].h^(k-1)
+ *
+ *                               = sum{k=0->inf} (k+1).X[k+1].h^k                                                            (C)
+ *
+ * Comparing (B) and (C),  X'[k] = (k+1).X[k+1]             *** this IDENTITY is also used in deriving the recurrences below ***
  *
  *                   ==>  X[k+1] = X'[k] / (k + 1)
  *
- * 1. Build up a coefficient jet for each x(t) using the ODEs, x'(t), and Taylor recurrences where needed, then divide by k + 1
+ * 1. Starting with initial values X[0], evaluate the ODE equations (X'[k]) using X[k], and recurrence relations where needed,
  *
- * 2. Apply Horner's method to each jet to calculate the next set of coordinates
+ *    then generate the next Taylor Series coefficient X[k+1] using the IDENTITY
+ *
+ * 2. Apply Horner's method to calculate the new values x(t0 + h), which become X[0] for the next time step.
  */
 
 /*
- * Calculate next coefficient in jet
+ * Returns value if k is 0, and zero otherwise.  For handling _additive_ constants.
  */
-void t_next (series S, mpfr_t dot, int k, sign sgn);
-
-/*
- * Evaluate a Taylor series safely and efficiently
- */
-mpfr_t *t_horner (series S, mpfr_t h);
+mpfr_t *t_const (mpfr_t *value, int k);
 
 /*
  * Returns a pointer to kth element of the absolute value of U, result stored and returned in variable A, NO JET STORAGE
@@ -105,25 +94,16 @@ mpfr_t *t_abs (series U, int k);
 /*
  * Cauchy product for C = A.B
  *
- *   if c(t) = a(t) b(t)
+ *   if c(t) = a(t).b(t)
  *
- * then c(t) = sum{k=0->inf} C(k) h^k
+ * then c(t) = sum{k=0->inf} C(k).h^k
  *
- *           = sum{j=0->inf} A(j) h^j sum{i=0->inf} B(i) h^i
+ *           = sum{j=0->inf} A(j).h^j sum{i=0->inf} B(i).h^i
  *
- *           = sum{k=0->inf} sum{j=0->k} A[j]B[k - j] h^k     where k = i + j  ==>  i = k - j
+ *           = sum{k=0->inf} sum{j=0->k} A[j].B[k - j].h^k     where k = i + j  ==>  i = k - j
  *
  *  ==> C[k] = sum{j=0->k} A[j].B[k-j]     perhaps implemented by a static/private function cauchy(A, B, k, ...)
  */
-
-/*
- * Returns a pointer to kth element of the square of U, result stored and returned in variable S, NO JET STORAGE
- *
- *  S = U.U
- *
- *  S = sum{j=0->k} U[j].U[k-j]
- */
-mpfr_t *t_sqr (series U, int k);
 
 /*
  * Returns a pointer to kth element of the product of U and V, result stored in variable P, NO JET STORAGE
@@ -133,6 +113,15 @@ mpfr_t *t_sqr (series U, int k);
  *  P = sum{j=0->k} U[j].V[k-j]
  */
 mpfr_t *t_prod (series U, series V, int k);
+
+/*
+ * Returns a pointer to kth element of the square of U, result stored and returned in variable S, NO JET STORAGE
+ *
+ *  S = U.U
+ *
+ *  S = sum{j=0->k} U[j].U[k-j]
+ */
+mpfr_t *t_sqr (series U, int k);
 
 /*
  * Returns a pointer to kth element of U / V, results accumulated in jet Q, DOMAIN RESTRICTION v[0] != 0.0
@@ -178,19 +167,23 @@ mpfr_t *t_sqrt (series r, series U, int k);
  *
  *           F' = (df/du).U' = dFdU.U'
  *
- *  Using F'[k] = (k+1) F[k+1]   (THE IDENTITY from earlier)
+ *  Using F'[k] = (k+1).F[k+1]   (the IDENTITY from earlier)
  *
  * ==>  F'[k-1] = k F[k], because we WANT F[k], and we can now replace F' with F, and U' with U as follows:
  *
- * Starting from the Cauchy product above, first rewrite it in terms of [k-1], then make the substitutions:
+ * Starting from the Cauchy product:
  *
  *        F'[k] = sum{j=0->k} dFdU[j].U'[k-j]
  *
- *      F'[k-1] = sum{j=0->k-1} dFdU[j].U'[k-1-j]
+ *  rewrite it in terms of [k-1]:
  *
- *        kF[k] = sum{j=0->k-1} dFdU[j].(k-j)U[k-j]      if k > 0, need a mathematical function call for k == 0
+ *      F'[k-1] = sum{j=0->k-1} dFdU[j].U'[k-1-j]            obviously does not work for k = 0 !
  *
- *     ==> F[k] = sum{j=0->k-1} dFdU[j].(k-j)U[k-j]/k    perhaps implemented by a static/private function d_cauchy(dFdU, U, k, ...)
+ * then make the IDENTITY substitutions
+ *
+ *        kF[k] = sum{j=0->k-1} dFdU[j].(k-j).U[k-j]         only if k > 0.  Use a mathematical function call for dFdU[0]
+ *
+ *     ==> F[k] = sum{j=0->k-1} dFdU[j].(k-j).U[k-j] / k     can be implemented by a static function f_k(dFdU, U, k, ...)
  */
 
 /*
@@ -198,9 +191,22 @@ mpfr_t *t_sqrt (series r, series U, int k);
  *
  *      E' = E.U'
  *
- *    E[k] = sum{j=0->k-1} E[j].(k-j)U[k-j]/k
+ *    E[k] = sum{j=0->k-1} E[j].(k-j).U[k-j]/k
  */
 mpfr_t *t_exp (series E, series U, int k);
+
+/*
+ * Selects either a trigonometric or hyperbolic version of the function
+ */
+typedef enum {TRIG, HYP} geometry;
+
+/*
+ * For returning combined recurrence values
+ */
+typedef struct {
+    mpfr_t *a;
+    mpfr_t *b;
+} pair;
 
 /*
  * Returns struct of pointers to kth elements of both sine and cosine of U, results accumulated in jets S and C
@@ -208,50 +214,70 @@ mpfr_t *t_exp (series E, series U, int k);
  *      S' =       C.U'
  *      C' = (+/-) S.U'     + for cosh (g == HYP), - for cos (g == TRIG)
  *
- *    S[k] = sum{j=0->k-1}       C[j].(k-j)U[k-j]/k
- *    C[k] = sum{j=0->k-1} (+/-) S[j].(k-j)U[k-j]/k
+ *    S[k] = sum{j=0->k-1}       C[j].(k-j).U[k-j]/k
+ *    C[k] = sum{j=0->k-1} (+/-) S[j].(k-j).U[k-j]/k
  */
-tuple t_sin_cos (series S, series C, series U, int k, geometry g);
+pair t_sin_cos (series S, series C, series U, int k, geometry g);
 
 /*
  * Returns struct of pointers to kth elements of both tangent and squared secant of U, results accumulated in jets T and S2
  *
  *      T' =       S2.U'
- *     S2' = (+/-)2 T.T'    + for sec^2 (g == TRIG), - for sech^2 (g == HYP)
+ *     S2' = (+/-)2.T.T'    + for sec^2 (g == TRIG), - for sech^2 (g == HYP)
  *
- *    T[k] = sum{j=0->k-1}       S2[j].(k-j)U[k-j]/k
- *   S2[k] = sum{j=0->k-1} (+/-)2 T[j].(k-j)T[k-j]/k
+ *    T[k] = sum{j=0->k-1}       S2[j].(k-j).U[k-j]/k
+ *   S2[k] = sum{j=0->k-1} (+/-)2 T[j].(k-j).T[k-j]/k
  */
-tuple t_tan_sec2 (series T, series S2, series U, int k, geometry g);
+pair t_tan_sec2 (series T, series S2, series U, int k, geometry g);
 
 /*
  * Returns a pointer to kth element of P = U^a (where a is scalar), results accumulated in jet P, DOMAIN RESTRICTION U[0] > 0.0
  *
- *                                    P'= U^a' = a U^(a-1).U'
- *                                      U.U^a' = a U^a.U'
- *                                        U.P' = a P.U'
+ *                                      P'= U^a' = a.U^(a-1).U'
+ *                                        U.U^a' = a.U^a.U'
+ *                                          U.P' = a.P.U'
  *
- *              sum{j=0->k-1} U[j].(k-j)P[k-j] =  a sum{j=0->k-1} P[j].(k-j)U[k-j]
+ *               sum{j=0->k-1} U[j].(k-j).P[k-j] =  a.sum{j=0->k-1} P[j].(k-j).U[k-j]
  *
- * U[0].kP[k] + sum{j=1->k-1} U[j].(k-j)P[k-j] =  a sum{j=0->k-1} P[j].(k-j)U[k-j]
+ * U[0].k.P[k] + sum{j=1->k-1} U[j].(k-j).P[k-j] =  a.sum{j=0->k-1} P[j].(k-j).U[k-j]
  *
- *                                  U[0].kP[k] =  a sum{j=0->k-1} P[j].(k-j)U[k-j]   - sum{j=1->k-1} U[j].(k-j)P[k-j]
+ *                                   U[0].k.P[k] =  a.sum{j=0->k-1} P[j].(k-j).U[k-j]   - sum{j=1->k-1} U[j].(k-j).P[k-j]
  *
- *                                        P[k] = (a sum{j=0->k-1} P[j].(k-j)U[k-j]/k - sum{j=1->k-1} U[j].(k-j)P[k-j]/k) / U[0]
+ *                                          P[k] = (a.sum{j=0->k-1} P[j].(k-j).U[k-j]/k - sum{j=1->k-1} U[j].(k-j).P[k-j]/k) / U[0]
  */
 mpfr_t *t_pwr (series P, series U, mpfr_t a, int k);
 
 /*
  * Returns a pointer to kth element of the natural logarithm of U, result accumulated in jet L, DOMAIN RESTRICTION U[0] > 0.0
  *
- *                     L' = U' / U
+ *                     L' = (1/U).U'
  *                     U' = U.L'
  *
- *                 k.U[k] = sum{j=0->k-1} U[j].(k-j)L[k-j]
+ *                 k.U[k] = sum{j=0->k-1} U[j].(k-j).L[k-j]
  *
- *                        = sum{j=1->k-1} U[j].(k-j)L[k-j] + U[0].kL[k]
+ *                        = sum{j=1->k-1} U[j].(k-j).L[k-j] + U[0].k.L[k]
  *
- *                   L[k] = (U[k] - sum{j=1->k-1} U[j].(k-j)L[k-j]/k) / U[0]
+ *                   L[k] = (U[k] - sum{j=1->k-1} U[j].(k-j).L[k-j]/k) / U[0]
  */
 mpfr_t *t_ln (series L, series U, int k);
 
+/*
+ * For returning x, y, z values
+ */
+typedef struct {
+    mpfr_t x;
+    mpfr_t y;
+    mpfr_t z;
+} components;
+
+/*
+ * Obligatory client method signatures
+ */
+void *get_p (int argc, char **argv, int order);
+
+void ode (series x, series y, series z, components *c, void *params, int k);
+
+/*
+ * For performing a simulation
+ */
+void tsm (int argc, char **argv, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0);

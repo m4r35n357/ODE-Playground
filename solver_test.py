@@ -1,10 +1,11 @@
 #
-#  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#  (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 #  Unit Testing
-#  pytest --cov=ad --cov=ad --cov-report html:cov_html ad_test.py solver_test.py -v
+#  pytest --cov=ad --cov=plotters --cov-report html:cov_html ad_test.py solver_test.py -v
+
 from math import sqrt
-from ad import Solver, Mode, Sense, bisect_s, newton_s, analyze_s, bisect_d, newton_d, analyze_d
+from plotters import Solver, Mode, Sense, bisect_s, newton_s, _analyze_s, bisect_d, newton_d, _analyze_d
 import pytest
 
 εf = 1.0e-9
@@ -74,7 +75,7 @@ def test_cubic_solve_dual(a, b, mode, target_x):
 def test_analysis_na_series(capsys):
     captured = capsys.readouterr()
     results = []
-    for result in analyze_s(model=model, method=Solver.NA, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
+    for result in _analyze_s(model=model, method=Solver.NA, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, mode=Mode.ALL, console=False, debug=False):
         if result.count < max_it:
             results.append(result)
@@ -84,7 +85,7 @@ def test_analysis_na_series(capsys):
 def test_analysis_na_dual(capsys):
     captured = capsys.readouterr()
     results = []
-    for result in analyze_d(model=model, method=Solver.NA, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
+    for result in _analyze_d(model=model, method=Solver.NA, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, console=False, debug=False):
         if result.count < max_it:
             results.append(result)
@@ -94,7 +95,7 @@ def test_analysis_na_dual(capsys):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cubic_series(solver):
     results = []
-    for result in analyze_s(model=lambda a: a ** 3 + 3 * a ** 2 - 3,
+    for result in _analyze_s(model=lambda a: a ** 3 + 3 * a ** 2 - 3,
                             method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, mode=Mode.ALL, console=True, debug=False):
         if result.count < max_it:
@@ -110,7 +111,7 @@ def test_analysis_cubic_series(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cubic_dual(solver):
     results = []
-    for result in analyze_d(model=lambda a: a ** 3 + 3 * a ** 2 - 3,
+    for result in _analyze_d(model=lambda a: a ** 3 + 3 * a ** 2 - 3,
                             method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, console=True, debug=False):
         if result.count < max_it:
@@ -123,7 +124,7 @@ def test_analysis_cubic_dual(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cos_cubic_series(solver):
     results = []
-    for result in analyze_s(model=lambda a: a.cos - a ** 3,
+    for result in _analyze_s(model=lambda a: a.cos - a ** 3,
                             method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, mode=Mode.ALL, console=True, debug=False):
         if result.count < max_it:
@@ -137,7 +138,7 @@ def test_analysis_cos_cubic_series(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cos_cubic_dual(solver):
     results = []
-    for result in analyze_d(model=lambda a: a.cos - a ** 3,
+    for result in _analyze_d(model=lambda a: a.cos - a ** 3,
                             method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, console=True, debug=False):
         if result.count < max_it:
@@ -148,7 +149,7 @@ def test_analysis_cos_cubic_dual(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_messy_series(solver):
     results = []
-    for result in analyze_s(model=lambda a: (a - 1) ** 2 / (a.cosh + 1).ln - 1,
+    for result in _analyze_s(model=lambda a: (a - 1) ** 2 / (a.cosh + 1).ln - 1,
                             method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, mode=Mode.ALL, console=True, debug=False):
         if result.count < max_it:
@@ -164,7 +165,7 @@ def test_analysis_messy_series(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_messy_dual(solver):
     results = []
-    for result in analyze_d(model=lambda a: (a - 1) ** 2 / (a.cosh + 1).ln - 1,
+    for result in _analyze_d(model=lambda a: (a - 1) ** 2 / (a.cosh + 1).ln - 1,
                             method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, console=True, debug=False):
         if result.count < max_it:
@@ -176,7 +177,7 @@ def test_analysis_messy_dual(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_septic_series(solver):
     results = []
-    for result in analyze_s(model=lambda a: (a + 7) * (5 + a) * (a + 2.0) * a * (1 - a) * (3.0 - a) * (a - 6),
+    for result in _analyze_s(model=lambda a: (a + 7) * (5 + a) * (a + 2.0) * a * (1 - a) * (3.0 - a) * (a - 6),
                             method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, mode=Mode.ALL, console=True, debug=False):
         if result.count < max_it:
@@ -204,7 +205,7 @@ def test_analysis_septic_series(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_septic_dual(solver):
     results = []
-    for result in analyze_d(model=lambda a: (a + 7) * (5 + a) * (a + 2.0) * a * (1 - a) * (3.0 - a) * (a - 6),
+    for result in _analyze_d(model=lambda a: (a + 7) * (5 + a) * (a + 2.0) * a * (1 - a) * (3.0 - a) * (a - 6),
                             method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                             limit=max_it, console=True, debug=False):
         if result.count < max_it:

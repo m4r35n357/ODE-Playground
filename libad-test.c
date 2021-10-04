@@ -1,9 +1,9 @@
 /*
- * Automatic Differentiation of Taylor Series, newest validation checks
+ * Automatic Differentiation of Taylor Seriesewest validation checks
  *
- * Example: ./libad-test-dbg 32 20 1 1e-18
+ * Example: ./libad-test-dbg 32 20 1 1e-18 [ 0 | 1 | 2 ]
  *
- * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
 #include <stdio.h>
@@ -21,14 +21,15 @@
 
 typedef enum {PASSED, SKIPPED, FAILED} result;
 
-static int debug = 0, total = 0, passed = 0, skipped = 0;
+static int n, debug = 0, total = 0, passed = 0, skipped = 0;
 
-static mpfr_t x0, delta, tolerance, D0, D05, D_05, D1, D_1, D2, D_2, D_3;
+static mpfr_t x0, delta, tolerance, D0, D01, D05, D_05, D1, D_1, D2, D_2, D_3;
 
 static void ad_lib_test_tempvars (void) {
-    ad_tempvars();
+    ad_tempvars(n);
     mpfr_init(delta);
     mpfr_init_set_ui(D0, 0, RND);
+    mpfr_init_set_str(D01, "0.1", BASE, RND);
     mpfr_init_set_str(D05, "0.5", BASE, RND);
     mpfr_init_set_str(D_05, "-0.5", BASE, RND);
     mpfr_init_set_ui(D1, 1, RND);
@@ -36,6 +37,24 @@ static void ad_lib_test_tempvars (void) {
     mpfr_init_set_ui(D2, 2, RND);
     mpfr_init_set_si(D_2, -2, RND);
     mpfr_init_set_si(D_3, -3, RND);
+}
+
+typedef struct { mpfr_t a, b, c; } parameters;
+
+void *get_p (int argc, char **argv, int order) {
+    (void)argc; (void)argv; (void)order;
+    parameters *p = malloc(sizeof (parameters));
+    mpfr_init_set(p->a, D1, RND);
+    mpfr_init_set(p->b, D0, RND);
+    mpfr_init_set(p->c, D_1, RND);
+    return p;
+}
+
+void ode (series x, series y, series z, components *c, void *params, int k) {
+    parameters *p = (parameters *)params;
+    mpfr_mul(c->x, p->a, x[k], RND);
+    mpfr_mul(c->y, p->b, y[k], RND);
+    mpfr_mul(c->z, p->c, z[k], RND);
 }
 
 static result skip (char* name) {
@@ -46,18 +65,17 @@ static result skip (char* name) {
 }
 
 static result compare (char* name, series a, series b) {
-    assert(b.size == a.size);
     total++;
-    for (int k = 0; k < b.size; k++) {
-        mpfr_sub(delta, a.jet[k], b.jet[k], RND);
+    for (int k = 0; k < n; k++) {
+        mpfr_sub(delta, a[k], b[k], RND);
         if (mpfr_cmp_abs(delta, tolerance) > 0) {
             printf("%s FAILED%s %s  k: %d  LHS: %.6e  RHS: %.6e  diff %.3e\n",
-                    KRED, KNRM, name, k, mpfr_get_d(a.jet[k], RND), mpfr_get_d(b.jet[k], RND), mpfr_get_d(delta, RND));
+                    KRED, KNRM, name, k, mpfr_get_d(a[k], RND), mpfr_get_d(b[k], RND), mpfr_get_d(delta, RND));
             return FAILED;
         }
         if (debug >= 2 && k == 0) printf("\n");
         if (debug >= 2) printf("%s  DEBUG%s  k: %2d  %+.6e %+.6e  diff %+.3e\n",
-                               KNRM, KNRM, k, mpfr_get_d(a.jet[k], RND), mpfr_get_d(b.jet[k], RND), mpfr_get_d(delta, RND));
+                               KNRM, KNRM, k, mpfr_get_d(a[k], RND), mpfr_get_d(b[k], RND), mpfr_get_d(delta, RND));
     }
     if (debug >= 1) printf("%s PASSED%s %s\n", KGRN, KNRM, name);
     passed++;
@@ -68,39 +86,40 @@ int main (int argc, char **argv) {
     mpfr_t PI_2;
 
     assert(argc == 5 || argc == 6);
-    mpfr_set_default_prec(strtod(argv[1], NULL) * 3.322);
-    ad_lib_test_tempvars();
-    long n = strtol(argv[2], NULL, BASE) + 1;
+    double precision = strtod(argv[1], NULL) * 3.322;
+    mpfr_set_default_prec((int)precision);
+    n = (int)strtol(argv[2], NULL, BASE) + 1;
     assert(n > 1);
+    ad_lib_test_tempvars();
     mpfr_init_set_str(x0, argv[3], BASE, RND);
     mpfr_init_set_str(tolerance, argv[4], BASE, RND);
-    if (argc == 6) debug = strtol(argv[5], NULL, BASE);
+    if (argc == 6) debug = (int)strtol(argv[5], NULL, BASE);
 
-    series abs = t_series(n);
-    series scale = t_series(n);
-    series sum = t_series(n);
-    series diff = t_series(n);
-    series prod = t_series(n);
-    series quot = t_series(n);
-    series inv = t_series(n);
-    series inv_x = t_series(n);
-    series neg = t_series(n);
-    series sqr_x = t_series(n);
-    series sqr_sin_x = t_series(n);
-    series sqr_cos_x = t_series(n);
-    series sqr_tan_x = t_series(n);
-    series sqrt_x = t_series(n);
-    series pow = t_series(n);
-    series exp_x = t_series(n);
-    series neg_exp_x = t_series(n);
-    series ln = t_series(n);
-    series ln_x = t_series(n);
-    series sin = t_series(n);
-    series sin_2x = t_series(n);
-    series cos = t_series(n);
-    series cos_2x = t_series(n);
-    series tan = t_series(n);
-    series sec2 = t_series(n);
+    series abs = t_jet(n);
+    series scale = t_jet(n);
+    series sum = t_jet(n);
+    series diff = t_jet(n);
+    series prod = t_jet(n);
+    series quot = t_jet(n);
+    series inv = t_jet(n);
+    series inv_x = t_jet(n);
+    series neg = t_jet(n);
+    series sqr_x = t_jet(n);
+    series sqr_sin_x = t_jet(n);
+    series sqr_cos_x = t_jet(n);
+    series sqr_tan_x = t_jet(n);
+    series sqrt_x = t_jet(n);
+    series pow = t_jet(n);
+    series exp_x = t_jet(n);
+    series neg_exp_x = t_jet(n);
+    series ln = t_jet(n);
+    series ln_x = t_jet(n);
+    series sin = t_jet(n);
+    series sin_2x = t_jet(n);
+    series cos = t_jet(n);
+    series cos_2x = t_jet(n);
+    series tan = t_jet(n);
+    series sec2 = t_jet(n);
 
     series c1 = ad_series_c(n, D1);
     series x = ad_series_v(n, x0);
@@ -109,9 +128,11 @@ int main (int argc, char **argv) {
     mpfr_const_pi(PI_2, RND);
     mpfr_div_2ui(PI_2, PI_2, 1, RND);
 
-    int x_positive = mpfr_sgn(x.jet[0]) > 0;
-    int x_non_zero = mpfr_zero_p(x.jet[0]) == 0;
-    int x_lt_pi_2 = mpfr_cmpabs(x.jet[0], PI_2) < 0;
+    int x_positive = mpfr_sgn(x[0]) > 0;
+    int x_non_zero = mpfr_zero_p(x[0]) == 0;
+    int x_lt_pi_2 = mpfr_cmpabs(x[0], PI_2) < 0;
+
+    tsm(argc, argv, 10, D01, 10, D1, D1, D1);
 
     printf("\n");
     ad_sqr(sqr_x, x);

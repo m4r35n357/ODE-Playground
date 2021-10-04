@@ -3,7 +3,7 @@
  * Interface for performing high order Automatic Differentiation
  * using the Taylor Series Method (TSM)
  *
- * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
 /*
@@ -24,7 +24,7 @@ typedef void (*model)(series, series);
 /*
  * Initialize file scoped temporary storage
  */
-void ad_tempvars (void);
+void ad_tempvars (int n);
 
 /*
  * Creates a Taylor Series with element zero set to value and the rest zeroed (represents a constant)
@@ -39,17 +39,17 @@ series ad_series_v (int size, mpfr_t value);
 /*
  * Prints a Taylor coefficient jet to order n
  */
-void jet_output (series jet, long n, char* f_colour, char *fk_colour);
+void jet_output (series jet, char* f_colour, char *fk_colour);
 
 /*
  * Applies factorials to convert Taylor coefficients to actual derivative values
  */
-void jet_to_derivs (series jet, long n);
+void jet_to_derivs (series jet);
 
 /*
  * Prints a derivative jet to order n
  */
-void derivative_output (series jet, long n, char* f_colour, char *fk_colour);
+void derivative_output (series jet, char* f_colour, char *fk_colour);
 
 /*
  * Finds a root of fn(f, x) by Newton's method, where f and x are Taylor Series
@@ -116,12 +116,12 @@ series ad_exp (series E, series U);
 /*
  * Calculates Taylor Series for the trigonometric sine and cosine of U, results stored in jets S and C
  */
-tuple ad_sin_cos (series S, series C, series U, geometry g);
+pair ad_sin_cos (series S, series C, series U, geometry g);
 
 /*
  * Calculates Taylor Series for the trigonometric tangent and squared secant of U, results stored in jets T and S2
  */
-tuple ad_tan_sec2 (series T, series S2, series U, geometry g);
+pair ad_tan_sec2 (series T, series S2, series U, geometry g);
 
 /*
  * Calculates Taylor Series for U^a, results stored in jet P

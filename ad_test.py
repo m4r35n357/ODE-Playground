@@ -1,12 +1,13 @@
 #
-#  (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#  (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 #  Unit Testing
 #  pytest --cov=ad --cov-report html:cov_html ad_test.py -v
 #  Mutation Testing
 #  rm -f .mutmut-cache; mutmut --test-time-base 10.0 --paths-to-mutate ad.py run --runner 'pytest ad_test.py'
+from collections import namedtuple
 from math import pi, exp, log, sin, cos, tan, sinh, cosh, tanh, factorial
-from ad import t_jet, t_horner, t_abs, t_prod, t_quot, t_pwr, t_exp, t_ln, t_sin_cos, t_tan_sec2, Series, Dual, t_asin, t_acos, t_atan
+from ad import Components, tsm, t_jet, t_horner, t_const, t_abs, t_prod, t_quot, t_pwr, t_exp, t_ln, t_sin_cos, t_tan_sec2, Series, Dual, t_asin, t_acos, t_atan
 from pytest import mark, raises, approx
 
 order = 6
@@ -38,6 +39,22 @@ data2_s = Series([0.9] * order)
 for i in range(1, order):
     data2_s.jet[i] = - 0.5 * i * data2_s.jet[i - 1]
 
+class Parameters(namedtuple('ParametersType', ['a', 'b', 'c'])):
+    pass
+
+def simple_get_p(order):
+    return Parameters(a=1.0, b=0.0, c=-1.0)
+
+def simple_ode(x, y, z, p, k):
+    return Components(x=p.a * x[k],
+                      y=p.b * y[k],
+                      z=p.c * z[k])
+
+@mark.skip(reason="no way of currently testing this")
+def test_tsm():
+    for step in tsm(simple_ode, simple_get_p):
+        assert False
+
 def test_t_jet_default():
     jet = t_jet(order)
     assert len(jet) == order
@@ -58,6 +75,12 @@ def test_t_jet(number):
 def test_horner():
     assert t_horner([-19, 7, -4, 6], 3) == 128
     assert t_horner([-19.0, 7.0, -4.0, 6.0], 3.0) == approx(128.0)
+
+def test_t_const():
+    value = 1.23456
+    ref = Series.get(order, value)
+    for k in range(order):
+        assert t_const(value, k) == ref.jet[k]
 
 @mark.parametrize('number', [1.0, δ])
 def test_t_abs_positive(number):
