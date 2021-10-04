@@ -1,9 +1,9 @@
 /*
  * Automatic Differentiation of Taylor Series, newest validation checks
  *
- * Example: ./libad-test-dbg 32 20 1 1e-18
+ * Example: ./libad-test-dbg 32 20 1 1e-18 [ 0 | 1 | 2 ]
  *
- * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
 #include <stdio.h>
@@ -52,9 +52,9 @@ void *get_p (int argc, char **argv, long order) {
 
 void ode (series x, series y, series z, components *c, void *params, int k) {
     parameters *p = (parameters *)params;
-	mpfr_mul(c->x, p->a, x[k], RND);
-	mpfr_mul(c->y, p->b, y[k], RND);
-	mpfr_mul(c->z, p->c, z[k], RND);
+    mpfr_mul(c->x, p->a, x[k], RND);
+    mpfr_mul(c->y, p->b, y[k], RND);
+    mpfr_mul(c->z, p->c, z[k], RND);
 }
 
 static result skip (char* name) {
@@ -89,11 +89,11 @@ int main (int argc, char **argv) {
     double precision = strtod(argv[1], NULL) * 3.322;
     mpfr_set_default_prec((int)precision);
     ad_lib_test_tempvars();
-    long n = strtol(argv[2], NULL, BASE) + 1;
+    int n = (int)strtol(argv[2], NULL, BASE) + 1;
     assert(n > 1);
     mpfr_init_set_str(x0, argv[3], BASE, RND);
     mpfr_init_set_str(tolerance, argv[4], BASE, RND);
-    if (argc == 6) debug = strtol(argv[5], NULL, BASE);
+    if (argc == 6) debug = (int)strtol(argv[5], NULL, BASE);
 
     series abs = t_jet(n);
     series scale = t_jet(n);

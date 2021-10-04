@@ -4,7 +4,7 @@
  * Example: ./tsm-rf-dbg 9 32 10 .01 50000 .05 -.05 .3 .28713 .1
  *          ./tsm-rf-dbg 9 32 16 .01 50000 .05 -.05 .3 .105 .1 | ./plot3d.py
  *
- * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
 #include <stdlib.h>
