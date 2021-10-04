@@ -26,6 +26,7 @@ components ode (series x, series y, series z, void *params, int k) {
     real xy = t_prod(x, y, k);
     return (components) {
         .x = p->a * x[k] - p->c * xy,
-        .y = p->d * xy - p->b * y[k]
+        .y = p->d * xy - p->b * y[k],
+        .z = 0.0L
     };
 }
