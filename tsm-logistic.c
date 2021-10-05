@@ -6,31 +6,28 @@
  * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
+#include <stdlib.h>
 #include <assert.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-int main (int argc, char **argv) {
-    long n, nsteps;
-    mpfr_t a, h, _;
+typedef struct { mpfr_t a; } parameters;
 
-    // initialize from command arguments
+void *get_p (int argc, char **argv, int n) {
     assert(argc == 10);
-    t_stepper(argv, &n, &h, &nsteps);
-    mpfr_inits(a, _, NULL);
-    series x = t_series(n + 1);
-    t_args(argv, argc, x.jet, &_, &_, &a);
+    (void)n;
+    parameters *p = malloc(sizeof (parameters));
+    t_params(argv, argc, &p->a);
+    return p;
+}
 
-    t_output(x.jet[0], _, _, h, 0);
-    for (long step = 1; step <= nsteps; step++) {
-        // build the jet of taylor coefficients
-        for (int k = 0; k < n; k++) {
-            //  x' = Ax(1 - x)
-            mpfr_fmms(_, a, x.jet[k], a, *t_sqr(x, k), RND);
-            t_next(x, _, k, POS);
-        }
-        // sum the series using Horner's method and advance one step
-        t_output(*t_horner(x, h), _, _, h, step);
-    }
-    return 0;
+void ode (series x, series y, series z, components *c, void *params, int k) {
+    (void)y; (void)z;
+    parameters *p = (parameters *)params;
+    //  x' = Ax(1 - x)
+    mpfr_fmms(c->x, p->a, x[k], p->a, *t_sqr(x, k), RND);
+    // not used
+    mpfr_set_zero(c->y, 1);
+    // not used
+    mpfr_set_zero(c->z, 1);
 }

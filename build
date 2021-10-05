@@ -27,7 +27,9 @@ build () {
 
 for model in \
 tsm-bouali \
+tsm-genesio-tesi \
 tsm-halvorsen \
+tsm-logistic \
 tsm-lorenz \
 tsm-lotka-volterra \
 tsm-rf \
