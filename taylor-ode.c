@@ -15,7 +15,7 @@ const mpfr_rnd_t RND = MPFR_RNDN;
 
 static char fs[42];
 
-static mpfr_t D0, D1, D_1, D2, D_2, _fk, _;
+static mpfr_t D0, D1, D_1, D2, D_2, _, _fk;
 
 void t_tempvars (int dp) {
     if (dp == 0) {
@@ -23,7 +23,7 @@ void t_tempvars (int dp) {
     } else {
         sprintf(fs, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe\n", dp, dp, dp);
     }
-    mpfr_inits(_fk, _, NULL);
+    mpfr_inits(_, _fk, NULL);
     mpfr_init_set_ui(D0, 0, RND);
     mpfr_init_set_ui(D1, 1, RND);
     mpfr_init_set_si(D_1, -1, RND);
@@ -135,13 +135,13 @@ mpfr_t *t_sqrt (series r, series u, int k) {
 }
 
 static mpfr_t *f_k (series df_du, series u, int k, int j_lower, int j_upper) {
-    mpfr_set_zero(_fk, 1);
+    mpfr_set_zero(_, 1);
     for (int j = j_lower; j <= j_upper; j++) {
-        mpfr_mul_si(_, u[k - j], k - j, RND);
-        mpfr_fma(_fk, df_du[j], _, _fk, RND);
+        mpfr_mul_si(_fk, u[k - j], k - j, RND);
+        mpfr_fma(_, df_du[j], _fk, _, RND);
     }
-    mpfr_div_si(_fk, _fk, k, RND);
-    return &_fk;
+    mpfr_div_si(_, _, k, RND);
+    return &_;
 }
 
 mpfr_t *t_exp (series e, series u, int k) {
@@ -178,13 +178,13 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
     return (pair){&t[k], &s[k]};
 }
 
-mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {
+mpfr_t *t_pwr (series p, series u, mpfr_t powr, int k) {
     assert(mpfr_sgn(u[0]) > 0);
     assert(p != u);
     if (k == 0) {
-        mpfr_pow(p[0], u[0], a, RND);
+        mpfr_pow(p[0], u[0], powr, RND);
     } else {
-        mpfr_mul(p[k], *f_k(p, u, k, 0, k - 1), a, RND);
+        mpfr_mul(p[k], powr, *f_k(p, u, k, 0, k - 1), RND);
         mpfr_sub(p[k], p[k], *f_k(u, p, k, 1, k - 1), RND);
         mpfr_div(p[k], p[k], u[0], RND);
     }
