@@ -11,14 +11,13 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-typedef struct { mpfr_t a, b, c, d0; } parameters;
+typedef struct { mpfr_t a, b, c; } parameters;
 
 void *get_p (int argc, char **argv, int n) {
     assert(argc == 12);
     (void)n;
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->a, &p->b, &p->c);
-    mpfr_init_set_ui(p->d0, 0, RND);
     return p;
 }
 

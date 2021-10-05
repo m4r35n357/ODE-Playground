@@ -12,13 +12,12 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-typedef struct { mpfr_t alpha, gamma, d0, d1, d4; series a, b, c; } parameters;
+typedef struct { mpfr_t alpha, gamma, d1, d4; series a, b, c; } parameters;
 
 void *get_p (int argc, char **argv, int n) {
     assert(argc == 11);
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->alpha, &p->gamma);
-    mpfr_init_set_ui(p->d0, 0, RND);
     mpfr_init_set_ui(p->d1, 1, RND);
     mpfr_init_set_ui(p->d4, 4, RND);
     p->a = t_jet(n); p->b = t_jet(n); p->c = t_jet(n);
