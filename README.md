@@ -1,5 +1,12 @@
-## Important
-This branch is pretty much "finished", or "abandoned", current work (double precision, bifurcation diagrams, no function analysis) is happening  on the tiny branch here: https://github.com/m4r35n357/ODE-Playground/tree/tiny
+## News (4th October 2021)
+
+I have decided to update the MPFR implementation in line with the pure C version that I have been working on since I wrote the message below.
+That remains in the compendium branch,and its README contains material not covered here.
+The code now looks like a framework; model clients no longer need to provide the TSM algorithm, or any other conditional code.
+The core TSM algorithm and the Taylor recurrences have all been brought up to date, and are now as minimal and readable as they can possibly be.
+
+## Important (OBSOLETE - kept for historical reasons)
+This branch is pretty much "finished", or "abandoned", current work (double precision, bifurcation diagrams, no function analysis) is happening  on the "compendium" branch here: https://github.com/m4r35n357/ODE-Playground/tree/compendium
 
 ## Background
 

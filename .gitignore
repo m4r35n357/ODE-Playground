@@ -8,13 +8,11 @@
 tsm-*-dbg
 tsm-*-static
 tsm-*-dynamic
-divergence
-dual-test
-taylor-test
 
-rk4-*-dbg
-rk4-*-static
-rk4-*-dynamic
+divergence
+
+ad-test-dbg
+libad-test-dbg
 
 # C coverage artifacts
 *.gcov
@@ -40,4 +38,3 @@ zig
 zig-cache/
 kerr-image.c
 
-a.out
