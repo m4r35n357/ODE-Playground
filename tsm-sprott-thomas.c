@@ -6,45 +6,35 @@
  * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
+#include <stdlib.h>
 #include <assert.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-int main (int argc, char **argv) {
-    long n, nsteps;
-    mpfr_t a, b, h, _;
+typedef struct { mpfr_t a, b; series sax, say, saz, cax, cay, caz, ax, ay, az, tx, ty, tz, sx, sy, sz; } parameters;
 
-    // initialize from command arguments
+void *get_p (int argc, char **argv, int n) {
     assert(argc == 11);
-    t_stepper(argv, &n, &h, &nsteps);
-    mpfr_inits(a, b, _, NULL);
-    series x = t_series(n + 1), y = t_series(n + 1), z = t_series(n + 1);
-    t_args(argv, argc, x.jet, y.jet, z.jet, &a, &b);
-    series sax = t_series(n), say = t_series(n), saz = t_series(n);
-    series cax = t_series(n), cay = t_series(n), caz = t_series(n);
-    series ax = t_series(n), ay = t_series(n), az = t_series(n);
-    series tx = t_series(n), ty = t_series(n), tz = t_series(n);
-    series sx = t_series(n), sy = t_series(n), sz = t_series(n);
+    parameters *p = malloc(sizeof (parameters));
+    t_params(argv, argc, &p->a, &p->b);
+    p->sax = t_jet(n); p->cax = t_jet(n); p->ax = t_jet(n); p->tx = t_jet(n); p->sx = t_jet(n);
+    p->say = t_jet(n); p->cay = t_jet(n); p->ay = t_jet(n); p->ty = t_jet(n); p->sy = t_jet(n);
+    p->saz = t_jet(n); p->caz = t_jet(n); p->az = t_jet(n); p->tz = t_jet(n); p->sz = t_jet(n);
+    return p;
+}
 
-    t_output(x.jet[0], y.jet[0], z.jet[0], h, 0);
-    for (long step = 1; step <= nsteps; step++) {
-        // build the jet of taylor coefficients
-        for (int k = 0; k < n; k++) {
-            mpfr_mul(ax.jet[k], x.jet[k], a, RND);
-            mpfr_mul(ay.jet[k], y.jet[k], a, RND);
-            mpfr_mul(az.jet[k], z.jet[k], a, RND);
-            //  x' = sin(Ay) - Btan(x)
-            mpfr_fms(_, b, *t_tan_sec2(tx, sx, x, k, TRIG).a, *t_sin_cos(say, cay, ay, k, TRIG).a, RND);
-            t_next(x, _, k, NEG);
-            //  y' = sin(Az) - Btan(y)
-            mpfr_fms(_, b, *t_tan_sec2(ty, sy, y, k, TRIG).a, *t_sin_cos(saz, caz, az, k, TRIG).a, RND);
-            t_next(y, _, k, NEG);
-            //  z' = sin(Ax) - Btan(z)
-            mpfr_fms(_, b, *t_tan_sec2(tz, sz, z, k, TRIG).a, *t_sin_cos(sax, cax, ax, k, TRIG).a, RND);
-            t_next(z, _, k, NEG);
-        }
-        // sum the series using Horner's method and advance one step
-        t_output(*t_horner(x, h), *t_horner(y, h), *t_horner(z, h), h, step);
-    }
-    return 0;
+void ode (series x, series y, series z, components *c, void *params, int k) {
+    parameters *p = (parameters *)params;
+    mpfr_mul(p->ax[k], x[k], p->a, RND);
+    mpfr_mul(p->ay[k], y[k], p->a, RND);
+    mpfr_mul(p->az[k], z[k], p->a, RND);
+    //  x' = sin(Ay) - Btan(x)
+    mpfr_fms(c->x, p->b, *t_tan_sec2(p->tx, p->sx, x, k, TRIG).a, *t_sin_cos(p->say, p->cay, p->ay, k, TRIG).a, RND);
+    mpfr_neg(c->x, c->x, RND);
+    //  y' = sin(Az) - Btan(y)
+    mpfr_fms(c->y, p->b, *t_tan_sec2(p->ty, p->sy, y, k, TRIG).a, *t_sin_cos(p->saz, p->caz, p->az, k, TRIG).a, RND);
+    mpfr_neg(c->y, c->y, RND);
+    //  z' = sin(Ax) - Btan(z)
+    mpfr_fms(c->z, p->b, *t_tan_sec2(p->tz, p->sz, z, k, TRIG).a, *t_sin_cos(p->sax, p->cax, p->ax, k, TRIG).a, RND);
+    mpfr_neg(c->z, c->z, RND);
 }

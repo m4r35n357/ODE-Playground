@@ -32,8 +32,11 @@ tsm-lorenz \
 tsm-lotka-volterra \
 tsm-rf \
 tsm-rossler \
+tsm-rucklidge \
+tsm-sprott-thomas \
 tsm-thomas \
-tsm-wimol-banlue
+tsm-wimol-banlue \
+tsm-yu-wang
 do
     rm -f ${model}-*
     build ${model} &
