@@ -158,6 +158,7 @@ int main (int argc, char **argv) {
     name = "x / sqrt(x) == sqrt(x)";
     x_positive ? compare(name, ad_quot(quot, x, sqrt_x), sqrt_x) : skip(name);
 
+    printf("\n");
     name = "x^2 == sqr(x)";
     x_positive ? compare(name, ad_pwr(pow, x, D2), sqr_x) : skip(name);
     name = "x^1 == x";
@@ -173,24 +174,27 @@ int main (int argc, char **argv) {
     name = "x^-2 == 1 / sqr(x)";
     x_positive ? compare(name, ad_pwr(pow, x, D_2), ad_inv(inv, sqr_x)) : skip(name);
 
+    printf("\n");
     name = "sqr(x) * x^-3 == 1 / x";
     x_positive ? compare(name, ad_prod(prod, sqr_x, ad_pwr(pow, x, D_3)), inv_x) : skip(name);
 
     name = "sqr(x)^0.5 == |x|";
     x_non_zero ? compare(name, ad_pwr(pow, sqr_x, D05), ad_abs(abs, x)) : skip(name);
 
+    printf("\n");
     name = "log(e^x) == x";
     compare(name, ad_ln(ln, ad_exp(exp_x, x)), x);
-    name = "log(sqr(x)) == 2 * log(x)";
+    name = "log(sqr(x)) == log(x) * 2";
     if (x_positive) ad_ln(ln_x, x);
     x_positive ? compare(name, ad_ln(ln, sqr_x), ad_scale(scale, ln_x, D2)) : skip(name);
-    name = "log(sqrt(x)) == 0.5 * log(x)";
+    name = "log(sqrt(x)) == log(x) / 2";
     x_positive ? compare(name, ad_ln(ln, sqrt_x), ad_scale(scale, ln_x, D05)) : skip(name);
     name = "log(1 / x) == - log(x)";
     x_positive ? compare(name, ad_ln(ln, inv_x), ad_neg(neg, ln_x)) : skip(name);
     name = "log(x^-3) == - 3 * log(x)";
     x_positive ? compare(name, ad_ln(ln, ad_pwr(pow, x, D_3)), ad_scale(scale, ln_x, D_3)) : skip(name);
 
+    printf("\n");
     ad_sin_cos(sin, cos, x, HYP);
     ad_tan_sec2(tan, sec2, x, HYP);
     ad_sqr(sqr_sin_x, sin);
@@ -209,13 +213,15 @@ int main (int argc, char **argv) {
     name = "cosh(2x) == cosh^2(x) + sinh^2(x)";
     compare(name, cos_2x, ad_plus(sum, sqr_cos_x, sqr_sin_x));
 
+    printf("\n");
     ad_exp(exp_x, x);
     ad_exp(neg_exp_x, ad_neg(neg, x));
-    name = "sinh(x) == 0.5 * (e^x - e^-x)";
-    compare(name, sin, ad_scale(scale, ad_minus(diff, exp_x, neg_exp_x), D05));
-    name = "cosh(x) == 0.5 * (e^x + e^-x)";
+    name = "cosh(x) == (e^x + e^-x) / 2";
     compare(name, cos, ad_scale(scale, ad_plus(sum, exp_x, neg_exp_x), D05));
+    name = "sinh(x) == (e^x - e^-x) / 2";
+    compare(name, sin, ad_scale(scale, ad_minus(diff, exp_x, neg_exp_x), D05));
 
+    printf("\n");
     ad_sin_cos(sin, cos, x, TRIG);
     ad_tan_sec2(tan, sec2, x, TRIG);
     ad_sqr(sqr_sin_x, sin);
