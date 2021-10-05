@@ -132,7 +132,16 @@ int main (int argc, char **argv) {
     int x_non_zero = mpfr_zero_p(x[0]) == 0;
     int x_lt_pi_2 = mpfr_cmpabs(x[0], PI_2) < 0;
 
+    printf("\n");
+    t_tempvars(12);
     tsm(argc, argv, 10, D01, 10, D1, D1, D1);
+    mpfr_t e1, e0, e_1;
+    mpfr_inits(e1, e0, e_1, NULL);
+    mpfr_exp(e1, D1, RND);
+    mpfr_exp(e0, D0, RND);
+    mpfr_exp(e_1, D_1, RND);
+    printf("\n");
+    t_output(e1, e0, e_1, D01, 10);
 
     printf("\n");
     ad_sqr(sqr_x, x);
