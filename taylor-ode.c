@@ -18,7 +18,11 @@ static char fs[42];
 static mpfr_t D0, D1, D_1, D2, D_2, _fk, _;
 
 void t_tempvars (int dp) {
-    dp == 0 ? sprintf(fs, "%%.RNe %%.RNe %%.RNe %%.9RNe\n") : sprintf(fs, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe\n", dp, dp, dp);
+    if (dp == 0) {
+        sprintf(fs, "%%.RNe %%.RNe %%.RNe %%.9RNe\n");
+    } else {
+        sprintf(fs, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe\n", dp, dp, dp);
+    }
     mpfr_inits(_fk, _, NULL);
     mpfr_init_set_ui(D0, 0, RND);
     mpfr_init_set_ui(D1, 1, RND);
@@ -69,7 +73,11 @@ mpfr_t *t_const (mpfr_t *value, int k){
 }
 
 mpfr_t *t_abs (series u, int k) {
-    mpfr_sgn(u[0]) < 0 ? mpfr_neg(_, u[k], RND) : mpfr_set(_, u[k], RND);
+    if (mpfr_sgn(u[0]) < 0) {
+        mpfr_neg(_, u[k], RND);
+    } else {
+        mpfr_set(_, u[k], RND);
+    }
     return &_;
 }
 
@@ -92,7 +100,11 @@ mpfr_t *t_sqr (series u, int k) {
 mpfr_t *t_quot (series q, series u, series v, int k) {
     assert(mpfr_zero_p(v[0]) == 0);
     assert(q != u && q != v);
-    k == 0 ? mpfr_set(q[k], u[0], RND) : mpfr_sub(q[k], u[k], *cauchy(q, v, k, 0, k - 1), RND);
+    if (k == 0) {
+        mpfr_set(q[0], u[0], RND);
+    } else {
+        mpfr_sub(q[k], u[k], *cauchy(q, v, k, 0, k - 1), RND);
+    }
     mpfr_div(q[k], q[k], v[0], RND);
     return &q[k];
 }
@@ -100,7 +112,11 @@ mpfr_t *t_quot (series q, series u, series v, int k) {
 mpfr_t *t_inv (series i, series v, int k) {
     assert(mpfr_zero_p(v[0]) == 0);
     assert(i != v);
-    k == 0 ? mpfr_set(i[k], D1, RND) : mpfr_neg(i[k], *cauchy(i, v, k, 0, k - 1), RND);
+    if (k == 0) {
+        mpfr_set(i[0], D1, RND);
+    } else {
+        mpfr_neg(i[k], *cauchy(i, v, k, 0, k - 1), RND);
+    }
     mpfr_div(i[k], i[k], v[0], RND);
     return &i[k];
 }
@@ -109,7 +125,7 @@ mpfr_t *t_sqrt (series r, series u, int k) {
     assert(mpfr_sgn(u[0]) > 0);
     assert(r != u);
     if (k == 0) {
-        mpfr_sqrt(r[k], u[0], RND);
+        mpfr_sqrt(r[0], u[0], RND);
     } else {
         mpfr_sub(r[k], u[k], *cauchy(r, r, k, 1, k - 1), RND);
         mpfr_div_2ui(r[k], r[k], 1, RND);
@@ -132,7 +148,7 @@ static mpfr_t *f_k (series df_du, series u, int k, int j_lower, int j_upper, mpf
 mpfr_t *t_exp (series e, series u, int k) {
     assert(e != u);
     if (k == 0) {
-        mpfr_exp(e[k], u[0], RND);
+        mpfr_exp(e[0], u[0], RND);
     } else {
         mpfr_set(e[k], *f_k(e, u, k, 0, k - 1, D1), RND);
     }
@@ -142,7 +158,7 @@ mpfr_t *t_exp (series e, series u, int k) {
 pair t_sin_cos (series s, series c, series u, int k, geometry g) {
     assert(s != c && s != u && c != u);
     if (k == 0) {
-        g == TRIG ? mpfr_sin_cos(s[k], c[k], u[0], RND) : mpfr_sinh_cosh(s[k], c[k], u[0], RND);
+        g == TRIG ? mpfr_sin_cos(s[0], c[0], u[0], RND) : mpfr_sinh_cosh(s[0], c[0], u[0], RND);
     } else {
         mpfr_set(s[k], *f_k(c, u, k, 0, k - 1, D1), RND);
         mpfr_set(c[k], *f_k(s, u, k, 0, k - 1, g == TRIG ? D_1 : D1), RND);
@@ -153,8 +169,8 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
 pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
     assert(t != s && t != u && s != u);
     if (k == 0) {
-        g == TRIG ? mpfr_tan(t[k], u[0], RND) : mpfr_tanh(t[k], u[0], RND);
-        g == TRIG ? mpfr_sec(s[k], u[0], RND) : mpfr_sech(s[k], u[0], RND);
+        g == TRIG ? mpfr_tan(t[0], u[0], RND) : mpfr_tanh(t[0], u[0], RND);
+        g == TRIG ? mpfr_sec(s[0], u[0], RND) : mpfr_sech(s[0], u[0], RND);
         mpfr_sqr(s[k], s[k], RND);
     } else {
         mpfr_set(t[k], *f_k(s, u, k, 0, k - 1, D1), RND);
@@ -167,7 +183,7 @@ mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {
     assert(mpfr_sgn(u[0]) > 0);
     assert(p != u);
     if (k == 0) {
-        mpfr_pow(p[k], u[0], a, RND);
+        mpfr_pow(p[0], u[0], a, RND);
     } else {
         mpfr_set(p[k], *f_k(p, u, k, 0, k - 1, a), RND);
         mpfr_sub(p[k], p[k], *f_k(u, p, k, 1, k - 1, D1), RND);
@@ -180,7 +196,7 @@ mpfr_t *t_ln (series l, series u, int k) {
     assert(mpfr_sgn(u[0]) > 0);
     assert(l != u);
     if (k == 0) {
-        mpfr_log(l[k], u[0], RND);
+        mpfr_log(l[0], u[0], RND);
     } else {
         mpfr_sub(l[k], u[k], *f_k(u, l, k, 1, k - 1, D1), RND);
         mpfr_div(l[k], l[k], u[0], RND);
