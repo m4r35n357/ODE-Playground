@@ -6,39 +6,29 @@
  * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
+#include <stdlib.h>
 #include <assert.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-int main (int argc, char **argv) {
-    long n, nsteps;
-    mpfr_t a, h, _, __;
+typedef struct { mpfr_t a, b; } parameters;
 
-    // initialize from command arguments
+void *get_p (int argc, char **argv, int n) {
     assert(argc == 11);
-    t_stepper(argv, &n, &h, &nsteps);
-    mpfr_inits(a, _, __, NULL);
-    series x = t_series(n + 1), y = t_series(n + 1), z = t_series(n + 1);
-    series w_b = t_series(n);
-    t_args(argv, argc, x.jet, y.jet, z.jet, &a, w_b.jet);
+    (void)n;
+    parameters *p = malloc(sizeof (parameters));
+    t_params(argv, argc, &p->a, &p->b);
+    return p;
+}
 
-    t_output(x.jet[0], y.jet[0], z.jet[0], h, 0);
-    for (long step = 1; step <= nsteps; step++) {
-        // build the jet of taylor coefficients
-        for (int k = 0; k < n; k++) {
-            //  x' = y
-            t_next(x, y.jet[k], k, POS);
-            //  y' = yz - x
-            mpfr_sub(_, *t_prod(y, z, k), x.jet[k], RND);
-            t_next(y, _, k, POS);
-            //  z' = z - ax^2 - y^2 - b
-            mpfr_sub(__, z.jet[k], w_b.jet[k], RND);
-            mpfr_sub(__, __, *t_sqr(y, k), RND);
-            mpfr_fma(_, *t_sqr(x, k), a, __, RND);
-            t_next(z, _, k, POS);
-        }
-        // sum the series using Horner's method and advance one step
-        t_output(*t_horner(x, h), *t_horner(y, h), *t_horner(z, h), h, step);
-    }
-    return 0;
+void ode (series x, series y, series z, components *c, void *params, int k) {
+    parameters *p = (parameters *)params;
+    //  x' = y
+    mpfr_set(c->x, y[k], RND);
+    //  y' = yz - x
+    mpfr_sub(c->y, *t_prod(y, z, k), x[k], RND);
+    //  z' = z - ax^2 - y^2 - b
+    mpfr_fma(c->z, p->a, *t_sqr(x, k), *t_sqr(y, k), RND);
+    mpfr_sub(c->z, z[k], c->z, RND);
+    mpfr_sub(c->z, c->z, *t_const(&p->b, k), RND);
 }

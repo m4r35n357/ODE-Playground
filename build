@@ -35,6 +35,8 @@ tsm-lotka-volterra \
 tsm-rf \
 tsm-rossler \
 tsm-rucklidge \
+tsm-sj \
+tsm-sprott-minimal \
 tsm-sprott-thomas \
 tsm-thomas \
 tsm-wimol-banlue \
