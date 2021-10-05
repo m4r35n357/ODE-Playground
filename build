@@ -51,7 +51,27 @@ echo " Building libad-test-dbg"
 rm -f libad-test-dbg
 ${CC} -O0 $WARNINGS -g -o libad-test-dbg taylor-ode.c ad.c libad-test.c -lmpfr &
 
-wait
+echo " Building libtaylor"
+rm -f libtaylor.so taylor-ode.o
+${CC} -O3 -DNDEBUG -c $WARNINGS -fpic taylor-ode.c && ${CC} -shared -o libtaylor.so taylor-ode.o -s &
+# Example:
+# gcc -O3 -DNDEBUG -L. -Wall -o test tsm-lorenz.c -ltaylor -lmpfr -s
+# export LD_LIBRARY_PATH=.
+# ./test 15 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/data; gnuplot -p -e "splot '/tmp/data' with lines"
+
+echo " Building libad"
+rm -f libad.so ad.o
+${CC} -O0 -c $WARNINGS -g -fpic ad.c && ${CC} -shared -o libad.so ad.o &
+# Example:
+# gcc -L. -Wall -g -o test ad-test.c -lad -ltaylor -lmpfr
+# ./test 7 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt
 
 echo ""
-ls -lh --color *ad-* tsm-* rk4-* divergence
+wait
+
+echo " Building libad-test"
+rm -f libad-test
+${CC} -L. $WARNINGS -o libad-test libad-test.c -lad -ltaylor -lmpfr
+
+echo ""
+ls -lh --color *ad-* tsm-* lib*.so divergence

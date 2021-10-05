@@ -13,6 +13,7 @@ divergence
 
 ad-test-dbg
 libad-test-dbg
+libad-test
 
 # C coverage artifacts
 *.gcov
