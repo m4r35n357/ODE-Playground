@@ -169,8 +169,8 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
     assert(t != s && t != u && s != u);
     if (k == 0) {
         g == TRIG ? mpfr_tan(t[0], u[0], RND) : mpfr_tanh(t[0], u[0], RND);
-        g == TRIG ? mpfr_sec(s[0], u[0], RND) : mpfr_sech(s[0], u[0], RND);
-        mpfr_sqr(s[k], s[k], RND);
+        mpfr_sqr(s[0], t[0], RND);
+        g == TRIG ? mpfr_add(s[0], D1, s[0], RND) : mpfr_sub(s[0], D1, s[0], RND);
     } else {
         mpfr_set(t[k], *f_k(s, u, k, 0, k - 1), RND);
         mpfr_mul(s[k], *f_k(t, t, k, 0, k - 1), g == TRIG ? D2 : D_2, RND);
