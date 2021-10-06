@@ -37,12 +37,12 @@ void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step) {
 }
 
 void t_params (char **argv, int argc, ...) {
-    va_list model_params;
-    va_start(model_params, argc);
+    va_list model;
+    va_start(model, argc);
     for (int i = 9; i < argc; i++) {
-        mpfr_init_set_str(*va_arg(model_params, mpfr_t *), argv[i], BASE, RND);
+        mpfr_init_set_str(*va_arg(model, mpfr_t *), argv[i], BASE, RND);
     }
-    va_end(model_params);
+    va_end(model);
 }
 
 series t_jet (int n) {
