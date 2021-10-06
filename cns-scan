@@ -17,7 +17,7 @@ n=1
 while [ $n -le $max ]
 do
     set $original
-    begin="$1 $2 $3"
+    begin="$1 $2 $max"
     shift 4
     finish="$*"
     current="$begin $n $finish"
