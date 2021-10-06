@@ -24,7 +24,7 @@ typedef void (*model)(series, series);
 /*
  * Initialize file scoped temporary storage
  */
-void ad_tempvars (int n);
+void ad_init (int n);
 
 /*
  * Creates a Taylor Series with element zero set to value and the rest zeroed (represents a constant)

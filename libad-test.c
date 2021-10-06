@@ -25,8 +25,9 @@ static int n, debug = 0, total = 0, passed = 0, skipped = 0;
 
 static mpfr_t x0, delta, tolerance, D0, D01, D05, D_05, D1, D_1, D2, D_2, D_3;
 
-static void ad_lib_test_tempvars (void) {
-    ad_tempvars(n);
+static void libad_test_init (void) {
+    ad_init(n);
+    t_init(12);
     mpfr_init(delta);
     mpfr_init_set_ui(D0, 0, RND);
     mpfr_init_set_str(D01, "0.1", BASE, RND);
@@ -90,7 +91,7 @@ int main (int argc, char **argv) {
     mpfr_set_default_prec((int)precision);
     n = (int)strtol(argv[2], NULL, BASE) + 1;
     assert(n > 1);
-    ad_lib_test_tempvars();
+    libad_test_init();
     mpfr_init_set_str(x0, argv[3], BASE, RND);
     mpfr_init_set_str(tolerance, argv[4], BASE, RND);
     if (argc == 6) debug = (int)strtol(argv[5], NULL, BASE);
@@ -133,7 +134,6 @@ int main (int argc, char **argv) {
     int x_lt_pi_2 = mpfr_cmpabs(x[0], PI_2) < 0;
 
     printf("\n");
-    t_tempvars(12);
     tsm(argc, argv, 10, D01, 10, D1, D1, D1);
     mpfr_t e1, e0, e_1;
     mpfr_inits(e1, e0, e_1, NULL);

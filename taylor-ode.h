@@ -33,7 +33,7 @@ void t_params (char **argv, int count, ...);
 /*
  * Pre-allocate some MPFR variables
  */
-void t_tempvars (int dp);
+void t_init (int dp);
 
 /*
  * Creates a zeroed Taylor Series of the specified size

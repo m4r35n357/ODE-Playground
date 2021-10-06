@@ -17,7 +17,7 @@ static char fs[42];
 
 static mpfr_t D0, D1, D_1, D2, D_2, _, _fk;
 
-void t_tempvars (int dp) {
+void t_init (int dp) {
     if (dp == 0) {
         sprintf(fs, "%%.RNe %%.RNe %%.RNe %%.9RNe\n");
     } else {

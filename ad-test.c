@@ -23,8 +23,8 @@ static series ___;
 
 static mpfr_t D0, D05, D_05, D1, D_1, D2, D_2, D3, D4;
 
-static void ad_test_tempvars (int n) {
-    ad_tempvars(n);
+static void ad_test_init (int n) {
+    ad_init(n);
     mpfr_init_set_ui(D0, 0, RND);
     mpfr_init_set_str(D05, "0.5", BASE, RND);
     mpfr_init_set_str(D_05, "-0.5", BASE, RND);
@@ -72,7 +72,7 @@ int main (int argc, char **argv) {
     mpfr_set_default_prec(113);
     n = (int)strtol(argv[1], NULL, BASE) + 1;
     assert(n > 1);
-    ad_test_tempvars(n);
+    ad_test_init(n);
     mpfr_init_set_str(x, argv[2], BASE, RND);
     mpfr_init_set_str(y, argv[3], BASE, RND);
     mpfr_init(_);

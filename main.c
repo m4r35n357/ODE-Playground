@@ -21,7 +21,7 @@ int main (int argc, char **argv) {
     mpfr_init_set_str(y0, argv[7], BASE, RND);
     mpfr_init_set_str(z0, argv[8], BASE, RND);
 
-    t_tempvars(dp);
+    t_init(dp);
     tsm(argc, argv, n, h, steps, x0, y0, z0);
 
     return 0;

@@ -13,8 +13,8 @@ static int order;
 
 static mpfr_t delta;
 
-void ad_tempvars (int n) {
-    t_tempvars(9);
+void ad_init (int n) {
+    t_init(9);
     order = n;
     mpfr_init(delta);
 }
