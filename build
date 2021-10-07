@@ -26,6 +26,7 @@ for model in \
 tsm-bouali \
 tsm-genesio-tesi \
 tsm-halvorsen \
+tsm-isuc \
 tsm-logistic \
 tsm-lorenz \
 tsm-lotka-volterra \
