@@ -63,9 +63,9 @@ mpfr_t *t_horner (series s, int n, mpfr_t h) {
     return &_;
 }
 
-mpfr_t *t_const (mpfr_t *value, int k){
+mpfr_t *t_const (mpfr_t value, int k){
     if (k == 0) {
-        mpfr_set(_const, *value, RND);
+        mpfr_set(_const, value, RND);
     } else {
         mpfr_set_zero(_const, 1);
     }

@@ -30,5 +30,5 @@ void ode (series x, series y, series z, components *c, void *params, int k) {
     mpfr_neg(c->y, *t_prod(z, p->tx, k), RND);
     //  z' = - A + xy + |y|
     mpfr_add(c->z, *t_prod(x, y, k), *t_abs(y, k), RND);
-    mpfr_sub(c->z, c->z, *t_const(&p->a, k), RND);
+    mpfr_sub(c->z, c->z, *t_const(p->a, k), RND);
 }

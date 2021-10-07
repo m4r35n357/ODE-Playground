@@ -30,5 +30,5 @@ void ode (series x, series y, series z, components *c, void *params, int k) {
     mpfr_fma(c->y, p->a, y[k], x[k], RND);
     //  z' = B + z(x - C)
     mpfr_fms(c->z, p->c, z[k], *t_prod(z, x, k), RND);
-    mpfr_sub(c->z, *t_const(&p->b, k), c->z, RND);
+    mpfr_sub(c->z, *t_const(p->b, k), c->z, RND);
 }
