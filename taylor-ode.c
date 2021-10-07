@@ -15,7 +15,7 @@ const mpfr_rnd_t RND = MPFR_RNDN;
 
 static char fs[42];
 
-static mpfr_t D0, D1, D_1, D2, D_2, _, _fk;
+static mpfr_t D0, D1, D_1, D2, D_2, _, _fk, _const, _abs, *_prod, *_sqr;
 
 void t_init (int dp) {
     if (dp == 0) {
@@ -23,7 +23,7 @@ void t_init (int dp) {
     } else {
         sprintf(fs, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe\n", dp, dp, dp);
     }
-    mpfr_inits(_, _fk, NULL);
+    mpfr_inits(_, _fk, _const, _abs, *_prod, *_sqr, NULL);
     mpfr_init_set_ui(D0, 0, RND);
     mpfr_init_set_ui(D1, 1, RND);
     mpfr_init_set_si(D_1, -1, RND);
@@ -65,20 +65,20 @@ mpfr_t *t_horner (series s, int n, mpfr_t h) {
 
 mpfr_t *t_const (mpfr_t *value, int k){
     if (k == 0) {
-        mpfr_set(_, *value, RND);
+        mpfr_set(_const, *value, RND);
     } else {
-        mpfr_set_zero(_, 1);
+        mpfr_set_zero(_const, 1);
     }
-    return &_;
+    return &_const;
 }
 
 mpfr_t *t_abs (series u, int k) {
     if (mpfr_sgn(u[0]) < 0) {
-        mpfr_neg(_, u[k], RND);
+        mpfr_neg(_abs, u[k], RND);
     } else {
-        mpfr_set(_, u[k], RND);
+        mpfr_set(_abs, u[k], RND);
     }
-    return &_;
+    return &_abs;
 }
 
 static mpfr_t *cauchy (series a, series b, int k, int j_lower, int j_upper) {
@@ -90,11 +90,11 @@ static mpfr_t *cauchy (series a, series b, int k, int j_lower, int j_upper) {
 }
 
 mpfr_t *t_prod (series u, series v, int k) {
-    return cauchy(u, v, k, 0, k);
+    return _prod = cauchy(u, v, k, 0, k);
 }
 
 mpfr_t *t_sqr (series u, int k) {
-    return cauchy(u, u, k, 0, k);
+    return _sqr = cauchy(u, u, k, 0, k);
 }
 
 mpfr_t *t_quot (series q, series u, series v, int k) {
