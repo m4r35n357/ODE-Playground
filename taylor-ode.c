@@ -15,7 +15,7 @@ const mpfr_rnd_t RND = MPFR_RNDN;
 
 static char fs[42];
 
-static mpfr_t D1, D_1, D2, D_2, _, _fk, _const, _abs, *_prod, *_sqr;
+static mpfr_t D1, D_1, D2, D_2, _horner, _, _fk, _const, _abs, *_prod, *_sqr;
 
 void t_init (int dp) {
     if (dp == 0) {
@@ -23,7 +23,7 @@ void t_init (int dp) {
     } else {
         sprintf(fs, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe\n", dp, dp, dp);
     }
-    mpfr_inits(_, _fk, _const, _abs, *_prod, *_sqr, NULL);
+    mpfr_inits(_horner, _, _fk, _const, _abs, *_prod, *_sqr, NULL);
     mpfr_init_set_ui(D1, 1, RND);
     mpfr_init_set_si(D_1, -1, RND);
     mpfr_init_set_ui(D2, 2, RND);
@@ -54,12 +54,12 @@ series t_jet (int n) {
 }
 
 mpfr_t *t_horner (series s, int n, mpfr_t h) {
-    mpfr_set_zero(_, 1);
+    mpfr_set_zero(_horner, 1);
     for (int i = n; i >= 0; i--) {
-        mpfr_fma(_, _, h, s[i], RND);
+        mpfr_fma(_horner, _horner, h, s[i], RND);
     }
-    if (mpfr_number_p(_) == 0) exit(1);
-    return &_;
+    if (mpfr_number_p(_horner) == 0) exit(1);
+    return &_horner;
 }
 
 mpfr_t *t_const (mpfr_t value, int k){
