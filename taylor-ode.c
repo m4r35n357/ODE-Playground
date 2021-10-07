@@ -15,7 +15,7 @@ const mpfr_rnd_t RND = MPFR_RNDN;
 
 static char fs[42];
 
-static mpfr_t D0, D1, D_1, D2, D_2, _, _fk, _const, _abs, *_prod, *_sqr;
+static mpfr_t D1, D_1, D2, D_2, _, _fk, _const, _abs, *_prod, *_sqr;
 
 void t_init (int dp) {
     if (dp == 0) {
@@ -24,7 +24,6 @@ void t_init (int dp) {
         sprintf(fs, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe\n", dp, dp, dp);
     }
     mpfr_inits(_, _fk, _const, _abs, *_prod, *_sqr, NULL);
-    mpfr_init_set_ui(D0, 0, RND);
     mpfr_init_set_ui(D1, 1, RND);
     mpfr_init_set_si(D_1, -1, RND);
     mpfr_init_set_ui(D2, 2, RND);
