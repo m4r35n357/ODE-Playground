@@ -89,14 +89,14 @@ series ad_neg (series m, series u) {
 
 series ad_abs (series a, series u) {
     for (int k = 0; k < order; k++) {
-        mpfr_set(a[k], *t_abs(u, k), RND);
+        mpfr_swap(a[k], *t_abs(u, k));
     }
     return a;
 }
 
 series ad_prod (series p, series u, series v) {
     for (int k = 0; k < order; k++) {
-        mpfr_set(p[k], *t_prod(u, v, k), RND);
+        mpfr_swap(p[k], *t_prod(u, v, k));
     }
     return p;
 }
@@ -117,7 +117,7 @@ series ad_inv (series i, series v) {
 
 series ad_sqr (series s, series u) {
     for (int k = 0; k < order; k++) {
-        mpfr_set(s[k], *t_sqr(u, k), RND);
+        mpfr_swap(s[k], *t_sqr(u, k));
     }
     return s;
 }

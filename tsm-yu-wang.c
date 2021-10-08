@@ -28,7 +28,7 @@ void ode (series x, series y, series z, components *c, void *params, int k) {
     //  y' = Bx - cxz
     mpfr_fmms(c->y, p->b, x[k], p->c, *t_prod(x, z, k), RND);
     //  z' = e^(xy) - Dz
-    mpfr_set(p->xy[k], *t_prod(x, y, k), RND);
+    mpfr_swap(p->xy[k], *t_prod(x, y, k));
     mpfr_fms(c->z, p->d, z[k], *t_exp(p->e_xy, p->xy, k), RND);
     mpfr_neg(c->z, c->z, RND);
 }
