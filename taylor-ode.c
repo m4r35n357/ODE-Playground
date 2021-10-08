@@ -89,12 +89,12 @@ static mpfr_t *cauchy (series a, series b, int k, int j_lower, int j_upper) {
 }
 
 mpfr_t *t_prod (series u, series v, int k) {
-    mpfr_set(_prod, *cauchy(u, v, k, 0, k), RND);
+    mpfr_swap(_prod, *cauchy(u, v, k, 0, k));
     return &_prod;
 }
 
 mpfr_t *t_sqr (series u, int k) {
-    mpfr_set(_sqr, *cauchy(u, u, k, 0, k), RND);
+    mpfr_swap(_sqr, *cauchy(u, u, k, 0, k));
     return &_sqr;
 }
 
@@ -150,7 +150,7 @@ mpfr_t *t_exp (series e, series u, int k) {
     if (k == 0) {
         mpfr_exp(e[0], u[0], RND);
     } else {
-        mpfr_set(e[k], *f_k(e, u, k, 0, k - 1), RND);
+        mpfr_swap(e[k], *f_k(e, u, k, 0, k - 1));
     }
     return &e[k];
 }
@@ -160,7 +160,7 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
     if (k == 0) {
         g == TRIG ? mpfr_sin_cos(s[0], c[0], u[0], RND) : mpfr_sinh_cosh(s[0], c[0], u[0], RND);
     } else {
-        mpfr_set(s[k], *f_k(c, u, k, 0, k - 1), RND);
+        mpfr_swap(s[k], *f_k(c, u, k, 0, k - 1));
         mpfr_mul(c[k], *f_k(s, u, k, 0, k - 1), g == TRIG ? D_1 : D1, RND);
     }
     return (pair){&s[k], &c[k]};
@@ -173,7 +173,7 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
         mpfr_sqr(s[0], t[0], RND);
         g == TRIG ? mpfr_add(s[0], D1, s[0], RND) : mpfr_sub(s[0], D1, s[0], RND);
     } else {
-        mpfr_set(t[k], *f_k(s, u, k, 0, k - 1), RND);
+        mpfr_swap(t[k], *f_k(s, u, k, 0, k - 1));
         mpfr_mul(s[k], *f_k(t, t, k, 0, k - 1), g == TRIG ? D2 : D_2, RND);
     }
     return (pair){&t[k], &s[k]};
@@ -219,9 +219,9 @@ void tsm (int argc, char **argv, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y
             mpfr_div_si(z[k + 1], c_dot->z, k + 1, RND);
         }
         t_output(x[0], y[0], z[0], h, step);
-        mpfr_set(x[0], *t_horner(x, n, h), RND);
-        mpfr_set(y[0], *t_horner(y, n, h), RND);
-        mpfr_set(z[0], *t_horner(z, n, h), RND);
+        mpfr_swap(x[0], *t_horner(x, n, h));
+        mpfr_swap(y[0], *t_horner(y, n, h));
+        mpfr_swap(z[0], *t_horner(z, n, h));
     }
     t_output(x[0], y[0], z[0], h, steps);
 }
