@@ -24,6 +24,7 @@ build () {
 
 for model in \
 tsm-bouali \
+tsm-burke-shaw \
 tsm-genesio-tesi \
 tsm-halvorsen \
 tsm-isuc \

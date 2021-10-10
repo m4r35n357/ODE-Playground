@@ -240,6 +240,7 @@ int main (int argc, char **argv) {
     name = "cos(2x) == cos^2(x) - sin^2(x)";
     compare(name, cos_2x, ad_minus(diff, sqr_cos_x, sqr_sin_x));
 
+    if (debug != 0) printf("\n");
     printf("%sTotal%s: %d, %sPASSED%s %d", KWHT, KNRM, total, KGRN, KNRM, passed);
     if (skipped > 0) {
         printf(", %sSKIPPED%s %d", KYLW, KNRM, skipped);
