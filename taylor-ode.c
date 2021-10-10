@@ -13,7 +13,7 @@ const int BASE = 10;
 
 const mpfr_rnd_t RND = MPFR_RNDN;
 
-static char fs[42];
+static char fs[60];
 
 static mpfr_t D1, D_1, D2, D_2, _horner, _, _fk, _const, _abs, _prod, _sqr;
 
