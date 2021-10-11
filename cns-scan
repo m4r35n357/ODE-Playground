@@ -23,8 +23,6 @@ do
     current="$begin $n $finish"
     case $method in
         'step2') halfstep $current;;
-        'step4') quarterstep $current;;
-        'order') orderplus1 $current;;
          'both') orderstep $current;;
               *) echo "CNS: Bad Method"; exit 1;;
     esac

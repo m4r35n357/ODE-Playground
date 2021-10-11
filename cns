@@ -13,8 +13,6 @@ original=$*
 
 case $method in
     'step2') halfstep $original;;
-    'step4') quarterstep $original;;
-    'order') orderplus1 $original;;
      'both') orderstep $original;;
     'nosim') ;;  # replot existing data
           *) echo "CNS: Bad Method"; exit 1;;
