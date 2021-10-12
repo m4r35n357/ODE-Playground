@@ -13,20 +13,16 @@ original=$*
 
 . ./cns-functions.sh
 
-n=2
+n=1
 while [ $n -le $max ]
 do
     set $original
-    begin="$1 $2"
-    shift 3
-    finish="$*"
-    current="$begin $n $finish"
+    begin="$1 $2 $max"
+    shift 4
+    current="$begin $n $*"
     case $method in
-        'step4') quarterstep $current;;
-        'step8') eightthstep $current;;
-        'order') orderplus2 $current;;
+        'step2') halfstep $current;;
          'both') orderstep $current;;
-        'both2') orderstep2 $current;;
               *) echo "CNS: Bad Method"; exit 1;;
     esac
     $current >$fileB & wait

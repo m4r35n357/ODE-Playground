@@ -35,33 +35,33 @@ real t_horner (series S, long n, real h);
 /*
  * The Taylor Series Method (TSM) in brief; to solve a system of Ordinary Differential Equations defined by:
  *
- *                         x'(t) = ode(x(t))
+ *                         v(t) = ode(x(t))
  *
- * We plug x(t) into the equations, then somehow use the value of x'(t) to estimate the next x value in the sequence.
+ * We plug x(t) into the equations, then somehow use the value(s) of v(t) to estimate the next x value(s) in the sequence.
  *
  * Now, evolution of a time-varying quantity can be represented as a Taylor Series:
  *
- *                     x(t0 + h) = sum{k=0->inf} X[k].h^k     where X[0] = x(t0), X[k] = (d/dt)^k x(t0) / k! and h = t - t0  (A)
+ *             x(t0 + h) = x(t) = sum{k=0->inf} X[k].h^k    where X[0] = x(t0), X[k] = (d/dt)^k x(t0) / k! and h = t - t0  (A)
  *
- * This calculation is best performed using Horner's method. Similarly, the time derivative of x(t) can be represented as:
+ * This calculation is best performed using Horner's method. Similarly, the velocities can be represented as:
  *
- *                         x'(t) = sum{k=0->inf} X'[k].h^k                                                                   (B)
+ *                         v(t) = sum{k=0->inf} V[k].h^k                                                                   (B)
  *
- * So, X'[k] is the result of evaluating the ODE equation, but with all variables expressed as Taylor Series, X[k].
+ * So, V[k] is the result of evaluating the ODE equation, but with all variables expressed as Taylor Series, X[k].
  *
- *                              X'[k] = ODE(X[k])
+ *                         V[k] = ODE(X[k])
  *
- * Furthermore, by differentiating (A) and equating it to (B) we obtain an additional and very useful IDENTITY:
+ * Furthermore, by explicitly differentiating (A) wrt t, we can obtain an additional and very useful IDENTITY:
  *
- *                     d/dt x(t) = sum{k=1->inf} k.X[k].h^(k-1)
+ *                    d/dt x(t) = sum{k=1->inf} k.X[k].h^(k-1)
  *
- *                               = sum{k=0->inf} (k+1).X[k+1].h^k                                                            (C)
+ *                              = sum{k=0->inf} (k+1).X[k+1].h^k                                                           (C)
  *
- * Comparing (B) and (C),  X'[k] = (k+1).X[k+1]             *** this IDENTITY is also used in deriving the recurrences below ***
+ * Comparing (B) and (C),  V[k] = (k+1).X[k+1]        *** this IDENTITY is also used in deriving the recurrences below ***
  *
- *                   ==>  X[k+1] = X'[k] / (k + 1)
+ *                   ==> X[k+1] = V[k] / (k + 1)
  *
- * 1. Starting with initial values X[0], evaluate the ODE equations (X'[k]) using X[k], and recurrence relations where needed,
+ * 1. Starting with initial values X[0], evaluate the ODE equations (V[k]) using X[k], and recurrence relations where needed,
  *
  *    then generate the next Taylor Series coefficient X[k+1] using the IDENTITY
  *

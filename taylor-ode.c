@@ -136,18 +136,18 @@ void tsm (int argc, char **argv, long dp, long n, real h, long steps, real x0, r
     series y = t_jet(n + 1); y[0] = y0;
     series z = t_jet(n + 1); z[0] = z0;
     void *p = get_p(argc, argv, n);
-    components cdot = (components) {0.0L, 0.0L, 0.0L};
+    components slope = (components) {0.0L, 0.0L, 0.0L};
     for (long step = 0; step < steps; step++) {
         for (int k = 0; k < n; k++) {
-            components c = ode(x, y, z, p, k);
-            x[k + 1] = c.x / (k + 1);
-            y[k + 1] = c.y / (k + 1);
-            z[k + 1] = c.z / (k + 1);
+            components v = ode(x, y, z, p, k);
+            x[k + 1] = v.x / (k + 1);
+            y[k + 1] = v.y / (k + 1);
+            z[k + 1] = v.z / (k + 1);
         }
-        t_output(dp, x[0], y[0], z[0], h * step, x[1] * cdot.x < 0.0L ? (x[2] > 0.0L ? "x" : "X") : "_",
-                                                 y[1] * cdot.y < 0.0L ? (y[2] > 0.0L ? "y" : "Y") : "_",
-                                                 z[1] * cdot.z < 0.0L ? (z[2] > 0.0L ? "z" : "Z") : "_");
-        cdot = (components) {x[1], y[1], z[1]};
+        t_output(dp, x[0], y[0], z[0], h * step, x[1] * slope.x < 0.0L ? (x[2] > 0.0L ? "x" : "X") : "_",
+                                                 y[1] * slope.y < 0.0L ? (y[2] > 0.0L ? "y" : "Y") : "_",
+                                                 z[1] * slope.z < 0.0L ? (z[2] > 0.0L ? "z" : "Z") : "_");
+        slope = (components) {x[1], y[1], z[1]};
         x[0] = t_horner(x, n, h);
         y[0] = t_horner(y, n, h);
         z[0] = t_horner(z, n, h);

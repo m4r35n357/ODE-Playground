@@ -12,11 +12,8 @@ original=$*
 . ./cns-functions.sh
 
 case $method in
-    'step4') quarterstep $original;;
-    'step8') eightthstep $original;;
-    'order') orderplus2 $original;;
+    'step2') halfstep $original;;
      'both') orderstep $original;;
-    'both2') orderstep2 $original;;
     'nosim') ;;  # replot existing data
           *) echo "CNS: Bad Method"; exit 1;;
 esac
