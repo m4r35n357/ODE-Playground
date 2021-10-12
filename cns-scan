@@ -19,8 +19,7 @@ do
     set $original
     begin="$1 $2 $max"
     shift 4
-    finish="$*"
-    current="$begin $n $finish"
+    current="$begin $n $*"
     case $method in
         'step2') halfstep $current;;
          'both') orderstep $current;;
