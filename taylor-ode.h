@@ -26,17 +26,17 @@ typedef mpfr_t *series;
 void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step);
 
 /*
- * Bulk set initial coordinate values and ODE parameters from the command line arguments (6 onwards)
+ * Bulk set initial coordinate values and ODE parameters from the command line arguments (9 onwards)
  */
 void t_params (char **argv, int count, ...);
 
 /*
- * Pre-allocate some MPFR variables
+ * Pre-allocate some local MPFR variables
  */
 void t_init (int dp);
 
 /*
- * Creates a zeroed Taylor Series of the specified size
+ * Creates a zeroed Taylor Series of the specified number of elements
  */
 series t_jet (int size);
 
@@ -56,7 +56,7 @@ mpfr_t *t_horner (series S, int n, mpfr_t h);
  *
  *             x(t0 + h) = x(t) = sum{k=0->inf} X[k].h^k    where X[0] = x(t0), X[k] = (d/dt)^k x(t0) / k! and h = t - t0  (A)
  *
- * This calculation is best performed using Horner's method. Similarly, the velocities can be represented as:
+ * This calculation is best performed using Horner's method. Similarly, the velocity can be represented as:
  *
  *                         v(t) = sum{k=0->inf} V[k].h^k                                                                   (B)
  *
@@ -80,6 +80,36 @@ mpfr_t *t_horner (series S, int n, mpfr_t h);
  *
  * 2. Apply Horner's method to calculate the new values x(t0 + h), which become X[0] for the next time step.
  */
+void tsm (int argc, char **argv, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0);
+
+/*
+ * For returning x, y, z velocities from the model
+ */
+typedef struct {
+    mpfr_t x;
+    mpfr_t y;
+    mpfr_t z;
+} components;
+
+/*
+ * Obligatory client method signatures
+ */
+
+/*
+ * Get a blob of parameter data from the model to be passed back in from ode()
+ */
+void *get_p (int argc, char **argv, int order);
+
+/*
+ * Calculate the kth components of the velocity jet V, using the coordinate jets and the parameter data,
+ *
+ * together with the functions below as necessary.
+ */
+void ode (components *c, series x, series y, series z, void *params, int k);
+
+/*
+ * Basic Taylor Series functions
+ */
 
 /*
  * Returns value if k is 0, and zero otherwise.  For handling _additive_ constants.
@@ -90,6 +120,10 @@ mpfr_t *t_const (mpfr_t value, int k);
  * Returns a pointer to kth element of the absolute value of U, result stored and returned in variable A, NO JET STORAGE
  */
 mpfr_t *t_abs (series U, int k);
+
+/*
+ * Taylor Series recurrence relationships
+ */
 
 /*
  * Cauchy product for C = A.B
@@ -260,24 +294,3 @@ mpfr_t *t_pwr (series P, series U, mpfr_t a, int k);
  *                   L[k] = (U[k] - sum{j=1->k-1} U[j].(k-j).L[k-j]/k) / U[0]
  */
 mpfr_t *t_ln (series L, series U, int k);
-
-/*
- * For returning x, y, z values
- */
-typedef struct {
-    mpfr_t x;
-    mpfr_t y;
-    mpfr_t z;
-} components;
-
-/*
- * Obligatory client method signatures
- */
-void *get_p (int argc, char **argv, int order);
-
-void ode (components *c, series x, series y, series z, void *params, int k);
-
-/*
- * For performing a simulation
- */
-void tsm (int argc, char **argv, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0);

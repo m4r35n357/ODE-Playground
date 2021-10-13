@@ -30,11 +30,6 @@ void t_init (int dp) {
     mpfr_init_set_si(D_2, -2, RND);
 }
 
-void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step) {
-    mpfr_mul_si(_, h, step, RND);
-    mpfr_printf(fs, x, y, z, _);
-}
-
 void t_params (char **argv, int argc, ...) {
     va_list model;
     va_start(model, argc);
@@ -53,6 +48,11 @@ series t_jet (int n) {
     return s;
 }
 
+void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step) {
+    mpfr_mul_si(_, h, step, RND);
+    mpfr_printf(fs, x, y, z, _);
+}
+
 mpfr_t *t_horner (series s, int n, mpfr_t h) {
     mpfr_set_zero(_horner, 1);
     for (int i = n; i >= 0; i--) {
@@ -60,6 +60,28 @@ mpfr_t *t_horner (series s, int n, mpfr_t h) {
     }
     if (mpfr_number_p(_horner) == 0) exit(1);
     return &_horner;
+}
+
+void tsm (int argc, char **argv, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0) {
+    series x = t_jet(n + 1); mpfr_set(x[0], x0, RND);
+    series y = t_jet(n + 1); mpfr_set(y[0], y0, RND);
+    series z = t_jet(n + 1); mpfr_set(z[0], z0, RND);
+    void *p = get_p(argc, argv, n);
+    components *v = malloc(sizeof (components));
+    mpfr_inits(v->x, v->y, v->z, NULL);
+    for (int step = 0; step < steps; step++) {
+        for (int k = 0; k < n; k++) {
+            ode(v, x, y, z, p, k);
+            mpfr_div_si(x[k + 1], v->x, k + 1, RND);
+            mpfr_div_si(y[k + 1], v->y, k + 1, RND);
+            mpfr_div_si(z[k + 1], v->z, k + 1, RND);
+        }
+        t_output(x[0], y[0], z[0], h, step);
+        mpfr_swap(x[0], *t_horner(x, n, h));
+        mpfr_swap(y[0], *t_horner(y, n, h));
+        mpfr_swap(z[0], *t_horner(z, n, h));
+    }
+    t_output(x[0], y[0], z[0], h, steps);
 }
 
 mpfr_t *t_const (mpfr_t value, int k){
@@ -202,26 +224,4 @@ mpfr_t *t_ln (series l, series u, int k) {
         mpfr_div(l[k], l[k], u[0], RND);
     }
     return &l[k];
-}
-
-void tsm (int argc, char **argv, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0) {
-    series x = t_jet(n + 1); mpfr_set(x[0], x0, RND);
-    series y = t_jet(n + 1); mpfr_set(y[0], y0, RND);
-    series z = t_jet(n + 1); mpfr_set(z[0], z0, RND);
-    void *p = get_p(argc, argv, n);
-    components *v = malloc(sizeof (components));
-    mpfr_inits(v->x, v->y, v->z, NULL);
-    for (int step = 0; step < steps; step++) {
-        for (int k = 0; k < n; k++) {
-            ode(v, x, y, z, p, k);
-            mpfr_div_si(x[k + 1], v->x, k + 1, RND);
-            mpfr_div_si(y[k + 1], v->y, k + 1, RND);
-            mpfr_div_si(z[k + 1], v->z, k + 1, RND);
-        }
-        t_output(x[0], y[0], z[0], h, step);
-        mpfr_swap(x[0], *t_horner(x, n, h));
-        mpfr_swap(y[0], *t_horner(y, n, h));
-        mpfr_swap(z[0], *t_horner(z, n, h));
-    }
-    t_output(x[0], y[0], z[0], h, steps);
 }
