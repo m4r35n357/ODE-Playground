@@ -209,14 +209,14 @@ void tsm (int argc, char **argv, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y
     series y = t_jet(n + 1); mpfr_set(y[0], y0, RND);
     series z = t_jet(n + 1); mpfr_set(z[0], z0, RND);
     void *p = get_p(argc, argv, n);
-    components *c_dot = malloc(sizeof (components));
-    mpfr_inits(c_dot->x, c_dot->y, c_dot->z, NULL);
+    components *v = malloc(sizeof (components));
+    mpfr_inits(v->x, v->y, v->z, NULL);
     for (int step = 0; step < steps; step++) {
         for (int k = 0; k < n; k++) {
-            ode(x, y, z, c_dot, p, k);
-            mpfr_div_si(x[k + 1], c_dot->x, k + 1, RND);
-            mpfr_div_si(y[k + 1], c_dot->y, k + 1, RND);
-            mpfr_div_si(z[k + 1], c_dot->z, k + 1, RND);
+            ode(v, x, y, z, p, k);
+            mpfr_div_si(x[k + 1], v->x, k + 1, RND);
+            mpfr_div_si(y[k + 1], v->y, k + 1, RND);
+            mpfr_div_si(z[k + 1], v->z, k + 1, RND);
         }
         t_output(x[0], y[0], z[0], h, step);
         mpfr_swap(x[0], *t_horner(x, n, h));

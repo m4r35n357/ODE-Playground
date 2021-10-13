@@ -21,14 +21,14 @@ void *get_p (int argc, char **argv, int n) {
     return p;
 }
 
-void ode (series x, series y, series z, components *c, void *params, int k) {
+void ode (components *v, series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
     //  x' = y
-    mpfr_set(c->x, y[k], RND);
+    mpfr_set(v->x, y[k], RND);
     //  y' = yz - x
-    mpfr_sub(c->y, *t_prod(y, z, k), x[k], RND);
+    mpfr_sub(v->y, *t_prod(y, z, k), x[k], RND);
     //  z' = z - ax^2 - y^2 - b
-    mpfr_fma(c->z, p->a, *t_sqr(x, k), *t_sqr(y, k), RND);
-    mpfr_sub(c->z, z[k], c->z, RND);
-    mpfr_sub(c->z, c->z, *t_const(p->b, k), RND);
+    mpfr_fma(v->z, p->a, *t_sqr(x, k), *t_sqr(y, k), RND);
+    mpfr_sub(v->z, z[k], v->z, RND);
+    mpfr_sub(v->z, v->z, *t_const(p->b, k), RND);
 }

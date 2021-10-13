@@ -51,7 +51,7 @@ void *get_p (int argc, char **argv, int order) {
     return p;
 }
 
-void ode (series x, series y, series z, components *c, void *params, int k) {
+void ode (components *c, series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
     mpfr_mul(c->x, p->a, x[k], RND);
     mpfr_mul(c->y, p->b, y[k], RND);

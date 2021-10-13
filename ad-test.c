@@ -60,8 +60,8 @@ void *get_p (int argc, char **argv, int n) {
     return p;
 }
 
-void ode (series x, series y, series z, components *c, void *params, int k) {
-    (void)x, (void)y, (void)z, (void)c, (void)params, (void)k;
+void ode (components *c, series x, series y, series z, void *params, int k) {
+    (void)c, (void)x, (void)y, (void)z, (void)params, (void)k;
 }
 
 int main (int argc, char **argv) {
