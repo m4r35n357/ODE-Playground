@@ -41,7 +41,7 @@ void t_init (int dp);
 series t_jet (int size);
 
 /*
- * Safely and efficiently evaluates a polynomial of length n, with the coefficients in S, and the variable in h
+ * Safely and efficiently evaluates a polynomial of degree n, with the coefficients in S, and the variable in h
  */
 mpfr_t *t_horner (series S, int n, mpfr_t h);
 
@@ -64,7 +64,7 @@ mpfr_t *t_horner (series S, int n, mpfr_t h);
  *
  *                         V[k] = ODE(X[k])
  *
- * Furthermore, by explicitly differentiating (A) wrt t, we can obtain an additional and very useful IDENTITY:
+ * Furthermore, by explicitly differentiating (A) wrt t, we obtain an alternative description of the velocity:
  *
  *                    d/dt x(t) = sum{k=1->inf} k.X[k].h^(k-1)
  *
@@ -76,7 +76,7 @@ mpfr_t *t_horner (series S, int n, mpfr_t h);
  *
  * 1. Starting with initial values X[0], evaluate the ODE equations (V[k]) using X[k], and recurrence relations where needed,
  *
- *    then generate the next Taylor Series coefficient X[k+1] using the IDENTITY
+ *    then generate the next Taylor Series coefficient X[k+1], up to X[n], using the IDENTITY
  *
  * 2. Apply Horner's method to calculate the new values x(t0 + h), which become X[0] for the next time step.
  */
