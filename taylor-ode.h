@@ -16,27 +16,27 @@ extern const int BASE;
 extern const mpfr_rnd_t RND;
 
 /*
- * Diffentiate real numbers from jets
+ * Type for Taylor Series coordinate jets
  */
 typedef mpfr_t *series;
 
 /*
- * Creates a zeroed jet of the specified size
+ * Prints a line of data to stdout
  */
 void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step);
 
 /*
- * Bulk set initial coordinate values and ODE parameters from the command line arguments (9 onwards)
+ * Retrieves ODE parameters from the tail of the command (arguments 9 onwards)
  */
 void t_params (char **argv, int count, ...);
 
 /*
- * Pre-allocate some local MPFR variables
+ * Pre-allocates some local MPFR variables
  */
 void t_init (int dp);
 
 /*
- * Creates a zeroed Taylor Series of the specified number of elements
+ * Creates a zeroed Taylor Series jet with the specified number of elements
  */
 series t_jet (int size);
 
@@ -60,7 +60,7 @@ mpfr_t *t_horner (series S, int n, mpfr_t h);
  *
  *                         v(t) = sum{k=0->inf} V[k].h^k                                                                   (B)
  *
- * So, V[k] is the result of evaluating the ODE equation, but with all variables expressed as Taylor Series, X[k].
+ * Where V[k] is the result of evaluating the ODE equation, but with all variables expressed as Taylor Series, X[k].
  *
  *                         V[k] = ODE(X[k])
  *
