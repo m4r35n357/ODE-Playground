@@ -142,16 +142,6 @@ int main (int argc, char **argv) {
     mpfr_set_si(__[2], 0, RND);
     mpfr_set_si(__[3], 2, RND);
     mpfr_printf(" 23 %8.3RNf\n", *t_horner(__, 3, D2));
-    mpfr_set_si(__[0], -1, RND);
-    mpfr_set_si(__[1], 2, RND);
-    mpfr_set_si(__[2], -6, RND);
-    mpfr_set_si(__[3], 2, RND);
-    mpfr_printf("  5 %8.3RNf\n", *t_horner(__, 3, D3));
-    mpfr_set_si(__[0], -19, RND);
-    mpfr_set_si(__[1], 7, RND);
-    mpfr_set_si(__[2], -4, RND);
-    mpfr_set_si(__[3], 6, RND);
-    mpfr_printf("128 %8.3RNf\n", *t_horner(__, 3, D3));
     mpfr_set_si(__[0], 3, RND);
     mpfr_set_si(__[1], -1, RND);
     mpfr_set_si(__[2], 2, RND);
