@@ -23,7 +23,7 @@ typedef enum {PASSED, SKIPPED, FAILED} result;
 
 static int n, debug = 0, total = 0, passed = 0, skipped = 0;
 
-static mpfr_t x0, delta, tolerance, D0, D01, D05, D_05, D1, D_1, D2, D_2, D_3;
+static mpfr_t x0, delta, tolerance, D0, D01, D05, D_05, D1, D_1, D2, D_2, D3, D_3;
 
 static void libad_test_init (void) {
     ad_init(n);
@@ -34,8 +34,9 @@ static void libad_test_init (void) {
     mpfr_init_set_str(D05, "0.5", BASE, RND);
     mpfr_init_set_str(D_05, "-0.5", BASE, RND);
     mpfr_init_set_ui(D1, 1, RND);
-    mpfr_init_set_si(D_1, -1, RND);
     mpfr_init_set_ui(D2, 2, RND);
+    mpfr_init_set_si(D3, 3, RND);
+    mpfr_init_set_si(D_1, -1, RND);
     mpfr_init_set_si(D_2, -2, RND);
     mpfr_init_set_si(D_3, -3, RND);
 }
@@ -51,11 +52,11 @@ void *get_p (int argc, char **argv, int order) {
     return p;
 }
 
-void ode (components *c, series x, series y, series z, void *params, int k) {
+void ode (components *v, series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
-    mpfr_mul(c->x, p->a, x[k], RND);
-    mpfr_mul(c->y, p->b, y[k], RND);
-    mpfr_mul(c->z, p->c, z[k], RND);
+    mpfr_mul(v->x, p->a, x[k], RND);
+    mpfr_mul(v->y, p->b, y[k], RND);
+    mpfr_mul(v->z, p->c, z[k], RND);
 }
 
 static result skip (char* name) {
@@ -134,13 +135,49 @@ int main (int argc, char **argv) {
     int x_lt_pi_2 = mpfr_cmpabs(x[0], PI_2) < 0;
 
     printf("\n");
+    printf("Horner\n");
+    series __ = ad_series_c(n, D0);
+    mpfr_set_si(__[0], 1, RND);
+    mpfr_set_si(__[1], 3, RND);
+    mpfr_set_si(__[2], 0, RND);
+    mpfr_set_si(__[3], 2, RND);
+    mpfr_printf(" 23 %8.3RNf\n", *t_horner(__, 3, D2));
+    mpfr_set_si(__[0], -1, RND);
+    mpfr_set_si(__[1], 2, RND);
+    mpfr_set_si(__[2], -6, RND);
+    mpfr_set_si(__[3], 2, RND);
+    mpfr_printf("  5 %8.3RNf\n", *t_horner(__, 3, D3));
+    mpfr_set_si(__[0], -19, RND);
+    mpfr_set_si(__[1], 7, RND);
+    mpfr_set_si(__[2], -4, RND);
+    mpfr_set_si(__[3], 6, RND);
+    mpfr_printf("128 %8.3RNf\n", *t_horner(__, 3, D3));
+    mpfr_set_si(__[0], 3, RND);
+    mpfr_set_si(__[1], -1, RND);
+    mpfr_set_si(__[2], 2, RND);
+    mpfr_set_si(__[3], -4, RND);
+    mpfr_set_si(__[4], 0, RND);
+    mpfr_set_si(__[5], 1, RND);
+    mpfr_printf("153 %8.3RNf\n", *t_horner(__, 5, D3));
+    mpfr_set_si(__[0], 1, RND);
+    mpfr_set_si(__[1], -4, RND);
+    mpfr_set_si(__[2], 0, RND);
+    mpfr_set_si(__[3], 0, RND);
+    mpfr_set_si(__[4], 2, RND);
+    mpfr_set_si(__[5], 3, RND);
+    mpfr_set_si(__[6], 0, RND);
+    mpfr_set_si(__[7], -2, RND);
+    mpfr_printf("201 %8.3RNf\n", *t_horner(__, 7, D_2));
+
+    printf("\n");
+    printf("TSM\n");
     tsm(argc, argv, 10, D01, 10, D1, D1, D1);
     mpfr_t e1, e0, e_1;
     mpfr_inits(e1, e0, e_1, NULL);
     mpfr_exp(e1, D1, RND);
     mpfr_exp(e0, D0, RND);
     mpfr_exp(e_1, D_1, RND);
-    printf("\n");
+    printf("Check\n");
     t_output(e1, e0, e_1, D01, 10);
 
     printf("\n");
