@@ -1,4 +1,8 @@
 #!/bin/sh
+#
+# Example: ./clean; time -p ./build; ./ad-test-dbg 6 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt; echo ""; ./libad-test-dbg 32 20 1 1e-18 0
+#
+# (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 
 /usr/bin/ctags *.c
 
