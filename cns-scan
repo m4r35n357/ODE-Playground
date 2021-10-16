@@ -17,8 +17,8 @@ n=1
 while [ $n -le $max ]
 do
     set $original
-    begin="$1 $2 $max"
-    shift 4
+    begin="$1 $2"
+    shift 3
     current="$begin $n $*"
     case $method in
         'step2') halfstep $current;;
