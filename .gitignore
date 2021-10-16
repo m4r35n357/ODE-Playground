@@ -7,9 +7,15 @@
 # TSM artifacts
 tsm-*-dbg
 tsm-*-static
+tsm-*-dynamic
 divergence
+
+# Test artifacts
 dual-test
 taylor-test
+ad-test-dbg
+libad-test-dbg
+libad-test
 
 # Symplectic artifacts
 h-*-dbg
@@ -38,5 +44,3 @@ cov_html/
 zig
 zig-cache/
 kerr-image.c
-
-a.out
