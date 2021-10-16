@@ -8,12 +8,18 @@
 tsm-*-dbg
 tsm-*-static
 tsm-*-dynamic
-
 divergence
 
+# Test artifacts
+dual-test
+taylor-test
 ad-test-dbg
 libad-test-dbg
 libad-test
+
+# Symplectic artifacts
+h-*-dbg
+h-*-static
 
 # C coverage artifacts
 *.gcov
@@ -38,4 +44,3 @@ cov_html/
 zig
 zig-cache/
 kerr-image.c
-

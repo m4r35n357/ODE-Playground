@@ -8,7 +8,7 @@ do
     [ -x $file ] && rm -f $file
 done
 
-rm -f divergence
+rm -f divergence ad-test-dbg libad-test-dbg
 
 rm -f lib*.so *.o
 rm -f coverage.info *.gcov *.gcda *.gcno *.gch *_gprof gmon.out
