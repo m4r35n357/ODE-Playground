@@ -16,6 +16,11 @@ extern const int BASE;
 extern const mpfr_rnd_t RND;
 
 /*
+ * Pre-allocates some local MPFR variables
+ */
+void t_init (int dp);
+
+/*
  * Type for Taylor Series coordinate jets
  */
 typedef mpfr_t *series;
@@ -29,11 +34,6 @@ void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step);
  * Retrieves ODE parameters from the tail of the command (arguments 9 onwards)
  */
 void t_params (char **argv, int count, ...);
-
-/*
- * Pre-allocates some local MPFR variables
- */
-void t_init (int dp);
 
 /*
  * Creates a zeroed Taylor Series jet with the specified number of elements
@@ -105,7 +105,7 @@ void *get_p (int argc, char **argv, int order);
  *
  * together with the functions below as necessary.
  */
-void ode (components *c, series x, series y, series z, void *params, int k);
+void ode (components *V, series X, series Y, series Z, void *P, int k);
 
 /*
  * Basic Taylor Series functions

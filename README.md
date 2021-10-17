@@ -1,4 +1,10 @@
-## News (4th October 2021)
+## News
+
+## (16th October 2021)
+Python simulators and AD/TSM module have been removed to eliminate duplication.
+They can now be found only on the compendium branch here: https://github.com/m4r35n357/ODE-Playground/tree/compendium, together with the long double version of TSM, Symplectic Integrator, and Black Hole code.
+
+## (4th October 2021)
 
 I have decided to update the MPFR implementation in line with the pure C version that I have been working on since I wrote the message below.
 That remains in the compendium branch,and its README contains material not covered here.
