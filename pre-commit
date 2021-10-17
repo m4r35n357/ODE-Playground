@@ -1,0 +1,68 @@
+#!/bin/sh
+#
+# An example hook script to verify what is about to be committed.
+# Called by "git commit" with no arguments.  The hook should
+# exit with non-zero status after issuing an appropriate message if
+# it wants to stop the commit.
+#
+# To enable this hook, rename this file to "pre-commit".
+
+echo "Running Python tests . . . "
+if ! pytest ad_test.py solver_test.py -q
+then
+    echo "Python tests failed!"
+    exit 1
+fi
+echo OK
+
+echo -n "Running Dual Test . . . "
+./dual-test 6 _ 4 -3 >/tmp/dual-test.txt
+if ! diff --context=1 /tmp/dual-test.txt dual-test.txt
+then
+    echo "Dual Test failed!"
+    exit 1
+fi
+echo OK
+
+echo -n "Running Taylor Test . . . "
+./taylor-test 6 1 4 -3 >/tmp/taylor-test.txt
+if ! diff --context=1 /tmp/taylor-test.txt taylor-test.txt
+then
+    echo "Taylor Test failed!"
+    exit 1
+fi
+echo OK
+
+echo -n "Running Clang build . . . "
+if ! ./build clang >/dev/null
+then
+    echo "c build failed!"
+    exit 1
+fi
+echo OK
+
+echo -n "Running Lorenz executables . . . "
+if ! ./tsm-lorenz-dbg 9 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
+then
+    echo "Lorenz(DBG) failed!"
+    exit 1
+fi
+echo -n "Debug, "
+
+if ! ./tsm-lorenz-static 9 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
+then
+    echo "Lorenz(STATIC) failed!"
+    exit 1
+fi
+echo "Static, "
+
+echo -n "Running Rabinovich-Fabrikant executable . . . "
+if [ 50001 -ne $(./tsm-rf-dbg 9 16 .01 50000 .05 -.05 .3 .105 .1 2>/dev/null | wc -l) ]
+then
+    echo "Rabinovich-Fabrikant test failed!"
+    exit 1
+fi
+echo OK
+
+echo "Committing . . ."
+exit 0
