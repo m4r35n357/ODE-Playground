@@ -9,12 +9,6 @@
 #include <math.h>
 #include "taylor-ode.h"
 
-void t_output (long dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label) {
-    char fs[128];
-    sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le %s %s %s\n", dp, dp, dp, x_label, y_label, z_label);
-    printf(fs, x, y, z, t);
-}
-
 void t_params (char **argv, int argc, ...) {
     va_list model_params;
     va_start(model_params, argc);
@@ -33,6 +27,12 @@ series t_jet (long n) {
     return s;
 }
 
+void t_output (long dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label) {
+    char fs[128];
+    sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le %s %s %s\n", dp, dp, dp, x_label, y_label, z_label);
+    printf(fs, x, y, z, t);
+}
+
 real t_horner (series jet, long n, real h) {
     real sum = 0.0L;
     for (long i = n; i >= 0; i--) {
@@ -40,6 +40,30 @@ real t_horner (series jet, long n, real h) {
     }
     if (isnan(sum) || isinf(sum)) exit(1);
     return sum;
+}
+
+void tsm (int argc, char **argv, long dp, long n, real h, long steps, real x0, real y0, real z0) {
+    series x = t_jet(n + 1); x[0] = x0;
+    series y = t_jet(n + 1); y[0] = y0;
+    series z = t_jet(n + 1); z[0] = z0;
+    void *p = get_p(argc, argv, n);
+    components slope = (components) {0.0L, 0.0L, 0.0L};
+    for (long step = 0; step < steps; step++) {
+        for (int k = 0; k < n; k++) {
+            components v = ode(x, y, z, p, k);
+            x[k + 1] = v.x / (k + 1);
+            y[k + 1] = v.y / (k + 1);
+            z[k + 1] = v.z / (k + 1);
+        }
+        t_output(dp, x[0], y[0], z[0], h * step, x[1] * slope.x < 0.0L ? (x[2] > 0.0L ? "x" : "X") : "_",
+                                                 y[1] * slope.y < 0.0L ? (y[2] > 0.0L ? "y" : "Y") : "_",
+                                                 z[1] * slope.z < 0.0L ? (z[2] > 0.0L ? "z" : "Z") : "_");
+        slope = (components) {x[1], y[1], z[1]};
+        x[0] = t_horner(x, n, h);
+        y[0] = t_horner(y, n, h);
+        z[0] = t_horner(z, n, h);
+    }
+    t_output(dp, x[0], y[0], z[0], h * steps, "_", "_", "_");
 }
 
 real t_const (real a, int k) {
@@ -129,28 +153,4 @@ real t_ln (series l, series u, int k) {
     assert(u[0] > 0.0L);
     assert(l != u);
     return l[k] = k == 0 ? logl(u[0]) : (u[k] - f_k(u, l, k, 1, k - 1)) / u[0];
-}
-
-void tsm (int argc, char **argv, long dp, long n, real h, long steps, real x0, real y0, real z0) {
-    series x = t_jet(n + 1); x[0] = x0;
-    series y = t_jet(n + 1); y[0] = y0;
-    series z = t_jet(n + 1); z[0] = z0;
-    void *p = get_p(argc, argv, n);
-    components slope = (components) {0.0L, 0.0L, 0.0L};
-    for (long step = 0; step < steps; step++) {
-        for (int k = 0; k < n; k++) {
-            components v = ode(x, y, z, p, k);
-            x[k + 1] = v.x / (k + 1);
-            y[k + 1] = v.y / (k + 1);
-            z[k + 1] = v.z / (k + 1);
-        }
-        t_output(dp, x[0], y[0], z[0], h * step, x[1] * slope.x < 0.0L ? (x[2] > 0.0L ? "x" : "X") : "_",
-                                                 y[1] * slope.y < 0.0L ? (y[2] > 0.0L ? "y" : "Y") : "_",
-                                                 z[1] * slope.z < 0.0L ? (z[2] > 0.0L ? "z" : "Z") : "_");
-        slope = (components) {x[1], y[1], z[1]};
-        x[0] = t_horner(x, n, h);
-        y[0] = t_horner(y, n, h);
-        z[0] = t_horner(z, n, h);
-    }
-    t_output(dp, x[0], y[0], z[0], h * steps, "_", "_", "_");
 }

@@ -8,27 +8,27 @@
 #include "real.h"
 
 /*
- * Diffentiate real numbers from jets
+ * Type for Taylor Series coordinate jets
  */
 typedef long double *series;
 
 /*
- * Prints x, y, z, t values, followed by turning point markers, to stdout
+ * Prints a line of data to stdout, with turning point markers
  */
 void t_output (long dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label);
 
 /*
- * Assigns a variable number of model-specific long double values from the tail of the command
+ * Retrieves ODE parameters from the tail of the command (arguments 8 onwards)
  */
 void t_params (char **argv, int count, ...);
 
 /*
- * Creates a zeroed jet of the specified size
+ * Creates a zeroed Taylor Series jet with the specified number of elements
  */
 series t_jet (long size);
 
 /*
- * Safely and efficiently evaluates a polynomial of length n, with the coefficients in S, and the variable in h
+ * Safely and efficiently evaluates a polynomial of degree n, with the coefficients in S, and the variable in h
  */
 real t_horner (series S, long n, real h);
 
@@ -43,15 +43,15 @@ real t_horner (series S, long n, real h);
  *
  *             x(t0 + h) = x(t) = sum{k=0->inf} X[k].h^k    where X[0] = x(t0), X[k] = (d/dt)^k x(t0) / k! and h = t - t0  (A)
  *
- * This calculation is best performed using Horner's method. Similarly, the velocities can be represented as:
+ * This calculation is best performed using Horner's method. Similarly, the velocity can be represented as:
  *
  *                         v(t) = sum{k=0->inf} V[k].h^k                                                                   (B)
  *
- * So, V[k] is the result of evaluating the ODE equation, but with all variables expressed as Taylor Series, X[k].
+ * Where V[k] is the result of evaluating the ODE equation, but with all variables expressed as Taylor Series, X[k].
  *
  *                         V[k] = ODE(X[k])
  *
- * Furthermore, by explicitly differentiating (A) wrt t, we can obtain an additional and very useful IDENTITY:
+ * Furthermore, by explicitly differentiating (A) wrt t, we obtain an alternative description of the velocity:
  *
  *                    d/dt x(t) = sum{k=1->inf} k.X[k].h^(k-1)
  *
@@ -63,20 +63,54 @@ real t_horner (series S, long n, real h);
  *
  * 1. Starting with initial values X[0], evaluate the ODE equations (V[k]) using X[k], and recurrence relations where needed,
  *
- *    then generate the next Taylor Series coefficient X[k+1] using the IDENTITY
+ *    then generate the next Taylor Series coefficient X[k+1], up to X[n], using the IDENTITY
  *
  * 2. Apply Horner's method to calculate the new values x(t0 + h), which become X[0] for the next time step.
  */
+void tsm (int argc, char **argv, long dp, long n, real h, long steps, real x0, real y0, real z0);
 
 /*
- * Returns the value of a if k is 0, and zero otherwise.  For handling _additive_ constants.
+ * For returning x, y, z velocities from the model
  */
-real t_const (real a, int k);
+typedef struct {
+    real x;
+    real y;
+    real z;
+} components;
+
+/*
+ * Obligatory client method signatures
+ */
+
+/*
+ * Get a blob of parameter data from the model to be passed back in from ode()
+ */
+void *get_p (int argc, char **argv, long order);
+
+/*
+ * Calculate the kth components of the velocity jet V, using the coordinate jets and the parameter data,
+ *
+ * together with the functions below as necessary.
+ */
+components ode (series X, series Y, series Z, void *P, int k);
+
+/*
+ * Basic Taylor Series functions
+ */
+
+/*
+ * Returns value if k is 0, and zero otherwise.  For handling _additive_ constants.
+ */
+real t_const (real value, int k);
 
 /*
  * Returns kth element of the absolute value of U, no user-supplied jet storage needed
  */
 real t_abs (series U, int k);
+
+/*
+ * Taylor Series recurrence relationships
+ */
 
 /*
  * Cauchy product for C = A.B
@@ -247,24 +281,3 @@ real t_pwr (series P, series U, real a, int k);
  *                   L[k] = (U[k] - sum{j=1->k-1} U[j].(k-j).L[k-j]/k) / U[0]
  */
 real t_ln (series L, series U, int k);
-
-/*
- * For returning x, y, z values from a model
- */
-typedef struct {
-    real x;
-    real y;
-    real z;
-} components;
-
-/*
- * Obligatory model function signatures
- */
-void *get_p (int argc, char **argv, long order);
-
-components ode (series x, series y, series z, void *params, int k);
-
-/*
- * For performing a simulation
- */
-void tsm (int argc, char **argv, long dp, long n, real h, long steps, real x0, real y0, real z0);
