@@ -15,7 +15,6 @@ dual-test
 taylor-test
 ad-test-dbg
 libad-test-dbg
-libad-test
 
 # Symplectic artifacts
 h-*-dbg

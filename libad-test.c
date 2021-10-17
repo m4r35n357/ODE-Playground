@@ -1,7 +1,7 @@
 /*
- * Automatic Differentiation of Taylor Seriesewest validation checks
+ * Automatic Differentiation of Taylor Series, newest validation checks
  *
- * Example: ./libad-test-dbg 32 20 1 1e-18 [ 0 | 1 | 2 ]
+ * Example: ./libad-test-dbg 32 20 1 1e-24 [ 0 | 1 | 2 ]
  *
  * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -18,8 +18,6 @@
 #define KGRN "\x1B[1;32m"
 #define KYLW "\x1B[1;33m"
 #define KRED "\x1B[1;31m"
-
-typedef enum {PASSED, SKIPPED, FAILED} result;
 
 static int n, debug = 0, total = 0, passed = 0, skipped = 0;
 
@@ -59,21 +57,20 @@ void ode (components *v, series x, series y, series z, void *params, int k) {
     mpfr_mul(v->z, p->c, z[k], RND);
 }
 
-static result skip (char* name) {
+static void skip (char* name) {
     total++;
     skipped++;
     printf("%sSKIPPED%s %s\n", KYLW, KNRM, name);
-    return SKIPPED;
 }
 
-static result compare (char* name, series a, series b) {
+static void compare (char* name, series a, series b) {
     total++;
     for (int k = 0; k < n; k++) {
         mpfr_sub(delta, a[k], b[k], RND);
         if (mpfr_cmp_abs(delta, tolerance) > 0) {
             printf("%s FAILED%s %s  k: %d  LHS: %.6e  RHS: %.6e  diff %.3e\n",
                     KRED, KNRM, name, k, mpfr_get_d(a[k], RND), mpfr_get_d(b[k], RND), mpfr_get_d(delta, RND));
-            return FAILED;
+            return;
         }
         if (debug >= 2 && k == 0) printf("\n");
         if (debug >= 2) printf("%s  DEBUG%s  k: %2d  %+.6e %+.6e  diff %+.3e\n",
@@ -81,7 +78,6 @@ static result compare (char* name, series a, series b) {
     }
     if (debug >= 1) printf("%s PASSED%s %s\n", KGRN, KNRM, name);
     passed++;
-    return PASSED;
 }
 
 int main (int argc, char **argv) {
@@ -161,7 +157,7 @@ int main (int argc, char **argv) {
 
     printf("\n");
     printf("TSM\n");
-    tsm(argc, argv, 10, D01, 10, D1, D1, D1);
+    tsm(argc, argv, n, D01, 10, D1, D1, D1);
     mpfr_t e1, e0, e_1;
     mpfr_inits(e1, e0, e_1, NULL);
     mpfr_exp(e1, D1, RND);
