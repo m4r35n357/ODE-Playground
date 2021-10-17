@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Example: ./clean; time -p ./build; ./ad-test-dbg 6 2 1 >/tmp/ad-test.txt; diff --context=1 /tmp/ad-test.txt ad-test.txt; ./libad-test-dbg 32 20 1 1e-18 0
+# Example:  ./clean; time -p ./build; ./libad-test-dbg 32 20 1 1e-24
 #
 # (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 
@@ -53,10 +53,6 @@ echo ""
 echo " Building divergence"
 ${CC} -O3 $WARNINGS -o divergence divergence.c -lm -s &
 
-echo " Building ad-test-dbg"
-rm -f ad-test-dbg
-${CC} -O0 $WARNINGS -g -o ad-test-dbg taylor-ode.c ad.c ad-test.c -lmpfr &
-
 echo " Building libad-test-dbg"
 rm -f libad-test-dbg
 ${CC} -O0 $WARNINGS -g -o libad-test-dbg taylor-ode.c ad.c libad-test.c -lmpfr &
@@ -69,7 +65,6 @@ ${CC} -O3 -DNDEBUG -c $WARNINGS -fpic taylor-ode.c && ${CC} -shared -o libtaylor
 # export LD_LIBRARY_PATH=.
 # ./test 15 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/data; gnuplot -p -e "splot '/tmp/data' with lines"
 
-echo ""
 wait
 
 echo ""
