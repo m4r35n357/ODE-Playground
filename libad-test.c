@@ -1,7 +1,7 @@
 /*
  * Automatic Differentiation of Taylor Seriesewest validation checks
  *
- * Example: ./libad-test-dbg 32 20 1 1e-18 [ 0 | 1 | 2 ]
+ * Example: ./libad-test-dbg 20 1 1e-18 [ 0 | 1 | 2 ]
  *
  * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -19,11 +19,11 @@
 #define KYLW "\x1B[1;33m"
 #define KRED "\x1B[1;31m"
 
-typedef enum {PASSED, SKIPPED, FAILED} result;
-
 static int n, debug = 0, total = 0, passed = 0, skipped = 0;
 
 static real x0, delta, tolerance;
+
+static const real PLUS1 = 1.0L, ZERO = 0.0L, MINUS1 = -1.0L;
 
 static void libad_test_init (void) {
     ad_init(n);
@@ -34,9 +34,9 @@ typedef struct { real a, b, c; } parameters;
 void *get_p (int argc, char **argv, long order) {
     (void)argc; (void)argv; (void)order;
     parameters *p = malloc(sizeof (parameters));
-    p->a = 1.0;
-    p->b = 0.0;
-    p->c = -1.0;
+    p->a = PLUS1;
+    p->b = ZERO;
+    p->c = MINUS1;
     return p;
 }
 
@@ -49,39 +49,37 @@ components ode (series x, series y, series z, void *params, int k) {
     };
 }
 
-static result skip (char* name) {
+static void skip (char* name) {
     total++;
     skipped++;
     printf("%sSKIPPED%s %s\n", KYLW, KNRM, name);
-    return SKIPPED;
 }
 
-static result compare (char* name, series a, series b) {
+static void compare (char* name, series a, series b) {
     total++;
     for (int k = 0; k < n; k++) {
         delta = a[k] - b[k];
         if (fabsl(delta) > tolerance) {
             printf("%s FAILED%s %s  k: %d  LHS: %.6Le  RHS: %.6Le  diff %.3Le\n", KRED, KNRM, name, k, a[k], b[k], delta);
-            return FAILED;
+            return;
         }
         if (debug >= 2 && k == 0) printf("\n");
         if (debug >= 2) printf("%s  DEBUG%s  k: %2d  %+.6Le %+.6Le  diff %+.3Le\n", KNRM, KNRM, k, a[k], b[k], delta);
     }
     if (debug >= 1) printf("%s PASSED%s %s\n", KGRN, KNRM, name);
     passed++;
-    return PASSED;
 }
 
 int main (int argc, char **argv) {
-    real PI_2;
+    real PI_2 = 0.5 * MY_PI;
 
-    assert(argc == 5 || argc == 6);
-    n = (int)strtol(argv[2], NULL, 10) + 1;
+    assert(argc == 4 || argc == 5);
+    n = (int)strtol(argv[1], NULL, 10) + 1;
     assert(n > 1);
     libad_test_init();
-    x0 = strtold(argv[3], NULL);
-    tolerance = strtold(argv[4], NULL);
-    if (argc == 6) debug = (int)strtol(argv[5], NULL, 10);
+    x0 = strtold(argv[2], NULL);
+    tolerance = strtold(argv[3], NULL);
+    if (argc == 5) debug = (int)strtol(argv[4], NULL, 10);
 
     series abs = t_jet(n);
     series scale = t_jet(n);
@@ -114,8 +112,6 @@ int main (int argc, char **argv) {
     series x = t_jet(n);
     x[0] = x0;
 
-    PI_2 = 0.5 * MY_PI;
-
     int x_positive = x[0] > 0;
     int x_non_zero = x[0] != 0;
     int x_lt_pi_2 = x[0] < PI_2;
@@ -147,10 +143,12 @@ int main (int argc, char **argv) {
 
     printf("\n");
     printf("TSM\n");
-    tsm(argc, argv, 12, 10, 0.1L, 10, 1.0L, 1.0L, 1.0L);
-    real e1 = expl(1.0L), e0 = expl(0.0L), e_1 = expl(-1.0L);
+    long order = 10, dp = 12, steps = 10;
+    real step = 0.1L;
+    tsm(argc, argv, dp, order, step, steps, 1.0L, 1.0L, 1.0L);
+    real e1 = expl(PLUS1), e0 = expl(ZERO), e_1 = expl(MINUS1);
     printf("Check\n");
-    t_output(12, e1, e0, e_1, 1.0L, "_", "_", "_");
+    t_output(dp, e1, e0, e_1, step * steps, "_", "_", "_");
 
     printf("\n");
     ad_sqr(sqr_x, x);

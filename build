@@ -111,5 +111,5 @@ ${CC} -O3 -DNDEBUG -c $WARNINGS -fpic symplectic.c && ${CC} -shared -o libsymp.s
 echo ""
 wait
 
-ls -lh --color taylor-test dual-test tsm-* h-* lib*.so divergence
+ls -lh --color taylor-test dual-test libad-test-dbg tsm-* h-* lib*.so divergence
 echo ""
