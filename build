@@ -85,7 +85,10 @@ echo ""
 echo " Building divergence"
 ${CC} -O3 $WARNINGS -o divergence divergence.c -lm -s &
 
-echo ""
+echo " Building libad-test-dbg"
+rm -f libad-test-dbg
+${CC} -O0 $WARNINGS -g -o libad-test-dbg taylor-ode.c ad.c libad-test.c -lm &
+
 echo " Building libtaylor"
 rm -f libtaylor.so taylor-ode.o
 ${CC} -O3 -DNDEBUG -c $WARNINGS -fpic taylor-ode.c && ${CC} -shared -o libtaylor.so taylor-ode.o -s &

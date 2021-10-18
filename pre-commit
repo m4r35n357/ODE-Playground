@@ -15,23 +15,23 @@ then
 fi
 echo OK
 
-echo -n "Running Dual Test . . . "
-./dual-test 6 _ 4 -3 >/tmp/dual-test.txt
-if ! diff --context=1 /tmp/dual-test.txt dual-test.txt
-then
-    echo "Dual Test failed!"
-    exit 1
-fi
-echo OK
+#echo -n "Running Dual Test . . . "
+#./dual-test 6 _ 4 -3 >/tmp/dual-test.txt
+#if ! diff --context=1 /tmp/dual-test.txt dual-test.txt
+#then
+#    echo "Dual Test failed!"
+#    exit 1
+#fi
+#echo OK
 
-echo -n "Running Taylor Test . . . "
-./taylor-test 6 1 4 -3 >/tmp/taylor-test.txt
-if ! diff --context=1 /tmp/taylor-test.txt taylor-test.txt
-then
-    echo "Taylor Test failed!"
-    exit 1
-fi
-echo OK
+#echo -n "Running Taylor Test . . . "
+#./taylor-test 6 1 4 -3 >/tmp/taylor-test.txt
+#if ! diff --context=1 /tmp/taylor-test.txt taylor-test.txt
+#then
+#    echo "Taylor Test failed!"
+#    exit 1
+#fi
+#echo OK
 
 echo -n "Running Clang build . . . "
 if ! ./build clang >/dev/null
