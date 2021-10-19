@@ -25,10 +25,6 @@ static real x0, delta, tolerance;
 
 static const real PLUS1 = 1.0L, ZERO = 0.0L, MINUS1 = -1.0L;
 
-static void libad_test_init (void) {
-    ad_init(n);
-}
-
 typedef struct { real a, b, c; } parameters;
 
 void *get_p (int argc, char **argv, long order) {
@@ -76,7 +72,7 @@ int main (int argc, char **argv) {
     assert(argc == 4 || argc == 5);
     n = (int)strtol(argv[1], NULL, 10) + 1;
     assert(n > 1);
-    libad_test_init();
+    ad_init(n);
     x0 = strtold(argv[2], NULL);
     tolerance = strtold(argv[3], NULL);
     if (argc == 5) debug = (int)strtol(argv[4], NULL, 10);
