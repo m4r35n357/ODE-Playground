@@ -118,6 +118,7 @@ int main (int argc, char **argv) {
     x_non_zero ? compare(name, d_pow(sqr_x, 0.5L), d_abs(x)) : skip(name);
 
     if (debug != 0) printf("\n");
+    ln_x = d_log(x);
     name = "log(e^x) == x";
     compare(name, d_log(d_exp(x)), x);
     name = "log(sqr(x)) == log(x) * 2";
