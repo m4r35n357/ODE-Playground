@@ -1,5 +1,5 @@
 /*
- * Automatic Differentiation of Taylor Seriesewest validation checks
+ * Automatic Differentiation of Taylor Series, newest validation checks
  *
  * Example: ./libad-test-dbg 20 1 1e-18 [ 0 | 1 | 2 ]
  *
@@ -67,7 +67,7 @@ static void compare (char* name, series a, series b) {
 }
 
 int main (int argc, char **argv) {
-    real PI_2 = 0.5 * MY_PI;
+    real PI_2 = 0.5L * MY_PI;
 
     assert(argc == 4 || argc == 5);
     n = (int)strtol(argv[1], NULL, 10);
@@ -108,19 +108,19 @@ int main (int argc, char **argv) {
     series x = t_jet(n + 1);
     x[0] = x0;
 
-    int x_positive = x[0] > 0;
-    int x_non_zero = x[0] != 0;
+    int x_positive = x[0] > 0.0L;
+    int x_non_zero = x[0] != 0.0L;
     int x_lt_pi_2 = x[0] < PI_2;
 
     printf("\n");
     printf("Horner\n");
-    series poly = t_jet(8);
-    poly[0] = 1; poly[1] = 3; poly[2] = 0; poly[3] = 2;
-    printf(" 23 %8.3Lf\n", t_horner(poly, 3, 2.0L));
-    poly[0] = 3; poly[1] = -1; poly[2] = 2; poly[3] = -4; poly[4] = 0; poly[5] = 1;
-    printf("153 %8.3Lf\n", t_horner(poly, 5, 3.0L));
-    poly[0] = 1; poly[1] = -4; poly[2] = 0; poly[3] = 0; poly[4] = 2; poly[5] = 3; poly[6] = 0; poly[7] = -2;
-    printf("201 %8.3Lf\n", t_horner(poly, 7, -2.0L));
+    series p = t_jet(8);
+    p[0] = 1.0L; p[1] = 3.0L; p[2] = 0.0L; p[3] = 2.0L;
+    printf(" 23 %8.3Lf\n", t_horner(p, 3, 2.0L));
+    p[0] = 3; p[1] = -1.0L; p[2] = 2.0L; p[3] = -4.0L; p[4] = 0.0L; p[5] = 1.0L;
+    printf("153 %8.3Lf\n", t_horner(p, 5, 3.0L));
+    p[0] = 1.0L; p[1] = -4.0L; p[2] = 0.0L; p[3] = 0.0L; p[4] = 2.0L; p[5] = 3.0L; p[6] = 0.0L; p[7] = -2.0L;
+    printf("201 %8.3Lf\n", t_horner(p, 7, -2.0L));
 
     printf("\n");
     printf("TSM\n");

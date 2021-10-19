@@ -1,4 +1,3 @@
-
 /*
  * Interface for performing high order Automatic Differentiation
  * using the Taylor Series Method (TSM)

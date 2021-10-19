@@ -50,14 +50,14 @@ series ad_scale (series s, series u, real a) {
 
 series ad_plus (series p, series u, series v) {
     for (int k = 0; k < order; k++) {
-		p[k] = u[k] + v[k];
+        p[k] = u[k] + v[k];
     }
     return p;
 }
 
 series ad_minus (series m, series u, series v) {
     for (int k = 0; k < order; k++) {
-		m[k] = u[k] - v[k];
+        m[k] = u[k] - v[k];
     }
     return m;
 }
