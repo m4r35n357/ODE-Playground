@@ -70,7 +70,7 @@ int main (int argc, char **argv) {
     real PI_2 = 0.5 * MY_PI;
 
     assert(argc == 4 || argc == 5);
-    n = (int)strtol(argv[1], NULL, 10) + 1;
+    n = (int)strtol(argv[1], NULL, 10);
     assert(n > 1);
     ad_init(n);
     x0 = strtold(argv[2], NULL);
@@ -105,7 +105,7 @@ int main (int argc, char **argv) {
 
     series c1 = t_jet(n);
     c1[0] = 1.0L;
-    series x = t_jet(n);
+    series x = t_jet(n + 1);
     x[0] = x0;
 
     int x_positive = x[0] > 0;
@@ -114,7 +114,7 @@ int main (int argc, char **argv) {
 
     printf("\n");
     printf("Horner\n");
-    series __ = t_jet(n);
+    series __ = t_jet(8);
     __[0] = 1;
     __[1] = 3;
     __[2] = 0;
@@ -139,9 +139,9 @@ int main (int argc, char **argv) {
 
     printf("\n");
     printf("TSM\n");
-    long order = 10, dp = 12, steps = 10;
+    long dp = 12, steps = 10;
     real step = 0.1L;
-    tsm(argc, argv, dp, order, step, steps, 1.0L, 1.0L, 1.0L);
+    tsm(argc, argv, dp, n, step, steps, 1.0L, 1.0L, 1.0L);
     real e1 = expl(PLUS1), e0 = expl(ZERO), e_1 = expl(MINUS1);
     printf("Check\n");
     t_output(dp, e1, e0, e_1, step * steps, "_", "_", "_");
