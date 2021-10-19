@@ -69,7 +69,6 @@ int main (int argc, char **argv) {
     dual cos = d_dual(0.0L);
     dual cos_2x = d_dual(0.0L);
     dual tan = d_dual(0.0L);
-    dual sec2 = d_dual(0.0L);
 
     dual c1 = d_dual(1.0L);
     dual x = d_var(x0);
@@ -135,19 +134,14 @@ int main (int argc, char **argv) {
     sin = d_sinh(x);
     cos = d_cosh(x);
     tan = d_tanh(x);
-    sec2 = d_shift(d_mul(tan, tan), 1.0L);
     sqr_sin_x = d_sqr(sin);
     sqr_cos_x = d_sqr(cos);
     sin_2x = d_sinh(xpx);
     cos_2x = d_cosh(xpx);
     name = "cosh^2(x) - sinh^2(x) == 1";
     compare(name, d_sub(sqr_cos_x, sqr_sin_x), c1);
-    name = "sech^2(x) + tanh^2(x) == 1";
-    compare(name, d_add(sec2, d_sqr(tan)), c1);
     name = "tanh(x) == sinh(x) / cosh(x)";
     compare(name, tan, d_div(sin, cos));
-    name = "sech^2(x) == 1 / cosh^2(x)";
-    compare(name, sec2, d_inv(sqr_cos_x));
     name = "sinh(2x) == 2 * sinh(x) * cosh(x)";
     compare(name, sin_2x, d_scale(d_mul(sin, cos), 2.0L));
     name = "cosh(2x) == cosh^2(x) + sinh^2(x)";
@@ -165,19 +159,14 @@ int main (int argc, char **argv) {
     sin = d_sin(x);
     cos = d_cos(x);
     tan = d_tan(x);
-    sec2 = d_shift(d_mul(tan, tan), 1.0L);
     sqr_sin_x = d_sqr(sin);
     sqr_cos_x = d_sqr(cos);
     sin_2x = d_sin(xpx);
     cos_2x = d_cos(xpx);
     name = "cos^2(x) + sin^2(x) == 1";
     compare(name, d_add(sqr_cos_x, sqr_sin_x), c1);
-    name = "sec^2(x) - tan^2(x) == 1";
-    x_lt_pi_2 ? compare(name, d_sub(sec2, d_sqr(tan)), c1) : skip(name);
     name = "tan(x) == sin(x) / cos(x)";
     x_lt_pi_2 ? compare(name, tan, d_div(sin, cos)) : skip(name);
-    name = "sec^2(x) == 1 / cos^2(x)";
-    x_lt_pi_2 ? compare(name, sec2, d_inv(sqr_cos_x)) : skip(name);
     name = "sin(2x) == 2 * sin(x) * cos(x)";
     compare(name, sin_2x, d_scale(d_mul(sin, cos), 2.0L));
     name = "cos(2x) == cos^2(x) - sin^2(x)";
