@@ -114,28 +114,13 @@ int main (int argc, char **argv) {
 
     printf("\n");
     printf("Horner\n");
-    series __ = t_jet(8);
-    __[0] = 1;
-    __[1] = 3;
-    __[2] = 0;
-    __[3] = 2;
-    printf(" 23 %8.3Lf\n", t_horner(__, 3, 2.0L));
-    __[0] = 3;
-    __[1] = -1;
-    __[2] = 2;
-    __[3] = -4;
-    __[4] = 0;
-    __[5] = 1;
-    printf("153 %8.3Lf\n", t_horner(__, 5, 3.0L));
-    __[0] = 1;
-    __[1] = -4;
-    __[2] = 0;
-    __[3] = 0;
-    __[4] = 2;
-    __[5] = 3;
-    __[6] = 0;
-    __[7] = -2;
-    printf("201 %8.3Lf\n", t_horner(__, 7, -2.0L));
+    series poly = t_jet(8);
+    poly[0] = 1; poly[1] = 3; poly[2] = 0; poly[3] = 2;
+    printf(" 23 %8.3Lf\n", t_horner(poly, 3, 2.0L));
+    poly[0] = 3; poly[1] = -1; poly[2] = 2; poly[3] = -4; poly[4] = 0; poly[5] = 1;
+    printf("153 %8.3Lf\n", t_horner(poly, 5, 3.0L));
+    poly[0] = 1; poly[1] = -4; poly[2] = 0; poly[3] = 0; poly[4] = 2; poly[5] = 3; poly[6] = 0; poly[7] = -2;
+    printf("201 %8.3Lf\n", t_horner(poly, 7, -2.0L));
 
     printf("\n");
     printf("TSM\n");
