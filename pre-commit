@@ -5,11 +5,14 @@ echo -n "Running Clang build . . . "
 ./build clang >/dev/null
 
 echo -n "Running Taylor Test . . . "
-if ! ./libad-test-dbg 32 20 1 1e-18
-then
-    echo "Taylor Test failed!"
-    exit 1
-fi
+for x in 1 0 -1
+do
+    if ! ./libad-test-dbg 32 20 $x 1e-18 0
+    then
+        echo "Taylor Test failed!"
+        exit 1
+    fi
+done
 echo OK
 
 echo -n "Running Lorenz executables . . . "

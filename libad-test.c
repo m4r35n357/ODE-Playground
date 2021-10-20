@@ -60,7 +60,7 @@ void ode (components *v, series x, series y, series z, void *params, int k) {
 static void skip (char* name) {
     total++;
     skipped++;
-    printf("%sSKIPPED%s %s\n", KYLW, KNRM, name);
+    if (debug >= 1) printf("%sSKIPPED%s %s\n", KYLW, KNRM, name);
 }
 
 static void compare (char* name, series a, series b) {
