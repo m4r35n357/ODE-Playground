@@ -27,31 +27,6 @@ typedef void (*model)(series, series);
 void ad_init (int n);
 
 /*
- * Creates a Taylor Series with element zero set to value and the rest zeroed (represents a constant)
- */
-series ad_series_c (int size, mpfr_t value);
-
-/*
- * Creates a Taylor Series with element zero set to value, element one set to 1, and the rest zeroed (represents a variable)
- */
-series ad_series_v (int size, mpfr_t value);
-
-/*
- * Prints a Taylor coefficient jet to order n
- */
-void jet_output (series jet, char* f_colour, char *fk_colour);
-
-/*
- * Applies factorials to convert Taylor coefficients to actual derivative values
- */
-void jet_to_derivs (series jet);
-
-/*
- * Prints a derivative jet to order n
- */
-void derivative_output (series jet, char* f_colour, char *fk_colour);
-
-/*
  * Finds a root of fn(f, x) by Newton's method, where f and x are Taylor Series
  */
 void ad_newton (model m, series f, series x, int max_it, mpfr_t f_tol, mpfr_t x_tol, mode degree);

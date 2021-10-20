@@ -21,7 +21,7 @@
 
 static int n, debug = 0, total = 0, passed = 0, skipped = 0;
 
-static mpfr_t x0, delta, tolerance, D0, D01, D05, D_05, D1, D_1, D2, D_2, D3, D_3;
+static mpfr_t delta, tolerance, D0, D01, D05, D_05, D1, D_1, D2, D_2, D3, D_3;
 
 static void libad_test_init (void) {
     ad_init(n);
@@ -89,9 +89,13 @@ int main (int argc, char **argv) {
     n = (int)strtol(argv[2], NULL, BASE) + 1;
     assert(n > 1);
     libad_test_init();
-    mpfr_init_set_str(x0, argv[3], BASE, RND);
+    series x = t_jet(n + 1);
+    mpfr_init_set_str(x[0], argv[3], BASE, RND);
     mpfr_init_set_str(tolerance, argv[4], BASE, RND);
     if (argc == 6) debug = (int)strtol(argv[5], NULL, BASE);
+
+    series c1 = t_jet(n);
+    mpfr_set(c1[0], D1, RND);
 
     series abs = t_jet(n);
     series scale = t_jet(n);
@@ -119,9 +123,6 @@ int main (int argc, char **argv) {
     series tan = t_jet(n);
     series sec2 = t_jet(n);
 
-    series c1 = ad_series_c(n, D1);
-    series x = ad_series_v(n, x0);
-
     mpfr_init(PI_2);
     mpfr_const_pi(PI_2, RND);
     mpfr_div_2ui(PI_2, PI_2, 1, RND);
@@ -132,7 +133,7 @@ int main (int argc, char **argv) {
 
     fprintf(stdout, "\n");
     fprintf(stdout, "Horner\n");
-    series p = ad_series_c(8, D0);
+    series p = t_jet(8);
     mpfr_set_si(p[0], 1, RND);
     mpfr_set_si(p[1], 3, RND);
     mpfr_set_si(p[2], 0, RND);

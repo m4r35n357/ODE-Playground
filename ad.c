@@ -19,39 +19,6 @@ void ad_init (int n) {
     mpfr_init(delta);
 }
 
-series ad_series_c (int n, mpfr_t value) {
-    series s = t_jet(n);
-    mpfr_set(s[0], value, RND);
-    return s;
-}
-
-series ad_series_v (int n, mpfr_t value) {
-    assert(n > 1);
-    series s = ad_series_c(n, value);
-    mpfr_set_ui(s[1], 1, RND);
-    return s;
-}
-
-void jet_output (series s, char* f_colour, char *fk_colour) {
-    mpfr_printf("%s%9.6RNf ", f_colour, s[0]);
-    for (int i = 1; i < order; i++) {
-        mpfr_printf("%s%9.6RNf ", fk_colour, s[i]);
-    }
-    printf("%s\n", f_colour);
-}
-
-void jet_to_derivs (series s) {
-    for (int i = 1, fac = 1; i < order; i++) {
-        fac *= i;
-        mpfr_mul_si(s[i], s[i], fac, RND);
-    }
-}
-
-void derivative_output (series jet, char* f_colour, char *fk_colour) {
-    jet_to_derivs(jet);
-    jet_output(jet, f_colour, fk_colour);
-}
-
 series ad_set (series b, series a) {
     for (int k = 0; k < order; k++) {
         mpfr_set(b[k], a[k], RND);
