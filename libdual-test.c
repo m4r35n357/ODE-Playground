@@ -25,7 +25,7 @@ static real x0, delta_val, delta_dot, tolerance;
 static void skip (char* name) {
     total++;
     skipped++;
-    printf("%sSKIPPED%s %s\n", KYLW, KNRM, name);
+    if (debug >= 1) printf("%sSKIPPED%s %s\n", KYLW, KNRM, name);
 }
 
 static void compare (char* name, dual a, dual b) {
@@ -117,7 +117,7 @@ int main (int argc, char **argv) {
     x_non_zero ? compare(name, d_pow(sqr_x, 0.5L), d_abs(x)) : skip(name);
 
     if (debug != 0) printf("\n");
-    ln_x = d_log(x);
+    if (x_positive) ln_x = d_log(x);
     name = "log(e^x) == x";
     compare(name, d_log(d_exp(x)), x);
     name = "log(sqr(x)) == log(x) * 2";
