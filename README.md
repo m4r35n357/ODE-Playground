@@ -52,8 +52,8 @@ There should be NO errors or warnings.  [UPDATE: kerr-image.c shows warnings on 
 
 #### Running c Tests
 ```
-$ ./dual-test 6 _ 4 -3
-$ ./taylor-test 6 8 4 -3
+$ ./libdual-test-dbg 1 1e-18 1
+$ ./libtaylor-test-dbg 20 1 1e-18 1
 ```
 #### Code coverage
 ```

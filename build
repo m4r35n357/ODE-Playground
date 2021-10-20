@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# ./clean; time -p ./build; echo ""; ./taylor-test 6 1 4 -3; echo ""; ./dual-test 6 _ 4 -3
+# Example:  ./clean; time -p ./build; ./libdual-test-dbg 1 1e-18 1; ./libad-test-dbg 20 1 1e-18 1
 #
 #  (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 
