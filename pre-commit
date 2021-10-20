@@ -12,7 +12,7 @@ echo -n "Running Clang build . . . "
 ./clean
 ./build clang >/dev/null
 
-echo -n "Running Dual Test . . . "
+echo "Running Dual Test . . . "
 for x in 1 0 -1
 do
     if ! ./libdual-test-dbg $x 1e-18 0
@@ -23,10 +23,10 @@ do
 done
 echo OK
 
-echo -n "Running Taylor Test . . . "
+echo "Running Taylor Test . . . "
 for x in 1 0 -1
 do
-    if ! ./libad-test-dbg 20 $x 1e-18 0
+    if ! ./libad-test-dbg 20 $x 1e-18 0 >/dev/null
     then
         echo "Taylor Test failed!"
         exit 1
@@ -40,14 +40,14 @@ then
     echo "Lorenz(DBG) failed!"
     exit 1
 fi
-echo -n "Debug, "
+echo -n "Debug"
 
 if ! ./tsm-lorenz-static 9 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
 then
     echo "Lorenz(STATIC) failed!"
     exit 1
 fi
-echo "Static"
+echo ", Static OK"
 
 echo -n "Running Rabinovich-Fabrikant executable . . . "
 if [ 50001 -ne $(./tsm-rf-dbg 9 16 .01 50000 .05 -.05 .3 .105 .1 2>/dev/null | wc -l) ]
