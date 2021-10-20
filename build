@@ -4,7 +4,6 @@
 #
 #  (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 
-
 /usr/bin/ctags *.c
 
 WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra -Wconversion'
@@ -77,11 +76,6 @@ do
 done
 
 echo ""
-echo " Building tests"
-${CC} -O0 -g $WARNINGS -o taylor-test taylor-test.c taylor-ode.c -lm &
-${CC} -O0 -g $WARNINGS -o dual-test dual-test.c dual.c -lm &
-
-echo ""
 echo " Building divergence"
 ${CC} -O3 $WARNINGS -o divergence divergence.c -lm -s &
 
@@ -115,5 +109,5 @@ ${CC} -O3 -DNDEBUG -c $WARNINGS -fpic symplectic.c && ${CC} -shared -o libsymp.s
 echo ""
 wait
 
-ls -lh --color taylor-test dual-test libad-test-dbg tsm-* h-* lib*.so divergence
+ls -lh --color libad-test-dbg libdual-test-dbg tsm-* h-* lib*.so divergence
 echo ""
