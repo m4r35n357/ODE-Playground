@@ -4,7 +4,7 @@ echo -n "Running Clang build . . . "
 ./clean
 ./build clang >/dev/null
 
-echo -n "Running Taylor Test . . . "
+echo "Running Taylor Test . . . "
 for x in 1 0 -1
 do
     if ! ./libad-test-dbg 32 20 $x 1e-18 0 >/dev/null
@@ -35,7 +35,7 @@ then
     echo "Lorenz(DYNAMIC) failed!"
     exit 1
 fi
-echo Dynamic
+echo Dynamic OK
 
 echo -n "Running Rabinovich-Fabrikant executable . . . "
 if [ 50001 -ne $(./tsm-rf-dbg 9 32 16 .01 50000 .05 -.05 .3 .105 .1 2>/dev/null | wc -l) ]

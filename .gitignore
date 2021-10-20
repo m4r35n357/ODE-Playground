@@ -11,10 +11,8 @@ tsm-*-dynamic
 divergence
 
 # Test artifacts
-dual-test
-taylor-test
-ad-test-dbg
 libad-test-dbg
+libdual-test-dbg
 
 # Symplectic artifacts
 h-*-dbg
