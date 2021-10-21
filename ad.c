@@ -19,13 +19,6 @@ void ad_init (int n) {
     mpfr_init(delta);
 }
 
-series ad_set (series b, series a) {
-    for (int k = 0; k < order; k++) {
-        mpfr_set(b[k], a[k], RND);
-    }
-    return b;
-}
-
 series ad_scale (series s, series u, mpfr_t a) {
     for (int k = 0; k < order; k++) {
         mpfr_mul(s[k], u[k], a, RND);

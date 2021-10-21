@@ -27,13 +27,6 @@ typedef void (*model)(series, series);
 void ad_init (int n);
 
 /*
- * Finds a root of fn(f, x) by Newton's method, where f and x are Taylor Series
- */
-void ad_newton (model m, series f, series x, int max_it, mpfr_t f_tol, mpfr_t x_tol, mode degree);
-
-series ad_set (series B, series A);
-
-/*
  * Scales Taylor Series U by a factor a, result stored in jet S
  */
 series ad_scale (series S, series U, mpfr_t a);
