@@ -91,6 +91,9 @@ int main (int argc, char **argv) {
     libad_test_init();
     series x = t_jet(n + 1);
     mpfr_init_set_str(x[0], argv[3], BASE, RND);
+    for (int k = 1; k <= n; k++) {
+        mpfr_div_si(x[k], x[0], k * k, RND);
+    }
     mpfr_init_set_str(tolerance, argv[4], BASE, RND);
     if (argc == 6) debug = (int)strtol(argv[5], NULL, BASE);
 
@@ -133,7 +136,7 @@ int main (int argc, char **argv) {
 
     fprintf(stdout, "\n");
     fprintf(stdout, "Horner\n");
-    series p = t_jet(8);
+    series p = t_jet(n >= 8 ? n : 8);
     mpfr_set_si(p[0], 1, RND);
     mpfr_set_si(p[1], 3, RND);
     mpfr_set_si(p[2], 0, RND);

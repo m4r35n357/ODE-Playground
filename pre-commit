@@ -7,7 +7,7 @@ echo -n "Running Clang build . . . "
 echo "Running Taylor Test . . . "
 for x in 1 0 -1
 do
-    if ! ./libad-test-dbg 32 20 $x 1e-18 0 >/dev/null
+    if ! ./libad-test-dbg 32 20 $x 1e-21 0 >/dev/null
     then
         echo "Taylor Test failed!"
         exit 1
