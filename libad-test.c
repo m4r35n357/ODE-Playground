@@ -75,6 +75,9 @@ int main (int argc, char **argv) {
     ad_init(n);
     series x = t_jet(n + 1);
     x[0] = strtold(argv[2], NULL);
+    for (int k = 1; k <= n; k++) {
+        x[k] = x[0] / (k * k);
+    }
     tolerance = strtold(argv[3], NULL);
     if (argc == 5) debug = (int)strtol(argv[4], NULL, 10);
 
@@ -113,7 +116,7 @@ int main (int argc, char **argv) {
 
     printf("\n");
     printf("Horner\n");
-    series p = t_jet(8);
+    series p = t_jet(n >= 8 ? n : 8);
     p[0] = 1.0L; p[1] = 3.0L; p[2] = 0.0L; p[3] = 2.0L;
     printf(" 23 %8.3Lf\n", t_horner(p, 3, 2.0L));
     p[0] = 3; p[1] = -1.0L; p[2] = 2.0L; p[3] = -4.0L; p[4] = 0.0L; p[5] = 1.0L;
@@ -126,9 +129,8 @@ int main (int argc, char **argv) {
     long dp = 12, steps = 10;
     real step = 0.1L;
     tsm(argc, argv, dp, n, step, steps, 1.0L, 1.0L, 1.0L);
-    real e1 = expl(PLUS1), e0 = expl(ZERO), e_1 = expl(MINUS1);
     printf("Check\n");
-    t_output(dp, e1, e0, e_1, step * steps, "_", "_", "_");
+    t_output(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), step * steps, "_", "_", "_");
 
     printf("\n");
     ad_sqr(sqr_x, x);

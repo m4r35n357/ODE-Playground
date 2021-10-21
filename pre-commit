@@ -15,7 +15,7 @@ echo -n "Running Clang build . . . "
 echo "Running Dual Test . . . "
 for x in 1 0 -1
 do
-    if ! ./libdual-test-dbg $x 1e-18 0
+    if ! ./libdual-test-dbg $x 1e-15 0
     then
         echo "Dual Test failed!"
         exit 1
@@ -26,7 +26,7 @@ echo OK
 echo "Running Taylor Test . . . "
 for x in 1 0 -1
 do
-    if ! ./libad-test-dbg 20 $x 1e-18 0 >/dev/null
+    if ! ./libad-test-dbg 8 $x 1e-15 0 >/dev/null
     then
         echo "Taylor Test failed!"
         exit 1
