@@ -8,6 +8,11 @@
 #include "real.h"
 
 /*
+ * The numerical base for string IO conversions
+ */
+extern const int BASE;
+
+/*
  * Type for Taylor Series coordinate jets
  */
 typedef long double *series;

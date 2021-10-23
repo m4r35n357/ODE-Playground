@@ -70,7 +70,7 @@ int main (int argc, char **argv) {
     real PI_2 = 0.5L * MY_PI;
 
     assert(argc == 4 || argc == 5);
-    n = (int)strtol(argv[1], NULL, 10);
+    n = (int)strtol(argv[1], NULL, BASE);
     assert(n > 1);
     ad_init(n);
     series x = t_jet(n + 1);
@@ -79,7 +79,7 @@ int main (int argc, char **argv) {
         x[k] = x[0] / (k * k);
     }
     tolerance = strtold(argv[3], NULL);
-    if (argc == 5) debug = (int)strtol(argv[4], NULL, 10);
+    if (argc == 5) debug = (int)strtol(argv[4], NULL, BASE);
 
     series c1 = t_jet(n);
     c1[0] = 1.0L;

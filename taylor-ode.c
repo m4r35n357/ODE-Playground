@@ -9,6 +9,8 @@
 #include <math.h>
 #include "taylor-ode.h"
 
+const int BASE = 10;
+
 void t_params (char **argv, int argc, ...) {
     va_list model_params;
     va_start(model_params, argc);
