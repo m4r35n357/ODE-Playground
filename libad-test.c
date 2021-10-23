@@ -56,7 +56,7 @@ static void compare (char* name, series a, series b) {
     for (int k = 0; k < n; k++) {
         delta = a[k] - b[k];
         if (fabsl(delta) > tolerance) {
-            printf("%s FAILED%s %s  k: %d  LHS: %.6Le  RHS: %.6Le  diff %.3Le\n", KRED, KNRM, name, k, a[k], b[k], delta);
+            fprintf(stderr, "%s FAILED%s %s  k: %d  LHS: %.6Le  RHS: %.6Le  diff %.3Le\n", KRED, KNRM, name, k, a[k], b[k], delta);
             return;
         }
         if (debug >= 2 && k == 0) fprintf(stderr, "\n");
@@ -114,25 +114,25 @@ int main (int argc, char **argv) {
     int x_non_zero = x[0] != 0.0L;
     int x_lt_pi_2 = x[0] < PI_2;
 
-    printf("\n");
-    printf("Horner\n");
+    fprintf(stdout, "\n");
+    fprintf(stdout, "Horner\n");
     series p = t_jet(n >= 8 ? n : 8);
     p[0] = 1.0L; p[1] = 3.0L; p[2] = 0.0L; p[3] = 2.0L;
-    printf(" 23 %8.3Lf\n", t_horner(p, 3, 2.0L));
+    fprintf(stdout, " 23 %8.3Lf\n", t_horner(p, 3, 2.0L));
     p[0] = 3; p[1] = -1.0L; p[2] = 2.0L; p[3] = -4.0L; p[4] = 0.0L; p[5] = 1.0L;
-    printf("153 %8.3Lf\n", t_horner(p, 5, 3.0L));
+    fprintf(stdout, "153 %8.3Lf\n", t_horner(p, 5, 3.0L));
     p[0] = 1.0L; p[1] = -4.0L; p[2] = 0.0L; p[3] = 0.0L; p[4] = 2.0L; p[5] = 3.0L; p[6] = 0.0L; p[7] = -2.0L;
-    printf("201 %8.3Lf\n", t_horner(p, 7, -2.0L));
+    fprintf(stdout, "201 %8.3Lf\n", t_horner(p, 7, -2.0L));
 
-    printf("\n");
-    printf("TSM\n");
+    fprintf(stdout, "\n");
+    fprintf(stdout, "TSM\n");
     long dp = 12, steps = 10;
     real step = 0.1L;
     tsm(argc, argv, dp, n, step, steps, 1.0L, 1.0L, 1.0L);
-    printf("Check\n");
+    fprintf(stdout, "Check\n");
     t_output(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), step * steps, "_", "_", "_");
 
-    printf("\n");
+    fprintf(stderr, "\n");
     ad_sqr(sqr_x, x);
     if (x_non_zero) ad_inv(inv_x, x);
     if (x_positive) ad_sqrt(sqrt_x, x);
