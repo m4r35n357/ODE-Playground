@@ -86,7 +86,7 @@ int main (int argc, char **argv) {
     assert(argc == 5 || argc == 6);
     double precision = strtod(argv[1], NULL) * 3.322;
     mpfr_set_default_prec((int)precision);
-    n = (int)strtol(argv[2], NULL, BASE) + 1;
+    n = (int)strtol(argv[2], NULL, BASE);
     assert(n > 1);
     libad_test_init();
     series x = t_jet(n + 1);
@@ -99,6 +99,14 @@ int main (int argc, char **argv) {
 
     series c1 = t_jet(n);
     mpfr_set(c1[0], D1, RND);
+
+    mpfr_init(PI_2);
+    mpfr_const_pi(PI_2, RND);
+    mpfr_div_2ui(PI_2, PI_2, 1, RND);
+
+    int x_positive = mpfr_sgn(x[0]) > 0;
+    int x_non_zero = mpfr_zero_p(x[0]) == 0;
+    int x_lt_pi_2 = mpfr_cmpabs(x[0], PI_2) < 0;
 
     series abs = t_jet(n);
     series scale = t_jet(n);
@@ -125,14 +133,6 @@ int main (int argc, char **argv) {
     series cos_2x = t_jet(n);
     series tan = t_jet(n);
     series sec2 = t_jet(n);
-
-    mpfr_init(PI_2);
-    mpfr_const_pi(PI_2, RND);
-    mpfr_div_2ui(PI_2, PI_2, 1, RND);
-
-    int x_positive = mpfr_sgn(x[0]) > 0;
-    int x_non_zero = mpfr_zero_p(x[0]) == 0;
-    int x_lt_pi_2 = mpfr_cmpabs(x[0], PI_2) < 0;
 
     fprintf(stdout, "\n");
     fprintf(stdout, "Horner\n");
