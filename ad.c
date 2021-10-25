@@ -40,13 +40,6 @@ series ad_minus (series m, series u, series v) {
     return m;
 }
 
-series ad_neg (series m, series u) {
-    for (int k = 0; k < order; k++) {
-        mpfr_neg(m[k], u[k], RND);
-    }
-    return m;
-}
-
 series ad_abs (series a, series u) {
     for (int k = 0; k < order; k++) {
         mpfr_swap(a[k], *t_abs(u, k));

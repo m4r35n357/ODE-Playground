@@ -42,11 +42,6 @@ series ad_plus (series P, series V, series U);
 series ad_minus (series M, series V, series U);
 
 /*
- * Calculates Taylor Series for the negative of U, result stored in jet M
- */
-series ad_neg (series M, series U);
-
-/*
  * Calculates Taylor Series for the absolute value of U, result stored in jet A
  */
 series ad_abs (series A, series U);
