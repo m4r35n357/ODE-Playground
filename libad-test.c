@@ -92,7 +92,6 @@ int main (int argc, char **argv) {
     series quot = t_jet(n);
     series inv = t_jet(n);
     series inv_x = t_jet(n);
-    series neg = t_jet(n);
     series sqr_x = t_jet(n);
     series sqr_sin_x = t_jet(n);
     series sqr_cos_x = t_jet(n);
@@ -171,15 +170,16 @@ int main (int argc, char **argv) {
     x_non_zero ? compare(name, ad_pwr(pow, sqr_x, 0.5L), ad_abs(abs, x)) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
-    name = "log(e^x) == x";
-    compare(name, ad_ln(ln, ad_exp(exp_x, x)), x);
-    name = "log(sqr(x)) == log(x) * 2";
+    ad_exp(exp_x, x);
     if (x_positive) ad_ln(ln_x, x);
+    name = "log(e^x) == x";
+    compare(name, ad_ln(ln, exp_x), x);
+    name = "log(sqr(x)) == log(x) * 2";
     x_positive ? compare(name, ad_ln(ln, sqr_x), ad_scale(scale, ln_x, 2.0L)) : skip(name);
     name = "log(sqrt(x)) == log(x) / 2";
     x_positive ? compare(name, ad_ln(ln, sqrt_x), ad_scale(scale, ln_x, 0.5L)) : skip(name);
     name = "log(1 / x) == - log(x)";
-    x_positive ? compare(name, ad_ln(ln, inv_x), ad_neg(neg, ln_x)) : skip(name);
+    x_positive ? compare(name, ad_ln(ln, inv_x), ad_scale(scale, ln_x, -1.0L)) : skip(name);
     name = "log(x^-3) == - 3 * log(x)";
     x_positive ? compare(name, ad_ln(ln, ad_pwr(pow, x, -3.0L)), ad_scale(scale, ln_x, -3.0L)) : skip(name);
 
@@ -203,8 +203,7 @@ int main (int argc, char **argv) {
     compare(name, cos_2x, ad_plus(sum, sqr_cos_x, sqr_sin_x));
 
     if (debug != 0) fprintf(stderr, "\n");
-    ad_exp(exp_x, x);
-    ad_exp(neg_exp_x, ad_neg(neg, x));
+    ad_exp(neg_exp_x, ad_scale(scale, x, -1.0L));
     name = "cosh(x) == (e^x + e^-x) / 2";
     compare(name, cos, ad_scale(scale, ad_plus(sum, exp_x, neg_exp_x), 0.5L));
     name = "sinh(x) == (e^x - e^-x) / 2";
