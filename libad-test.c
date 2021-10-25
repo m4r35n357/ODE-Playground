@@ -72,9 +72,11 @@ static void compare (char* name, series a, series b) {
                     KRED, KNRM, name, k, mpfr_get_d(a[k], RND), mpfr_get_d(b[k], RND), mpfr_get_d(delta, RND));
             return;
         }
-        if (debug >= 2 && k == 0) fprintf(stderr, "\n");
-        if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.6e %+.6e  diff %+.3e\n",
+        if (debug >= 2) {
+            if (k == 0) fprintf(stderr, "\n");
+            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.6e %+.6e  diff %+.3e\n",
                                 KNRM, KNRM, k, mpfr_get_d(a[k], RND), mpfr_get_d(b[k], RND), mpfr_get_d(delta, RND));
+        }
     }
     if (debug >= 1) fprintf(stderr, "%s PASSED%s %s\n", KGRN, KNRM, name);
     passed++;
@@ -208,10 +210,11 @@ int main (int argc, char **argv) {
     x_non_zero ? compare(name, ad_pwr(pow, sqr_x, D05), ad_abs(abs, x)) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
-    name = "log(e^x) == x";
-    compare(name, ad_ln(ln, ad_exp(exp_x, x)), x);
-    name = "log(sqr(x)) == log(x) * 2";
+    ad_exp(exp_x, x);
     if (x_positive) ad_ln(ln_x, x);
+    name = "log(e^x) == x";
+    compare(name, ad_ln(ln, exp_x), x);
+    name = "log(sqr(x)) == log(x) * 2";
     x_positive ? compare(name, ad_ln(ln, sqr_x), ad_scale(scale, ln_x, D2)) : skip(name);
     name = "log(sqrt(x)) == log(x) / 2";
     x_positive ? compare(name, ad_ln(ln, sqrt_x), ad_scale(scale, ln_x, D05)) : skip(name);
