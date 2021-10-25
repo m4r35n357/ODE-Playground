@@ -137,34 +137,47 @@ int main (int argc, char **argv) {
     ad_sqr(sqr_x, x);
     if (x_non_zero) ad_inv(inv_x, x);
     if (x_positive) ad_sqrt(sqrt_x, x);
+
     char* name = "x * x == sqr(x)";
     compare(name, ad_prod(prod, x, x), sqr_x);
+
     name = "sqr(x) / x == x";
     x_non_zero ? compare(name, ad_quot(quot, sqr_x, x), x) : skip(name);
+
     name = "x * 1 / x == 1";
     x_non_zero ? compare(name, ad_prod(prod, x, inv_x), c1) : skip(name);
+
     name = "sqrt(x) * sqrt(x) == x";
     x_positive ? compare(name, ad_prod(prod, sqrt_x, sqrt_x), x) : skip(name);
+
     name = "x / sqrt(x) == sqrt(x)";
     x_positive ? compare(name, ad_quot(quot, x, sqrt_x), sqrt_x) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
+
     name = "x^2 == sqr(x)";
     x_positive ? compare(name, ad_pwr(pow, x, 2.0L), sqr_x) : skip(name);
+
     name = "x^1 == x";
     x_positive ? compare(name, ad_pwr(pow, x, 1.0L), x) : skip(name);
+
     name = "x^0.5 == sqrt(x)";
     x_positive ? compare(name, ad_pwr(pow, x, 0.5L), sqrt_x): skip(name);
+
     name = "x^0 == 1";
     x_positive ? compare(name, ad_pwr(pow, x, 0.0L), c1) : skip(name);
+
     name = "x^-0.5 == 1 / sqrt(x)";
     x_positive ? compare(name, ad_pwr(pow, x, -0.5L), ad_inv(inv, sqrt_x)) : skip(name);
+
     name = "x^-1 == 1 / x";
     x_positive ? compare(name, ad_pwr(pow, x, -1.0L), inv_x) : skip(name);
+
     name = "x^-2 == 1 / sqr(x)";
     x_positive ? compare(name, ad_pwr(pow, x, -2.0L), ad_inv(inv, sqr_x)) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
+
     name = "sqr(x) * x^-3 == 1 / x";
     x_positive ? compare(name, ad_prod(prod, sqr_x, ad_pwr(pow, x, -3.0L)), inv_x) : skip(name);
 
@@ -174,14 +187,19 @@ int main (int argc, char **argv) {
     if (debug != 0) fprintf(stderr, "\n");
     ad_exp(exp_x, x);
     if (x_positive) ad_ln(ln_x, x);
+
     name = "log(e^x) == x";
     compare(name, ad_ln(ln, exp_x), x);
+
     name = "log(sqr(x)) == log(x) * 2";
     x_positive ? compare(name, ad_ln(ln, sqr_x), ad_scale(scale, ln_x, 2.0L)) : skip(name);
+
     name = "log(sqrt(x)) == log(x) / 2";
     x_positive ? compare(name, ad_ln(ln, sqrt_x), ad_scale(scale, ln_x, 0.5L)) : skip(name);
+
     name = "log(1 / x) == - log(x)";
     x_positive ? compare(name, ad_ln(ln, inv_x), ad_scale(scale, ln_x, -1.0L)) : skip(name);
+
     name = "log(x^-3) == - 3 * log(x)";
     x_positive ? compare(name, ad_ln(ln, ad_pwr(pow, x, -3.0L)), ad_scale(scale, ln_x, -3.0L)) : skip(name);
 
@@ -191,23 +209,31 @@ int main (int argc, char **argv) {
     ad_sqr(sqr_sin_x, sin);
     ad_sqr(sqr_cos_x, cos);
     ad_sin_cos(sin_2x, cos_2x, ad_scale(scale, x, 2.0L), HYP);
+
     name = "cosh^2(x) - sinh^2(x) == 1";
     compare(name, ad_minus(diff, sqr_cos_x, sqr_sin_x), c1);
+
     name = "sech^2(x) + tanh^2(x) == 1";
     compare(name, ad_plus(sum, sec2, ad_sqr(sqr_tan_x, tan)), c1);
+
     name = "tanh(x) == sinh(x) / cosh(x)";
     compare(name, tan, ad_quot(quot, sin, cos));
+
     name = "sech^2(x) == 1 / cosh^2(x)";
     compare(name, sec2, ad_inv(inv, sqr_cos_x));
+
     name = "sinh(2x) == 2 * sinh(x) * cosh(x)";
     compare(name, sin_2x, ad_scale(scale, ad_prod(prod, sin, cos), 2.0L));
+
     name = "cosh(2x) == cosh^2(x) + sinh^2(x)";
     compare(name, cos_2x, ad_plus(sum, sqr_cos_x, sqr_sin_x));
 
     if (debug != 0) fprintf(stderr, "\n");
     ad_exp(neg_exp_x, ad_scale(scale, x, -1.0L));
+
     name = "cosh(x) == (e^x + e^-x) / 2";
     compare(name, cos, ad_scale(scale, ad_plus(sum, exp_x, neg_exp_x), 0.5L));
+
     name = "sinh(x) == (e^x - e^-x) / 2";
     compare(name, sin, ad_scale(scale, ad_minus(diff, exp_x, neg_exp_x), 0.5L));
 
@@ -217,16 +243,22 @@ int main (int argc, char **argv) {
     ad_sqr(sqr_sin_x, sin);
     ad_sqr(sqr_cos_x, cos);
     ad_sin_cos(sin_2x, cos_2x, ad_scale(scale, x, 2.0L), TRIG);
+
     name = "cos^2(x) + sin^2(x) == 1";
     compare(name, ad_plus(sum, sqr_cos_x, sqr_sin_x), c1);
+
     name = "sec^2(x) - tan^2(x) == 1";
     x_lt_pi_2 ? compare(name, ad_minus(diff, sec2, ad_sqr(sqr_tan_x, tan)), c1) : skip(name);
+
     name = "tan(x) == sin(x) / cos(x)";
     x_lt_pi_2 ? compare(name, tan, ad_quot(quot, sin, cos)) : skip(name);
+
     name = "sec^2(x) == 1 / cos^2(x)";
     x_lt_pi_2 ? compare(name, sec2, ad_inv(inv, sqr_cos_x)) : skip(name);
+
     name = "sin(2x) == 2 * sin(x) * cos(x)";
     compare(name, sin_2x, ad_scale(scale, ad_prod(prod, sin, cos), 2.0L));
+
     name = "cos(2x) == cos^2(x) - sin^2(x)";
     compare(name, cos_2x, ad_minus(diff, sqr_cos_x, sqr_sin_x));
 
