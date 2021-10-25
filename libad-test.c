@@ -59,8 +59,10 @@ static void compare (char* name, series a, series b) {
             fprintf(stderr, "%s FAILED%s %s  k: %d  LHS: %.6Le  RHS: %.6Le  diff %.3Le\n", KRED, KNRM, name, k, a[k], b[k], delta);
             return;
         }
-        if (debug >= 2 && k == 0) fprintf(stderr, "\n");
-        if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.6Le %+.6Le  diff %+.3Le\n", KNRM, KNRM, k, a[k], b[k], delta);
+        if (debug >= 2) {
+            if (k == 0) fprintf(stderr, "\n");
+            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.6Le %+.6Le  diff %+.3Le\n", KNRM, KNRM, k, a[k], b[k], delta);
+        }
     }
     if (debug >= 1) fprintf(stderr, "%s PASSED%s %s\n", KGRN, KNRM, name);
     passed++;
