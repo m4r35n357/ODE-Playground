@@ -1,20 +1,24 @@
 ## News
 
-## (16th October 2021)
+### (26th October 2021)
+To distinguish it from the MPFR code in master, the compendium branch has been renamed to pure_c: https://github.com/m4r35n357/ODE-Playground/tree/pure_c.
+It still contains the Python (pure!) and Symplectic code, it is just a rename.
+
+### (16th October 2021)
 Python simulators and AD/TSM module have been removed to eliminate duplication.
 They can now be found only on the compendium branch here: https://github.com/m4r35n357/ODE-Playground/tree/compendium, together with the long double version of TSM, Symplectic Integrator, and Black Hole code.
 
-## (4th October 2021)
+### (4th October 2021)
 
 I have decided to update the MPFR implementation in line with the pure C version that I have been working on since I wrote the message below.
 That remains in the compendium branch,and its README contains material not covered here.
 The code now looks like a framework; model clients no longer need to provide the TSM algorithm, or any other conditional code.
 The core TSM algorithm and the Taylor recurrences have all been brought up to date, and are now as minimal and readable as they can possibly be.
 
-## Important (OBSOLETE - kept for historical reasons)
+### Important (OBSOLETE - kept for historical reasons)
 This branch is pretty much "finished", or "abandoned", current work (double precision, bifurcation diagrams, no function analysis) is happening  on the "compendium" branch here: https://github.com/m4r35n357/ODE-Playground/tree/compendium
 
-## Background
+### Background
 
 This project is mainly a collection of programs in c and Python for evolving systems of ODEs using the Taylor Series Method (TSM), a rather old but poorly acknowledged technique based on forward mode Automatic Differentiation (AD).
 TSM is a procedure for integrating ODEs using Taylor Series of arbitrary order, calculated to arbitrary precision (the former requires the latter in practice), using recurrence relations between time derivatives of increasing order.
