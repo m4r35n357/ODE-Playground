@@ -22,7 +22,10 @@ void t_params (char **argv, int argc, ...) {
 
 series t_jet (long n) {
     series s = calloc((size_t)n, sizeof (real));
-    if (s == NULL) { fprintf(stderr, "Allocation failure!\n"); exit(2); };
+    if (s == NULL) {
+        fprintf(stderr, "Allocation failure!\n");
+        exit(1);
+    }
     for (long i = 0; i < n; i++) {
         s[i] = 0.0L;
     }
@@ -40,7 +43,10 @@ real t_horner (series jet, long n, real h) {
     for (long i = n; i >= 0; i--) {
         sum = sum * h + jet[i];
     }
-    if (isnan(sum) || isinf(sum)) { fprintf(stderr, "Value error!\n"); exit(1); };
+    if (isnan(sum) || isinf(sum)) {
+        fprintf(stderr, "Value error!\n");
+        exit(2);
+    }
     return sum;
 }
 
