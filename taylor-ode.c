@@ -41,7 +41,10 @@ void t_params (char **argv, int argc, ...) {
 
 series t_jet (int n) {
     mpfr_t *s = calloc((size_t)n, sizeof (mpfr_t));
-    if (s == NULL) exit(2);
+    if (s == NULL) {
+        fprintf(stderr, "Allocation failure!\n");
+        exit(1);
+    }
     for (int i = 0; i < n; i++) {
         mpfr_init_set_ui(s[i], 0, RND);
     }
@@ -58,7 +61,10 @@ mpfr_t *t_horner (series s, int n, mpfr_t h) {
     for (int i = n; i >= 0; i--) {
         mpfr_fma(_, _, h, s[i], RND);
     }
-    if (mpfr_number_p(_) == 0) exit(1);
+    if (mpfr_number_p(_) == 0) {
+        fprintf(stderr, "Value error!\n");
+        exit(2);
+    }
     return &_;
 }
 
