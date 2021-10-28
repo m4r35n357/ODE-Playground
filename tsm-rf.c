@@ -13,13 +13,13 @@
 
 typedef struct { real alpha, gamma; series a, b, c; } parameters;
 
-void *get_p (int argc, char **argv, long order) {
+void *get_p (int argc, char **argv, int n) {
     assert(argc == 10);
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->alpha, &p->gamma);
-    p->a = t_jet(order);
-    p->b = t_jet(order);
-    p->c = t_jet(order);
+    p->a = t_jet(n);
+    p->b = t_jet(n);
+    p->c = t_jet(n);
     return p;
 }
 

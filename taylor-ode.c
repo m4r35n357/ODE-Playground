@@ -20,27 +20,27 @@ void t_params (char **argv, int argc, ...) {
     va_end(model_params);
 }
 
-series t_jet (long n) {
+series t_jet (int n) {
     series s = calloc((size_t)n, sizeof (real));
     if (s == NULL) {
         fprintf(stderr, "Allocation failure!\n");
         exit(1);
     }
-    for (long i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++) {
         s[i] = 0.0L;
     }
     return s;
 }
 
-void t_output (long dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label) {
+void t_output (int dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label) {
     char fs[128];
-    sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le %s %s %s\n", dp, dp, dp, x_label, y_label, z_label);
+    sprintf(fs, "%%+.%dLe %%+.%dLe %%+.%dLe %%+.6Le %s %s %s\n", dp, dp, dp, x_label, y_label, z_label);
     printf(fs, x, y, z, t);
 }
 
-real t_horner (series jet, long n, real h) {
+real t_horner (series jet, int n, real h) {
     real sum = 0.0L;
-    for (long i = n; i >= 0; i--) {
+    for (int i = n; i >= 0; i--) {
         sum = sum * h + jet[i];
     }
     if (isnan(sum) || isinf(sum)) {
@@ -50,13 +50,13 @@ real t_horner (series jet, long n, real h) {
     return sum;
 }
 
-void tsm (int argc, char **argv, long dp, long n, real h, long steps, real x0, real y0, real z0) {
+void tsm (int argc, char **argv, int dp, int n, real h, int steps, real x0, real y0, real z0) {
     series x = t_jet(n + 1); x[0] = x0;
     series y = t_jet(n + 1); y[0] = y0;
     series z = t_jet(n + 1); z[0] = z0;
     void *p = get_p(argc, argv, n);
     components slope = (components) {0.0L, 0.0L, 0.0L};
-    for (long step = 0; step < steps; step++) {
+    for (int step = 0; step < steps; step++) {
         for (int k = 0; k < n; k++) {
             components v = ode(x, y, z, p, k);
             x[k + 1] = v.x / (k + 1);

@@ -12,11 +12,11 @@
 
 typedef struct { real mu; series x2; } parameters;
 
-void *get_p (int argc, char **argv, long order) {
+void *get_p (int argc, char **argv, int n) {
     assert(argc == 9);
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->mu);
-    p->x2 = t_jet(order);
+    p->x2 = t_jet(n);
     return p;
 }
 

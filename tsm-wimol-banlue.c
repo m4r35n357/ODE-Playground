@@ -12,12 +12,12 @@
 
 typedef struct { real a; series tx, s2x; } parameters;
 
-void *get_p (int argc, char **argv, long order) {
+void *get_p (int argc, char **argv, int n) {
     assert(argc == 9);
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->a);
-    p->tx = t_jet(order);
-    p->s2x = t_jet(order);
+    p->tx = t_jet(n);
+    p->s2x = t_jet(n);
     return p;
 }
 

@@ -27,7 +27,7 @@ static const real PLUS1 = 1.0L, ZERO = 0.0L, MINUS1 = -1.0L;
 
 typedef struct { real a, b, c; } parameters;
 
-void *get_p (int argc, char **argv, long order) {
+void *get_p (int argc, char **argv, int order) {
     (void)argc; (void)argv; (void)order;
     parameters *p = malloc(sizeof (parameters));
     p->a = PLUS1;
@@ -127,7 +127,7 @@ int main (int argc, char **argv) {
 
     fprintf(stdout, "\n");
     fprintf(stdout, "TSM\n");
-    long dp = 12, steps = 10;
+    int dp = 12, steps = 10;
     real step = 0.1L;
     tsm(argc, argv, dp, n, step, steps, 1.0L, 1.0L, 1.0L);
     fprintf(stdout, "Check\n");

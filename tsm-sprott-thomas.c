@@ -12,13 +12,13 @@
 
 typedef struct { real a, b; series ax, ay, az, sax, say, saz, cax, cay, caz, tx, ty, tz, s2x, s2y, s2z; } parameters;
 
-void *get_p (int argc, char **argv, long order) {
+void *get_p (int argc, char **argv, int n) {
     assert(argc == 10);
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->a, &p->b);
-    p->ax = t_jet(order); p->sax = t_jet(order); p->cax = t_jet(order); p->tx = t_jet(order); p->s2x = t_jet(order);
-    p->ay = t_jet(order); p->say = t_jet(order); p->cay = t_jet(order); p->ty = t_jet(order); p->s2y = t_jet(order);
-    p->az = t_jet(order); p->saz = t_jet(order); p->caz = t_jet(order); p->tz = t_jet(order); p->s2z = t_jet(order);
+    p->ax = t_jet(n); p->sax = t_jet(n); p->cax = t_jet(n); p->tx = t_jet(n); p->s2x = t_jet(n);
+    p->ay = t_jet(n); p->say = t_jet(n); p->cay = t_jet(n); p->ty = t_jet(n); p->s2y = t_jet(n);
+    p->az = t_jet(n); p->saz = t_jet(n); p->caz = t_jet(n); p->tz = t_jet(n); p->s2z = t_jet(n);
     return p;
 }
 

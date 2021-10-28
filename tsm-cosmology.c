@@ -12,9 +12,9 @@
 
 typedef struct { real w; } parameters;
 
-void *get_p (int argc, char **argv, long order) {
+void *get_p (int argc, char **argv, int n) {
     assert(argc == 11);
-    (void)order;
+    (void)n;
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->w);
     return p;

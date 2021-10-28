@@ -12,13 +12,13 @@
 
 typedef struct { real b; series sx, sy, sz, cx, cy, cz; } parameters;
 
-void *get_p (int argc, char **argv, long order) {
+void *get_p (int argc, char **argv, int n) {
     assert(argc == 9);
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->b);
-    p->sx = t_jet(order); p->cx = t_jet(order);
-    p->sy = t_jet(order); p->cy = t_jet(order);
-    p->sz = t_jet(order); p->cz = t_jet(order);
+    p->sx = t_jet(n); p->cx = t_jet(n);
+    p->sy = t_jet(n); p->cy = t_jet(n);
+    p->sz = t_jet(n); p->cz = t_jet(n);
     return p;
 }
 

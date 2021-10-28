@@ -7,12 +7,14 @@
 #include "taylor-ode.h"
 
 int main (int argc, char **argv) {
-    long dp = strtol(argv[1], NULL, BASE); assert(dp >= 1 && dp <= 99);
-    long n = strtol(argv[2], NULL, BASE); assert(n >= 2 && n <= 64);
-    real h = strtold(argv[3], NULL); assert(h > 0.0L);
-    long steps = strtol(argv[4], NULL, BASE); assert(steps >= 1 && steps <= 1000000);
+    int display_precision = (int)strtol(argv[1], NULL, BASE); assert(display_precision >= 1 && display_precision <= 99);
 
-    tsm(argc, argv, dp, n, h, steps, strtold(argv[5], NULL), strtold(argv[6], NULL), strtold(argv[7], NULL));
+    int order = (int)strtol(argv[2], NULL, BASE); assert(order >= 2 && order <= 64);
+    real step_size = strtold(argv[3], NULL); assert(step_size > 0.0L);
+    int steps = (int)strtol(argv[4], NULL, BASE); assert(steps >= 1 && steps <= 1000000);
+
+    tsm(argc, argv, display_precision, order, step_size, steps,
+        strtold(argv[5], NULL), strtold(argv[6], NULL), strtold(argv[7], NULL));
 
     return 0;
 }

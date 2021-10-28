@@ -20,7 +20,7 @@ typedef long double *series;
 /*
  * Prints a line of data to stdout, with turning point markers
  */
-void t_output (long dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label);
+void t_output (int dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label);
 
 /*
  * Retrieves ODE parameters from the tail of the command (arguments 8 onwards)
@@ -30,12 +30,12 @@ void t_params (char **argv, int count, ...);
 /*
  * Creates a zeroed Taylor Series jet with the specified number of elements
  */
-series t_jet (long size);
+series t_jet (int size);
 
 /*
  * Safely and efficiently evaluates a polynomial of degree n, with the coefficients in S, and the variable in h
  */
-real t_horner (series S, long n, real h);
+real t_horner (series S, int n, real h);
 
 /*
  * The Taylor Series Method (TSM) in brief; to solve a system of Ordinary Differential Equations defined by:
@@ -72,7 +72,7 @@ real t_horner (series S, long n, real h);
  *
  * 2. Apply Horner's method to calculate the new values x(t0 + h), which become X[0] for the next time step.
  */
-void tsm (int argc, char **argv, long dp, long n, real h, long steps, real x0, real y0, real z0);
+void tsm (int argc, char **argv, int dp, int n, real h, int steps, real x0, real y0, real z0);
 
 /*
  * For returning x, y, z velocities from the model
@@ -90,7 +90,7 @@ typedef struct {
 /*
  * Get a blob of parameter data from the model to be passed back in from ode()
  */
-void *get_p (int argc, char **argv, long order);
+void *get_p (int argc, char **argv, int order);
 
 /*
  * Calculate the kth components of the velocity jet V, using the coordinate jets and the parameter data,
