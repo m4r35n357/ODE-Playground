@@ -84,32 +84,44 @@ int main (int argc, char **argv) {
     if (x_positive) sqrt_x = d_sqrt(x);
     char* name = "x * x == sqr(x)";
     compare(name, d_mul(x, x), sqr_x);
+
     name = "sqr(x) / x == x";
     x_non_zero ? compare(name, d_div(sqr_x, x), x) : skip(name);
+
     name = "x * 1 / x == 1";
     x_non_zero ? compare(name, d_mul(x, inv_x), c1) : skip(name);
+
     name = "sqrt(x) * sqrt(x) == x";
     x_positive ? compare(name, d_mul(sqrt_x, sqrt_x), x) : skip(name);
+
     name = "x / sqrt(x) == sqrt(x)";
     x_positive ? compare(name, d_div(x, sqrt_x), sqrt_x) : skip(name);
 
     if (debug != 0) printf("\n");
+
     name = "x^2 == sqr(x)";
     x_positive ? compare(name, d_pow(x, 2.0L), sqr_x) : skip(name);
+
     name = "x^1 == x";
     x_positive ? compare(name, d_pow(x, 1.0L), x) : skip(name);
+
     name = "x^0.5 == sqrt(x)";
     x_positive ? compare(name, d_pow(x, 0.5L), sqrt_x): skip(name);
+
     name = "x^0 == 1";
     x_positive ? compare(name, d_pow(x, 0.0L), c1) : skip(name);
+
     name = "x^-0.5 == 1 / sqrt(x)";
     x_positive ? compare(name, d_pow(x, -0.5L), d_inv(sqrt_x)) : skip(name);
+
     name = "x^-1 == 1 / x";
     x_positive ? compare(name, d_pow(x, -1.0L), inv_x) : skip(name);
+
     name = "x^-2 == 1 / sqr(x)";
     x_positive ? compare(name, d_pow(x, -2.0L), d_inv(sqr_x)) : skip(name);
 
     if (debug != 0) printf("\n");
+
     name = "sqr(x) * x^-3 == 1 / x";
     x_positive ? compare(name, d_mul(sqr_x, d_pow(x, -3.0L)), inv_x) : skip(name);
 
@@ -118,15 +130,20 @@ int main (int argc, char **argv) {
 
     if (debug != 0) printf("\n");
     if (x_positive) ln_x = d_log(x);
+
     name = "log(e^x) == x";
     compare(name, d_log(d_exp(x)), x);
+
     name = "log(sqr(x)) == log(x) * 2";
     if (x_positive) d_log(x);
     x_positive ? compare(name, d_log(sqr_x), d_scale(ln_x, 2.0L)) : skip(name);
+
     name = "log(sqrt(x)) == log(x) / 2";
     x_positive ? compare(name, d_log(sqrt_x), d_scale(ln_x, 0.5L)) : skip(name);
+
     name = "log(1 / x) == - log(x)";
     x_positive ? compare(name, d_log(inv_x), d_scale(ln_x, -1.0L)) : skip(name);
+
     name = "log(x^-3) == - 3 * log(x)";
     x_positive ? compare(name, d_log(d_pow(x, -3.0L)), d_scale(ln_x, -3.0L)) : skip(name);
 
@@ -138,20 +155,26 @@ int main (int argc, char **argv) {
     sqr_cos_x = d_sqr(cos);
     sin_2x = d_sinh(xpx);
     cos_2x = d_cosh(xpx);
+
     name = "cosh^2(x) - sinh^2(x) == 1";
     compare(name, d_sub(sqr_cos_x, sqr_sin_x), c1);
+
     name = "tanh(x) == sinh(x) / cosh(x)";
     compare(name, tan, d_div(sin, cos));
+
     name = "sinh(2x) == 2 * sinh(x) * cosh(x)";
     compare(name, sin_2x, d_scale(d_mul(sin, cos), 2.0L));
+
     name = "cosh(2x) == cosh^2(x) + sinh^2(x)";
     compare(name, cos_2x, d_add(sqr_cos_x, sqr_sin_x));
 
     if (debug != 0) printf("\n");
     exp_x = d_exp(x);
     neg_exp_x = d_exp(d_scale(x, -1.0L));
+
     name = "cosh(x) == (e^x + e^-x) / 2";
     compare(name, cos, d_scale(d_add(exp_x, neg_exp_x), 0.5L));
+
     name = "sinh(x) == (e^x - e^-x) / 2";
     compare(name, sin, d_scale(d_sub(exp_x, neg_exp_x), 0.5L));
 
@@ -163,12 +186,16 @@ int main (int argc, char **argv) {
     sqr_cos_x = d_sqr(cos);
     sin_2x = d_sin(xpx);
     cos_2x = d_cos(xpx);
+
     name = "cos^2(x) + sin^2(x) == 1";
     compare(name, d_add(sqr_cos_x, sqr_sin_x), c1);
+
     name = "tan(x) == sin(x) / cos(x)";
     x_lt_pi_2 ? compare(name, tan, d_div(sin, cos)) : skip(name);
+
     name = "sin(2x) == 2 * sin(x) * cos(x)";
     compare(name, sin_2x, d_scale(d_mul(sin, cos), 2.0L));
+
     name = "cos(2x) == cos^2(x) - sin^2(x)";
     compare(name, cos_2x, d_sub(sqr_cos_x, sqr_sin_x));
 
