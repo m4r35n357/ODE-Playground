@@ -213,8 +213,8 @@ mpfr_t *t_pwr (series p, series u, mpfr_t powr, int k) {
     if (k == 0) {
         mpfr_pow(p[0], u[0], powr, RND);
     } else {
-        mpfr_mul(p[k], powr, *f_k(p, u, k, 0, k - 1), RND);
-        mpfr_sub(p[k], p[k], *f_k(u, p, k, 1, k - 1), RND);
+        mpfr_swap(p[k], *f_k(u, p, k, 1, k - 1));
+        mpfr_fms(p[k], *f_k(p, u, k, 0, k - 1), powr, p[k], RND);
         mpfr_div(p[k], p[k], u[0], RND);
     }
     return &p[k];
