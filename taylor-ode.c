@@ -12,12 +12,12 @@
 const int BASE = 10;
 
 void t_params (char **argv, int argc, ...) {
-    va_list model_params;
-    va_start(model_params, argc);
+    va_list model;
+    va_start(model, argc);
     for (int i = 8; i < argc; i++) {
-        *va_arg(model_params, real *) = strtold(argv[i], NULL);
+        *va_arg(model, real *) = strtold(argv[i], NULL);
     }
-    va_end(model_params);
+    va_end(model);
 }
 
 series t_jet (int n) {
@@ -38,10 +38,10 @@ void t_output (int dp, real x, real y, real z, real t, char *x_label, char *y_la
     printf(fs, x, y, z, t);
 }
 
-real t_horner (series jet, int n, real h) {
+real t_horner (series s, int n, real h) {
     real sum = 0.0L;
     for (int i = n; i >= 0; i--) {
-        sum = sum * h + jet[i];
+        sum = sum * h + s[i];
     }
     if (isnan(sum) || isinf(sum)) {
         fprintf(stderr, "Value error!\n");
@@ -50,12 +50,16 @@ real t_horner (series jet, int n, real h) {
     return sum;
 }
 
+static char *tp (series jet, real slope, char *min, char *max, char *blank) {
+    return jet[1] * slope < 0.0L ? (jet[2] > 0.0L ? min : max) : blank;
+}
+
 void tsm (int argc, char **argv, int dp, int n, real h, int steps, real x0, real y0, real z0) {
     series x = t_jet(n + 1); x[0] = x0;
     series y = t_jet(n + 1); y[0] = y0;
     series z = t_jet(n + 1); z[0] = z0;
     void *p = get_p(argc, argv, n);
-    components slope = (components) {0.0L, 0.0L, 0.0L};
+    components s = (components) {0.0L, 0.0L, 0.0L};
     for (int step = 0; step < steps; step++) {
         for (int k = 0; k < n; k++) {
             components v = ode(x, y, z, p, k);
@@ -63,10 +67,8 @@ void tsm (int argc, char **argv, int dp, int n, real h, int steps, real x0, real
             y[k + 1] = v.y / (k + 1);
             z[k + 1] = v.z / (k + 1);
         }
-        t_output(dp, x[0], y[0], z[0], h * step, x[1] * slope.x < 0.0L ? (x[2] > 0.0L ? "x" : "X") : "_",
-                                                 y[1] * slope.y < 0.0L ? (y[2] > 0.0L ? "y" : "Y") : "_",
-                                                 z[1] * slope.z < 0.0L ? (z[2] > 0.0L ? "z" : "Z") : "_");
-        slope = (components) {x[1], y[1], z[1]};
+        t_output(dp, x[0], y[0], z[0], h * step, tp(x, s.x, "x", "X", "_"), tp(y, s.y, "y", "Y", "_"), tp(z, s.z, "z", "Z", "_"));
+        s = (components) {x[1], y[1], z[1]};
         x[0] = t_horner(x, n, h);
         y[0] = t_horner(y, n, h);
         z[0] = t_horner(z, n, h);
