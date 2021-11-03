@@ -54,16 +54,20 @@ build_tsm () {
 
 for model in \
 tsm-bouali \
+tsm-burke-shaw \
 tsm-cosmology \
 tsm-genesio-tesi \
 tsm-halvorsen \
+tsm-isuc \
+tsm-logistic \
 tsm-kom \
 tsm-lorenz \
 tsm-lotka-volterra \
 tsm-nose-hoover \
+tsm-rf \
 tsm-rossler \
 tsm-rucklidge \
-tsm-rf \
+tsm-sj \
 tsm-sprott-minimal \
 tsm-sprott-thomas \
 tsm-thomas \
