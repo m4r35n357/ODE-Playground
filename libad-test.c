@@ -55,7 +55,7 @@ static void compare (char* name, series a, series b) {
     total++;
     for (int k = 0; k < n; k++) {
         delta = a[k] - b[k];
-        if (fabsl(delta) > tolerance) {
+        if (isnan(delta) || isinf(delta) || fabsl(delta) > tolerance) {
             fprintf(stderr, "%s FAILED%s %s  k: %d  LHS: %.6Le  RHS: %.6Le  diff %.3Le\n", KRED, KNRM, name, k, a[k], b[k], delta);
             return;
         }
@@ -68,10 +68,11 @@ static void compare (char* name, series a, series b) {
     passed++;
 }
 
-static void contaminate (series a) {
+static series contaminate (series a) {
     for (int k = 0; k < n; k++) {
         a[k] = INFINITY;
     }
+    return a;
 }
 
 int main (int argc, char **argv) {
@@ -92,34 +93,34 @@ int main (int argc, char **argv) {
     series c1 = t_jet(n);
     c1[0] = 1.0L;
 
-    series abs = t_jet(n);
-    series scale = t_jet(n);
-    series sum = t_jet(n);
-    series diff = t_jet(n);
-    series prod = t_jet(n);
-    series quot = t_jet(n);
-    series inv = t_jet(n);
-    series inv_x = t_jet(n);
-    series sqr_x = t_jet(n);
-    series sqr_sin_x = t_jet(n);
-    series sqr_cos_x = t_jet(n);
-    series sqr_tan_x = t_jet(n);
-    series sqrt_x = t_jet(n);
-    series pow = t_jet(n);
-    series exp_x = t_jet(n);
-    series neg_exp_x = t_jet(n);
-    series ln = t_jet(n);
-    series ln_x = t_jet(n);
-    series sin = t_jet(n);
-    series sin_2x = t_jet(n);
-    series cos = t_jet(n);
-    series cos_2x = t_jet(n);
-    series tan = t_jet(n);
-    series sec2 = t_jet(n);
-
     int x_positive = x[0] > 0.0L;
     int x_non_zero = x[0] != 0.0L;
     int x_lt_pi_2 = x[0] < PI_2;
+
+    series abs = contaminate(t_jet(n));
+    series scale = contaminate(t_jet(n));
+    series sum = contaminate(t_jet(n));
+    series diff = contaminate(t_jet(n));
+    series prod = contaminate(t_jet(n));
+    series quot = contaminate(t_jet(n));
+    series inv = contaminate(t_jet(n));
+    series inv_x = contaminate(t_jet(n));
+    series sqr_x = contaminate(t_jet(n));
+    series sqr_sin_x = contaminate(t_jet(n));
+    series sqr_cos_x = contaminate(t_jet(n));
+    series sqr_tan_x = contaminate(t_jet(n));
+    series sqrt_x = contaminate(t_jet(n));
+    series pow = contaminate(t_jet(n));
+    series exp_x = contaminate(t_jet(n));
+    series neg_exp_x = contaminate(t_jet(n));
+    series ln = contaminate(t_jet(n));
+    series ln_x = contaminate(t_jet(n));
+    series sin = contaminate(t_jet(n));
+    series sin_2x = contaminate(t_jet(n));
+    series cos = contaminate(t_jet(n));
+    series cos_2x = contaminate(t_jet(n));
+    series tan = contaminate(t_jet(n));
+    series sec2 = contaminate(t_jet(n));
 
     fprintf(stdout, "\n");
     fprintf(stdout, "Horner\n");
