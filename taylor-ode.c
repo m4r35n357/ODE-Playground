@@ -24,9 +24,9 @@ void t_init (int dp) {
         sprintf(fs, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe\n", dp, dp, dp);
     }
     mpfr_inits( _, _fk, _const, _abs, _prod, _sqr, NULL);
-    mpfr_init_set_ui(D1, 1, RND);
+    mpfr_init_set_si(D1, 1, RND);
     mpfr_init_set_si(D_1, -1, RND);
-    mpfr_init_set_ui(D2, 2, RND);
+    mpfr_init_set_si(D2, 2, RND);
     mpfr_init_set_si(D_2, -2, RND);
 }
 
@@ -46,7 +46,7 @@ series t_jet (int n) {
         exit(1);
     }
     for (int i = 0; i < n; i++) {
-        mpfr_init_set_ui(s[i], 0, RND);
+        mpfr_init_set_si(s[i], 0, RND);
     }
     return s;
 }
@@ -157,7 +157,7 @@ mpfr_t *t_sqrt (series r, series u, int k) {
         mpfr_sqrt(r[0], u[0], RND);
     } else {
         mpfr_sub(r[k], u[k], *cauchy(r, r, k, 1, k - 1), RND);
-        mpfr_div_2ui(r[k], r[k], 1, RND);
+        mpfr_div_2si(r[k], r[k], 1, RND);
         mpfr_div(r[k], r[k], r[0], RND);
     }
     return &r[k];

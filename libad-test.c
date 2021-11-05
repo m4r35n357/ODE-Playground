@@ -27,12 +27,12 @@ static void libad_test_init (void) {
     ad_init(n);
     t_init(12);
     mpfr_init(delta);
-    mpfr_init_set_ui(D0, 0, RND);
+    mpfr_init_set_si(D0, 0, RND);
     mpfr_init_set_str(D01, "0.1", BASE, RND);
     mpfr_init_set_str(D05, "0.5", BASE, RND);
     mpfr_init_set_str(D_05, "-0.5", BASE, RND);
-    mpfr_init_set_ui(D1, 1, RND);
-    mpfr_init_set_ui(D2, 2, RND);
+    mpfr_init_set_si(D1, 1, RND);
+    mpfr_init_set_si(D2, 2, RND);
     mpfr_init_set_si(D3, 3, RND);
     mpfr_init_set_si(D_1, -1, RND);
     mpfr_init_set_si(D_2, -2, RND);
@@ -111,7 +111,7 @@ int main (int argc, char **argv) {
 
     mpfr_init(PI_2);
     mpfr_const_pi(PI_2, RND);
-    mpfr_div_2ui(PI_2, PI_2, 1, RND);
+    mpfr_div_2si(PI_2, PI_2, 1, RND);
 
     int x_positive = mpfr_sgn(x[0]) > 0;
     int x_non_zero = mpfr_zero_p(x[0]) == 0;

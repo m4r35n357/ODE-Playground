@@ -18,8 +18,8 @@ void *get_p (int argc, char **argv, int n) {
     assert(argc == 11);
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->alpha, &p->gamma);
-    mpfr_init_set_ui(p->D1, 1, RND);
-    mpfr_init_set_ui(p->D4, 4, RND);
+    mpfr_init_set_si(p->D1, 1, RND);
+    mpfr_init_set_si(p->D4, 4, RND);
     p->a = t_jet(n); p->b = t_jet(n); p->c = t_jet(n);
     return p;
 }
@@ -35,6 +35,6 @@ void ode (components *v, series x, series y, series z, void *params, int k) {
     mpfr_fma(v->y, p->gamma, y[k], *t_prod(x, p->b, k), RND);
     //  z' = -2z(A + xy)
     mpfr_add(p->c[k], *t_prod(x, y, k), *t_const(p->alpha, k), RND);
-    mpfr_mul_2ui(v->z, *t_prod(z, p->c, k), 1, RND);
+    mpfr_mul_2si(v->z, *t_prod(z, p->c, k), 1, RND);
     mpfr_neg(v->z, v->z, RND);
 }
