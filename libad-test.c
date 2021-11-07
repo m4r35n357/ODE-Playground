@@ -163,41 +163,32 @@ int main (int argc, char **argv) {
     if (debug != 0) fprintf(stderr, "\n");
 
     name = "x^2 == sqr(x)";
-    contaminate(pow);
     x_positive ? compare(name, ad_pwr(pow, x, 2.0L), sqr_x) : skip(name);
 
     name = "x^1 == x";
-    contaminate(pow);
     x_positive ? compare(name, ad_pwr(pow, x, 1.0L), x) : skip(name);
 
     name = "x^0.5 == sqrt(x)";
-    contaminate(pow);
     x_positive ? compare(name, ad_pwr(pow, x, 0.5L), sqrt_x): skip(name);
 
     name = "x^0 == 1";
-    contaminate(pow);
     x_positive ? compare(name, ad_pwr(pow, x, 0.0L), c1) : skip(name);
 
     name = "x^-0.5 == 1 / sqrt(x)";
-    contaminate(pow);
     x_positive ? compare(name, ad_pwr(pow, x, -0.5L), ad_inv(inv, sqrt_x)) : skip(name);
 
     name = "x^-1 == 1 / x";
-    contaminate(pow);
     x_positive ? compare(name, ad_pwr(pow, x, -1.0L), inv_x) : skip(name);
 
     name = "x^-2 == 1 / sqr(x)";
-    contaminate(pow);
     x_positive ? compare(name, ad_pwr(pow, x, -2.0L), ad_inv(inv, sqr_x)) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
 
     name = "sqr(x) * x^-3 == 1 / x";
-    contaminate(pow);
     x_positive ? compare(name, ad_prod(prod, sqr_x, ad_pwr(pow, x, -3.0L)), inv_x) : skip(name);
 
     name = "sqr(x)^0.5 == |x|";
-    contaminate(pow);
     x_non_zero ? compare(name, ad_pwr(pow, sqr_x, 0.5L), ad_abs(abs, x)) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
@@ -205,24 +196,18 @@ int main (int argc, char **argv) {
     if (x_positive) ad_ln(ln_x, x);
 
     name = "log(e^x) == x";
-    contaminate(ln);
     compare(name, ad_ln(ln, exp_x), x);
 
     name = "log(sqr(x)) == log(x) * 2";
-    contaminate(ln);
     x_positive ? compare(name, ad_ln(ln, sqr_x), ad_scale(scale, ln_x, 2.0L)) : skip(name);
 
     name = "log(sqrt(x)) == log(x) / 2";
-    contaminate(ln);
     x_positive ? compare(name, ad_ln(ln, sqrt_x), ad_scale(scale, ln_x, 0.5L)) : skip(name);
 
     name = "log(1 / x) == - log(x)";
-    contaminate(ln);
     x_positive ? compare(name, ad_ln(ln, inv_x), ad_scale(scale, ln_x, -1.0L)) : skip(name);
 
     name = "log(x^-3) == - 3 * log(x)";
-    contaminate(ln);
-    contaminate(pow);
     x_positive ? compare(name, ad_ln(ln, ad_pwr(pow, x, -3.0L)), ad_scale(scale, ln_x, -3.0L)) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
