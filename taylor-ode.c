@@ -15,7 +15,7 @@ const mpfr_rnd_t RND = MPFR_RNDN;
 
 static char fs[60];
 
-static mpfr_t D1, D_1, D2, D_2, _, _fk, _const, _abs, _prod, _sqr;
+static mpfr_t D1, D_1, D2, D_2, _, _du_dt, _const, _abs, _prod, _sqr;
 
 void t_init (int dp) {
     if (dp == 0) {
@@ -23,7 +23,7 @@ void t_init (int dp) {
     } else {
         sprintf(fs, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe\n", dp, dp, dp);
     }
-    mpfr_inits( _, _fk, _const, _abs, _prod, _sqr, NULL);
+    mpfr_inits( _, _du_dt, _const, _abs, _prod, _sqr, NULL);
     mpfr_init_set_si(D1, 1, RND);
     mpfr_init_set_si(D_1, -1, RND);
     mpfr_init_set_si(D2, 2, RND);
@@ -166,8 +166,8 @@ mpfr_t *t_sqrt (series r, series u, int k) {
 static mpfr_t *f_k (series df_du, series u, int k, int j_lower) {
     mpfr_set_zero(_, 1);
     for (int j = j_lower; j < k; j++) {
-        mpfr_mul_si(_fk, u[k - j], k - j, RND);
-        mpfr_fma(_, df_du[j], _fk, _, RND);
+        mpfr_mul_si(_du_dt, u[k - j], k - j, RND);
+        mpfr_fma(_, df_du[j], _du_dt, _, RND);
     }
     mpfr_div_si(_, _, k, RND);
     return &_;
