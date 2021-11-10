@@ -170,7 +170,7 @@ Parameter | Meaning
 
 ##### CNS duration vs. Simulation Order (gnuplot graph):
 ```
-./cns-scan both 28 1 ./tsm-lorenz-static 6 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3  | gnuplot -p -e "plot '<cat' with boxes"
+./cns-scan both 28 1 ./tsm-lorenz-static 6 _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | gnuplot -p -e "plot '<cat' with boxes"
 ```
 
 #### Sensitivity to Initial Conditions:
