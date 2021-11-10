@@ -39,54 +39,54 @@ def t_sqr(u, k):
 def t_sqrt(r, u, k):
     return sqrt(u[0]) if k == 0 else 0.5 * (u[k] - _cauchy(r, r, k, 1, k - 1)) / r[0]
 
-def _d_cauchy(h, u, k, lower, upper, factor=1.0):
-    return factor * fsum(h[j] * (k - j) * u[k - j] for j in range(lower, upper + 1)) / k
+def _f_k(h, u, k, lower):
+    return fsum(h[j] * (k - j) * u[k - j] for j in range(lower, k)) / k
 
 def t_exp(e, u, k):
-    return exp(u[0]) if k == 0 else _d_cauchy(e, u, k, 0, k - 1)
+    return exp(u[0]) if k == 0 else _f_k(e, u, k, 0)
 
 def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
         return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
-    s[k] = _d_cauchy(c, u, k, 0, k - 1)
-    c[k] = _d_cauchy(s, u, k, 0, k - 1, -1.0 if not hyp else 1.0)
+    s[k] = _f_k(c, u, k, 0)
+    c[k] = _f_k(s, u, k, 0) * (-1.0 if not hyp else 1.0)
     return s[k], c[k]
 
 def t_tan_sec2(t, s, u, k, hyp=False):
     if k == 0:
         return (tanh(u[0]), 1.0 - tanh(u[0])**2) if hyp else (tan(u[0]), 1.0 + tan(u[0])**2)
-    t[k] = _d_cauchy(s, u, k, 0, k - 1)
-    s[k] = _d_cauchy(t, t, k, 0, k - 1, 2.0 if not hyp else -2.0)
+    t[k] = _f_k(s, u, k, 0)
+    s[k] = _f_k(t, t, k, 0) * (2.0 if not hyp else -2.0)
     return t[k], s[k]
 
 def t_pwr(p, u, a, k):
-    return u[0]**a if k == 0 else (_d_cauchy(p, u, k, 0, k - 1, a) - _d_cauchy(u, p, k, 1, k - 1)) / u[0]
+    return u[0]**a if k == 0 else (a * _f_k(p, u, k, 0) - _f_k(u, p, k, 1)) / u[0]
 
 def t_ln(ln, u, k):
-    return log(u[0]) if k == 0 else (u[k] - _d_cauchy(u, ln, k, 1, k - 1)) / u[0]
+    return log(u[0]) if k == 0 else (u[k] - _f_k(u, ln, k, 1)) / u[0]
 
 def _i_cauchy(g, u, f, k, sign=True):
-    return ((u[k] if sign else - u[k]) - _d_cauchy(g, f, k, 1, k - 1)) / g[0]
+    return ((u[k] if sign else - u[k]) - _f_k(g, f, k, 1)) / g[0]
 
 def t_asin(h, g, u, k, hyp=False):
     if k == 0:
         return (asinh(u[0]), sqrt(u[0]**2 + 1.0)) if hyp else (asin(u[0]), sqrt(1.0 - u[0]**2))
     h[k] = _i_cauchy(g, u, h, k)
-    g[k] = _d_cauchy(u, h, k, 0, k - 1)
+    g[k] = _f_k(u, h, k, 0)
     return (h[k], g[k]) if hyp else (h[k], - g[k])
 
 def t_acos(h, g, u, k, hyp=False):
     if k == 0:
         return (acosh(u[0]), sqrt(u[0]**2 - 1.0)) if hyp else (acos(u[0]), sqrt(1.0 - u[0]**2))
     h[k] = _i_cauchy(g, u, h, k, sign=hyp)
-    g[k] = _d_cauchy(u, h, k, 0, k - 1)
+    g[k] = _f_k(u, h, k, 0)
     return h[k], g[k]
 
 def t_atan(h, g, u, k, hyp=False):
     if k == 0:
         return (atanh(u[0]), 1.0 - u[0]**2) if hyp else (atan(u[0]), 1.0 + u[0]**2)
     h[k] = _i_cauchy(g, u, h, k)
-    g[k] = 2.0 * _d_cauchy(u, u, k, 0, k - 1)
+    g[k] = 2.0 * _f_k(u, u, k, 0)
     return (h[k], - g[k]) if hyp else (h[k], g[k])
 
 
