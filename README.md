@@ -301,6 +301,23 @@ $ ./cns both ./tsm-lorenz-dbg 15 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 
 ```
 (output not shown)
 
+#### CNS Duration Scanning
+
+Runs a simulation repeatedly with increasing order of integration, for each order showing the simulation time when the deviation threshold is exceeded.
+
+cns-scan (shell script) ||
+----------|-----------
+Parameter | Meaning
+----------|-----------
+1 | Precision, also used as maximum order for Taylor integrator (minimum is 1)
+2 | deviation threshold
+3+ | ODE call
+
+##### CNS duration vs. Simulation Order (gnuplot graph):
+```
+./cns-scan both 32 1 ./tsm-lorenz-static 6 _ _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | gnuplot -p -e "plot '<cat' with boxes"
+```
+
 ## ic script - Sensitivity to variation in initial conditions
 This script is used to generate deviation data for chaos scanning, but the data can also be plotted in real time using matplotlib.
 As well as the trajectory specified in the command arguments, six others are created and evolved; each one is the centre of the face of a cube around the original value
