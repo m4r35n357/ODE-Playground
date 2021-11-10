@@ -11,12 +11,8 @@
 
 static int order;
 
-static mpfr_t delta;
-
 void ad_init (int n) {
-    t_init(9);
     order = n;
-    mpfr_init(delta);
 }
 
 series ad_scale (series s, series u, mpfr_t a) {
