@@ -64,7 +64,7 @@ The recurrence relations used here are derived along the lines of (amongst other
 
 There are also convenient factories for generating derivative "jets" of arbitrary order, and an implementation of Horner's method for summing the Taylor Series.
 These "low-level" functions, when properly called,  are all that is needed to solve systems of ODEs.
-There is a fairly extensive collection of nonlinear ODE examples already implemented, in the file tsm.py, and in the tsm-\*-*.c files.
+There is a fairly extensive collection of nonlinear ODE examples already implemented, in the file tsm-lorenz-dbg, and in the tsm-\*-*.c files.
 The list includes systems due to Lorenz, Rossler, Thomas, Bouali, Rabinovitch-Fabrikant, Sprott, and many others.
 
 ## Accuracy of solutions
@@ -127,7 +127,7 @@ git clone https://github.com/m4r35n357/ODE-Playground
 cd ODE-Playground
 ```
 
-#### Graph Plotting
+#### Python 3 Packages (for plotting), please use a virtual environment!
 There are some plotting and graphing utilities written in Python 3, (the data itself can come from either c or Python executables, which share output "formats").
 In the example invocations given below, communication between the executable and plotting script uses a Unix pipe.
 The dependencies are:
@@ -198,26 +198,22 @@ grep Example *
 ## Solving and Plotting ODEs
 This use case only involves calling the "t-functions" in ad.py or taylor-ode.c.
 No differentiation happens in these functions (they only implement the recurrence relations); it is the responsibility of the calling program to organize this properly.
-Refer to tsm.py and tsm-*.c for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors.
+Refer to tsm-lorenz-dbg and tsm-*.c for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors.
 To find some example invocations:
 ```
 $ grep Example *.py tsm-*.c
 ```
-Matplotlib progressive graph plotting in Python (second parameter ignored as python floats are fixed double precision):
+Matplotlib progressive graph plotting:
 ```
-$ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
-```
-or in c (notice absence of the model parameter and presence of the internal precision arg):
-```
-$ ./tsm-lorenz-dbg 15 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
+$ ./tsm-lorenz-dbg 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 ```
 
-#### tsm.py and tsm-\*-\* Parameter Reference
-The Python ODE solver, tsm.py, comprises a long "if" statement containing a "zoo" of pre-programmed ODE systems.
+#### tsm-lorenz-dbg and tsm-\*-\* Parameter Reference
+The Python ODE solver, tsm-lorenz-dbg, comprises a long "if" statement containing a "zoo" of pre-programmed ODE systems.
 tsm-\*-\* represents the individual c solvers.
 
 ##### Python (float precision)
-tsm.py ||
+tsm-lorenz-dbg ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
@@ -248,7 +244,7 @@ Since the RK4 Lorentz simulator (c only) is by definition fixed order, the "orde
 
 Write to a data file
 ```
-$ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/data
+$ ./tsm-lorenz-dbg 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
 ```
 then plot it
 ```
@@ -257,7 +253,7 @@ $ gnuplot -p -e "splot '/tmp/data' with lines"
 
 #### 3D progressive trajectory plotting (pi3d)
 ```
-$ ./tsm.py lorenz 16 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
+$ ./tsm-lorenz-dbg 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
 ```
 
 ## cns script - Clean Numerical Simulation
@@ -271,13 +267,12 @@ cns shell script ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
-step | The step size is reduced by a quarter (suitable for RK4) comparisons
-order | The Taylor Series order is increased by two
+step2 | The step size is halved
 both | The order is increased by one, and the step size by one half
 
 #### Example output - 300 time units
 ```
-$ ./cns both ./tsm-lorenz-dbg 15 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3
+$ ./cns step2 ./tsm-lorenz-dbg 15 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3
 Better: ./tsm-lorenz-dbg 138 103 .005000 70000 -15.8 -17.48 35.64 10 28 8 3
  MPFR default precision: 458 bits
  MPFR default precision: 431 bits
@@ -291,13 +286,13 @@ Threshold: 1.0e+00, t: 301.320
 
 600 time units
 ```
-$ ./cns both ./tsm-lorenz-dbg 15 240 204 .01 65000 -15.8 -17.48 35.64 10 28 8 3
+$ ./cns step2 ./tsm-lorenz-dbg 15 240 204 .01 65000 -15.8 -17.48 35.64 10 28 8 3
 ```
 (output not shown)
 
 1500 time units
 ```
-$ ./cns both ./tsm-lorenz-dbg 15 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 3
+$ ./cns step2 ./tsm-lorenz-dbg 15 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 3
 ```
 (output not shown)
 
@@ -311,11 +306,11 @@ Parameter | Meaning
 ----------|-----------
 1 | Precision, also used as maximum order for Taylor integrator (minimum is 1)
 2 | deviation threshold
-3+ | ODE call
+3+ | ODE call (the precision and order parameters should be placeholders to avoid confusion)
 
 ##### CNS duration vs. Simulation Order (gnuplot graph):
 ```
-./cns-scan both 32 1 ./tsm-lorenz-static 6 _ _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | gnuplot -p -e "plot '<cat' with boxes"
+$ ./cns-scan step2 32 1 ./tsm-lorenz-static 6 _ _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | gnuplot -p -e "plot '<cat' with boxes"
 ```
 
 ## ic script - Sensitivity to variation in initial conditions
@@ -327,17 +322,16 @@ ic shell script ||
 Parameter | Meaning
 ----------|-----------
 separation | Initial separation between "original" trajectory and the additional ones
-plot / noplot | Allows non-interactive use without plotting the data (e.g. by the chaos scanner).
 
 The simulation is run seven times in parallel processes, the original along with each perturbed x, y, z.
 ```
-$ ./ic .001 plot ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
-oo ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
-x+ ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.799 -17.48 35.64 10 28 8 3
-x- ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.801 -17.48 35.64 10 28 8 3
-y+ ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.479 35.64 10 28 8 3
-y- ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.481 35.64 10 28 8 3
-z+ ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.48 35.641 10 28 8 3
-z- ./tsm-lorenz-dbg 9 16 10 .01 10001 -15.8 -17.48 35.639 10 28 8 3
+$ ./ic .001 ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
+oo ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
+x+ ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.799 -17.48 35.64 10 28 8 3
+x- ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.801 -17.48 35.64 10 28 8 3
+y+ ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.8 -17.479 35.64 10 28 8 3
+y- ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.8 -17.481 35.64 10 28 8 3
+z+ ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.8 -17.48 35.641 10 28 8 3
+z- ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.8 -17.48 35.639 10 28 8 3
 ```
 (3D plot not shown)
