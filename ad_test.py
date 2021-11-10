@@ -50,11 +50,6 @@ def simple_ode(x, y, z, p, k):
                       y=p.b * y[k],
                       z=p.c * z[k])
 
-@mark.skip(reason="no way of currently testing this")
-def test_tsm():
-    for step in tsm(simple_ode, simple_get_p):
-        assert False
-
 def test_t_jet_default():
     jet = t_jet(order)
     assert len(jet) == order
