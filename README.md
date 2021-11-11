@@ -209,6 +209,42 @@ scan_d() finds roots only.
 mplot_d() plots the function and its first derivative.
 scan_s() finds roots, turning points and inflections.
 mplot_s() plots the function and its first 12 derivatives by default; 
+
+Partly to verify my own implementation of the Taylor recurrence rules, I have added a demonstration of using series arithmetic to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
+The solver demo can be used to find roots (and also extrema and inflection points by "extending" Newton to higher derivatives) in single variable nonlinear equations.
+Of course it is more generally useful for finding inverse values (where real solutions exist) of complicated functions, not just their roots.
+
+The "higher-level" ad_functions (or the Series class in Python) manipulate entire  Taylor series "jets" at once, so are only useful for univariate functions.
+In Python there is an overloaded operator "~" which extracts the actual derivative values from the taylor series coefficents, as well as additional operators for (negation and **).
+The \*\* (power) operator caters for f(x)^a, a^f(x) and f1(x)^f2(x), subject to domain limitations on f(x).
+There are also functions for (matching the t_functions):
+* abs
+* sqr
+* sqrt
+* exp
+* sin(h)_cos(h)
+* tan(h)_sec(h)2
+* pwr (f(x)^a, where a is a scalar)
+* ln
+* asin(h), acos(h), atan(h) - Python only
+
+Using these "higher level" functions, Newton's method is implemented trivially, but I have also provided an implementation of the bisection method for comparison.
+
+The plotters.py script enables the analysis of a "model" function's derivatives along with the value itself, across a range of the input variable.
+That file contains a selection of example invocations in the comments.
+Optionally it will analyse that range for roots, extrema and inflection points using the lower order derivatives.
+Here is a seventh-degree polynomial model by way of example, and a trigonometric identity as a check of the sin and sqr functions:
+```python
+def septic(a):
+    return (a + 7) * (5 + a) * (a + 2) * a * (a - 1) * (a - 3) * (a - 6)
+
+def trig(a):
+    return (3 * a).sin - 3 * a.sin + 4 * a.sin**3
+```
+Operators on or between jets and numbers are implemented by overloading, and the functions are implemented as _properties_ of a jet.
+These two approaches produce a fairly readable format for coding the models.
+The value parameter allows simple calculation of function inverse values, as well as roots.
+
 ```
 $ ipython3 -i ipython.py 
 Python 3.9.2 (default, Feb 28 2021, 17:03:44) 
