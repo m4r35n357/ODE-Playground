@@ -39,7 +39,7 @@ These programs are the result.
 
 Finally, more general resources on automatic differentiation can be found at the following portal: http://www.autodiff.org/ (see specifically the "Applications" and "Tools" sections).
 
-## Taylor Series ODE Solvers (c/MPFR and Python)
+## Taylor Series ODE Solvers, c/MPFR in master branch, pure c and Python in pure_c branch)
 
 My primary aim was to be able to solve coupled nonlinear equations and investigate chaotic systems, without relying on "black-box" ODE solvers.
 The resulting c code takes the form of a small (<200 loc) arbitrary precision Taylor Series "library", and the model-specific ODE simulators are tiny client programs to this, typically 25-35 loc each.
@@ -70,50 +70,6 @@ The list includes systems due to Lorenz, Rossler, Thomas, Bouali, Rabinovitch-Fa
 ## Accuracy of solutions
 Rather than estimating local error using the usual Taylor Series method, I have provided a clean numerical simulation (CNS) shell script, that makes it easy to run a "better" simulation alongside.
 The differences can be plotted for easy visual comparison.
-
-## Function Analysis (Python)
-
-Partly to verify my own implementation of the Taylor recurrence rules, I have added a demonstration of using series arithmetic to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
-The solver demo can be used to find roots (and also extrema and inflection points by "extending" Newton to higher derivatives) in single variable nonlinear equations.
-Of course it is more generally useful for finding inverse values (where real solutions exist) of complicated functions, not just their roots.
-
-The "higher-level" ad_functions (or the Series class in Python) manipulate entire  Taylor series "jets" at once, so are only useful for univariate functions.
-In Python there is an overloaded operator "~" which extracts the actual derivative values from the taylor series coefficents, as well as additional operators for (negation and **).
-The \*\* (power) operator caters for f(x)^a, a^f(x) and f1(x)^f2(x), subject to domain limitations on f(x).
-There are also functions for (matching the t_functions):
-* abs
-* sqr
-* sqrt
-* exp
-* sin(h)_cos(h)
-* tan(h)_sec(h)2
-* pwr (f(x)^a, where a is a scalar)
-* ln
-* asin(h), acos(h), atan(h) - Python only
-
-Using these "higher level" functions, Newton's method is implemented trivially, but I have also provided an implementation of the bisection method for comparison.
-
-The plotters.py script enables the analysis of a "model" function's derivatives along with the value itself, across a range of the input variable.
-That file contains a selection of example invocations in the comments.
-Optionally it will analyse that range for roots, extrema and inflection points using the lower order derivatives.
-Here is a seventh-degree polynomial model by way of example, and a trigonometric identity as a check of the sin and sqr functions:
-```python
-def septic(a):
-    return (a + 7) * (5 + a) * (a + 2) * a * (a - 1) * (a - 3) * (a - 6)
-
-def trig(a):
-    return (3 * a).sin - 3 * a.sin + 4 * a.sin**3
-```
-Operators on or between jets and numbers are implemented by overloading, and the functions are implemented as _properties_ of a jet.
-These two approaches produce a fairly readable format for coding the models.
-The value parameter allows simple calculation of function inverse values, as well as roots.
-
-In summary, there are five main areas of application for the code:
-* solving nonlinear ODEs (to arbitrary precision with c/MPFR)
-* scanning ODE parameters for detecting chaos in solutions
-* checking global accuracy of solutions
-* plotting functions and their (higher) derivatives, with solution, turning-point, and inflection analysis (Python is best here)
-* various interactive investigations in the Python console
 
 ## Build/Test Environment (Debian/Ubuntu/Raspbian)
 
