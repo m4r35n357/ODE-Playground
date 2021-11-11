@@ -203,60 +203,41 @@ To find some example invocations:
 ```
 $ grep Example *.py tsm-*.c
 ```
-Matplotlib progressive graph plotting:
-```
-$ ./tsm-lorenz-dbg 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
-```
+#### Run an ODE simulation (ODE call):
 
-#### tsm-lorenz-dbg and tsm-\*-\* Parameter Reference
-The Python ODE solver, tsm-lorenz-dbg, comprises a long "if" statement containing a "zoo" of pre-programmed ODE systems.
-tsm-\*-\* represents the individual c solvers.
+Runs a named simulation, and prints results to stdout
 
-##### Python (float precision)
-tsm-lorenz-dbg ||
-----------|-----------
-Parameter | Meaning
-----------|-----------
-1 | model (ODE) name
-2 | ignored
-3 | order of Taylor Series
-4 | step size
-5 | number of steps
-6,7,8 | x0, y0, z0
-9+ | ODE parameters
-
-##### c (MPFR arbitrary precision)
-tsm-\*-\* c executable ||
+tsm-\*-\* c executables ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
 1 | x, y, z output precision in decimal places (0 for full)
 2 | (approximate) internal precision in decimal places
-3 | order of Taylor Series (plot interval in RK4)
-4 | step size
+3 | order of Taylor Series
+4 | time step size
 5 | number of steps
-6,7, 8 | x0, y0, z0
+6,7, 8 | initial conditions, x0, y0, z0
 9+ | ODE parameters
 
-Since the RK4 Lorentz simulator (c only) is by definition fixed order, the "order" parameter is used to pass in a "plot interval" (e.g. 10 means plot only every 10th result).
+##### Run & plot (3D plot using pi3d):
+```
+./tsm-thomas-dbg 9 32 10 0.1 30000 1 0 0 .185 | ./plot3d.py
+```
+##### Run & plot (animated matplotlib graph):
+```
+./tsm-lorenz-dbg 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
+```
+##### Run & plot (3D gnuplot graph):
+```
+./tsm-thomas-dbg 9 32 10 0.1 30000 1 0 0 .185 | gnuplot -p -e "set terminal wxt size 1200,900; splot '<cat' with lines"
+```
+##### Run & plot (2D gnuplot graph):
+```
+./tsm-lorenz-dbg 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
+gnuplot -p -e "set terminal wxt size 1200,900; plot '/tmp/$USER/data' using 4:1 with lines, '/tmp/$USER/data' using 4:2 with lines, '/tmp/$USER/data' using 4:3 with lines"
+```
 
-#### 3D static trajectory plotting (gnuplot)
-
-Write to a data file
-```
-$ ./tsm-lorenz-dbg 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
-```
-then plot it
-```
-$ gnuplot -p -e "splot '/tmp/data' with lines"
-```
-
-#### 3D progressive trajectory plotting (pi3d)
-```
-$ ./tsm-lorenz-dbg 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plot3d.py
-```
-
-## cns script - Clean Numerical Simulation
+#### Clean Numerical Simulation:
 
 This is a relatively new approach to dealing with the global error of ODE simulations, described in detail here: https://arxiv.org/abs/1109.0130.
 As a rough guide to the accuracy of a solution, it can be compared with a "better" solution (one made with "better" solver parameters), and discarded at the point where the solutions diverge.
@@ -267,9 +248,18 @@ cns shell script ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
+1 | CNS function, Selects a better integrator for comparison, see below
+2+ | ODE call
+
+CNS function Parameter | Meaning
+----------|-----------
 step2 | The step size is halved
 both | The order is increased by one, and the step size by one half
 
+##### CNS plot (matplotlib diff graph):
+```
+./cns both ./tsm-lorenz-static 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+```
 #### Example output - 300 time units
 ```
 $ ./cns step2 ./tsm-lorenz-dbg 15 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3
