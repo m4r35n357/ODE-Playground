@@ -53,12 +53,14 @@ The functions provided cover the basic algebraic operations on Taylor Series (+ 
 * abs
 * sqr
 * sqrt
+* quot
+* inv
 * exp
 * sin(h)_cos(h)
-* tan(h)_sec(h)2
+* tan(h)_sec^2(h)
 * pwr (f(x)^a, where a is a scalar)
 * ln
-* asin(h), acos(h), atan(h) - Python only
+* asin(h), acos(h), atan(h) - Python only (on pure_c branch)
 
 The recurrence relations used here are derived along the lines of (amongst other sources) http://www2.math.uni-wuppertal.de/wrswt/preprints/prep_05_4.pdf and http://aimsciences.org/journals/displayPaperPro.jsp?paperID=9241 (open access).
 
@@ -214,7 +216,7 @@ both | The order is increased by one, and the step size by one half
 
 ##### CNS plot (matplotlib diff graph):
 ```
-./cns both ./tsm-lorenz-static 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+$ ./cns step2 ./tsm-lorenz-static 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 ```
 #### Example output - 300 time units
 ```
@@ -271,7 +273,7 @@ separation | Initial separation between "original" trajectory and the additional
 
 The simulation is run seven times in parallel processes, the original along with each perturbed x, y, z.
 ```
-$ ./ic .001 ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
+$ ./ic .001 ./tsm-lorenz-dbg 9 32 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
 oo ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
 x+ ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.799 -17.48 35.64 10 28 8 3
 x- ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.801 -17.48 35.64 10 28 8 3
