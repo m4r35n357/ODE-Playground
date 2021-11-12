@@ -108,19 +108,19 @@ Testing Requirements
 Most of the code is covered several times over.
 Tests have been mutation tested with mutmut.
 ```
-$ pytest ad_test.py solver_test.py -v
+pytest ad_test.py solver_test.py -v
 ```
 
 #### c Build (GCC or Clang)
 ```
-$ ./clean
-$ ./build [clang]
+./clean
+./build [clang]
 ```
 There should be NO errors or warnings.  [UPDATE: kerr-image.c shows warnings on arm64; it is 3rd party code]
 
 #### Running c Tests
 ```
-$ ./libad-test-dbg 32 20 1 1e-18
+./libad-test-dbg 32 20 1 1e-18
 
 Total: 33, PASSED 33
 ```
@@ -139,13 +139,13 @@ Parameter | Meaning
 
 #### Code coverage
 ```
-$ ./coverage
+./coverage
 ```
 The output contains file system links to the HTML results
 
 #### C Code profiling
 ```
-$ ./profile
+./profile
 ```
 The results are printed to stdout
 
@@ -159,7 +159,7 @@ No differentiation happens in these functions (they only implement the recurrenc
 Refer to tsm-lorenz-dbg and tsm-*.c for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors.
 To find some example invocations:
 ```
-$ grep Example *.py tsm-*.c
+grep Example *.py tsm-*.c
 ```
 #### Run an ODE simulation (ODE call):
 
@@ -216,11 +216,11 @@ both | The order is increased by one, and the step size by one half
 
 ##### CNS plot (matplotlib diff graph):
 ```
-$ ./cns step2 ./tsm-lorenz-static 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 ./tsm-lorenz-static 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 ```
 #### Example output - 300 time units
 ```
-$ ./cns step2 ./tsm-lorenz-dbg 15 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 ./tsm-lorenz-dbg 15 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3
 Better: ./tsm-lorenz-dbg 138 103 .005000 70000 -15.8 -17.48 35.64 10 28 8 3
  MPFR default precision: 458 bits
  MPFR default precision: 431 bits
@@ -234,13 +234,13 @@ Threshold: 1.0e+00, t: 301.320
 
 600 time units
 ```
-$ ./cns step2 ./tsm-lorenz-dbg 15 240 204 .01 65000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 ./tsm-lorenz-dbg 15 240 204 .01 65000 -15.8 -17.48 35.64 10 28 8 3
 ```
 (output not shown)
 
 1500 time units
 ```
-$ ./cns step2 ./tsm-lorenz-dbg 15 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 ./tsm-lorenz-dbg 15 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 3
 ```
 (output not shown)
 
@@ -258,7 +258,7 @@ Parameter | Meaning
 
 ##### CNS duration vs. Simulation Order (gnuplot graph):
 ```
-$ ./cns-scan step2 32 1 ./tsm-lorenz-static 6 _ _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | gnuplot -p -e "plot '<cat' with boxes"
+./cns-scan step2 32 1 ./tsm-lorenz-static 6 _ _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | gnuplot -p -e "plot '<cat' with boxes"
 ```
 
 ## ic script - Sensitivity to variation in initial conditions
@@ -273,7 +273,7 @@ separation | Initial separation between "original" trajectory and the additional
 
 The simulation is run seven times in parallel processes, the original along with each perturbed x, y, z.
 ```
-$ ./ic .001 ./tsm-lorenz-dbg 9 32 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
+./ic .001 ./tsm-lorenz-dbg 9 32 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
 oo ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
 x+ ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.799 -17.48 35.64 10 28 8 3
 x- ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.801 -17.48 35.64 10 28 8 3
