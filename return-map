@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+#  Example: ./return-map X  # data taken from /tmp/$USER/data
+#
+#  (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+
+data="/tmp/$USER/data"
+map="/tmp/$USER/map"
+
+coordinate=$1
+
+old=0
+grep $coordinate $data | while read x y z remainder
+do
+    case $coordinate in
+        X|x) echo $old $x; old=$x;;
+        Y|y) echo $old $y; old=$y;;
+        Z|z) echo $old $z; old=$z;;
+        *) exit;;
+    esac
+done >$map
+
+gnuplot -p -e "set terminal wxt size 1200,900; plot '$map' using 1:2 with points"
