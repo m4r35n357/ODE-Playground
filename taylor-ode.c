@@ -50,8 +50,8 @@ real t_horner (series s, int n, real h) {
     return sum;
 }
 
-static char *tp (series jet, real slope, char *min, char *max, char *blank) {
-    return jet[1] * slope < 0.0L ? (jet[2] > 0.0L ? min : max) : blank;
+static char *tag (series jet, real slope, char *min, char *max) {
+    return jet[1] * slope < 0.0L ? (jet[2] > 0.0L ? min : max) : "_";
 }
 
 void tsm (int argc, char **argv, int dp, int n, real h, int steps, real x0, real y0, real z0) {
@@ -67,7 +67,7 @@ void tsm (int argc, char **argv, int dp, int n, real h, int steps, real x0, real
             y[k + 1] = v.y / (k + 1);
             z[k + 1] = v.z / (k + 1);
         }
-        t_output(dp, x[0], y[0], z[0], h * step, tp(x, s.x, "x", "X", "_"), tp(y, s.y, "y", "Y", "_"), tp(z, s.z, "z", "Z", "_"));
+        t_output(dp, x[0], y[0], z[0], h * step, tag(x, s.x, "x", "X"), tag(y, s.y, "y", "Y"), tag(z, s.z, "z", "Z"));
         s = (components) {x[1], y[1], z[1]};
         x[0] = t_horner(x, n, h);
         y[0] = t_horner(y, n, h);

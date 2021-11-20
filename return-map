@@ -9,15 +9,15 @@ map="/tmp/$USER/map"
 
 coordinate=$1
 
-old=0
+previous=0
 grep $coordinate $data | while read x y z remainder
 do
     case $coordinate in
-        X|x) echo $old $x; old=$x;;
-        Y|y) echo $old $y; old=$y;;
-        Z|z) echo $old $z; old=$z;;
+        X|x) echo $previous $x; previous=$x;;
+        Y|y) echo $previous $y; previous=$y;;
+        Z|z) echo $previous $z; previous=$z;;
         *) exit;;
     esac
 done >$map
 
-gnuplot -p -e "set terminal wxt size 1200,900; plot '$map' using 1:2 with points"
+gnuplot -p -e "set terminal wxt size 800,600; plot '$map' using 1:2 with points pt 0"
