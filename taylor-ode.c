@@ -185,24 +185,26 @@ mpfr_t *t_exp (series e, series u, int k) {
 
 pair t_sin_cos (series s, series c, series u, int k, geometry g) {
     assert(s != c && s != u && c != u);
+    _Bool trig = g == TRIG;
     if (k == 0) {
-        g == TRIG ? mpfr_sin_cos(s[0], c[0], u[0], RND) : mpfr_sinh_cosh(s[0], c[0], u[0], RND);
+        trig ? mpfr_sin_cos(s[0], c[0], u[0], RND) : mpfr_sinh_cosh(s[0], c[0], u[0], RND);
     } else {
         mpfr_swap(s[k], *f_k(c, u, k, 0));
-        mpfr_mul(c[k], *f_k(s, u, k, 0), g == TRIG ? D_1 : D1, RND);
+        mpfr_mul(c[k], *f_k(s, u, k, 0), trig ? D_1 : D1, RND);
     }
     return (pair){&s[k], &c[k]};
 }
 
 pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
     assert(t != s && t != u && s != u);
+    _Bool trig = g == TRIG;
     if (k == 0) {
-        g == TRIG ? mpfr_tan(t[0], u[0], RND) : mpfr_tanh(t[0], u[0], RND);
+        trig ? mpfr_tan(t[0], u[0], RND) : mpfr_tanh(t[0], u[0], RND);
         mpfr_sqr(s[0], t[0], RND);
-        g == TRIG ? mpfr_add(s[0], D1, s[0], RND) : mpfr_sub(s[0], D1, s[0], RND);
+        trig ? mpfr_add(s[0], D1, s[0], RND) : mpfr_sub(s[0], D1, s[0], RND);
     } else {
         mpfr_swap(t[k], *f_k(s, u, k, 0));
-        mpfr_mul(s[k], *f_k(t, t, k, 0), g == TRIG ? D2 : D_2, RND);
+        mpfr_mul(s[k], *f_k(t, t, k, 0), trig ? D2 : D_2, RND);
     }
     return (pair){&t[k], &s[k]};
 }
