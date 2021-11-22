@@ -19,7 +19,7 @@
 #include "dual.h"
 
 static dual hamiltonian (real M, real k, real l, dual q, dual p) {
-    return d_add(d_scale(d_sqr(p), 0.5 / M), d_scale(d_sqr(d_shift(q, -l)), 0.5 * k));
+    return d_add(d_scale(d_sqr(p), 0.5L / M), d_scale(d_sqr(d_shift(q, -l)), 0.5L * k));
 }
 
 typedef struct {
