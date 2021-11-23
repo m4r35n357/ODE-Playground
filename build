@@ -6,7 +6,8 @@
 
 /usr/bin/ctags *.c
 
-WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra -Wconversion'
+WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra -Wconversion -Wunsuffixed-float-constants -Wredundant-decls -Wmissing-field-initializers -Wmissing-declarations -Wuninitialized'
+
 STD='c99'
 
 CC="/usr/bin/gcc -std=$STD"

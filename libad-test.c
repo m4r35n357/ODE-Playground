@@ -93,7 +93,7 @@ int main (int argc, char **argv) {
     mpfr_t PI_2;
 
     assert(argc == 5 || argc == 6);
-    double precision = strtod(argv[1], NULL) * 3.322;
+    long double precision = strtod(argv[1], NULL) * 3.322L;
     mpfr_set_default_prec((int)precision);
     n = (int)strtol(argv[2], NULL, BASE);
     assert(n > 1);
