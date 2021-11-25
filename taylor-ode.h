@@ -194,7 +194,7 @@ mpfr_t *t_inv (series I, series V, int k);
  *
  * R[k] = (U[k] - sum{j=1->k-1} R[j].R[k-j]) / (2.R[0])
  */
-mpfr_t *t_sqrt (series r, series U, int k);
+mpfr_t *t_sqrt (series R, series U, int k);
 
 /*
  * Applying the chain rule for the derivative of a composed function f(u) creates another Cauchy product:
