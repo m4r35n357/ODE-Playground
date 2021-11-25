@@ -32,9 +32,9 @@ series t_jet (int n) {
     return s;
 }
 
-void t_output (int dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label) {
+void t_output (int dp, real x, real y, real z, real t, char *x_tag, char *y_tag, char *z_tag) {
     char fs[128];
-    sprintf(fs, "%%+.%dLe %%+.%dLe %%+.%dLe %%+.6Le %s %s %s\n", dp, dp, dp, x_label, y_label, z_label);
+    sprintf(fs, "%%+.%dLe %%+.%dLe %%+.%dLe %%+.6Le %s %s %s\n", dp, dp, dp, x_tag, y_tag, z_tag);
     printf(fs, x, y, z, t);
 }
 
