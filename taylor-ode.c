@@ -116,7 +116,7 @@ static mpfr_t *cauchy (series a, series b, int k, int j_lower, int j_upper) {
     return &_;
 }
 
-mpfr_t *t_prod (series u, series v, int k) {
+mpfr_t *t_mul (series u, series v, int k) {
     mpfr_swap(_prod, *cauchy(u, v, k, 0, k));
     return &_prod;
 }
@@ -126,7 +126,7 @@ mpfr_t *t_sqr (series u, int k) {
     return &_sqr;
 }
 
-mpfr_t *t_quot (series q, series u, series v, int k) {
+mpfr_t *t_div (series q, series u, series v, int k) {
     assert(mpfr_zero_p(v[0]) == 0);
     assert(q != u && q != v);
     if (k == 0) {

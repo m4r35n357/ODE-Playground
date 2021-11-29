@@ -34,12 +34,12 @@ series ad_scale (series S, series U, mpfr_t a);
 /*
  * Calculates Taylor Series for the sum of U and V, result stored in jet P
  */
-series ad_plus (series P, series V, series U);
+series ad_add (series P, series V, series U);
 
 /*
  * Calculates Taylor Series for the difference of U and V, result stored in jet M
  */
-series ad_minus (series M, series V, series U);
+series ad_sub (series M, series V, series U);
 
 /*
  * Calculates Taylor Series for the absolute value of U, result stored in jet A
@@ -49,12 +49,12 @@ series ad_abs (series A, series U);
 /*
  * Calculates Taylor Series for U * V, result stored in jet P
  */
-series ad_prod (series P, series V, series U);
+series ad_mul (series P, series V, series U);
 
 /*
  * Calculates Taylor Series for U / V, result stored in jet Q
  */
-series ad_quot (series Q, series U, series V);
+series ad_div (series Q, series U, series V);
 
 /*
  * Calculates Taylor Series for 1 / V, result stored in jet I

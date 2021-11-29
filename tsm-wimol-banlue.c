@@ -27,8 +27,8 @@ void ode (components *v, series x, series y, series z, void *params, int k) {
     mpfr_sub(v->x, y[k], x[k], RND);
     //  y' = - z * tan(x)
     t_tan_sec2(p->tx, p->s2x, x, k, HYP);
-    mpfr_neg(v->y, *t_prod(z, p->tx, k), RND);
+    mpfr_neg(v->y, *t_mul(z, p->tx, k), RND);
     //  z' = - A + xy + |y|
-    mpfr_add(v->z, *t_prod(x, y, k), *t_abs(y, k), RND);
+    mpfr_add(v->z, *t_mul(x, y, k), *t_abs(y, k), RND);
     mpfr_sub(v->z, v->z, *t_const(p->a, k), RND);
 }

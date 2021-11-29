@@ -25,7 +25,7 @@ void ode (components *v, series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
     //  x' = ay - kx - yz
     mpfr_fmms(v->x, p->alpha, y[k], p->kappa, x[k], RND);
-    mpfr_sub(v->x, v->x, *t_prod(y, z, k), RND);
+    mpfr_sub(v->x, v->x, *t_mul(y, z, k), RND);
     //  y' = x
     mpfr_set(v->y, x[k], RND);
     //  z' = y^2 - z

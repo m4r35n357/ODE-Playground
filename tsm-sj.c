@@ -26,7 +26,7 @@ void ode (components *v, series x, series y, series z, void *params, int k) {
     //  x' = y
     mpfr_set(v->x, y[k], RND);
     //  y' = yz - x
-    mpfr_sub(v->y, *t_prod(y, z, k), x[k], RND);
+    mpfr_sub(v->y, *t_mul(y, z, k), x[k], RND);
     //  z' = z - ax^2 - y^2 - b
     mpfr_fma(v->z, p->a, *t_sqr(x, k), *t_sqr(y, k), RND);
     mpfr_sub(v->z, z[k], v->z, RND);

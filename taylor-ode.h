@@ -146,7 +146,7 @@ mpfr_t *t_abs (series U, int k);
  *
  *  P = sum{j=0->k} U[j].V[k-j]
  */
-mpfr_t *t_prod (series U, series V, int k);
+mpfr_t *t_mul (series U, series V, int k);
 
 /*
  * Returns a pointer to kth element of the square of U, result stored and returned in variable S, NO JET STORAGE
@@ -172,7 +172,7 @@ mpfr_t *t_sqr (series U, int k);
  *
  *                     = (U[k] - sum{j=0->k-1} Q[j].V[k-j]) / V[0]    otherwise
  */
-mpfr_t *t_quot (series Q, series U, series V, int k);
+mpfr_t *t_div (series Q, series U, series V, int k);
 
 /*
  * Returns a pointer to kth element of 1 / V, results accumulated in jet I, DOMAIN RESTRICTION v[0] != 0.0

@@ -22,14 +22,14 @@ series ad_scale (series s, series u, mpfr_t a) {
     return s;
 }
 
-series ad_plus (series p, series u, series v) {
+series ad_add (series p, series u, series v) {
     for (int k = 0; k < order; k++) {
         mpfr_add(p[k], u[k], v[k], RND);
     }
     return p;
 }
 
-series ad_minus (series m, series u, series v) {
+series ad_sub (series m, series u, series v) {
     for (int k = 0; k < order; k++) {
         mpfr_sub(m[k], u[k], v[k], RND);
     }
@@ -43,16 +43,16 @@ series ad_abs (series a, series u) {
     return a;
 }
 
-series ad_prod (series p, series u, series v) {
+series ad_mul (series p, series u, series v) {
     for (int k = 0; k < order; k++) {
-        mpfr_set(p[k], *t_prod(u, v, k), RND);
+        mpfr_set(p[k], *t_mul(u, v, k), RND);
     }
     return p;
 }
 
-series ad_quot (series q, series u, series v) {
+series ad_div (series q, series u, series v) {
     for (int k = 0; k < order; k++) {
-        t_quot(q, u, v, k);
+        t_div(q, u, v, k);
     }
     return q;
 }

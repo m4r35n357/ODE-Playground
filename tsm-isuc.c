@@ -29,7 +29,7 @@ void ode (components *v, series x, series y, series z, void *params, int k) {
     mpfr_fms(v->y, p->a, y[k], x[k], RND);
     mpfr_neg(v->y, v->y, RND);
     //  z' = B + Cz - (x^2 + y^2)z
-    mpfr_add(p->x2py2[k], *t_sqr(x, k), *t_prod(y, y, k), RND);
-    mpfr_fms(v->z, p->c, z[k], *t_prod(p->x2py2, z, k), RND);
+    mpfr_add(p->x2py2[k], *t_sqr(x, k), *t_mul(y, y, k), RND);
+    mpfr_fms(v->z, p->c, z[k], *t_mul(p->x2py2, z, k), RND);
     mpfr_add(v->z, v->z, *t_const(p->b, k), RND);
 }

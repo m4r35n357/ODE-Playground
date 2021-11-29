@@ -25,7 +25,7 @@ void *get_p (int argc, char **argv, int n) {
 void ode (components *v, series x, series y, series z, void *params, int k) {
     (void)z;
     parameters *p = (parameters *)params;
-    mpfr_swap(p->xy, *t_prod(x, y, k));
+    mpfr_swap(p->xy, *t_mul(x, y, k));
     //  x' = Ax - Cxy
     mpfr_fmms(v->x, p->a, x[k], p->c, p->xy, RND);
     //  y' = Dxy - By
