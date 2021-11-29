@@ -21,14 +21,14 @@ series ad_scale (series s, series u, real a) {
     return s;
 }
 
-series ad_plus (series p, series u, series v) {
+series ad_add (series p, series u, series v) {
     for (int k = 0; k < order; k++) {
         p[k] = u[k] + v[k];
     }
     return p;
 }
 
-series ad_minus (series m, series u, series v) {
+series ad_sub (series m, series u, series v) {
     for (int k = 0; k < order; k++) {
         m[k] = u[k] - v[k];
     }
@@ -42,16 +42,16 @@ series ad_abs (series a, series u) {
     return a;
 }
 
-series ad_prod (series p, series u, series v) {
+series ad_mul (series p, series u, series v) {
     for (int k = 0; k < order; k++) {
-        p[k] = t_prod(u, v, k);
+        p[k] = t_mul(u, v, k);
     }
     return p;
 }
 
-series ad_quot (series q, series u, series v) {
+series ad_div (series q, series u, series v) {
     for (int k = 0; k < order; k++) {
-        t_quot(q, u, v, k);
+        t_div(q, u, v, k);
     }
     return q;
 }

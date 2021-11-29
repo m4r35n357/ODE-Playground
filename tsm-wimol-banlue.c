@@ -26,7 +26,7 @@ components ode (series x, series y, series z, void *params, int k) {
     t_tan_sec2(p->tx, p->s2x, x, k, HYP);
     return (components) {
         .x = y[k] - x[k],
-        .y = - t_prod(z, p->tx, k),
-        .z = - t_const(p->a, k) + t_prod(x, y, k) + t_abs(y, k)
+        .y = - t_mul(z, p->tx, k),
+        .z = - t_const(p->a, k) + t_mul(x, y, k) + t_abs(y, k)
     };
 }

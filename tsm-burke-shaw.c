@@ -24,7 +24,7 @@ components ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
     return (components) {
         .x = - p->s * (x[k] + y[k]),
-        .y = - (p->s * t_prod(x, z, k) + y[k]),
-        .z = p->s * t_prod(x, y, k) + p->v
+        .y = - (p->s * t_mul(x, z, k) + y[k]),
+        .z = p->s * t_mul(x, y, k) + p->v
     };
 }

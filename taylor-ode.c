@@ -92,7 +92,7 @@ static real cauchy (series a, series b, int k, int j_lower, int j_upper) {
     return sum;
 }
 
-real t_prod (series u, series v, int k) {
+real t_mul (series u, series v, int k) {
     return cauchy(u, v, k, 0, k);
 }
 
@@ -100,7 +100,7 @@ real t_sqr (series u, int k) {
     return cauchy(u, u, k, 0, k);
 }
 
-real t_quot (series q, series u, series v, int k) {
+real t_div (series q, series u, series v, int k) {
     assert(v[0] != 0.0L);
     assert(q != u && q != v);
     return q[k] = (k == 0 ? u[0] : u[k] - cauchy(q, v, k, 0, k - 1)) / v[0];

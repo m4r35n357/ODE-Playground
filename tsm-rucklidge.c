@@ -23,7 +23,7 @@ void *get_p (int argc, char **argv, int n) {
 components ode (series x, series y, series z, void *params,  int k) {
     parameters *p = (parameters *)params;
     return (components) {
-        .x = p->alpha * y[k] - p->kappa * x[k] - t_prod(y, z, k),
+        .x = p->alpha * y[k] - p->kappa * x[k] - t_mul(y, z, k),
         .y = x[k],
         .z = t_sqr(y, k) - z[k]
     };

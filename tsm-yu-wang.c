@@ -23,10 +23,10 @@ void *get_p (int argc, char **argv, int n) {
 
 components ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
-    p->xy[k] = t_prod(x, y, k);
+    p->xy[k] = t_mul(x, y, k);
     return (components) {
         .x = p->a * (y[k] - x[k]),
-        .y = p->b * x[k] - p->c * t_prod(x, z, k),
+        .y = p->b * x[k] - p->c * t_mul(x, z, k),
         .z = t_exp(p->e_xy, p->xy, k) - p->d * z[k]
     };
 }

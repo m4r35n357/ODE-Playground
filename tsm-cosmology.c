@@ -24,7 +24,7 @@ components ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
     (void)z;
     return (components) {  // .x maps to rho, .y to theta
-        .x = - (1.0L + p->w) * t_prod(x, y, k),
+        .x = - (1.0L + p->w) * t_mul(x, y, k),
         .y = - t_sqr(y, k) / 3.0L - 4.0L * MY_PI * (1.0L + 3.0L * p->w) * x[k],
         .z = 0.0L
     };

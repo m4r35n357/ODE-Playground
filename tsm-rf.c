@@ -27,10 +27,10 @@ components ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
     p->a[k] = z[k] + t_sqr(x, k) - t_const(1.0L, k);
     p->b[k] = 4.0L * z[k] - p->a[k];
-    p->c[k] = t_const(p->alpha, k) + t_prod(x, y, k);
+    p->c[k] = t_const(p->alpha, k) + t_mul(x, y, k);
     return (components) {
-        .x = t_prod(y, p->a, k) + p->gamma * x[k],
-        .y = t_prod(x, p->b, k) + p->gamma * y[k],
-        .z = - 2.0L * t_prod(z, p->c, k)
+        .x = t_mul(y, p->a, k) + p->gamma * x[k],
+        .y = t_mul(x, p->b, k) + p->gamma * y[k],
+        .z = - 2.0L * t_mul(z, p->c, k)
     };
 }

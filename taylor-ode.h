@@ -138,7 +138,7 @@ real t_abs (series U, int k);
  *
  *  P = sum{j=0->k} U[j].V[k-j]
  */
-real t_prod (series U, series V, int k);
+real t_mul (series U, series V, int k);
 
 /*
  * Returns kth element of the square of U, no user-supplied jet storage needed
@@ -164,7 +164,7 @@ real t_sqr (series U, int k);
  *
  *                     = (U[k] - sum{j=0->k-1} Q[j].V[k-j]) / V[0]    otherwise
  */
-real t_quot (series Q, series U, series V, int k);
+real t_div (series Q, series U, series V, int k);
 
 /*
  * Returns kth element of 1 / V, results accumulated in jet I, DOMAIN RESTRICTION v[0] != 0.0

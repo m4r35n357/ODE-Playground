@@ -26,8 +26,8 @@ components ode (series x, series y, series z, void *params, int k) {
     p->wa[k] = t_const(1.0L, k) - y[k];
     p->wb[k] = t_const(1.0L, k) - t_sqr(x, k);
     return (components) {
-        .x = p->a * t_prod(x, p->wa, k) - p->b * z[k],
-        .y = - p->c * t_prod(y, p->wb, k),
+        .x = p->a * t_mul(x, p->wa, k) - p->b * z[k],
+        .y = - p->c * t_mul(y, p->wb, k),
         .z = p->d * x[k]
     };
 }

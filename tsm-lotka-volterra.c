@@ -23,7 +23,7 @@ void *get_p (int argc, char **argv, int n) {
 components ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
     (void)z;
-    real xy = t_prod(x, y, k);
+    real xy = t_mul(x, y, k);
     return (components) {
         .x = p->a * x[k] - p->c * xy,
         .y = p->d * xy - p->b * y[k],
