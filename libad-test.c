@@ -92,6 +92,9 @@ int main (int argc, char **argv) {
 
     series c1 = t_jet(n);
     c1[0] = 1.0L;
+    for (int i = 1; i < n; i++) {
+        c1[i] = 0.0L;
+    }
 
     int x_positive = x[0] > 0.0L;
     int x_non_zero = x[0] != 0.0L;
