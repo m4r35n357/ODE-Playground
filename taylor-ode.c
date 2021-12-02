@@ -46,7 +46,8 @@ series t_jet (int n) {
         exit(1);
     }
     for (int i = 0; i < n; i++) {
-        mpfr_init_set_si(s[i], 0, RND);
+        mpfr_init(s[i]);
+	mpfr_set_inf(s[i], 1);
     }
     return s;
 }

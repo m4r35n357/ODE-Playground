@@ -108,6 +108,9 @@ int main (int argc, char **argv) {
 
     series c1 = t_jet(n);
     mpfr_set(c1[0], D1, RND);
+    for (int i = 1; i < n; i++) {
+        mpfr_set_zero(c1[i], 1);
+    }
 
     mpfr_init(PI_2);
     mpfr_const_pi(PI_2, RND);
