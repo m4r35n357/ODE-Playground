@@ -15,6 +15,13 @@ void ad_init (int n) {
     order = n;
 }
 
+series ad_const (series c, mpfr_t a) {
+    for (int k = 0; k < order; k++) {
+	    mpfr_set(c[k], *t_const(a, k), RND);
+    }
+    return c;
+}
+
 series ad_scale (series s, series u, mpfr_t a) {
     for (int k = 0; k < order; k++) {
         mpfr_mul(s[k], u[k], a, RND);

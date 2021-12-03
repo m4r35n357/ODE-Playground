@@ -99,12 +99,6 @@ int main (int argc, char **argv) {
     mpfr_init_set_str(tolerance, argv[4], BASE, RND);
     if (argc == 6) debug = (int)strtol(argv[5], NULL, BASE);
 
-    series c1 = t_jet(n);
-    mpfr_set(c1[0], D1, RND);
-    for (int i = 1; i < n; i++) {
-        mpfr_set_zero(c1[i], 1);
-    }
-
     mpfr_init(PI_2);
     mpfr_const_pi(PI_2, RND);
     mpfr_div_2si(PI_2, PI_2, 1, RND);
@@ -137,6 +131,8 @@ int main (int argc, char **argv) {
     series cos_2x = t_jet(n);
     series tan = t_jet(n);
     series sec2 = t_jet(n);
+
+    series S1 = ad_const(t_jet(n), D1);
 
     fprintf(stdout, "\n");
     fprintf(stdout, "Horner\n");
@@ -186,7 +182,7 @@ int main (int argc, char **argv) {
     x_non_zero ? compare(name, ad_div(quot, sqr_x, x), x) : skip(name);
 
     name = "x * 1 / x == 1";
-    x_non_zero ? compare(name, ad_mul(prod, x, inv_x), c1) : skip(name);
+    x_non_zero ? compare(name, ad_mul(prod, x, inv_x), S1) : skip(name);
 
     name = "sqrt(x) * sqrt(x) == x";
     x_positive ? compare(name, ad_mul(prod, sqrt_x, sqrt_x), x) : skip(name);
@@ -206,7 +202,7 @@ int main (int argc, char **argv) {
     x_positive ? compare(name, ad_pwr(pow, x, D05), sqrt_x): skip(name);
 
     name = "x^0 == 1";
-    x_positive ? compare(name, ad_pwr(pow, x, D0), c1) : skip(name);
+    x_positive ? compare(name, ad_pwr(pow, x, D0), S1) : skip(name);
 
     name = "x^-0.5 == 1 / sqrt(x)";
     x_positive ? compare(name, ad_pwr(pow, x, D_05), ad_inv(inv, sqrt_x)) : skip(name);
@@ -252,10 +248,10 @@ int main (int argc, char **argv) {
     ad_sin_cos(sin_2x, cos_2x, ad_scale(scale, x, D2), HYP);
 
     name = "cosh^2(x) - sinh^2(x) == 1";
-    compare(name, ad_sub(diff, sqr_cos_x, sqr_sin_x), c1);
+    compare(name, ad_sub(diff, sqr_cos_x, sqr_sin_x), S1);
 
     name = "sech^2(x) + tanh^2(x) == 1";
-    compare(name, ad_add(sum, sec2, ad_sqr(sqr_tan_x, tan)), c1);
+    compare(name, ad_add(sum, sec2, ad_sqr(sqr_tan_x, tan)), S1);
 
     name = "tanh(x) == sinh(x) / cosh(x)";
     compare(name, tan, ad_div(quot, sin, cos));
@@ -286,10 +282,10 @@ int main (int argc, char **argv) {
     ad_sin_cos(sin_2x, cos_2x, ad_scale(scale, x, D2), TRIG);
 
     name = "cos^2(x) + sin^2(x) == 1";
-    compare(name, ad_add(sum, sqr_cos_x, sqr_sin_x), c1);
+    compare(name, ad_add(sum, sqr_cos_x, sqr_sin_x), S1);
 
     name = "sec^2(x) - tan^2(x) == 1";
-    x_lt_pi_2 ? compare(name, ad_sub(diff, sec2, ad_sqr(sqr_tan_x, tan)), c1) : skip(name);
+    x_lt_pi_2 ? compare(name, ad_sub(diff, sec2, ad_sqr(sqr_tan_x, tan)), S1) : skip(name);
 
     name = "tan(x) == sin(x) / cos(x)";
     x_lt_pi_2 ? compare(name, tan, ad_div(quot, sin, cos)) : skip(name);
