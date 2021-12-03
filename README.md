@@ -115,7 +115,7 @@ Parameter | Meaning
 ----------|-----------
 1 | start of parameter range
 2 | end of parameter range
-3 | "transient skip" value (skip first lines / value, or 0)
+3 | "transient skip" value; skip first (lines / value), or 0
 4+ | ODE call with variable parameter replaced by ['$p']
 
 ##### Bifurcation Diagram (manual gnuplot graph):

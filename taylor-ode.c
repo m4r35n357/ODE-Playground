@@ -27,7 +27,7 @@ series t_jet (int n) {
         exit(1);
     }
     for (int i = 0; i < n; i++) {
-        s[i] = 1.0L / 0.0L;
+        s[i] = NAN;
     }
     return s;
 }
