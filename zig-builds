@@ -8,6 +8,7 @@
 #  Example: ./zig-builds aarch64-linux-musl ReleaseFast
 #  Example: ./zig-builds x86_64-linux-musl ReleaseFast
 #  Example: ./zig-builds i386-linux-musl ReleaseFast
+#  Example: ./zig-builds x86_64-windows-gnu ReleaseFast
 
 target=$1
 opt=$2
@@ -24,8 +25,8 @@ do
 done
 
 $zig_build_exe divergence.c $CCOPTS
-$zig_build_exe taylor-test.c taylor-ode.c $CCOPTS
-$zig_build_exe dual-test.c dual.c $CCOPTS
+$zig_build_exe libad-test.c taylor-ode.c ad.c $CCOPTS
+$zig_build_exe libdual-test.c dual.c $CCOPTS
 
 $zig_build_exe h-analysis.c symplectic.c $CCOPTS
 $zig_build_exe h-kerr.c symplectic.c dual.c $CCOPTS
