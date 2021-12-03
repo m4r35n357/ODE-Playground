@@ -14,6 +14,13 @@ void ad_init (int n) {
     order = n;
 }
 
+series ad_const (series c, real a) {
+    for (int k = 0; k < order; k++) {
+        c[k] = t_const(a, k);
+    }
+    return c;
+}
+
 series ad_scale (series s, series u, real a) {
     for (int k = 0; k < order; k++) {
         s[k] = u[k] * a;

@@ -25,6 +25,12 @@ typedef void (*model)(series, series);
  */
 void ad_init (int n);
 
+
+/*
+ * Set up a constant jet of value a, result stored in jet C
+ */
+series ad_const (series C, real a);
+
 /*
  * Scales Taylor Series U by a factor a, result stored in jet S
  */

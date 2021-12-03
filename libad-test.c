@@ -83,12 +83,6 @@ int main (int argc, char **argv) {
     tolerance = strtold(argv[3], NULL);
     if (argc == 5) debug = (int)strtol(argv[4], NULL, BASE);
 
-    series c1 = t_jet(n);
-    c1[0] = 1.0L;
-    for (int i = 1; i < n; i++) {
-        c1[i] = 0.0L;
-    }
-
     int x_positive = x[0] > 0.0L;
     int x_non_zero = x[0] != 0.0L;
     int x_lt_pi_2 = x[0] < PI_2;
@@ -117,6 +111,8 @@ int main (int argc, char **argv) {
     series cos_2x = t_jet(n);
     series tan = t_jet(n);
     series sec2 = t_jet(n);
+
+    series c1 = ad_const(t_jet(n), 1.0L);
 
     fprintf(stdout, "\n");
     fprintf(stdout, "Horner\n");
