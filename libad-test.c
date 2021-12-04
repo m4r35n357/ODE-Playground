@@ -60,7 +60,7 @@ void ode (components *v, series x, series y, series z, void *params, int k) {
 static void skip (char* name) {
     total++;
     skipped++;
-    if (debug >= 1) fprintf(stderr, "%sSKIPPED%s %s\n", KYLW, KNRM, name);
+    if (debug >= 1) fprintf(stderr, "%s SKIP%s %s\n", KYLW, KNRM, name);
 }
 
 static void compare (char* name, series a, series b) {
@@ -68,7 +68,7 @@ static void compare (char* name, series a, series b) {
     for (int k = 0; k < n; k++) {
         mpfr_sub(delta, a[k], b[k], RND);
         if (mpfr_number_p(delta) == 0 || mpfr_cmpabs(delta, tolerance) > 0) {
-            fprintf(stderr, "%s FAILED%s %s  k: %d  LHS: %.6e  RHS: %.6e  diff %.3e\n",
+            fprintf(stderr, "%s FAIL%s %s  k: %d  LHS: %.6e  RHS: %.6e  diff %.3e\n",
                     KRED, KNRM, name, k, mpfr_get_d(a[k], RND), mpfr_get_d(b[k], RND), mpfr_get_d(delta, RND));
             return;
         }
@@ -78,7 +78,7 @@ static void compare (char* name, series a, series b) {
                     KNRM, KNRM, k, mpfr_get_d(a[k], RND), mpfr_get_d(b[k], RND), mpfr_get_d(delta, RND));
         }
     }
-    if (debug >= 1) fprintf(stderr, "%s PASSED%s %s\n", KGRN, KNRM, name);
+    if (debug >= 1) fprintf(stderr, "%s PASS%s %s\n", KGRN, KNRM, name);
     passed++;
 }
 
@@ -135,7 +135,7 @@ int main (int argc, char **argv) {
     series S1 = ad_const(t_jet(n), D1);
 
     fprintf(stdout, "\n");
-    fprintf(stdout, "Horner\n");
+    fprintf(stdout, "%sHorner%s\n", KWHT, KNRM);
     series p = t_jet(n >= 8 ? n : 8);
     mpfr_set_si(p[0], 1, RND);
     mpfr_set_si(p[1], 3, RND);
@@ -160,14 +160,14 @@ int main (int argc, char **argv) {
     mpfr_fprintf(stdout, "201 %8.3RNf\n", *t_horner(p, 7, D_2));
 
     fprintf(stdout, "\n");
-    fprintf(stdout, "TSM\n");
+    fprintf(stdout, "%sTSM%s\n", KWHT, KNRM);
     tsm(argc, argv, n, D01, 10, D1, D1, D1);
     mpfr_t e1, e0, e_1;
     mpfr_inits(e1, e0, e_1, NULL);
     mpfr_exp(e1, D1, RND);
     mpfr_exp(e0, D0, RND);
     mpfr_exp(e_1, D_1, RND);
-    fprintf(stdout, "Check\n");
+    fprintf(stdout, "%sCheck%s\n", KWHT, KNRM);
     t_output(e1, e0, e_1, D01, 10);
 
     fprintf(stderr, "\n");
