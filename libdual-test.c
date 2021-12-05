@@ -25,25 +25,25 @@ static real x0, delta_val, delta_dot, tolerance;
 static void skip (char* name) {
     total++;
     skipped++;
-    if (debug >= 1) printf("%sSKIPPED%s %s\n", KYLW, KNRM, name);
+    if (debug >= 1) fprintf(stderr, "%s SKIP%s %s\n", KYLW, KNRM, name);
 }
 
 static void compare (char* name, dual a, dual b) {
     total++;
     delta_val = a.val - b.val;
     if (fabsl(delta_val) > tolerance) {
-        printf("%s FAILED%s %s  LHS: %.6Le  RHS: %.6Le  diff %.3Le\n", KRED, KNRM, name, a.val, b.val, delta_val);
+        printf("%s FAIL%s %s  LHS: %.6Le  RHS: %.6Le  diff %.3Le\n", KRED, KNRM, name, a.val, b.val, delta_val);
         return;
     }
     delta_dot = a.dot - b.dot;
     if (fabsl(delta_dot) > tolerance) {
-        printf("%s FAILED%s %s  LHS: %.6Le  RHS: %.6Le  diff %.3Le\n", KRED, KNRM, name, a.dot, b.dot, delta_dot);
+        printf("%s FAIL%s %s  LHS: %.6Le  RHS: %.6Le  diff %.3Le\n", KRED, KNRM, name, a.dot, b.dot, delta_dot);
         return;
     }
     if (debug >= 2) printf("\n");
     if (debug >= 2) printf("%s  DEBUG%s  %+.6Le %+.6Le  diff %+.3Le\n", KNRM, KNRM, a.val, b.val, delta_val);
     if (debug >= 2) printf("%s  DEBUG%s  %+.6Le %+.6Le  diff %+.3Le\n", KNRM, KNRM, a.dot, b.dot, delta_dot);
-    if (debug >= 1) printf("%s PASSED%s %s\n", KGRN, KNRM, name);
+    if (debug >= 1) printf("%s PASS%s %s\n", KGRN, KNRM, name);
     passed++;
 }
 

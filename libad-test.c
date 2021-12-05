@@ -48,7 +48,7 @@ components ode (series x, series y, series z, void *params, int k) {
 static void skip (char* name) {
     total++;
     skipped++;
-    if (debug >= 1) fprintf(stderr, "%sSKIPPED%s %s\n", KYLW, KNRM, name);
+    if (debug >= 1) fprintf(stderr, "%s SKIP%s %s\n", KYLW, KNRM, name);
 }
 
 static void compare (char* name, series a, series b) {
@@ -56,7 +56,7 @@ static void compare (char* name, series a, series b) {
     for (int k = 0; k < n; k++) {
         delta = a[k] - b[k];
         if (isnan(delta) || isinf(delta) || fabsl(delta) > tolerance) {
-            fprintf(stderr, "%s FAILED%s %s  k: %d  LHS: %.6Le  RHS: %.6Le  diff %.3Le\n", KRED, KNRM, name, k, a[k], b[k], delta);
+            fprintf(stderr, "%s FAIL%s %s  k: %d  LHS: %.6Le  RHS: %.6Le  diff %.3Le\n", KRED, KNRM, name, k, a[k], b[k], delta);
             return;
         }
         if (debug >= 2) {
@@ -64,7 +64,7 @@ static void compare (char* name, series a, series b) {
             fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.6Le %+.6Le  diff %+.3Le\n", KNRM, KNRM, k, a[k], b[k], delta);
         }
     }
-    if (debug >= 1) fprintf(stderr, "%s PASSED%s %s\n", KGRN, KNRM, name);
+    if (debug >= 1) fprintf(stderr, "%s PASS%s %s\n", KGRN, KNRM, name);
     passed++;
 }
 
@@ -115,7 +115,7 @@ int main (int argc, char **argv) {
     series c1 = ad_const(t_jet(n), 1.0L);
 
     fprintf(stdout, "\n");
-    fprintf(stdout, "Horner\n");
+    fprintf(stdout, "%sHorner%s\n", KWHT, KNRM);
     series p = t_jet(n >= 8 ? n : 8);
     p[0] = 1.0L; p[1] = 3.0L; p[2] = 0.0L; p[3] = 2.0L;
     fprintf(stdout, " 23 %8.3Lf\n", t_horner(p, 3, 2.0L));
@@ -125,11 +125,11 @@ int main (int argc, char **argv) {
     fprintf(stdout, "201 %8.3Lf\n", t_horner(p, 7, -2.0L));
 
     fprintf(stdout, "\n");
-    fprintf(stdout, "TSM\n");
+    fprintf(stdout, "%sTSM%s\n", KWHT, KNRM);
     int dp = 12, steps = 10;
     real step = 0.1L;
     tsm(argc, argv, dp, n, step, steps, 1.0L, 1.0L, 1.0L);
-    fprintf(stdout, "Check\n");
+    fprintf(stdout, "%sCheck%s\n", KWHT, KNRM);
     t_output(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), step * steps, "_", "_", "_");
 
     fprintf(stderr, "\n");
