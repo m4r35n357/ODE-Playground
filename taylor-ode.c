@@ -13,20 +13,16 @@ const int BASE = 10;
 
 const mpfr_rnd_t RND = MPFR_RNDN;
 
-static char fs[60];
+static char f[60];
 
-static mpfr_t D1, D_1, D2, D_2, _, _du_dt, _const, _abs, _prod, _sqr;
+static mpfr_t D1, D2, D_1, D_2, _, _du_dt, _const, _abs, _prod, _sqr;
 
-void t_init (int dp) {
-    if (dp == 0) {
-        sprintf(fs, "%%.RNe %%.RNe %%.RNe %%.9RNe\n");
-    } else {
-        sprintf(fs, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe\n", dp, dp, dp);
-    }
+void t_init (int p) {
+    p == 0 ? sprintf(f, "%%.RNe %%.RNe %%.RNe %%.9RNe\n") : sprintf(f, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe\n", p, p, p);
     mpfr_inits( _, _du_dt, _const, _abs, _prod, _sqr, NULL);
     mpfr_init_set_si(D1, 1, RND);
-    mpfr_init_set_si(D_1, -1, RND);
     mpfr_init_set_si(D2, 2, RND);
+    mpfr_init_set_si(D_1, -1, RND);
     mpfr_init_set_si(D_2, -2, RND);
 }
 
@@ -54,7 +50,7 @@ series t_jet (int n) {
 
 void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step) {
     mpfr_mul_si(_, h, step, RND);
-    mpfr_printf(fs, x, y, z, _);
+    mpfr_printf(f, x, y, z, _);
 }
 
 mpfr_t *t_horner (series s, int n, mpfr_t h) {
