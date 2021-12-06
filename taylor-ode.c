@@ -13,9 +13,9 @@ const int BASE = 10;
 
 const mpfr_rnd_t RND = MPFR_RNDN;
 
-static char f[60];
-
 static mpfr_t D1, D2, D_1, D_2, _, _du_dt, _const, _abs, _prod, _sqr;
+
+static char f[60];
 
 void t_init (int p) {
     p == 0 ? sprintf(f, "%%.RNe %%.RNe %%.RNe %%.9RNe\n") : sprintf(f, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe\n", p, p, p);
