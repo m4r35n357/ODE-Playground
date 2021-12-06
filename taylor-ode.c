@@ -139,7 +139,7 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
         .b = c[k] = trig ? cosl(u[0]) : coshl(u[0])
     } : (pair) {
         .a = s[k] = f_k(c, u, k, 0),
-        .b = c[k] = f_k(s, u, k, 0) * (trig ? - 1.0L : 1.0L)
+        .b = c[k] = f_k(s, u, k, 0) * (trig ? -1.0L : 1.0L)
     };
 }
 
@@ -151,7 +151,7 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
         .b = s[k] = trig ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]
     } : (pair) {
         .a = t[k] = f_k(s, u, k, 0),
-        .b = s[k] = f_k(t, t, k, 0) * (trig ? 2.0L : - 2.0L)
+        .b = s[k] = f_k(t, t, k, 0) * (trig ? 2.0L : -2.0L)
     };
 }
 
