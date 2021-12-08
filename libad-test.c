@@ -125,11 +125,11 @@ int main (int argc, char **argv) {
     fprintf(stdout, "201 %8.3Lf\n", t_horner(p, 7, -2.0L));
 
     fprintf(stdout, "\n");
-    fprintf(stdout, "%sTSM%s\n", KWHT, KNRM);
+    fprintf(stdout, "%sTaylor Series Method: x'=1  y'=0  z'=-1%s\n", KWHT, KNRM);
     int dp = 12, steps = 10;
     real step = 0.1L;
     tsm(argc, argv, dp, n, step, steps, 1.0L, 1.0L, 1.0L);
-    fprintf(stdout, "%sCheck%s\n", KWHT, KNRM);
+    fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", KWHT, KNRM);
     t_output(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), step * steps, "_", "_", "_");
 
     fprintf(stderr, "\n");

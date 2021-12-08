@@ -120,7 +120,7 @@ Parameter | Meaning
 
 ##### Bifurcation Diagram (manual gnuplot graph):
 ```
-./bifurcation-scan .1 .23 10 ./tsm-thomas-static 6 10 0.1 10000 1 0 0 '$p'
+./bifurcation-scan .1 .23 10 ./tsm-thomas-static 6 4 0.1 10000 1 0 0 '$p'
 ```
 This produces three PNG files, one for each coordinate.
 You can see them using any image viewer e.g. ImageMagick:
