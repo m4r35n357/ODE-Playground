@@ -96,7 +96,8 @@ Parameter | Meaning
 ```
 ##### Run & plot (3D gnuplot graph):
 ```
-./tsm-thomas-dbg 6 10 0.1 30000 1 0 0 .185 | gnuplot -p -e "set terminal wxt size 1200,900; splot '<cat' with lines"
+./tsm-thomas-dbg 6 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
+gnuplot -p -e "set xyplane 0; set view 54.73561,135; splot '/tmp/$USER/data' with lines"
 ```
 ##### Run & plot (2D gnuplot graph):
 ```

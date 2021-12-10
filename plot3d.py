@@ -54,7 +54,7 @@ def main():
     display.set_background(0, 0, 0, 1)  # r,g,b,alpha
     # Camera
     camera = Camera()
-    rot = tilt = 0
+    rot, tilt = 135.0, 90.0 - 54.73561
     cam_rad = 50.0
     font = Font('/usr/share/fonts/truetype/liberation2/LiberationMono-Regular.ttf', color='green', codepoints='-0123456789. txyz:=+', font_size=18)
     font.blend = True
