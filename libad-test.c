@@ -133,6 +133,8 @@ int main (int argc, char **argv) {
     t_output(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), step * steps, "_", "_", "_");
 
     fprintf(stderr, "\n");
+    fprintf(stdout, "%sRecurrence Relations%s\n", KWHT, KNRM);
+
     ad_sqr(sqr_x, x);
     if (x_non_zero) ad_inv(inv_x, x);
     if (x_positive) ad_sqrt(sqrt_x, x);
