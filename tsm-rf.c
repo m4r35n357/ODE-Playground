@@ -24,17 +24,17 @@ void *get_p (int argc, char **argv, int n) {
     return p;
 }
 
-void ode (components *v, series x, series y, series z, void *params, int k) {
+void ode (components *vk, series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
     //  x' = y(z - 1 + x^2) + Gx
     mpfr_sub(p->a[k], *t_sqr(x, k), *t_const(p->D1, k), RND);
     mpfr_add(p->a[k], z[k], p->a[k], RND);
-    mpfr_fma(v->x, p->gamma, x[k], *t_mul(y, p->a, k), RND);
+    mpfr_fma(vk->x, p->gamma, x[k], *t_mul(y, p->a, k), RND);
     //  y' = x(3z + 1 - x^2) + Gy
     mpfr_fms(p->b[k], p->D4, z[k], p->a[k], RND);
-    mpfr_fma(v->y, p->gamma, y[k], *t_mul(x, p->b, k), RND);
+    mpfr_fma(vk->y, p->gamma, y[k], *t_mul(x, p->b, k), RND);
     //  z' = -2z(A + xy)
     mpfr_add(p->c[k], *t_mul(x, y, k), *t_const(p->alpha, k), RND);
-    mpfr_mul_2si(v->z, *t_mul(z, p->c, k), 1, RND);
-    mpfr_neg(v->z, v->z, RND);
+    mpfr_mul_2si(vk->z, *t_mul(z, p->c, k), 1, RND);
+    mpfr_neg(vk->z, vk->z, RND);
 }

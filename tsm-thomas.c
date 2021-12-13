@@ -23,15 +23,15 @@ void *get_p (int argc, char **argv, int n) {
     return p;
 }
 
-void ode (components *v, series x, series y, series z, void *params, int k) {
+void ode (components *vk, series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
     //  x' = sin(y) - Bx
-    mpfr_fms(v->x, p->b, x[k], *t_sin_cos(p->sy, p->cy, y, k, TRIG).a, RND);
-    mpfr_neg(v->x, v->x, RND);
+    mpfr_fms(vk->x, p->b, x[k], *t_sin_cos(p->sy, p->cy, y, k, TRIG).a, RND);
+    mpfr_neg(vk->x, vk->x, RND);
     //  y' = sin(z) - By
-    mpfr_fms(v->y, p->b, y[k], *t_sin_cos(p->sz, p->cz, z, k, TRIG).a, RND);
-    mpfr_neg(v->y, v->y, RND);
+    mpfr_fms(vk->y, p->b, y[k], *t_sin_cos(p->sz, p->cz, z, k, TRIG).a, RND);
+    mpfr_neg(vk->y, vk->y, RND);
     //  z' = sin(x) - Bz
-    mpfr_fms(v->z, p->b, z[k], *t_sin_cos(p->sx, p->cx, x, k, TRIG).a, RND);
-    mpfr_neg(v->z, v->z, RND);
+    mpfr_fms(vk->z, p->b, z[k], *t_sin_cos(p->sx, p->cx, x, k, TRIG).a, RND);
+    mpfr_neg(vk->z, vk->z, RND);
 }

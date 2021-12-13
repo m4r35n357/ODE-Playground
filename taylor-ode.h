@@ -48,7 +48,7 @@ mpfr_t *t_horner (series S, int n, mpfr_t h);
 /*
  * The Taylor Series Method (TSM) in brief; to solve a system of Ordinary Differential Equations defined by:
  *
- *                         v(t) = ode(x(t))
+ *                         v(t) = ode(x(t))                  (where x represents x, y, z in turn)
  *
  * We plug x(t) into the equations, then somehow use the value(s) of v(t) to estimate the next x value(s) in the sequence.
  *

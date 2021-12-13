@@ -23,18 +23,18 @@ void *get_p (int argc, char **argv, int n) {
     return p;
 }
 
-void ode (components *v, series x, series y, series z, void *params, int k) {
+void ode (components *vk, series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
     mpfr_mul(p->ax[k], x[k], p->a, RND);
     mpfr_mul(p->ay[k], y[k], p->a, RND);
     mpfr_mul(p->az[k], z[k], p->a, RND);
     //  x' = sin(Ay) - Btan(x)
-    mpfr_fms(v->x, p->b, *t_tan_sec2(p->tx, p->sx, x, k, TRIG).a, *t_sin_cos(p->say, p->cay, p->ay, k, TRIG).a, RND);
-    mpfr_neg(v->x, v->x, RND);
+    mpfr_fms(vk->x, p->b, *t_tan_sec2(p->tx, p->sx, x, k, TRIG).a, *t_sin_cos(p->say, p->cay, p->ay, k, TRIG).a, RND);
+    mpfr_neg(vk->x, vk->x, RND);
     //  y' = sin(Az) - Btan(y)
-    mpfr_fms(v->y, p->b, *t_tan_sec2(p->ty, p->sy, y, k, TRIG).a, *t_sin_cos(p->saz, p->caz, p->az, k, TRIG).a, RND);
-    mpfr_neg(v->y, v->y, RND);
+    mpfr_fms(vk->y, p->b, *t_tan_sec2(p->ty, p->sy, y, k, TRIG).a, *t_sin_cos(p->saz, p->caz, p->az, k, TRIG).a, RND);
+    mpfr_neg(vk->y, vk->y, RND);
     //  z' = sin(Ax) - Btan(z)
-    mpfr_fms(v->z, p->b, *t_tan_sec2(p->tz, p->sz, z, k, TRIG).a, *t_sin_cos(p->sax, p->cax, p->ax, k, TRIG).a, RND);
-    mpfr_neg(v->z, v->z, RND);
+    mpfr_fms(vk->z, p->b, *t_tan_sec2(p->tz, p->sz, z, k, TRIG).a, *t_sin_cos(p->sax, p->cax, p->ax, k, TRIG).a, RND);
+    mpfr_neg(vk->z, vk->z, RND);
 }

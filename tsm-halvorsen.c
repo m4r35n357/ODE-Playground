@@ -21,21 +21,21 @@ void *get_p (int argc, char **argv, int n) {
     return p;
 }
 
-void ode (components *v, series x, series y, series z, void *params, int k) {
+void ode (components *vk, series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
     //  x' = - Ax - By - Bz - y^2
-    mpfr_fmma(v->x, p->b, y[k], p->b, z[k], RND);
-    mpfr_fma(v->x, p->a, x[k], v->x, RND);
-    mpfr_add(v->x, *t_sqr(y, k), v->x, RND);
-    mpfr_neg(v->x, v->x, RND);
+    mpfr_fmma(vk->x, p->b, y[k], p->b, z[k], RND);
+    mpfr_fma(vk->x, p->a, x[k], vk->x, RND);
+    mpfr_add(vk->x, *t_sqr(y, k), vk->x, RND);
+    mpfr_neg(vk->x, vk->x, RND);
     //  y' = - Ay - Bz - Bx - z^2
-    mpfr_fmma(v->y, p->b, z[k], p->b, x[k], RND);
-    mpfr_fma(v->y, p->a, y[k], v->y, RND);
-    mpfr_add(v->y, *t_sqr(z, k), v->y, RND);
-    mpfr_neg(v->y, v->y, RND);
+    mpfr_fmma(vk->y, p->b, z[k], p->b, x[k], RND);
+    mpfr_fma(vk->y, p->a, y[k], vk->y, RND);
+    mpfr_add(vk->y, *t_sqr(z, k), vk->y, RND);
+    mpfr_neg(vk->y, vk->y, RND);
     //  z' = - Az - Bx - By - x^2
-    mpfr_fmma(v->z, p->b, x[k], p->b, y[k], RND);
-    mpfr_fma(v->z, p->a, z[k], v->z, RND);
-    mpfr_add(v->z, *t_sqr(x, k), v->z, RND);
-    mpfr_neg(v->z, v->z, RND);
+    mpfr_fmma(vk->z, p->b, x[k], p->b, y[k], RND);
+    mpfr_fma(vk->z, p->a, z[k], vk->z, RND);
+    mpfr_add(vk->z, *t_sqr(x, k), vk->z, RND);
+    mpfr_neg(vk->z, vk->z, RND);
 }
