@@ -62,10 +62,10 @@ void tsm (int argc, char **argv, int dp, int n, real h, int steps, real x0, real
     components s = (components) {0.0L, 0.0L, 0.0L};
     for (int step = 0; step < steps; step++) {
         for (int k = 0; k < n; k++) {
-            components v = ode(x, y, z, p, k);
-            x[k + 1] = v.x / (k + 1);
-            y[k + 1] = v.y / (k + 1);
-            z[k + 1] = v.z / (k + 1);
+            components vk = ode(x, y, z, p, k);
+            x[k + 1] = vk.x / (k + 1);
+            y[k + 1] = vk.y / (k + 1);
+            z[k + 1] = vk.z / (k + 1);
         }
         t_output(dp, x[0], y[0], z[0], h * step, tag(x, s.x, "x", "X"), tag(y, s.y, "y", "Y"), tag(z, s.z, "z", "Z"));
         s = (components) {x[1], y[1], z[1]};
