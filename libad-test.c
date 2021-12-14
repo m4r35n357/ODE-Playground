@@ -154,17 +154,20 @@ int main (int argc, char **argv) {
     mpfr_fprintf(stdout, "201 %8.3RNf\n", *t_horner(p, 7, D_2));
 
     fprintf(stdout, "\n");
-    fprintf(stdout, "%sTSM%s\n", KWHT, KNRM);
-    tsm(argc, argv, n, D01, 10, D1, D1, D1);
+    fprintf(stdout, "%sTaylor Series Method: x'=1  y'=0  z'=-1%s\n", KWHT, KNRM);
+    int steps = 10;
+    tsm(argc, argv, n, D01, steps, D1, D1, D1);
+    fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", KWHT, KNRM);
     mpfr_t e1, e0, e_1;
     mpfr_inits(e1, e0, e_1, NULL);
     mpfr_exp(e1, D1, RND);
     mpfr_exp(e0, D0, RND);
     mpfr_exp(e_1, D_1, RND);
-    fprintf(stdout, "%sCheck%s\n", KWHT, KNRM);
-    t_output(e1, e0, e_1, D01, 10);
+    t_output(e1, e0, e_1, D01, steps);
 
     fprintf(stderr, "\n");
+    fprintf(stdout, "%sRecurrence Relations%s\n", KWHT, KNRM);
+
     ad_sqr(sqr_x, x);
     if (x_non_zero) ad_inv(inv_x, x);
     if (x_positive) ad_sqrt(sqrt_x, x);
