@@ -132,8 +132,8 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
     assert(s != c && s != u && c != u);
     _Bool trig = g == TRIG;
     return k == 0 ? (pair) {
-        .a = s[k] = trig ? sinl(u[0]) : sinhl(u[0]),
-        .b = c[k] = trig ? cosl(u[0]) : coshl(u[0])
+        .a = s[0] = trig ? sinl(u[0]) : sinhl(u[0]),
+        .b = c[0] = trig ? cosl(u[0]) : coshl(u[0])
     } : (pair) {
         .a = s[k] = f_k(c, u, k, 0),
         .b = c[k] = f_k(s, u, k, 0) * (trig ? -1.0L : 1.0L)
@@ -144,8 +144,8 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
     assert(t != s && t != u && s != u);
     _Bool trig = g == TRIG;
     return k == 0 ? (pair) {
-        .a = t[k] = trig ? tanl(u[0]) : tanhl(u[0]),
-        .b = s[k] = trig ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]
+        .a = t[0] = trig ? tanl(u[0]) : tanhl(u[0]),
+        .b = s[0] = trig ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]
     } : (pair) {
         .a = t[k] = f_k(s, u, k, 0),
         .b = s[k] = f_k(t, t, k, 0) * (trig ? 2.0L : -2.0L)
