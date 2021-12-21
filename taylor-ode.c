@@ -188,7 +188,7 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
         mpfr_swap(s[k], *f_k(c, u, k, 0));
         mpfr_mul(c[k], *f_k(s, u, k, 0), trig ? D_1 : D1, RND);
     }
-    return (pair){&s[k], &c[k]};
+    return (pair){ .a = &s[k], .b = &c[k] };
 }
 
 pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
@@ -202,7 +202,7 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
         mpfr_swap(t[k], *f_k(s, u, k, 0));
         mpfr_mul(s[k], *f_k(t, t, k, 0), trig ? D2 : D_2, RND);
     }
-    return (pair){&t[k], &s[k]};
+    return (pair){ .a = &t[k], .b = &s[k] };
 }
 
 mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {

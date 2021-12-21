@@ -96,14 +96,14 @@ pair ad_sin_cos (series s, series c, series u, geometry g) {
     for (int k = 0; k < order; k++) {
         t_sin_cos(s, c, u, k, g);
     }
-    return (pair){s, c};
+    return (pair){ .a = s, .b = c };
 }
 
 pair ad_tan_sec2 (series t, series s2, series u, geometry g) {
     for (int k = 0; k < order; k++) {
         t_tan_sec2(t, s2, u, k, g);
     }
-    return (pair){t, s2};
+    return (pair){ .a = t, .b = s2 };
 }
 
 series ad_pwr (series p, series u, mpfr_t a) {

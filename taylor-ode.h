@@ -117,7 +117,7 @@ void ode (components *V, series X, series Y, series Z, void *P, int k);
 mpfr_t *t_const (mpfr_t value, int k);
 
 /*
- * Returns a pointer to kth element of the absolute value of U, result stored and returned in variable A, NO JET STORAGE
+ * Returns a pointer to kth element of the absolute value of U, no user-supplied jet storage needed
  */
 mpfr_t *t_abs (series U, int k);
 
@@ -140,7 +140,7 @@ mpfr_t *t_abs (series U, int k);
  */
 
 /*
- * Returns a pointer to kth element of the product of U and V, result stored in variable P, NO JET STORAGE
+ * Returns a pointer to kth element of the product of U and V, no user-supplied jet storage needed
  *
  *  P = U.V
  *
@@ -149,7 +149,7 @@ mpfr_t *t_abs (series U, int k);
 mpfr_t *t_mul (series U, series V, int k);
 
 /*
- * Returns a pointer to kth element of the square of U, result stored and returned in variable S, NO JET STORAGE
+ * Returns a pointer to kth element of the square of U, no user-supplied jet storage needed
  *
  *  S = U.U
  *
@@ -158,7 +158,7 @@ mpfr_t *t_mul (series U, series V, int k);
 mpfr_t *t_sqr (series U, int k);
 
 /*
- * Returns a pointer to kth element of U / V, results accumulated in jet Q, DOMAIN RESTRICTION v[0] != 0.0
+ * Returns a pointer to kth element of U / V, results stored in user-supplied jet Q, DOMAIN RESTRICTION v[0] != 0.0
  *
  *     Q = U / V ==> U = Q.V
  *
@@ -175,7 +175,7 @@ mpfr_t *t_sqr (series U, int k);
 mpfr_t *t_div (series Q, series U, series V, int k);
 
 /*
- * Returns a pointer to kth element of 1 / V, results accumulated in jet I, DOMAIN RESTRICTION v[0] != 0.0
+ * Returns a pointer to kth element of 1 / V, results stored in user-supplied jet I, DOMAIN RESTRICTION v[0] != 0.0
  *
  * from quotient, I[k] = 1.0 / V[0]                                   if k == 0
  *
@@ -184,7 +184,7 @@ mpfr_t *t_div (series Q, series U, series V, int k);
 mpfr_t *t_inv (series I, series V, int k);
 
 /*
- * Returns a pointer to kth element of the square root of U, results accumulated in jet R, DOMAIN RESTRICTION U[0] > 0.0
+ * Returns a pointer to kth element of the square root of U, results stored in user-supplied jet R, DOMAIN RESTRICTION U[0] > 0.0
  *
  *    U = R.R
  *
@@ -221,7 +221,7 @@ mpfr_t *t_sqrt (series R, series U, int k);
  */
 
 /*
- * Returns a pointer to kth element of the exponential of U, results accumulated in jet E
+ * Returns a pointer to kth element of the exponential of U, results stored in user-supplied jet E
  *
  *      E' = E.U'
  *
@@ -243,7 +243,7 @@ typedef struct {
 } pair;
 
 /*
- * Returns struct of pointers to kth elements of both sine and cosine of U, results accumulated in jets S and C
+ * Returns struct of pointers to kth elements of both sine and cosine of U, results stored in user-supplied jets S and C
  *
  *      S' =       C.U'
  *      C' = (+/-) S.U'     + for cosh (g == HYP), - for cos (g == TRIG)
@@ -254,7 +254,7 @@ typedef struct {
 pair t_sin_cos (series S, series C, series U, int k, geometry g);
 
 /*
- * Returns struct of pointers to kth elements of both tangent and squared secant of U, results accumulated in jets T and S2
+ * Returns struct of pointers to kth elements of both tangent and squared secant of U, results stored in user-supplied jets T and S2
  *
  *      T' =       S2.U'
  *     S2' = (+/-)2.T.T'    + for sec^2 (g == TRIG), - for sech^2 (g == HYP)
@@ -265,7 +265,7 @@ pair t_sin_cos (series S, series C, series U, int k, geometry g);
 pair t_tan_sec2 (series T, series S2, series U, int k, geometry g);
 
 /*
- * Returns a pointer to kth element of P = U^a (where a is scalar), results accumulated in jet P, DOMAIN RESTRICTION U[0] > 0.0
+ * Returns a pointer to kth element of P = U^a (where a is scalar), results stored in user-supplied jet P, DOMAIN RESTRICTION U[0] > 0.0
  *
  *                                      P'= U^a' = a.U^(a-1).U'
  *                                        U.U^a' = a.U^a.U'
@@ -282,7 +282,7 @@ pair t_tan_sec2 (series T, series S2, series U, int k, geometry g);
 mpfr_t *t_pwr (series P, series U, mpfr_t a, int k);
 
 /*
- * Returns a pointer to kth element of the natural logarithm of U, result accumulated in jet L, DOMAIN RESTRICTION U[0] > 0.0
+ * Returns a pointer to kth element of the natural logarithm of U, results stored in user-supplied jet L, DOMAIN RESTRICTION U[0] > 0.0
  *
  *                     L' = (1/U).U'
  *                     U' = U.L'
