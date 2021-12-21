@@ -150,7 +150,7 @@ real t_mul (series U, series V, int k);
 real t_sqr (series U, int k);
 
 /*
- * Returns kth element of U / V, results accumulated in jet Q, DOMAIN RESTRICTION v[0] != 0.0
+ * Returns kth element of U / V, results stored in user-supplied jet Q, DOMAIN RESTRICTION v[0] != 0.0
  *
  *     Q = U / V ==> U = Q.V
  *
@@ -167,7 +167,7 @@ real t_sqr (series U, int k);
 real t_div (series Q, series U, series V, int k);
 
 /*
- * Returns kth element of 1 / V, results accumulated in jet I, DOMAIN RESTRICTION v[0] != 0.0
+ * Returns kth element of 1 / V, results stored in user-supplied jet I, DOMAIN RESTRICTION v[0] != 0.0
  *
  * from quotient, I[k] = 1.0 / V[0]                                   if k == 0
  *
