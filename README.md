@@ -158,12 +158,12 @@ Parameter | Meaning
 
 CNS function Parameter | Meaning
 ----------|-----------
-step2 | The step size is halved
-both | The order is increased by one, and the step size halved
+step2 | The step size is halved (this is  now the _only_ "better" integrator!)
+nosim | User-defined comparison between /tmp/$USER/dataA and /tmp/$USER/dataB
 
 ##### CNS plot (matplotlib diff graph):
 ```
-./cns both ./tsm-lorenz-static 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 ./tsm-lorenz-static 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 ```
 
 #### CNS Duration Scanning
@@ -181,7 +181,7 @@ Parameter | Meaning
 
 ##### CNS duration vs. Simulation Order (gnuplot graph):
 ```
-./cns-scan both 28 1 ./tsm-lorenz-static 6 _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | gnuplot -p -e "plot '<cat' with boxes"
+./cns-scan 28 1 ./tsm-lorenz-static 6 _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | gnuplot -p -e "plot '<cat' with boxes"
 ```
 
 #### Sensitivity to Initial Conditions:
