@@ -20,13 +20,18 @@ The Python code uses hardware acceleration on all platforms; 80 bit on Intel, 64
 
 ### ODE analysis using arbitrary-order Taylor Series Integration
 
-Plot trajectories, including multi-body
+Plot 3D trajectories using Pi3D, including multi-body
 
-Good selection of models included
+Good selection of clients (models) included
 
-Investigate validity of solutions wrt integrator order
+Investigate the validity of chaotic solutions against integrator order
 
-Plot bifurcation diagrams
+Plot bifurcation diagrams, to find "interesting" parameter values to study
+
+### Interactive Function Analysis with Python
+
+For learning about automatic differentiation using Dual Numbers in IPython.
+See the examples at the bottom of this document.
 
 ### Hamiltonian analysis with Symplectic Integrators, using Dual Numbers for Automatic Differentiation
 
@@ -61,13 +66,15 @@ $ ./clean
 $ ./build [gcc|clang]
 ```
 There should be NO errors or warnings.  [UPDATE: kerr-image.c shows warnings on arm64; it is 3rd party code]
+Each client is built _both_ as a dynamic executable with asserts and debug symbols, and as a stripped static executable with asserts disabled.
+The (default) MUSL static binaries are particularly tiny!
 
 #### Running c Tests
 ```
 $ ./libdual-test-dbg 1 1e-18 1
 $ ./libtaylor-test-dbg 20 1 1e-18 1
 ```
-#### Code coverage
+#### C and Python Code coverage
 ```
 $ ./coverage
 ```
@@ -79,11 +86,11 @@ $ ./profile
 ```
 The results are printed to stdout
 
-#### Find examples for ODE parameters and other things:
+#### Find examples for ODE parameters and many other things:
 ```
 grep Example *
 ```
-#### Run an ODE simulation (ODE call):
+#### Run a basic ODE simulation (ODE call):
 
 Runs a named simulation, and prints results to stdout
 
