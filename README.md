@@ -44,23 +44,23 @@ No formal documentation yet, see the c files for example usage.
 
 ## Quick Start
 
-#### Debian/Ubuntu packages:
+### Debian/Ubuntu packages:
 ```
 sudo apt install bc git build-essential musl-tools pkg-config mesa-utils-extra python3-tk python3-dev libfreetype6-dev libatlas-base-dev virtualenvwrapper gnuplot-x11 lcov
 ```
 
-#### Python 3 Packages (for plotting), please use a virtual environment!
+### Python 3 Packages (for plotting), please use a virtual environment!
 ```
 mkvirtualenv -p /usr/bin/python3 taylor
 pip install matplotlib pillow pi3d pytest pytest_cov ipython
 ```
 
-#### Running Python Tests
+### Running Python Tests
 ```
 $ pytest ad_test.py solver_test.py -v
 ```
 
-#### c Build (MUSL with GCC by default, glibc with GCC or Clang optional)
+### c Build (MUSL with GCC by default, glibc with GCC or Clang optional)
 ```
 $ ./clean
 $ ./build [gcc|clang]
@@ -71,18 +71,18 @@ There should be NO errors or warnings.
 Each client is built _both_ as a dynamic executable with asserts and debug symbols, and as a stripped static executable with asserts disabled.
 The (default) MUSL static binaries are particularly tiny!
 
-#### Running c Tests
+### Running c Tests
 
-libdual-test-dbg (c executable) ||
-----------|-----------
+**libdual-test-dbg** (c executable)
+
 Parameter | Meaning
 ----------|-----------
 1 | X value
 2 | Error limit (absolute)
 3 | (Optional) verbosity: 0: summary (default), 1: list, 2: detail
 
-libtaylor-test-dbg (c executable) ||
-----------|-----------
+**libtaylor-test-dbg** (c executable)
+
 Parameter | Meaning
 ----------|-----------
 1 | Order
@@ -94,28 +94,28 @@ Parameter | Meaning
 $ ./libdual-test-dbg 1 1e-18 1
 $ ./libtaylor-test-dbg 20 1 1e-18 1
 ```
-#### C and Python Code coverage
+### C and Python Code coverage
 ```
 $ ./coverage
 ```
 The output contains file system links to the HTML results
 
-#### C Code profiling
+### C Code profiling
 ```
 $ ./profile
 ```
 The results are printed to stdout
 
-#### Find examples for ODE parameters and many other things:
+### Find examples for ODE parameters and many other things:
 ```
 grep Example *
 ```
-#### Run a basic ODE simulation (ODE call):
+### Run a basic ODE simulation (ODE call):
 
 Runs a named simulation, and prints results to stdout
 
-tsm-\*-\* (c executables) ||
-----------|-----------
+**tsm-model-type** (c executables)
+
 Parameter | Meaning
 ----------|-----------
 1 | x, y, z output precision in decimal places
@@ -125,32 +125,32 @@ Parameter | Meaning
 5,6,7 | initial conditions, x0, y0, z0
 8+ | ODE parameters
 
-##### Run & plot (3D plot using pi3d):
+#### Run & plot (3D plot using pi3d):
 ```
 ./tsm-thomas-dbg 6 10 0.1 30000 1 0 0 .185 | ./plot3d.py
 ```
-##### Run & plot (animated matplotlib graph):
+#### Run & plot (animated matplotlib graph):
 ```
 ./tsm-lorenz-dbg 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 ```
-##### Run & plot (3D gnuplot graph):
+#### Run & plot (3D gnuplot graph):
 ```
 ./tsm-thomas-dbg 6 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
 gnuplot -p -e "set xyplane 0; set view 54.73561,135; set xlabel 'X'; set ylabel 'Y'; set zlabel 'Z'; splot '/tmp/ian/data' with lines"
 ```
-##### Run & plot (2D gnuplot graph):
+#### Run & plot (2D gnuplot graph):
 ```
 ./tsm-lorenz-dbg 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
 gnuplot -p -e "set terminal wxt size 1200,900; plot '/tmp/$USER/data' using 4:1 with lines, '/tmp/$USER/data' using 4:2 with lines, '/tmp/$USER/data' using 4:3 with lines"
 ```
 
-#### Bifurcation Diagrams:
+### Bifurcation Diagrams:
 
 Run  a simulation many times for different values of a single parameter, uses turning point markers in the ODE simulation output for plotting bifurcation diagrams in X, Y and Z, and saves plots to PNG files.
 Optionally, skips initial transient by dropping first (datalines / value) results (10 is usually a good value).
 
-bifurcation-scan (shell script) ||
-----------|-----------
+**bifurcation-scan** (shell script)
+
 Parameter | Meaning
 ----------|-----------
 1 | start of parameter range
@@ -158,7 +158,7 @@ Parameter | Meaning
 3 | "transient skip" value; skip first (lines / value), or 0
 4+ | ODE call with variable parameter replaced by ['$p']
 
-##### Bifurcation Diagram (manual gnuplot graph):
+#### Bifurcation Diagram (manual gnuplot graph):
 ```
 ./bifurcation-scan .1 .23 10 ./tsm-thomas-static 6 4 0.1 10000 1 0 0 '$p'
 ```
@@ -172,62 +172,62 @@ If you want to interact with actual plots (e.g. to read off parameter values for
 gnuplot -p -e "set t wxt size 1350,800 background rgb 'grey85'; set grid back; plot '/tmp/$USER/bifurcationX' lt rgb 'dark-blue' w dots, '/tmp/$USER/bifurcationx' lt rgb 'dark-green' w dots"
 ```
 
-#### Clean Numerical Simulation:
+### Clean Numerical Simulation:
 
 Runs a simulation twice, once with a "better" integrator, and shows the differences graphically.
 
-cns (shell script) ||
-----------|-----------
+**cns** (shell script)
+
 Parameter | Meaning
 ----------|-----------
 1 | CNS function, Selects a better integrator for comparison, see below
 2+ | ODE call
 
-CNS function Parameter | Meaning
+CNS function | Meaning
 ----------|-----------
 step2 | The step size is halved (this is  now the _only_ "better" integrator!)
 nosim | User-defined comparison between /tmp/$USER/dataA and /tmp/$USER/dataB
 
-##### CNS plot (matplotlib diff graph):
+#### CNS plot (matplotlib diff graph):
 ```
 ./cns step2 ./tsm-lorenz-static 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 ```
 
-#### CNS Duration Scanning
+### CNS Duration Scanning
 
 Runs a simulation repeatedly with increasing order of integration, for each order showing the simulation time when the deviation threshold is exceeded.
 You can run this to determine the maximum _useful_ integrator order to use, for a given step size
 
-cns-scan (shell script) ||
-----------|-----------
+**cns-scan** (shell script) 
+
 Parameter | Meaning
 ----------|-----------
 1 | Maximum order for Taylor integrator (minimum is 1)
 2 | deviation threshold
 3+ | ODE call
 
-##### CNS duration vs. Simulation Order (gnuplot graph):
+#### CNS duration vs. Simulation Order (gnuplot graph):
 ```
 ./cns-scan 28 1 ./tsm-lorenz-static 6 _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | gnuplot -p -e "plot '<cat' with boxes"
 ```
 
-#### Sensitivity to Initial Conditions:
+### Sensitivity to Initial Conditions:
 
 Runs a simulation together with six additional ones (+- deviations in X, Y and Z axes)
 
-ic (shell script) ||
-----------|-----------
+**ic** (shell script)
+
 Parameter | Meaning
 ----------|-----------
 1 | Initial separation between "original" trajectory and the extra ones
 2+ | ODE call
 
-##### Sensitivity to Initial Conditions (3D plot using pi3d):
+#### Sensitivity to Initial Conditions (3D plot using pi3d):
 ```
 ./ic .001 ./tsm-thomas-static 6 10 0.1 30000 1 0 0 .185
 ```
 
-## Interactive Function Analysis with Python
+### Interactive Function Analysis with Python
 This use case involves calling the Dual and Series methods and operators from ad.py, together with the functions from plotters.py, from a Python interpreter.
 This is how I like to set things up (pip installed ipython recommended!):
 ```
