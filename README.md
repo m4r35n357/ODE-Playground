@@ -4,7 +4,19 @@
 No planned new features, and no known bugs ;)
 
 All programs are written in pure C or Python, apart from the plotting utilities.
-Sources and Executables are tiny; the default build is against MUSL libc.
+Sources and Executables are tiny (if MUSL is used); the default build is against MUSL libc.
+
+All c floating point operations are executed in _long double_ precision.
+This gives a choice of precision and performance on different platforms.
+
+Platform | Implementation
+----------|-----------
+ix86 | 80 bit hardware float
+x86-64 | 80 bit hardware float
+armhf | 64 bit hardware float
+aarch64 | 128 bit software float
+
+The Python code uses hardware acceleration on all platforms; 80 bit on Intel, 64 bit on ARM.
 
 ### ODE analysis using arbitrary-order Taylor Series Integration
 
@@ -146,11 +158,8 @@ Parameter | Meaning
 
 CNS function Parameter | Meaning
 ----------|-----------
-step4 | The step size is quartered
-step8 | The step size is eightthed
-order | The order is increased by two
+step2 | The step size is halved
 both | The order is increased by one, and the step size halved
-both2 | The order is increased by two, and the step size quartered
 
 ##### CNS plot (matplotlib diff graph):
 ```
@@ -160,6 +169,7 @@ both2 | The order is increased by two, and the step size quartered
 #### CNS Duration Scanning
 
 Runs a simulation repeatedly with increasing order of integration, for each order showing the simulation time when the deviation threshold is exceeded.
+You can run this to determine the maximum _useful_ integrator order to use, for a given step size
 
 cns-scan (shell script) ||
 ----------|-----------
