@@ -3,7 +3,7 @@
 
 No planned new features, and no known bugs ;)
 
-All programs are written in pure C or Python, apart from the plotting utilities.
+All programs are written in pure C99 or Python, apart from the plotting utilities.
 Sources and Executables are tiny (if MUSL is used); the default build is against MUSL libc.
 
 All c floating point operations are executed in _long double_ precision.
@@ -65,11 +65,31 @@ $ pytest ad_test.py solver_test.py -v
 $ ./clean
 $ ./build [gcc|clang]
 ```
-There should be NO errors or warnings.  [UPDATE: kerr-image.c shows warnings on arm64; it is 3rd party code]
+There should be NO errors or warnings.
+[UPDATE: kerr-image.c shows warnings on arm64; it is 3rd party code]
+
 Each client is built _both_ as a dynamic executable with asserts and debug symbols, and as a stripped static executable with asserts disabled.
 The (default) MUSL static binaries are particularly tiny!
 
 #### Running c Tests
+
+libdual-test-dbg (c executable) ||
+----------|-----------
+Parameter | Meaning
+----------|-----------
+1 | X value
+2 | Error limit (absolute)
+3 | (Optional) verbosity: 0: summary (default), 1: list, 2: detail
+
+libtaylor-test-dbg (c executable) ||
+----------|-----------
+Parameter | Meaning
+----------|-----------
+1 | Order
+2 | X value
+3 | Error limit (absolute)
+4 | (Optional) verbosity: 0: summary (default), 1: list, 2: detail
+
 ```
 $ ./libdual-test-dbg 1 1e-18 1
 $ ./libtaylor-test-dbg 20 1 1e-18 1
