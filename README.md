@@ -122,7 +122,7 @@ grep Example *
 ### Run a basic ODE simulation (ODE call):
 
 Runs a named simulation, and prints results to stdout.
-Each line consists of a column each for x, y, z, t, followed by three minima/maxima tags for generating bifurcation diagrams.
+Each line consists of a column each for x, y, z, t, followed by three turning point tags for generating bifurcation diagrams.
 
 **tsm-model-type** (c executables)
 
@@ -157,7 +157,7 @@ It should be possible to send output directly to gnuplot via a pipe, but many ve
 
 ### Bifurcation Diagrams:
 
-Runs a simulation many times for different values of a single parameter, uses turning point markers in the ODE simulation output for plotting bifurcation diagrams in X, Y and Z, and saves plots to PNG files.
+Runs a simulation many times for different values of a single parameter, uses turning point tags in the ODE simulation output for plotting bifurcation diagrams in X, Y and Z, and saves plots to PNG files.
 Plots maxima and minima in different colours!
 Optionally, skips initial transient by dropping first (datalines / value) results (10 is usually a good value).
 
