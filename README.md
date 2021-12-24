@@ -44,18 +44,19 @@ No formal documentation yet, see the c files for example usage.
 
 ## Quick Start
 
-### Debian/Ubuntu packages:
+### Requirements - Debian/Ubuntu packages
 ```
 sudo apt install bc git build-essential musl-tools pkg-config mesa-utils-extra python3-tk python3-dev libfreetype6-dev libatlas-base-dev virtualenvwrapper gnuplot-x11 lcov
 ```
 
-### Python 3 Packages (for plotting), please use a virtual environment!
+### Requirements - Python 3 Packages (for plotting), please use a virtual environment!
 ```
 mkvirtualenv -p /usr/bin/python3 taylor
 pip install matplotlib pillow pi3d pytest pytest_cov ipython
 ```
 
 ### Running Python Tests
+You can use -q instead of -v for brevity
 ```
 $ pytest ad_test.py solver_test.py -v
 ```
@@ -66,12 +67,17 @@ $ ./clean
 $ ./build [gcc|clang]
 ```
 There should be NO errors or warnings.
-[UPDATE: kerr-image.c shows warnings on arm64; it is 3rd party code]
+
+[UPDATE] clang shows warnings for the unsupported -Wunsuffixed-float-constants warning!
+
+[UPDATE] kerr-image.c shows warnings on arm64; it is 3rd party code
 
 Each client is built _both_ as a dynamic executable with asserts and debug symbols, and as a stripped static executable with asserts disabled.
 The (default) MUSL static binaries are particularly tiny!
 
 ### Running c Tests
+
+The tests enforce a redundant web of densely interrelated functionality that cannot exist in the presence of coding errors! ;)
 
 **libdual-test-dbg** (c executable)
 
@@ -95,35 +101,39 @@ $ ./libdual-test-dbg 1 1e-18 1
 $ ./libtaylor-test-dbg 20 1 1e-18 1
 ```
 ### C and Python Code coverage
+Creates web page summaries for both c and Python
 ```
 $ ./coverage
 ```
 The output contains file system links to the HTML results
 
 ### C Code profiling
+Very basic information, included just for completeness
 ```
 $ ./profile
 ```
 The results are printed to stdout
 
 ### Find examples for ODE parameters and many other things:
+Useful commands are frequently added to the comments in source headings.
 ```
 grep Example *
 ```
 ### Run a basic ODE simulation (ODE call):
 
-Runs a named simulation, and prints results to stdout
+Runs a named simulation, and prints results to stdout.
+Each line consists of a column each for x, y, z, t, followed by three minima/maxima tags for generating bifurcation diagrams.
 
 **tsm-model-type** (c executables)
 
 Parameter | Meaning
 ----------|-----------
-1 | x, y, z output precision in decimal places
+1 | x,y,z display precision in decimal places
 2 | order of Taylor Series
-3 | time step size
+3 | time step
 4 | number of steps
-5,6,7 | initial conditions, x0, y0, z0
-8+ | ODE parameters
+5,6,7 | initial conditions, x0,y0,z0
+8+ | Model parameters
 
 #### Run & plot (3D plot using pi3d):
 ```
@@ -143,10 +153,12 @@ gnuplot -p -e "set xyplane 0; set view 54.73561,135; set xlabel 'X'; set ylabel 
 ./tsm-lorenz-dbg 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
 gnuplot -p -e "set terminal wxt size 1200,900; plot '/tmp/$USER/data' using 4:1 with lines, '/tmp/$USER/data' using 4:2 with lines, '/tmp/$USER/data' using 4:3 with lines"
 ```
+It should be possible to send output directly to gnuplot via a pipe, but many versions segfault when reading stdin so I now specify a temporary file instead.
 
 ### Bifurcation Diagrams:
 
-Run  a simulation many times for different values of a single parameter, uses turning point markers in the ODE simulation output for plotting bifurcation diagrams in X, Y and Z, and saves plots to PNG files.
+Runs a simulation many times for different values of a single parameter, uses turning point markers in the ODE simulation output for plotting bifurcation diagrams in X, Y and Z, and saves plots to PNG files.
+Plots maxima and minima in different colours!
 Optionally, skips initial transient by dropping first (datalines / value) results (10 is usually a good value).
 
 **bifurcation-scan** (shell script)
@@ -158,6 +170,8 @@ Parameter | Meaning
 3 | "transient skip" value; skip first (lines / value), or 0
 4+ | ODE call with variable parameter replaced by ['$p']
 
+The general idea is to replace one of the model parameters with the string '$p' (including quotes!).
+
 #### Bifurcation Diagram (manual gnuplot graph):
 ```
 ./bifurcation-scan .1 .23 10 ./tsm-thomas-static 6 4 0.1 10000 1 0 0 '$p'
@@ -167,14 +181,15 @@ You can see them using any image viewer e.g. ImageMagick:
 ```
 display /tmp/$USER/X.png
 ```
-If you want to interact with actual plots (e.g. to read off parameter values for simulation), use a command like (for x):
+If you want to interact with actual plots (e.g. to read off parameter values for simulation), use a command like (for the x coordinate):
 ```
 gnuplot -p -e "set t wxt size 1350,800 background rgb 'grey85'; set grid back; plot '/tmp/$USER/bifurcationX' lt rgb 'dark-blue' w dots, '/tmp/$USER/bifurcationx' lt rgb 'dark-green' w dots"
 ```
 
 ### Clean Numerical Simulation:
 
-Runs a simulation twice, once with a "better" integrator, and shows the differences graphically.
+In a chaotic system, accuracy can only be maintained for a finite simulation time.
+This script runs a given simulation twice, the second time with a "better" integrator, and shows the differences graphically.
 
 **cns** (shell script)
 
@@ -196,7 +211,7 @@ nosim | User-defined comparison between /tmp/$USER/dataA and /tmp/$USER/dataB
 ### CNS Duration Scanning
 
 Runs a simulation repeatedly with increasing order of integration, for each order showing the simulation time when the deviation threshold is exceeded.
-You can run this to determine the maximum _useful_ integrator order to use, for a given step size
+You can run this to determine the maximum _useful_ integrator order to use, for a given step size.
 
 **cns-scan** (shell script) 
 
@@ -213,7 +228,7 @@ Parameter | Meaning
 
 ### Sensitivity to Initial Conditions:
 
-Runs a simulation together with six additional ones (+- deviations in X, Y and Z axes)
+Runs a simulation together with six additional ones (+- deviations in X, Y and Z axes) and plots directly to Pi3D.
 
 **ic** (shell script)
 
