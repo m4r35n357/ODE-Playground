@@ -16,27 +16,34 @@ command=$*
 tmpdir=${TMP_TAYLOR:-/tmp/$USER}
 tmpfile=${tmpdir}/data
 filtered=${tmpdir}/bifurcation
-for item in X x Y y Z z
+for tag in X x Y y Z z
 do
-    >${filtered}${item}
+    >${filtered}${tag}
 done
 
 [ $skip -eq 0 ] && lower=1 || lower=$((datalines / skip + 1))
 upper=$((datalines + 1))
 
+col='[^ ]*'
+space=' *'
+
+filter () {  # $1 is the turning point tag, $2 is the column containing its data
+    /bin/grep $1 ${tmpfile} | /bin/sed --expression="s/\($col\)$space\($col\)$space\($col\) *.*/$p \\$2/" >>${filtered}$1 &
+}
+
 p=${start}
 while [ $(echo "$p < $end" | /usr/bin/bc) -eq 1 ]
 do
-    eval ${command} 2>/dev/null | /bin/sed --quiet "$lower,$ p" >${tmpfile}
+    eval ${command} 2>/dev/null | /bin/sed --quiet "$lower,$ p" >${tmpfile}  # run & save data, skipping "transient"
     if [ $(/usr/bin/wc --lines <$tmpfile) -eq $((upper - lower + 1)) ]
     then
         echo "   Processing parameter value: $p"
-        /bin/grep 'X' ${tmpfile} | /bin/sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \1/" >>${filtered}X &
-        /bin/grep 'x' ${tmpfile} | /bin/sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \1/" >>${filtered}x &
-        /bin/grep 'Y' ${tmpfile} | /bin/sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \2/" >>${filtered}Y &
-        /bin/grep 'y' ${tmpfile} | /bin/sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \2/" >>${filtered}y &
-        /bin/grep 'Z' ${tmpfile} | /bin/sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \3/" >>${filtered}Z &
-        /bin/grep 'z' ${tmpfile} | /bin/sed --expression="s/\([^ ]*\) *\([^ ]*\) *\([^ ]*\) *.*/$p \3/" >>${filtered}z &
+        filter 'X' 1
+        filter 'x' 1
+        filter 'Y' 2
+        filter 'y' 2
+        filter 'Z' 3
+        filter 'z' 3
         wait
     else
         echo "UNBOUNDED for parameter value: $p"
