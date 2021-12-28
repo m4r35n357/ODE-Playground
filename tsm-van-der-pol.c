@@ -3,7 +3,7 @@
  *
  * Example:  ./tsm-van-der-pol-dbg 15 10 .01 10000 1 0 0 5
  *
- * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
 #include <stdlib.h>
