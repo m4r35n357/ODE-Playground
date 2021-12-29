@@ -3,7 +3,7 @@
  *
  * Example: ./tsm-thomas-dbg 9 32 10 0.1 30000 1 0 0 .19
  *
- * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
 #include <stdlib.h>
