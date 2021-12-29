@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-#  (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
 from sys import argv, stdin, stderr

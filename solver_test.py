@@ -1,5 +1,5 @@
 #
-#  (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 #  Unit Testing
 #  pytest --cov=ad --cov=plotters --cov-report html:cov_html ad_test.py solver_test.py -v

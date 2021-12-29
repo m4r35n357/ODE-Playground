@@ -3,7 +3,7 @@
  *
  * Example: ./tsm-lotka-volterra-dbg 15 10 .01 10000 10 10 0 1 .5 .05 .02
  *
- * (c) 2018-2021 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
 #include <stdlib.h>
