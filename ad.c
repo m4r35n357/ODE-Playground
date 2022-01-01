@@ -17,7 +17,7 @@ void ad_init (int n) {
 
 series ad_const (series c, mpfr_t a) {
     for (int k = 0; k < order; k++) {
-	    mpfr_set(c[k], *t_const(a, k), RND);
+        mpfr_set(c[k], *t_const(a, k), RND);
     }
     return c;
 }
