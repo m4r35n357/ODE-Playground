@@ -1,9 +1,17 @@
 #!/bin/sh
+#
+#  Example: ./profile thomas 15 10 0.1 300000 1 0 0 .19
+#
+#  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 
-PROGNAME='tsm_lorenz_gprof'
+model=$1
+shift
+args=$*
 
-gcc -Wall -pg -g -o $PROGNAME tsm-lorenz.c taylor-ode.c main.c -lm
+progname="tsm_${model}_gprof"
 
-./$PROGNAME 15 10 .01 1000000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null
+gcc -Wall -pg -g -o $progname tsm-${model}.c taylor-ode.c main.c -lm
 
-gprof -p -b ./$PROGNAME gmon.out
+time -p ./$progname $args >/dev/null
+
+gprof -p -b ./$progname gmon.out
