@@ -1,7 +1,7 @@
 /*
  * Automatic Differentiation of Taylor Series, newest validation checks
  *
- * Example: ./libad-test-dbg 20 1 1e-18 [ 0 | 1 | 2 ]
+ * Example: ./libad-test-dbg 20 .5 1e-18 [ 0 | 1 | 2 ]
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */

@@ -97,8 +97,8 @@ Parameter | Meaning
 4 | (Optional) verbosity: 0: summary (default), 1: list, 2: detail
 
 ```
-$ ./libdual-test-dbg 1 1e-18 1
-$ ./libtaylor-test-dbg 20 1 1e-18 1
+$ ./libdual-test-dbg .5 1e-18 1
+$ ./libtaylor-test-dbg 20 .5 1e-18 1
 ```
 ### C and Python Code coverage
 Creates web page summaries for both c and Python
