@@ -81,85 +81,147 @@ real t_abs (series u, int k) {
     return u[0] < 0.0L ? - u[k] : u[k];
 }
 
-static real cauchy (series a, series b, int k, int j_lower, int j_upper) {
+real t_mul (series u, series v, int k) {
     real sum = 0.0L;
-    for (int j = j_lower; j <= j_upper; j++) {
-        sum += a[j] * b[k - j];
+    for (int j = 0; j <= k; j++) {
+        sum += u[j] * v[k - j];
     }
     return sum;
 }
 
-real t_mul (series u, series v, int k) {
-    return cauchy(u, v, k, 0, k);
-}
-
 real t_sqr (series u, int k) {
-    return cauchy(u, u, k, 0, k);
+    _Bool odd = k % 2;
+    real sum = 0.0L;
+    for (int j = 0; j <= (k - (odd ? 1 : 2)) / 2; j++) {
+        sum += u[j] * u[k - j];
+    }
+    return 2.0L * sum + (odd ? 0.0L : u[k / 2] * u[k / 2]);
 }
 
 real t_div (series q, series u, series v, int k) {
     assert(v[0] != 0.0L);
     assert(q != u && q != v);
-    return q[k] = (k == 0 ? u[0] : u[k] - cauchy(q, v, k, 0, k - 1)) / v[0];
+    if (k == 0) {
+        return q[0] = u[0] / v[0];
+    } else {
+        real sum = 0.0L;
+        for (int j = 0; j < k; j++) {
+            sum += q[j] * v[k - j];
+        }
+        return q[k] = (u[k] - sum) / v[0];
+    }
 }
 
 real t_inv (series i, series v, int k) {
     assert(v[0] != 0.0L);
     assert(i != v);
-    return i[k] = (k == 0 ? 1.0L : - cauchy(i, v, k, 0, k - 1)) / v[0];
+    if (k == 0) {
+        return i[0] = 1.0L / v[0];
+    } else {
+        real sum = 0.0L;
+        for (int j = 0; j < k; j++) {
+            sum += i[j] * v[k - j];
+        }
+        return i[k] = - sum / v[0];
+    }
 }
 
 real t_sqrt (series r, series u, int k) {
     assert(u[0] > 0.0L);
     assert(r != u);
-    return r[k] = k == 0 ? sqrtl(u[0]) : 0.5L * (u[k] - cauchy(r, r, k, 1, k - 1)) / r[0];
-}
-
-static real f_k (series df_du, series u, int k, int j_lower) {
-    real sum = 0.0L;
-    for (int j = j_lower; j < k; j++) {
-        sum += df_du[j] * (k - j) * u[k - j];
+    if (k == 0) {
+        return r[0] = sqrtl(u[0]);
+    } else {
+        _Bool odd = k % 2;
+        real sum = 0.0L;
+        for (int j = 1; j <= (k - (odd ? 1 : 2)) / 2; j++) {
+            sum += r[j] * r[k - j];
+        }
+        return r[k] = 0.5L * (u[k] - 2.0L * sum - (odd ? 0.0L : r[k / 2] * r[k / 2])) / r[0];
     }
-    return sum / k;
 }
 
 real t_exp (series e, series u, int k) {
     assert(e != u);
-    return e[k] = k == 0 ? expl(u[0]) : f_k(e, u, k, 0);
+    if (k == 0) {
+        return e[0] = expl(u[0]);
+    } else {
+        real sum = 0.0L;
+        for (int j = 0; j < k; j++) {
+            sum += e[j] * (k - j) * u[k - j];
+        }
+        return e[k] = sum / k;
+    }
 }
 
 pair t_sin_cos (series s, series c, series u, int k, geometry g) {
     assert(s != c && s != u && c != u);
     _Bool trig = g == TRIG;
-    return k == 0 ? (pair) {
-        .a = s[0] = trig ? sinl(u[0]) : sinhl(u[0]),
-        .b = c[0] = trig ? cosl(u[0]) : coshl(u[0])
-    } : (pair) {
-        .a = s[k] = f_k(c, u, k, 0),
-        .b = c[k] = f_k(s, u, k, 0) * (trig ? -1.0L : 1.0L)
-    };
+    if (k == 0) {
+        return (pair) {
+            .a = s[0] = trig ? sinl(u[0]) : sinhl(u[0]),
+            .b = c[0] = trig ? cosl(u[0]) : coshl(u[0])
+        };
+    } else {
+        real s_sum = 0.0L, c_sum = 0.0L;
+        for (int j = 0; j < k; j++) {
+            real du_dt = (k - j) * u[k - j];
+            c_sum += c[j] * du_dt;
+            s_sum += s[j] * du_dt;
+        };
+        return (pair) {
+            .a = s[k] = c_sum / k,
+            .b = c[k] = s_sum * (trig ? -1.0L : 1.0L) / k
+        };
+    }
 }
 
 pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
     assert(t != s && t != u && s != u);
     _Bool trig = g == TRIG;
-    return k == 0 ? (pair) {
-        .a = t[0] = trig ? tanl(u[0]) : tanhl(u[0]),
-        .b = s[0] = trig ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]
-    } : (pair) {
-        .a = t[k] = f_k(s, u, k, 0),
-        .b = s[k] = f_k(t, t, k, 0) * (trig ? 2.0L : -2.0L)
-    };
+    if (k == 0) {
+        return (pair) {
+            .a = t[0] = trig ? tanl(u[0]) : tanhl(u[0]),
+            .b = s[0] = trig ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]
+        };
+    } else {
+        real t_sum = 0.0L, s_sum = 0.0L;
+        for (int j = 0; j < k; j++) {
+            s_sum += s[j] * (k - j) * u[k - j];
+        };
+        t[k] = s_sum / k;
+        for (int j = 0; j < k; j++) {
+            t_sum += t[j] * (k - j) * t[k - j];
+        };
+        s[k] = t_sum * (trig ? 2.0L : -2.0L) / k;
+        return (pair) {.a = t[k], .b = s[k]};
+    }
 }
 
 real t_pwr (series p, series u, real a, int k) {
     assert(u[0] > 0.0L);
     assert(p != u);
-    return p[k] = k == 0 ? powl(u[0], a) : (f_k(p, u, k, 0) * a - f_k(u, p, k, 1)) / u[0];
+    if (k == 0) {
+        return p[0] = powl(u[0], a);
+    } else {
+        real sum = 0.0L;
+        for (int j = 0; j < k; j++) {
+            sum += (a * (k - j) - j) * p[j] * u[k - j];
+        }
+        return p[k] = sum / (k * u[0]);
+    }
 }
 
 real t_ln (series l, series u, int k) {
     assert(u[0] > 0.0L);
     assert(l != u);
-    return l[k] = k == 0 ? logl(u[0]) : (u[k] - f_k(u, l, k, 1)) / u[0];
+    if (k == 0) {
+        return l[0] = logl(u[0]);
+    } else {
+        real sum = 0.0L;
+        for (int j = 1; j < k; j++) {
+            sum += u[j] * (k - j) * l[k - j];
+        }
+        return l[k] = (u[k] - sum / k) / u[0];
+    }
 }
