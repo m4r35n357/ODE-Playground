@@ -126,33 +126,18 @@ mpfr_t *t_sqr (series u, int k) {
 mpfr_t *t_div (series q, series u, series v, int k) {
     assert(mpfr_zero_p(v[0]) == 0);
     assert(q != u && q != v);
+    _Bool inv = u == NULL;
     if (k == 0) {
-        mpfr_set(_, u[0], RND);
+        inv ? mpfr_set(_, D1, RND): mpfr_set(_, u[0], RND);
     } else {
         mpfr_set_zero(_, 1);
         for (int j = 0; j < k; j++) {
             mpfr_fma(_, q[j], v[k - j], _, RND);
         }
-        mpfr_sub(_, u[k], _, RND);
+        inv ? mpfr_neg(_, _, RND) : mpfr_sub(_, u[k], _, RND);
     }
     mpfr_div(q[k], _, v[0], RND);
     return &q[k];
-}
-
-mpfr_t *t_inv (series i, series v, int k) {
-    assert(mpfr_zero_p(v[0]) == 0);
-    assert(i != v);
-    if (k == 0) {
-        mpfr_set(_, D1, RND);
-    } else {
-        mpfr_set_zero(_, 1);
-        for (int j = 0; j < k; j++) {
-            mpfr_fma(_, i[j], v[k - j], _, RND);
-        }
-        mpfr_neg(_, _, RND);
-    }
-    mpfr_div(i[k], _, v[0], RND);
-    return &i[k];
 }
 
 mpfr_t *t_sqrt (series r, series u, int k) {

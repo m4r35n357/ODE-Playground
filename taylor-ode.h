@@ -171,17 +171,14 @@ mpfr_t *t_sqr (series U, int k);
  *                     =  U[0] / V[0]                                 if k == 0
  *
  *                     = (U[k] - sum{j=0->k-1} Q[j].V[k-j]) / V[0]    otherwise
- */
-mpfr_t *t_div (series Q, series U, series V, int k);
-
-/*
- * Returns a pointer to kth element of 1 / V, results stored in user-supplied jet I, DOMAIN RESTRICTION v[0] != 0.0
+ *
+ * If U == NULL, returns a pointer to kth element of 1 / V, results stored in user-supplied jet I, DOMAIN RESTRICTION v[0] != 0.0
  *
  * from quotient, I[k] = 1.0 / V[0]                                   if k == 0
  *
  *                I[k] = - sum{j=0->k-1} I[j].V[k-j] / V[0]           otherwise
  */
-mpfr_t *t_inv (series I, series V, int k);
+mpfr_t *t_div (series Q, series U, series V, int k);
 
 /*
  * Returns a pointer to kth element of the square root of U, results stored in user-supplied jet R, DOMAIN RESTRICTION U[0] > 0.0
