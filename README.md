@@ -217,7 +217,7 @@ You can run this to determine the maximum _useful_ integrator order to use, for 
 
 Parameter | Meaning
 ----------|-----------
-1 | Maximum order for Taylor integrator (minimum is 1)
+1 | Maximum order for Taylor integrator (minimum is 2)
 2 | deviation threshold
 3+ | ODE call
 
