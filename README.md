@@ -253,7 +253,7 @@ cns-scan (shell script) ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
-1 | Precision, also used as maximum order for Taylor integrator (minimum is 1)
+1 | Precision, also used as maximum order for Taylor integrator (minimum is 2)
 2 | deviation threshold
 3+ | ODE call (the precision and order parameters should be placeholders to avoid confusion)
 

@@ -13,7 +13,7 @@ original=$*
 
 . ./cns-functions.sh
 
-n=1
+n=2
 while [ $n -le $max ]
 do
     set $original
