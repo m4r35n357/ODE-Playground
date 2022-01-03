@@ -101,28 +101,15 @@ real t_sqr (series u, int k) {
 real t_div (series q, series u, series v, int k) {
     assert(v[0] != 0.0L);
     assert(q != u && q != v);
+    _Bool inv = u == NULL;
     if (k == 0) {
-        return q[0] = u[0] / v[0];
+        return q[0] = (inv ? 1.0L : u[0]) / v[0];
     } else {
         real sum = 0.0L;
         for (int j = 0; j < k; j++) {
             sum += q[j] * v[k - j];
         }
-        return q[k] = (u[k] - sum) / v[0];
-    }
-}
-
-real t_inv (series i, series v, int k) {
-    assert(v[0] != 0.0L);
-    assert(i != v);
-    if (k == 0) {
-        return i[0] = 1.0L / v[0];
-    } else {
-        real sum = 0.0L;
-        for (int j = 0; j < k; j++) {
-            sum += i[j] * v[k - j];
-        }
-        return i[k] = - sum / v[0];
+        return q[k] = ((inv ? 0.0L : u[k]) - sum) / v[0];
     }
 }
 
