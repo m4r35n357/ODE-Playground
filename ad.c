@@ -113,6 +113,13 @@ series ad_pwr (series p, series u, mpfr_t a) {
     return p;
 }
 
+series ad_ipwr (series p, series u, int a) {
+    for (int k = 0; k < order; k++) {
+        t_ipwr(p, u, a, k);
+    }
+    return p;
+}
+
 series ad_ln (series l, series u) {
     for (int k = 0; k < order; k++) {
         t_ln(l, u, k);

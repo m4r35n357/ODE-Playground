@@ -199,29 +199,46 @@ int main (int argc, char **argv) {
 
     if (debug != 0) fprintf(stderr, "\n");
 
-    name = "x^2 == sqr(x)";
+    name = "x^2.0 == sqr(x)";
     x_positive ? compare(name, ad_pwr(r1, x, D2), sqr_x) : skip(name);
 
-    name = "x^1 == x";
+    name = "x^1.0 == x";
     x_positive ? compare(name, ad_pwr(r1, x, D1), x) : skip(name);
 
     name = "x^0.5 == sqrt(x)";
     x_positive ? compare(name, ad_pwr(r1, x, D05), sqrt_x): skip(name);
 
-    name = "x^0 == 1";
+    name = "x^0.0 == 1";
     x_positive ? compare(name, ad_pwr(r1, x, D0), S1) : skip(name);
 
     name = "x^-0.5 == 1 / sqrt(x)";
     x_positive ? compare(name, ad_pwr(r1, x, D_05), ad_inv(r2, sqrt_x)) : skip(name);
 
-    name = "x^-1 == 1 / x";
+    name = "x^-1.0 == 1 / x";
     x_positive ? compare(name, ad_pwr(r1, x, D_1), inv_x) : skip(name);
 
-    name = "x^-2 == 1 / sqr(x)";
+    name = "x^-2.0 == 1 / sqr(x)";
     x_positive ? compare(name, ad_pwr(r1, x, D_2), ad_inv(r2, sqr_x)) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
     ad_abs(abs_x, x);
+
+    name = "x^2 == sqr(x)";
+    x_positive ? compare(name, ad_ipwr(r1, x, 2), sqr_x) : skip(name);
+
+    name = "x^1 == x";
+    x_positive ? compare(name, ad_ipwr(r1, x, 1), x) : skip(name);
+
+    name = "x^0 == 1";
+    x_positive ? compare(name, ad_ipwr(r1, x, 0), S1) : skip(name);
+
+    name = "x^-1 == 1 / x";
+    x_positive ? compare(name, ad_ipwr(r1, x, -1), inv_x) : skip(name);
+
+    name = "x^-2 == 1 / sqr(x)";
+    x_positive ? compare(name, ad_ipwr(r1, x, -2), ad_inv(r2, sqr_x)) : skip(name);
+
+    if (debug != 0) fprintf(stderr, "\n");
 
     name = "sqr(x) * x^-3 == 1 / x";
     x_positive ? compare(name, ad_mul(r1, sqr_x, ad_pwr(r2, x, D_3)), inv_x) : skip(name);
