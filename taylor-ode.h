@@ -128,7 +128,7 @@ real t_abs (series U, int k);
  *
  *           = sum{k=0->inf} sum{j=0->k} A[j].B[k - j].h^k     where k = i + j  ==>  i = k - j
  *
- *  ==> C[k] = sum{j=0->k} A[j].B[k-j]     perhaps implemented by a static/private function cauchy(A, B, k, ...)
+ *  ==> C[k] = sum{j=0->k} A[j].B[k-j]
  */
 
 /*
@@ -164,7 +164,7 @@ real t_sqr (series U, int k);
  *
  *                     = (U[k] - sum{j=0->k-1} Q[j].V[k-j]) / V[0]    otherwise
  *
- * If U == NULL, returns a pointer to kth element of 1 / V, results stored in user-supplied jet I, DOMAIN RESTRICTION v[0] != 0.0
+ * If U == NULL, returns kth element of 1 / V, results stored in user-supplied jet I, DOMAIN RESTRICTION v[0] != 0.0
  *
  * from quotient, I[k] = 1.0 / V[0]                                   if k == 0
  *
@@ -204,9 +204,9 @@ real t_sqrt (series R, series U, int k);
  *
  * then make the IDENTITY substitutions
  *
- *        kF[k] = sum{j=0->k-1} dFdU[j].(k-j).U[k-j]         only if k > 0.  Use a mathematical function call for dFdU[0]
+ *        kF[k] = sum{j=0->k-1} dFdU[j].(k-j).U[k-j]         only for k > 0.  Use a mathematical function call for dFdU[0]
  *
- *     ==> F[k] = sum{j=0->k-1} dFdU[j].(k-j).U[k-j] / k     can be implemented by a static function f_k(dFdU, U, k, ...)
+ *     ==> F[k] = sum{j=0->k-1} dFdU[j].(k-j).U[k-j] / k
  */
 
 /*
