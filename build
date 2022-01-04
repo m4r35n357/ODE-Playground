@@ -14,6 +14,9 @@ CC="/usr/bin/gcc -std=$STD"
 if [ x"$1" = x'clang' ]
 then
     CC="/usr/bin/clang -std=$STD"
+elif [ x"$1" = x'tcc' ]
+then
+    CC="/usr/local/bin/tcc -std=$STD"
 fi
 ${CC} --version
 

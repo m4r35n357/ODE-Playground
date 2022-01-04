@@ -136,7 +136,7 @@ mpfr_t *t_abs (series U, int k);
  *
  *           = sum{k=0->inf} sum{j=0->k} A[j].B[k - j].h^k     where k = i + j  ==>  i = k - j
  *
- *  ==> C[k] = sum{j=0->k} A[j].B[k-j]     perhaps implemented by a static/private function cauchy(A, B, k, ...)
+ *  ==> C[k] = sum{j=0->k} A[j].B[k-j]
  */
 
 /*
@@ -212,9 +212,9 @@ mpfr_t *t_sqrt (series R, series U, int k);
  *
  * then make the IDENTITY substitutions
  *
- *        kF[k] = sum{j=0->k-1} dFdU[j].(k-j).U[k-j]         only if k > 0.  Use a mathematical function call for dFdU[0]
+ *        kF[k] = sum{j=0->k-1} dFdU[j].(k-j).U[k-j]         only for k > 0.  Use a mathematical function call for dFdU[0]
  *
- *     ==> F[k] = sum{j=0->k-1} dFdU[j].(k-j).U[k-j] / k     can be implemented by a static function f_k(dFdU, U, k, ...)
+ *     ==> F[k] = sum{j=0->k-1} dFdU[j].(k-j).U[k-j] / k
  */
 
 /*
@@ -275,6 +275,8 @@ pair t_tan_sec2 (series T, series S2, series U, int k, geometry g);
  *                                   U[0].k.P[k] =  a.sum{j=0->k-1} P[j].(k-j).U[k-j]   - sum{j=1->k-1} U[j].(k-j).P[k-j]
  *
  *                                          P[k] = (a.sum{j=0->k-1} P[j].(k-j).U[k-j]/k - sum{j=1->k-1} U[j].(k-j).P[k-j]/k) / U[0]
+ *
+ *                                               = sum{j=0->k-1} (a.(k-j)-j).P[j].U[k-j] / (k.U[0])
  */
 mpfr_t *t_pwr (series P, series U, mpfr_t a, int k);
 
