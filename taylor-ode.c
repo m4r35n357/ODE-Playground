@@ -192,7 +192,7 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
         mpfr_div_si(c[k], _a, k, RND);
         if (trig) mpfr_neg(c[k], c[k], RND);
     }
-    return (pair){.a = &s[k], .b = &c[k]};
+    return (pair) {&s[k], &c[k]};
 }
 
 pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
@@ -217,7 +217,7 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
         mpfr_div_si(s[k], _, k, RND);
         mpfr_mul(s[k], s[k], trig ? D2 : D_2, RND);
     }
-    return (pair){.a = &t[k], .b = &s[k]};
+    return (pair) {&t[k], &s[k]};
 }
 
 mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {
