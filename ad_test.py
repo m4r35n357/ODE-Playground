@@ -327,7 +327,7 @@ def test_divide_domain_object_bad(number):
 def test_divide_object_object():
     dual = d_3 / d_4
     assert dual.val - f3 / f4 == approx(0.0)
-    assert dual.dot == approx((f4 - f3) / f4 ** 2)
+    assert dual.dot == approx((f4 - f3) / f4**2)
     quotient = t_jet(order)
     t_series = s_3 / s_4
     for k in range(order):
