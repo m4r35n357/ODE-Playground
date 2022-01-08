@@ -90,26 +90,24 @@ real t_mul (series u, series v, int k) {
 }
 
 real t_sqr (series u, int k) {
-    _Bool odd = k % 2;
     real sum = 0.0L;
-    for (int j = 0; j <= (k - (odd ? 1 : 2)) / 2; j++) {
+    for (int j = 0; j <= (k - (k % 2 ? 1 : 2)) / 2; j++) {
         sum += u[j] * u[k - j];
     }
-    return 2.0L * sum + (odd ? 0.0L : u[k / 2] * u[k / 2]);
+    return 2.0L * sum + (k % 2 ? 0.0L : u[k / 2] * u[k / 2]);
 }
 
 real t_div (series q, series u, series v, int k) {
     assert(v[0] != 0.0L);
     assert(q != u && q != v);
-    _Bool inv = u == NULL;
     if (k == 0) {
-        return q[0] = (inv ? 1.0L : u[0]) / v[0];
+        return q[0] = (u == NULL ? 1.0L : u[0]) / v[0];
     } else {
         real sum = 0.0L;
         for (int j = 0; j < k; j++) {
             sum += q[j] * v[k - j];
         }
-        return q[k] = ((inv ? 0.0L : u[k]) - sum) / v[0];
+        return q[k] = ((u == NULL ? 0.0L : u[k]) - sum) / v[0];
     }
 }
 
@@ -119,12 +117,11 @@ real t_sqrt (series r, series u, int k) {
     if (k == 0) {
         return r[0] = sqrtl(u[0]);
     } else {
-        _Bool odd = k % 2;
         real sum = 0.0L;
-        for (int j = 1; j <= (k - (odd ? 1 : 2)) / 2; j++) {
+        for (int j = 1; j <= (k - (k % 2 ? 1 : 2)) / 2; j++) {
             sum += r[j] * r[k - j];
         }
-        return r[k] = 0.5L * (u[k] - 2.0L * sum - (odd ? 0.0L : r[k / 2] * r[k / 2])) / r[0];
+        return r[k] = 0.5L * (u[k] - 2.0L * sum - (k % 2 ? 0.0L : r[k / 2] * r[k / 2])) / r[0];
     }
 }
 
@@ -143,9 +140,8 @@ real t_exp (series e, series u, int k) {
 
 pair t_sin_cos (series s, series c, series u, int k, geometry g) {
     assert(s != c && s != u && c != u);
-    _Bool trig = g == TRIG;
     if (k == 0) {
-        return (pair) {s[0] = trig ? sinl(u[0]) : sinhl(u[0]), c[0] = trig ? cosl(u[0]) : coshl(u[0])};
+        return (pair) {s[0] = g == TRIG ? sinl(u[0]) : sinhl(u[0]), c[0] = g == TRIG ? cosl(u[0]) : coshl(u[0])};
     } else {
         real s_sum = 0.0L, c_sum = 0.0L;
         for (int j = 0; j < k; j++) {
@@ -153,15 +149,14 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
             c_sum += c[j] * du_dt;
             s_sum += s[j] * du_dt;
         };
-        return (pair) {s[k] = c_sum / k, c[k] = s_sum * (trig ? -1.0L : 1.0L) / k};
+        return (pair) {s[k] = c_sum / k, c[k] = s_sum * (g == TRIG ? -1.0L : 1.0L) / k};
     }
 }
 
 pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
     assert(t != s && t != u && s != u);
-    _Bool trig = g == TRIG;
     if (k == 0) {
-        return (pair) {t[0] = trig ? tanl(u[0]) : tanhl(u[0]), s[0] = trig ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]};
+        return (pair) {t[0] = g == TRIG ? tanl(u[0]) : tanhl(u[0]), s[0] = g == TRIG ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]};
     } else {
         real t_sum = 0.0L, s_sum = 0.0L;
         for (int j = 0; j < k; j++) {
@@ -171,7 +166,7 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
         for (int j = 0; j < k; j++) {
             t_sum += t[j] * (k - j) * t[k - j];
         };
-        s[k] = t_sum * (trig ? 2.0L : -2.0L) / k;
+        s[k] = t_sum * (g == TRIG ? 2.0L : -2.0L) / k;
         return (pair) {t[k], s[k]};
     }
 }
