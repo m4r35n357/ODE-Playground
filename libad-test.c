@@ -97,6 +97,7 @@ int main (int argc, char **argv) {
     series r1 = contaminate(t_jet(n));
     series r2 = contaminate(t_jet(n));
     series r3 = contaminate(t_jet(n));
+    series abs_x = contaminate(t_jet(n));
     series inv_x = contaminate(t_jet(n));
     series sqr_x = contaminate(t_jet(n));
     series sqr_sin_x = contaminate(t_jet(n));
@@ -192,6 +193,7 @@ int main (int argc, char **argv) {
     contaminate(r2);
 
     if (debug != 0) fprintf(stderr, "\n");
+    ad_abs(abs_x, x);
 
     name = "sqr(x) * x^-3 == 1 / x";
     x_positive ? compare(name, ad_mul(r1, sqr_x, ad_pwr(r2, x, -3.0L)), inv_x) : skip(name);
@@ -199,9 +201,12 @@ int main (int argc, char **argv) {
     contaminate(r2);
 
     name = "sqr(x)^0.5 == |x|";
-    x_non_zero ? compare(name, ad_pwr(r1, sqr_x, 0.5L), ad_abs(r2, x)) : skip(name);
+    x_non_zero ? compare(name, ad_pwr(r1, sqr_x, 0.5L), abs_x) : skip(name);
     contaminate(r1);
-    contaminate(r2);
+
+    name = "sqrt(sqr(x) == |x|";
+    x_non_zero ? compare(name, ad_sqrt(r1, sqr_x), abs_x) : skip(name);
+    contaminate(r1);
 
     if (debug != 0) fprintf(stderr, "\n");
     ad_exp(exp_x, x);
