@@ -272,13 +272,11 @@ pair t_tan_sec2 (series T, series S2, series U, int k, geometry g);
  *
  * U[0].k.P[k] + sum{j=1->k-1} U[j].(k-j).P[k-j] =  a.sum{j=0->k-1} P[j].(k-j).U[k-j]
  *
- *                                   U[0].k.P[k] =  a.sum{j=0->k-1} P[j].(k-j).U[k-j]   - sum{j=1->k-1} U[j].(k-j).P[k-j]
+ *                                          P[k] = (a.sum{j=0->k-1} P[j].(k-j).U[k-j] - sum{j=1->k-1} U[j].(k-j).P[k-j]) / k.U[0]
  *
- *                                          P[k] = (a.sum{j=0->k-1} P[j].(k-j).U[k-j]/k - sum{j=1->k-1} U[j].(k-j).P[k-j]/k) / U[0]
+ *                                               = (a.sum{j=0->k-1} P[j].(k-j).U[k-j] - sum{j=1->k-1} j.P[j].U[k-j]) / k.U[0]        (by symmetry)
  *
- *                                               = (a.sum{j=0->k-1} P[j].(k-j).U[k-j]/k - sum{j=1->k-1} j.P[j].U[k-j]/k) / U[0]              (by symmetry)
- *
- *                                               = sum{j=0->k-1} (a.(k-j)-j).P[j].U[k-j] / (k.U[0])             ("extra" P[0] term is multiplied by zero!)
+ *                                               = sum{j=0->k-1} (a.(k-j)-j).P[j].U[k-j] / k.U[0]       ("extra" P[0] term is multiplied by zero!)
  */
 mpfr_t *t_pwr (series P, series U, mpfr_t a, int k);
 
