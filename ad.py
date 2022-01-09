@@ -21,72 +21,67 @@ def t_const(a, k):
 def t_abs(u, k):
     return - u[k] if u[0] < 0.0 else u[k]
 
-def _cauchy(a, b, k, lower, upper):
-    return fsum(a[j] * b[k - j] for j in range(lower, upper + 1))
-
 def t_prod(u, v, k):
-    return _cauchy(u, v, k, 0, k)
+    return fsum(u[j] * v[k - j] for j in range(0, k + 1))
 
 def t_quot(q, u, v, k):
-    return u[0] / v[0] if k == 0 else (u[k] - _cauchy(q, v, k, 0, k - 1)) / v[0]
-
-def t_inv(i, v, k):
-    return 1.0 / v[0] if k == 0 else - _cauchy(i, v, k, 0, k - 1) / v[0]
+    if k == 0:
+        return (1.0 if not u else u[0]) / v[0]
+    return ((0.0 if not u else u[k]) - fsum(q[j] * v[k - j] for j in range(0, k))) / v[0]
 
 def t_sqr(u, k):
-    return _cauchy(u, u, k, 0, k)
+    odd = (k % 2 == 1)
+    return 2.0 * fsum(u[j] * u[k - j] for j in range(0, (k - (1 if odd else 2)) // 2 + 1)) + (0.0 if odd else u[k // 2]**2)
 
 def t_sqrt(r, u, k):
-    return sqrt(u[0]) if k == 0 else 0.5 * (u[k] - _cauchy(r, r, k, 1, k - 1)) / r[0]
-
-def _f_k(h, u, k, lower):
-    return fsum(h[j] * (k - j) * u[k - j] for j in range(lower, k)) / k
+    if k == 0:
+        return sqrt(u[0])
+    odd = (k % 2 == 1)
+    return 0.5 * (u[k] - 2.0 * fsum(r[j] * r[k - j] for j in range(1, (k - (1 if odd else 2)) // 2 + 1)) - (0.0 if odd else r[k // 2]**2)) / r[0]
 
 def t_exp(e, u, k):
-    return exp(u[0]) if k == 0 else _f_k(e, u, k, 0)
+    return exp(u[0]) if k == 0 else fsum(e[j] * (k - j) * u[k - j] for j in range(0, k)) / k
 
 def t_sin_cos(s, c, u, k, hyp=False):
     if k == 0:
         return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
-    s[k] = _f_k(c, u, k, 0)
-    c[k] = _f_k(s, u, k, 0) * (-1.0 if not hyp else 1.0)
-    return s[k], c[k]
+    s[k] = fsum(c[j] * (k - j) * u[k - j] for j in range(0, k)) / k
+    c[k] = fsum(s[j] * (k - j) * u[k - j] for j in range(0, k)) / k
+    return s[k], c[k] if hyp else -c[k]
 
 def t_tan_sec2(t, s, u, k, hyp=False):
     if k == 0:
-        return (tanh(u[0]), 1.0 - tanh(u[0])**2) if hyp else (tan(u[0]), 1.0 + tan(u[0])**2)
-    t[k] = _f_k(s, u, k, 0)
-    s[k] = _f_k(t, t, k, 0) * (2.0 if not hyp else -2.0)
-    return t[k], s[k]
+        t[0] = tanh(u[0]) if hyp else tan(u[0])
+        return (t[0], 1.0 - t[0]**2) if hyp else (t[0], 1.0 + t[0]**2)
+    t[k] = fsum(s[j] * (k - j) * u[k - j] for j in range(0, k)) / k
+    s[k] = fsum(t[j] * (k - j) * t[k - j] for j in range(0, k)) / k
+    return t[k], s[k] * (-2.0 if hyp else 2.0)
 
 def t_pwr(p, u, a, k):
-    return u[0]**a if k == 0 else (a * _f_k(p, u, k, 0) - _f_k(u, p, k, 1)) / u[0]
+    return u[0]**a if k == 0 else fsum((a * (k - j) - j) * p[j] * u[k - j] for j in range(0, k)) / (k * u[0])
 
 def t_ln(ln, u, k):
-    return log(u[0]) if k == 0 else (u[k] - _f_k(u, ln, k, 1)) / u[0]
-
-def _i_cauchy(g, u, f, k, sign=True):
-    return ((u[k] if sign else - u[k]) - _f_k(g, f, k, 1)) / g[0]
+    return log(u[0]) if k == 0 else (u[k] - fsum(u[j] * (k - j) * ln[k - j] for j in range(1, k)) / k) / u[0]
 
 def t_asin(h, g, u, k, hyp=False):
     if k == 0:
         return (asinh(u[0]), sqrt(u[0]**2 + 1.0)) if hyp else (asin(u[0]), sqrt(1.0 - u[0]**2))
-    h[k] = _i_cauchy(g, u, h, k)
-    g[k] = _f_k(u, h, k, 0)
+    h[k] = (u[k] - fsum(g[j] * (k - j) * h[k - j] for j in range(1, k)) / k) / g[0]
+    g[k] = fsum(u[j] * (k - j) * h[k - j] for j in range(0, k)) / k
     return (h[k], g[k]) if hyp else (h[k], - g[k])
 
 def t_acos(h, g, u, k, hyp=False):
     if k == 0:
         return (acosh(u[0]), sqrt(u[0]**2 - 1.0)) if hyp else (acos(u[0]), sqrt(1.0 - u[0]**2))
-    h[k] = _i_cauchy(g, u, h, k, sign=hyp)
-    g[k] = _f_k(u, h, k, 0)
+    h[k] = ((u[k] if hyp else - u[k]) - fsum(g[j] * (k - j) * h[k - j] for j in range(1, k)) / k) / g[0]
+    g[k] = fsum(u[j] * (k - j) * h[k - j] for j in range(0, k)) / k
     return h[k], g[k]
 
 def t_atan(h, g, u, k, hyp=False):
     if k == 0:
         return (atanh(u[0]), 1.0 - u[0]**2) if hyp else (atan(u[0]), 1.0 + u[0]**2)
-    h[k] = _i_cauchy(g, u, h, k)
-    g[k] = 2.0 * _f_k(u, u, k, 0)
+    h[k] = (u[k] - fsum(g[j] * (k - j) * h[k - j] for j in range(1, k)) / k) / g[0]
+    g[k] = 2.0 * fsum(u[j] * (k - j) * u[k - j] for j in range(0, k)) / k
     return (h[k], - g[k]) if hyp else (h[k], g[k])
 
 
@@ -196,7 +191,7 @@ class Series:
         assert self.val != 0.0, f"self.val = {self.val}"
         jet = t_jet(self.n)
         for k in self.index:
-            jet[k] = t_inv(jet, self.jet, k) * o
+            jet[k] = t_quot(jet, None, self.jet, k) * o
         return Series(jet)
 
     def __pow__(self, o):
