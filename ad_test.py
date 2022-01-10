@@ -703,13 +703,9 @@ def test_asin():
     dual = d_05.sin.asin
     assert dual.val == approx(d_05.val)
     assert dual.dot == approx(d_05.dot)
-    series = s_05.asin
-    asin, _ = t_jet(order), t_jet(order)
+    series = data1_s.sin.asin
     for k in range(order):
-        asin[k], _[k] = t_asin(asin, _, s_05.jet, k)
-        assert asin[k] == approx(series.jet[k])
-    assert series.jet[0] == approx(pi / 6.0)
-    assert len(series.jet) == order
+        assert data1_s.jet[k] == approx(series.jet[k])
 
 @mark.domain
 @mark.parametrize('number', [1.0 - δ, -1.0 + δ])
@@ -728,38 +724,25 @@ def test_acos():
     dual = d_05.cos.acos
     assert dual.val == approx(d_05.val)
     assert dual.dot == approx(d_05.dot)
-    series = s_05.acos
-    acos, _ = t_jet(order), t_jet(order)
+    series = data1_s.cos.acos
     for k in range(order):
-        acos[k], _[k] = t_acos(acos, _, s_05.jet, k)
-        assert acos[k] == approx(series.jet[k])
-    assert series.jet[0] == approx(pi / 3.0)
-    assert len(series.jet) == order
+        assert data1_s.jet[k] == approx(series.jet[k])
 
 def test_atan():
     dual = d_05.tan.atan
     assert dual.val == approx(d_05.val)
     assert dual.dot == approx(d_05.dot)
-    series = s_1.atan
-    atan, _ = t_jet(order), t_jet(order)
+    series = data1_s.tan.atan
     for k in range(order):
-        atan[k], _[k] = t_atan(atan, _, s_1.jet, k)
-        assert atan[k] == approx(series.jet[k])
-    assert series.jet[0] == approx(pi / 4.0)
-    assert len(series.jet) == order
+        assert data1_s.jet[k] == approx(series.jet[k])
 
 def test_asinh():
     dual = d_05.sinh.asinh
     assert dual.val == approx(d_05.val)
     assert dual.dot == approx(d_05.dot)
-    x = s_05
-    series = x.asinh
-    asinh, _ = t_jet(order), t_jet(order)
+    series = data1_s.sinh.asinh
     for k in range(order):
-        asinh[k], _[k] = t_asin(asinh, _, s_05.jet, k, hyp=True)
-        assert asinh[k] == approx(series.jet[k])
-    for term in (series - (x + (x**2 + 1)**0.5).ln).jet:
-        assert term == approx(0.0)
+        assert data1_s.jet[k] == approx(series.jet[k])
 
 @mark.domain
 @mark.parametrize('number', [1.0 + δ])
@@ -778,14 +761,9 @@ def test_acosh():
     dual = d_05.cosh.acosh
     assert dual.val == approx(d_05.val)
     assert dual.dot == approx(d_05.dot)
-    x = s_2
-    series = x.acosh
-    acosh, _ = t_jet(order), t_jet(order)
+    series = data1_s.cosh.acosh
     for k in range(order):
-        acosh[k], _[k] = t_acos(acosh, _, s_2.jet, k, hyp=True)
-        assert acosh[k] == approx(series.jet[k])
-    for term in (series - (x + (x**2 - 1)**0.5).ln).jet:
-        assert term == approx(0.0)
+        assert data1_s.jet[k] == approx(series.jet[k])
 
 @mark.domain
 @mark.parametrize('number', [1.0 - δ, -1.0 + δ])
@@ -804,14 +782,9 @@ def test_atanh():
     dual = d_05.tanh.atanh
     assert dual.val == approx(d_05.val)
     assert dual.dot == approx(d_05.dot)
-    x = s_05
-    series = x.atanh
-    atanh, _ = t_jet(order), t_jet(order)
+    series = data1_s.tanh.atanh
     for k in range(order):
-        atanh[k], _[k] = t_atan(atanh, _, s_05.jet, k, hyp=True)
-        assert atanh[k] == approx(series.jet[k])
-    for term in (series - 0.5 * ((1 + x) / (1 - x)).ln).jet:
-        assert term == approx(0.0)
+        assert data1_s.jet[k] == approx(series.jet[k])
 
 @mark.domain
 @mark.parametrize('number', [1, δ])

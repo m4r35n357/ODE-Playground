@@ -63,26 +63,26 @@ def t_pwr(p, u, a, k):
 def t_ln(ln, u, k):
     return log(u[0]) if k == 0 else (u[k] - fsum(j * ln[j] * u[k - j] for j in range(1, k)) / k) / u[0]
 
-def t_asin(h, g, u, k, hyp=False):
+def t_asin(f, g, u, k, hyp=False):
     if k == 0:
         return (asinh(u[0]), sqrt(u[0]**2 + 1.0)) if hyp else (asin(u[0]), sqrt(1.0 - u[0]**2))
-    h[k] = (u[k] - fsum(j * h[j] * g[k - j] for j in range(1, k)) / k) / g[0]
-    g[k] = fsum(u[j] * (k - j) * h[k - j] for j in range(0, k)) / k
-    return (h[k], g[k]) if hyp else (h[k], - g[k])
+    f[k] = (u[k] - fsum(j * f[j] * g[k - j] for j in range(1, k)) / k) / g[0]
+    g[k] = fsum(u[j] * (k - j) * f[k - j] for j in range(0, k)) / k            #  dg/dt = u.df/dt
+    return (f[k], g[k]) if hyp else (f[k], - g[k])
 
-def t_acos(h, g, u, k, hyp=False):
+def t_acos(f, g, u, k, hyp=False):
     if k == 0:
         return (acosh(u[0]), sqrt(u[0]**2 - 1.0)) if hyp else (acos(u[0]), sqrt(1.0 - u[0]**2))
-    h[k] = ((u[k] if hyp else - u[k]) - fsum(j * h[j] * g[k - j] for j in range(1, k)) / k) / g[0]
-    g[k] = fsum(u[j] * (k - j) * h[k - j] for j in range(0, k)) / k
-    return h[k], g[k]
+    f[k] = ((u[k] if hyp else - u[k]) - fsum(j * f[j] * g[k - j] for j in range(1, k)) / k) / g[0]
+    g[k] = fsum(u[j] * (k - j) * f[k - j] for j in range(0, k)) / k            #  dg/dt = u.df/dt
+    return f[k], g[k]
 
-def t_atan(h, g, u, k, hyp=False):
+def t_atan(f, g, u, k, hyp=False):
     if k == 0:
         return (atanh(u[0]), 1.0 - u[0]**2) if hyp else (atan(u[0]), 1.0 + u[0]**2)
-    h[k] = (u[k] - fsum(j * h[j] * g[k - j] for j in range(1, k)) / k) / g[0]
-    g[k] = 2.0 * fsum(u[j] * (k - j) * u[k - j] for j in range(0, k)) / k
-    return (h[k], - g[k]) if hyp else (h[k], g[k])
+    f[k] = (u[k] - fsum(j * f[j] * g[k - j] for j in range(1, k)) / k) / g[0]
+    g[k] = 2.0 * fsum(u[j] * (k - j) * u[k - j] for j in range(0, k)) / k      #  dg/dt = 2u.du/dt
+    return (f[k], - g[k]) if hyp else (f[k], g[k])
 
 
 class Components(namedtuple('ParametersType', ['x', 'y', 'z'])):
