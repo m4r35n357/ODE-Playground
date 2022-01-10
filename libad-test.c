@@ -110,6 +110,7 @@ int main (int argc, char **argv) {
     series r1 = t_jet(n);
     series r2 = t_jet(n);
     series r3 = t_jet(n);
+    series abs_x = t_jet(n);
     series inv_x = t_jet(n);
     series sqr_x = t_jet(n);
     series sqr_sin_x = t_jet(n);
@@ -211,12 +212,16 @@ int main (int argc, char **argv) {
     x_positive ? compare(name, ad_pwr(r1, x, D_2), ad_inv(r2, sqr_x)) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
+    ad_abs(abs_x, x);
 
     name = "sqr(x) * x^-3 == 1 / x";
     x_positive ? compare(name, ad_mul(r1, sqr_x, ad_pwr(r2, x, D_3)), inv_x) : skip(name);
 
     name = "sqr(x)^0.5 == |x|";
-    x_non_zero ? compare(name, ad_pwr(r1, sqr_x, D05), ad_abs(r2, x)) : skip(name);
+    x_non_zero ? compare(name, ad_pwr(r1, sqr_x, D05), abs_x) : skip(name);
+
+    name = "sqrt(sqr(x) == |x|";
+    x_non_zero ? compare(name, ad_sqrt(r1, sqr_x), abs_x) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
     ad_exp(exp_x, x);
