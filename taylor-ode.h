@@ -283,5 +283,7 @@ real t_pwr (series P, series U, real a, int k);
  *                        = sum{j=1->k-1} U[j].(k-j).L[k-j] + U[0].k.L[k]
  *
  *                   L[k] = (U[k] - sum{j=1->k-1} U[j].(k-j).L[k-j]/k) / U[0]
+ *
+ *                        = (U[k] - sum{j=1->k-1} j.L[j].U[k-j]/k) / U[0]                    (by symmetry)
  */
 real t_ln (series L, series U, int k);

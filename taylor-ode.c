@@ -193,7 +193,7 @@ real t_ln (series l, series u, int k) {
     } else {
         real sum = 0.0L;
         for (int j = 1; j < k; j++) {
-            sum += u[j] * (k - j) * l[k - j];
+            sum += j * l[j] * u[k - j];
         }
         return l[k] = (u[k] - sum / k) / u[0];
     }
