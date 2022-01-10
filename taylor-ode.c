@@ -242,8 +242,8 @@ mpfr_t *t_ln (series l, series u, int k) {
     } else {
         mpfr_set_zero(_, 1);
         for (int j = 1; j < k; j++) {
-            mpfr_mul_si(__, l[k - j], k - j, RND);
-            mpfr_fma(_, u[j], __, _, RND);
+            mpfr_mul_si(__, l[j], j, RND);
+            mpfr_fma(_, u[k - j], __, _, RND);
         }
         mpfr_div_si(_, _, k, RND);
         mpfr_sub(_, u[k], _, RND);
