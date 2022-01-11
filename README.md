@@ -28,9 +28,10 @@ Investigate the validity of chaotic solutions against integrator order
 
 Plot bifurcation diagrams, to find "interesting" parameter values to study
 
-### Interactive Function Analysis with Python
+### Taylor Calculator - Interactive Function Analysis in Python console
 
 For learning about automatic differentiation using Dual Numbers in IPython.
+Also for plotting functions together with their derivatives.
 See the examples at the bottom of this document.
 
 ### Hamiltonian analysis with Symplectic Integrators, using Dual Numbers for Automatic Differentiation
@@ -242,7 +243,7 @@ Parameter | Meaning
 ./ic .001 ./tsm-thomas-static 6 10 0.1 30000 1 0 0 .185
 ```
 
-### Interactive Function Analysis with Python
+### Taylor Series & Dual Numbers Calculator - Interactive Function Analysis with Python
 This use case involves calling the Dual and Series methods and operators from ad.py, together with the functions from plotters.py, from a Python interpreter.
 This is how I like to set things up (pip installed ipython recommended!):
 ```
