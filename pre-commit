@@ -4,9 +4,9 @@ echo -n "Running Clang build . . . "
 ./clean
 ./build clang >/dev/null
 
-echo "Running Taylor Test . . . "
-for x in 1 0 -1
+for x in .5 0 -.5
 do
+    echo "Running Taylor Test, x = $x . . . "
     if ! ./libad-test-dbg 32 20 $x 1e-21 0 >/dev/null
     then
         echo "\033[31;1mTaylor Test failed!\033[0m"
