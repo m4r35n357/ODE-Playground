@@ -111,7 +111,7 @@ int main (int argc, char **argv) {
 
     fprintf(stdout, "\n");
     fprintf(stdout, "%sHorner%s\n", KWHT, KNRM);
-    series p = t_jet(n >= 8 ? n : 8);
+    series p = t_jet(n >= 7 ? n : 7);
     p[0] = 1.0L; p[1] = 3.0L; p[2] = 0.0L; p[3] = 2.0L;
     fprintf(stdout, " 23 %8.3Lf\n", t_horner(p, 3, 2.0L));
     p[0] = 3; p[1] = -1.0L; p[2] = 2.0L; p[3] = -4.0L; p[4] = 0.0L; p[5] = 1.0L;
