@@ -21,7 +21,7 @@ void t_params (char **argv, int argc, ...) {
 }
 
 series t_jet (int n) {
-    series s = calloc((size_t)n, sizeof (real));
+    series s = calloc((size_t)n + 1, sizeof (real));
     if (s == NULL) {
         fprintf(stderr, "Allocation failure!\n");
         exit(1);
@@ -52,9 +52,9 @@ static char *tag (series jet, real slope, char *min, char *max) {
 }
 
 void tsm (int argc, char **argv, int dp, int n, real h, int steps, real x0, real y0, real z0) {
-    series x = t_jet(n + 1); x[0] = x0;
-    series y = t_jet(n + 1); y[0] = y0;
-    series z = t_jet(n + 1); z[0] = z0;
+    series x = t_jet(n); x[0] = x0;
+    series y = t_jet(n); y[0] = y0;
+    series z = t_jet(n); z[0] = z0;
     void *p = get_p(argc, argv, n);
     components s = (components) {0.0L, 0.0L, 0.0L};
     for (int step = 0; step < steps; step++) {
@@ -156,7 +156,7 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
 pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
     assert(t != s && t != u && s != u);
     if (k == 0) {
-		t[0] = g == TRIG ? tanl(u[0]) : tanhl(u[0]);
+        t[0] = g == TRIG ? tanl(u[0]) : tanhl(u[0]);
         return (pair) {t[0], s[0] = g == TRIG ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]};
     } else {
         real t_sum = 0.0L, s_sum = 0.0L;
