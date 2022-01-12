@@ -32,18 +32,18 @@ static void compare (char* name, dual a, dual b) {
     total++;
     delta_val = a.val - b.val;
     if (fabsl(delta_val) > tolerance) {
-        printf("%s FAIL%s %s  LHS: %.6Le  RHS: %.6Le  diff %.3Le\n", KRED, KNRM, name, a.val, b.val, delta_val);
+        fprintf(stderr, "%s FAIL%s %s  LHS: %.6Le  RHS: %.6Le  diff %.3Le\n", KRED, KNRM, name, a.val, b.val, delta_val);
         return;
     }
     delta_dot = a.dot - b.dot;
     if (fabsl(delta_dot) > tolerance) {
-        printf("%s FAIL%s %s  LHS: %.6Le  RHS: %.6Le  diff %.3Le\n", KRED, KNRM, name, a.dot, b.dot, delta_dot);
+        fprintf(stderr, "%s FAIL%s %s  LHS: %.6Le  RHS: %.6Le  diff %.3Le\n", KRED, KNRM, name, a.dot, b.dot, delta_dot);
         return;
     }
-    if (debug >= 2) printf("\n");
-    if (debug >= 2) printf("%s  DEBUG%s  %+.6Le %+.6Le  diff %+.3Le\n", KNRM, KNRM, a.val, b.val, delta_val);
-    if (debug >= 2) printf("%s  DEBUG%s  %+.6Le %+.6Le  diff %+.3Le\n", KNRM, KNRM, a.dot, b.dot, delta_dot);
-    if (debug >= 1) printf("%s PASS%s %s\n", KGRN, KNRM, name);
+    if (debug >= 2) fprintf(stderr, "\n");
+    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.6Le %+.6Le  diff %+.3Le\n", KNRM, KNRM, a.val, b.val, delta_val);
+    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.6Le %+.6Le  diff %+.3Le\n", KNRM, KNRM, a.dot, b.dot, delta_dot);
+    if (debug >= 1) fprintf(stderr, "%s PASS%s %s\n", KGRN, KNRM, name);
     passed++;
 }
 
@@ -77,7 +77,7 @@ int main (int argc, char **argv) {
     dual xpx = d_scale(x, 2.0L);
 
     fprintf(stderr, "\n");
-    fprintf(stdout, "%sDual Numbers, x = %.1Lf%s\n", KWHT, x.val, KNRM);
+    fprintf(stderr, "%sDual Numbers, x = %.1Lf%s\n", KWHT, x.val, KNRM);
 
     sqr_x = d_sqr(x);
     if (x_non_zero) inv_x = d_inv(x);
@@ -98,7 +98,7 @@ int main (int argc, char **argv) {
     name = "x / sqrt(x) == sqrt(x)";
     x_positive ? compare(name, d_div(x, sqrt_x), sqrt_x) : skip(name);
 
-    if (debug != 0) printf("\n");
+    if (debug != 0) fprintf(stderr, "\n");
 
     name = "x^2 == sqr(x)";
     x_positive ? compare(name, d_pow(x, 2.0L), sqr_x) : skip(name);
@@ -121,7 +121,7 @@ int main (int argc, char **argv) {
     name = "x^-2 == 1 / sqr(x)";
     x_positive ? compare(name, d_pow(x, -2.0L), d_inv(sqr_x)) : skip(name);
 
-    if (debug != 0) printf("\n");
+    if (debug != 0) fprintf(stderr, "\n");
 
     name = "sqr(x) * x^-3 == 1 / x";
     x_positive ? compare(name, d_mul(sqr_x, d_pow(x, -3.0L)), inv_x) : skip(name);
@@ -129,7 +129,7 @@ int main (int argc, char **argv) {
     name = "sqr(x)^0.5 == |x|";
     x_non_zero ? compare(name, d_pow(sqr_x, 0.5L), d_abs(x)) : skip(name);
 
-    if (debug != 0) printf("\n");
+    if (debug != 0) fprintf(stderr, "\n");
     exp_x = d_exp(x);
     if (x_positive) ln_x = d_log(x);
 
@@ -148,7 +148,7 @@ int main (int argc, char **argv) {
     name = "log(x^-3) == - 3 * log(x)";
     x_positive ? compare(name, d_log(d_pow(x, -3.0L)), d_scale(ln_x, -3.0L)) : skip(name);
 
-    if (debug != 0) printf("\n");
+    if (debug != 0) fprintf(stderr, "\n");
     sin = d_sinh(x);
     cos = d_cosh(x);
     tan = d_tanh(x);
@@ -169,7 +169,7 @@ int main (int argc, char **argv) {
     name = "cosh(2x) == cosh^2(x) + sinh^2(x)";
     compare(name, cos_2x, d_add(sqr_cos_x, sqr_sin_x));
 
-    if (debug != 0) printf("\n");
+    if (debug != 0) fprintf(stderr, "\n");
     neg_exp_x = d_exp(d_scale(x, -1.0L));
 
     name = "cosh(x) == (e^x + e^-x) / 2";
@@ -178,7 +178,7 @@ int main (int argc, char **argv) {
     name = "sinh(x) == (e^x - e^-x) / 2";
     compare(name, sin, d_scale(d_sub(exp_x, neg_exp_x), 0.5L));
 
-    if (debug != 0) printf("\n");
+    if (debug != 0) fprintf(stderr, "\n");
     sin = d_sin(x);
     cos = d_cos(x);
     tan = d_tan(x);
@@ -199,16 +199,16 @@ int main (int argc, char **argv) {
     name = "cos(2x) == cos^2(x) - sin^2(x)";
     compare(name, cos_2x, d_sub(sqr_cos_x, sqr_sin_x));
 
-    if (debug != 0) printf("\n");
-    printf("%sTotal%s: %d, %sPASSED%s %d", KWHT, KNRM, total, KGRN, KNRM, passed);
+    if (debug != 0) fprintf(stderr, "\n");
+    fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", KWHT, KNRM, total, KGRN, KNRM, passed);
     if (skipped > 0) {
-        printf(", %sSKIPPED%s %d", KYLW, KNRM, skipped);
+        fprintf(stderr, ", %sSKIPPED%s %d", KYLW, KNRM, skipped);
     }
     if (passed == total - skipped) {
-        printf("\n\n");
+        fprintf(stderr, "\n\n");
         return 0;
     } else {
-        printf(", %sFAILED%s %d\n\n", KRED, KNRM, total - passed - skipped);
+        fprintf(stderr, ", %sFAILED%s %d\n\n", KRED, KNRM, total - passed - skipped);
         return 1;
     }
 }
