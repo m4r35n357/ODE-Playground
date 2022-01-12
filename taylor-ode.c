@@ -167,8 +167,7 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
         for (int j = 0; j < k; j++) {
             t_sum += t[j] * (k - j) * t[k - j];
         };
-        s[k] = 2.0L * (g == TRIG ? t_sum : - t_sum) / k;
-        return (pair) {t[k], s[k]};
+        return (pair) {t[k], s[k] = 2.0L * (g == TRIG ? t_sum : - t_sum) / k};
     }
 }
 
