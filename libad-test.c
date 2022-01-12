@@ -82,13 +82,6 @@ static void compare (char* name, series a, series b) {
     passed++;
 }
 
-static series contaminate (series a) {
-    for (int k = 0; k < n; k++) {
-        mpfr_set_inf(a[k], 1);
-    }
-    return a;
-}
-
 int main (int argc, char **argv) {
     mpfr_t PI_2;
 
@@ -114,31 +107,31 @@ int main (int argc, char **argv) {
     int x_non_zero = mpfr_zero_p(x[0]) == 0;
     int x_lt_pi_2 = mpfr_cmpabs(x[0], PI_2) < 0;
 
-    series r1 = contaminate(t_jet(n));
-    series r2 = contaminate(t_jet(n));
-    series r3 = contaminate(t_jet(n));
-    series abs_x = contaminate(t_jet(n));
-    series inv_x = contaminate(t_jet(n));
-    series sqr_x = contaminate(t_jet(n));
-    series sqr_sin_x = contaminate(t_jet(n));
-    series sqr_cos_x = contaminate(t_jet(n));
-    series sqr_tan_x = contaminate(t_jet(n));
-    series sqrt_x = contaminate(t_jet(n));
-    series exp_x = contaminate(t_jet(n));
-    series neg_exp_x = contaminate(t_jet(n));
-    series ln_x = contaminate(t_jet(n));
-    series sin = contaminate(t_jet(n));
-    series sin_2x = contaminate(t_jet(n));
-    series cos = contaminate(t_jet(n));
-    series cos_2x = contaminate(t_jet(n));
-    series tan = contaminate(t_jet(n));
-    series sec2 = contaminate(t_jet(n));
+    series r1 = t_jet(n);
+    series r2 = t_jet(n);
+    series r3 = t_jet(n);
+    series abs_x = t_jet(n);
+    series inv_x = t_jet(n);
+    series sqr_x = t_jet(n);
+    series sqr_sin_x = t_jet(n);
+    series sqr_cos_x = t_jet(n);
+    series sqr_tan_x = t_jet(n);
+    series sqrt_x = t_jet(n);
+    series exp_x = t_jet(n);
+    series neg_exp_x = t_jet(n);
+    series ln_x = t_jet(n);
+    series sin = t_jet(n);
+    series sin_2x = t_jet(n);
+    series cos = t_jet(n);
+    series cos_2x = t_jet(n);
+    series tan = t_jet(n);
+    series sec2 = t_jet(n);
 
     series S1 = ad_const(t_jet(n), D1);
 
     fprintf(stdout, "\n");
     fprintf(stdout, "%sHorner%s\n", KWHT, KNRM);
-    series p = t_jet(n >= 8 ? n : 8);
+    series p = t_jet(n >= 7 ? n : 7);
     mpfr_set_si(p[0], 1, RND);
     mpfr_set_si(p[1], 3, RND);
     mpfr_set_si(p[2], 0, RND);
@@ -185,67 +178,50 @@ int main (int argc, char **argv) {
 
     name = "sqr(x) / x == x";
     x_non_zero ? compare(name, ad_div(r1, sqr_x, x), x) : skip(name);
-    contaminate(r1);
 
     name = "x * 1 / x == 1";
     x_non_zero ? compare(name, ad_mul(r1, x, inv_x), S1) : skip(name);
-    contaminate(r1);
 
     name = "sqrt(x) * sqrt(x) == x";
     x_positive ? compare(name, ad_mul(r1, sqrt_x, sqrt_x), x) : skip(name);
-    contaminate(r1);
 
     name = "x / sqrt(x) == sqrt(x)";
     x_positive ? compare(name, ad_div(r1, x, sqrt_x), sqrt_x) : skip(name);
-    contaminate(r1);
 
     if (debug != 0) fprintf(stderr, "\n");
 
     name = "x^2 == sqr(x)";
     x_positive ? compare(name, ad_pwr(r1, x, D2), sqr_x) : skip(name);
-    contaminate(r1);
 
     name = "x^1 == x";
     x_positive ? compare(name, ad_pwr(r1, x, D1), x) : skip(name);
-    contaminate(r1);
 
     name = "x^0.5 == sqrt(x)";
     x_positive ? compare(name, ad_pwr(r1, x, D05), sqrt_x): skip(name);
-    contaminate(r1);
 
     name = "x^0 == 1";
     x_positive ? compare(name, ad_pwr(r1, x, D0), S1) : skip(name);
-    contaminate(r1);
 
     name = "x^-0.5 == 1 / sqrt(x)";
     x_positive ? compare(name, ad_pwr(r1, x, D_05), ad_inv(r2, sqrt_x)) : skip(name);
-    contaminate(r1);
-    contaminate(r2);
 
     name = "x^-1 == 1 / x";
     x_positive ? compare(name, ad_pwr(r1, x, D_1), inv_x) : skip(name);
-    contaminate(r1);
 
     name = "x^-2 == 1 / sqr(x)";
     x_positive ? compare(name, ad_pwr(r1, x, D_2), ad_inv(r2, sqr_x)) : skip(name);
-    contaminate(r1);
-    contaminate(r2);
 
     if (debug != 0) fprintf(stderr, "\n");
     ad_abs(abs_x, x);
 
     name = "sqr(x) * x^-3 == 1 / x";
     x_positive ? compare(name, ad_mul(r1, sqr_x, ad_pwr(r2, x, D_3)), inv_x) : skip(name);
-    contaminate(r1);
-    contaminate(r2);
 
     name = "sqr(x)^0.5 == |x|";
     x_non_zero ? compare(name, ad_pwr(r1, sqr_x, D05), abs_x) : skip(name);
-    contaminate(r1);
 
     name = "sqrt(sqr(x) == |x|";
     x_non_zero ? compare(name, ad_sqrt(r1, sqr_x), abs_x) : skip(name);
-    contaminate(r1);
 
     if (debug != 0) fprintf(stderr, "\n");
     ad_exp(exp_x, x);
@@ -253,28 +229,18 @@ int main (int argc, char **argv) {
 
     name = "log(e^x) == x";
     compare(name, ad_ln(r1, exp_x), x);
-    contaminate(r1);
 
     name = "log(sqr(x)) == log(x) * 2";
     x_positive ? compare(name, ad_ln(r1, sqr_x), ad_scale(r2, ln_x, D2)) : skip(name);
-    contaminate(r1);
-    contaminate(r2);
 
     name = "log(sqrt(x)) == log(x) / 2";
     x_positive ? compare(name, ad_ln(r1, sqrt_x), ad_scale(r2, ln_x, D05)) : skip(name);
-    contaminate(r1);
-    contaminate(r2);
 
     name = "log(1 / x) == - log(x)";
     x_positive ? compare(name, ad_ln(r1, inv_x), ad_scale(r2, ln_x, D_1)) : skip(name);
-    contaminate(r1);
-    contaminate(r2);
 
     name = "log(x^-3) == - 3 * log(x)";
     x_positive ? compare(name, ad_ln(r1, ad_pwr(r2, x, D_3)), ad_scale(r3, ln_x, D_3)) : skip(name);
-    contaminate(r1);
-    contaminate(r2);
-    contaminate(r3);
 
     if (debug != 0) fprintf(stderr, "\n");
     ad_sin_cos(sin, cos, x, HYP);
@@ -285,42 +251,30 @@ int main (int argc, char **argv) {
 
     name = "cosh^2(x) - sinh^2(x) == 1";
     compare(name, ad_sub(r1, sqr_cos_x, sqr_sin_x), S1);
-    contaminate(r1);
 
     name = "sech^2(x) + tanh^2(x) == 1";
     compare(name, ad_add(r1, sec2, ad_sqr(sqr_tan_x, tan)), S1);
-    contaminate(r1);
 
     name = "tanh(x) == sinh(x) / cosh(x)";
     compare(name, tan, ad_div(r1, sin, cos));
-    contaminate(r1);
 
     name = "sech^2(x) == 1 / cosh^2(x)";
     compare(name, sec2, ad_inv(r1, sqr_cos_x));
-    contaminate(r1);
 
     name = "sinh(2x) == 2 * sinh(x) * cosh(x)";
     compare(name, sin_2x, ad_scale(r1, ad_mul(r2, sin, cos), D2));
-    contaminate(r1);
-    contaminate(r2);
 
     name = "cosh(2x) == cosh^2(x) + sinh^2(x)";
     compare(name, cos_2x, ad_add(r1, sqr_cos_x, sqr_sin_x));
-    contaminate(r1);
 
     if (debug != 0) fprintf(stderr, "\n");
     ad_exp(neg_exp_x, ad_scale(r1, x, D_1));
-    contaminate(r1);
 
     name = "cosh(x) == (e^x + e^-x) / 2";
     compare(name, cos, ad_scale(r1, ad_add(r2, exp_x, neg_exp_x), D05));
-    contaminate(r1);
-    contaminate(r2);
 
     name = "sinh(x) == (e^x - e^-x) / 2";
     compare(name, sin, ad_scale(r1, ad_sub(r2, exp_x, neg_exp_x), D05));
-    contaminate(r1);
-    contaminate(r2);
 
     if (debug != 0) fprintf(stderr, "\n");
     ad_sin_cos(sin, cos, x, TRIG);
@@ -331,28 +285,21 @@ int main (int argc, char **argv) {
 
     name = "cos^2(x) + sin^2(x) == 1";
     compare(name, ad_add(r1, sqr_cos_x, sqr_sin_x), S1);
-    contaminate(r1);
 
     name = "sec^2(x) - tan^2(x) == 1";
     x_lt_pi_2 ? compare(name, ad_sub(r1, sec2, ad_sqr(sqr_tan_x, tan)), S1) : skip(name);
-    contaminate(r1);
 
     name = "tan(x) == sin(x) / cos(x)";
     x_lt_pi_2 ? compare(name, tan, ad_div(r1, sin, cos)) : skip(name);
-    contaminate(r1);
 
     name = "sec^2(x) == 1 / cos^2(x)";
     x_lt_pi_2 ? compare(name, sec2, ad_inv(r1, sqr_cos_x)) : skip(name);
-    contaminate(r1);
 
     name = "sin(2x) == 2 * sin(x) * cos(x)";
     compare(name, sin_2x, ad_scale(r1, ad_mul(r2, sin, cos), D2));
-    contaminate(r1);
-    contaminate(r2);
 
     name = "cos(2x) == cos^2(x) - sin^2(x)";
     compare(name, cos_2x, ad_sub(r1, sqr_cos_x, sqr_sin_x));
-    contaminate(r1);
 
     if (debug != 0) fprintf(stderr, "\n");
     fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", KWHT, KNRM, total, KGRN, KNRM, passed);
