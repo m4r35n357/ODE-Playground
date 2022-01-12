@@ -36,12 +36,12 @@ void t_params (char **argv, int argc, ...) {
 }
 
 series t_jet (int n) {
-    mpfr_t *s = calloc((size_t)n, sizeof (mpfr_t));
+    mpfr_t *s = calloc((size_t)n + 1, sizeof (mpfr_t));
     if (s == NULL) {
         fprintf(stderr, "Allocation failure!\n");
         exit(1);
     }
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i <= n; i++) {
         mpfr_init(s[i]);
     }
     return s;
@@ -65,9 +65,9 @@ mpfr_t *t_horner (series s, int n, mpfr_t h) {
 }
 
 void tsm (int argc, char **argv, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0) {
-    series x = t_jet(n + 1); mpfr_set(x[0], x0, RND);
-    series y = t_jet(n + 1); mpfr_set(y[0], y0, RND);
-    series z = t_jet(n + 1); mpfr_set(z[0], z0, RND);
+    series x = t_jet(n); mpfr_set(x[0], x0, RND);
+    series y = t_jet(n); mpfr_set(y[0], y0, RND);
+    series z = t_jet(n); mpfr_set(z[0], z0, RND);
     void *p = get_p(argc, argv, n);
     components *vk = malloc(sizeof (components));
     mpfr_inits(vk->x, vk->y, vk->z, NULL);
@@ -126,7 +126,7 @@ mpfr_t *t_div (series q, series u, series v, int k) {
     assert(mpfr_zero_p(v[0]) == 0);
     assert(q != u && q != v);
     if (k == 0) {
-        u == NULL ? mpfr_set(_, D1, RND): mpfr_set(_, u[0], RND);
+        mpfr_set(_, u == NULL ? D1 : u[0], RND);
     } else {
         mpfr_set_zero(_, 1);
         for (int j = 0; j < k; j++) {
