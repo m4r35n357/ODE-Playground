@@ -149,14 +149,15 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
             c_sum += c[j] * du_dt;
             s_sum += s[j] * du_dt;
         };
-        return (pair) {s[k] = c_sum / k, c[k] = s_sum * (g == TRIG ? -1.0L : 1.0L) / k};
+        return (pair) {s[k] = c_sum / k, c[k] = (g == TRIG ? - s_sum : s_sum) / k};
     }
 }
 
 pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
     assert(t != s && t != u && s != u);
     if (k == 0) {
-        return (pair) {t[0] = g == TRIG ? tanl(u[0]) : tanhl(u[0]), s[0] = g == TRIG ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]};
+		t[0] = g == TRIG ? tanl(u[0]) : tanhl(u[0]);
+        return (pair) {t[0], s[0] = g == TRIG ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]};
     } else {
         real t_sum = 0.0L, s_sum = 0.0L;
         for (int j = 0; j < k; j++) {
@@ -166,7 +167,7 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
         for (int j = 0; j < k; j++) {
             t_sum += t[j] * (k - j) * t[k - j];
         };
-        s[k] = t_sum * (g == TRIG ? 2.0L : -2.0L) / k;
+        s[k] = 2.0L * (g == TRIG ? t_sum : - t_sum) / k;
         return (pair) {t[k], s[k]};
     }
 }
