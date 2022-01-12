@@ -135,7 +135,7 @@ int main (int argc, char **argv) {
     t_output(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), step * steps, "_", "_", "_");
 
     fprintf(stderr, "\n");
-    fprintf(stdout, "%sRecurrence Relations%s\n", KWHT, KNRM);
+    fprintf(stdout, "%sRecurrence Relations, x = %.1Lf%s\n", KWHT, x[0], KNRM);
 
     ad_sqr(sqr_x, x);
     if (x_non_zero) ad_inv(inv_x, x);

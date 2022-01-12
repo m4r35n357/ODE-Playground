@@ -77,7 +77,7 @@ int main (int argc, char **argv) {
     dual xpx = d_scale(x, 2.0L);
 
     fprintf(stderr, "\n");
-    fprintf(stdout, "%sDual Numbers%s\n", KWHT, KNRM);
+    fprintf(stdout, "%sDual Numbers, x = %.1Lf%s\n", KWHT, x.val, KNRM);
 
     sqr_x = d_sqr(x);
     if (x_non_zero) inv_x = d_inv(x);
