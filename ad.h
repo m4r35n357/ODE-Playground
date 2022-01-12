@@ -100,3 +100,9 @@ series ad_pwr (series P, series U, real a);
  * Calculates Taylor Series for the natural logarithm of U, results stored in jet L
  */
 series ad_ln (series L, series U);
+
+void ad_asin (series AS, series DU_DF, series U, geometry G);
+
+void ad_acos (series AC, series DU_DF, series U, geometry G);
+
+void ad_atan (series AT, series DU_DF, series U, geometry G);
