@@ -22,7 +22,7 @@ void t_params (char **argv, int argc, ...) {
 
 series t_jet (int n) {
     series s = calloc((size_t)n + 1, sizeof (real));
-    if (s == NULL) {
+    if (!s) {
         fprintf(stderr, "Allocation failure!\n");
         exit(1);
     }
@@ -101,13 +101,13 @@ real t_div (series q, series u, series v, int k) {
     assert(v[0] != 0.0L);
     assert(q != u && q != v);
     if (k == 0) {
-        return q[0] = (u == NULL ? 1.0L : u[0]) / v[0];
+        return q[0] = (u ? u[0] : 1.0L) / v[0];
     } else {
         real sum = 0.0L;
         for (int j = 0; j < k; j++) {
             sum += q[j] * v[k - j];
         }
-        return q[k] = ((u == NULL ? 0.0L : u[k]) - sum) / v[0];
+        return q[k] = ((u ? u[k] : 0.0L) - sum) / v[0];
     }
 }
 

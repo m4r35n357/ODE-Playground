@@ -26,8 +26,8 @@ def t_prod(u, v, k):
 
 def t_quot(q, u, v, k):
     if k == 0:
-        return (1.0 if not u else u[0]) / v[0]
-    return ((0.0 if not u else u[k]) - fsum(q[j] * v[k - j] for j in range(0, k))) / v[0]
+        return (u[0] if u else 1.0) / v[0]
+    return ((u[k] if u else 0.0) - fsum(q[j] * v[k - j] for j in range(0, k))) / v[0]
 
 def t_sqr(u, k):
     odd = (k % 2 == 1)
