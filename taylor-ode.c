@@ -37,7 +37,7 @@ void t_params (char **argv, int argc, ...) {
 
 series t_jet (int n) {
     mpfr_t *s = calloc((size_t)n + 1, sizeof (mpfr_t));
-    if (s == NULL) {
+    if (!s) {
         fprintf(stderr, "Allocation failure!\n");
         exit(1);
     }
@@ -126,13 +126,13 @@ mpfr_t *t_div (series q, series u, series v, int k) {
     assert(mpfr_zero_p(v[0]) == 0);
     assert(q != u && q != v);
     if (k == 0) {
-        mpfr_set(_, u == NULL ? D1 : u[0], RND);
+        mpfr_set(_, u ? u[0] : D1, RND);
     } else {
         mpfr_set_zero(_, 1);
         for (int j = 0; j < k; j++) {
             mpfr_fma(_, q[j], v[k - j], _, RND);
         }
-        u == NULL ? mpfr_neg(_, _, RND) : mpfr_sub(_, u[k], _, RND);
+        u ? mpfr_sub(_, u[k], _, RND) : mpfr_neg(_, _, RND);
     }
     mpfr_div(q[k], _, v[0], RND);
     return &q[k];
