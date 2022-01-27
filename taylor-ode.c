@@ -234,6 +234,23 @@ mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {
     return &p[k];
 }
 
+mpfr_t *t_ipwr (series p, series u, int a, int k) {
+    assert(mpfr_sgn(u[0]) > 0);
+    assert(p != u);
+    if (k == 0) {
+        mpfr_pow_si(p[0], u[0], a, RND);
+    } else {
+        mpfr_set_zero(_, 1);
+        for (int j = 0; j < k; j++) {
+            mpfr_mul_si(__, u[k - j], a * (k - j) - j, RND);
+            mpfr_fma(_, p[j], __, _, RND);
+        }
+        mpfr_div_si(_, _, k, RND);
+        mpfr_div(p[k], _, u[0], RND);
+    }
+    return &p[k];
+}
+
 mpfr_t *t_ln (series l, series u, int k) {
     assert(mpfr_sgn(u[0]) > 0);
     assert(l != u);

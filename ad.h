@@ -97,6 +97,8 @@ pair ad_tan_sec2 (series T, series S2, series U, geometry g);
  */
 series ad_pwr (series P, series U, mpfr_t a);
 
+series ad_ipwr (series P, series U, int a);
+
 /*
  * Calculates Taylor Series for the natural logarithm of U, results stored in jet L
  */
