@@ -60,7 +60,7 @@ The functions provided cover the basic algebraic operations on Taylor Series (+ 
 * tan(h)_sec^2(h)
 * pwr (f(x)^a, where a is a scalar)
 * ln
-* asin(h), acos(h), atan(h) - Python only (on pure_c branch)
+* asin(h), acos(h), atan(h) - pure_c branch only
 
 The recurrence relations used here are derived along the lines of (amongst other sources) http://www2.math.uni-wuppertal.de/wrswt/preprints/prep_05_4.pdf and http://aimsciences.org/journals/displayPaperPro.jsp?paperID=9241 (open access).
 
