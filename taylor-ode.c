@@ -26,6 +26,9 @@ series t_jet (int n) {
         fprintf(stderr, "Allocation failure!\n");
         exit(1);
     }
+    for (int i = 0; i <= n; i++) {
+        s[i] = NAN;
+    }
     return s;
 }
 
@@ -196,5 +199,70 @@ real t_ln (series l, series u, int k) {
             sum += j * l[j] * u[k - j];
         }
         return l[k] = (u[k] - sum / k) / u[0];
+    }
+}
+
+pair t_asin (series as, series uf, series u, int k, geometry g) {
+    assert(g == TRIG ? u[0] >= -1.0L && u[0] <= 1.0L : 1);
+    assert(as != uf && as != u && uf != u);
+    if (k == 0) {
+        return (pair) {
+            as[0] = g == TRIG ? asinl(u[0]) : asinhl(u[0]),
+            uf[0] = sqrtl(g == TRIG ? 1.0L - u[0] * u[0] : 1.0L + u[0] * u[0])
+        };
+    } else {
+        real as_sum = 0.0L, uf_sum = 0.0L;
+        for (int j = 1; j < k; j++) {
+            as_sum += j * as[j] * uf[k - j];
+        };
+        as[k] = (u[k] - as_sum / k) / uf[0];
+        for (int j = 0; j < k; j++) {
+            uf_sum += u[j] * (k - j) * as[k - j];
+        };
+        return (pair) {as[k], uf[k] = (g == TRIG ? - uf_sum : uf_sum) / k};
+    }
+}
+
+pair t_acos (series ac, series uf, series u, int k, geometry g) {
+    assert(g == TRIG ? u[0] >= -1.0L && u[0] <= 1.0L : u[0] >= 1.0L);
+    assert(ac != uf && ac != u && uf != u);
+    if (k == 0) {
+        return (pair) {
+            ac[0] = g == TRIG ? acosl(u[0]) : acoshl(u[0]),
+            uf[0] = g == TRIG ? - sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] - 1.0L)
+        };
+    } else {
+        real ac_sum = 0.0L, uf_sum = 0.0L;
+        for (int j = 1; j < k; j++) {
+            ac_sum += j * ac[j] * uf[k - j];
+        };
+        ac[k] = (u[k] + (g == TRIG ? ac_sum : - ac_sum) / k) / uf[0];
+        for (int j = 0; j < k; j++) {
+            uf_sum += u[j] * (k - j) * ac[k - j];
+        };
+        return (pair) {ac[k], uf[k] = uf_sum / k};
+    }
+}
+
+pair t_atan (series at, series uf, series u, int k, geometry g) {
+    assert(g == TRIG ? 1 : u[0] >= -1.0L && u[0] <= 1.0L);
+    assert(at != uf && at != u && uf != u);
+    if (k == 0) {
+        return (pair) {
+            at[0] = g == TRIG ? atanl(u[0]) : atanhl(u[0]),
+            uf[0] = g == TRIG ? 1.0L + u[0] * u[0] : 1.0L - u[0] * u[0]
+        };
+    } else {
+        real at_sum = 0.0L, uf_sum = 0.0L;
+        for (int j = 1; j < k; j++) {
+            at_sum += j * at[j] * uf[k - j];
+        };
+        for (int j = 0; j < k; j++) {
+            uf_sum += u[j] * (k - j) * u[k - j];
+        };
+        return (pair) {
+            at[k] = (u[k] - at_sum / k) / uf[0],
+            uf[k] = 2.0L * (g == TRIG ? uf_sum : - uf_sum) / k
+        };
     }
 }
