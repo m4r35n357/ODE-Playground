@@ -301,26 +301,24 @@ int main (int argc, char **argv) {
     compare(name, r1, x);
 
     if (debug != 0) fprintf(stderr, "\n");
+    ad_ln(gd_1, ad_abs(r3, ad_div(r2, ad_add(r1, sin, S1), cos)));
 
-    ad_add(r1, sin, S1);
-    ad_div(r2, r1, cos);
-    ad_abs(r3, r2);
-    ad_ln(gd_1, r3);
     name = "arsin(tan(x)) == gd^-1 x";
     ad_asin(r1, r2, tan, HYP);
     compare(name, gd_1, r1);
+
     name = "artan(sin(x)) == gd^-1 x";
     ad_atan(r1, r2, sin, HYP);
     compare(name, gd_1, r1);
 
     ad_tan_sec2(r3, r2, gd_1, HYP);
     ad_asin(r1, r2, r3, TRIG);
-    name = "gd^-1 arcsin(tanh(x)) == x";
+    name = "arcsin(tanh(gd^-1 x)) == x";
     compare(name, r1, x);
 
     ad_sin_cos(r3, r2, gd_1, HYP);
     ad_atan(r1, r2, r3, TRIG);
-    name = "gd^-1 arctan(sinh(x)) == x";
+    name = "arctan(sinh(gd^-1 x)) == x";
     compare(name, r1, x);
 
     if (debug != 0) fprintf(stderr, "\n");

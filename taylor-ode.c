@@ -26,9 +26,6 @@ series t_jet (int n) {
         fprintf(stderr, "Allocation failure!\n");
         exit(1);
     }
-    for (int i = 0; i <= n; i++) {
-        s[i] = NAN;
-    }
     return s;
 }
 
