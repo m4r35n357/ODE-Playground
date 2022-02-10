@@ -13,7 +13,7 @@
 target=$1
 opt=$2
 
-CCOPTS="-O $opt --single-threaded --strip --library c -target $target"
+CCOPTS="-O $opt -fsingle-threaded --strip --library c -target $target"
 
 echo Zig version $(./zig version)
 
