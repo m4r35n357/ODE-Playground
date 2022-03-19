@@ -2,7 +2,7 @@
 #
 #  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-# Example: ./h-kerr-dbg 6 8 .01 1000 1 0.800 1.0 1.0 0x1.e4193e70400aa1618d6a73588003p-1 0x1.6f332af8a7a45e1270ce0d557031p+0 1.0 0x1.fea400cf8eb083ea2dc0c606c15p+2 7.500 0.000 >kerr-image-input
+# Example: ./h-kerr-dbg 6 8 .01 1000 1 0.800 1.0 0x1.e4193e70400aa1618d6a73588003p-1 0x1.6f332af8a7a45e1270ce0d557031p+0 1.0 0x1.fea400cf8eb083ea2dc0c606c15p+2 7.500 0.000 >kerr-image-input
 # Example:  time -p <kerr-image-input ./raytrace
 # Example:  ffmpeg -y -i RaytracingOutput/%04d.png -c:v libx264 -crf 1 raytrace.mp4
 # Example:  mplayer raytrace.mp4 -fps 10
