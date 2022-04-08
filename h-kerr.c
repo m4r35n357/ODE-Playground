@@ -67,7 +67,7 @@ static parameters *get_p (int argc, char **argv, int va_begin) {
     return p;
 }
 
-void update_q (void *params, real c) {  // dq / dt = dH / dp
+void update_q (void *params, real c) {  // dq / dt = d"H" / dp
     parameters *p = (parameters *)params;
     p->q_t += c * p->p_t;
     p->q_r += c * p->p_r;
@@ -76,10 +76,10 @@ void update_q (void *params, real c) {  // dq / dt = dH / dp
     refresh(p);
 }
 
-void update_p (void *params, real d) {  // dp / dt = - dH / dq = - (- 0.5 dX / dq) where X is R or THETA
+void update_p (void *params, real d) {  // dp / dt = - d"H" / dq = - (- 0.5 dX / dq) where X is R or THETA
     parameters *p = (parameters *)params;
-    p->p_r += 0.5L * d * p->R.dot;
-    p->p_theta += 0.5L * d * p->THETA.dot;
+    p->p_r -= d * (- 0.5L * p->R.dot);
+    p->p_theta -= d * (- 0.5L * p->THETA.dot);
 }
 
 static real v_dot_v (real vt, real vr, real vth, real vph, real a, real ra2, real sth2, real sigma, real delta) {  // conserved
@@ -97,8 +97,9 @@ static void plot_path (long dp, void *params, real t) {
     sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%.6Le  %%.3Le %%.3Le %%.3Le  %%.3Le %%.3Le\n", dp, dp, dp);
     printf(fs, ra_sth * cosl(p->q_phi), ra_sth * sinl(p->q_phi), p->q_r * cosl(p->q_theta), t,
            error(1.0L + v_dot_v(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2.val, p->sth2.val, sigma, p->delta.val)),
-           error(0.5L * (p->p_r * p->p_r - p->R.val)), error(0.5L * (p->p_theta * p->p_theta - p->THETA.val)),
-           gamma, sqrtl(1.0L - 1.0L / (gamma * gamma)));  // "Hamiltonian" = p_r^2 / 2 + (- R(q_r) / 2) = 0, similar for THETA
+           error(0.5L * (p->p_r * p->p_r - p->R.val)),              // "H" = p_r^2 / 2 + (- R(q_r) / 2) = 0
+           error(0.5L * (p->p_theta * p->p_theta - p->THETA.val)),  // "H" = p_theta^2 / 2 + (- THETA(q_theta) / 2) = 0
+           gamma, sqrtl(1.0L - 1.0L / (gamma * gamma)));
 }
 
 static void plot_view (long dp, void *params, real t) {
