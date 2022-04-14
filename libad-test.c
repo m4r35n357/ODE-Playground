@@ -13,11 +13,11 @@
 #include "taylor-ode.h"
 #include "ad.h"
 
-#define KNRM "\x1B[0;37m"
-#define KWHT "\x1B[1;37m"
-#define KGRN "\x1B[1;32m"
-#define KYLW "\x1B[1;33m"
-#define KRED "\x1B[1;31m"
+#define NRM "\x1B[0;37m"
+#define WHT "\x1B[1;37m"
+#define GRN "\x1B[1;32m"
+#define YLW "\x1B[1;33m"
+#define RED "\x1B[1;31m"
 
 static int n, debug = 0, total = 0, passed = 0, skipped = 0;
 
@@ -48,7 +48,7 @@ components ode (series x, series y, series z, void *params, int k) {
 static void skip (char* name) {
     total++;
     skipped++;
-    if (debug >= 1) fprintf(stderr, "%s SKIP%s %s\n", KYLW, KNRM, name);
+    if (debug >= 1) fprintf(stderr, "%s SKIP%s %s\n", YLW, NRM, name);
 }
 
 static void compare (char* name, series a, series b) {
@@ -56,15 +56,15 @@ static void compare (char* name, series a, series b) {
     for (int k = 0; k < n; k++) {
         delta = a[k] - b[k];
         if (isnan(delta) || isinf(delta) || fabsl(delta) > tolerance) {
-            fprintf(stderr, "%s FAIL%s %s\n  k=%d  LHS: %+.6Le  RHS: %+.6Le  (%+.3Le)\n", KRED, KNRM, name, k, a[k], b[k], delta);
+            fprintf(stderr, "%s FAIL%s %s\n  k=%d  LHS: %+.6Le  RHS: %+.6Le  (%+.3Le)\n", RED, NRM, name, k, a[k], b[k], delta);
             return;
         }
         if (debug >= 2) {
             if (k == 0) fprintf(stderr, "\n");
-            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.6Le %+.6Le  (%+.3Le)\n", KNRM, KNRM, k, a[k], b[k], delta);
+            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.6Le %+.6Le  (%+.3Le)\n", NRM, NRM, k, a[k], b[k], delta);
         }
     }
-    if (debug >= 1) fprintf(stderr, "%s PASS%s %s\n", KGRN, KNRM, name);
+    if (debug >= 1) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
     passed++;
 }
 
@@ -120,7 +120,7 @@ int main (int argc, char **argv) {
     series S1 = ad_const(t_jet(n), 1.0L);
 
     fprintf(stdout, "\n");
-    fprintf(stdout, "%sHorner%s\n", KWHT, KNRM);
+    fprintf(stdout, "%sHorner%s\n", WHT, NRM);
     series p = t_jet(n >= 7 ? n : 7);
     p[0] = 1.0L; p[1] = 3.0L; p[2] = 0.0L; p[3] = 2.0L;
     fprintf(stdout, " 23 %8.3Lf\n", t_horner(p, 3, 2.0L));
@@ -130,15 +130,15 @@ int main (int argc, char **argv) {
     fprintf(stdout, "201 %8.3Lf\n", t_horner(p, 7, -2.0L));
 
     fprintf(stdout, "\n");
-    fprintf(stdout, "%sTaylor Series Method: x'=1  y'=0  z'=-1%s\n", KWHT, KNRM);
+    fprintf(stdout, "%sTaylor Series Method: x'=1  y'=0  z'=-1%s\n", WHT, NRM);
     int dp = 12, steps = 10;
     real step = 0.1L;
     tsm(argc, argv, dp, n, step, steps, 1.0L, 1.0L, 1.0L);
-    fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", KWHT, KNRM);
+    fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);
     t_output(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), step * steps, "_", "_", "_");
 
     fprintf(stderr, "\n");
-    fprintf(stderr, "%sRecurrence Relations, x = %.1Lf%s\n", KWHT, x[0], KNRM);
+    fprintf(stderr, "%sRecurrence Relations, x = %.1Lf%s\n", WHT, x[0], NRM);
 
     ad_sqr(sqr_x, x);
     if (x_non_zero) ad_inv(inv_x, x);
@@ -322,15 +322,15 @@ int main (int argc, char **argv) {
     compare(name, r1, x);
 
     if (debug != 0) fprintf(stderr, "\n");
-    fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", KWHT, KNRM, total, KGRN, KNRM, passed);
+    fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
     if (skipped > 0) {
-        fprintf(stderr, ", %sSKIPPED%s %d", KYLW, KNRM, skipped);
+        fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
     }
     if (passed == total - skipped) {
         fprintf(stderr, "\n\n");
         return 0;
     } else {
-        fprintf(stderr, ", %sFAILED%s %d\n\n", KRED, KNRM, total - passed - skipped);
+        fprintf(stderr, ", %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);
         return 1;
     }
 }

@@ -12,11 +12,11 @@
 #include <math.h>
 #include "dual.h"
 
-#define KNRM "\x1B[0;37m"
-#define KWHT "\x1B[1;37m"
-#define KGRN "\x1B[1;32m"
-#define KYLW "\x1B[1;33m"
-#define KRED "\x1B[1;31m"
+#define NRM "\x1B[0;37m"
+#define WHT "\x1B[1;37m"
+#define GRN "\x1B[1;32m"
+#define YLW "\x1B[1;33m"
+#define RED "\x1B[1;31m"
 
 static int debug = 0, total = 0, passed = 0, skipped = 0;
 
@@ -25,25 +25,25 @@ static real delta_val, delta_dot, tolerance;
 static void skip (char* name) {
     total++;
     skipped++;
-    if (debug >= 1) fprintf(stderr, "%s SKIP%s %s\n", KYLW, KNRM, name);
+    if (debug >= 1) fprintf(stderr, "%s SKIP%s %s\n", YLW, NRM, name);
 }
 
 static void compare (char* name, dual a, dual b) {
     total++;
     delta_val = a.val - b.val;
     if (fabsl(delta_val) > tolerance) {
-        fprintf(stderr, "%s FAIL%s %s\n  VAL  LHS: %+.6Le  RHS: %+.6Le  (%+.3Le)\n", KRED, KNRM, name, a.val, b.val, delta_val);
+        fprintf(stderr, "%s FAIL%s %s\n  VAL  LHS: %+.6Le  RHS: %+.6Le  (%+.3Le)\n", RED, NRM, name, a.val, b.val, delta_val);
         return;
     }
     delta_dot = a.dot - b.dot;
     if (fabsl(delta_dot) > tolerance) {
-        fprintf(stderr, "%s FAIL%s %s\n  DOT  LHS: %+.6Le  RHS: %+.6Le  (%+.3Le)\n", KRED, KNRM, name, a.dot, b.dot, delta_dot);
+        fprintf(stderr, "%s FAIL%s %s\n  DOT  LHS: %+.6Le  RHS: %+.6Le  (%+.3Le)\n", RED, NRM, name, a.dot, b.dot, delta_dot);
         return;
     }
     if (debug >= 2) fprintf(stderr, "\n");
-    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.6Le %+.6Le  diff %+.3Le\n", KNRM, KNRM, a.val, b.val, delta_val);
-    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.6Le %+.6Le  diff %+.3Le\n", KNRM, KNRM, a.dot, b.dot, delta_dot);
-    if (debug >= 1) fprintf(stderr, "%s PASS%s %s\n", KGRN, KNRM, name);
+    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.6Le %+.6Le  diff %+.3Le\n", NRM, NRM, a.val, b.val, delta_val);
+    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.6Le %+.6Le  diff %+.3Le\n", NRM, NRM, a.dot, b.dot, delta_dot);
+    if (debug >= 1) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
     passed++;
 }
 
@@ -77,7 +77,7 @@ int main (int argc, char **argv) {
     dual xpx = d_scale(x, 2.0L);
 
     fprintf(stderr, "\n");
-    fprintf(stderr, "%sDual Numbers, x = %.1Lf%s\n", KWHT, x.val, KNRM);
+    fprintf(stderr, "%sDual Numbers, x = %.1Lf%s\n", WHT, x.val, NRM);
 
     sqr_x = d_sqr(x);
     if (x_non_zero) inv_x = d_inv(x);
@@ -200,15 +200,15 @@ int main (int argc, char **argv) {
     compare(name, cos_2x, d_sub(sqr_cos_x, sqr_sin_x));
 
     if (debug != 0) fprintf(stderr, "\n");
-    fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", KWHT, KNRM, total, KGRN, KNRM, passed);
+    fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
     if (skipped > 0) {
-        fprintf(stderr, ", %sSKIPPED%s %d", KYLW, KNRM, skipped);
+        fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
     }
     if (passed == total - skipped) {
         fprintf(stderr, "\n\n");
         return 0;
     } else {
-        fprintf(stderr, ", %sFAILED%s %d\n\n", KRED, KNRM, total - passed - skipped);
+        fprintf(stderr, ", %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);
         return 1;
     }
 }
