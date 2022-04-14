@@ -18,6 +18,7 @@
 #define GRN "\x1B[1;32m"
 #define YLW "\x1B[1;33m"
 #define RED "\x1B[1;31m"
+#define CYN "\x1B[0;36m"
 
 static int n, debug = 0, total = 0, passed = 0, skipped = 0;
 
@@ -138,7 +139,7 @@ int main (int argc, char **argv) {
     t_output(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), step * steps, "_", "_", "_");
 
     fprintf(stderr, "\n");
-    fprintf(stderr, "%sRecurrence Relations, x = %.1Lf%s\n", WHT, x[0], NRM);
+    fprintf(stderr, "%sRecurrence Relations: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x[0], NRM);
 
     ad_sqr(sqr_x, x);
     if (x_non_zero) ad_inv(inv_x, x);

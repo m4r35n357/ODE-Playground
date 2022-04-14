@@ -17,6 +17,7 @@
 #define GRN "\x1B[1;32m"
 #define YLW "\x1B[1;33m"
 #define RED "\x1B[1;31m"
+#define CYN "\x1B[0;36m"
 
 static int debug = 0, total = 0, passed = 0, skipped = 0;
 
@@ -77,7 +78,7 @@ int main (int argc, char **argv) {
     dual xpx = d_scale(x, 2.0L);
 
     fprintf(stderr, "\n");
-    fprintf(stderr, "%sDual Numbers, x = %.1Lf%s\n", WHT, x.val, NRM);
+    fprintf(stderr, "%sDual Numbers: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x.val, NRM);
 
     sqr_x = d_sqr(x);
     if (x_non_zero) inv_x = d_inv(x);
