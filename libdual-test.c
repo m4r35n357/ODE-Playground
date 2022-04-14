@@ -32,12 +32,12 @@ static void compare (char* name, dual a, dual b) {
     total++;
     delta_val = a.val - b.val;
     if (fabsl(delta_val) > tolerance) {
-        fprintf(stderr, "%s FAIL%s %s  LHS: %.6Le  RHS: %.6Le  diff %.3Le\n", KRED, KNRM, name, a.val, b.val, delta_val);
+        fprintf(stderr, "%s FAIL%s %s\n  VAL  LHS: %+.6Le  RHS: %+.6Le  (%+.3Le)\n", KRED, KNRM, name, a.val, b.val, delta_val);
         return;
     }
     delta_dot = a.dot - b.dot;
     if (fabsl(delta_dot) > tolerance) {
-        fprintf(stderr, "%s FAIL%s %s  LHS: %.6Le  RHS: %.6Le  diff %.3Le\n", KRED, KNRM, name, a.dot, b.dot, delta_dot);
+        fprintf(stderr, "%s FAIL%s %s\n  DOT  LHS: %+.6Le  RHS: %+.6Le  (%+.3Le)\n", KRED, KNRM, name, a.dot, b.dot, delta_dot);
         return;
     }
     if (debug >= 2) fprintf(stderr, "\n");

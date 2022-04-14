@@ -56,12 +56,12 @@ static void compare (char* name, series a, series b) {
     for (int k = 0; k < n; k++) {
         delta = a[k] - b[k];
         if (isnan(delta) || isinf(delta) || fabsl(delta) > tolerance) {
-            fprintf(stderr, "%s FAIL%s %s  k: %d  LHS: %.6Le  RHS: %.6Le  diff %.3Le\n", KRED, KNRM, name, k, a[k], b[k], delta);
+            fprintf(stderr, "%s FAIL%s %s\n  k=%d  LHS: %+.6Le  RHS: %+.6Le  (%+.3Le)\n", KRED, KNRM, name, k, a[k], b[k], delta);
             return;
         }
         if (debug >= 2) {
             if (k == 0) fprintf(stderr, "\n");
-            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.6Le %+.6Le  diff %+.3Le\n", KNRM, KNRM, k, a[k], b[k], delta);
+            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.6Le %+.6Le  (%+.3Le)\n", KNRM, KNRM, k, a[k], b[k], delta);
         }
     }
     if (debug >= 1) fprintf(stderr, "%s PASS%s %s\n", KGRN, KNRM, name);
