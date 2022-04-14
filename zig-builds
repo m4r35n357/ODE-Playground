@@ -6,9 +6,12 @@
 #
 #  Example: ./zig-builds arm-linux-musleabihf ReleaseFast
 #  Example: ./zig-builds aarch64-linux-musl ReleaseFast
+#  Example: ./zig-builds aarch64-linux-gnu ReleaseFast
 #  Example: ./zig-builds x86_64-linux-musl ReleaseFast
 #  Example: ./zig-builds i386-linux-musl ReleaseFast
 #  Example: ./zig-builds x86_64-windows-gnu ReleaseFast
+#
+#  Example: for i in .5 0 -.5; do ./libdual-test $i 1e-18 1; ./libad-test 10 $i 1e-18 1; done >/dev/null
 
 target=$1
 opt=$2
@@ -34,6 +37,6 @@ $zig_build_exe h-newton.c symplectic.c dual.c $CCOPTS
 $zig_build_exe h-kerr-gen-particle.c dual.c $CCOPTS
 $zig_build_exe h-kerr-gen-light.c $CCOPTS
 
-ls -lh --color divergence* taylor-test dual-test tsm-* h-*
+ls -lh --color divergence* libad-test libdual-test tsm-* h-*
 
 echo OK
