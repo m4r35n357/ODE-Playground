@@ -332,6 +332,6 @@ int main (int argc, char **argv) {
         return 0;
     } else {
         fprintf(stderr, ", %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);
-        return 1;
+        return 3;
     }
 }
