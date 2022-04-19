@@ -100,6 +100,8 @@ Parameter | Meaning
 ```
 $ ./libdual-test-dbg .5 1e-18 1
 $ ./libtaylor-test-dbg 20 .5 1e-18 1
+
+$ for i in .5 0 -.5; do ./libdual-test-dbg $i 1e-15 1; ./libad-test-dbg 10 $i 1e-15 1; done >/dev/null
 ```
 ### C and Python Code coverage
 Creates web page summaries for both c and Python
