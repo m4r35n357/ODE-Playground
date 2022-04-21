@@ -52,10 +52,25 @@ do
 done
 
 echo ""
+build_rk4 () {
+    name=$1
+    ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c ode-common.c runge-kutta-ode.c main_rk4.c -lm -s
+    ${CC} -O0 -g $WARNINGS -o ${name}-dbg ${name}.c ode-common.c runge-kutta-ode.c main_rk4.c -lm
+}
+
+for model in \
+rk4-lorenz \
+rk4-thomas
+do
+    echo " Building ${model}"
+    build_rk4 ${model} &
+done
+
+echo ""
 build_tsm () {
     name=$1
-    ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c main.c -lm -s
-    ${CC} -O0 -g $WARNINGS -o ${name}-dbg ${name}.c taylor-ode.c main.c -lm
+    ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c ode-common.c taylor-ode.c main_tsm.c -lm -s
+    ${CC} -O0 -g $WARNINGS -o ${name}-dbg ${name}.c ode-common.c taylor-ode.c main_tsm.c -lm
 }
 
 for model in \
@@ -95,7 +110,7 @@ ${CC} -O0 $WARNINGS -g -o libdual-test-dbg dual.c libdual-test.c -lm &
 
 echo " Building libad-test-dbg"
 rm -f libad-test-dbg
-${CC} -O0 $WARNINGS -g -o libad-test-dbg taylor-ode.c ad.c libad-test.c -lm &
+${CC} -O0 $WARNINGS -g -o libad-test-dbg ode-common.c taylor-ode.c ad.c libad-test.c -lm &
 
 echo " Building libtaylor"
 rm -f libtaylor.so taylor-ode.o
@@ -119,5 +134,5 @@ ${CC} -O3 -DNDEBUG -c $WARNINGS -fpic symplectic.c && ${CC} -shared -o libsymp.s
 echo ""
 wait
 
-ls -lh --color libad-test-dbg libdual-test-dbg tsm-* h-* lib*.so divergence
+ls -lh --color libad-test-dbg libdual-test-dbg tsm-* rk4-* h-* lib*.so divergence
 echo ""

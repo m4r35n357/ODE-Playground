@@ -18,13 +18,23 @@ aarch64 | 128 bit software float
 
 The Python code uses hardware acceleration on all platforms; 80 bit on Intel, 64 bit on ARM.
 
-### ODE analysis using arbitrary-order Taylor Series Integration
+### ODE analysis using fourth order Runge-Kutta (RK4) - C only
+
+Plot 3D trajectories using Pi3D, including multi-body
+
+Minimal selection of clients (models) included
+
+Investigate the validity of chaotic solutions against step size, and compare to TSM
+
+Plot bifurcation diagrams, to find "interesting" parameter values to study
+
+### ODE analysis using arbitrary-order Taylor Series Method (TSM)
 
 Plot 3D trajectories using Pi3D, including multi-body
 
 Good selection of clients (models) included
 
-Investigate the validity of chaotic solutions against integrator order
+Investigate the validity of chaotic solutions against integrator order and step size
 
 Plot bifurcation diagrams, to find "interesting" parameter values to study
 
@@ -125,7 +135,7 @@ grep Example *
 ### Run a basic ODE simulation (ODE call):
 
 Runs a named simulation, and prints results to stdout.
-Each line consists of a column each for x, y, z, t, followed by three turning point tags for generating bifurcation diagrams.
+Each output line consists of a column each for x, y, z, t, followed by three turning point tags for generating bifurcation diagrams.
 
 **tsm-model-type** (c executables)
 
@@ -133,6 +143,17 @@ Parameter | Meaning
 ----------|-----------
 1 | x,y,z display precision in decimal places
 2 | order of Taylor Series
+3 | time step
+4 | number of steps
+5,6,7 | initial conditions, x0,y0,z0
+8+ | Model parameters
+
+**rk4-model-type** (c executables)
+
+Parameter | Meaning
+----------|-----------
+1 | x,y,z display precision in decimal places
+2 | only plot every ? lines of output (for smaller internal step than plot step)
 3 | time step
 4 | number of steps
 5,6,7 | initial conditions, x0,y0,z0
@@ -208,7 +229,8 @@ nosim | User-defined comparison between /tmp/$USER/dataA and /tmp/$USER/dataB
 
 #### CNS plot (matplotlib diff graph):
 ```
-./cns step2 ./tsm-lorenz-static 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 ./tsm-lorenz-static 6 4 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 ./rk4-lorenz-static 6 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 ```
 
 ### CNS Duration Scanning

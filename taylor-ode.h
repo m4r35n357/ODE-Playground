@@ -5,27 +5,12 @@
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
-#include "real.h"
-
-/*
- * The numerical base for string IO conversions
- */
-extern const int BASE;
+#include "ode-common.h"
 
 /*
  * Type for Taylor Series coordinate jets
  */
 typedef long double *series;
-
-/*
- * Prints a line of data to stdout, with turning point markers
- */
-void t_output (int dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label);
-
-/*
- * Retrieves ODE parameters from the tail of the command (arguments 8 onwards)
- */
-void t_params (char **argv, int count, ...);
 
 /*
  * Creates a zeroed Taylor Series jet with the specified number of elements
@@ -73,15 +58,6 @@ real t_horner (series S, int n, real h);
  * 2. Apply Horner's method to calculate the new values x(t0 + h), which become X[0] for the next time step.
  */
 void tsm (int dp, int n, real h, int steps, real x0, real y0, real z0, void *P);
-
-/*
- * For returning x, y, z velocities from the model
- */
-typedef struct {
-    real x;
-    real y;
-    real z;
-} components;
 
 /*
  * Obligatory client method signatures
