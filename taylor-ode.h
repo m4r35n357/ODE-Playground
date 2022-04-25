@@ -72,7 +72,7 @@ real t_horner (series S, int n, real h);
  *
  * 2. Apply Horner's method to calculate the new values x(t0 + h), which become X[0] for the next time step.
  */
-void tsm (int argc, char **argv, int dp, int n, real h, int steps, real x0, real y0, real z0);
+void tsm (int dp, int n, real h, int steps, real x0, real y0, real z0, void *P);
 
 /*
  * For returning x, y, z velocities from the model

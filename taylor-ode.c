@@ -51,11 +51,10 @@ static char *tag (series jet, real slope, char *min, char *max) {
     return jet[1] * slope < 0.0L ? (jet[2] > 0.0L ? min : max) : "_";
 }
 
-void tsm (int argc, char **argv, int dp, int n, real h, int steps, real x0, real y0, real z0) {
+void tsm (int dp, int n, real h, int steps, real x0, real y0, real z0, void *p) {
     series x = t_jet(n); x[0] = x0;
     series y = t_jet(n); y[0] = y0;
     series z = t_jet(n); z[0] = z0;
-    void *p = get_p(argc, argv, n);
     components s = (components) {0.0L, 0.0L, 0.0L};
     for (int step = 0; step < steps; step++) {
         for (int k = 0; k < n; k++) {

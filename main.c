@@ -13,8 +13,8 @@ int main (int argc, char **argv) {
     real step_size = strtold(argv[3], NULL); assert(step_size > 0.0L);
     int steps = (int)strtol(argv[4], NULL, BASE); assert(steps >= 1 && steps <= 1000000);
 
-    tsm(argc, argv, display_precision, order, step_size, steps,
-        strtold(argv[5], NULL), strtold(argv[6], NULL), strtold(argv[7], NULL));
+    tsm(display_precision, order, step_size, steps,
+        strtold(argv[5], NULL), strtold(argv[6], NULL), strtold(argv[7], NULL), get_p(argc, argv, order));
 
     return 0;
 }
