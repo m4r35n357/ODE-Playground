@@ -55,3 +55,15 @@ dual d_sinh (dual a);
 dual d_cosh (dual a);
 
 dual d_tanh (dual a);
+
+dual d_asin (dual a);
+
+dual d_acos (dual a);
+
+dual d_atan (dual a);
+
+dual d_asinh (dual a);
+
+dual d_acosh (dual a);
+
+dual d_atanh (dual a);

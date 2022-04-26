@@ -106,3 +106,27 @@ dual d_tanh (dual a) {
     real tanh_val = tanhl(a.val);
     return (dual) { .val = tanh_val, .dot = a.dot * (1.0L - tanh_val * tanh_val) };
 }
+
+dual d_asin (dual a) {
+    return (dual) { .val = asinl(a.val), .dot = a.dot / sqrtl(1.0L - a.val * a.val) };
+}
+
+dual d_acos (dual a) {
+    return (dual) { .val = acosl(a.val), .dot = - a.dot / sqrtl(1.0L - a.val * a.val) };
+}
+
+dual d_atan (dual a) {
+    return (dual) { .val = atanl(a.val), .dot = a.dot / (1.0L + a.val * a.val) };
+}
+
+dual d_asinh (dual a) {
+    return (dual) { .val = asinhl(a.val), .dot = a.dot / sqrtl(1.0L + a.val * a.val) };
+}
+
+dual d_acosh (dual a) {
+    return (dual) { .val = acoshl(a.val), .dot = a.dot / sqrtl(1.0L - a.val * a.val) };
+}
+
+dual d_atanh (dual a) {
+    return (dual) { .val = atanhl(a.val), .dot = a.dot / (1.0L - a.val * a.val) };
+}
