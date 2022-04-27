@@ -196,6 +196,7 @@ int main (int argc, char **argv) {
     name = "arctanh(tanh(x)) == x";
     compare(name, d_atanh(tan), x);
 
+    if (debug != 0) fprintf(stderr, "\n");
     sin = d_sin(x);
     cos = d_cos(x);
     tan = d_tan(x);

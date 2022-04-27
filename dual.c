@@ -108,10 +108,12 @@ dual d_tanh (dual a) {
 }
 
 dual d_asin (dual a) {
+    assert(a.val >= -1.0L && a.val <= 1.0L);
     return (dual) { .val = asinl(a.val), .dot = a.dot / sqrtl(1.0L - a.val * a.val) };
 }
 
 dual d_acos (dual a) {
+    assert(a.val >= -1.0L && a.val <= 1.0L);
     return (dual) { .val = acosl(a.val), .dot = - a.dot / sqrtl(1.0L - a.val * a.val) };
 }
 
@@ -124,9 +126,11 @@ dual d_asinh (dual a) {
 }
 
 dual d_acosh (dual a) {
+    assert(a.val >= 1.0L);
     return (dual) { .val = acoshl(a.val), .dot = a.dot / sqrtl(1.0L - a.val * a.val) };
 }
 
 dual d_atanh (dual a) {
+    assert(a.val >= -1.0L && a.val <= 1.0L);
     return (dual) { .val = atanhl(a.val), .dot = a.dot / (1.0L - a.val * a.val) };
 }
