@@ -41,3 +41,4 @@ cov_html/
 zig
 zig-cache/
 kerr-image.c
+RaytracingOutput/
