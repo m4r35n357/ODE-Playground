@@ -88,27 +88,20 @@ def t_atan(f, g, u, k, hyp=False):
 class Components(namedtuple('ParametersType', ['x', 'y', 'z'])):
     pass
 
-def output(x, y, z, t):
-    print(f'{x:+.{Context.places}e} {y:+.{Context.places}e} {z:+.{Context.places}e} {t:.5e}')
+def output(dp, x, y, z, t):
+    print(f'{x:+.{dp}e} {y:+.{dp}e} {z:+.{dp}e} {t:.5e}')
 
 
 # noinspection NonAsciiCharacters
-def tsm(ode, get_p):
-    Context.places, n, δt, n_steps = int(argv[1]), int(argv[2]), float(argv[3]), int(argv[4])  # controls
-    x, y, z = t_jet(n + 1), t_jet(n + 1), t_jet(n + 1)  # coordinate jets
-    x[0], y[0], z[0] = float(argv[5]), float(argv[6]), float(argv[7])  # initial values
-    steps = range(1, n_steps + 1)
-    index = range(n)
-    p = get_p(n)
-    output(x[0], y[0], z[0], 0.0)
-    for step in steps:
-        for k in index:
+def tsm(ode, places, n, δt, n_steps, x0, y0, z0, p):
+    x, y, z = t_jet(n + 1, x0), t_jet(n + 1, y0), t_jet(n + 1, z0)  # coordinate jets
+    for step in range(n_steps):
+        for k in range(n):
             c = ode(x, y, z, p, k)
-            x[k + 1] = c.x / (k + 1)
-            y[k + 1] = c.y / (k + 1)
-            z[k + 1] = c.z / (k + 1)
+            x[k + 1], y[k + 1], z[k + 1] = c.x / (k + 1), c.y / (k + 1), c.z / (k + 1)
+        output(places, x[0], y[0], z[0], step * δt)
         x[0], y[0], z[0] = t_horner(x, δt), t_horner(y, δt), t_horner(z, δt)
-        output(x[0], y[0], z[0], step * δt)
+    output(places, x[0], y[0], z[0], n_steps * δt)
 
 
 class Context:

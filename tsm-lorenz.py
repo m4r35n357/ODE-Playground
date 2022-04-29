@@ -5,7 +5,7 @@
 
 from sys import argv
 from collections import namedtuple
-from ad import tsm, t_prod, Components
+from ad import tsm, t_prod, Components, Context
 
 class Parameters(namedtuple('ParametersType', ['σ', 'ρ', 'β'])):
     pass
@@ -21,4 +21,5 @@ def ode(x, y, z, p, k):
                       z=t_prod(x, y, k) - p.β * z[k])
 
 
-tsm(ode, get_p)
+Context.places, n, δt, n_steps = int(argv[1]), int(argv[2]), float(argv[3]), int(argv[4])  # controls
+tsm(ode, Context.places, n, δt, n_steps, float(argv[5]), float(argv[6]), float(argv[7]), get_p(n))
