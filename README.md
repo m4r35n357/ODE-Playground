@@ -108,10 +108,10 @@ Parameter | Meaning
 4 | (Optional) verbosity: 0: summary (default), 1: list, 2: detail
 
 ```
-$ ./libdual-test-dbg .5 1e-18 1
-$ ./libtaylor-test-dbg 20 .5 1e-18 1
+$ ./libdual-test-dbg .5 1e-15 1
+$ ./libad-test-dbg 20 .5 1e-15 1
 
-$ for i in .5 0 -.5; do ./libdual-test-dbg $i 1e-15 1; ./libad-test-dbg 10 $i 1e-15 1; done >/dev/null
+$ for i in .5 0 -.5; do ./libdual-test-dbg $i 1e-15; ./libad-test-dbg 10 $i 1e-15; done >/dev/null
 ```
 ### C and Python Code coverage
 Creates web page summaries for both c and Python
