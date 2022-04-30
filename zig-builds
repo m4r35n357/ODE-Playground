@@ -24,11 +24,16 @@ zig_build_exe="./zig build-exe -fno-lto"
 
 for source in tsm-*.c
 do
-    $zig_build_exe $source taylor-ode.c main.c $CCOPTS
+    $zig_build_exe $source ode-common.c taylor-ode.c main_tsm.c $CCOPTS
+done
+
+for source in rk4-*.c
+do
+    $zig_build_exe $source ode-common.c runge-kutta-ode.c main_rk4.c $CCOPTS
 done
 
 $zig_build_exe divergence.c $CCOPTS
-$zig_build_exe libad-test.c taylor-ode.c ad.c $CCOPTS
+$zig_build_exe libad-test.c ode-common.c taylor-ode.c ad.c $CCOPTS
 $zig_build_exe libdual-test.c dual.c $CCOPTS
 
 $zig_build_exe h-analysis.c symplectic.c $CCOPTS
@@ -37,6 +42,6 @@ $zig_build_exe h-newton.c symplectic.c dual.c $CCOPTS
 $zig_build_exe h-kerr-gen-particle.c dual.c $CCOPTS
 $zig_build_exe h-kerr-gen-light.c $CCOPTS
 
-ls -lh --color divergence* libad-test libdual-test tsm-* h-*
+ls -lh --color divergence* libad-test libdual-test tsm-* rk4-* h-*
 
 echo OK
