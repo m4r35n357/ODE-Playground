@@ -377,7 +377,8 @@ class Dual:
             return i_pow if o > 0 else (1.0 / i_pow if o < 0 else Dual(1.0, 0.0))
         elif isinstance(o, float):
             assert self.val > 0.0, f"self.val = {self.val}"  # pragma: no mutate
-            return Dual(self.val ** o, self.dot * o * self.val ** (o - 1))
+            pwr = self.val ** o
+            return Dual(pwr, self.dot * o * pwr / self.val)
         elif isinstance(o, Dual):
             return (self.ln * o).exp
         raise RuntimeError(f"Incompatible Type: {type(o)}")
