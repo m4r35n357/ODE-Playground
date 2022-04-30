@@ -10,7 +10,7 @@ args=$*
 
 progname="tsm_${model}_gprof"
 
-gcc -Wall -pg -g -o $progname tsm-${model}.c taylor-ode.c main.c -lm
+gcc -Wall -pg -g -o $progname tsm-${model}.c ode-common.c taylor-ode.c main_tsm.c -lm
 
 time -p ./$progname $args >/dev/null
 

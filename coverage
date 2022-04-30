@@ -7,7 +7,7 @@ C_OUT_FILE='coverage.info'
 pytest --cov=ad --cov=plotters --cov-report html:$PYTHON_OUT ad_test.py solver_test.py -q
 echo ""
 
-c99 --coverage -O0 -o libad-test-dbg libad-test.c ad.c taylor-ode.c -lm
+c99 --coverage -O0 -o libad-test-dbg libad-test.c ad.c ode-common.c taylor-ode.c -lm
 ./libad-test-dbg 10 1 1e-12 >/dev/null
 
 c99 --coverage -O0 -o libdual-test-dbg libdual-test.c dual.c -lm
