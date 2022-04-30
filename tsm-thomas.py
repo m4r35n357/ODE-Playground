@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 #
+#  Example: ./tsm-thomas.py 6 8 0.1 30000 1 0 0 .19
+#
 #  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
 from sys import argv
 from collections import namedtuple
-from ad import tsm, t_sin_cos, Components, t_jet
+from ad import Components, Context, tsm, t_jet, t_sin_cos
 
 class Parameters(namedtuple('ParametersType', ['b', 'sx', 'sy', 'sz', 'cx', 'cy', 'cz'])):
     pass
@@ -22,4 +24,5 @@ def ode(x, y, z, p, k):
                       z=t_sin_cos(p.sx, p.cx, x, k)[0] - p.b * z[k])
 
 
-tsm(ode, get_p)
+Context.places, n, δt, n_steps = int(argv[1]), int(argv[2]), float(argv[3]), int(argv[4])  # controls
+tsm(ode, Context.places, n, δt, n_steps, float(argv[5]), float(argv[6]), float(argv[7]), get_p(n))

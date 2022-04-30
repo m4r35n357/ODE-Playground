@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 #
+#  Example: ./tsm-lorenz.py 6 8 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+#
 #  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
 from sys import argv
 from collections import namedtuple
 from ad import tsm, t_prod, Components, Context
+from ad import Components, Context, tsm, t_prod
 
 class Parameters(namedtuple('ParametersType', ['σ', 'ρ', 'β'])):
     pass
