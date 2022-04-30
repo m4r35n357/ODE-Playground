@@ -3,18 +3,14 @@
  *
  * Example: ./rk4-lorenz-dbg 15 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
  *
- * (c) 2018-2020 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
 #include <stdlib.h>
 #include <assert.h>
 #include "runge-kutta-ode.h"
 
-typedef struct {
-    real sigma;
-    real rho;
-    real beta;
-} parameters;
+typedef struct { real sigma, rho, beta; } parameters;
 
 void *get_p (int argc, char **argv) {
     assert(argc == 12);
