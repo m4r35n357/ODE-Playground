@@ -12,7 +12,7 @@ halfstep () {  # step / 2
         *rk4-*)	start="$1 $2 $(($3 * 2))";;
         *)      echo "CNS: Bad Executable Name"; exit;;
     esac
-    step=$(echo "scale=6; $4 / 2;" | /usr/bin/bc)
+    step=$(echo "scale=9; $4 / 2;" | /usr/bin/bc)
     steps=$(($5 * 2))
     shift 5
     end="$*"
