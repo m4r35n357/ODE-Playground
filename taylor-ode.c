@@ -7,6 +7,7 @@
 #include <stdarg.h>
 #include <assert.h>
 #include <math.h>
+#include <time.h>
 #include "taylor-ode.h"
 
 series t_jet (int n) {
@@ -35,6 +36,7 @@ static char *tag (series jet, real slope, char *min, char *max) {
 }
 
 void tsm (int dp, int n, real h, int steps, real x0, real y0, real z0, void *p) {
+    clock_t start = clock();
     series x = t_jet(n); x[0] = x0;
     series y = t_jet(n); y[0] = y0;
     series z = t_jet(n); z[0] = z0;
@@ -46,13 +48,13 @@ void tsm (int dp, int n, real h, int steps, real x0, real y0, real z0, void *p) 
             y[k + 1] = vk.y / (k + 1);
             z[k + 1] = vk.z / (k + 1);
         }
-        t_output(dp, x[0], y[0], z[0], h * step, tag(x, s.x, "x", "X"), tag(y, s.y, "y", "Y"), tag(z, s.z, "z", "Z"));
+        t_output(dp, x[0], y[0], z[0], h * step, tag(x, s.x, "x", "X"), tag(y, s.y, "y", "Y"), tag(z, s.z, "z", "Z"), cpu(start));
         s = (components) {x[1], y[1], z[1]};
         x[0] = t_horner(x, n, h);
         y[0] = t_horner(y, n, h);
         z[0] = t_horner(z, n, h);
     }
-    t_output(dp, x[0], y[0], z[0], h * steps, "_", "_", "_");
+    t_output(dp, x[0], y[0], z[0], h * steps, "_", "_", "_", cpu(start));
 }
 
 real t_const (real a, int k) {
@@ -130,7 +132,7 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
             real du_dt = (k - j) * u[k - j];
             c_sum += c[j] * du_dt;
             s_sum += s[j] * du_dt;
-        };
+        }
         return (pair) {s[k] = c_sum / k, c[k] = (g == TRIG ? - s_sum : s_sum) / k};
     }
 }
@@ -144,11 +146,11 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
         real t_sum = 0.0L, s_sum = 0.0L;
         for (int j = 0; j < k; j++) {
             s_sum += s[j] * (k - j) * u[k - j];
-        };
+        }
         t[k] = s_sum / k;
         for (int j = 0; j < k; j++) {
             t_sum += t[j] * (k - j) * t[k - j];
-        };
+        }
         return (pair) {t[k], s[k] = 2.0L * (g == TRIG ? t_sum : - t_sum) / k};
     }
 }

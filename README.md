@@ -231,6 +231,11 @@ step2 | The step size is halved (this is  now the _only_ "better" integrator!)
 nosim | User-defined comparison between /tmp/$USER/dataA and /tmp/$USER/dataB
 
 #### CNS plot (matplotlib diff graph):
+
+Here are some comparisons bewtween TSM and RK4 for roughly similar clean simulation times in each case.
+Note that RK4 quickly becomes impractical because of excessive CPU usage, whereas TSM can stay clean up to even higher time values.
+These specific results require 128-bit precision, i.e. aarch64 long double (software).
+In hardware 80-bit (x86-64) or 64-bit (armhf) floating point, the maximum clean simulation time will be correspondingly lower.
 ```
 ./cns step2 1.0 ./rk4-lorenz-static 6 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 ./cns step2 1.0 ./tsm-lorenz-static 6 4 .01 10000 -15.8 -17.48 35.64 10 28 8 3
@@ -263,9 +268,18 @@ Parameter | Meaning
 2 | deviation threshold
 3+ | ODE call
 
-#### CNS duration vs. Simulation Order (gnuplot graph):
+#### CNS duration vs. Simulation Order (gnuplot graph) for the given step size:
+
+The following commands perform a scan, and plot the simulation time and cpu time as histograms against integrator order:
 ```
-./cns-scan 28 1 ./tsm-lorenz-static 6 _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | gnuplot -p -e "plot '<cat' with boxes"
+./cns-scan 32 1 ./tsm-lorenz-static 6 _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | tee /tmp/$USER/data
+
+gnuplot -p -e "set ytics nomirror; set y2tics; plot '/tmp/$USER/data' using 1:2 axes x1y1 with boxes, '/tmp/$USER/data' using 1:3 axes x1y2 with boxes"
+```
+
+Order and CPU time against (desired) maximum clean simulation time from the same data:
+```
+gnuplot -p -e "set ytics nomirror; set y2tics; plot '/tmp/$USER/data' using 2:1 axes x1y1 with points, '/tmp/$USER/data' using 2:3 axes x1y2 with points"
 ```
 
 ### Sensitivity to Initial Conditions:
