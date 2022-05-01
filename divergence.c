@@ -8,8 +8,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
-
-typedef long double real;
+#include "real.h"
 
 int main(int argc, char **argv) {
     assert(argc >= 4);

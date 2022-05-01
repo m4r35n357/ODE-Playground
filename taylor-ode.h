@@ -10,7 +10,7 @@
 /*
  * Type for Taylor Series coordinate jets
  */
-typedef long double *series;
+typedef real *series;
 
 /*
  * Creates a zeroed Taylor Series jet with the specified number of elements
