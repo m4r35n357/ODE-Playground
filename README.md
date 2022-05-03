@@ -170,7 +170,7 @@ Parameter | Meaning
 #### Run & plot (3D gnuplot graph):
 ```
 ./tsm-thomas-dbg 6 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
-gnuplot -p -e "set xyplane 0; set view 54.73561,135; set xlabel 'X'; set ylabel 'Y'; set zlabel 'Z'; splot '/tmp/ian/data' with lines"
+gnuplot -p -e "set xyplane 0; set view 54.73561,135; set xlabel 'X'; set ylabel 'Y'; set zlabel 'Z'; splot '/tmp/$USER/data' with lines"
 ```
 #### Run & plot (2D gnuplot graph):
 ```
@@ -214,6 +214,8 @@ gnuplot -p -e "set t wxt size 1350,800 background rgb 'grey85'; set grid back; p
 
 In a chaotic system, accuracy can only be maintained for a finite simulation time.
 This script runs a given simulation twice, the second time with a "better" integrator, and shows the differences graphically.
+The maximum achievable clean simulation time is determined by machine precision alone.
+Step size and order can affect the efficiency of the calculations, but not the ultimate accuracy!
 
 **cns** (shell script)
 
@@ -233,7 +235,7 @@ nosim | User-defined comparison between /tmp/$USER/dataA and /tmp/$USER/dataB
 ./cns step2 ./rk4-lorenz-static 6 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 ```
 
-### CNS Duration Scanning
+### CNS Duration Scanning (TSM only)
 
 Runs a simulation repeatedly with increasing order of integration, for each order showing the simulation time when the deviation threshold is exceeded.
 You can run this to determine the maximum _useful_ integrator order to use, for a given step size.
