@@ -222,7 +222,8 @@ Step size and order can affect the efficiency of the calculations, but not the u
 Parameter | Meaning
 ----------|-----------
 1 | CNS function, Selects a better integrator for comparison, see below
-2+ | ODE call
+2 | deviation threshold
+3+ | ODE call
 
 CNS function | Meaning
 ----------|-----------
@@ -231,8 +232,22 @@ nosim | User-defined comparison between /tmp/$USER/dataA and /tmp/$USER/dataB
 
 #### CNS plot (matplotlib diff graph):
 ```
-./cns step2 ./tsm-lorenz-static 6 4 .01 10000 -15.8 -17.48 35.64 10 28 8 3
-./cns step2 ./rk4-lorenz-static 6 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./rk4-lorenz-static 6 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./tsm-lorenz-static 6 4 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+
+./cns step2 1.0 ./rk4-lorenz-static 6 10 .001 100000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./tsm-lorenz-static 6 8 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+
+./cns step2 1.0 ./rk4-lorenz-static 6 100 .0001 1000000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./tsm-lorenz-static 6 12 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+
+./cns step2 1.0 ./rk4-lorenz-static 6 1000 .00001 10000000 -15.8 -17.48 35.64 10 28 8 3 
+./cns step2 1.0 ./tsm-lorenz-static 6 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+
+./cns step2 1.0 ./rk4-lorenz-static 6 10000 .000001 100000000 -15.8 -17.48 35.64 10 28 8 3 
+./cns step2 1.0 ./tsm-lorenz-static 6 20 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+
+./cns step2 1.0 ./tsm-lorenz-static 6 28 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 ```
 
 ### CNS Duration Scanning (TSM only)

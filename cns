@@ -6,7 +6,8 @@
 echo "Clean Numerical Simulation: [$*]" >&2
 
 method=$1
-shift
+threshold=$2
+shift 2
 original=$*
 
 . ./cns-functions.sh
@@ -21,6 +22,6 @@ case $method in
           *) $original >$fileB & wait;;
 esac
 
-./divergence $fileA $fileB 0.000000000001 0.000000001 0.000001 0.001 1.0
+./divergence $fileA $fileB $threshold
 
-./plotDiff.py $fileA $fileB &
+./plotDiff.py $fileA $fileB $threshold 2>/dev/null &
