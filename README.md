@@ -306,7 +306,7 @@ There are also functions for (matching the t_functions):
 * tan(h)_sec(h)2
 * pwr (f(x)^a, where a is a scalar)
 * ln
-* asin(h), acos(h), atan(h) - Python only
+* asin(h), acos(h), atan(h)
 
 Using these "higher level" functions, Newton's method is implemented trivially, but I have also provided an implementation of the bisection method for comparison.
 
