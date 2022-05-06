@@ -13,11 +13,12 @@
 #include "taylor-ode.h"
 #include "ad.h"
 
-#define KNRM "\x1B[0;37m"
-#define KWHT "\x1B[1;37m"
-#define KGRN "\x1B[1;32m"
-#define KYLW "\x1B[1;33m"
-#define KRED "\x1B[1;31m"
+#define NRM "\x1B[0;37m"
+#define WHT "\x1B[1;37m"
+#define GRN "\x1B[1;32m"
+#define YLW "\x1B[1;33m"
+#define RED "\x1B[1;31m"
+#define CYN "\x1B[0;36m"
 
 static int n, debug = 0, total = 0, passed = 0, skipped = 0;
 
@@ -60,7 +61,7 @@ void ode (components *v, series x, series y, series z, void *params, int k) {
 static void skip (char* name) {
     total++;
     skipped++;
-    if (debug >= 1) fprintf(stderr, "%s SKIP%s %s\n", KYLW, KNRM, name);
+    if (debug >= 1) fprintf(stderr, "%s SKIP%s %s\n", YLW, NRM, name);
 }
 
 static void compare (char* name, series a, series b) {
@@ -68,17 +69,17 @@ static void compare (char* name, series a, series b) {
     for (int k = 0; k < n; k++) {
         mpfr_sub(delta, a[k], b[k], RND);
         if (mpfr_number_p(delta) == 0 || mpfr_cmpabs(delta, tolerance) > 0) {
-            fprintf(stderr, "%s FAIL%s %s  k: %d  LHS: %.6e  RHS: %.6e  diff %.3e\n",
-                    KRED, KNRM, name, k, mpfr_get_d(a[k], RND), mpfr_get_d(b[k], RND), mpfr_get_d(delta, RND));
+            fprintf(stderr, "%s FAIL%s %s  k=%d  LHS: %.6e  RHS: %.6e  (%.3e)\n",
+                    RED, NRM, name, k, mpfr_get_d(a[k], RND), mpfr_get_d(b[k], RND), mpfr_get_d(delta, RND));
             return;
         }
         if (debug >= 2) {
             if (k == 0) fprintf(stderr, "\n");
-            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.6e %+.6e  diff %+.3e\n",
-                    KNRM, KNRM, k, mpfr_get_d(a[k], RND), mpfr_get_d(b[k], RND), mpfr_get_d(delta, RND));
+            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.6e %+.6e  (%+.3e)\n",
+                    NRM, NRM, k, mpfr_get_d(a[k], RND), mpfr_get_d(b[k], RND), mpfr_get_d(delta, RND));
         }
     }
-    if (debug >= 1) fprintf(stderr, "%s PASS%s %s\n", KGRN, KNRM, name);
+    if (debug >= 1) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
     passed++;
 }
 
@@ -139,7 +140,7 @@ int main (int argc, char **argv) {
     series S1 = ad_const(t_jet(n), D1);
 
     fprintf(stdout, "\n");
-    fprintf(stdout, "%sHorner%s\n", KWHT, KNRM);
+    fprintf(stdout, "%sHorner%s\n", WHT, NRM);
     series p = t_jet(n >= 7 ? n : 7);
     mpfr_set_si(p[0], 1, RND);
     mpfr_set_si(p[1], 3, RND);
@@ -164,10 +165,10 @@ int main (int argc, char **argv) {
     mpfr_fprintf(stdout, "201 %8.3RNf\n", *t_horner(p, 7, D_2));
 
     fprintf(stdout, "\n");
-    fprintf(stdout, "%sTaylor Series Method: x'=1  y'=0  z'=-1%s\n", KWHT, KNRM);
+    fprintf(stdout, "%sTaylor Series Method: x'=1  y'=0  z'=-1%s\n", WHT, NRM);
     int steps = 10;
     tsm(argc, argv, n, D01, steps, D1, D1, D1);
-    fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", KWHT, KNRM);
+    fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);
     mpfr_t e1, e0, e_1;
     mpfr_inits(e1, e0, e_1, NULL);
     mpfr_exp(e1, D1, RND);
@@ -176,7 +177,7 @@ int main (int argc, char **argv) {
     t_output(e1, e0, e_1, D01, steps, 0.0);
 
     fprintf(stderr, "\n");
-    fprintf(stderr, "%sRecurrence Relations, x = %.1Lf%s\n", KWHT, mpfr_get_ld(x[0], RND), KNRM);
+    fprintf(stderr, "%sRecurrence Relations: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, mpfr_get_ld(x[0], RND), NRM);
 
     ad_sqr(sqr_x, x);
     if (x_non_zero) ad_inv(inv_x, x);
@@ -328,15 +329,15 @@ int main (int argc, char **argv) {
     compare(name, cos_2x, ad_sub(r1, sqr_cos_x, sqr_sin_x));
 
     if (debug != 0) fprintf(stderr, "\n");
-    fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", KWHT, KNRM, total, KGRN, KNRM, passed);
+    fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
     if (skipped > 0) {
-        fprintf(stderr, ", %sSKIPPED%s %d", KYLW, KNRM, skipped);
+        fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
     }
     if (passed == total - skipped) {
         fprintf(stderr, "\n\n");
         return 0;
     } else {
-        fprintf(stderr, ", %sFAILED%s %d\n\n", KRED, KNRM, total - passed - skipped);
-        return 1;
+        fprintf(stderr, ", %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);
+        return 3;
     }
 }
