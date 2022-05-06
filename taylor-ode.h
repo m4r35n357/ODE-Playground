@@ -5,6 +5,8 @@
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
+#include <time.h>
+
 /*
  * The numerical base for string IO conversions
  */
@@ -28,12 +30,17 @@ typedef mpfr_t *series;
 /*
  * Prints a line of data to stdout
  */
-void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step);
+void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, double cpu);
 
 /*
  * Retrieves ODE parameters from the tail of the command (arguments 9 onwards)
  */
 void t_params (char **argv, int count, ...);
+
+/*
+ * Cumulative CPU time in seconds from a clock() value
+ */
+double cpu (clock_t since);
 
 /*
  * Creates a zeroed Taylor Series jet with the specified number of elements

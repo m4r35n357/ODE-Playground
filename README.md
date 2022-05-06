@@ -159,23 +159,24 @@ No differentiation happens in these functions (they only implement the recurrenc
 Refer to tsm-lorenz-dbg and tsm-*.c for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors.
 To find some example invocations:
 ```
-grep Example *.py tsm-*.c
+grep Example *
 ```
-#### Run an ODE simulation (ODE call):
+#### Run a basic ODE simulation (ODE call):
 
-Runs a named simulation, and prints results to stdout
+Runs a named simulation, and prints results to stdout.
+Each output line consists of a column each for x, y, z, t, followed by cumulative CPU usage
 
-tsm-\*-\* c executables ||
-----------|-----------
+**tsm-model-type** (c executables)
+
 Parameter | Meaning
 ----------|-----------
-1 | x, y, z output precision in decimal places (0 for full)
+1 | x,y,z display precision in decimal places (0 for full)
 2 | (approximate) internal precision in decimal places
 3 | order of Taylor Series
-4 | time step size
+4 | time step
 5 | number of steps
-6,7, 8 | initial conditions, x0, y0, z0
-9+ | ODE parameters
+6,7,8 | initial conditions, x0,y0,z0
+9+ | Model parameters
 
 ##### Run & plot (3D plot using pi3d):
 ```
@@ -195,47 +196,46 @@ gnuplot -p -e "set xyplane 0; set view 54.73561,135; set xlabel 'X'; set ylabel 
 ./tsm-lorenz-dbg 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
 gnuplot -p -e "set terminal wxt size 1200,900; plot '/tmp/$USER/data' using 4:1 with lines, '/tmp/$USER/data' using 4:2 with lines, '/tmp/$USER/data' using 4:3 with lines"
 ```
+It should be possible to send output directly to gnuplot via a pipe, but many versions segfault when reading stdin so I now specify a temporary file instead.
 
 #### Clean Numerical Simulation:
 
-This is a relatively new approach to dealing with the global error of ODE simulations, described in detail here: https://arxiv.org/abs/1109.0130.
-As a rough guide to the accuracy of a solution, it can be compared with a "better" solution (one made with "better" solver parameters), and discarded at the point where the solutions diverge.
-The two simulations are run in parallel processes, but obviously the "better" solution takes longer.
-There are three alternative strategies for creating the "better" integrator:
+In a chaotic system, accuracy can only be maintained for a finite simulation time.
+This script runs a given simulation twice, the second time with a "better" integrator, and shows the differences graphically.
+The maximum achievable clean simulation time is determined by machine precision alone.
+Step size and order can affect the efficiency of the calculations, but not the ultimate accuracy!
 
-cns shell script ||
-----------|-----------
+**cns** (shell script)
+
 Parameter | Meaning
 ----------|-----------
 1 | CNS function, Selects a better integrator for comparison, see below
-2+ | ODE call
+2 | deviation threshold
+3+ | ODE call
 
-CNS function Parameter | Meaning
+CNS function | Meaning
 ----------|-----------
-step2 | The step size is halved
-both | The order is increased by one, and the step size by one half
+step2 | The step size is halved (this is  now the _only_ "better" integrator!)
 
 ##### CNS plot (matplotlib diff graph):
+
 ```
-./cns step2 ./tsm-lorenz-static 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1 ./tsm-lorenz-static 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 ```
 #### Example output - 300 time units
 ```
-./cns step2 ./tsm-lorenz-dbg 15 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3
-Better: ./tsm-lorenz-dbg 138 103 .005000 70000 -15.8 -17.48 35.64 10 28 8 3
- MPFR default precision: 458 bits
+./cns step2 1 ./tsm-lorenz-dbg 15 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3
+Clean Numerical Simulation: [step2 1 ./tsm-lorenz-dbg 15 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3]
+Better: ./tsm-lorenz-dbg 15 130 102 .005000 70000 -15.8 -17.48 35.64 10 28 8 3
  MPFR default precision: 431 bits
-Threshold: 1.0e-12, t: 267.060
-Threshold: 1.0e-09, t: 278.700
-Threshold: 1.0e-06, t: 284.950
-Threshold: 1.0e-03, t: 293.140
-Threshold: 1.0e+00, t: 301.320
+ MPFR default precision: 431 bits
+threshold: 1.0e+00  t: 301.320  cpu: 73.506
 ```
 (matplotlib plot not shown!)
 
 600 time units
 ```
-./cns step2 ./tsm-lorenz-dbg 15 240 204 .01 65000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1 ./tsm-lorenz-dbg 15 240 204 .01 65000 -15.8 -17.48 35.64 10 28 8 3
 ```
 (output not shown)
 
@@ -248,18 +248,28 @@ Threshold: 1.0e+00, t: 301.320
 #### CNS Duration Scanning
 
 Runs a simulation repeatedly with increasing order of integration, for each order showing the simulation time when the deviation threshold is exceeded.
+You can run this to determine the maximum _useful_ integrator order to use, for a given step size.
 
-cns-scan (shell script) ||
-----------|-----------
+**cns-scan** (shell script) 
+
 Parameter | Meaning
 ----------|-----------
 1 | Precision, also used as maximum order for Taylor integrator (minimum is 2)
 2 | deviation threshold
 3+ | ODE call (the precision and order parameters should be placeholders to avoid confusion)
 
-##### CNS duration vs. Simulation Order (gnuplot graph):
+#### CNS duration vs. Simulation Order (gnuplot graph) for the given step size:
+
+The following commands perform a scan, and plot the simulation time and cpu time as histograms against integrator order:
 ```
-./cns-scan step2 32 1 ./tsm-lorenz-static 6 _ _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | gnuplot -p -e "plot '<cat' with boxes"
+./cns-scan 32 1 ./tsm-lorenz-static 6 _ _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | tee /tmp/$USER/data
+
+gnuplot -p -e "set ytics nomirror; set y2tics; plot '/tmp/$USER/data' using 1:2 axes x1y1 with boxes, '/tmp/$USER/data' using 1:3 axes x1y2 with boxes"
+```
+
+Order and CPU time against (desired) maximum clean simulation time from the same data:
+```
+gnuplot -p -e "set ytics nomirror; set y2tics; plot '/tmp/$USER/data' using 2:1 axes x1y1 with points, '/tmp/$USER/data' using 2:3 axes x1y2 with points"
 ```
 
 ## ic script - Sensitivity to variation in initial conditions
@@ -267,10 +277,11 @@ This script is used to generate deviation data for chaos scanning, but the data 
 As well as the trajectory specified in the command arguments, six others are created and evolved; each one is the centre of the face of a cube around the original value
 
 ic shell script ||
-----------|-----------
+
 Parameter | Meaning
 ----------|-----------
-separation | Initial separation between "original" trajectory and the additional ones
+1 | Initial separation between "original" trajectory and the extra ones
+2+ | ODE call
 
 The simulation is run seven times in parallel processes, the original along with each perturbed x, y, z.
 ```

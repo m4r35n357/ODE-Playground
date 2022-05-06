@@ -7,13 +7,14 @@ from sys import argv, stderr
 from math import sqrt
 from matplotlib import pyplot
 
-def position_error(a, b):
-    return sqrt((float(a[0]) - float(b[0]))**2 + (float(a[1]) - float(b[1]))**2 + (float(a[2]) - float(b[2]))**2)
+def position_error(a, b, threshold):
+    pe = sqrt((float(a[0]) - float(b[0]))**2 + (float(a[1]) - float(b[1]))**2 + (float(a[2]) - float(b[2]))**2)
+    return pe if pe < threshold else threshold
 
 def main():
     print(f'Compare Simulations: {argv}', file=stderr)
-    if len(argv) != 3:
-        raise Exception(">>> ERROR! Please supply two file names <<<")
+    if len(argv) != 4:
+        raise Exception(">>> ERROR! Please supply two file names and a deviation threshold <<<")
     ax1 = pyplot.figure().add_subplot(111)
     pyplot.grid(b=True, color='0.25', linestyle='-')
     ax1.set_xlabel('time', color='b')
@@ -35,7 +36,7 @@ def main():
             w.append(float(data_b[1]))
             x.append(float(data_a[2]))
             y.append(float(data_b[2]))
-            pos_error = position_error(data_a, data_b)
+            pos_error = position_error(data_a, data_b, float(argv[3]))
             max_error = pos_error if pos_error > max_error else max_error
             z.append(max_error)
             line_a, line_b = a.readline(), b.readline()

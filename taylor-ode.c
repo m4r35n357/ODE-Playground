@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <assert.h>
+#include <time.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 
@@ -18,7 +19,7 @@ static mpfr_t D1, D2, D_1, D_2, _, __, _a, _b, _const, _abs, _mul, _sqr;
 static char f[60];
 
 void t_init (int p) {
-    p == 0 ? sprintf(f, "%%.RNe %%.RNe %%.RNe %%.9RNe\n") : sprintf(f, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe\n", p, p, p);
+    p == 0 ? sprintf(f, "%%.RNe %%.RNe %%.RNe %%.9RNe %%.3f\n") : sprintf(f, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", p, p, p);
     mpfr_init_set_si(D1, 1, RND);
     mpfr_init_set_si(D2, 2, RND);
     mpfr_init_set_si(D_1, -1, RND);
@@ -35,6 +36,10 @@ void t_params (char **argv, int argc, ...) {
     va_end(model);
 }
 
+double cpu (clock_t since) {
+    return (double)(clock() - since) / CLOCKS_PER_SEC;
+}
+
 series t_jet (int n) {
     mpfr_t *s = calloc((size_t)n + 1, sizeof (mpfr_t));
     if (!s) {
@@ -47,9 +52,9 @@ series t_jet (int n) {
     return s;
 }
 
-void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step) {
+void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, double cpu) {
     mpfr_mul_si(_, h, step, RND);
-    mpfr_printf(f, x, y, z, _);
+    mpfr_printf(f, x, y, z, _, cpu);
 }
 
 mpfr_t *t_horner (series s, int n, mpfr_t h) {
@@ -65,6 +70,7 @@ mpfr_t *t_horner (series s, int n, mpfr_t h) {
 }
 
 void tsm (int argc, char **argv, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0) {
+    clock_t start = clock();
     series x = t_jet(n); mpfr_set(x[0], x0, RND);
     series y = t_jet(n); mpfr_set(y[0], y0, RND);
     series z = t_jet(n); mpfr_set(z[0], z0, RND);
@@ -78,12 +84,12 @@ void tsm (int argc, char **argv, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y
             mpfr_div_si(y[k + 1], vk->y, k + 1, RND);
             mpfr_div_si(z[k + 1], vk->z, k + 1, RND);
         }
-        t_output(x[0], y[0], z[0], h, step);
+        t_output(x[0], y[0], z[0], h, step, cpu(start));
         mpfr_swap(x[0], *t_horner(x, n, h));
         mpfr_swap(y[0], *t_horner(y, n, h));
         mpfr_swap(z[0], *t_horner(z, n, h));
     }
-    t_output(x[0], y[0], z[0], h, steps);
+    t_output(x[0], y[0], z[0], h, steps, cpu(start));
 }
 
 mpfr_t *t_const (mpfr_t value, int k){

@@ -14,14 +14,3 @@ halfstep () {  # step / 2
     echo 'Better:' $start $step $steps $end >&2
     $start $step $steps $end | sed -n '1~2p' >$fileA &
 }
-
-orderstep () {  # order + 1, step / 2
-    start="$1 $2 $3"
-    order=$(($4 + 1))
-    step=$(echo "scale=6; $5 / 2;" | /usr/bin/bc)
-    steps=$(($6 * 2))
-    shift 6
-    end="$*"
-    echo 'Better:' $start $order $step $steps $end >&2
-    $start $order $step $steps $end | sed -n '1~2p' >$fileA &
-}

@@ -1,14 +1,12 @@
 #!/bin/sh
 #
 #  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
-#
 
 echo "CNS duration vs Integrator Order: [$*]" >&2
 
-method=$1
-max=$2
-threshold=$3
-shift 3
+max=$1
+threshold=$2
+shift 2
 original=$*
 
 . ./cns-functions.sh
@@ -20,11 +18,7 @@ do
     begin="$1 $2 $max"
     shift 4
     current="$begin $n $*"
-    case $method in
-        'step2') halfstep $current;;
-         'both') orderstep $current;;
-              *) echo "CNS: Bad Method"; exit 1;;
-    esac
+    halfstep $current
     $current >$fileB & wait
     temp=$(./divergence $fileA $fileB $threshold)
     if [ x$temp = x'' ]
@@ -32,7 +26,7 @@ do
         echo $n -1
     else
         set $temp
-        echo $n $4
+        echo $n $4 $6
     fi
     n=$((n + 1))
 done 2>/dev/null

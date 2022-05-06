@@ -173,7 +173,7 @@ int main (int argc, char **argv) {
     mpfr_exp(e1, D1, RND);
     mpfr_exp(e0, D0, RND);
     mpfr_exp(e_1, D_1, RND);
-    t_output(e1, e0, e_1, D01, steps);
+    t_output(e1, e0, e_1, D01, steps, 0.0);
 
     fprintf(stderr, "\n");
     fprintf(stderr, "%sRecurrence Relations, x = %.1Lf%s\n", KWHT, mpfr_get_ld(x[0], RND), KNRM);

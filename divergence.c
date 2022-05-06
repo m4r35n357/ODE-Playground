@@ -9,8 +9,6 @@
 #include <assert.h>
 #include <math.h>
 
-typedef long double real;
-
 int main(int argc, char **argv) {
     assert(argc >= 4);
     FILE *fileA, *fileB;
@@ -18,13 +16,13 @@ int main(int argc, char **argv) {
         fprintf(stderr, "divergence: Cannot read data files!\n");
         exit(1);
     }
-    real xA, yA, zA, xB, yB, zB, t;
+    long double xA, yA, zA, xB, yB, zB, tA, tB, cpuA, cpuB;
     for (int i = 3; i < argc; i++) {
-        real threshold = strtold(argv[i], NULL);
-        while(fscanf(fileA, "%Le %Le %Le %Le", &xA, &yA, &zA, &t) != EOF &&
-              fscanf(fileB, "%Le %Le %Le %Le", &xB, &yB, &zB, &t) != EOF) {
+        long double threshold = strtold(argv[i], NULL);
+        while(fscanf(fileA, "%Le %Le %Le %Le %Le", &xA, &yA, &zA, &tA, &cpuA) != EOF &&
+              fscanf(fileB, "%Le %Le %Le %Le %Le", &xB, &yB, &zB, &tB, &cpuB) != EOF) {
             if (sqrtl((xA - xB) * (xA - xB) + (yA - yB) * (yA - yB) + (zA - zB) * (zA - zB)) > threshold) {
-                fprintf(stdout, "%s %.1Le %s %.3Lf\n", "Threshold:", threshold, "t:", t);
+                fprintf(stdout, "%s %.1Le  %s %6.3Lf  %s %.3Lf\n", "threshold:", threshold, "t:", tB, "cpu:", cpuB);
                 break;
             }
         }
