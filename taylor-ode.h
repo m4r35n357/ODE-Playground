@@ -304,3 +304,48 @@ mpfr_t *t_ipwr (series p, series u, int a, int k);
  *                        = (U[k] - sum{j=1->k-1} j.L[j].U[k-j]/k) / U[0]                    (by symmetry)
  */
 mpfr_t *t_ln (series L, series U, int k);
+
+/*
+ * Returns kth elements of arcsin(h) of U and 1 / DF_DU, results stored in user-supplied jets As and DU_DF
+ *
+ *       df/du = 1 / sqrt(1 +- U^2)
+ *       du/df = sqrt(1 +- U^2)
+ *
+ *         AS' =   dUdF.U'
+ *      du/df' = (+/-)U.AS'    - for arcsin (g == TRIG), + for arcsinh (g == HYP)
+ *
+ *       AS[k] = (U[k] - sum{j=1->k-1} j.AS[j].dUdF[k-j]/k) / dUdF[0]                        (by symmetry)
+ *
+ *     dUdF[k] = sum{j=0->k-1} U[j].(k-j).AS[k-j]/k
+ */
+pair t_asin (series AS, series DU_DF, series U, int k, geometry g);
+
+/*
+ * Returns kth elements of arccos(h) of U and 1 / DF_DU, results stored in user-supplied jets As and DU_DF
+ *
+ *       df/du = -1 / sqrt(1 - U^2) for arccos (g == TRIG), 1 / sqrt(u^2 - 1) for arccosh (g == HYP)
+ *       du/df =    - sqrt(1 - U^2) for arccos (g == TRIG),     sqrt(u^2 - 1) for arccosh (g == HYP)
+ *
+ *         AC' =   dUdF.U'
+ *      du/df' = (+/-)U.AC'    - for arccos (g == TRIG), + for arccosh (g == HYP)
+ *
+ *       AC[k] = (U[k] - sum{j=1->k-1} j.AC[j].dUdF[k-j]/k) / dUdF[0]                        (by symmetry)
+ *
+ *     dUdF[k] = sum{j=0->k-1} U[j].(k-j).AC[k-j]/k
+ */
+pair t_acos (series AC, series G, series U, int k, geometry g);
+
+/*
+ * Returns kth elements of arctan(h) of U and 1 / DF_DU, results stored in user-supplied jets As and DU_DF
+ *
+ *       df/du = 1 / (1 +- U^2)
+ *       du/df = (1 +- U^2)
+ *
+ *         AT' =     dUdF.U'
+ *      du/df' = (+/-)2.U.U'    + for arctan (g == TRIG), - for arctanh (g == HYP)
+ *
+ *       AT[k] = (U[k] - sum{j=1->k-1} j.AT[j].dUdF[k-j]/k) / dUdF[0]                        (by symmetry)
+ *
+ *     dUdF[k] = sum{j=0->k-1} (+/-)2 U[j].(k-j).U[k-j]/k
+ */
+pair t_atan (series AT, series G, series U, int k, geometry g);

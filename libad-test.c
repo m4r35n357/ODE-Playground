@@ -136,6 +136,7 @@ int main (int argc, char **argv) {
     series cosh_2x = t_jet(n);
     series tanh = t_jet(n);
     series sech2 = t_jet(n);
+    series gd_1 = t_jet(n);
 
     series S1 = ad_const(t_jet(n), D1);
 
@@ -222,7 +223,6 @@ int main (int argc, char **argv) {
     x_positive ? compare(name, ad_pwr(r1, x, D_2), ad_inv(r2, sqr_x)) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
-    ad_abs(abs_x, x);
 
     name = "x^2 == sqr(x)";
     x_positive ? compare(name, ad_ipwr(r1, x, 2), sqr_x) : skip(name);
@@ -240,6 +240,7 @@ int main (int argc, char **argv) {
     x_positive ? compare(name, ad_ipwr(r1, x, -2), ad_inv(r2, sqr_x)) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
+    ad_abs(abs_x, x);
 
     name = "sqr(x) * x^-3 == 1 / x";
     x_positive ? compare(name, ad_mul(r1, sqr_x, ad_pwr(r2, x, D_3)), inv_x) : skip(name);
@@ -304,6 +305,20 @@ int main (int argc, char **argv) {
     compare(name, sinh, ad_scale(r1, ad_sub(r2, exp_x, neg_exp_x), D05));
 
     if (debug != 0) fprintf(stderr, "\n");
+
+    ad_asin(r1, r2, sinh, HYP);
+    name = "arcsinh(sinh(x)) == x";
+    compare(name, r1, x);
+
+    ad_acos(r1, r2, cosh, HYP);
+    name = "arccosh(cosh(x)) == |x|";
+    x_non_zero ? compare(name, r1, abs_x) : skip(name);
+
+    ad_atan(r1, r2, tanh, HYP);
+    name = "arctanh(tanh(x)) == x";
+    compare(name, r1, x);
+
+    if (debug != 0) fprintf(stderr, "\n");
     ad_sin_cos(sin, cos, x, TRIG);
     ad_tan_sec2(tan, sec2, x, TRIG);
     ad_sqr(sqr_sin_x, sin);
@@ -327,6 +342,41 @@ int main (int argc, char **argv) {
 
     name = "cos(2x) == cos^2(x) - sin^2(x)";
     compare(name, cos_2x, ad_sub(r1, sqr_cos_x, sqr_sin_x));
+
+    if (debug != 0) fprintf(stderr, "\n");
+
+    ad_asin(r1, r2, sin, TRIG);
+    name = "arcsin(sin(x)) == x";
+    compare(name, r1, x);
+
+    ad_acos(r1, r2, cos, TRIG);
+    name = "arccos(cos(x)) == |x|";
+    x_non_zero ? compare(name, r1, abs_x) : skip(name);
+
+    ad_atan(r1, r2, tan, TRIG);
+    name = "arctan(tan(x)) == x";
+    compare(name, r1, x);
+
+    if (debug != 0) fprintf(stderr, "\n");
+    ad_ln(gd_1, ad_abs(r3, ad_div(r2, ad_add(r1, sin, S1), cos)));
+
+    name = "arsin(tan(x)) == gd^-1 x";
+    ad_asin(r1, r2, tan, HYP);
+    compare(name, gd_1, r1);
+
+    name = "artan(sin(x)) == gd^-1 x";
+    ad_atan(r1, r2, sin, HYP);
+    compare(name, gd_1, r1);
+
+    ad_tan_sec2(r3, r2, gd_1, HYP);
+    ad_asin(r1, r2, r3, TRIG);
+    name = "arcsin(tanh(gd^-1 x)) == x";
+    compare(name, r1, x);
+
+    ad_sin_cos(r3, r2, gd_1, HYP);
+    ad_atan(r1, r2, r3, TRIG);
+    name = "arctan(sinh(gd^-1 x)) == x";
+    compare(name, r1, x);
 
     if (debug != 0) fprintf(stderr, "\n");
     fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);

@@ -126,3 +126,21 @@ series ad_ln (series l, series u) {
     }
     return l;
 }
+
+void ad_asin (series as, series du_df, series u, geometry g) {
+    for (int k = 0; k < order; k++) {
+        t_asin(as, du_df, u, k, g);
+    }
+}
+
+void ad_acos (series ac, series du_df, series u, geometry g) {
+    for (int k = 0; k < order; k++) {
+        t_acos(ac, du_df, u, k, g);
+    }
+}
+
+void ad_atan (series at, series du_df, series u, geometry g) {
+    for (int k = 0; k < order; k++) {
+        t_atan(at, du_df, u, k, g);
+    }
+}

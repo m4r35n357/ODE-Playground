@@ -45,22 +45,23 @@ My primary aim was to be able to solve coupled nonlinear equations and investiga
 The resulting c code takes the form of a small (<200 loc) arbitrary precision Taylor Series "library", and the model-specific ODE simulators are tiny client programs to this, typically 25-35 loc each.
 The header file taylor-ode.h contains a terse but complete description of the Taylor Series Method as implemented here, together with derivations of the recurrences that enable analysis of complex composed functions.
 
-I have also duplicated the ODE solving functionality in Python 3 (at float precision), but with extra testing and more advanced function analysis features (enabled by operator overloading and the Python REPL).
+I have also duplicated the ODE solving functionality in Python 3 (at float precision), see the pure_c branch, but with extra testing and more advanced function analysis features (enabled by operator overloading and the Python REPL).
 
 The recurrence rules (the "t-functions" in c and Python) are the key to calculating high order derivatives accurately, without needing finite differences.
 They generate "jets" of Taylor Series coefficients iteratively, term by term, using previously calculated lower order values.
 The functions provided cover the basic algebraic operations on Taylor Series (+ - * /), and also include several common functions:
 * abs
+* mul
 * sqr
 * sqrt
-* quot
-* inv
+* div, inv
 * exp
 * sin(h)_cos(h)
 * tan(h)_sec^2(h)
-* pwr (f(x)^a, where a is a scalar)
+* pwr (f(x)^a, where a is real)
+* ipwr (f(x)^a, where a is an integer)
 * ln
-* asin(h), acos(h), atan(h) - pure_c branch only
+* asin(h), acos(h), atan(h)
 
 The recurrence relations used here are derived along the lines of (amongst other sources) http://www2.math.uni-wuppertal.de/wrswt/preprints/prep_05_4.pdf and http://aimsciences.org/journals/displayPaperPro.jsp?paperID=9241 (open access).
 
