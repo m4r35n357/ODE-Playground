@@ -15,7 +15,7 @@ n=2
 while [ $n -le $max ]
 do
     set $original
-    begin="$1 $2 $max"
+    begin="$1 $2 $3"
     shift 4
     current="$begin $n $*"
     halfstep $current
