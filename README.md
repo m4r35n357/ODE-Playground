@@ -181,20 +181,20 @@ Parameter | Meaning
 
 ##### Run & plot (3D plot using pi3d):
 ```
-./tsm-thomas-dbg 9 32 10 0.1 30000 1 0 0 .185 | ./plot3d.py
+./tsm-thomas-dbg 9 113 10 0.1 30000 1 0 0 .185 | ./plot3d.py
 ```
 ##### Run & plot (animated matplotlib graph):
 ```
-./tsm-lorenz-dbg 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
+./tsm-lorenz-dbg 9 113 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 ```
 ##### Run & plot (3D gnuplot graph):
 ```
-./tsm-thomas-dbg 9 32 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
+./tsm-thomas-dbg 9 113 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
 gnuplot -p -e "set xyplane 0; set view 54.73561,135; set xlabel 'X'; set ylabel 'Y'; set zlabel 'Z'; splot '/tmp/ian/data' with lines"
 ```
 ##### Run & plot (2D gnuplot graph):
 ```
-./tsm-lorenz-dbg 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
+./tsm-lorenz-dbg 9 113 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
 gnuplot -p -e "set terminal wxt size 1200,900; plot '/tmp/$USER/data' using 4:1 with lines, '/tmp/$USER/data' using 4:2 with lines, '/tmp/$USER/data' using 4:3 with lines"
 ```
 It should be possible to send output directly to gnuplot via a pipe, but many versions segfault when reading stdin so I now specify a temporary file instead.
@@ -221,7 +221,7 @@ step2 | The step size is halved (this is  now the _only_ "better" integrator!)
 ##### CNS plot (matplotlib diff graph):
 
 ```
-./cns step2 1 ./tsm-lorenz-static 9 32 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1 ./tsm-lorenz-static 9 113 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 ```
 #### Example output - 300 time units
 ```
@@ -233,18 +233,6 @@ Better: ./tsm-lorenz-dbg 15 130 102 .005000 70000 -15.8 -17.48 35.64 10 28 8 3
 threshold: 1.0e+00  t: 301.320  cpu: 73.506
 ```
 (matplotlib plot not shown!)
-
-600 time units
-```
-./cns step2 1 ./tsm-lorenz-dbg 15 240 204 .01 65000 -15.8 -17.48 35.64 10 28 8 3
-```
-(output not shown)
-
-1500 time units
-```
-./cns step2 ./tsm-lorenz-dbg 15 800 501 .005 150000 -15.8 -17.48 35.64 10 28 8 3
-```
-(output not shown)
 
 #### CNS Duration Scanning
 
@@ -263,7 +251,7 @@ Parameter | Meaning
 
 The following commands perform a scan, and plot the simulation time and cpu time as histograms against integrator order:
 ```
-./cns-scan 32 1 ./tsm-lorenz-static 6 128 _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | tee /tmp/$USER/data
+./cns-scan 32 1 ./tsm-lorenz-static 6 113 _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | tee /tmp/$USER/data
 
 gnuplot -p -e "set ytics nomirror; set y2tics; plot '/tmp/$USER/data' using 1:2 axes x1y1 with boxes, '/tmp/$USER/data' using 1:3 axes x1y2 with boxes"
 ```
@@ -286,13 +274,13 @@ Parameter | Meaning
 
 The simulation is run seven times in parallel processes, the original along with each perturbed x, y, z.
 ```
-./ic .001 ./tsm-lorenz-dbg 9 32 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
-oo ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
-x+ ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.799 -17.48 35.64 10 28 8 3
-x- ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.801 -17.48 35.64 10 28 8 3
-y+ ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.8 -17.479 35.64 10 28 8 3
-y- ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.8 -17.481 35.64 10 28 8 3
-z+ ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.8 -17.48 35.641 10 28 8 3
-z- ./tsm-lorenz-dbg 9 9 32 10 .01 10001 -15.8 -17.48 35.639 10 28 8 3
+./ic .001 ./tsm-lorenz-dbg 9 53 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 2>/dev/null
+oo ./tsm-lorenz-dbg 9 9 53 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
+x+ ./tsm-lorenz-dbg 9 9 53 10 .01 10001 -15.799 -17.48 35.64 10 28 8 3
+x- ./tsm-lorenz-dbg 9 9 53 10 .01 10001 -15.801 -17.48 35.64 10 28 8 3
+y+ ./tsm-lorenz-dbg 9 9 53 10 .01 10001 -15.8 -17.479 35.64 10 28 8 3
+y- ./tsm-lorenz-dbg 9 9 53 10 .01 10001 -15.8 -17.481 35.64 10 28 8 3
+z+ ./tsm-lorenz-dbg 9 9 53 10 .01 10001 -15.8 -17.48 35.641 10 28 8 3
+z- ./tsm-lorenz-dbg 9 9 53 10 .01 10001 -15.8 -17.48 35.639 10 28 8 3
 ```
 (3D plot not shown)
