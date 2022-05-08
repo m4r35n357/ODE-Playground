@@ -127,13 +127,13 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
     if (k == 0) {
         return (pair) {s[0] = g == TRIG ? sinl(u[0]) : sinhl(u[0]), c[0] = g == TRIG ? cosl(u[0]) : coshl(u[0])};
     } else {
-        real s_sum = 0.0L, c_sum = 0.0L;
+        real _s = 0.0L, _c = 0.0L;
         for (int j = 0; j < k; j++) {
             real du_dt = (k - j) * u[k - j];
-            c_sum += c[j] * du_dt;
-            s_sum += s[j] * du_dt;
+            _c += c[j] * du_dt;
+            _s += s[j] * du_dt;
         }
-        return (pair) {s[k] = c_sum / k, c[k] = (g == TRIG ? - s_sum : s_sum) / k};
+        return (pair) {s[k] = _c / k, c[k] = (g == TRIG ? - _s : _s) / k};
     }
 }
 
@@ -143,11 +143,11 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
         t[0] = g == TRIG ? tanl(u[0]) : tanhl(u[0]);
         return (pair) {t[0], s[0] = g == TRIG ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]};
     } else {
-        real t_sum = 0.0L, s_sum = 0.0L;
+        real t_sum = 0.0L, _s = 0.0L;
         for (int j = 0; j < k; j++) {
-            s_sum += s[j] * (k - j) * u[k - j];
+            _s += s[j] * (k - j) * u[k - j];
         }
-        t[k] = s_sum / k;
+        t[k] = _s / k;
         for (int j = 0; j < k; j++) {
             t_sum += t[j] * (k - j) * t[k - j];
         }
@@ -192,15 +192,15 @@ pair t_asin (series as, series uf, series u, int k, geometry g) {
             uf[0] = sqrtl(g == TRIG ? 1.0L - u[0] * u[0] : 1.0L + u[0] * u[0])
         };
     } else {
-        real as_sum = 0.0L, uf_sum = 0.0L;
+        real _as = 0.0L, _uf = 0.0L;
         for (int j = 1; j < k; j++) {
-            as_sum += j * as[j] * uf[k - j];
+            _as += j * as[j] * uf[k - j];
         }
-        as[k] = (u[k] - as_sum / k) / uf[0];
+        as[k] = (u[k] - _as / k) / uf[0];
         for (int j = 0; j < k; j++) {
-            uf_sum += u[j] * (k - j) * as[k - j];
+            _uf += u[j] * (k - j) * as[k - j];
         }
-        return (pair) {as[k], uf[k] = (g == TRIG ? - uf_sum : uf_sum) / k};
+        return (pair) {as[k], uf[k] = (g == TRIG ? - _uf : _uf) / k};
     }
 }
 
@@ -213,15 +213,15 @@ pair t_acos (series ac, series uf, series u, int k, geometry g) {
             uf[0] = g == TRIG ? - sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] - 1.0L)
         };
     } else {
-        real ac_sum = 0.0L, uf_sum = 0.0L;
+        real _ac = 0.0L, _uf = 0.0L;
         for (int j = 1; j < k; j++) {
-            ac_sum += j * ac[j] * uf[k - j];
+            _ac += j * ac[j] * uf[k - j];
         }
-        ac[k] = (u[k] + (g == TRIG ? ac_sum : - ac_sum) / k) / uf[0];
+        ac[k] = (u[k] - (g == TRIG ? - _ac : _ac) / k) / uf[0];
         for (int j = 0; j < k; j++) {
-            uf_sum += u[j] * (k - j) * ac[k - j];
+            _uf += u[j] * (k - j) * ac[k - j];
         }
-        return (pair) {ac[k], uf[k] = uf_sum / k};
+        return (pair) {ac[k], uf[k] = _uf / k};
     }
 }
 
@@ -234,16 +234,13 @@ pair t_atan (series at, series uf, series u, int k, geometry g) {
             uf[0] = g == TRIG ? 1.0L + u[0] * u[0] : 1.0L - u[0] * u[0]
         };
     } else {
-        real at_sum = 0.0L, uf_sum = 0.0L;
+        real _at = 0.0L, _uf = 0.0L;
         for (int j = 1; j < k; j++) {
-            at_sum += j * at[j] * uf[k - j];
+            _at += j * at[j] * uf[k - j];
         }
         for (int j = 0; j < k; j++) {
-            uf_sum += u[j] * (k - j) * u[k - j];
+            _uf += u[j] * (k - j) * u[k - j];
         }
-        return (pair) {
-            at[k] = (u[k] - at_sum / k) / uf[0],
-            uf[k] = 2.0L * (g == TRIG ? uf_sum : - uf_sum) / k
-        };
+        return (pair) {at[k] = (u[k] - _at / k) / uf[0], uf[k] = 2.0L * (g == TRIG ? _uf : - _uf) / k};
     }
 }
