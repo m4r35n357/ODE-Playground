@@ -162,6 +162,8 @@ To find some example invocations:
 ```
 grep Example *
 ```
+Where CPU timings are given, they are made on a Raspberry Pi 400, mildly overclocked to 2100MHz, and writing output to a tmpfs file.
+
 #### Run a basic ODE simulation (ODE call):
 
 Runs a named simulation, and prints results to stdout.
@@ -212,7 +214,7 @@ Parameter | Meaning
 ----------|-----------
 1 | CNS function, Selects a better integrator for comparison, see below
 2 | deviation threshold
-3+ | ODE call
+3+ | ODE call (you can now use precision "names" in cns scripts)
 
 CNS function | Meaning
 ----------|-----------
@@ -221,37 +223,66 @@ step2 | The step size is halved (this is  now the _only_ "better" integrator!)
 ##### CNS plot (matplotlib diff graph):
 
 ```
-./cns step2 1 ./tsm-lorenz-static 9 113 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1 ./tsm-lorenz-static 9 long 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 ```
-#### Example output - 300 time units
+#### Example output - ~300 time units
 ```
-./cns step2 1 ./tsm-lorenz-dbg 15 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3
-Clean Numerical Simulation: [step2 1 ./tsm-lorenz-dbg 15 130 102 .01 35000 -15.8 -17.48 35.64 10 28 8 3]
-Better: ./tsm-lorenz-dbg 15 130 102 .005000 70000 -15.8 -17.48 35.64 10 28 8 3
- MPFR default precision: 431 bits
- MPFR default precision: 431 bits
-threshold: 1.0e+00  t: 301.320  cpu: 73.506
+$ time -p ./cns step2 1 ./tsm-lorenz-static 6 408 102 .01 32000 -15.8 -17.48 35.64 10 28 8 3
+Clean Numerical Simulation: [step2 1 ./tsm-lorenz-static 6 408 102 .01 32000 -15.8 -17.48 35.64 10 28 8 3]
+Better: ./tsm-lorenz-static 6 408 102 .005000 64000 -15.8 -17.48 35.64 10 28 8 3
+ MPFR default precision: 408 bits
+ MPFR default precision: 408 bits
+threshold: 1.0e+00  t: 301.330  cpu: 103.982 208.085
+real 224.00
+user 330.71
+sys 0.81
 ```
+#### Example output - ~450 time units
+```
+$ time -p ./cns step2 1 ./tsm-lorenz-static 6 630 153 .01 46000 -15.8 -17.48 35.64 10 28 8 3
+Clean Numerical Simulation: [step2 1 ./tsm-lorenz-static 6 630 153 .01 46000 -15.8 -17.48 35.64 10 28 8 3]
+Better: ./tsm-lorenz-static 6 630 153 .005000 92000 -15.8 -17.48 35.64 10 28 8 3
+ MPFR default precision: 630 bits
+ MPFR default precision: 630 bits
+threshold: 1.0e+00  t: 453.560  cpu: 545.447 1091.855
+real 1109.91
+user 1660.16
+sys 0.72
+```
+#### Example output - ~600 time units
+```
+$ time -p ./cns step2 1 ./tsm-lorenz-static 6 840 204 .01 62000 -15.8 -17.48 35.64 10 28 8 3
+Clean Numerical Simulation: [step2 1 ./tsm-lorenz-static 6 840 204 .01 62000 -15.8 -17.48 35.64 10 28 8 3]
+Better: ./tsm-lorenz-static 6 840 204 .005000 124000 -15.8 -17.48 35.64 10 28 8 3
+ MPFR default precision: 840 bits
+ MPFR default precision: 840 bits
+threshold: 1.0e+00  t: 600.870  cpu: 1956.807 3917.292
+real 4052.25
+user 6059.11
+sys 2.41
+```
+
 (matplotlib plot not shown!)
 
 #### CNS Duration Scanning
 
-Runs a simulation repeatedly with increasing order of integration, for each order showing the simulation time when the deviation threshold is exceeded.
-You can run this to determine the maximum _useful_ integrator order to use, for a given step size.
+Runs a simulation repeatedly, incrementing the order of integration, and for each order shows the simulation time when the deviation threshold is exceeded.
+You can run this to determine the maximum _useful_ integrator order to use, for a given precision and step size.
 
 **cns-scan** (shell script) 
 
 Parameter | Meaning
 ----------|-----------
-1 | Precision, also used as maximum order for Taylor integrator (minimum is 2)
-2 | deviation threshold
-3+ | ODE call (the precision and order parameters should be placeholders to avoid confusion)
+1 | minimum order for Taylor integrator
+2 | maximum order for Taylor integrator
+3 | deviation threshold
+4+ | ODE call (the order parameter should be a placeholder, e.g. "_", to avoid confusion)
 
 #### CNS duration vs. Simulation Order (gnuplot graph) for the given step size:
 
 The following commands perform a scan, and plot the simulation time and cpu time as histograms against integrator order:
 ```
-./cns-scan 32 1 ./tsm-lorenz-static 6 113 _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | tee /tmp/$USER/data
+./cns-scan 1 32 1 ./tsm-lorenz-static 6 long _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | tee /tmp/$USER/data
 
 gnuplot -p -e "set ytics nomirror; set y2tics; plot '/tmp/$USER/data' using 1:2 axes x1y1 with boxes, '/tmp/$USER/data' using 1:3 axes x1y2 with boxes"
 ```

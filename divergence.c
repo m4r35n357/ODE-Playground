@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
         while(fscanf(fileA, "%Le %Le %Le %Le %Le", &xA, &yA, &zA, &tA, &cpuA) != EOF &&
               fscanf(fileB, "%Le %Le %Le %Le %Le", &xB, &yB, &zB, &tB, &cpuB) != EOF) {
             if (sqrtl((xA - xB) * (xA - xB) + (yA - yB) * (yA - yB) + (zA - zB) * (zA - zB)) > threshold) {
-                fprintf(stdout, "%s %.1Le  %s %6.3Lf  %s %.3Lf\n", "threshold:", threshold, "t:", tB, "cpu:", cpuB);
+                fprintf(stdout, "%s %.1Le  %s %6.3Lf  %s %.3Lf %.3Lf\n", "threshold:", threshold, "t:", tB, "cpu:", cpuB, cpuA);
                 break;
             }
         }
