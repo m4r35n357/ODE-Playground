@@ -243,7 +243,7 @@ int main (int argc, char **argv) {
     ad_abs(abs_x, x);
 
     name = "sqr(x) * x^-3 == 1 / x";
-    x_positive ? compare(name, ad_mul(r1, sqr_x, ad_pwr(r2, x, D_3)), inv_x) : skip(name);
+    x_positive ? compare(name, ad_mul(r1, sqr_x, ad_ipwr(r2, x, -3)), inv_x) : skip(name);
 
     name = "sqr(x)^0.5 == |x|";
     x_non_zero ? compare(name, ad_pwr(r1, sqr_x, D05), abs_x) : skip(name);
@@ -267,8 +267,8 @@ int main (int argc, char **argv) {
     name = "log(1 / x) == - log(x)";
     x_positive ? compare(name, ad_ln(r1, inv_x), ad_scale(r2, ln_x, D_1)) : skip(name);
 
-    name = "log(x^-3) == - 3 * log(x)";
-    x_positive ? compare(name, ad_ln(r1, ad_pwr(r2, x, D_3)), ad_scale(r3, ln_x, D_3)) : skip(name);
+    name = "log(x^-2) == - 2 * log(x)";
+    x_positive ? compare(name, ad_ln(r1, ad_ipwr(r2, x, -2)), ad_scale(r3, ln_x, D_2)) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
     ad_sin_cos(sinh, cosh, x, HYP);
