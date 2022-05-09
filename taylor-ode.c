@@ -19,11 +19,7 @@ static mpfr_t _, __, _a, _b, _const, _abs, _mul, _sqr;
 static char f[60];
 
 void t_init (int places) {
-    if (places == 0) {
-        sprintf(f, "%%.RNe %%.RNe %%.RNe %%.9RNe %%.3f\n");
-    } else {
-        sprintf(f, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", places, places, places);
-    }
+    sprintf(f, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", places, places, places);
     mpfr_inits( _, __, _a, _b, _const, _abs, _mul, _sqr, NULL);
 }
 

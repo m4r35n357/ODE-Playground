@@ -132,7 +132,7 @@ libad-test-dbg c executable ||
 ----------|-----------
 Parameter | Meaning
 ----------|-----------
-1 | (approximate) precision in decimal places
+1 | (approximate) precision in bits
 2 | order of Taylor Series
 3 | x value
 4 | tolerance
@@ -171,7 +171,7 @@ Each output line consists of a column each for x, y, z, t, followed by cumulativ
 
 Parameter | Meaning
 ----------|-----------
-1 | x,y,z display precision in decimal places (0 for full)
+1 | x,y,z display precision in bits
 2 | (approximate) internal precision in decimal places
 3 | order of Taylor Series
 4 | time step
