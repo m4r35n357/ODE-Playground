@@ -7,6 +7,7 @@
 #include <stdarg.h>
 #include <assert.h>
 #include <math.h>
+#include <time.h>
 #include "taylor-ode.h"
 
 series t_jet (int n) {
@@ -35,6 +36,7 @@ static char *tag (series jet, real slope, char *min, char *max) {
 }
 
 void tsm (int dp, int n, real h, int steps, real x0, real y0, real z0, void *p) {
+    clock_t start = clock();
     series x = t_jet(n); x[0] = x0;
     series y = t_jet(n); y[0] = y0;
     series z = t_jet(n); z[0] = z0;
@@ -46,13 +48,13 @@ void tsm (int dp, int n, real h, int steps, real x0, real y0, real z0, void *p) 
             y[k + 1] = vk.y / (k + 1);
             z[k + 1] = vk.z / (k + 1);
         }
-        t_output(dp, x[0], y[0], z[0], h * step, tag(x, s.x, "x", "X"), tag(y, s.y, "y", "Y"), tag(z, s.z, "z", "Z"));
+        t_output(dp, x[0], y[0], z[0], h * step, tag(x, s.x, "x", "X"), tag(y, s.y, "y", "Y"), tag(z, s.z, "z", "Z"), cpu(start));
         s = (components) {x[1], y[1], z[1]};
         x[0] = t_horner(x, n, h);
         y[0] = t_horner(y, n, h);
         z[0] = t_horner(z, n, h);
     }
-    t_output(dp, x[0], y[0], z[0], h * steps, "_", "_", "_");
+    t_output(dp, x[0], y[0], z[0], h * steps, "_", "_", "_", cpu(start));
 }
 
 real t_const (real a, int k) {
@@ -125,13 +127,13 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
     if (k == 0) {
         return (pair) {s[0] = g == TRIG ? sinl(u[0]) : sinhl(u[0]), c[0] = g == TRIG ? cosl(u[0]) : coshl(u[0])};
     } else {
-        real s_sum = 0.0L, c_sum = 0.0L;
+        real _s = 0.0L, _c = 0.0L;
         for (int j = 0; j < k; j++) {
             real du_dt = (k - j) * u[k - j];
-            c_sum += c[j] * du_dt;
-            s_sum += s[j] * du_dt;
-        };
-        return (pair) {s[k] = c_sum / k, c[k] = (g == TRIG ? - s_sum : s_sum) / k};
+            _c += c[j] * du_dt;
+            _s += s[j] * du_dt;
+        }
+        return (pair) {s[k] = _c / k, c[k] = (g == TRIG ? - _s : _s) / k};
     }
 }
 
@@ -141,14 +143,14 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
         t[0] = g == TRIG ? tanl(u[0]) : tanhl(u[0]);
         return (pair) {t[0], s[0] = g == TRIG ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]};
     } else {
-        real t_sum = 0.0L, s_sum = 0.0L;
+        real t_sum = 0.0L, _s = 0.0L;
         for (int j = 0; j < k; j++) {
-            s_sum += s[j] * (k - j) * u[k - j];
-        };
-        t[k] = s_sum / k;
+            _s += s[j] * (k - j) * u[k - j];
+        }
+        t[k] = _s / k;
         for (int j = 0; j < k; j++) {
             t_sum += t[j] * (k - j) * t[k - j];
-        };
+        }
         return (pair) {t[k], s[k] = 2.0L * (g == TRIG ? t_sum : - t_sum) / k};
     }
 }
@@ -190,15 +192,15 @@ pair t_asin (series as, series uf, series u, int k, geometry g) {
             uf[0] = sqrtl(g == TRIG ? 1.0L - u[0] * u[0] : 1.0L + u[0] * u[0])
         };
     } else {
-        real as_sum = 0.0L, uf_sum = 0.0L;
+        real _as = 0.0L, _uf = 0.0L;
         for (int j = 1; j < k; j++) {
-            as_sum += j * as[j] * uf[k - j];
+            _as += j * as[j] * uf[k - j];
         }
-        as[k] = (u[k] - as_sum / k) / uf[0];
+        as[k] = (u[k] - _as / k) / uf[0];
         for (int j = 0; j < k; j++) {
-            uf_sum += u[j] * (k - j) * as[k - j];
+            _uf += u[j] * (k - j) * as[k - j];
         }
-        return (pair) {as[k], uf[k] = (g == TRIG ? - uf_sum : uf_sum) / k};
+        return (pair) {as[k], uf[k] = (g == TRIG ? - _uf : _uf) / k};
     }
 }
 
@@ -211,15 +213,15 @@ pair t_acos (series ac, series uf, series u, int k, geometry g) {
             uf[0] = g == TRIG ? - sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] - 1.0L)
         };
     } else {
-        real ac_sum = 0.0L, uf_sum = 0.0L;
+        real _ac = 0.0L, _uf = 0.0L;
         for (int j = 1; j < k; j++) {
-            ac_sum += j * ac[j] * uf[k - j];
+            _ac += j * ac[j] * uf[k - j];
         }
-        ac[k] = (u[k] + (g == TRIG ? ac_sum : - ac_sum) / k) / uf[0];
+        ac[k] = (u[k] - (g == TRIG ? - _ac : _ac) / k) / uf[0];
         for (int j = 0; j < k; j++) {
-            uf_sum += u[j] * (k - j) * ac[k - j];
+            _uf += u[j] * (k - j) * ac[k - j];
         }
-        return (pair) {ac[k], uf[k] = uf_sum / k};
+        return (pair) {ac[k], uf[k] = _uf / k};
     }
 }
 
@@ -232,16 +234,13 @@ pair t_atan (series at, series uf, series u, int k, geometry g) {
             uf[0] = g == TRIG ? 1.0L + u[0] * u[0] : 1.0L - u[0] * u[0]
         };
     } else {
-        real at_sum = 0.0L, uf_sum = 0.0L;
+        real _at = 0.0L, _uf = 0.0L;
         for (int j = 1; j < k; j++) {
-            at_sum += j * at[j] * uf[k - j];
+            _at += j * at[j] * uf[k - j];
         }
         for (int j = 0; j < k; j++) {
-            uf_sum += u[j] * (k - j) * u[k - j];
+            _uf += u[j] * (k - j) * u[k - j];
         }
-        return (pair) {
-            at[k] = (u[k] - at_sum / k) / uf[0],
-            uf[k] = 2.0L * (g == TRIG ? uf_sum : - uf_sum) / k
-        };
+        return (pair) {at[k] = (u[k] - _at / k) / uf[0], uf[k] = 2.0L * (g == TRIG ? _uf : - _uf) / k};
     }
 }

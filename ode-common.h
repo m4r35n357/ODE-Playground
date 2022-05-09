@@ -4,6 +4,7 @@
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
+#include <time.h>
 #include "real.h"
 
 /*
@@ -14,7 +15,7 @@ extern const int BASE;
 /*
  * Prints a line of data to stdout, with turning point markers
  */
-void t_output (int dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label);
+void t_output (int dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label, real cpu);
 
 /*
  * Retrieves ODE parameters from the tail of the command (arguments 8 onwards)
@@ -29,3 +30,8 @@ typedef struct {
     real y;
     real z;
 } components;
+
+/*
+ * Cumulative CPU time in seconds from a clock() value
+ */
+real cpu (clock_t since);

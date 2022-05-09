@@ -7,6 +7,7 @@
 #include <stdarg.h>
 #include <assert.h>
 #include <math.h>
+#include <time.h>
 #include "runge-kutta-ode.h"
 
 static char *tag (real new, real old, char *max) {
@@ -14,6 +15,7 @@ static char *tag (real new, real old, char *max) {
 }
 
 void rk4 (int dp, int n, real h, int steps, real x0, real y0, real z0, void *p) {
+    clock_t start = clock();
     real x = x0, xdot = 0.0L, kx = 0.0L;
     real y = y0, ydot = 0.0L, ky = 0.0L;
     real z = z0, zdot = 0.0L, kz = 0.0L;
@@ -30,9 +32,9 @@ void rk4 (int dp, int n, real h, int steps, real x0, real y0, real z0, void *p) 
             exit(2);
         }
         if (step % n == 0) {
-            t_output(dp, x, y, z, h * step, tag(kx, xdot, "X"), tag(ky, ydot, "Y"), tag(kz, zdot, "Z"));
+            t_output(dp, x, y, z, h * step, tag(kx, xdot, "X"), tag(ky, ydot, "Y"), tag(kz, zdot, "Z"), cpu(start));
             xdot = kx, ydot = ky, zdot = kz;
         }
     }
-    t_output(dp, x, y, z, h * steps, "_", "_", "_");
+    t_output(dp, x, y, z, h * steps, "_", "_", "_", cpu(start));
 }

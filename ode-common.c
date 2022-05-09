@@ -20,8 +20,12 @@ void t_params (char **argv, int argc, ...) {
     va_end(model);
 }
 
-void t_output (int dp, real x, real y, real z, real t, char *x_tag, char *y_tag, char *z_tag) {
+void t_output (int dp, real x, real y, real z, real t, char *x_tag, char *y_tag, char *z_tag, real cpu) {
     char fs[128];
-    sprintf(fs, "%%+.%dLe %%+.%dLe %%+.%dLe %%+.6Le %s %s %s\n", dp, dp, dp, x_tag, y_tag, z_tag);
-    printf(fs, x, y, z, t);
+    sprintf(fs, "%%+.%dLe %%+.%dLe %%+.%dLe %%.6Le %s %s %s %%.3Lf\n", dp, dp, dp, x_tag, y_tag, z_tag);
+    printf(fs, x, y, z, t, cpu);
+}
+
+real cpu (clock_t since) {
+    return (real)(clock() - since) / CLOCKS_PER_SEC;
 }
