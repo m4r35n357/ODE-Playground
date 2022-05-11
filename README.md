@@ -266,7 +266,7 @@ Parameter | Meaning
 ----------|-----------
 1 | Maximum order for Taylor integrator (minimum is 2)
 2 | deviation threshold
-3+ | ODE call
+3+ | ODE call (with "order" argument set to "_")
 
 #### CNS duration vs. Simulation Order (gnuplot graph) for the given step size:
 

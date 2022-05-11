@@ -9,6 +9,11 @@ threshold=$2
 shift 2
 original=$*
 
+case $3 in
+    "_")  ;;
+    *)    echo 'Order argument should be set to "_"'; exit 1;;
+esac
+
 . ./cns-functions.sh
 
 n=2
