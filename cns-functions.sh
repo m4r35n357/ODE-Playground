@@ -8,12 +8,11 @@ fileB="/tmp/$USER/dataB"  # results of the requested simulation
 get_precision () {
     begin="$1 $2"
     case $3 in
-        half)   p='11';;
-        float)  p='23';;
+        single) p='23';;
         double) p='53';;
         ext*)   p='63';;
-        long)   p='113';;
-        octo)   p='237';;
+        quad*)  p='113';;
+        oct*)   p='237';;
         *)      p="$3";;
     esac
     shift 3

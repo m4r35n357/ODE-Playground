@@ -280,14 +280,23 @@ Parameter | Meaning
 
 #### CNS duration vs. Simulation Order (gnuplot graph) for the given step size:
 
-The following commands perform a scan, and plot the simulation time and cpu time as histograms against integrator order:
+The following commands perform a scan, and plot the simulation time and cpu time as histograms against integrator order.
+Quadruple precision can be clean up to ~76 time units:
 ```
-./cns-scan 1 32 1 ./tsm-lorenz-static 6 long _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | tee /tmp/$USER/data
+./cns-scan 4 32 1 ./tsm-lorenz-static 6 quad _ .01 10000 -15.8 -17.48 35.64 10 28 8 3 | tee /tmp/$USER/data
+```
 
+Octuple precision can be clean up to ~173 time units:
+```
+./cns-scan 24 60 1 ./tsm-lorenz-static 6 oct _ .01 18000 -15.8 -17.48 35.64 10 28 8 3 | tee /tmp/$USER/data
+```
+
+To plot clean simulation time and CPU vs. order:
+```
 gnuplot -p -e "set ytics nomirror; set y2tics; plot '/tmp/$USER/data' using 1:2 axes x1y1 with boxes, '/tmp/$USER/data' using 1:3 axes x1y2 with boxes"
 ```
 
-Order and CPU time against (desired) maximum clean simulation time from the same data:
+To plot required order and CPU time against (desired) maximum clean simulation time from the same data:
 ```
 gnuplot -p -e "set ytics nomirror; set y2tics; plot '/tmp/$USER/data' using 2:1 axes x1y1 with points, '/tmp/$USER/data' using 2:3 axes x1y2 with points"
 ```
