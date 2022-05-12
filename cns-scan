@@ -11,7 +11,7 @@ original=$*
 
 case $3 in
     "_")  ;;
-    *)    echo 'Order argument should be set to "_"'; exit 1;;
+    *)    echo '"order" argument should be set to "_"'; exit 1;;
 esac
 
 . ./cns-functions.sh
@@ -24,11 +24,13 @@ do
     shift 3
     current="$begin $n $*"
     halfstep $current
-    $current >$fileB & wait
+    $current >$fileB &
+    wait
     temp=$(./divergence $fileA $fileB $threshold)
     if [ x$temp = x'' ]
     then
-        echo $n -1
+        echo $n "No more data - increase simulation time?"
+    exit 1
     else
         set $temp
         echo $n $4 $6
