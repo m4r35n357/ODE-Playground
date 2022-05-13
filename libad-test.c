@@ -168,7 +168,7 @@ int main (int argc, char **argv) {
     fprintf(stdout, "\n");
     fprintf(stdout, "%sTaylor Series Method: x'=1  y'=0  z'=-1%s\n", WHT, NRM);
     int steps = 10;
-    tsm(argc, argv, n, D01, steps, D1, D1, D1);
+    tsm(n, D01, steps, D1, D1, D1, get_p(argc, argv, n));
     fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);
     mpfr_t e1, e0, e_1;
     mpfr_inits(e1, e0, e_1, NULL);

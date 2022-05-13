@@ -65,12 +65,11 @@ mpfr_t *t_horner (series s, int n, mpfr_t h) {
     return &_;
 }
 
-void tsm (int argc, char **argv, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0) {
+void tsm (int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0, void *p) {
     clock_t start = clock();
     series x = t_jet(n); mpfr_set(x[0], x0, RND);
     series y = t_jet(n); mpfr_set(y[0], y0, RND);
     series z = t_jet(n); mpfr_set(z[0], z0, RND);
-    void *p = get_p(argc, argv, n);
     components *vk = malloc(sizeof (components));
     mpfr_inits(vk->x, vk->y, vk->z, NULL);
     for (int step = 0; step < steps; step++) {

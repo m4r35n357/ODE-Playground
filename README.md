@@ -192,7 +192,7 @@ Parameter | Meaning
 ##### Run & plot (3D gnuplot graph):
 ```
 ./tsm-thomas-dbg 9 113 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
-gnuplot -p -e "set xyplane 0; set view 54.73561,135; set xlabel 'X'; set ylabel 'Y'; set zlabel 'Z'; splot '/tmp/ian/data' with lines"
+gnuplot -p -e "set xyplane 0; set view 54.73561,135; set xlabel 'X'; set ylabel 'Y'; set zlabel 'Z'; splot '/tmp/$USER/data' with lines"
 ```
 ##### Run & plot (2D gnuplot graph):
 ```
