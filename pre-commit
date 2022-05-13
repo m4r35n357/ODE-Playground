@@ -7,7 +7,7 @@ echo -n "Running Clang build . . . "
 for x in .5 0 -.5
 do
     echo "Running Taylor Test, x = $x . . . "
-    if ! ./libad-test-dbg 128 20 $x 1e-21 0 >/dev/null
+    if ! ./libad-test-dbg 237 64 $x 1e-64 0 >/dev/null
     then
         echo "\033[31;1mTaylor Test failed!\033[0m"
         exit 1
@@ -16,21 +16,21 @@ done
 echo OK
 
 echo -n "Running Lorenz executables . . . "
-if ! ./tsm-lorenz-dbg 0 128 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
+if ! ./tsm-lorenz-dbg 0 113 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
 then
     echo "\033[31;1mLorenz(DBG) failed!\033[0m"
     exit 1
 fi
 echo -n "Debug, "
 
-if ! ./tsm-lorenz-static 0 128 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
+if ! ./tsm-lorenz-static 0 113 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
 then
     echo "\033[31;1mLorenz(STATIC) failed!\033[0m"
     exit 1
 fi
 echo -n "Static, "
 
-if ! ./tsm-lorenz-dynamic 0 128 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
+if ! ./tsm-lorenz-dynamic 0 113 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
 then
     echo "\033[31;1mLorenz(DYNAMIC) failed!\033[0m"
     exit 1
@@ -38,7 +38,7 @@ fi
 echo Dynamic OK
 
 echo -n "Running Rabinovich-Fabrikant executable . . . "
-if [ 50001 -ne $(./tsm-rf-dbg 9 128 16 .01 50000 .05 -.05 .3 .105 .1 2>/dev/null | wc -l) ]
+if [ 50001 -ne $(./tsm-rf-dbg 9 113 16 .01 50000 .05 -.05 .3 .105 .1 2>/dev/null | wc -l) ]
 then
     echo "\033[31;1mRabinovich-Fabrikant test failed!\033[0m"
     exit 1

@@ -120,23 +120,46 @@ pytest ad_test.py solver_test.py -v
 There should be NO errors or warnings.  [UPDATE: kerr-image.c shows warnings on arm64; it is 3rd party code]
 
 #### Running c Tests
-```
-./libad-test-dbg 32 20 1 1e-18
 
-Total: 33, PASSED 33
-```
-The final parameter can be set to 0 (or left absent) for a summary, 1 for individual tests, or 2 for full detail of Taylor Series.
-Depending on the x value, some tests might be skipped owing to domain restrictions on some of the functions involved.
+**libad-test-dbg** c executable
 
-libad-test-dbg c executable ||
-----------|-----------
 Parameter | Meaning
 ----------|-----------
-1 | (approximate) precision in bits
+1 | precision in bits
 2 | order of Taylor Series
 3 | x value
 4 | tolerance
 5 | debug level (optional)
+
+The final parameter can be set to 0 (or left absent) for a summary, 1 for individual tests, or 2 for full detail of Taylor Series.
+Depending on the x value, some tests might be skipped owing to domain restrictions on some of the functions involved.
+
+```
+$ ./libad-test-dbg 237 64 -.5 1e-64
+
+Horner
+ 23   23.000
+153  153.000
+201  201.000
+
+Taylor Series Method: x'=1  y'=0  z'=-1
++1.000000000000e+00 +1.000000000000e+00 +1.000000000000e+00 +0.000000000e+00 0.000
++1.105170918076e+00 +1.000000000000e+00 +9.048374180360e-01 +1.000000000e-01 0.000
++1.221402758160e+00 +1.000000000000e+00 +8.187307530780e-01 +2.000000000e-01 0.001
++1.349858807576e+00 +1.000000000000e+00 +7.408182206817e-01 +3.000000000e-01 0.001
++1.491824697641e+00 +1.000000000000e+00 +6.703200460356e-01 +4.000000000e-01 0.001
++1.648721270700e+00 +1.000000000000e+00 +6.065306597126e-01 +5.000000000e-01 0.001
++1.822118800391e+00 +1.000000000000e+00 +5.488116360940e-01 +6.000000000e-01 0.001
++2.013752707470e+00 +1.000000000000e+00 +4.965853037914e-01 +7.000000000e-01 0.002
++2.225540928492e+00 +1.000000000000e+00 +4.493289641172e-01 +8.000000000e-01 0.002
++2.459603111157e+00 +1.000000000000e+00 +4.065696597406e-01 +9.000000000e-01 0.002
++2.718281828459e+00 +1.000000000000e+00 +3.678794411714e-01 +1.000000000e+00 0.002
+Check: e^1  e^0  e^-1
++2.718281828459e+00 +1.000000000000e+00 +3.678794411714e-01 +1.000000000e+00 0.000
+
+Recurrence Relations: x = -0.5
+Total: 49, PASSED 30, SKIPPED 19
+```
 
 #### Code coverage
 ```
