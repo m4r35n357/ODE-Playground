@@ -76,7 +76,7 @@ int main (int argc, char **argv) {
     n = (int)strtol(argv[1], NULL, BASE);
     assert(n > 1);
     ad_init(n);
-    series x = t_jet(n);
+    series x = t_jet(n + 1);
     x[0] = strtold(argv[2], NULL);
     for (int k = 1; k <= n; k++) {
         x[k] = x[0] / (k * k);
