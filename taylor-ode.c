@@ -37,7 +37,7 @@ double cpu (clock_t since) {
 }
 
 series t_jet (int n) {
-    mpfr_t *s = calloc((size_t)n + 1, sizeof (mpfr_t));
+    mpfr_t *s = calloc((size_t)n, sizeof (mpfr_t));
     if (!s) {
         fprintf(stderr, "Allocation failure!\n");
         exit(1);
@@ -67,9 +67,9 @@ mpfr_t *t_horner (series s, int n, mpfr_t h) {
 
 void tsm (int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0, void *p) {
     clock_t start = clock();
-    series x = t_jet(n); mpfr_set(x[0], x0, RND);
-    series y = t_jet(n); mpfr_set(y[0], y0, RND);
-    series z = t_jet(n); mpfr_set(z[0], z0, RND);
+    series x = t_jet(n + 1); mpfr_set(x[0], x0, RND);
+    series y = t_jet(n + 1); mpfr_set(y[0], y0, RND);
+    series z = t_jet(n + 1); mpfr_set(z[0], z0, RND);
     components *vk = malloc(sizeof (components));
     mpfr_inits(vk->x, vk->y, vk->z, NULL);
     for (int step = 0; step < steps; step++) {

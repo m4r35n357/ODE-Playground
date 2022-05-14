@@ -10,7 +10,7 @@
 
 int main (int argc, char **argv) {
     int display_precision = (int)strtol(argv[1], NULL, BASE);
-    mpfr_set_default_prec((int)strtol(argv[2], NULL, BASE));
+    mpfr_set_default_prec((mpfr_prec_t)strtol(argv[2], NULL, BASE));
     fprintf(stderr, " MPFR default precision: %lu bits\n", mpfr_get_default_prec());
     t_init(display_precision);
 
