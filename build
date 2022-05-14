@@ -8,18 +8,16 @@
 
 /usr/bin/ctags *.h *.c
 
-WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra -Wconversion -Wunsuffixed-float-constants -Wredundant-decls -Wmissing-field-initializers -Wmissing-declarations -Wuninitialized'
+WARNINGS='-pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra -Wconversion -Wredundant-decls -Wmissing-field-initializers -Wmissing-declarations -Wuninitialized'
 
 STD='c99'
 
-CC="/usr/bin/gcc -std=$STD"
-if [ x"$1" = x'clang' ]
-then
-    CC="/usr/bin/clang -std=$STD"
-elif [ x"$1" = x'tcc' ]
-then
-    CC="/usr/local/bin/tcc -std=$STD"
-fi
+case $1 in
+    clang) WARNINGS="$WARNINGS -ffp-model=precise"
+           CC="/usr/bin/clang -std=$STD";;
+    gcc|*) WARNINGS="$WARNINGS -Wunsuffixed-float-constants -frounding-math -fsignaling-nans"
+           CC="/usr/bin/gcc -std=$STD";;
+esac
 ${CC} --version
 
 rm -f *.o *.so *.gch
