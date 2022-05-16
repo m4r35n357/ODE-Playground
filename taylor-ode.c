@@ -24,7 +24,7 @@ real t_horner (series s, int n, real h) {
     for (int i = n; i >= 0; i--) {
         sum = sum * h + s[i];
     }
-    if (isnan(sum) || isinf(sum)) {
+    if (! isfinite(sum)) {
         fprintf(stderr, "Value error!\n");
         exit(2);
     }

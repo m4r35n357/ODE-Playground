@@ -27,7 +27,7 @@ void rk4 (int dp, int n, real h, int steps, real x0, real y0, real z0, void *p) 
         x += h * (kx = (k1.x + 2.0L * (k2.x + k3.x) + k4.x) / 6.0L);
         y += h * (ky = (k1.y + 2.0L * (k2.y + k3.y) + k4.y) / 6.0L);
         z += h * (kz = (k1.z + 2.0L * (k2.z + k3.z) + k4.z) / 6.0L);
-        if (isnan(x) || isinf(x) || isnan(y) || isinf(y) || isnan(z) || isinf(z)) {
+        if (! isfinite(x) || ! isfinite(y) || ! isfinite(z)) {
             fprintf(stderr, "Value error!\n");
             exit(2);
         }

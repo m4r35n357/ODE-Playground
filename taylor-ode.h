@@ -64,7 +64,7 @@ void tsm (int dp, int n, real h, int steps, real x0, real y0, real z0, void *P);
  */
 
 /*
- * Get a blob of parameter data from the model to be passed to ode()
+ * Get a blob of parameter data from the model to be passed into ode()
  */
 void *get_p (int argc, char **argv, int order);
 

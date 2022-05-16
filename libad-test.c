@@ -56,7 +56,7 @@ static void compare (char* name, series a, series b) {
     total++;
     for (int k = 0; k < n; k++) {
         delta = a[k] - b[k];
-        if (isnan(delta) || isinf(delta) || fabsl(delta) > tolerance) {
+        if (! isfinite(delta) || fabsl(delta) > tolerance) {
             fprintf(stderr, "%s FAIL%s %s\n  k=%d  LHS: %+.6Le  RHS: %+.6Le  (%+.3Le)\n", RED, NRM, name, k, a[k], b[k], delta);
             return;
         }
