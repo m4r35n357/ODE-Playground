@@ -64,7 +64,7 @@ void tsm (int dp, int n, real h, int steps, real x0, real y0, real z0, void *P);
  */
 
 /*
- * Get a blob of parameter data from the model to be passed back in from ode()
+ * Get a blob of parameter data from the model to be passed to ode()
  */
 void *get_p (int argc, char **argv, int order);
 
@@ -140,11 +140,11 @@ real t_sqr (series U, int k);
  *
  *                     = (U[k] - sum{j=0->k-1} Q[j].V[k-j]) / V[0]    otherwise
  *
- * If U == NULL, returns kth element of 1 / V, results stored in user-supplied jet I, DOMAIN RESTRICTION v[0] != 0.0
+ * If U == NULL, returns kth element of 1 / V, results stored in user-supplied jet Q, DOMAIN RESTRICTION v[0] != 0.0
  *
- * from quotient, I[k] = 1.0 / V[0]                                   if k == 0
+ * from above,    Q[k] = 1.0 / V[0]                                   if k == 0
  *
- *                I[k] = - sum{j=0->k-1} I[j].V[k-j] / V[0]           otherwise
+ *                Q[k] = - sum{j=0->k-1} Q[j].V[k-j] / V[0]           otherwise
  */
 real t_div (series Q, series U, series V, int k);
 
