@@ -42,7 +42,7 @@ static void refresh (parameters *p) {
     p->p_phi = (p->L / p->sth2.val - p->aE) + p->a * P.val / p->delta.val;
 }
 
-static parameters *get_p (int argc, char **argv, int va_begin) {
+void *get_p (int argc, char **argv, int va_begin) {
     parameters *p = malloc(sizeof (parameters));
     real spin, p_mass, energy, momentum, m_factor, carter, r_0, theta_0;
     t_variables(argv, va_begin, argc, &spin, &p_mass, &energy, &momentum, &m_factor, &carter, &r_0, &theta_0);

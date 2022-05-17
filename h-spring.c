@@ -28,7 +28,7 @@ typedef struct {
     real h0;  // stored initial value of Hamiltonian
 } parameters;
 
-static parameters *get_p (int argc, char **argv, int va_begin) {
+void *get_p (int argc, char **argv, int va_begin) {
     parameters *p = malloc(sizeof (parameters));
     t_variables(argv, va_begin, argc, &p->m, &p->k, &p->l);
     p->q = p->l + 1.0L;

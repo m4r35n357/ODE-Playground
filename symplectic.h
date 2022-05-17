@@ -6,16 +6,42 @@
  */
 void t_variables (char **argv, int start, int count, ...);
 
+/*
+ * Get a blob of parameter data from the model to be passed into solve()
+ */
+void *get_p (int argc, char **argv, int va_begin);
+
+/*
+ * "Logarithmic" error function
+ */
 real error (real e);
 
-typedef void (*updater)(void *, real);
+/*
+ * To pass an updater as parameter
+ */
+typedef void (*updater)(void *params, real c_d);
 
-typedef void (*plotter)(long, void *, real);
+/*
+ * To pass a plotter as parameter
+ */
+typedef void (*plotter)(long dp, void *params, real t);
 
-typedef void (*integrator)(void *, updater, updater, real);
+/*
+ * To pass an integrator as parameter
+ */
+typedef void (*integrator)(void *params, updater uq, updater up, real h);
 
+/*
+ * Coordinate updater dq = (dH/dp).dt
+ */
 void update_q (void *params, real c);
 
+/*
+ * Momentum updater dp = -(dH/dq).dt
+ */
 void update_p (void *params, real d);
 
+/*
+ * Call the integrator
+ */
 void solve (char **argv, void *p, updater uq, updater up, plotter output);

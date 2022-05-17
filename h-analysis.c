@@ -19,7 +19,7 @@ typedef struct {
     long count;
 } parameters;
 
-static parameters *get_p (int argc, char **argv, int va_begin) {
+void *get_p (int argc, char **argv, int va_begin) {
     (void)argc; (void)argv; (void)va_begin;
     parameters *p = malloc(sizeof (parameters));
     p->c = 0.0L;
