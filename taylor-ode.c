@@ -122,10 +122,10 @@ real t_exp (series e, series u, int k) {
     }
 }
 
-pair t_sin_cos (series s, series c, series u, int k, geometry g) {
+pair t_sin_cos (series s, series c, series u, int k, geometry G) {
     assert(s != c && s != u && c != u);
     if (k == 0) {
-        return (pair) {s[0] = g == TRIG ? sinl(u[0]) : sinhl(u[0]), c[0] = g == TRIG ? cosl(u[0]) : coshl(u[0])};
+        return (pair) {s[0] = G == TRIG ? sinl(u[0]) : sinhl(u[0]), c[0] = G == TRIG ? cosl(u[0]) : coshl(u[0])};
     } else {
         real _s = 0.0L, _c = 0.0L;
         for (int j = 0; j < k; j++) {
@@ -133,15 +133,15 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
             _c += c[j] * du_dt;
             _s += s[j] * du_dt;
         }
-        return (pair) {s[k] = _c / k, c[k] = (g == TRIG ? - _s : _s) / k};
+        return (pair) {s[k] = _c / k, c[k] = (G == TRIG ? - _s : _s) / k};
     }
 }
 
-pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
+pair t_tan_sec2 (series t, series s, series u, int k, geometry G) {
     assert(t != s && t != u && s != u);
     if (k == 0) {
-        t[0] = g == TRIG ? tanl(u[0]) : tanhl(u[0]);
-        return (pair) {t[0], s[0] = g == TRIG ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]};
+        t[0] = G == TRIG ? tanl(u[0]) : tanhl(u[0]);
+        return (pair) {t[0], s[0] = G == TRIG ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]};
     } else {
         real _t = 0.0L, _s = 0.0L;
         for (int j = 0; j < k; j++) {
@@ -151,7 +151,7 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
         for (int j = 0; j < k; j++) {
             _t += t[j] * (k - j) * t[k - j];
         }
-        return (pair) {t[k], s[k] = 2.0L * (g == TRIG ? _t : - _t) / k};
+        return (pair) {t[k], s[k] = 2.0L * (G == TRIG ? _t : - _t) / k};
     }
 }
 
@@ -183,13 +183,13 @@ real t_ln (series l, series u, int k) {
     }
 }
 
-pair t_asin (series a, series g, series u, int k, geometry m) {
-    assert(m == TRIG ? u[0] >= -1.0L && u[0] <= 1.0L : 1);
+pair t_asin (series a, series g, series u, int k, geometry G) {
+    assert(G == TRIG ? u[0] >= -1.0L && u[0] <= 1.0L : 1);
     assert(a != g && a != u && g != u);
     if (k == 0) {
         return (pair) {
-            a[0] = m == TRIG ? asinl(u[0]) : asinhl(u[0]),
-            g[0] = sqrtl(m == TRIG ? 1.0L - u[0] * u[0] : 1.0L + u[0] * u[0])
+            a[0] = G == TRIG ? asinl(u[0]) : asinhl(u[0]),
+            g[0] = sqrtl(G == TRIG ? 1.0L - u[0] * u[0] : 1.0L + u[0] * u[0])
         };
     } else {
         real _a = 0.0L, _g = 0.0L;
@@ -200,24 +200,24 @@ pair t_asin (series a, series g, series u, int k, geometry m) {
         for (int j = 0; j < k; j++) {
             _g += u[j] * (k - j) * a[k - j];
         }
-        return (pair) {a[k], g[k] = (m == TRIG ? - _g : _g) / k};
+        return (pair) {a[k], g[k] = (G == TRIG ? - _g : _g) / k};
     }
 }
 
-pair t_acos (series a, series g, series u, int k, geometry m) {
-    assert(m == TRIG ? u[0] >= -1.0L && u[0] <= 1.0L : u[0] >= 1.0L);
+pair t_acos (series a, series g, series u, int k, geometry G) {
+    assert(G == TRIG ? u[0] >= -1.0L && u[0] <= 1.0L : u[0] >= 1.0L);
     assert(a != g && a != u && g != u);
     if (k == 0) {
         return (pair) {
-            a[0] = m == TRIG ? acosl(u[0]) : acoshl(u[0]),
-            g[0] = m == TRIG ? - sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] - 1.0L)
+            a[0] = G == TRIG ? acosl(u[0]) : acoshl(u[0]),
+            g[0] = G == TRIG ? - sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] - 1.0L)
         };
     } else {
         real _a = 0.0L, _g = 0.0L;
         for (int j = 1; j < k; j++) {
             _a += j * a[j] * g[k - j];
         }
-        a[k] = (u[k] - (m == TRIG ? - _a : _a) / k) / g[0];
+        a[k] = (u[k] - (G == TRIG ? - _a : _a) / k) / g[0];
         for (int j = 0; j < k; j++) {
             _g += u[j] * (k - j) * a[k - j];
         }
@@ -225,13 +225,13 @@ pair t_acos (series a, series g, series u, int k, geometry m) {
     }
 }
 
-pair t_atan (series a, series g, series u, int k, geometry m) {
-    assert(m == TRIG ? 1 : u[0] >= -1.0L && u[0] <= 1.0L);
+pair t_atan (series a, series g, series u, int k, geometry G) {
+    assert(G == TRIG ? 1 : u[0] >= -1.0L && u[0] <= 1.0L);
     assert(a != g && a != u && g != u);
     if (k == 0) {
         return (pair) {
-            a[0] = m == TRIG ? atanl(u[0]) : atanhl(u[0]),
-            g[0] = m == TRIG ? 1.0L + u[0] * u[0] : 1.0L - u[0] * u[0]
+            a[0] = G == TRIG ? atanl(u[0]) : atanhl(u[0]),
+            g[0] = G == TRIG ? 1.0L + u[0] * u[0] : 1.0L - u[0] * u[0]
         };
     } else {
         real _a = 0.0L, _g = 0.0L;
@@ -241,6 +241,6 @@ pair t_atan (series a, series g, series u, int k, geometry m) {
         for (int j = 0; j < k; j++) {
             _g += u[j] * (k - j) * u[k - j];
         }
-        return (pair) {a[k] = (u[k] - _a / k) / g[0], g[k] = 2.0L * (m == TRIG ? _g : - _g) / k};
+        return (pair) {a[k] = (u[k] - _a / k) / g[0], g[k] = 2.0L * (G == TRIG ? _g : - _g) / k};
     }
 }

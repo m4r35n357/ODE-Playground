@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
     FILE *fileA, *fileB;
     if ((fileA = fopen(argv[1], "r")) == NULL || (fileB = fopen(argv[2], "r")) == NULL) {
         fprintf(stderr, "divergence: Cannot read data files!\n");
-        exit(1);
+        exit(5);
     }
     real xA, yA, zA, xB, yB, zB, tA, tB, cpuA, cpuB;
     char bl[2];

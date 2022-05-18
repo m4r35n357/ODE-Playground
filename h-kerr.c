@@ -129,7 +129,7 @@ int main (int argc, char **argv) {
         case 2: plot = plot_raw; break;
         default:
             printf("Plot type is {%ld} but should be 0 (x,y,z,error,speed), 1 (view), or 2 (raw)\n", plot_type);
-            exit(1);
+            exit(2);
     }
     solve(argv, get_p(argc, argv, plot_type_position + 1), update_q, update_p, plot);
     return 0;
