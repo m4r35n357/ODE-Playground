@@ -181,9 +181,9 @@ It should be possible to send output directly to gnuplot via a pipe, but many ve
 
 ### Bifurcation Diagrams:
 
-Runs a simulation many times for different values of a single parameter, uses turning point tags in the ODE simulation output for plotting bifurcation diagrams in X, Y and Z, and saves plots to PNG files.
-Plots maxima and minima in different colours!
-Optionally, skips initial transient by dropping first (datalines / value) results (10 is usually a good value).
+This script runs a simulation many times for different values of a single parameter, and uses turning point tags in the ODE simulation output for plotting bifurcation diagrams in X, Y and Z, and saves plots to PNG files.
+Because the simulations carry second derivatives in the coordinate jets, we can plot maxima and minima in different colours!
+Optionally, we can skip the initial transient by dropping the first (datalines / value) results (10 is usually a good value).
 
 **bifurcation-scan** (shell script)
 
@@ -197,6 +197,8 @@ Parameter | Meaning
 The general idea is to replace one of the model parameters with the string '$p' (including quotes!).
 
 #### Bifurcation Diagram (manual gnuplot graph):
+
+A fourth-order integrator is sufficient for bifurcation diagrams and will run faster; for this scenario we only care about transitions into and out of chaos, not accuracy within the chaotic regions.
 ```
 ./bifurcation-scan .1 .23 10 ./tsm-thomas-static 6 4 0.1 10000 1 0 0 '$p'
 ```
