@@ -29,14 +29,12 @@ do
     $current >$fileB &
     wait
     temp=$(./divergence $fileA $fileB $threshold)
-    if [ x$temp = x'' ]
-    then
-        echo $n "No more data - increase simulation time?"
-    exit 1
-    else
-        set $temp
-        echo $n $4 $6
-    fi
+    case temp in
+        '') echo $n "No more data - increase simulation time?"
+            exit 1;;
+         *) set $temp
+            echo $n $4 $6;;
+    esac
     n=$((n + 1))
 done 2>/dev/null
 exit 0

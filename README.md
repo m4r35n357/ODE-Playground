@@ -316,12 +316,12 @@ Octuple precision can be clean up to ~173 time units:
 
 To plot clean simulation time and CPU vs. order:
 ```
-gnuplot -p -e "set ytics nomirror; set y2tics; plot '/tmp/$USER/data' using 1:2 axes x1y1 with boxes, '/tmp/$USER/data' using 1:3 axes x1y2 with boxes"
+gnuplot -p -e "set key left; set ytics nomirror; set y2tics; plot '/tmp/$USER/data' using 1:2 axes x1y1 with boxes, '/tmp/$USER/data' using 1:3 axes x1y2 with boxes"
 ```
 
 To plot required order and CPU time against (desired) maximum clean simulation time from the same data:
 ```
-gnuplot -p -e "set ytics nomirror; set y2tics; plot '/tmp/$USER/data' using 2:1 axes x1y1 with points, '/tmp/$USER/data' using 2:3 axes x1y2 with points"
+gnuplot -p -e "set key left; set ytics nomirror; set y2tics; plot '/tmp/$USER/data' using 2:1 axes x1y1 with points, '/tmp/$USER/data' using 2:3 axes x1y2 with points"
 ```
 
 ## ic script - Sensitivity to variation in initial conditions
