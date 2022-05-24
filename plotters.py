@@ -273,11 +273,11 @@ for i in range(-50, 51):
     f = lambda a: (a**2 + 1)**(i*0.1)
     #scan(f)
     #mplot(f)
-    msave(f'test_{i+50:03d}.png', f)
+    msave_s(f'test_{i+50:03d}.png', f)
 
 for i in range(19):
     f = lambda a: (a**2 + 1.0 / (10.0)**i)**0.5
-    msave(f'test_{i:03d}.png', f)
+    msave_s(f'test_{i:03d}.png', f)
 
 f = lambda a: abs(- (a - 1.5)**3 + 4 * (a - 1.5) - 2)
 f = lambda a: - (abs(a) - 1.5)**3 + 4 * (abs(a) - 1.5) - 2

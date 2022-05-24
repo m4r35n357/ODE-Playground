@@ -7,11 +7,13 @@
 #  rm -f .mutmut-cache; mutmut --test-time-base 10.0 --paths-to-mutate ad.py run --runner 'pytest ad_test.py'
 from collections import namedtuple
 from math import pi, exp, log, sin, cos, tan, sinh, cosh, tanh, factorial
-from ad import Components, tsm, t_jet, t_horner, t_const, t_abs, t_prod, t_quot, t_pwr, t_exp, t_ln, t_sin_cos, t_tan_sec2, Series, Dual, t_asin, t_acos, t_atan
 from pytest import mark, raises, approx
+from ad import Components, t_jet, t_horner, t_const, t_abs, t_prod, t_quot, t_pwr, t_exp, t_ln, t_sin_cos, t_tan_sec2, Series, Dual
 
 order = 6
+# noinspection NonAsciiCharacters
 ε = 1.0e-12  # small error
+# noinspection NonAsciiCharacters
 δ = 1.0e-6  # small amount
 zero = 0.0
 f1 = 1.0
@@ -42,7 +44,7 @@ for i in range(1, order):
 class Parameters(namedtuple('ParametersType', ['a', 'b', 'c'])):
     pass
 
-def simple_get_p(order):
+def simple_get_p():
     return Parameters(a=1.0, b=0.0, c=-1.0)
 
 def simple_ode(x, y, z, p, k):
@@ -308,7 +310,7 @@ def test_multiply_number_object(number):
     assert series.val == approx(number * f3)
     assert series.jet[1] == approx(number)
     for term in series.jet[2:]:
-        assert term== approx(0.0)
+        assert term == approx(0.0)
 
 @mark.domain
 @mark.parametrize('number', [i5, δ, - δ, - i5])

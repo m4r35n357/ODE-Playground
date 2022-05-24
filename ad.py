@@ -1,7 +1,7 @@
 #
 #  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-from sys import stderr, argv
+from sys import stderr
 from math import fsum, sin, cos, sinh, cosh, tan, tanh, exp, log, asinh, asin, acosh, acos, atanh, atan, sqrt
 from collections import namedtuple
 from time import clock_gettime, CLOCK_MONOTONIC
@@ -185,6 +185,7 @@ class Series:
         assert self.val != 0.0, f"self.val = {self.val}"
         jet = t_jet(self.n)
         for k in self.index:
+            # noinspection PyTypeChecker
             jet[k] = t_quot(jet, None, self.jet, k) * o
         return Series(jet)
 
