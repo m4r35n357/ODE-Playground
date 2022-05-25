@@ -293,11 +293,12 @@ Runs a simulation together with six additional ones (+- deviations in X, Y and Z
 Parameter | Meaning
 ----------|-----------
 1 | Initial separation between "original" trajectory and the extra ones
-2+ | ODE call
+2 | Precision in decimal places ("scale" variable in bc)
+3+ | ODE call
 
 #### Sensitivity to Initial Conditions (3D plot using pi3d):
 ```
-./ic .001 ./tsm-thomas-static 6 10 0.1 30000 1 0 0 .185
+./ic .001 32 ./tsm-thomas-static 6 10 0.1 30000 1 0 0 .185
 ```
 
 ### Taylor Series & Dual Numbers Calculator - Interactive Function Analysis with Python

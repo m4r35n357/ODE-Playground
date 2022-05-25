@@ -16,7 +16,8 @@ fileF=${tmpdir}/dataF
 fileG=${tmpdir}/dataG
 
 delta=$1
-shift
+precision=$2
+shift 2
 
 perturb () {
     start="$1 $2 $3 $4 $5"
@@ -29,33 +30,31 @@ perturb () {
     $start $x0 $y0 $z0 $end >$fileG &
     y=$y0
     z=$z0
-    x=$(echo "scale=32; $x0 + $delta;" | /usr/bin/bc)
+    x=$(echo "scale=$precision; $x0 + $delta;" | /usr/bin/bc)
     echo 'x+' $start $x $y $z $end
     $start $x $y $z $end >$fileA &
-    x=$(echo "scale=32; $x0 - $delta;" | /usr/bin/bc)
+    x=$(echo "scale=$precision; $x0 - $delta;" | /usr/bin/bc)
     echo 'x-' $start $x $y $z $end
     $start $x $y $z $end >$fileB &
     x=$x0
     z=$z0
-    y=$(echo "scale=32; $y0 + $delta;" | /usr/bin/bc)
+    y=$(echo "scale=$precision; $y0 + $delta;" | /usr/bin/bc)
     echo 'y+' $start $x $y $z $end
     $start $x $y $z $end >$fileC &
-    y=$(echo "scale=32; $y0 - $delta;" | /usr/bin/bc)
+    y=$(echo "scale=$precision; $y0 - $delta;" | /usr/bin/bc)
     echo 'y-' $start $x $y $z $end
     $start $x $y $z $end >$fileD &
     x=$x0
     y=$y0
-    z=$(echo "scale=32; $z0 + $delta;" | /usr/bin/bc)
+    z=$(echo "scale=$precision; $z0 + $delta;" | /usr/bin/bc)
     echo 'z+' $start $x $y $z $end
     $start $x $y $z $end >$fileE &
-    z=$(echo "scale=32; $z0 - $delta;" | /usr/bin/bc)
+    z=$(echo "scale=$precision; $z0 - $delta;" | /usr/bin/bc)
     echo 'z-' $start $x $y $z $end
     $start $x $y $z $end >$fileF &
 }
 
 perturb $*
 wait
-
-/usr/bin/gnuplot -e "set title '$*'; set terminal png size 1200,900; splot '$fileG' with lines" >${tmpdir}/ic.png
 
 ./plot3d.py $fileA $fileB $fileC $fileD $fileE $fileF $fileG
