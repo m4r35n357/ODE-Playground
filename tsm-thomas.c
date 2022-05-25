@@ -1,7 +1,19 @@
 /*
  * Thomas' cyclically symmetric attractor
  *
- * Example: ./tsm-thomas-dbg 9 32 10 0.1 30000 1 0 0 .19
+ * Example: ./tsm-thomas-dbg 9 237 16  0.1 30000 1 0 0 .185
+ * 
+./cns step2 1 ./tsm-thomas-static $(yad --title="Thomas Attractor (TSM)" --form --separator=" " \
+    --field="Display Precision":NUM \
+    --field="Precision in Bits":NUM \
+    --field="Order":NUM \
+    --field="Step Size":NUM \
+    --field="Steps":NUM \
+    --field="x0" \
+    --field="y0" \
+    --field="z0" \
+    --field="b" \
+    -- '6!3..64!3' '237!11..999!2' '8!4..256!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' "1" "0" "0" ".185")
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
