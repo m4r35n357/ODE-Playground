@@ -3,6 +3,20 @@
  *
  * Example: ./rk4-lorenz-dbg 15 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
  *
+./cns step2 1 ./rk4-lorenz-static $(yad --title="Lorenz Attractor (RK4)" --form --separator=" " --align=right \
+    --field="Display Precision":NUM \
+    --field="Plot Interval":NUM \
+    --field="Step Size":NUM \
+    --field="Steps":NUM \
+    --field="x0" \
+    --field="y0" \
+    --field="z0" \
+    --field="sigma" \
+    --field="rho" \
+    --field="beta (numerator)" \
+    --field="beta (denominator)" \
+    -- '6!3..64!3' '1!1..1000!1' '.01!0.00001..0.1!0.00001!6' '10000!1..1000000!1000' "-15.8" "-18.48" "35.64" "10" "28" "8" "3")
+ *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
