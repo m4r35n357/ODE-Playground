@@ -26,7 +26,7 @@ real error (real e) {
 
 static struct weight {
     real fwd, rev;
-} w_w, w_x, w_y, w_z;
+} weight_r_4, weight_r_3, weight_r_2, weight_r_1;
 
 static void stormer_verlet (void *p, real cd) {
     update_q(p, cd * 0.5L);
@@ -43,7 +43,7 @@ static void suzuki (void *p, integrator base, real cd, struct weight w) {
 }
 
 static void base4 (void *p, real cd) {
-    suzuki(p, stormer_verlet, cd, w_z);
+    suzuki(p, stormer_verlet, cd, weight_r_1);
 }
 
 static void fourth_order (void *p, real h) {
@@ -51,7 +51,7 @@ static void fourth_order (void *p, real h) {
 }
 
 static void base6 (void *p, real cd) {
-    suzuki(p, base4, cd, w_y);
+    suzuki(p, base4, cd, weight_r_2);
 }
 
 static void sixth_order (void *p, real h) {
@@ -59,7 +59,7 @@ static void sixth_order (void *p, real h) {
 }
 
 static void base8 (void *p, real cd) {
-    suzuki(p, base6, cd, w_x);
+    suzuki(p, base6, cd, weight_r_3);
 }
 
 static void eightth_order (void *p, real h) {
@@ -67,7 +67,7 @@ static void eightth_order (void *p, real h) {
 }
 
 static void base10 (void *p, real cd) {
-    suzuki(p, base8, cd, w_w);
+    suzuki(p, base8, cd, weight_r_4);
 }
 
 static void tenth_order (void *p, real h) {
@@ -79,14 +79,14 @@ void solve (char **argv, void *p, plotter output) {
     real h = strtold(argv[3], NULL);
     assert(h > 0.0L && h <= 10.0L);
     assert(steps >= 0 && steps <= 1000000);
-    w_z.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 3.0L));
-    w_y.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 5.0L));
-    w_x.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 7.0L));
-    w_w.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 9.0L));
-    w_z.rev = 1.0L - 4.0L * w_z.fwd;
-    w_y.rev = 1.0L - 4.0L * w_y.fwd;
-    w_x.rev = 1.0L - 4.0L * w_x.fwd;
-    w_w.rev = 1.0L - 4.0L * w_w.fwd;
+    weight_r_1.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 3.0L));
+    weight_r_2.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 5.0L));
+    weight_r_3.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 7.0L));
+    weight_r_4.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 9.0L));
+    weight_r_1.rev = 1.0L - 4.0L * weight_r_1.fwd;
+    weight_r_2.rev = 1.0L - 4.0L * weight_r_2.fwd;
+    weight_r_3.rev = 1.0L - 4.0L * weight_r_3.fwd;
+    weight_r_4.rev = 1.0L - 4.0L * weight_r_4.fwd;
     integrator composer = NULL;
     switch (method) {
         case 2: composer = stormer_verlet; break;

@@ -11,6 +11,23 @@
  * Gamma, speed:
  * Example:  gnuplot -p -e "set terminal wxt size 600,450; plot '/tmp/$USER/data' using 4:8 with lines, '/tmp/$USER/data' using 4:9 with lines"
  *
+./h-kerr-static $(yad --title="Kerr Orbit" --form --separator=" " --align=right \
+    --field="Display Precision":NUM \
+    --field="Order":NUM \
+    --field="Step Size":NUM \
+    --field="Steps":NUM \
+    --field="Plot type":CB \
+    --field="BH spin" \
+    --field="particle mass" \
+    --field="particle energy" \
+    --field="particle momentum" \
+    --field="momentum factor" \
+    --field="Carter's constant" \
+    --field="r0" \
+    --field="theta0" \
+    -- '6!3..64!3' '4!2..10!2' '0.1!0.1..1!0.1!1' '10000!1..100000!1' '0!1!2' \
+       "0.8" "1.0" "0.9455050956749083" "1.434374509531738" "1.0" "7.978759958927879" "12.0" "63.0")
+ *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 

@@ -4,6 +4,13 @@
  * Example:  ./h-analysis-dbg  6 8 1 1 >/tmp/$USER/data
  *
  * Example:  gnuplot -p -e "set terminal wxt size 600,450; plot '/tmp/$USER/data' using 2:3 with linespoints pt 7 ps 0"
+  *
+./h-analysis-static $(yad --title="Step Analysis" --form --separator=" " --align=right \
+    --field="Display Precision":NUM \
+    --field="Order":NUM \
+    --field="Step Size":RO \
+    --field="Steps":RO \
+    -- '6!3..64!3' '4!2..10!2' "1.0" "1") >/tmp/$USER/data
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
