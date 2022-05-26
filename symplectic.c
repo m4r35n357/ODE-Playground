@@ -28,53 +28,53 @@ static struct weight {
     real fwd, rev;
 } w_w, w_x, w_y, w_z;
 
-static void stormer_verlet (void *p, updater uq, updater up, real cd) {
-    uq(p, cd * 0.5L);
-    up(p, cd);
-    uq(p, cd * 0.5L);
+static void stormer_verlet (void *p, real cd) {
+    update_q(p, cd * 0.5L);
+    update_p(p, cd);
+    update_q(p, cd * 0.5L);
 }
 
-static void suzuki (void *p, integrator base, updater uq, updater up, real cd, struct weight w) {
-    base(p, uq, up, cd * w.fwd);
-    base(p, uq, up, cd * w.fwd);
-    base(p, uq, up, cd * w.rev);
-    base(p, uq, up, cd * w.fwd);
-    base(p, uq, up, cd * w.fwd);
+static void suzuki (void *p, integrator base, real cd, struct weight w) {
+    base(p, cd * w.fwd);
+    base(p, cd * w.fwd);
+    base(p, cd * w.rev);
+    base(p, cd * w.fwd);
+    base(p, cd * w.fwd);
 }
 
-static void base4 (void *p, updater uq, updater up, real cd) {
-    suzuki(p, stormer_verlet, uq, up, cd, w_z);
+static void base4 (void *p, real cd) {
+    suzuki(p, stormer_verlet, cd, w_z);
 }
 
-static void fourth_order (void *p, updater uq, updater up, real h) {
-    base4(p, uq, up, h);
+static void fourth_order (void *p, real h) {
+    base4(p, h);
 }
 
-static void base6 (void *p, updater uq, updater up, real cd) {
-    suzuki(p, base4, uq, up, cd, w_y);
+static void base6 (void *p, real cd) {
+    suzuki(p, base4, cd, w_y);
 }
 
-static void sixth_order (void *p, updater uq, updater up, real h) {
-    base6(p, uq, up, h);
+static void sixth_order (void *p, real h) {
+    base6(p, h);
 }
 
-static void base8 (void *p, updater uq, updater up, real cd) {
-    suzuki(p, base6, uq, up, cd, w_x);
+static void base8 (void *p, real cd) {
+    suzuki(p, base6, cd, w_x);
 }
 
-static void eightth_order (void *p, updater uq, updater up, real h) {
-    base8(p, uq, up, h);
+static void eightth_order (void *p, real h) {
+    base8(p, h);
 }
 
-static void base10 (void *p, updater uq, updater up, real cd) {
-    suzuki(p, base8, uq, up, cd, w_w);
+static void base10 (void *p, real cd) {
+    suzuki(p, base8, cd, w_w);
 }
 
-static void tenth_order (void *p, updater uq, updater up, real h) {
-    base10(p, uq, up, h);
+static void tenth_order (void *p, real h) {
+    base10(p, h);
 }
 
-void solve (char **argv, void *p, updater uq, updater up, plotter output) {
+void solve (char **argv, void *p, plotter output) {
     long dp = strtol(argv[1], NULL, 10), method = strtol(argv[2], NULL, 10), steps = strtol(argv[4], NULL, 10);
     real h = strtold(argv[3], NULL);
     assert(h > 0.0L && h <= 10.0L);
@@ -100,7 +100,7 @@ void solve (char **argv, void *p, updater uq, updater up, plotter output) {
     }
     output(dp, p, 0.0L);
     for (long step = 1; step <= steps; step++) {
-        composer(p, uq, up, h);
+        composer(p, h);
         output(dp, p, step * h);
     }
 }

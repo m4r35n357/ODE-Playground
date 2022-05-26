@@ -64,6 +64,6 @@ static void plot (long dp, void *params, real t) {
 
 int main (int argc, char **argv) {
     assert(argc == 8);
-    solve(argv, get_p(argc, argv, 5), update_q, update_p, plot);
+    solve(argv, get_p(argc, argv, 5), plot);
     return 0;
 }
