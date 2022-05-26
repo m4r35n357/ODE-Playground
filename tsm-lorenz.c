@@ -3,7 +3,7 @@
  *
  * Example: ./tsm-lorenz-dbg 9 237 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3
  *
-./cns step2 1 ./tsm-lorenz-static $(yad --title="Lorenz Attractor (TSM)" --form --separator=" " \
+./cns step2 1 ./tsm-lorenz-static $(yad --title="Lorenz Attractor (TSM)" --form --separator=" " --align=right \
     --field="Display Precision":NUM \
     --field="Precision in Bits":NUM \
     --field="Order":NUM \
@@ -12,10 +12,10 @@
     --field="x0" \
     --field="y0" \
     --field="z0" \
-    --field="Sigma" \
-    --field="Rho" \
-    --field="Beta numerator" \
-    --field="Beta denominator" \
+    --field="sigma" \
+    --field="rho" \
+    --field="beta (numerator)" \
+    --field="beta (denominator)" \
     -- '6!3..64!3' '237!11..999!2' '8!4..256!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' "-15.8" "-18.48" "35.64" "10" "28" "8" "3")
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file

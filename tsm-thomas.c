@@ -3,7 +3,7 @@
  *
  * Example: ./tsm-thomas-dbg 9 237 16  0.1 30000 1 0 0 .185
  * 
-./cns step2 1 ./tsm-thomas-static $(yad --title="Thomas Attractor (TSM)" --form --separator=" " \
+./cns step2 1 ./tsm-thomas-static $(yad --title="Thomas Attractor (TSM)" --form --separator=" " --align=right \
     --field="Display Precision":NUM \
     --field="Precision in Bits":NUM \
     --field="Order":NUM \
