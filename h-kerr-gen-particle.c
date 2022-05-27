@@ -4,15 +4,15 @@
  * Example:  ./h-kerr-gen-particle-dbg 1e-9 3 12 63 1 1 .8 >/tmp/$USER/data
  * Example:  ./h-kerr-gen-particle-dbg 1e-9 12 -1 63 1 1 .8 >/tmp/$USER/data
  *
-parameters=$(yad --title="Generate Parameters" --form --separator=" " \
-    --field="Solver Tolerance" "1.0e-9" \
-    --field="Rmin" "3.0" \
-    --field="Rmax (-1 for circular)" "12.0" \
-    --field="Elevation (degrees)" "63.0" \
-    --field="BH mass" "1.0" \
-    --field="Particle mass" "1.0" \
-    --field="BH spin (-ve for retrograde)" "0.8")
-./h-kerr-gen-particle-dbg $parameters >/tmp/$USER/data
+./h-kerr-gen-particle-dbg $(yad --title="Generate Parameters" --form --separator=" " --align=right \
+    --field="Solver Tolerance" \
+    --field="Rmin" \
+    --field="Rmax (-1 for circular)" \
+    --field="Elevation (degrees)" \
+    --field="BH mass" \
+    --field="Particle mass" \
+    --field="BH spin (-ve for retrograde)" \
+    -- "1.0e-9" "3.0" "12.0" "63.0" "1.0" "1.0" "0.8") >/tmp/$USER/data
  *
  * Potential plots:
  *

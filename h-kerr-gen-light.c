@@ -3,6 +3,11 @@
  *
  * Example:  ./h-kerr-gen-light-dbg 3 .8
  *
+./h-kerr-gen-light-dbg $(yad --title="Step Analysis" --form --separator=" " --align=right \
+    --field="r" \
+    --field="spin":NUM \
+    -- "3" '0.8!0.0..1.0!0.1!1')
+ *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
