@@ -59,6 +59,10 @@ No formal documentation yet, see the c files for example usage.
 ```
 sudo apt install bc git build-essential musl-tools pkg-config mesa-utils-extra python3-tk python3-dev libfreetype6-dev libatlas-base-dev virtualenvwrapper gnuplot-x11 lcov
 ```
+Optional:
+```
+sudo apt install yad ffmpeg
+```
 
 ### Requirements - Python 3 Packages (for plotting), please use a virtual environment!
 ```
