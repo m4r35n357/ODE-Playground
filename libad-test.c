@@ -1,7 +1,11 @@
 /*
  * Automatic Differentiation of Taylor Series, newest validation checks
  *
- * Example: ./libad-test-dbg 32 20 1 1e-21 [ 0 | 1 | 2 ]
+ * Example: ./libad-test-dbg 237 64 .5 1e-64 [ 0 | 1 | 2 ]
+ *
+./libad-test-dbg $(yad --title="Taylor Arithmetic Tests" --form --separator=" " --align=right \
+    --field="Precision in Bits":NUM --field="Order":NUM --field="Value":NUM --field="Deviation":NUM --field="Detail":CB \
+    -- '237!11..999!2' '64!4..256!1' '0.5!-1.0..1.0!0.1!1' '18!3..36!3' '0!1!2')
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
