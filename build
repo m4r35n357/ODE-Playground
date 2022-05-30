@@ -123,9 +123,13 @@ rm -f libsymp.so symp.o
 ${CC} -O3 -DNDEBUG -c $WARNINGS -fpic symplectic.c && ${CC} -shared -o libsymp.so symplectic.o -s &
 
 # wget -c ftp://ftp.madore.org/pub/madore/misc/kerr-image.c
-# echo " Building kerr-image"
-# gcc -o kerr-image kerr-image.c -O6 -Wall -std=c99 -pedantic -Wextra -Wno-unused-result -lm
-# gcc -g -o kerr-image-dbg kerr-image.c -O0 -Wall -std=c99 -pedantic -Wextra -Wno-unused-result -lm
+if [ -e kerr-image.c ]
+then
+    echo ""
+    echo " Building kerr-image (third party code)"
+    gcc -o kerr-image kerr-image.c -O6 -Wall -std=c99 -pedantic -Wextra -Wno-unused-result -lm
+    gcc -g -o kerr-image-dbg kerr-image.c -O0 -Wall -std=c99 -pedantic -Wextra -Wno-unused-result -lm
+fi
 
 echo ""
 wait
