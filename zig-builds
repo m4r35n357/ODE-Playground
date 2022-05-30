@@ -2,23 +2,32 @@
 #
 #  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-# ./zig should be a symlink to your Zig executable
+# ./zig should be a symlink to your Zig executable!
 #
 #  Example: ./zig-builds arm-linux-musleabihf ReleaseFast
-#  Example: ./zig-builds aarch64-linux-musl ReleaseFast
-#  Example: ./zig-builds aarch64-linux-gnu ReleaseFast
-#  Example: ./zig-builds x86_64-linux-musl ReleaseFast
-#  Example: ./zig-builds i386-linux-musl ReleaseFast
-#  Example: ./zig-builds x86_64-windows-gnu ReleaseFast
+#
+<<'###BLOCK-COMMENT'
+./zig-builds $(yad --title="Zig cross-compile" --form --separator=" " --align=right \
+    --field="Architecture":CB --field=strip:CHK --field="Build Mode":CB \
+    -- 'arm-linux-musleabihf!aarch64-linux-musl!aarch64-linux-gnu!aarch64-macos-gnu!x86_64-linux-musl!x86_64-linux-gnu!x86_64-windows-gnu' \
+       'FALSE' 'ReleaseSafe!ReleaseFast!ReleaseSmall!Debug')
+###BLOCK-COMMENT
 #
 #  Example: for i in .5 0 -.5; do ./libdual-test $i 1e-18 1; ./libad-test 10 $i 1e-18 1; done >/dev/null
 
 target=$1
-opt=$2
+stripped=$2
+buildmode=$3
 
-CCOPTS="-O $opt -fsingle-threaded --strip --library c -target $target"
+CCOPTS="-O $buildmode -fsingle-threaded --library c -target $target"
+case $stripped in
+    "TRUE") CCOPTS="$CCOPTS --strip";;
+esac
 
+echo ""
 echo Zig version $(./zig version)
+echo $CCOPTS
+echo ""
 
 zig_build_exe="./zig build-exe -fno-lto"
 
