@@ -9,13 +9,14 @@ method=$1
 threshold=$2
 shift 2
 
+. ./cns-functions.sh
+
 case $method in
     'step2') original=$*
-             . ./cns-functions.sh
              halfstep $original
              $original >$fileB &
              wait;;
-    'nosim') ;;  # replot existing data
+    'nosim') ;;  # compare user-supplied data or replot existing
           *) echo "CNS: Bad Method"; exit 1;;
 esac
 
