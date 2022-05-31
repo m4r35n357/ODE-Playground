@@ -102,7 +102,7 @@ Parameter | Meaning
 2 | Error limit (absolute)
 3 | (Optional) verbosity: 0: summary (default), 1: list, 2: detail
 
-**libtaylor-test-dbg** (c executable)
+**libad-test-dbg** (c executable)
 
 Parameter | Meaning
 ----------|-----------
