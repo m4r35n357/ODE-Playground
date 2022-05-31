@@ -4,22 +4,27 @@
 #
 # ./zig should be a symlink to your Zig executable!
 #
-#  Example: ./zig-builds arm-linux-musleabihf ReleaseFast
+#  Example: ./zig-builds arm-linux-musleabihf ReleaseSmall
 #
 <<'###BLOCK-COMMENT'
 ./zig-builds $(yad --title="Zig cross-compile" --form --separator=" " --align=right \
-    --field="Architecture":CB --field=strip:CHK --field="Build Mode":CB \
+    --field="Architecture":CB --field="Build Mode":CB --field="Strip Symbols":CHK  --field="Single-threaded":CHK \
     -- 'arm-linux-musleabihf!aarch64-linux-musl!aarch64-linux-gnu!aarch64-macos-gnu!x86_64-linux-musl!x86_64-linux-gnu!x86_64-windows-gnu' \
-       'FALSE' 'ReleaseSafe!ReleaseFast!ReleaseSmall!Debug')
+       'ReleaseSmall!ReleaseFast!ReleaseSafe!Debug' 'TRUE' 'TRUE')
 ###BLOCK-COMMENT
 #
 #  Example: for i in .5 0 -.5; do ./libdual-test $i 1e-18 1; ./libad-test 10 $i 1e-18 1; done >/dev/null
 
 target=$1
-stripped=$2
-buildmode=$3
+buildmode=$2
+stripped=${3:-TRUE}
+single=${4:-TRUE}
 
-CCOPTS="-O $buildmode -fsingle-threaded --library c -target $target"
+CCOPTS="-O $buildmode"
+case $single in
+    "TRUE") CCOPTS="$CCOPTS -fsingle-threaded";;
+esac
+CCOPTS="$CCOPTS --library c -target $target"
 case $stripped in
     "TRUE") CCOPTS="$CCOPTS --strip";;
 esac
