@@ -135,7 +135,7 @@ The final parameter can be set to 0 (or left absent) for a summary, 1 for indivi
 Depending on the x value, some tests might be skipped owing to domain restrictions on some of the functions involved.
 
 ```
-$ ./libad-test-dbg 237 64 -.5 1e-64
+./libad-test-dbg 237 64 -.5 1e-64
 
 Horner
  23   23.000
@@ -250,7 +250,7 @@ step2 | The step size is halved (this is  now the _only_ "better" integrator!)
 ```
 #### Example output - ~300 time units
 ```
-$ time -p ./cns step2 1 ./tsm-lorenz-static 6 408 102 .01 32000 -15.8 -17.48 35.64 10 28 8 3
+time -p ./cns step2 1 ./tsm-lorenz-static 6 408 102 .01 32000 -15.8 -17.48 35.64 10 28 8 3
 Clean Numerical Simulation: [step2 1 ./tsm-lorenz-static 6 408 102 .01 32000 -15.8 -17.48 35.64 10 28 8 3]
 Better: ./tsm-lorenz-static 6 408 102 .005000 64000 -15.8 -17.48 35.64 10 28 8 3
  MPFR default precision: 408 bits
@@ -262,7 +262,7 @@ sys 0.81
 ```
 #### Example output - ~450 time units
 ```
-$ time -p ./cns step2 1 ./tsm-lorenz-static 6 630 153 .01 46000 -15.8 -17.48 35.64 10 28 8 3
+time -p ./cns step2 1 ./tsm-lorenz-static 6 630 153 .01 46000 -15.8 -17.48 35.64 10 28 8 3
 Clean Numerical Simulation: [step2 1 ./tsm-lorenz-static 6 630 153 .01 46000 -15.8 -17.48 35.64 10 28 8 3]
 Better: ./tsm-lorenz-static 6 630 153 .005000 92000 -15.8 -17.48 35.64 10 28 8 3
  MPFR default precision: 630 bits
@@ -274,7 +274,7 @@ sys 0.72
 ```
 #### Example output - ~600 time units
 ```
-$ time -p ./cns step2 1 ./tsm-lorenz-static 6 840 204 .01 62000 -15.8 -17.48 35.64 10 28 8 3
+time -p ./cns step2 1 ./tsm-lorenz-static 6 840 204 .01 62000 -15.8 -17.48 35.64 10 28 8 3
 Clean Numerical Simulation: [step2 1 ./tsm-lorenz-static 6 840 204 .01 62000 -15.8 -17.48 35.64 10 28 8 3]
 Better: ./tsm-lorenz-static 6 840 204 .005000 124000 -15.8 -17.48 35.64 10 28 8 3
  MPFR default precision: 840 bits
