@@ -73,13 +73,13 @@ pip install matplotlib pillow pi3d pytest pytest_cov ipython
 ### Running Python Tests
 You can use -q instead of -v for brevity
 ```
-$ pytest ad_test.py solver_test.py -v
+pytest ad_test.py solver_test.py -v
 ```
 
 ### c Build (MUSL with GCC by default, glibc with GCC or Clang optional)
 ```
-$ ./clean
-$ ./build [gcc|clang]
+./clean
+./build [gcc|clang]
 ```
 There should be NO errors or warnings.
 
@@ -112,22 +112,22 @@ Parameter | Meaning
 4 | (Optional) verbosity: 0: summary (default), 1: list, 2: detail
 
 ```
-$ ./libdual-test-dbg .5 1e-15 1
-$ ./libad-test-dbg 20 .5 1e-15 1
+./libdual-test-dbg .5 1e-15 1
+./libad-test-dbg 20 .5 1e-15 1
 
-$ for i in .5 0 -.5; do ./libdual-test-dbg $i 1e-15; ./libad-test-dbg 10 $i 1e-15; done >/dev/null
+for i in .5 0 -.5; do ./libad-test-dbg 10 $i 1e-15; ./libdual-test-dbg $i 1e-15; done
 ```
 ### C and Python Code coverage
 Creates web page summaries for both c and Python
 ```
-$ ./coverage
+./coverage
 ```
 The output contains file system links to the HTML results
 
 ### C Code profiling
 Very basic information, included just for completeness
 ```
-$ ./profile
+./profile
 ```
 The results are printed to stdout
 
