@@ -357,26 +357,24 @@ To plot required order and CPU time against (desired) maximum clean simulation t
 gnuplot -p -e "set key left; set ytics nomirror; set y2tics; plot '/tmp/$USER/data' using 2:1 axes x1y1 with points, '/tmp/$USER/data' using 2:3 axes x1y2 with points"
 ```
 
-## ic script - Sensitivity to variation in initial conditions
-This script is used to generate deviation data for chaos scanning, but the data can also be plotted in real time using matplotlib.
+#### Sensitivity to Initial Conditions (3D plot using pi3d):
+
+This script is used to generate deviation data for chaos scanning, and plots in real time.
 As well as the trajectory specified in the command arguments, six others are created and evolved; each one is the centre of the face of a cube around the original value
 
-ic shell script ||
+**ic** (shell script)
 
 Parameter | Meaning
 ----------|-----------
 1 | Initial separation between "original" trajectory and the extra ones
-2+ | ODE call
+2 | Precision in decimal places ("scale" variable in bc)
+3+ | ODE call
 
 The simulation is run seven times in parallel processes, the original along with each perturbed x, y, z.
 ```
-./ic .001 ./tsm-lorenz-dbg 9 53 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 2>/dev/null
-oo ./tsm-lorenz-dbg 9 9 53 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3
-x+ ./tsm-lorenz-dbg 9 9 53 10 .01 10001 -15.799 -17.48 35.64 10 28 8 3
-x- ./tsm-lorenz-dbg 9 9 53 10 .01 10001 -15.801 -17.48 35.64 10 28 8 3
-y+ ./tsm-lorenz-dbg 9 9 53 10 .01 10001 -15.8 -17.479 35.64 10 28 8 3
-y- ./tsm-lorenz-dbg 9 9 53 10 .01 10001 -15.8 -17.481 35.64 10 28 8 3
-z+ ./tsm-lorenz-dbg 9 9 53 10 .01 10001 -15.8 -17.48 35.641 10 28 8 3
-z- ./tsm-lorenz-dbg 9 9 53 10 .01 10001 -15.8 -17.48 35.639 10 28 8 3
+./ic .001 32 ./tsm-thomas-static 6 53 10 0.1 30000 1 0 0 .185
 ```
-(3D plot not shown)
+```
+./ic .001 32 ./tsm-lorenz-dbg 9 53 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 2>/dev/null
+```
+(3D plots not shown!)
