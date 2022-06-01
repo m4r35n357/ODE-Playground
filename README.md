@@ -237,16 +237,49 @@ Parameter | Meaning
 ----------|-----------
 1 | CNS function, Selects a better integrator for comparison, see below
 2 | deviation threshold
-3+ | ODE call (you can now use precision "names" in cns scripts)
+3+ | ODE call (you can now use precision "names" in CNS scripts)
 
 CNS function | Meaning
 ----------|-----------
 step2 | The step size is halved (this is  now the _only_ "better" integrator!)
 
-##### CNS plot (matplotlib diff graph):
-
+NOTE: the CPU time required for a clean simulation is of order:
 ```
-./cns step2 1 ./tsm-lorenz-static 9 long 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+O(required precision * order^2 * clean simulation time)
+```
+Since (empirically, for these Lorenz parameters and timestep)
+1. clean simulation time is approximately proportional to the required precision
+2. clean simulation time is approximately proportional to the Taylor series order
+the CPU requirement can also be seen as:
+```
+O(required precision^4) or O(order^4) or O(clean simulation time^4)
+```
+
+##### Make a CNS plot (matplotlib diff graph):
+
+#### Example output - quadruple precision
+```
+./cns step2 1 ./tsm-lorenz-static 6 quad 28 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+Clean Numerical Simulation: [step2 1 ./tsm-lorenz-static 6 quad 28 .01 10000 -15.8 -17.48 35.64 10 28 8 3]
+Better: ./tsm-lorenz-static 6 113 28 .005000 20000 -15.8 -17.48 35.64 10 28 8 3
+ MPFR default precision: 113 bits
+ MPFR default precision: 113 bits
+threshold: 1.0e+00  t: 76.440  cpu: 1.264 2.590
+real 3.41
+user 4.97
+sys 0.10
+```
+#### Example output - octuple precision
+```
+time -p ./cns step2 1 ./tsm-lorenz-static 6 oct 58 .01 18000 -15.8 -17.48 35.64 10 28 8 3
+Clean Numerical Simulation: [step2 1 ./tsm-lorenz-static 6 oct 58 .01 18000 -15.8 -17.48 35.64 10 28 8 3]
+Better: ./tsm-lorenz-static 6 237 58 .005000 36000 -15.8 -17.48 35.64 10 28 8 3
+ MPFR default precision: 237 bits
+ MPFR default precision: 237 bits
+threshold: 1.0e+00  t: 171.910  cpu: 12.511 24.808
+real 26.11
+user 39.03
+sys 0.17
 ```
 #### Example output - ~300 time units
 ```
