@@ -9,14 +9,16 @@ Sources and Executables are tiny (if MUSL is used); the default build is against
 All c floating point operations are executed in _long double_ precision.
 This gives a choice of precision and performance on different platforms.
 
-Platform | Implementation
+Platform | FP Implementation
 ----------|-----------
 ix86 | 80 bit hardware float
 x86-64 | 80 bit hardware float
 armhf | 64 bit hardware float
-aarch64 | 128 bit software float
+aarch64 | 128 bit _software_ float
 
 The Python code uses hardware acceleration on all platforms; 80 bit on Intel, 64 bit on ARM.
+In general Python is much too slow for performing actual simulations; it value is mostly in the interactive plotting features, and nonlinear equation solving (using Newton's method or bisection).
+It is also most convenient for demonstrating detailed operation of the TSM method in a debugger.
 
 ### ODE analysis using fourth order Runge-Kutta (RK4) - C only
 
@@ -203,8 +205,13 @@ The general idea is to replace one of the model parameters with the string '$p' 
 #### Bifurcation Diagram (manual gnuplot graph):
 
 A fourth-order integrator is sufficient for bifurcation diagrams and will run faster; for this scenario we only care about transitions into and out of chaos, not accuracy within the chaotic regions.
+Progress output is sent to /dev/null in the examples below for brevity, but is useful in most situations.
 ```
-./bifurcation-scan .1 .23 10 ./tsm-thomas-static 6 4 0.1 10000 1 0 0 '$p'
+time -p ./bifurcation-scan .1 .225 10 ./tsm-thomas-static 6 4 0.1 10000 1 0 0 '$p' >/dev/null
+Bifurcation Diagrams: [.1 .225 10 ./tsm-thomas-static 6 4 0.1 10000 1 0 0 $p]
+real 194.46
+user 195.12
+sys 116.62
 ```
 This produces three PNG files, one for each coordinate.
 You can see them using any image viewer e.g. ImageMagick:
@@ -215,6 +222,17 @@ If you want to interact with actual plots (e.g. to read off parameter values for
 ```
 gnuplot -p -e "set t wxt size 1350,800 background rgb 'grey85'; set grid back; plot '/tmp/$USER/bifurcationX' lt rgb 'dark-blue' w dots, '/tmp/$USER/bifurcationx' lt rgb 'dark-green' w dots"
 ```
+If you are curious about Python performance, you can try this:
+```
+time -p ./bifurcation-scan .1 .225 10 ./tsm-thomas.py 6 4 0.1 10000 1 0 0 '$p' >/dev/null                                        
+    ...
+_harmless "missing maxima" gnuplot data errors skipped_
+    ...
+real 1923.69
+user 1915.76
+sys 87.86
+```
+This is why the Python implementation does not identify turning points!
 
 ### Clean Numerical Simulation:
 
