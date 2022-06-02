@@ -27,7 +27,7 @@ do
     $current >$fileB &
     wait
     temp=$(./divergence $fileA $fileB $threshold)
-    case temp in
+    case $temp in
         '') echo $n "No more data - increase simulation time?"
             exit 1;;
          *) set $temp
