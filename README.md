@@ -298,12 +298,12 @@ The following commands perform a scan, and plot the simulation time and cpu time
 ```
 ./cns-scan 32 1 ./tsm-lorenz-static 6 _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | tee /tmp/$USER/data
 
-gnuplot -p -e "set key left; set ytics nomirror; set y2tics; plot '/tmp/$USER/data' using 1:2 axes x1y1 with boxes, '/tmp/$USER/data' using 1:3 axes x1y2 with boxes"
+gnuplot -p -e "set key left; set ytics nomirror; set y2tics; set xlabel 'Taylor Series Order'; set ylabel 'Clean Simulation Time'; set y2label 'CPU Time'; plot '/tmp/$USER/data' using 1:2 axes x1y1 with boxes, '/tmp/$USER/data' using 1:3 axes x1y2 with boxes"
 ```
 
 Order and CPU time against (desired) maximum clean simulation time from the same data:
 ```
-gnuplot -p -e "set key left; set ytics nomirror; set y2tics; plot '/tmp/$USER/data' using 2:1 axes x1y1 with points, '/tmp/$USER/data' using 2:3 axes x1y2 with points"
+gnuplot -p -e "set key left; set ytics nomirror; set y2tics; set xlabel 'Clean Simulation Time'; set ylabel 'Taylor Series Order'; set y2label 'CPU Time'; plot '/tmp/$USER/data' using 2:1 axes x1y1 with points, '/tmp/$USER/data' using 2:3 axes x1y2 with points"
 ```
 
 ### Sensitivity to Initial Conditions:
