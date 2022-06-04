@@ -66,24 +66,38 @@ Optional:
 sudo apt install yad ffmpeg
 ```
 
-### Requirements - Python 3 Packages (for plotting), please use a virtual environment!
+#### Python 3 Packages (for plotting), please use a virtual environment!
+There are some plotting and graphing utilities written in Python 3, (the data itself can come from either c or Python executables, which share output "formats").
+In the example invocations given below, communication between the executable and plotting script uses a Unix pipe.
+The dependencies are:
+* matplotlib for 2D graphs and progressive graphs
+* pi3d for 3D progressive trajectories
+* gnuplot for static 3D trajectories
+
+This is a typical Python virtual environment setup:
 ```
-mkvirtualenv -p /usr/bin/python3 taylor
-pip install matplotlib pillow pi3d pytest pytest_cov ipython
+mkvirtualenv --python /usr/bin/python3 taylor
+pip install matplotlib pillow pi3d pytest pytest-cov mutmut ipython
 ```
 
-### Running Python Tests
-You can use -q instead of -v for brevity
+#### Running Python Tests
+Testing Requirements
+* pytest
+* pytest_cov
+* mutmut (optional)
+
+Most of the code is covered several times over.
+Tests have been mutation tested with mutmut.
 ```
 pytest ad_test.py solver_test.py -v
 ```
 
-### c Build (MUSL with GCC by default, glibc with GCC or Clang optional)
+#### c Build (MUSL with GCC by default, glibc with GCC or Clang optional)
 ```
 ./clean
 ./build [gcc|clang]
 ```
-There should be NO errors or warnings.
+There should be NO errors or warnings.  [UPDATE: kerr-image.c shows warnings on arm64; it is 3rd party code]
 
 [UPDATE] clang shows warnings for the unsupported -Wunsuffixed-float-constants warning!
 
@@ -92,17 +106,9 @@ There should be NO errors or warnings.
 Each client is built _both_ as a dynamic executable with asserts and debug symbols, and as a stripped static executable with asserts disabled.
 The (default) MUSL static binaries are particularly tiny!
 
-### Running c Tests
+#### Running c Tests
 
 The tests enforce a redundant web of densely interrelated functionality that cannot exist in the presence of coding errors! ;)
-
-**libdual-test-dbg** (c executable)
-
-Parameter | Meaning
-----------|-----------
-1 | X value
-2 | Error limit (absolute)
-3 | (Optional) verbosity: 0: summary (default), 1: list, 2: detail
 
 **libad-test-dbg** (c executable)
 
@@ -113,35 +119,85 @@ Parameter | Meaning
 3 | Error limit (absolute)
 4 | (Optional) verbosity: 0: summary (default), 1: list, 2: detail
 
+The final parameter can be set to 0 (or left absent) for a summary, 1 for individual tests, or 2 for full detail of Taylor Series.
+Depending on the x value, some tests might be skipped owing to domain restrictions on some of the functions involved.
+
+```
+./libad-test-dbg 20 .5 1e-15
+
+Horner
+ 23   23.000
+153  153.000
+201  201.000
+
+Taylor Series Method: x'=1  y'=0  z'=-1
++1.000000000000e+00 +1.000000000000e+00 +1.000000000000e+00 0.000000e+00 _ _ _ 0.000
++1.105170918076e+00 +1.000000000000e+00 +9.048374180360e-01 1.000000e-01 _ _ _ 0.000
++1.221402758160e+00 +1.000000000000e+00 +8.187307530780e-01 2.000000e-01 _ _ _ 0.000
++1.349858807576e+00 +1.000000000000e+00 +7.408182206817e-01 3.000000e-01 _ _ _ 0.000
++1.491824697641e+00 +1.000000000000e+00 +6.703200460356e-01 4.000000e-01 _ _ _ 0.001
++1.648721270700e+00 +1.000000000000e+00 +6.065306597126e-01 5.000000e-01 _ _ _ 0.001
++1.822118800391e+00 +1.000000000000e+00 +5.488116360940e-01 6.000000e-01 _ _ _ 0.001
++2.013752707470e+00 +1.000000000000e+00 +4.965853037914e-01 7.000000e-01 _ _ _ 0.001
++2.225540928492e+00 +1.000000000000e+00 +4.493289641172e-01 8.000000e-01 _ _ _ 0.001
++2.459603111157e+00 +1.000000000000e+00 +4.065696597406e-01 9.000000e-01 _ _ _ 0.001
++2.718281828459e+00 +1.000000000000e+00 +3.678794411714e-01 1.000000e+00 _ _ _ 0.001
+Check: e^1  e^0  e^-1
++2.718281828459e+00 +1.000000000000e+00 +3.678794411714e-01 1.000000e+00 _ _ _ 0.000
+
+Recurrence Relations: x = 0.5
+Total: 44, PASSED 44
+```
+
+**libdual-test-dbg** (c executable)
+
+Parameter | Meaning
+----------|-----------
+1 | X value
+2 | Error limit (absolute)
+3 | (Optional) verbosity: 0: summary (default), 1: list, 2: detail
+
 ```
 ./libdual-test-dbg .5 1e-15 1
-./libad-test-dbg 20 .5 1e-15 1
+
+Dual Numbers: x = 0.5
+Total: 40, PASSED 40
 
 for i in .5 0 -.5; do ./libad-test-dbg 10 $i 1e-15; ./libdual-test-dbg $i 1e-15; done
 ```
-### C and Python Code coverage
+#### Code coverage
 Creates web page summaries for both c and Python
 ```
 ./coverage
 ```
 The output contains file system links to the HTML results
 
-### C Code profiling
+#### C Code profiling
 Very basic information, included just for completeness
 ```
 ./profile
 ```
 The results are printed to stdout
 
-### Find examples for ODE parameters and many other things:
+#### Find examples for ODE parameters and many other things:
 Useful commands are frequently added to the comments in source headings.
 ```
 grep Example *
 ```
-### Run a basic ODE simulation (ODE call):
+## Solving and Plotting ODEs
+This use case only involves calling the "t-functions" in ad.py or taylor-ode.c.
+No differentiation happens in these functions (they only implement the recurrence relations); it is the responsibility of the calling program to organize this properly.
+Refer to tsm-lorenz-dbg and tsm-*.c for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors.
+To find some example invocations:
+```
+grep Example *
+```
+Where CPU timings are given, they are made on a Raspberry Pi 400, mildly overclocked to 2100MHz, and writing output to a tmpfs file.
+
+#### Run a basic ODE simulation (ODE call):
 
 Runs a named simulation, and prints results to stdout.
-Each output line consists of a column each for x, y, z, t, followed by three turning point tags for generating bifurcation diagrams.
+Each output line consists of a column each for x, y, z, t, followed by three turning point tags for generating bifurcation diagrams, and cumulative CPU usage.
 
 **tsm-model-type** (c executables)
 
@@ -165,23 +221,33 @@ Parameter | Meaning
 5,6,7 | initial conditions, x0,y0,z0
 8+ | Model parameters
 
-#### Run & plot (3D plot using pi3d):
+##### Run & plot (3D plot using pi3d):
 ```
 ./tsm-thomas-dbg 6 10 0.1 30000 1 0 0 .185 | ./plot3d.py
 ```
-#### Run & plot (animated matplotlib graph):
+##### Run & plot (animated matplotlib graph):
 ```
 ./tsm-lorenz-dbg 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 ```
-#### Run & plot (3D gnuplot graph):
+##### Run & plot (3D gnuplot graph):
 ```
 ./tsm-thomas-dbg 6 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
-gnuplot -p -e "set xyplane 0; set view 54.73561,135; set xlabel 'X'; set ylabel 'Y'; set zlabel 'Z'; splot '/tmp/$USER/data' with lines"
+gnuplot -p << EOF
+set xyplane 0
+set view 54.73561,135
+set xlabel 'X'
+set ylabel 'Y'
+set zlabel 'Z'
+splot '/tmp/$USER/data' with lines
+EOF
 ```
-#### Run & plot (2D gnuplot graph):
+##### Run & plot (2D gnuplot graph):
 ```
 ./tsm-lorenz-dbg 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
-gnuplot -p -e "set terminal wxt size 1200,900; plot '/tmp/$USER/data' using 4:1 with lines, '/tmp/$USER/data' using 4:2 with lines, '/tmp/$USER/data' using 4:3 with lines"
+gnuplot -p << EOF
+set terminal wxt size 1200,900
+plot '/tmp/$USER/data' using 4:1 with lines, '/tmp/$USER/data' using 4:2 with lines, '/tmp/$USER/data' using 4:3 with lines
+EOF
 ```
 It should be possible to send output directly to gnuplot via a pipe, but many versions segfault when reading stdin so I now specify a temporary file instead.
 
@@ -234,7 +300,7 @@ sys 87.86
 ```
 This is why the Python implementation does not identify turning points!
 
-### Clean Numerical Simulation:
+#### Clean Numerical Simulation:
 
 In a chaotic system, accuracy can only be maintained for a finite simulation time.
 This script runs a given simulation twice, the second time with a "better" integrator, and shows the differences graphically.
@@ -254,7 +320,7 @@ CNS function | Meaning
 step2 | The step size is halved (this is  now the _only_ "better" integrator!)
 nosim | User-defined comparison between /tmp/$USER/dataA and /tmp/$USER/dataB
 
-#### CNS plot (matplotlib diff graph):
+##### Make a CNS plot (matplotlib diff graph):
 
 Here are some comparisons bewtween TSM and RK4 for roughly similar clean simulation times in each case.
 Note that RK4 quickly becomes impractical because of excessive CPU usage, whereas TSM can stay clean up to even higher time values.
@@ -279,7 +345,7 @@ In hardware 80-bit (x86-64) or 64-bit (armhf) floating point, the maximum clean 
 ./cns step2 1.0 ./tsm-lorenz-static 6 28 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 ```
 
-### CNS Duration Scanning (TSM only)
+#### CNS Duration Scanning (TSM only)
 
 Runs a simulation repeatedly with increasing order of integration, for each order showing the simulation time when the deviation threshold is exceeded.
 You can run this to determine the maximum _useful_ integrator order to use, for a given step size.
@@ -298,15 +364,18 @@ The following commands perform a scan, and plot the simulation time and cpu time
 ```
 ./cns-scan 32 1 ./tsm-lorenz-static 6 _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | tee /tmp/$USER/data
 
-gnuplot -p -e "set key left; set ytics nomirror; set y2tics; set xlabel 'Taylor Series Order'; set ylabel 'Clean Simulation Time'; set y2label 'CPU Time'; plot '/tmp/$USER/data' using 1:2 axes x1y1 with boxes, '/tmp/$USER/data' using 1:3 axes x1y2 with boxes"
+gnuplot -p << EOF
+set key left
+set ytics nomirror
+set y2tics
+set xlabel 'Taylor Series Order'
+set ylabel 'Clean Simulation Time'
+set y2label 'CPU Time'
+plot '/tmp/$USER/data' using 1:2 axes x1y1 title 'Clean Simulation Time' with boxes, '/tmp/$USER/data' using 1:3 axes x1y2 title 'CPU Time' with boxes
+EOF
 ```
 
-Order and CPU time against (desired) maximum clean simulation time from the same data:
-```
-gnuplot -p -e "set key left; set ytics nomirror; set y2tics; set xlabel 'Clean Simulation Time'; set ylabel 'Taylor Series Order'; set y2label 'CPU Time'; plot '/tmp/$USER/data' using 2:1 axes x1y1 with points, '/tmp/$USER/data' using 2:3 axes x1y2 with points"
-```
-
-### Sensitivity to Initial Conditions:
+#### Sensitivity to Initial Conditions (3D plot using pi3d):
 
 Runs a simulation together with six additional ones (+- deviations in X, Y and Z axes) and plots directly to Pi3D.
 
@@ -318,10 +387,14 @@ Parameter | Meaning
 2 | Precision in decimal places ("scale" variable in bc)
 3+ | ODE call
 
-#### Sensitivity to Initial Conditions (3D plot using pi3d):
+The simulation is run seven times in parallel processes, the original along with each perturbed x, y, z.
 ```
 ./ic .001 32 ./tsm-thomas-static 6 10 0.1 30000 1 0 0 .185
 ```
+```
+./ic .001 32 ./tsm-lorenz-dbg 6 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 2>/dev/null
+```
+(3D plots not shown!)
 
 ### Taylor Series & Dual Numbers Calculator - Interactive Function Analysis with Python
 This use case involves calling the Dual and Series methods and operators from ad.py, together with the functions from plotters.py, from a Python interpreter.
