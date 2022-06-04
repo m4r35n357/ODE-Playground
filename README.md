@@ -74,9 +74,9 @@ The list includes systems due to Lorenz, Rossler, Thomas, Bouali, Rabinovitch-Fa
 Rather than estimating local error using the usual Taylor Series method, I have provided a clean numerical simulation (CNS) shell script, that makes it easy to run a "better" simulation alongside.
 The differences can be plotted for easy visual comparison.
 
-## Build/Test Environment (Debian/Ubuntu/Raspbian)
+## Quick Start
 
-OS level requirements:
+### Requirements - Debian/Ubuntu packages
 ```
 sudo apt install bc git build-essential pkg-config mesa-utils-extra python3-tk python3-dev libmpc-dev libfreetype6-dev libatlas-base-dev virtualenvwrapper gnuplot-x11 lcov
 ```
@@ -96,7 +96,7 @@ The dependencies are:
 
 This is a typical Python virtual environment setup:
 ```
-mkvirtualenv --python /usr/bin/python3 ad
+mkvirtualenv --python /usr/bin/python3 taylor
 pip install matplotlib pillow pi3d pytest pytest-cov mutmut ipython
 ```
 
@@ -112,24 +112,32 @@ Tests have been mutation tested with mutmut.
 pytest ad_test.py solver_test.py -v
 ```
 
-#### c Build (GCC or Clang)
+#### c Build (GCC by default, Clang optional)
 ```
 ./clean
 ./build [clang]
 ```
 There should be NO errors or warnings.  [UPDATE: kerr-image.c shows warnings on arm64; it is 3rd party code]
 
+[UPDATE] clang shows warnings for the unsupported -Wunsuffixed-float-constants warning!
+
+[UPDATE] kerr-image.c shows warnings on arm64; it is 3rd party code
+
+Each client is built _both_ as a dynamic executable with asserts and debug symbols, and as a stripped static executable with asserts disabled.
+
 #### Running c Tests
 
-**libad-test-dbg** c executable
+The tests enforce a redundant web of densely interrelated functionality that cannot exist in the presence of coding errors! ;)
+
+**libad-test-dbg** (c executable)
 
 Parameter | Meaning
 ----------|-----------
-1 | precision in bits
-2 | order of Taylor Series
-3 | x value
-4 | tolerance
-5 | debug level (optional)
+1 | Precision in bits
+2 | Order
+3 | X value
+4 | Error limit (absolute)
+5 | (Optional) verbosity: 0: summary (default), 1: list, 2: detail
 
 The final parameter can be set to 0 (or left absent) for a summary, 1 for individual tests, or 2 for full detail of Taylor Series.
 Depending on the x value, some tests might be skipped owing to domain restrictions on some of the functions involved.
@@ -162,18 +170,21 @@ Total: 49, PASSED 30, SKIPPED 19
 ```
 
 #### Code coverage
+Creates a web page summary
 ```
 ./coverage
 ```
 The output contains file system links to the HTML results
 
 #### C Code profiling
+Very basic information, included just for completeness
 ```
 ./profile
 ```
 The results are printed to stdout
 
-#### Find examples for ODE parameters and other things:
+#### Find examples for ODE parameters and many other things:
+Useful commands are frequently added to the comments in source headings.
 ```
 grep Example *
 ```
@@ -190,14 +201,14 @@ Where CPU timings are given, they are made on a Raspberry Pi 400, mildly overclo
 #### Run a basic ODE simulation (ODE call):
 
 Runs a named simulation, and prints results to stdout.
-Each output line consists of a column each for x, y, z, t, followed by cumulative CPU usage
+Each output line consists of a column each for x, y, z, t, followed by three empty turning point tags and cumulative CPU usage
 
 **tsm-model-type** (c executables)
 
 Parameter | Meaning
 ----------|-----------
-1 | x,y,z display precision in bits
-2 | (approximate) internal precision in decimal places
+1 | x,y,z display precision in decimal places
+2 | internal precision in bits
 3 | order of Taylor Series
 4 | time step
 5 | number of steps
@@ -206,23 +217,39 @@ Parameter | Meaning
 
 ##### Run & plot (3D plot using pi3d):
 ```
-./tsm-thomas-dbg 9 113 10 0.1 30000 1 0 0 .185 | ./plot3d.py
+./tsm-thomas-dbg 6 113 10 0.1 30000 1 0 0 .185 | ./plot3d.py
 ```
 ##### Run & plot (animated matplotlib graph):
 ```
-./tsm-lorenz-dbg 9 113 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
+./tsm-lorenz-dbg 6 113 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 ```
 ##### Run & plot (3D gnuplot graph):
 ```
-./tsm-thomas-dbg 9 113 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
-gnuplot -p -e "set xyplane 0; set view 54.73561,135; set xlabel 'X'; set ylabel 'Y'; set zlabel 'Z'; splot '/tmp/$USER/data' with lines"
+./tsm-thomas-dbg 6 113 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
+
+gnuplot -p << EOF
+set xyplane 0
+set view 54.73561,135
+set xlabel 'X'
+set ylabel 'Y'
+set zlabel 'Z'
+splot '/tmp/$USER/data' with lines
+EOF
 ```
 ##### Run & plot (2D gnuplot graph):
 ```
-./tsm-lorenz-dbg 9 113 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
-gnuplot -p -e "set terminal wxt size 1200,900; plot '/tmp/$USER/data' using 4:1 with lines, '/tmp/$USER/data' using 4:2 with lines, '/tmp/$USER/data' using 4:3 with lines"
+./tsm-lorenz-dbg 6 113 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
+
+gnuplot -p << EOF
+set terminal wxt size 1200,900
+plot '/tmp/$USER/data' using 4:1 with lines, '/tmp/$USER/data' using 4:2 with lines, '/tmp/$USER/data' using 4:3 with lines
+EOF
 ```
 It should be possible to send output directly to gnuplot via a pipe, but many versions segfault when reading stdin so I now specify a temporary file instead.
+
+### Bifurcation Diagrams:
+
+See pure_c branch.
 
 #### Clean Numerical Simulation:
 
@@ -242,6 +269,7 @@ Parameter | Meaning
 CNS function | Meaning
 ----------|-----------
 step2 | The step size is halved (this is  now the _only_ "better" integrator!)
+nosim | User-defined comparison between /tmp/$USER/dataA and /tmp/$USER/dataB
 
 NOTE: the CPU time required for a clean simulation is of order:
 ```
@@ -329,38 +357,40 @@ You can run this to determine the maximum _useful_ integrator order to use, for 
 
 Parameter | Meaning
 ----------|-----------
-1 | minimum order for Taylor integrator
-2 | maximum order for Taylor integrator
+1 | Minimum order for Taylor integrator
+2 | Maximum order for Taylor integrator
 3 | deviation threshold
-4+ | ODE call (the order parameter should be a placeholder, e.g. "_", to avoid confusion)
+4+ | ODE call (with "order" argument set to "_", to avoid confusion)
 
 #### CNS duration vs. Simulation Order (gnuplot graph) for the given step size:
 
 The following commands perform a scan, and plot the simulation time and cpu time as histograms against integrator order.
-Quadruple precision can be clean up to ~76 time units:
+Quadruple precision can be clean up to ~76 time units for Lorenz:
 ```
 ./cns-scan 4 32 1 ./tsm-lorenz-static 6 quad _ .01 10000 -15.8 -17.48 35.64 10 28 8 3 | tee /tmp/$USER/data
 ```
 
-Octuple precision can be clean up to ~173 time units:
+Octuple precision can be clean up to ~173 time units for Lorenz:
 ```
 ./cns-scan 24 60 1 ./tsm-lorenz-static 6 oct _ .01 18000 -15.8 -17.48 35.64 10 28 8 3 | tee /tmp/$USER/data
 ```
 
 To plot clean simulation time and CPU vs. order:
 ```
-gnuplot -p -e "set key left; set ytics nomirror; set y2tics; set xlabel 'Taylor Series Order'; set ylabel 'Clean Simulation Time'; set y2label 'CPU Time'; plot '/tmp/$USER/data' using 1:2 axes x1y1 with boxes, '/tmp/$USER/data' using 1:3 axes x1y2 with boxes"
-```
-
-Order and CPU time against (desired) maximum clean simulation time from the same data:
-```
-gnuplot -p -e "set key left; set ytics nomirror; set y2tics; set xlabel 'Clean Simulation Time'; set ylabel 'Taylor Series Order'; set y2label 'CPU Time'; plot '/tmp/$USER/data' using 2:1 axes x1y1 with points, '/tmp/$USER/data' using 2:3 axes x1y2 with points"
+gnuplot -p << EOF
+set key left
+set ytics nomirror
+set y2tics
+set xlabel 'Taylor Series Order'
+set ylabel 'CNS Time, model units'
+set y2label 'CPU Time, seconds'
+plot '/tmp/$USER/data' using 1:2 axes x1y1 title 'CNS' with boxes, '/tmp/$USER/data' using 1:3 axes x1y2 title 'CPU' with boxes
+EOF
 ```
 
 #### Sensitivity to Initial Conditions (3D plot using pi3d):
 
-This script is used to generate deviation data for chaos scanning, and plots in real time.
-As well as the trajectory specified in the command arguments, six others are created and evolved; each one is the centre of the face of a cube around the original value
+Runs a simulation together with six additional ones (+- deviations in X, Y and Z axes) and plots directly to Pi3D.
 
 **ic** (shell script)
 
@@ -375,6 +405,6 @@ The simulation is run seven times in parallel processes, the original along with
 ./ic .001 32 ./tsm-thomas-static 6 53 10 0.1 30000 1 0 0 .185
 ```
 ```
-./ic .001 32 ./tsm-lorenz-dbg 9 53 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 2>/dev/null
+./ic .001 32 ./tsm-lorenz-dbg 6 53 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 2>/dev/null
 ```
 (3D plots not shown!)
