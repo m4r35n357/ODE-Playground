@@ -369,9 +369,9 @@ set key left
 set ytics nomirror
 set y2tics
 set xlabel 'Taylor Series Order'
-set ylabel 'Clean Simulation Time'
-set y2label 'CPU Time'
-plot '/tmp/$USER/data' using 1:2 axes x1y1 title 'Clean Simulation Time' with boxes, '/tmp/$USER/data' using 1:3 axes x1y2 title 'CPU Time' with boxes
+set ylabel 'CNS Time, model units'
+set y2label 'CPU Time, seconds'
+plot '/tmp/$USER/data' using 1:2 axes x1y1 title 'CNS' with boxes, '/tmp/$USER/data' using 1:3 axes x1y2 title 'CPU' with boxes
 EOF
 ```
 
@@ -424,7 +424,7 @@ Of course it is more generally useful for finding inverse values (where real sol
 The "higher-level" ad_functions (or the Series class in Python) manipulate entire  Taylor series "jets" at once, so are only useful for univariate functions.
 In Python there is an overloaded operator "~" which extracts the actual derivative values from the taylor series coefficents, as well as additional operators for (negation and **).
 The \*\* (power) operator caters for f(x)^a, a^f(x) and f1(x)^f2(x), subject to domain limitations on f(x).
-There are also functions for (matching the t_functions):
+There are also functions for (matching the lower-level t_functions):
 * abs
 * sqr
 * sqrt
