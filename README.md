@@ -121,8 +121,6 @@ There should be NO errors or warnings.  [UPDATE: kerr-image.c shows warnings on 
 
 [UPDATE] clang shows warnings for the unsupported -Wunsuffixed-float-constants warning!
 
-[UPDATE] kerr-image.c shows warnings on arm64; it is 3rd party code
-
 Each client is built _both_ as a dynamic executable with asserts and debug symbols, and as a stripped static executable with asserts disabled.
 
 #### Running c Tests
