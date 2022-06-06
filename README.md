@@ -100,18 +100,6 @@ mkvirtualenv --python /usr/bin/python3 taylor
 pip install matplotlib pillow pi3d pytest pytest-cov mutmut ipython
 ```
 
-#### Running Python Tests
-Testing Requirements
-* pytest
-* pytest_cov
-* mutmut (optional)
-
-Most of the code is covered several times over.
-Tests have been mutation tested with mutmut.
-```
-pytest ad_test.py solver_test.py -v
-```
-
 #### c Build (GCC by default, Clang optional)
 ```
 ./clean
