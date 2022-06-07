@@ -270,7 +270,7 @@ mpfr_t *t_ln (series l, series u, int k) {
 }
 
 pair t_asin (series as, series uf, series u, int k, geometry g) {
-    assert(g == TRIG ? mpfr_cmpabs_ui(u[0], 1L) <= 0L : 1);
+    assert(g == TRIG ? mpfr_cmpabs_ui(u[0], 1.0L) <= 0 : 1);
     assert(as != uf && as != u && uf != u);
     if (k == 0) {
         g == TRIG ? mpfr_asin(as[0], u[0], RND) : mpfr_asinh(as[0], u[0], RND);
@@ -297,7 +297,7 @@ pair t_asin (series as, series uf, series u, int k, geometry g) {
 }
 
 pair t_acos (series ac, series uf, series u, int k, geometry g) {
-    assert(g == TRIG ? mpfr_cmpabs_ui(u[0], 1L) <= 0L : mpfr_cmp_si(u[0], 1L) >= 0L);
+    assert(g == TRIG ? mpfr_cmpabs_ui(u[0], 1.0L) <= 0 : mpfr_cmp_si(u[0], 1.0L) >= 0);
     assert(ac != uf && ac != u && uf != u);
     if (k == 0) {
         g == TRIG ? mpfr_acos(ac[0], u[0], RND) : mpfr_acosh(ac[0], u[0], RND);
@@ -325,7 +325,7 @@ pair t_acos (series ac, series uf, series u, int k, geometry g) {
 }
 
 pair t_atan (series at, series uf, series u, int k, geometry g) {
-    assert(g == TRIG ? 1 : mpfr_cmpabs_ui(u[0], 1L) <= 0L);
+    assert(g == TRIG ? 1 : mpfr_cmpabs_ui(u[0], 1.0L) <= 0);
     assert(at != uf && at != u && uf != u);
     if (k == 0) {
         g == TRIG ? mpfr_atan(at[0], u[0], RND) : mpfr_atanh(at[0], u[0], RND);
