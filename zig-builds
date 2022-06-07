@@ -12,8 +12,6 @@
     -- 'arm-linux-musleabihf!aarch64-linux-musl!aarch64-linux-gnu!aarch64-macos-gnu!x86_64-linux-musl!x86_64-linux-gnu!x86_64-windows-gnu' \
        'ReleaseSmall!ReleaseFast!ReleaseSafe!Debug' 'TRUE' 'TRUE')
 ###BLOCK-COMMENT
-#
-#  Example: for i in .5 0 -.5; do ./libdual-test $i 1e-18 1; ./libad-test 10 $i 1e-18 1; done >/dev/null
 
 target=$1
 buildmode=$2
