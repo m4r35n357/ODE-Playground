@@ -173,10 +173,10 @@ mpfr_t *t_exp (series e, series u, int k) {
     return &e[k];
 }
 
-pair t_sin_cos (series s, series c, series u, int k, geometry g) {
+pair t_sin_cos (series s, series c, series u, int k, geometry G) {
     assert(s != c && s != u && c != u);
     if (k == 0) {
-        g == TRIG ? mpfr_sin_cos(s[0], c[0], u[0], RND) : mpfr_sinh_cosh(s[0], c[0], u[0], RND);
+        G == TRIG ? mpfr_sin_cos(s[0], c[0], u[0], RND) : mpfr_sinh_cosh(s[0], c[0], u[0], RND);
     } else {
         mpfr_set_zero(_a, 1);
         mpfr_set_zero(_b, 1);
@@ -186,17 +186,17 @@ pair t_sin_cos (series s, series c, series u, int k, geometry g) {
             mpfr_fma(_a, s[j], __, _a, RND);
         }
         mpfr_div_si(s[k], _b, k, RND);
-        mpfr_div_si(c[k], _a, g == TRIG ? - k : k, RND);
+        mpfr_div_si(c[k], _a, G == TRIG ? - k : k, RND);
     }
     return (pair) {&s[k], &c[k]};
 }
 
-pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
+pair t_tan_sec2 (series t, series s, series u, int k, geometry G) {
     assert(t != s && t != u && s != u);
     if (k == 0) {
-        g == TRIG ? mpfr_tan(t[0], u[0], RND) : mpfr_tanh(t[0], u[0], RND);
+        G == TRIG ? mpfr_tan(t[0], u[0], RND) : mpfr_tanh(t[0], u[0], RND);
         mpfr_sqr(s[0], t[0], RND);
-        g == TRIG ? mpfr_add_si(s[0], s[0], 1, RND) : mpfr_si_sub(s[0], 1, s[0], RND);
+        G == TRIG ? mpfr_add_si(s[0], s[0], 1, RND) : mpfr_si_sub(s[0], 1, s[0], RND);
     } else {
         mpfr_set_zero(_, 1);
         for (int j = 0; j < k; j++) {
@@ -210,7 +210,7 @@ pair t_tan_sec2 (series t, series s, series u, int k, geometry g) {
             mpfr_fma(_, t[j], __, _, RND);
         }
         mpfr_div_si(s[k], _, k, RND);
-        mpfr_mul_si(s[k], s[k], g == TRIG ? 2 : -2, RND);
+        mpfr_mul_si(s[k], s[k], G == TRIG ? 2 : -2, RND);
     }
     return (pair) {&t[k], &s[k]};
 }
@@ -269,84 +269,84 @@ mpfr_t *t_ln (series l, series u, int k) {
     return &l[k];
 }
 
-pair t_asin (series as, series uf, series u, int k, geometry g) {
-    assert(g == TRIG ? mpfr_cmpabs_ui(u[0], 1.0L) <= 0 : 1);
-    assert(as != uf && as != u && uf != u);
+pair t_asin (series a, series g, series u, int k, geometry G) {
+    assert(G == TRIG ? mpfr_cmpabs_ui(u[0], 1) <= 0 : 1);
+    assert(a != g && a != u && g != u);
     if (k == 0) {
-        g == TRIG ? mpfr_asin(as[0], u[0], RND) : mpfr_asinh(as[0], u[0], RND);
-        mpfr_sqr(uf[0], u[0], RND);
-        g == TRIG ? mpfr_si_sub(uf[0], 1, uf[0], RND) : mpfr_add_si(uf[0], uf[0], 1, RND);
-        mpfr_sqrt(uf[0], uf[0], RND);
+        G == TRIG ? mpfr_asin(a[0], u[0], RND) : mpfr_asinh(a[0], u[0], RND);
+        mpfr_sqr(g[0], u[0], RND);
+        G == TRIG ? mpfr_si_sub(g[0], 1, g[0], RND) : mpfr_add_si(g[0], g[0], 1, RND);
+        mpfr_sqrt(g[0], g[0], RND);
     } else {
         mpfr_set_zero(_, 1);
         for (int j = 1; j < k; j++) {
-            mpfr_mul_si(__, as[j], j, RND);
-            mpfr_fma(_, uf[k - j], __, _, RND);
+            mpfr_mul_si(__, a[j], j, RND);
+            mpfr_fma(_, g[k - j], __, _, RND);
         }
         mpfr_div_si(_, _, k, RND);
         mpfr_sub(_, u[k], _, RND);
-        mpfr_div(as[k], _, uf[0], RND);
+        mpfr_div(a[k], _, g[0], RND);
         mpfr_set_zero(_, 1);
         for (int j = 0; j < k; j++) {
-            mpfr_mul_si(__, as[k - j], k - j, RND);
+            mpfr_mul_si(__, a[k - j], k - j, RND);
             mpfr_fma(_, u[j], __, _, RND);
         }
-        mpfr_div_si(uf[k], _, g == TRIG ? - k : k, RND);
+        mpfr_div_si(g[k], _, G == TRIG ? - k : k, RND);
     }
-    return (pair) {&as[k], &uf[k]};
+    return (pair) {&a[k], &g[k]};
 }
 
-pair t_acos (series ac, series uf, series u, int k, geometry g) {
-    assert(g == TRIG ? mpfr_cmpabs_ui(u[0], 1.0L) <= 0 : mpfr_cmp_si(u[0], 1.0L) >= 0);
-    assert(ac != uf && ac != u && uf != u);
+pair t_acos (series a, series g, series u, int k, geometry G) {
+    assert(G == TRIG ? mpfr_cmpabs_ui(u[0], 1) <= 0 : mpfr_cmp_si(u[0], 1) >= 0);
+    assert(a != g && a != u && g != u);
     if (k == 0) {
-        g == TRIG ? mpfr_acos(ac[0], u[0], RND) : mpfr_acosh(ac[0], u[0], RND);
-        mpfr_sqr(uf[0], u[0], RND);
-        g == TRIG ? mpfr_si_sub(uf[0], 1, uf[0], RND) : mpfr_sub_si(uf[0], uf[0], 1, RND);
-        mpfr_sqrt(uf[0], uf[0], RND);
-        if (g == TRIG) mpfr_neg(uf[0], uf[0], RND);
+        G == TRIG ? mpfr_acos(a[0], u[0], RND) : mpfr_acosh(a[0], u[0], RND);
+        mpfr_sqr(g[0], u[0], RND);
+        G == TRIG ? mpfr_si_sub(g[0], 1, g[0], RND) : mpfr_sub_si(g[0], g[0], 1, RND);
+        mpfr_sqrt(g[0], g[0], RND);
+        if (G == TRIG) mpfr_neg(g[0], g[0], RND);
     } else {
         mpfr_set_zero(_, 1);
         for (int j = 1; j < k; j++) {
-            mpfr_mul_si(__, ac[j], j, RND);
-            mpfr_fma(_, uf[k - j], __, _, RND);
+            mpfr_mul_si(__, a[j], j, RND);
+            mpfr_fma(_, g[k - j], __, _, RND);
         }
-        mpfr_div_si(_, _, g == TRIG ? - k : k, RND);
+        mpfr_div_si(_, _, G == TRIG ? - k : k, RND);
         mpfr_sub(_, u[k], _, RND);
-        mpfr_div(ac[k], _, uf[0], RND);
+        mpfr_div(a[k], _, g[0], RND);
         mpfr_set_zero(_, 1);
         for (int j = 0; j < k; j++) {
-            mpfr_mul_si(__, ac[k - j], k - j, RND);
+            mpfr_mul_si(__, a[k - j], k - j, RND);
             mpfr_fma(_, u[j], __, _, RND);
         }
-        mpfr_div_si(uf[k], _, k, RND);
+        mpfr_div_si(g[k], _, k, RND);
     }
-    return (pair) {&ac[k], &uf[k]};
+    return (pair) {&a[k], &g[k]};
 }
 
-pair t_atan (series at, series uf, series u, int k, geometry g) {
-    assert(g == TRIG ? 1 : mpfr_cmpabs_ui(u[0], 1.0L) <= 0);
-    assert(at != uf && at != u && uf != u);
+pair t_atan (series a, series g, series u, int k, geometry G) {
+    assert(G == TRIG ? 1 : mpfr_cmpabs_ui(u[0], 1) <= 0);
+    assert(a != g && a != u && g != u);
     if (k == 0) {
-        g == TRIG ? mpfr_atan(at[0], u[0], RND) : mpfr_atanh(at[0], u[0], RND);
-        mpfr_sqr(uf[0], u[0], RND);
-        g == TRIG ? mpfr_add_si(uf[0], uf[0], 1, RND) : mpfr_si_sub(uf[0], 1, uf[0], RND);
+        G == TRIG ? mpfr_atan(a[0], u[0], RND) : mpfr_atanh(a[0], u[0], RND);
+        mpfr_sqr(g[0], u[0], RND);
+        G == TRIG ? mpfr_add_si(g[0], g[0], 1, RND) : mpfr_si_sub(g[0], 1, g[0], RND);
     } else {
         mpfr_set_zero(_, 1);
         for (int j = 1; j < k; j++) {
-            mpfr_mul_si(__, at[j], j, RND);
-            mpfr_fma(_, uf[k - j], __, _, RND);
+            mpfr_mul_si(__, a[j], j, RND);
+            mpfr_fma(_, g[k - j], __, _, RND);
         }
         mpfr_div_si(_, _, k, RND);
         mpfr_sub(_, u[k], _, RND);
-        mpfr_div(at[k], _, uf[0], RND);
+        mpfr_div(a[k], _, g[0], RND);
         mpfr_set_zero(_, 1);
         for (int j = 0; j < k; j++) {
             mpfr_mul_si(__, u[k - j], k - j, RND);
             mpfr_fma(_, u[j], __, _, RND);
         }
-        mpfr_div_si(_, _, g == TRIG ? k : - k, RND);
-        mpfr_mul_2si(uf[k], _, 1, RND);
+        mpfr_div_si(_, _, G == TRIG ? k : - k, RND);
+        mpfr_mul_2si(g[k], _, 1, RND);
     }
-    return (pair) {&at[k], &uf[k]};
+    return (pair) {&a[k], &g[k]};
 }
