@@ -1,28 +1,37 @@
 /*
  * Lorenz System
  *
- * Example: ./tsm-lorenz-dbg 6 237 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+ * Example: ./tsm-lorenz-dbg  6 237 16  .01 10000  -15.8 -17.48 35.64  10 28 8 3
  *
- time -p ./cns $(yad --title="Lorenz CNS (TSM)" --form --separator=" " --align=right \
-    --field="Mode":CB --field="Separation" --field="Model:RO" \
+ $(yad --columns=2 --title="Lorenz Attractor (TSM)" --form --separator=" " --align=right \
+    --field="Model:CB" \
     --field="Display Precision":NUM --field="Precision in Bits":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
     --field="x0" --field="y0" --field="z0" \
     --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
-    -- 'step2!nosim' '1' './tsm-lorenz-static' \
-    '6!3..64!3' '237!11..999!2' '16!4..256!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+    -- './tsm-lorenz-static!./tsm-lorenz-dbg' \
+    '6!3..64!3' '237!11..999!2' '16!2..256!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+    '-15.8' '-18.48' '35.64' \
+    '10' '28' '8' '3') >/tmp/$USER/data
+ *
+ ./cns $(yad --columns=2 --title="Lorenz CNS (TSM)" --form --separator=" " --align=right \
+    --field="Mode":CB --field="Separation" --field="Model:CB" \
+    --field="Display Precision":NUM --field="Precision in Bits":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+    --field="x0" --field="y0" --field="z0" \
+    --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
+    -- 'step2!nosim' '1' './tsm-lorenz-static!./tsm-lorenz-dbg' \
+    '6!3..64!3' '237!11..999!2' '16!2..256!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
     '-15.8' '-18.48' '35.64' \
     '10' '28' '8' '3')
  *
- time -p ./cns-scan $(yad --title="Lorenz CNS scan (TSM)" --form --separator=" " --align=right \
-    --field="Minium Order":NUM --field="Maxium Order":NUM --field="Separation" --field="Model:RO" \
+ ./cns-scan $(yad --columns=2 --title="Lorenz CNS Scan (TSM)" --form --separator=" " --align=right \
+    --field="Minium Order":NUM --field="Maxium Order":NUM --field="Separation" --field="Model:CB" \
     --field="Display Precision":NUM --field="Precision in Bits":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
     --field="x0" --field="y0" --field="z0" \
     --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
-    -- '2!2..64!1' '64!2..64!1' '1' './tsm-lorenz-static' \
+    -- '2!2..256!1' '32!2..256!1' '1' './tsm-lorenz-static!./tsm-lorenz-dbg' \
     '6!3..64!3' '237!11..999!2' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
     '-15.8' '-18.48' '35.64' \
-    '10' '28' '8' '3') |\
-tee /tmp/$USER/data
+    '10' '28' '8' '3') | tee /tmp/$USER/data
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
