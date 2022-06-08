@@ -3,7 +3,7 @@
  *
  * Example: ./libad-test-dbg 20 .5 1e-18 [ 0 | 1 | 2 ]
  *
-./libad-test-dbg $(yad --title="Taylor Tests" --form --separator=" " --align=right \
+ ./libad-test-dbg $(yad --title="Taylor Tests" --form --separator=" " --align=right \
     --field="Order":NUM --field="Value":NUM --field="Error Threshold":NUM --field="Detail":CB \
     -- '20!4..128!1' '0.5!-1.0..1.0!0.1!1' '18!3..36!3' '0!1!2')
  *

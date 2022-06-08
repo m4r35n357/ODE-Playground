@@ -3,7 +3,7 @@
  *
  * Example: ./rk4-thomas-dbg 15 1 0.1 30000 1 0 0 .185
  *
-./cns step2 1 ./rk4-thomas-static $(yad --title="Thomas Attractor (RK4)" --form --separator=" " --align=right \
+ ./cns step2 1 ./rk4-thomas-static $(yad --title="Thomas Attractor (RK4)" --form --separator=" " --align=right \
     --field="Display Precision":NUM \
     --field="Plot Interval":NUM \
     --field="Step Size":NUM \

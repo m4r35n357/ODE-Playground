@@ -4,7 +4,7 @@
  * Example:  ./h-kerr-gen-particle-dbg 1e-9 3 12 63 1 1 .8 >/tmp/$USER/data
  * Example:  ./h-kerr-gen-particle-dbg 1e-9 12 -1 63 1 1 .8 >/tmp/$USER/data
  *
-./h-kerr-gen-particle-dbg $(yad --title="Generate Parameters" --form --separator=" " --align=right \
+ ./h-kerr-gen-particle-dbg $(yad --title="Generate Parameters" --form --separator=" " --align=right \
     --field="Solver Tolerance" \
     --field="Rmin" \
     --field="Rmax (-1 for circular)" \

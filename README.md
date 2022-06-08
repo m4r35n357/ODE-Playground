@@ -232,7 +232,7 @@ Parameter | Meaning
 ##### Run & plot (3D gnuplot graph):
 ```
 ./tsm-thomas-dbg 6 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
-gnuplot -p << EOF
+ gnuplot -p << EOF
 set xyplane 0
 set view 54.73561,135
 set xlabel 'X'
@@ -244,7 +244,7 @@ EOF
 ##### Run & plot (2D gnuplot graph):
 ```
 ./tsm-lorenz-dbg 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
-gnuplot -p << EOF
+ gnuplot -p << EOF
 set terminal wxt size 1200,900
 plot '/tmp/$USER/data' using 4:1 with lines, '/tmp/$USER/data' using 4:2 with lines, '/tmp/$USER/data' using 4:3 with lines
 EOF
@@ -364,7 +364,7 @@ The following commands perform a scan, and plot the simulation time and cpu time
 ```
 ./cns-scan 32 1 ./tsm-lorenz-static 6 _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | tee /tmp/$USER/data
 
-gnuplot -p << EOF
+ gnuplot -p << EOF
 set key left
 set ytics nomirror
 set y2tics

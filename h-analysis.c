@@ -5,7 +5,7 @@
  *
  * Example:  gnuplot -p -e "set terminal wxt size 600,450; plot '/tmp/$USER/data' using 2:3 with linespoints pt 7 ps 0"
   *
-./h-analysis-static $(yad --title="Step Analysis" --form --separator=" " --align=right \
+ ./h-analysis-static $(yad --title="Step Analysis" --form --separator=" " --align=right \
     --field="Display Precision":NUM \
     --field="Order":NUM \
     --field="Step Size":RO \

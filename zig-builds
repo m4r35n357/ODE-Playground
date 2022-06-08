@@ -7,7 +7,7 @@
 #  Example: ./zig-builds arm-linux-musleabihf ReleaseSmall
 #
 <<'###BLOCK-COMMENT'
-./zig-builds $(yad --title="Zig cross-compile" --form --separator=" " --align=right \
+ ./zig-builds $(yad --title="Zig cross-compile" --form --separator=" " --align=right \
     --field="Architecture":CB --field="Build Mode":CB --field="Strip Symbols":CHK  --field="Single-threaded":CHK \
     -- 'arm-linux-musleabihf!aarch64-linux-musl!aarch64-linux-gnu!aarch64-macos-gnu!x86_64-linux-musl!x86_64-linux-gnu!x86_64-windows-gnu' \
        'ReleaseSmall!ReleaseFast!ReleaseSafe!Debug' 'TRUE' 'TRUE')

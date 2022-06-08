@@ -3,7 +3,7 @@
  *
  * Example: ./libdual-test-dbg 1 1e-18 [ 0 | 1 | 2 ]
  *
-./libdual-test-dbg $(yad --title="Dual Tests" --form --separator=" " --align=right \
+ ./libdual-test-dbg $(yad --title="Dual Tests" --form --separator=" " --align=right \
     --field="Value":NUM --field="Error Threshold":NUM --field="Detail":CB \
     -- '0.5!-1.0..1.0!0.1!1' '18!3..36!3' '0!1!2')
  *
