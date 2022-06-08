@@ -3,27 +3,36 @@
  *
  * Example: ./tsm-lorenz-dbg  6 8 .01 10000  -15.8 -17.48 35.64  10 28 8 3
  *
- time -p ./cns step2 1 \
-./tsm-lorenz-static $(yad --title="Lorenz CNS (TSM)" --form --separator=" " --align=right \
+ time -p ./cns $(yad --title="Lorenz CNS (TSM)" --form --separator=" " --align=right \
+    --field="Mode":CB --field="Separation" --field="Model:RO" \
     --field="Display Precision":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
     --field="x0" --field="y0" --field="z0" \
     --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
-    -- '6!3..64!3' '8!4..128!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' "-15.8" "-18.48" "35.64" "10" "28" "8" "3")
+    -- 'step2!nosim' '1' './tsm-lorenz-static' \
+    '6!3..64!3' '8!4..128!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+    '-15.8' '-18.48' '35.64' \
+    '10' '28' '8' '3')
  *
- time -p ./cns-scan 32 1 \
-./tsm-lorenz-static $(yad --title="Lorenz CNS scan (TSM)" --form --separator=" " --align=right \
+ time -p ./cns-scan $(yad --title="Lorenz CNS Scan (TSM)" --form --separator=" " --align=right \
+    --field="Maxium Order":NUM --field="Separation" --field="Model:RO" \
     --field="Display Precision":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
     --field="x0" --field="y0" --field="z0" \
     --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
-    -- '6!3..64!3' "_" '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' "-15.8" "-18.48" "35.64" "10" "28" "8" "3") |\
+    -- '32!2..64!1' '1' './tsm-lorenz-static' \
+    '6!3..64!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+    '-15.8' '-18.48' '35.64' \
+    '10' '28' '8' '3') |\
 tee /tmp/$USER/data
  *
- time -p ./bifurcation-scan 0 50 10 \
-./tsm-lorenz-static $(yad --title="Lorenz Bifurcation (TSM)" --form --separator=" " --align=right \
+ time -p ./bifurcation-scan $(yad --title="Lorenz Bifurcation (TSM)" --form --separator=" " --align=right \
+    --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:RO" \
     --field="Display Precision":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
     --field="x0" --field="y0" --field="z0" \
     --field="sigma" --field="rho:RO" --field="beta (numerator)" --field="beta (denominator)" \
-    -- '6!3..64!3' '4!4..128!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' "-15.8" "-18.48" "35.64" "10" '$p' "8" "3")
+    -- '0.0' '50.0' '10' './tsm-lorenz-static' \
+    '6!3..64!3' '4!4..128!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+    '-15.8' '-18.48' '35.64' \
+    '10' '$p' '8' '3')
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */

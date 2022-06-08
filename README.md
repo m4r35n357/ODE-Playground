@@ -286,7 +286,11 @@ display /tmp/$USER/X.png
 ```
 If you want to interact with actual plots (e.g. to read off parameter values for simulation), use a command like (for the x coordinate):
 ```
-gnuplot -p -e "set t wxt size 1350,800 background rgb 'grey85'; set grid back; plot '/tmp/$USER/bifurcationX' lt rgb 'dark-blue' w dots, '/tmp/$USER/bifurcationx' lt rgb 'dark-green' w dots"
+ gnuplot -p << EOF
+set t wxt size 1350,800 background rgb 'grey85'
+set grid back
+plot '/tmp/$USER/bifurcationX' lt rgb 'dark-blue' w dots, '/tmp/$USER/bifurcationx' lt rgb 'dark-green' w dots
+EOF
 ```
 If you are curious about Python performance, you can try this:
 ```
