@@ -3,23 +3,33 @@
  *
  * Example: ./rk4-lorenz-dbg  6 1 .01 10000  -15.8 -17.48 35.64  10 28 8 3
  *
- time -p ./cns $(yad --title="Lorenz CNS (RK4)" --form --separator=" " --align=right \
-    --field="Mode":CB --field="Separation" --field="Model:RO" \
-    --field="Display Precision":NUM --field="Plot Interval":NUM --field="Step Size":NUM --field="Steps":NUM \
+ $(yad --columns=2 --title="Lorenz Attractor (RK4)" --form --separator=" " --align=right \
+    --field="Model:CB" \
+    --field="Display Precision":NUM --field="Plot Interval":NUM --field="Step Size" --field="Steps" \
     --field="x0" --field="y0" --field="z0" \
     --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
-    -- 'step2!nosim' '1' './rk4-lorenz-static' \
-    '6!3..64!3' '1!1..1000!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+    -- './rk4-lorenz-static!./rk4-lorenz-dbg!./rk4-lorenz' \
+    '6!3..64!3' '1!1..1000!1' '.01' '10000' \
+    '-15.8' '-18.48' '35.64' \
+    '10' '28' '8' '3') >/tmp/$USER/data
+ *
+ ./cns $(yad --columns=2 --title="Lorenz CNS (RK4)" --form --separator=" " --align=right \
+    --field="Mode":CB --field="Separation" --field="Model:CB" \
+    --field="Display Precision":NUM --field="Plot Interval":NUM --field="Step Size" --field="Steps" \
+    --field="x0" --field="y0" --field="z0" \
+    --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
+    -- 'step2!nosim' '1' './rk4-lorenz-static!./rk4-lorenz-dbg!./rk4-lorenz' \
+    '6!3..64!3' '1!1..1000!1' '.01' '10000' \
     '-15.8' '-18.48' '35.64' \
     '10' '28' '8' '3')
  *
- time -p ./bifurcation-scan $(yad --title="Lorenz Bifurcation (RK4)" --form --separator=" " --align=right \
-    --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:RO" \
-    --field="Display Precision":NUM --field="Plot Interval":NUM --field="Step Size":NUM --field="Steps":NUM \
+ ./bifurcation-scan $(yad --columns=2 --title="Lorenz Bifurcation (RK4)" --form --separator=" " --align=right \
+    --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:CB" \
+    --field="Display Precision":NUM --field="Plot Interval":NUM --field="Step Size" --field="Steps" \
     --field="x0" --field="y0" --field="z0" \
     --field="sigma" --field="rho:RO" --field="beta (numerator)" --field="beta (denominator)" \
-    -- '0.0' '50.0' '10' './rk4-lorenz-static' \
-    '6!3..64!3' '1!1..1000!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+    -- '0.0' '50.0' '10' './rk4-lorenz-static!./rk4-lorenz-dbg!./rk4-lorenz' \
+    '6!3..64!3' '1!1..1000!1' '.01' '10000' \
     '-15.8' '-18.48' '35.64' \
     '10' '$p' '8' '3')
  *

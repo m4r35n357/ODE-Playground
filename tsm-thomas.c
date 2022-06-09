@@ -1,18 +1,47 @@
 /*
  * Thomas' cyclically symmetric attractor
  *
- * Example: ./tsm-thomas-dbg 15 10 0.1 30000 1 0 0 .185
+ * Example: ./tsm-thomas-dbg  15 10  0.1 30000  1 0 0  .185
  * 
-./cns step2 1 ./tsm-thomas-static $(yad --title="Thomas Attractor (TSM)" --form --separator=" " --align=right \
-    --field="Display Precision":NUM \
-    --field="Order":NUM \
-    --field="Step Size":NUM \
-    --field="Steps":NUM \
-    --field="x0" \
-    --field="y0" \
-    --field="z0" \
+ $(yad --columns=2 --title="Thomas Attractor (TSM)" --form --separator=" " --align=right \
+    --field="Model:CB" \
+    --field="Display Precision":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+    --field="x0" --field="y0" --field="z0" \
     --field="b" \
-    -- '6!3..64!3' '8!4..128!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' "1" "0" "0" ".185")
+    -- './tsm-thomas-static!./tsm-thomas-dbg!./tsm-thomas!./tsm-thomas.py' \
+    '6!3..64!3' '8!4..128!1' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
+    '1.0' '0.0' '0.0' \
+    '0.185') >/tmp/$USER/data
+ *
+ ./cns $(yad --columns=2 --title="Thomas CNS (TSM)" --form --separator=" " --align=right \
+    --field="Mode":CB --field="Separation" --field="Model:CB" \
+    --field="Display Precision":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+    --field="x0" --field="y0" --field="z0" \
+    --field="b" \
+    -- 'step2!nosim' '1' './tsm-thomas-static!./tsm-thomas-dbg!./tsm-thomas!./tsm-thomas.py' \
+    '6!3..64!3' '8!4..128!1' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
+    '1.0' '0.0' '0.0' \
+    '0.185')
+ *
+ ./cns-scan $(yad --columns=2 --title="Thomas CNS Scan (TSM)" --form --separator=" " --align=right \
+    --field="Maxium Order":NUM --field="Separation" --field="Model:CB" \
+    --field="Display Precision":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
+    --field="x0" --field="y0" --field="z0" \
+    --field="b" \
+    -- '32!2..64!1' '1' './tsm-thomas-static!./tsm-thomas-dbg!./tsm-thomas!./tsm-thomas.py' \
+    '6!3..64!3' '_' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
+    '1.0' '0.0' '0.0' \
+    '0.185') | tee /tmp/$USER/data
+ *
+ ./bifurcation-scan $(yad --title="Thomas Bifurcation (TSM)" --form --separator=" " --align=right \
+    --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:CB" \
+    --field="Display Precision":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+    --field="x0" --field="y0" --field="z0" \
+    --field="b:RO" \
+    -- '0.1' '0.23' '10' './tsm-thomas-static!./tsm-thomas-dbg!./tsm-thomas!./tsm-thomas.py' \
+    '6!3..64!3' '4!4..128!1' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
+    '1.0' '0.0' '0.0' \
+    '$p')
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
