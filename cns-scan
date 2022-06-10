@@ -2,7 +2,7 @@
 #
 #  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 
-echo "CNS duration vs Integrator Order: [$*]" >&2
+echo "CNS duration vs Integrator Order: [$0 $*]" >&2
 
 min_order=$1
 max_order=$2

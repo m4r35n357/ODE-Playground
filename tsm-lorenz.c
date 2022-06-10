@@ -15,21 +15,21 @@
  *
  ./cns $(yad --columns=2 --title="Lorenz CNS (TSM)" --form --separator=" " --align=right \
     --field="Mode":CB --field="Deviation" --field="Model:CB" \
-    --field="Display Places":NUM --field="Precision (bits)":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+    --field="Display Places":NUM --field="Precision":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
     --field="x0" --field="y0" --field="z0" \
     --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
     -- 'step2!nosim' '1.0' './tsm-lorenz-static!./tsm-lorenz-dbg' \
-    '6!3..64!3' '237!11..999!2' '16!2..256!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+    '6!3..64!3' 'octuple!quadruple!extended!double!single' '16!2..256!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
     '-15.8' '-18.48' '35.64' \
     '10' '28' '8' '3')
  *
  ./cns-scan $(yad --columns=2 --title="Lorenz CNS Scan (TSM)" --form --separator=" " --align=right \
     --field="Minium Order":NUM --field="Maxium Order":NUM --field="Deviation" --field="Model:CB" \
-    --field="Display Places":NUM --field="Precision (bits)":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
+    --field="Display Places":NUM --field="Precision":CB --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
     --field="x0" --field="y0" --field="z0" \
     --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
     -- '2!2..256!1' '32!2..256!1' '1.0' './tsm-lorenz-static!./tsm-lorenz-dbg' \
-    '6!3..64!3' '237!11..999!2' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+    '6!3..64!3' 'octuple!quadruple!extended!double!single' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
     '-15.8' '-18.48' '35.64' \
     '10' '28' '8' '3') | tee /tmp/$USER/data
  *
