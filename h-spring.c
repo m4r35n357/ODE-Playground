@@ -10,7 +10,7 @@
  * Example:  gnuplot -p -e "set terminal wxt size 600,450; set yrange [-240:0]; plot '/tmp/$USER/data' using 4:5 with lines"
  *
  ./h-spring-static $(yad --title="Mass-Spring System" --form --separator=" " --align=right \
-    --field="Display Precision":NUM \
+    --field="Display Places":NUM \
     --field="Order":NUM \
     --field="Step Size":NUM \
     --field="Steps":NUM \

@@ -13,7 +13,7 @@
  * Example:  gnuplot -p -e "set terminal wxt size 600,450; plot '/tmp/$USER/data' using 4:8 with lines, '/tmp/$USER/data' using 4:9 with lines"
  *
  ./h-kerr-static $(yad --title="Kerr Orbit" --form --separator=" " --align=right \
-    --field="Display Precision":NUM \
+    --field="Display Places":NUM \
     --field="Order":NUM \
     --field="Step Size":NUM \
     --field="Steps":NUM \

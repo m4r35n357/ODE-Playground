@@ -1,18 +1,17 @@
 /*
  * Thomas' cyclically symmetric attractor
  *
- * Example: ./rk4-thomas-dbg 15 1 0.1 30000 1 0 0 .185
+ * Example: ./rk4-thomas-dbg  15 1  0.1 30000  1 0 0  .185
  *
- ./cns step2 1 ./rk4-thomas-static $(yad --title="Thomas Attractor (RK4)" --form --separator=" " --align=right \
-    --field="Display Precision":NUM \
-    --field="Plot Interval":NUM \
-    --field="Step Size":NUM \
-    --field="Steps":NUM \
-    --field="x0" \
-    --field="y0" \
-    --field="z0" \
+ $(yad --columns=2 --title="Thomas Attractor (RK4)" --form --separator=" " --align=right \
+    --field="Model:CB" \
+    --field="Display Places":NUM --field="Plot Interval":NUM --field="Step Size" --field="Steps" \
+    --field="x0" --field="y0" --field="z0" \
     --field="b" \
-    -- '6!3..64!3' '1!1..1000!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' "1" "0" "0" ".185")
+    -- './rk4-thomas-static!./rk4-thomas-dbg!./rk4-thomas' \
+    '6!3..64!3' '1!1..1000!1' '.1' '30000' \
+    '1.0' '0.0' '0.0' \
+    '0.185') >/tmp/$USER/data
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */

@@ -203,7 +203,7 @@ Each output line consists of a column each for x, y, z, t, followed by three tur
 
 Parameter | Meaning
 ----------|-----------
-1 | x,y,z display precision in decimal places
+1 | x,y,z output decimal places
 2 | order of Taylor Series
 3 | time step
 4 | number of steps
@@ -214,7 +214,7 @@ Parameter | Meaning
 
 Parameter | Meaning
 ----------|-----------
-1 | x,y,z display precision in decimal places
+1 | x,y,z output decimal places
 2 | only plot every ? lines of output (for smaller internal step than plot step)
 3 | time step
 4 | number of steps
