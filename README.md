@@ -1,4 +1,8 @@
 
+## Basic UI
+
+Uses yad, cut & paste examples are in the appropriate source files.
+
 ## ODE/Hamiltonian Playground, Now feature-complete
 
 No planned new features, and no known bugs ;)

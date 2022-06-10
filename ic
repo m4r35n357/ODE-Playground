@@ -3,7 +3,7 @@
 #  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
-echo "Sensitivity to Initial Conditions: [$*]" >&2
+echo "Sensitivity to Initial Conditions: [$0 $*]" >&2
 
 tmpdir=${TMP_TAYLOR:-/tmp/$USER}
 [ -d ${tmpdir} ] || mkdir ${tmpdir}

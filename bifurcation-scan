@@ -3,7 +3,7 @@
 #  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
-echo "Bifurcation Diagrams: [$*]" >&2
+echo "Bifurcation Diagrams: [$0 $*]" >&2
 
 start=$1
 end=$2
