@@ -1,5 +1,11 @@
 ## News
 
+### (June 2022)
+Since last update:
+The arc/ar-functions have been added (and fully tested).
+Documentation has been slightly improved.
+Basic UI for various programs and scripts using yad is now available for manual cut & paste use.
+
 ### (26th October 2021)
 To distinguish it from the MPFR code in master, the compendium branch has been renamed to pure_c: https://github.com/m4r35n357/ODE-Playground/tree/pure_c.
 It still contains the Python (pure!) and Symplectic code, it is just a rename.
