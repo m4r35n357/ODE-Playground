@@ -1,7 +1,7 @@
 /*
  * Thomas' cyclically symmetric attractor
  *
- * Example: ./tsm-thomas-dbg  15 10  0.1 30000  1 0 0  .185
+ * Example: ./tsm-thomas-dbg  6 8  0.1 30000  1 0 0  .185
  *
  $(yad --columns=2 --title="Thomas Attractor (TSM)" --form --separator=" " --align=right \
     --field="Model:CB" \
