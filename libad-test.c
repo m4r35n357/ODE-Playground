@@ -270,14 +270,14 @@ int main (int argc, char **argv) {
     name = "log(1 / x) == - log(x)";
     x_positive ? compare(name, ad_ln(r1, inv_x), ad_scale(r2, ln_x, D_1)) : skip(name);
 
-    name = "log(x^-2) == - 2 * log(x)";
-    x_positive ? compare(name, ad_ln(r1, ad_ipwr(r2, x, -2)), ad_scale(r3, ln_x, D_2)) : skip(name);
+    name = "log(x^-3) == - 3 * log(x)";
+    x_positive ? compare(name, ad_ln(r1, ad_ipwr(r2, x, -3)), ad_scale(r3, ln_x, D_3)) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
     ad_sin_cos(sinh, cosh, x, HYP);
     ad_tan_sec2(tanh, sech2, x, HYP);
     ad_sqr(sqr_sinh_x, sinh);
-    ad_sqr(sqr_cosh_x, cosh);
+    ad_mul(sqr_cosh_x, cosh, cosh);
     ad_sin_cos(sinh_2x, cosh_2x, ad_scale(r1, x, D2), HYP);
 
     name = "cosh^2(x) - sinh^2(x) == 1";
@@ -324,7 +324,7 @@ int main (int argc, char **argv) {
     if (debug != 0) fprintf(stderr, "\n");
     ad_sin_cos(sin, cos, x, TRIG);
     ad_tan_sec2(tan, sec2, x, TRIG);
-    ad_sqr(sqr_sin_x, sin);
+    ad_mul(sqr_sin_x, sin, sin);
     ad_sqr(sqr_cos_x, cos);
     ad_sin_cos(sin_2x, cos_2x, ad_scale(r1, x, D2), TRIG);
 
