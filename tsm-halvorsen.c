@@ -1,7 +1,37 @@
 /*
  * Halvorsen Cyclic Attractor
  *
- * Example: ./tsm-halvorsen-dbg 9 32 10 .01 10000 1 0 0 1.4 4
+ * Example: ./tsm-halvorsen-dbg  6 237 16  .01 10000  1 0 0  1.4 4
+ *
+ $(yad --columns=2 --title="Halvorsen Attractor (TSM)" --form --separator=" " --align=right \
+    --field="Model:CB" \
+    --field="Display Places":NUM --field="Precision (bits)":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+    --field="x0" --field="y0" --field="z0" \
+    --field="a" --field="b" \
+    -- './tsm-halvorsen-static!./tsm-halvorsen-dbg' \
+    '6!3..64!3' '237!11..999!2' '16!2..256!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+    '1.0' '0.0' '0.0' \
+    '1.4' '4') >/tmp/$USER/data
+ *
+ ./cns $(yad --columns=2 --title="Halvorsen CNS (TSM)" --form --separator=" " --align=right \
+    --field="Mode":CB --field="Deviation" --field="Model:CB" \
+    --field="Display Places":NUM --field="Precision":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+    --field="x0" --field="y0" --field="z0" \
+    --field="a" --field="b" \
+    -- 'step2!nosim' '1.0' './tsm-halvorsen-static!./tsm-halvorsen-dbg' \
+    '6!3..64!3' 'octuple!quadruple!extended!double!single' '16!2..256!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+    '1.0' '0.0' '0.0' \
+    '1.4' '4')
+ *
+ ./cns-scan $(yad --columns=2 --title="Halvorsen CNS Scan (TSM)" --form --separator=" " --align=right \
+    --field="Minium Order":NUM --field="Maxium Order":NUM --field="Deviation" --field="Model:CB" \
+    --field="Display Places":NUM --field="Precision":CB --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
+    --field="x0" --field="y0" --field="z0" \
+    --field="a" --field="b" \
+    -- '2!2..256!1' '32!2..256!1' '1.0' './tsm-halvorsen-static!./tsm-halvorsen-dbg' \
+    '6!3..64!3' 'octuple!quadruple!extended!double!single' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+    '1.0' '0.0' '0.0' \
+    '1.4' '4') | tee /tmp/$USER/data
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
