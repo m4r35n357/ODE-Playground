@@ -254,16 +254,16 @@ int main (int argc, char **argv) {
 
     if (debug != 0) fprintf(stderr, "\n");
 
-    ad_asin(r1, r2, sinh, HYP);
     name = "arcsinh(sinh(x)) == x";
+    ad_asin(r1, r2, sinh, HYP);
     compare(name, r1, x);
 
-    ad_acos(r1, r2, cosh, HYP);
     name = "arccosh(cosh(x)) == |x|";
+    ad_acos(r1, r2, cosh, HYP);
     x_non_zero ? compare(name, r1, abs_x) : skip(name);
 
-    ad_atan(r1, r2, tanh, HYP);
     name = "arctanh(tanh(x)) == x";
+    ad_atan(r1, r2, tanh, HYP);
     compare(name, r1, x);
 
     if (debug != 0) fprintf(stderr, "\n");
@@ -293,16 +293,16 @@ int main (int argc, char **argv) {
 
     if (debug != 0) fprintf(stderr, "\n");
 
-    ad_asin(r1, r2, sin, TRIG);
     name = "arcsin(sin(x)) == x";
+    ad_asin(r1, r2, sin, TRIG);
     compare(name, r1, x);
 
-    ad_acos(r1, r2, cos, TRIG);
     name = "arccos(cos(x)) == |x|";
+    ad_acos(r1, r2, cos, TRIG);
     x_non_zero ? compare(name, r1, abs_x) : skip(name);
 
-    ad_atan(r1, r2, tan, TRIG);
     name = "arctan(tan(x)) == x";
+    ad_atan(r1, r2, tan, TRIG);
     compare(name, r1, x);
 
     if (debug != 0) fprintf(stderr, "\n");
@@ -316,14 +316,14 @@ int main (int argc, char **argv) {
     ad_atan(r1, r2, sin, HYP);
     compare(name, gd_1, r1);
 
+    name = "arcsin(tanh(gd^-1 x)) == x";
     ad_tan_sec2(r3, r2, gd_1, HYP);
     ad_asin(r1, r2, r3, TRIG);
-    name = "arcsin(tanh(gd^-1 x)) == x";
     compare(name, r1, x);
 
+    name = "arctan(sinh(gd^-1 x)) == x";
     ad_sin_cos(r3, r2, gd_1, HYP);
     ad_atan(r1, r2, r3, TRIG);
-    name = "arctan(sinh(gd^-1 x)) == x";
     compare(name, r1, x);
 
     if (debug != 0) fprintf(stderr, "\n");
