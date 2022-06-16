@@ -107,25 +107,25 @@ int main (int argc, char **argv) {
 
     if (debug != 0) fprintf(stderr, "\n");
 
-    name = "x^2 == sqr(x)";
+    name = "x^2.0 == sqr(x)";
     x_positive ? compare(name, d_pow(x, 2.0L), sqr_x) : skip(name);
 
-    name = "x^1 == x";
+    name = "x^1.0 == x";
     x_positive ? compare(name, d_pow(x, 1.0L), x) : skip(name);
 
     name = "x^0.5 == sqrt(x)";
     x_positive ? compare(name, d_pow(x, 0.5L), sqrt_x): skip(name);
 
-    name = "x^0 == 1";
+    name = "x^0.0 == 1";
     x_positive ? compare(name, d_pow(x, 0.0L), d1) : skip(name);
 
     name = "x^-0.5 == 1 / sqrt(x)";
     x_positive ? compare(name, d_pow(x, -0.5L), d_inv(sqrt_x)) : skip(name);
 
-    name = "x^-1 == 1 / x";
+    name = "x^-1.0 == 1 / x";
     x_positive ? compare(name, d_pow(x, -1.0L), inv_x) : skip(name);
 
-    name = "x^-2 == 1 / sqr(x)";
+    name = "x^-2.0 == 1 / sqr(x)";
     x_positive ? compare(name, d_pow(x, -2.0L), d_inv(sqr_x)) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
