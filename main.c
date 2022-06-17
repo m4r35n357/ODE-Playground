@@ -12,11 +12,10 @@ int main (int argc, char **argv) {
     int display_precision = (int)strtol(argv[1], NULL, BASE);
     mpfr_set_default_prec((mpfr_prec_t)strtol(argv[2], NULL, BASE));
     fprintf(stderr, " MPFR default precision: %lu bits\n", mpfr_get_default_prec());
+    int order = (int)strtol(argv[3], NULL, BASE);
     t_init(display_precision);
 
     mpfr_t step_size, x0, y0, z0;
-
-    int order = (int)strtol(argv[3], NULL, BASE);
     mpfr_init_set_str(step_size, argv[4], BASE, RND);
     int steps = (int)strtol(argv[5], NULL, BASE);
 

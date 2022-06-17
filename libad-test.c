@@ -49,9 +49,9 @@ typedef struct { mpfr_t a, b, c; } parameters;
 void *get_p (int argc, char **argv, int order) {
     (void)argc; (void)argv; (void)order;
     parameters *p = malloc(sizeof (parameters));
-    mpfr_init_set(p->a, D1, RND);
-    mpfr_init_set(p->b, D0, RND);
-    mpfr_init_set(p->c, D_1, RND);
+    mpfr_init_set_si(p->a, 1, RND);
+    mpfr_init_set_si(p->b, 0, RND);
+    mpfr_init_set_si(p->c, -1, RND);
     return p;
 }
 
