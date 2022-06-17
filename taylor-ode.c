@@ -36,11 +36,11 @@ static char *tag (series jet, real slope, char *min, char *max) {
 }
 
 void tsm (int dp, int n, real h, int steps, real x0, real y0, real z0, void *p) {
-    clock_t start = clock();
     series x = t_jet(n + 1); x[0] = x0;
     series y = t_jet(n + 1); y[0] = y0;
     series z = t_jet(n + 1); z[0] = z0;
     components s = (components) {0.0L, 0.0L, 0.0L};
+    clock_t start = clock();
     for (int step = 0; step < steps; step++) {
         for (int k = 0; k < n; k++) {
             components vk = ode(x, y, z, p, k);

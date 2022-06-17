@@ -94,14 +94,20 @@ def output(dp, x, y, z, t, cpu):
 
 
 def tsm(ode, places, n, h, steps, x0, y0, z0, p):
+    x = t_jet(n + 1, x0)
+    y = t_jet(n + 1, y0)
+    z = t_jet(n + 1, z0)
     t0 = clock_gettime(CLOCK_MONOTONIC)
-    x, y, z = t_jet(n + 1, x0), t_jet(n + 1, y0), t_jet(n + 1, z0)  # coordinate jets
     for step in range(steps):
         for k in range(n):
             c = ode(x, y, z, p, k)
-            x[k + 1], y[k + 1], z[k + 1] = c.x / (k + 1), c.y / (k + 1), c.z / (k + 1)
+            x[k + 1] = c.x / (k + 1)
+            y[k + 1] = c.y / (k + 1)
+            z[k + 1] = c.z / (k + 1)
         output(places, x[0], y[0], z[0], step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
-        x[0], y[0], z[0] = t_horner(x, h), t_horner(y, h), t_horner(z, h)
+        x[0] = t_horner(x, h)
+        y[0] = t_horner(y, h)
+        z[0] = t_horner(z, h)
     output(places, x[0], y[0], z[0], steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
 
 
