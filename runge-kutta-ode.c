@@ -15,10 +15,10 @@ static char *tag (real new, real old, char *max) {
 }
 
 void rk4 (int dp, int n, real h, int steps, real x0, real y0, real z0, void *p) {
-    clock_t start = clock();
     real x = x0, xdot = 0.0L, kx = 0.0L;
     real y = y0, ydot = 0.0L, ky = 0.0L;
     real z = z0, zdot = 0.0L, kz = 0.0L;
+    clock_t start = clock();
     for (long step = 1; step < steps + 1; step++) {
         components k1 = ode(x, y, z, p);
         components k2 = ode(x + 0.5L * k1.x * h, y + 0.5L * k1.y * h, z + 0.5L * k1.z * h, p);

@@ -15,9 +15,9 @@ def get_p():
     return Parameters(a=float(argv[8]), b=float(argv[9]))
 
 def ode(x, y, z, p, k):
-    return Components(x=p.a * x[k] - p.b * (y[k] + z[k]) - t_sqr(y, k),
-                      y=p.a * y[k] - p.b * (z[k] + x[k]) - t_sqr(z, k),
-                      z=p.a * z[k] - p.b * (x[k] + y[k]) - t_sqr(x, k))
+    return Components(x=-p.a * x[k] - p.b * (y[k] + z[k]) - t_sqr(y, k),
+                      y=-p.a * y[k] - p.b * (z[k] + x[k]) - t_sqr(z, k),
+                      z=-p.a * z[k] - p.b * (x[k] + y[k]) - t_sqr(x, k))
 
 
 Context.places, n, h, steps = int(argv[1]), int(argv[2]), float(argv[3]), int(argv[4])  # controls
