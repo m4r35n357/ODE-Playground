@@ -86,9 +86,6 @@ def t_atan(f, g, u, k, hyp=False):
     return (f[k], - g[k]) if hyp else (f[k], g[k])
 
 
-class Components(namedtuple('ParametersType', ['x', 'y', 'z'])):
-    pass
-
 def t_out(dp, x, y, z, t, cpu):
     print(f'{x:+.{dp}e} {y:+.{dp}e} {z:+.{dp}e} {t:.5e} _ _ _ {cpu:.5e}')
 
@@ -124,6 +121,10 @@ def rk4(ode, places, n, h, steps, x, y, z, p):
         if step % n == 0:
             t_out(places, x, y, z, step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
     t_out(places, x, y, z, steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
+
+
+class Components(namedtuple('ParametersType', ['x', 'y', 'z'])):
+    pass
 
 
 class Context:

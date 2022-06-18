@@ -33,12 +33,12 @@
     '1.0' '0.0' '0.0' \
     '0.185') | tee /tmp/$USER/data
  *
- ./bifurcation-scan $(yad --title="Thomas Bifurcation (TSM)" --form --separator=" " --align=right \
+ ./bifurcation-scan $(yad --columns=2 --title="Thomas Bifurcation (TSM)" --form --separator=" " --align=right \
     --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:CB" \
     --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
     --field="x0" --field="y0" --field="z0" \
     --field="b:RO" \
-    -- '0.1' '0.23' '10' './tsm-thomas-static!./tsm-thomas-dbg!./tsm-thomas!./tsm-thomas.py' \
+    -- '0.1' '0.23' '10' './tsm-thomas-static!./tsm-thomas-dbg!./tsm-thomas' \
     '6!3..64!3' '4!4..128!1' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
     '1.0' '0.0' '0.0' \
     '$p')

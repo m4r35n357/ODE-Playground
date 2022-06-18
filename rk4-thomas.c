@@ -23,12 +23,12 @@
     '1.0' '0.0' '0.0' \
     '0.185')
  *
- ./bifurcation-scan $(yad --title="Thomas Bifurcation (RK4)" --form --separator=" " --align=right \
+ ./bifurcation-scan $(yad --columns=2 --title="Thomas Bifurcation (RK4)" --form --separator=" " --align=right \
     --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:CB" \
     --field="Display Places":NUM --field="Plot Interval":NUM --field="Step Size" --field="Steps" \
     --field="x0" --field="y0" --field="z0" \
     --field="b:RO" \
-    -- '0.1' '0.23' '10' './rk4-thomas-static!./rk4-thomas-dbg!./rk4-thomas!./rk4-thomas.py' \
+    -- '0.1' '0.23' '10' './rk4-thomas-static!./rk4-thomas-dbg!./rk4-thomas' \
     '6!3..64!3' '4!4..128!1' '.1' '30000' \
     '1.0' '0.0' '0.0' \
     '$p')

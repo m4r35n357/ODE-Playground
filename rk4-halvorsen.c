@@ -23,12 +23,12 @@
     '1.0' '0.0' '0.0' \
     '1.4' '4')
  *
- ./bifurcation-scan $(yad --title="Halvorsen Bifurcation (RK4)" --form --separator=" " --align=right \
+ ./bifurcation-scan $(yad --columns=2 --title="Halvorsen Bifurcation (RK4)" --form --separator=" " --align=right \
     --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:CB" \
     --field="Display Places":NUM --field="Plot Interval":NUM --field="Step Size" --field="Steps" \
     --field="x0" --field="y0" --field="z0" \
     --field="a:RO" --field="b" \
-    -- '0.1' '0.23' '10' './rk4-halvorsen-static!./rk4-halvorsen-dbg!./rk4-halvorsen!./rk4-halvorsen.py' \
+    -- '0.1' '0.23' '10' './rk4-halvorsen-static!./rk4-halvorsen-dbg!./rk4-halvorsen' \
     '6!3..64!3' '1!1..1000!1' '.01' '10000' \
     '1.0' '0.0' '0.0' \
     '$p' '4')

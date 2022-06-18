@@ -9,7 +9,7 @@
     --field="x0" --field="y0" --field="z0" \
     --field="a" --field="b" \
     -- './tsm-halvorsen-static!./tsm-halvorsen-dbg!./tsm-halvorsen!./tsm-halvorsen.py' \
-    '6!3..64!3' '8!4..128!1' '.1!0.001..0.01!0.001!3' '10000!1..1000000!1000' \
+    '6!3..64!3' '8!4..128!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
     '1.0' '0.0' '0.0' \
     '1.4' '4') >/tmp/$USER/data
  *
@@ -19,7 +19,7 @@
     --field="x0" --field="y0" --field="z0" \
     --field="a" --field="b" \
     -- 'step2!nosim' '1.0' './tsm-halvorsen-static!./tsm-halvorsen-dbg!./tsm-halvorsen!./tsm-halvorsen.py' \
-    '6!3..64!3' '8!4..128!1' '.1!0.001..0.01!0.001!3' '10000!1..1000000!1000' \
+    '6!3..64!3' '8!4..128!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
     '1.0' '0.0' '0.0' \
     '1.4' '4')
  *
@@ -29,17 +29,17 @@
     --field="x0" --field="y0" --field="z0" \
     --field="a" --field="b" \
     -- '32!2..64!1' '1.0' './tsm-halvorsen-static!./tsm-halvorsen-dbg!./tsm-halvorsen!./tsm-halvorsen.py' \
-    '6!3..64!3' '_' '.1!0.001..0.01!0.001!3' '10000!1..1000000!1000' \
+    '6!3..64!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
     '1.0' '0.0' '0.0' \
     '1.4' '4') | tee /tmp/$USER/data
  *
- ./bifurcation-scan $(yad --title="Halvorsen Bifurcation (TSM)" --form --separator=" " --align=right \
+ ./bifurcation-scan $(yad --columns=2 --title="Halvorsen Bifurcation (TSM)" --form --separator=" " --align=right \
     --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:CB" \
     --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
     --field="x0" --field="y0" --field="z0" \
     --field="a:RO" --field="b" \
-    -- '0.1' '0.23' '10' './tsm-halvorsen-static!./tsm-halvorsen-dbg!./tsm-halvorsen!./tsm-halvorsen.py' \
-    '6!3..64!3' '4!4..128!1' '.1!0.001..0.01!0.001!3' '10000!1..1000000!1000' \
+    -- '1' '4' '10' './tsm-halvorsen-static!./tsm-halvorsen-dbg!./tsm-halvorsen' \
+    '6!3..64!3' '4!4..128!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
     '1.0' '0.0' '0.0' \
     '$p' '4')
  *

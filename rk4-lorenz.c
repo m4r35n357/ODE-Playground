@@ -28,7 +28,7 @@
     --field="Display Places":NUM --field="Plot Interval":NUM --field="Step Size" --field="Steps" \
     --field="x0" --field="y0" --field="z0" \
     --field="sigma" --field="rho:RO" --field="beta (numerator)" --field="beta (denominator)" \
-    -- '0.0' '50.0' '10' './rk4-lorenz-static!./rk4-lorenz-dbg!./rk4-lorenz!./rk4-lorenz.py' \
+    -- '0.0' '50.0' '10' './rk4-lorenz-static!./rk4-lorenz-dbg!./rk4-lorenz' \
     '6!3..64!3' '1!1..1000!1' '.01' '10000' \
     '-15.8' '-18.48' '35.64' \
     '10' '$p' '8' '3')
