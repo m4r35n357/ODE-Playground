@@ -30,7 +30,7 @@ typedef mpfr_t *series;
 /*
  * Prints a line of data to stdout
  */
-void t_output (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, double cpu);
+void t_out (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, double cpu);
 
 /*
  * Retrieves ODE parameters from the tail of the command (arguments 9 onwards)
