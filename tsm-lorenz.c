@@ -14,7 +14,7 @@
     '10' '28' '8' '3') >/tmp/$USER/data
  *
  ./cns $(yad --columns=2 --title="Lorenz CNS (TSM)" --form --separator=" " --align=right \
-    --field="Mode":CB --field="Deviation" --field="Model:CB" \
+    --field="Mode":CB --field="Separation" --field="Model:CB" \
     --field="Display Places":NUM --field="Precision":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
     --field="x0" --field="y0" --field="z0" \
     --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
@@ -24,7 +24,7 @@
     '10' '28' '8' '3')
  *
  ./cns-scan $(yad --columns=2 --title="Lorenz CNS Scan (TSM)" --form --separator=" " --align=right \
-    --field="Minium Order":NUM --field="Maxium Order":NUM --field="Deviation" --field="Model:CB" \
+    --field="Minium Order":NUM --field="Maxium Order":NUM --field="Separation" --field="Model:CB" \
     --field="Display Places":NUM --field="Precision":CB --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
     --field="x0" --field="y0" --field="z0" \
     --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
