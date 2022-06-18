@@ -56,6 +56,7 @@ build_rk4 () {
 
 for model in \
 rk4-lorenz \
+rk4-halvorsen \
 rk4-thomas
 do
     echo " Building ${model}"

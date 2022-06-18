@@ -8,10 +8,30 @@
     --field="Display Places":NUM --field="Plot Interval":NUM --field="Step Size" --field="Steps" \
     --field="x0" --field="y0" --field="z0" \
     --field="b" \
-    -- './rk4-thomas-static!./rk4-thomas-dbg!./rk4-thomas' \
+    -- './rk4-thomas-static!./rk4-thomas-dbg!./rk4-thomas!./rk4-thomas.py' \
     '6!3..64!3' '1!1..1000!1' '.1' '30000' \
     '1.0' '0.0' '0.0' \
     '0.185') >/tmp/$USER/data
+ *
+ ./cns $(yad --columns=2 --title="Thomas CNS (RK4)" --form --separator=" " --align=right \
+    --field="Mode":CB --field="Separation" --field="Model:CB" \
+    --field="Display Places":NUM --field="Plot Interval":NUM --field="Step Size" --field="Steps" \
+    --field="x0" --field="y0" --field="z0" \
+    --field="b" \
+    -- 'step2!nosim' '1.0' './rk4-thomas-static!./rk4-thomas-dbg!./rk4-thomas!./rk4-thomas.py' \
+    '6!3..64!3' '8!4..128!1' '.1' '30000' \
+    '1.0' '0.0' '0.0' \
+    '0.185')
+ *
+ ./bifurcation-scan $(yad --title="Thomas Bifurcation (RK4)" --form --separator=" " --align=right \
+    --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:CB" \
+    --field="Display Places":NUM --field="Plot Interval":NUM --field="Step Size" --field="Steps" \
+    --field="x0" --field="y0" --field="z0" \
+    --field="b:RO" \
+    -- '0.1' '0.23' '10' './rk4-thomas-static!./rk4-thomas-dbg!./rk4-thomas!./rk4-thomas.py' \
+    '6!3..64!3' '4!4..128!1' '.1' '30000' \
+    '1.0' '0.0' '0.0' \
+    '$p')
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
