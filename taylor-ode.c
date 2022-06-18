@@ -40,7 +40,7 @@ void tsm (int dp, int n, real h, int steps, real x0, real y0, real z0, void *p) 
     series y = t_jet(n + 1); y[0] = y0;
     series z = t_jet(n + 1); z[0] = z0;
     components s = (components) {0.0L, 0.0L, 0.0L};
-    clock_t start = clock();
+    clock_t t0 = clock();
     for (int step = 0; step < steps; step++) {
         for (int k = 0; k < n; k++) {
             components vk = ode(x, y, z, p, k);
@@ -48,13 +48,13 @@ void tsm (int dp, int n, real h, int steps, real x0, real y0, real z0, void *p) 
             y[k + 1] = vk.y / (k + 1);
             z[k + 1] = vk.z / (k + 1);
         }
-        t_output(dp, x[0], y[0], z[0], h * step, tag(x, s.x, "x", "X"), tag(y, s.y, "y", "Y"), tag(z, s.z, "z", "Z"), cpu(start));
+        t_out(dp, x[0], y[0], z[0], h * step, tag(x, s.x, "x", "X"), tag(y, s.y, "y", "Y"), tag(z, s.z, "z", "Z"), cpu(t0));
         s = (components) {x[1], y[1], z[1]};
         x[0] = t_horner(x, n, h);
         y[0] = t_horner(y, n, h);
         z[0] = t_horner(z, n, h);
     }
-    t_output(dp, x[0], y[0], z[0], h * steps, "_", "_", "_", cpu(start));
+    t_out(dp, x[0], y[0], z[0], h * steps, "_", "_", "_", cpu(t0));
 }
 
 real t_const (real a, int k) {

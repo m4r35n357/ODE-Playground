@@ -140,7 +140,7 @@ int main (int argc, char **argv) {
     real step = 0.1L;
     tsm(dp, n, step, steps, 1.0L, 1.0L, 1.0L, get_p(argc, argv, n));
     fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);
-    t_output(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), step * steps, "_", "_", "_", 0.0F);
+    t_out(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), step * steps, "_", "_", "_", 0.0F);
 
     fprintf(stderr, "\n");
     fprintf(stderr, "%sRecurrence Relations: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x[0], NRM);

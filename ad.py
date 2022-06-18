@@ -89,7 +89,7 @@ def t_atan(f, g, u, k, hyp=False):
 class Components(namedtuple('ParametersType', ['x', 'y', 'z'])):
     pass
 
-def output(dp, x, y, z, t, cpu):
+def t_out(dp, x, y, z, t, cpu):
     print(f'{x:+.{dp}e} {y:+.{dp}e} {z:+.{dp}e} {t:.5e} _ _ _ {cpu:.5e}')
 
 
@@ -104,11 +104,11 @@ def tsm(ode, places, n, h, steps, x0, y0, z0, p):
             x[k + 1] = c.x / (k + 1)
             y[k + 1] = c.y / (k + 1)
             z[k + 1] = c.z / (k + 1)
-        output(places, x[0], y[0], z[0], step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
+        t_out(places, x[0], y[0], z[0], step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
         x[0] = t_horner(x, h)
         y[0] = t_horner(y, h)
         z[0] = t_horner(z, h)
-    output(places, x[0], y[0], z[0], steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
+    t_out(places, x[0], y[0], z[0], steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
 
 
 def rk4(ode, places, n, h, steps, x, y, z, p):
@@ -122,8 +122,8 @@ def rk4(ode, places, n, h, steps, x, y, z, p):
         y += h * (k1.y + 2.0 * (k2.y + k3.y) + k4.y) / 6.0
         z += h * (k1.z + 2.0 * (k2.z + k3.z) + k4.z) / 6.0
         if step % n == 0:
-            output(places, x, y, z, step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
-    output(places, x, y, z, steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
+            t_out(places, x, y, z, step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
+    t_out(places, x, y, z, steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
 
 
 class Context:

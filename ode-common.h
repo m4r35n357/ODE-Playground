@@ -15,7 +15,7 @@ extern const int BASE;
 /*
  * Prints a line of data to stdout, with turning point markers
  */
-void t_output (int dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label, real cpu);
+void t_out (int dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label, real cpu);
 
 /*
  * Retrieves ODE parameters from the tail of the command (arguments 8 onwards)

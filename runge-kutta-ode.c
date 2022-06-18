@@ -18,7 +18,7 @@ void rk4 (int dp, int n, real h, int steps, real x0, real y0, real z0, void *p) 
     real x = x0, xdot = 0.0L, kx = 0.0L;
     real y = y0, ydot = 0.0L, ky = 0.0L;
     real z = z0, zdot = 0.0L, kz = 0.0L;
-    clock_t start = clock();
+    clock_t t0 = clock();
     for (long step = 1; step < steps + 1; step++) {
         components k1 = ode(x, y, z, p);
         components k2 = ode(x + 0.5L * k1.x * h, y + 0.5L * k1.y * h, z + 0.5L * k1.z * h, p);
@@ -32,9 +32,9 @@ void rk4 (int dp, int n, real h, int steps, real x0, real y0, real z0, void *p) 
             exit(2);
         }
         if (step % n == 0) {
-            t_output(dp, x, y, z, h * step, tag(kx, xdot, "X"), tag(ky, ydot, "Y"), tag(kz, zdot, "Z"), cpu(start));
+            t_out(dp, x, y, z, h * step, tag(kx, xdot, "X"), tag(ky, ydot, "Y"), tag(kz, zdot, "Z"), cpu(t0));
             xdot = kx, ydot = ky, zdot = kz;
         }
     }
-    t_output(dp, x, y, z, h * steps, "_", "_", "_", cpu(start));
+    t_out(dp, x, y, z, h * steps, "_", "_", "_", cpu(t0));
 }
