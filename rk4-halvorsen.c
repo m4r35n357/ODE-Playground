@@ -28,7 +28,7 @@
     --field="Display Places":NUM --field="Plot Interval":NUM --field="Step Size" --field="Steps" \
     --field="x0" --field="y0" --field="z0" \
     --field="a:RO" --field="b" \
-    -- '0.1' '0.23' '10' './rk4-halvorsen-static!./rk4-halvorsen-dbg!./rk4-halvorsen' \
+    -- '1' '4' '10' './rk4-halvorsen-static!./rk4-halvorsen-dbg!./rk4-halvorsen' \
     '6!3..64!3' '1!1..1000!1' '.01' '10000' \
     '1.0' '0.0' '0.0' \
     '$p' '4')
