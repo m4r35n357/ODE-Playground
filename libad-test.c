@@ -3,9 +3,9 @@
  *
  * Example: ./libad-test-dbg 20 .5 1e-18 [ 0 | 1 | 2 ]
  *
- ./libad-test-dbg $(yad --title="Taylor Tests" --form --separator=" " --align=right \
-    --field="Order":NUM --field="Value":NUM --field="Error Threshold":NUM --field="Detail":CB \
-    -- '20!4..128!1' '0.5!-1.0..1.0!0.1!1' '18!3..36!3' '0!1!2')
+ ./libad-test-dbg $(yad --columns=2 --title="Taylor Tests" --form --separator=" " --align=right \
+    --field="Order":NUM --field="Value":NUM --field="Max. Error":CB --field="Detail":CB \
+    -- '20!2..128!1' '0.5!-1.0..1.0!0.1!1' '1.0e-15!1.0e-18!1.0e-21!1.0e-24!1.0e-27!1.0e-30!1.0e-36' '0!1!2')
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */

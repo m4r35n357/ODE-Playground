@@ -1,7 +1,25 @@
 
-## Basic UI
+## NEWS: Default compiler (c99)
 
-Uses yad, cut & paste examples are in the appropriate source files.
+Changed to GCC; MUSL is still available as an option (also Clang).
+
+## NEWS: Basic dialogue box UI for many operations using yad
+
+Several cut & paste examples are provided in comments at the top of the following source files:
+* tsm-lorenz.c
+* tsm-thomas.c
+* tsm-halvorsen.c
+* rk4-lorenz.c
+* rk4-thomas.c
+* rk4-halvorsen.c
+
+A blank initial character is provided to keep these long lines off your history (bash).
+These examples allow simple selection of static & debug executables, and Python versions (where valid).
+
+There are also yad dialogues for running tests and making executables using zig-build:
+* libad-test.c
+* libdual-test.c
+* zig-builds
 
 ## ODE/Hamiltonian Playground, Now feature-complete
 
