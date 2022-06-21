@@ -12,6 +12,7 @@ Several cut & paste examples are provided in comments at the top of the followin
 * rk4-lorenz.c
 * rk4-thomas.c
 * rk4-halvorsen.c
+* h-*
 
 A blank initial character is provided to keep these long lines off your history (bash).
 These examples allow simple selection of static & debug executables, and Python versions (where valid).

@@ -13,6 +13,9 @@
        'ReleaseSmall!ReleaseFast!ReleaseSafe!Debug' 'TRUE' 'TRUE')
 ###BLOCK-COMMENT
 
+echo ""
+echo "Zig Builds: [$0 $*]" >&2
+
 target=$1
 buildmode=$2
 stripped=${3:-TRUE}
