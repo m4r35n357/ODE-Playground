@@ -2,9 +2,22 @@
 
 ### (June 2022)
 Since last update:
+
 The arc/ar-functions have been added (and fully tested).
+
 Documentation has been slightly improved.
-Basic UI for various programs and scripts using yad is now available for manual cut & paste use.
+
+Several cut & paste examples are provided in comments at the top of the following source files:
+* tsm-lorenz.c
+* tsm-thomas.c
+* tsm-halvorsen.c
+
+A blank initial character is provided to keep these long lines off your history (bash).
+These examples allow simple selection of static & debug executables, and Python versions (where valid).
+
+There are also yad dialogues for running tests and making executables using zig-build:
+* libad-test.c
+
 
 ### (26th October 2021)
 To distinguish it from the MPFR code in master, the compendium branch has been renamed to pure_c: https://github.com/m4r35n357/ODE-Playground/tree/pure_c.
