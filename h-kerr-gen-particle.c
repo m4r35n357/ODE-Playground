@@ -5,17 +5,25 @@
  * Example:  ./h-kerr-gen-particle-dbg 1e-9 12 -1 63 1 1 .8 >/tmp/$USER/data
  *
  ./h-kerr-gen-particle-dbg $(yad --columns=2 --title="Generate Parameters (particle)" --form --separator=" " --align=right \
-    --field="Solver Tolerance" \
-    --field="Rmin" \
-    --field="Rmax (-1 for circular)" \
-    --field="Elevation (degrees)" \
-    --field="BH spin (-ve for retrograde)":NUM \
+    --field="Solver Tolerance" --field="Rmin" --field="Rmax (-1 for circular)" \
+    --field="Elevation (degrees)" --field="BH spin (-ve for retrograde)":NUM \
     -- "1.0e-9" "3.0" "12.0" "63.0" '0.8!-1.0..1.0!0.1!1') >/tmp/$USER/data
  *
- * Potential plots:
+ gnuplot -p << EOF
+set terminal wxt size 600,450
+set yrange [*:10]
+set xlabel 'r'
+set ylabel 'R potential'
+plot 0.0, '/tmp/$USER/data' using 1:2 title 'R' with lines
+EOF
  *
- * Example:  gnuplot -p -e "set terminal wxt size 600,450; set yrange [*:10]; plot 0.0, '/tmp/$USER/data' using 1:2 with lines"
- * Example:  gnuplot -p -e "set terminal wxt size 600,450; set yrange [*:1]; plot 0.0, '/tmp/$USER/data' using 3:4 with lines"
+ gnuplot -p << EOF
+set terminal wxt size 600,450
+set yrange [*:1]
+set xlabel 'theta'
+set ylabel 'THETA potential'
+plot 0.0, '/tmp/$USER/data' using 3:4 title 'THETA' with lines
+EOF
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */

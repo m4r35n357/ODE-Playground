@@ -211,10 +211,7 @@ grep Example *
 This use case only involves calling the "t-functions" in ad.py or taylor-ode.c.
 No differentiation happens in these functions (they only implement the recurrence relations); it is the responsibility of the calling program to organize this properly.
 Refer to tsm-lorenz-dbg and tsm-*.c for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors.
-To find some example invocations:
-```
-grep Example *
-```
+
 Where CPU timings are given, they are made on a Raspberry Pi 400, mildly overclocked to 2100MHz, and writing output to a tmpfs file.
 
 #### Run a basic ODE simulation (ODE call):
@@ -269,7 +266,7 @@ EOF
 ./tsm-lorenz-dbg 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
  gnuplot -p << EOF
 set terminal wxt size 1200,900
-plot '/tmp/$USER/data' using 4:1 with lines, '/tmp/$USER/data' using 4:2 with lines, '/tmp/$USER/data' using 4:3 with lines
+plot '/tmp/$USER/data' using 4:1 with lines, '' u 4:2 w l, '' u 4:3 w l
 EOF
 ```
 It should be possible to send output directly to gnuplot via a pipe, but many versions segfault when reading stdin so I now specify a temporary file instead.
@@ -312,7 +309,7 @@ If you want to interact with actual plots (e.g. to read off parameter values for
  gnuplot -p << EOF
 set t wxt size 1350,800 background rgb 'grey85'
 set grid back
-plot '/tmp/$USER/bifurcationX' lt rgb 'dark-blue' w dots, '/tmp/$USER/bifurcationx' lt rgb 'dark-green' w dots
+plot '/tmp/$USER/bifurcationX' lt rgb 'dark-blue' with dots, '/tmp/$USER/bifurcationx' lt rgb 'dark-green' w d
 EOF
 ```
 If you are curious about Python performance, you can try this:
@@ -398,7 +395,7 @@ set y2tics
 set xlabel 'Taylor Series Order'
 set ylabel 'CNS Time, model units'
 set y2label 'CPU Time, seconds'
-plot '/tmp/$USER/data' using 1:2 axes x1y1 title 'CNS' with boxes, '/tmp/$USER/data' using 1:3 axes x1y2 title 'CPU' with boxes
+plot '/tmp/$USER/data' using 1:2 axes x1y1 title 'CNS' with boxes, '' u 1:3 axes x1y2 t 'CPU' w b
 EOF
 ```
 
