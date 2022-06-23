@@ -3,10 +3,10 @@
  *
  * Example:  ./h-kerr-gen-light-dbg 3 .8
  *
- ./h-kerr-gen-light-dbg $(yad --title="Step Analysis" --form --separator=" " --align=right \
-    --field="r" \
-    --field="spin":NUM \
-    -- "3" '0.8!0.0..1.0!0.1!1')
+ ./h-kerr-gen-light-dbg $(yad --columns=2 --title="Generate Parameters (light)" --form --separator=" " --align=right \
+    --field="r":NUM \
+    --field="BH spin":NUM \
+    -- '3.0!1.0..4.0!0.1!1' '0.8!-1.0..1.0!0.1!1')
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -35,10 +35,27 @@ int main(int argc, char **argv) {
     } else {
         fprintf(stdout, "\n");
         fprintf(stdout, "Simulate:\n");
-        fprintf(stdout, "./h-kerr-dbg 6 8 .01 10000 0 .8 0.0 1.0 %La 1.0 %La %.3Lf 0.0 >/tmp/$USER/data\n", L, Q, r);
+        fprintf(stdout, "./h-kerr-dbg 6 8 .01 10000 0 %.3Lf 0.0 1.0 %La 1.0 %La %.3Lf 0.0 >/tmp/$USER/data\n", a, L, Q, r);
         fprintf(stdout, "\n");
+        fprintf(stderr, "./h-kerr-dbg $(yad --columns=2 --title='Kerr Orbit (light)' --form --separator=' ' --align=right ");
+        fprintf(stderr, "--field='Display Places':NUM ");
+        fprintf(stderr, "--field='Order':NUM ");
+        fprintf(stderr, "--field='Step Size':NUM ");
+        fprintf(stderr, "--field='Steps':NUM ");
+        fprintf(stderr, "--field='Plot type':CB ");
+        fprintf(stderr, "--field='BH spin':NUM ");
+        fprintf(stderr, "--field='particle mass':RO ");
+        fprintf(stderr, "--field='particle energy':RO ");
+        fprintf(stderr, "--field='particle momentum' ");
+        fprintf(stderr, "--field='momentum factor':RO ");
+        fprintf(stderr, "--field='Carter constant' ");
+        fprintf(stderr, "--field='r0' ");
+        fprintf(stderr, "--field='theta0' ");
+        fprintf(stderr, "-- '6!3..64!3' '4!2..10!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' '0!1!2' "),
+        fprintf(stderr, "'%.3Lf!-1.0..1.0!0.1!1' 0.0 1.0 %.9Le 1.0 %.9Le %.3Lf 0.0) >/tmp/$USER/data\n", a, L, Q, r);
+        fprintf(stderr, "\n");
         fprintf(stdout, "Generate ICs:\n");
-        fprintf(stdout, "./h-kerr-dbg 15 8 .01 0 2 .8 0.0 1.0 %La 1.0 %La %.3Lf 0.0\n", L, Q, r);
+        fprintf(stdout, "./h-kerr-dbg 15 8 .01 0 2 %.3Lf 0.0 1.0 %La 1.0 %La %.3Lf 0.0\n", a, L, Q, r);
         fprintf(stdout, "\n");
     }
 }

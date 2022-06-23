@@ -17,7 +17,7 @@
     --field="mass" \
     --field="spring constant" \
     --field="length" \
-    -- '6!3..64!3' '4!2..10!2' '0.1!0.1..1!0.1!1' '10000!1..100000!1' "1" "1" "1")
+    -- '6!3..64!3' '4!2..10!2' '0.1!0.1..1!0.1!1' '10000!1..100000!1' "1" "1" "1") >/tmp/$USER/data
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */

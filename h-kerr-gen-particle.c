@@ -4,15 +4,15 @@
  * Example:  ./h-kerr-gen-particle-dbg 1e-9 3 12 63 1 1 .8 >/tmp/$USER/data
  * Example:  ./h-kerr-gen-particle-dbg 1e-9 12 -1 63 1 1 .8 >/tmp/$USER/data
  *
- ./h-kerr-gen-particle-dbg $(yad --title="Generate Parameters" --form --separator=" " --align=right \
+ ./h-kerr-gen-particle-dbg $(yad --columns=2 --title="Generate Parameters (particle)" --form --separator=" " --align=right \
     --field="Solver Tolerance" \
     --field="Rmin" \
     --field="Rmax (-1 for circular)" \
     --field="Elevation (degrees)" \
     --field="BH mass" \
-    --field="Particle mass" \
-    --field="BH spin (-ve for retrograde)" \
-    -- "1.0e-9" "3.0" "12.0" "63.0" "1.0" "1.0" "0.8") >/tmp/$USER/data
+    --field="Particle mass":RO \
+    --field="BH spin (-ve for retrograde)":NUM \
+    -- "1.0e-9" "3.0" "12.0" "63.0" "1.0" "1.0" '0.8!-1.0..1.0!0.1!1') >/tmp/$USER/data
  *
  * Potential plots:
  *
@@ -32,11 +32,16 @@ typedef struct { real a, b, c; } vector3;
 
 typedef struct { real a, b, c, d, e, f, g, h, i; } matrix3x3;
 
+static real det2x2 (real a, real d, real b, real c) {
+    real w = b * c;
+    return fmal(a, d, -w) + fmal(-b, c, w);
+}
+
 static matrix3x3 m_invert (matrix3x3 m) {
     matrix3x3 c = (matrix3x3) {
-        .a =  (m.e * m.i - m.f * m.h), .b = -(m.d * m.i - m.f * m.g), .c =  (m.d * m.h - m.e * m.g),
-        .d = -(m.b * m.i - m.c * m.h), .e =  (m.a * m.i - m.c * m.g), .f = -(m.a * m.h - m.b * m.g),
-        .g =  (m.b * m.f - m.c * m.e), .h = -(m.a * m.f - m.c * m.d), .i =  (m.a * m.e - m.b * m.d)
+        .a =  det2x2(m.e, m.i, m.f, m.h), .b = -det2x2(m.d, m.i, m.f, m.g), .c =  det2x2(m.d, m.h, m.e, m.g),
+        .d = -det2x2(m.b, m.i, m.c, m.h), .e =  det2x2(m.a, m.i, m.c, m.g), .f = -det2x2(m.a, m.h, m.b, m.g),
+        .g =  det2x2(m.b, m.f, m.c, m.e), .h = -det2x2(m.a, m.f, m.c, m.d), .i =  det2x2(m.a, m.e, m.b, m.d)
     };
     real d = m.a * c.a + m.b * c.b + m.c * c.c;
     assert(d != 0.0L);
@@ -158,14 +163,33 @@ int main (int argc, char **argv) {
             count, p->epsilon, valid ? (p->spin * p->L < 0.0L ? "RETROGRADE" : "PROGRADE") : "INVALID");
     fprintf(stderr, "\n");
     fprintf(stderr, "Simulate:\n");
-    fprintf(stderr, "./h-kerr-dbg 6 8 .01 10000 0 %.3Lf 1.0 %.9Le %.9Le 1.0 %.9Le %.3Lf %.3Lf >/tmp/$USER/data\n",
-            p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax), 0.0L);
-    fprintf(stderr, "./h-kerr-dbg 6 8 .01 10000 0 %.3Lf 1.0 %La %La 1.0 %La %.3Lf %.3Lf >/tmp/$USER/data\n",
-            p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax), 0.0L);
+    fprintf(stderr, "./h-kerr-dbg 6 8 .01 10000 0 %.3Lf 1.0 %.9Le %.9Le 1.0 %.9Le %.3Lf 0.0 >/tmp/$USER/data\n",
+            p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax));
+    fprintf(stderr, "\n");
+    fprintf(stderr, "./h-kerr-dbg 6 8 .01 10000 0 %.3Lf 1.0 %La %La 1.0 %La %.3Lf 0.0 >/tmp/$USER/data\n",
+            p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax));
+    fprintf(stderr, "\n");
+    fprintf(stderr, "./h-kerr-dbg $(yad --columns=2 --title='Kerr Orbit (particle)' --form --separator=' ' --align=right ");
+    fprintf(stderr, "--field='Display Places':NUM ");
+    fprintf(stderr, "--field='Order':NUM ");
+    fprintf(stderr, "--field='Step Size':NUM ");
+    fprintf(stderr, "--field='Steps':NUM ");
+    fprintf(stderr, "--field='Plot type':CB ");
+    fprintf(stderr, "--field='BH spin':NUM ");
+    fprintf(stderr, "--field='particle mass':RO ");
+    fprintf(stderr, "--field='particle energy' ");
+    fprintf(stderr, "--field='particle momentum' ");
+    fprintf(stderr, "--field='momentum factor' ");
+    fprintf(stderr, "--field='Carter constant' ");
+    fprintf(stderr, "--field='r0' ");
+    fprintf(stderr, "--field='theta0' ");
+    fprintf(stderr, "-- '6!3..64!3' '4!2..10!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' '0!1!2' "),
+    fprintf(stderr, "'%.3Lf!-1.0..1.0!0.1!1' 1.0 %.9Le %.9Le 1.0 %.9Le %.3Lf 0.0) >/tmp/$USER/data\n",
+            p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax));
     fprintf(stderr, "\n");
     fprintf(stderr, "Generate ICs:\n");
-    fprintf(stderr, "./h-kerr-dbg 15 8 .01 0 2 %.3Lf 1.0 %La %La 1.0 %La %.3Lf %.3Lf\n",
-            p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax), 0.0L);
+    fprintf(stderr, "./h-kerr-dbg 15 8 .01 0 2 %.3Lf 1.0 %La %La 1.0 %La %.3Lf 0.0\n",
+            p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax));
     fprintf(stderr, "\n");
 
     real r_range = (circular ? p->rmin + 1.0L : p->rmax + 1.0L);
