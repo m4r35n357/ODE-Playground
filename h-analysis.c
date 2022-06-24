@@ -14,7 +14,7 @@ set xrange [-0.1:1.1]
 set yrange [-0.1:1.1]
 set xlabel 'coordinate'
 set ylabel 'momentum'
-plot '/tmp/$USER/data' using 2:3 title 'sequence' with linespoints pt 7 ps 0
+plot '/tmp/$USER/data' using 1:2 title 'sequence' with linespoints pt 7 ps 0
 EOF
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
@@ -25,38 +25,31 @@ EOF
 #include <assert.h>
 #include "symplectic.h"
 
-typedef struct {
-    real c;
-    real d;
-    long count;
-} parameters;
+typedef struct { real c; real d; } parameters;
 
 void *get_p (int argc, char **argv, int va_begin) {
     (void)argc; (void)argv; (void)va_begin;
     parameters *p = malloc(sizeof (parameters));
     p->c = 0.0L;
     p->d = 0.0L;
-    p->count = 0L;
     return p;
 }
 
 static void plot (long dp, void *params, real t) {
     (void)dp; (void)t;
     parameters *p = (parameters *)params;
-    printf("%+.6ld %+.3Le %+.3Le\n", p->count, p->c, p->d);
+    printf("%+.3Le %+.3Le\n", p->c, p->d);
 }
 
 void update_q (void *params, real c) {
     parameters *p = (parameters *)params;
     p->c += c;
-    p->count += 1;
     plot(0L, p, 0.0L);
 }
 
 void update_p (void *params, real d) {
     parameters *p = (parameters *)params;
     p->d += d;
-    p->count += 1;
     plot(0L, p, 0.0L);
 }
 
