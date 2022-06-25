@@ -75,7 +75,9 @@ static void tenth_order (void *p, real h) {
 }
 
 void solve (char **argv, void *p, plotter output) {
-    long dp = strtol(argv[1], NULL, 10), method = strtol(argv[2], NULL, 10), steps = strtol(argv[4], NULL, 10);
+    int dp = (int)strtol(argv[1], NULL, 10);
+    long method = strtol(argv[2], NULL, 10);
+    long steps = strtol(argv[4], NULL, 10);
     real h = strtold(argv[3], NULL);
     assert(h > 0.0L && h <= 10.0L);
     assert(steps >= 0 && steps <= 1000000);
