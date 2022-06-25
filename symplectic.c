@@ -75,12 +75,10 @@ static void tenth_order (void *p, real h) {
 }
 
 void solve (char **argv, void *p, plotter output) {
-    int dp = (int)strtol(argv[1], NULL, 10);
-    long method = strtol(argv[2], NULL, 10);
-    long steps = strtol(argv[4], NULL, 10);
-    real h = strtold(argv[3], NULL);
-    assert(h > 0.0L && h <= 10.0L);
-    assert(steps >= 0 && steps <= 1000000);
+    int display_precision = (int)strtol(argv[1], NULL, 10); assert(display_precision >= 1 && display_precision <= 32);
+    long order = strtol(argv[2], NULL, 10); assert(order >= 2 && order <= 10);
+    real step_size = strtold(argv[3], NULL); assert(step_size > 0.0L);
+    long steps = strtol(argv[4], NULL, 10); assert(steps >= 0 && steps <= 1000000);
     weight_r_1.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 3.0L));
     weight_r_2.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 5.0L));
     weight_r_3.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 7.0L));
@@ -90,19 +88,19 @@ void solve (char **argv, void *p, plotter output) {
     weight_r_3.rev = 1.0L - 4.0L * weight_r_3.fwd;
     weight_r_4.rev = 1.0L - 4.0L * weight_r_4.fwd;
     integrator composer = NULL;
-    switch (method) {
+    switch (order) {
         case 2: composer = stormer_verlet; break;
         case 4: composer = fourth_order; break;
         case 6: composer = sixth_order; break;
         case 8: composer = eightth_order; break;
         case 10: composer = tenth_order; break;
         default:
-            printf("Method parameter is {%ld} but should be 2, 4, 6, 8, or 10 \n", method);
+            printf("Order parameter is {%ld} but should be 2, 4, 6, 8, or 10 \n", order);
             exit(1);
     }
-    output(dp, p, 0.0L);
+    output(display_precision, p, 0.0L);
     for (long step = 1; step <= steps; step++) {
-        composer(p, h);
-        output(dp, p, step * h);
+        composer(p, step_size);
+        output(display_precision, p, step * step_size);
     }
 }
