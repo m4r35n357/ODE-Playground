@@ -35,7 +35,7 @@ void *get_p (int argc, char **argv, int va_begin) {
     return p;
 }
 
-static void plot (long dp, void *params, real t) {
+static void plot (int dp, void *params, real t) {
     (void)dp; (void)t;
     parameters *p = (parameters *)params;
     printf("%+.3Le %+.3Le\n", p->c, p->d);

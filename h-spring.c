@@ -64,12 +64,11 @@ void update_p (void *params, real d) {
     p->p -= d * h(p->m, p->k, p->l, d_var(p->q), d_dual(p->p)).dot;
 }
 
-static void plot (long dp, void *params, real t) {
+static void plot (int dp, void *params, real t) {
     parameters *p = (parameters *)params;
-    char fs[128];
-    sprintf(fs, "%%+.%ldLe %%+.%ldLe %%+.%ldLe %%+.6Le %%+.3Le %%+.3Le\n", dp, dp, dp);
     real h_now = h(p->m, p->k, p->l, d_dual(p->q), d_dual(p->p)).val;
-    printf(fs, p->q, p->p, 0.0L, t, error(h_now - p->h0), h_now);
+    printf("%+.*Le %+.*Le %+.3Lf %.6Le %+.*Le %+.*Le\n",
+           dp, p->q, dp, p->p, 0.0L, t, dp, error(h_now - p->h0), dp, h_now);
 }
 
 int main (int argc, char **argv) {

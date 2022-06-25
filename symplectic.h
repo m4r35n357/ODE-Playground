@@ -19,7 +19,7 @@ real error (real e);
 /*
  * To pass a plotter as parameter
  */
-typedef void (*plotter)(long dp, void *params, real t);
+typedef void (*plotter)(int dp, void *params, real t);
 
 /*
  * To pass an integrator as parameter
