@@ -10,7 +10,7 @@
 /*
  * RK4 algorithm
  */
-void rk4 (int dp, int n, real h, int steps, real x0, real y0, real z0, void *P);
+void rk4 (int dp, int n, real h, int steps, real x0, real y0, real z0, void *P, clock_t since);
 
 /*
  * Obligatory client method signatures

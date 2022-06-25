@@ -98,9 +98,9 @@ void solve (char **argv, void *p, plotter output) {
             printf("Order parameter is {%ld} but should be 2, 4, 6, 8, or 10 \n", order);
             exit(1);
     }
-    output(display_precision, p, 0.0L);
-    for (long step = 1; step <= steps; step++) {
-        composer(p, step_size);
+    for (long step = 0; step < steps; step++) {
         output(display_precision, p, step * step_size);
+        composer(p, step_size);
     }
+    output(display_precision, p, steps * step_size);
 }

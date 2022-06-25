@@ -4,37 +4,34 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdarg.h>
-#include <assert.h>
 #include <math.h>
-#include <time.h>
 #include "runge-kutta-ode.h"
 
 static char *tag (real new, real old, char *max) {
     return new * old < 0.0L ? max : "_";
 }
 
-void rk4 (int dp, int n, real h, int steps, real x0, real y0, real z0, void *p) {
-    real x = x0, xdot = 0.0L, kx = 0.0L;
-    real y = y0, ydot = 0.0L, ky = 0.0L;
-    real z = z0, zdot = 0.0L, kz = 0.0L;
-    clock_t t0 = clock();
-    for (long step = 1; step < steps + 1; step++) {
+void rk4 (int dp, int n, real h, int steps, real x0, real y0, real z0, void *p, clock_t t0) {
+    real x = x0, x_1 = 0.0L;
+    real y = y0, y_1 = 0.0L;
+    real z = z0, z_1 = 0.0L;
+    components s = (components) {0.0L, 0.0L, 0.0L};
+    for (int step = 0; step < steps; step++) {
+        if (step % n == 0) {
+            t_out(dp, x, y, z, h * step, tag(x_1, s.x, "X"), tag(y_1, s.y, "Y"), tag(z_1, s.z, "Z"), t0);
+            s = (components) {x_1, y_1, z_1};
+        }
         components k1 = ode(x, y, z, p);
         components k2 = ode(x + 0.5L * k1.x * h, y + 0.5L * k1.y * h, z + 0.5L * k1.z * h, p);
         components k3 = ode(x + 0.5L * k2.x * h, y + 0.5L * k2.y * h, z + 0.5L * k2.z * h, p);
         components k4 = ode(x + k3.x * h, y + k3.y * h, z + k3.z * h, p);
-        x += h * (kx = (k1.x + 2.0L * (k2.x + k3.x) + k4.x) / 6.0L);
-        y += h * (ky = (k1.y + 2.0L * (k2.y + k3.y) + k4.y) / 6.0L);
-        z += h * (kz = (k1.z + 2.0L * (k2.z + k3.z) + k4.z) / 6.0L);
+        x += h * (x_1 = (k1.x + 2.0L * (k2.x + k3.x) + k4.x) / 6.0L);
+        y += h * (y_1 = (k1.y + 2.0L * (k2.y + k3.y) + k4.y) / 6.0L);
+        z += h * (z_1 = (k1.z + 2.0L * (k2.z + k3.z) + k4.z) / 6.0L);
         if (! isfinite(x) || ! isfinite(y) || ! isfinite(z)) {
             fprintf(stderr, "Value error!\n");
             exit(2);
         }
-        if (step % n == 0) {
-            t_out(dp, x, y, z, h * step, tag(kx, xdot, "X"), tag(ky, ydot, "Y"), tag(kz, zdot, "Z"), cpu(t0));
-            xdot = kx, ydot = ky, zdot = kz;
-        }
     }
-    t_out(dp, x, y, z, h * steps, "_", "_", "_", cpu(t0));
+    t_out(dp, x, y, z, h * steps, "_", "_", "_", t0);
 }
