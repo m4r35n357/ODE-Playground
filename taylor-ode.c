@@ -32,10 +32,6 @@ void t_params (char **argv, int argc, ...) {
     va_end(model);
 }
 
-double cpu (clock_t since) {
-    return (double)(clock() - since) / CLOCKS_PER_SEC;
-}
-
 series t_jet (int n) {
     mpfr_t *s = calloc((size_t)n, sizeof (mpfr_t));
     if (!s) {
@@ -48,9 +44,9 @@ series t_jet (int n) {
     return s;
 }
 
-void t_out (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, double cpu) {
+void t_out (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, clock_t since) {
     mpfr_mul_si(_, h, step, RND);
-    mpfr_printf(f, x, y, z, _, cpu);
+    mpfr_printf(f, x, y, z, _, (double)(clock() - since) / CLOCKS_PER_SEC);
 }
 
 mpfr_t *t_horner (series s, int n, mpfr_t h) {
@@ -65,13 +61,12 @@ mpfr_t *t_horner (series s, int n, mpfr_t h) {
     return &_;
 }
 
-void tsm (int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0, void *p) {
+void tsm (int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0, void *p, clock_t t0) {
     series x = t_jet(n + 1); mpfr_set(x[0], x0, RND);
     series y = t_jet(n + 1); mpfr_set(y[0], y0, RND);
     series z = t_jet(n + 1); mpfr_set(z[0], z0, RND);
     components *vk = malloc(sizeof (components));
     mpfr_inits(vk->x, vk->y, vk->z, NULL);
-    clock_t t0 = clock();
     for (int step = 0; step < steps; step++) {
         for (int k = 0; k < n; k++) {
             ode(vk, x, y, z, p, k);
@@ -79,12 +74,12 @@ void tsm (int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0, void *p) 
             mpfr_div_si(y[k + 1], vk->y, k + 1, RND);
             mpfr_div_si(z[k + 1], vk->z, k + 1, RND);
         }
-        t_out(x[0], y[0], z[0], h, step, cpu(t0));
+        t_out(x[0], y[0], z[0], h, step, t0);
         mpfr_swap(x[0], *t_horner(x, n, h));
         mpfr_swap(y[0], *t_horner(y, n, h));
         mpfr_swap(z[0], *t_horner(z, n, h));
     }
-    t_out(x[0], y[0], z[0], h, steps, cpu(t0));
+    t_out(x[0], y[0], z[0], h, steps, t0);
 }
 
 mpfr_t *t_const (mpfr_t value, int k){

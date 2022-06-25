@@ -23,7 +23,7 @@ int main (int argc, char **argv) {
     mpfr_init_set_str(y0, argv[7], BASE, RND);
     mpfr_init_set_str(z0, argv[8], BASE, RND);
 
-    tsm(order, step_size, steps, x0, y0, z0, get_p(argc, argv, order));
+    tsm(order, step_size, steps, x0, y0, z0, get_p(argc, argv, order), clock());
 
     return 0;
 }

@@ -30,17 +30,12 @@ typedef mpfr_t *series;
 /*
  * Prints a line of data to stdout
  */
-void t_out (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, double cpu);
+void t_out (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, clock_t since);
 
 /*
  * Retrieves ODE parameters from the tail of the command (arguments 9 onwards)
  */
 void t_params (char **argv, int count, ...);
-
-/*
- * Cumulative CPU time in seconds from a clock() value
- */
-double cpu (clock_t since);
 
 /*
  * Creates a zeroed Taylor Series jet with the specified number of elements
@@ -87,7 +82,7 @@ mpfr_t *t_horner (series S, int n, mpfr_t h);
  *
  * 2. Apply Horner's method to calculate the new values x(t0 + h), which become X[0] for the next time step.
  */
-void tsm (int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0, void *P);
+void tsm (int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0, void *P, clock_t since);
 
 /*
  * For returning x, y, z velocities from the model
