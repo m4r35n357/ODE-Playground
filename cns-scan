@@ -35,4 +35,13 @@ do
     esac
     n=$((n + 1))
 done 2>/dev/null
-exit 0
+
+ /usr/bin/gnuplot -p << EOF
+set key left
+set ytics nomirror
+set y2tics
+set xlabel 'Taylor Series Order'
+set ylabel 'CNS Time, model units'
+set y2label 'CPU Time, seconds'
+plot '/tmp/$USER/data' using 1:2 axes x1y1 title 'CNS' with boxes, '' u 1:3 axes x1y2 t 'CPU' w boxes
+EOF

@@ -11,6 +11,11 @@
 #include "real.h"
 
 int main(int argc, char **argv) {
+    fprintf(stderr, "[ ");
+    for (int i = 0; i < argc; i++) {
+        fprintf(stderr, "%s ", argv[i]);
+    }
+    fprintf(stderr, "]\n");
     assert(argc >= 4);
     FILE *fileA, *fileB;
     if ((fileA = fopen(argv[1], "r")) == NULL || (fileB = fopen(argv[2], "r")) == NULL) {
@@ -18,14 +23,14 @@ int main(int argc, char **argv) {
         exit(5);
     }
     real xA, yA, zA, xB, yB, zB, tA, tB, cpuA, cpuB;
-    char bl[2];
+    char bl[1];
     for (int i = 3; i < argc; i++) {
         real threshold = strtold(argv[i], NULL);
         while(fscanf(fileA, "%Le %Le %Le %Le %s %s %s %Le", &xA, &yA, &zA, &tA, bl, bl, bl, &cpuA) != EOF &&
               fscanf(fileB, "%Le %Le %Le %Le %s %s %s %Le", &xB, &yB, &zB, &tB, bl, bl, bl, &cpuB) != EOF) {
             assert(fabsl(tB - tA) <= 1.0e-99L);
             if (sqrtl((xA - xB) * (xA - xB) + (yA - yB) * (yA - yB) + (zA - zB) * (zA - zB)) > threshold) {
-                fprintf(stdout, "%s %.1Le  %s %6.3Lf  %s %.3Lf\n", "threshold:", threshold, "t:", tB, "cpu:", cpuB);
+                printf("%s %.1Le  %s %6.3Lf  %s %.3Lf\n", "threshold:", threshold, "t:", tB, "cpu:", cpuB);
                 break;
             }
         }

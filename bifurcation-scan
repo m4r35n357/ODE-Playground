@@ -59,3 +59,8 @@ base='set terminal png size 1350,800 background rgb "grey85"; set grid back;'
 /usr/bin/gnuplot -e "set title '$*'; $base plot '${filtered}Z' lt rgb '#800000' w dots, '${filtered}z' lt rgb '#400040' w dots" \
     >${tmpdir}/Z.png &
 wait
+
+/usr/bin/display ${tmpdir}/X.png &
+/usr/bin/display ${tmpdir}/Y.png &
+/usr/bin/display ${tmpdir}/Z.png &
+wait

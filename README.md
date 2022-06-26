@@ -82,7 +82,7 @@ No formal documentation yet, see the c files for example usage.
 
 ### Requirements - Debian/Ubuntu packages
 ```
-sudo apt install bc git build-essential musl-tools pkg-config mesa-utils-extra python3-tk python3-dev libfreetype6-dev libatlas-base-dev virtualenvwrapper gnuplot-x11 lcov
+sudo apt install bc git build-essential musl-tools pkg-config mesa-utils-extra python3-tk python3-dev libfreetype6-dev libatlas-base-dev virtualenvwrapper gnuplot-x11 lcov gnuplot-x11
 ```
 Optional:
 ```
@@ -368,6 +368,13 @@ In hardware 80-bit (x86-64) or 64-bit (armhf) floating point, the maximum clean 
 
 ./cns step2 1.0 ./tsm-lorenz-static 6 28 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 ```
+If you need to re-plot after closing gnuplot, either use the "nosim" argument, or:
+```
+ gnuplot -p << EOF                                                             
+set key horizontal left
+plot '/tmp/$USER/dataA' using 4:1 t 'xA' with lines lc black, '' u 4:2 t 'yA' w l lc black, '' u 4:3 t 'zA' w l lc black, '/tmp/$USER/dataB' using 4:1 t 'xB' with lines lc 'red', '' u 4:2 t 'yB' w l lc 'green', '' u 4:3 t 'zB' w l lc 'blue'
+EOF
+```
 
 #### CNS Duration Scanning (TSM only)
 
@@ -395,7 +402,7 @@ set y2tics
 set xlabel 'Taylor Series Order'
 set ylabel 'CNS Time, model units'
 set y2label 'CPU Time, seconds'
-plot '/tmp/$USER/data' using 1:2 axes x1y1 title 'CNS' with boxes, '' u 1:3 axes x1y2 t 'CPU' w b
+plot '/tmp/$USER/data' using 1:2 axes x1y1 title 'CNS' with boxes, '' u 1:3 axes x1y2 t 'CPU' w boxes
 EOF
 ```
 

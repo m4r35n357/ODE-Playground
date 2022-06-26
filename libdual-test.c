@@ -55,6 +55,11 @@ static void compare (char* name, dual a, dual b) {
 int main (int argc, char **argv) {
     real PI_2 = 0.5L * MY_PI;
 
+    fprintf(stderr, "[ ");
+    for (int i = 0; i < argc; i++) {
+        fprintf(stderr, "%s ", argv[i]);
+    }
+    fprintf(stderr, "]\n");
     assert(argc == 3 || argc == 4);
     dual x = d_var(strtold(argv[1], NULL));
     tolerance = strtold(argv[2], NULL);
