@@ -9,7 +9,7 @@
     --field="x0" --field="y0" --field="z0" \
     --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
     -- './tsm-lorenz-static!./tsm-lorenz-dbg!./tsm-lorenz!./tsm-lorenz.py' \
-    '6!3..64!3' '8!4..128!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+    '6!0..36!3' '8!4..128!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
     '-15.8' '-18.48' '35.64' \
     '10' '28' '8' '3') >/tmp/$USER/data
  *
@@ -19,7 +19,7 @@
     --field="x0" --field="y0" --field="z0" \
     --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
     -- 'step2!nosim' '1.0' './tsm-lorenz-static!./tsm-lorenz-dbg!./tsm-lorenz!./tsm-lorenz.py' \
-    '6!3..64!3' '8!4..128!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+    '6!0..36!3' '8!4..128!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
     '-15.8' '-18.48' '35.64' \
     '10' '28' '8' '3')
  *
@@ -29,7 +29,7 @@
     --field="x0" --field="y0" --field="z0" \
     --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
     -- '32!2..64!1' '1.0' './tsm-lorenz-static!./tsm-lorenz-dbg!./tsm-lorenz!./tsm-lorenz.py' \
-    '6!3..64!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+    '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
     '-15.8' '-18.48' '35.64' \
     '10' '28' '8' '3') | tee /tmp/$USER/data
  *
@@ -39,7 +39,7 @@
     --field="x0" --field="y0" --field="z0" \
     --field="sigma" --field="rho:RO" --field="beta (numerator)" --field="beta (denominator)" \
     -- '0.0' '50.0' '10' './tsm-lorenz-static!./tsm-lorenz-dbg!./tsm-lorenz' \
-    '6!3..64!3' '4!4..128!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+    '6!0..36!3' '4!4..128!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
     '-15.8' '-18.48' '35.64' \
     '10' '$p' '8' '3')
  *
