@@ -90,6 +90,11 @@ static void compare (char* name, series a, series b) {
 int main (int argc, char **argv) {
     mpfr_t PI_2;
 
+    fprintf(stderr, "[ ");
+	for (int i = 0; i < argc; i++) {
+        fprintf(stderr, "%s ", argv[i]);
+    }
+    fprintf(stderr, "]\n");
     assert(argc == 5 || argc == 6);
     mpfr_set_default_prec((int)strtol(argv[1], NULL, BASE));
     n = (int)strtol(argv[2], NULL, BASE);
