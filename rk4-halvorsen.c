@@ -8,7 +8,7 @@
     --field="Display Places":NUM --field="Plot Interval":NUM --field="Step Size" --field="Steps" \
     --field="x0" --field="y0" --field="z0" \
     --field="a" --field="b" \
-    -- './rk4-halvorsen-static!./rk4-halvorsen-dbg!./rk4-halvorsen!./rk4-halvorsen.py' \
+    -- './rk4-halvorsen-static!./rk4-halvorsen-dbg!./rk4-halvorsen' \
     '6!0..36!3' '1!1..1000!1' '.01' '10000' \
     '1.0' '0.0' '0.0' \
     '1.4' '4') >/tmp/$USER/data
@@ -18,7 +18,7 @@
     --field="Display Places":NUM --field="Plot Interval":NUM --field="Step Size" --field="Steps" \
     --field="x0" --field="y0" --field="z0" \
     --field="a" --field="b" \
-    -- 'step2!nosim' '1.0' './rk4-halvorsen-static!./rk4-halvorsen-dbg!./rk4-halvorsen!./rk4-halvorsen.py' \
+    -- 'step2!nosim' '1.0' './rk4-halvorsen-static!./rk4-halvorsen-dbg!./rk4-halvorsen' \
     '6!0..36!3' '1!1..1000!1' '.01' '10000' \
     '1.0' '0.0' '0.0' \
     '1.4' '4')

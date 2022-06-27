@@ -8,7 +8,7 @@
     --field="Display Places":NUM --field="Plot Interval":NUM --field="Step Size" --field="Steps" \
     --field="x0" --field="y0" --field="z0" \
     --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
-    -- './rk4-lorenz-static!./rk4-lorenz-dbg!./rk4-lorenz!./rk4-lorenz.py' \
+    -- './rk4-lorenz-static!./rk4-lorenz-dbg!./rk4-lorenz' \
     '6!0..36!3' '1!1..1000!1' '.01' '10000' \
     '-15.8' '-18.48' '35.64' \
     '10' '28' '8' '3') >/tmp/$USER/data
@@ -18,7 +18,7 @@
     --field="Display Places":NUM --field="Plot Interval":NUM --field="Step Size" --field="Steps" \
     --field="x0" --field="y0" --field="z0" \
     --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
-    -- 'step2!nosim' '1.0' './rk4-lorenz-static!./rk4-lorenz-dbg!./rk4-lorenz!./rk4-lorenz.py' \
+    -- 'step2!nosim' '1.0' './rk4-lorenz-static!./rk4-lorenz-dbg!./rk4-lorenz' \
     '6!0..36!3' '1!1..1000!1' '.01' '10000' \
     '-15.8' '-18.48' '35.64' \
     '10' '28' '8' '3')

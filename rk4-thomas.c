@@ -8,7 +8,7 @@
     --field="Display Places":NUM --field="Plot Interval":NUM --field="Step Size" --field="Steps" \
     --field="x0" --field="y0" --field="z0" \
     --field="b" \
-    -- './rk4-thomas-static!./rk4-thomas-dbg!./rk4-thomas!./rk4-thomas.py' \
+    -- './rk4-thomas-static!./rk4-thomas-dbg!./rk4-thomas' \
     '6!0..36!3' '1!1..1000!1' '.1' '30000' \
     '1.0' '0.0' '0.0' \
     '0.185') >/tmp/$USER/data
@@ -18,7 +18,7 @@
     --field="Display Places":NUM --field="Plot Interval":NUM --field="Step Size" --field="Steps" \
     --field="x0" --field="y0" --field="z0" \
     --field="b" \
-    -- 'step2!nosim' '1.0' './rk4-thomas-static!./rk4-thomas-dbg!./rk4-thomas!./rk4-thomas.py' \
+    -- 'step2!nosim' '1.0' './rk4-thomas-static!./rk4-thomas-dbg!./rk4-thomas' \
     '6!0..36!3' '8!4..128!1' '.1' '30000' \
     '1.0' '0.0' '0.0' \
     '0.185')

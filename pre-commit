@@ -1,13 +1,5 @@
 #!/bin/sh
 
-echo "Running Python tests . . . "
-if ! pytest ad_test.py solver_test.py -q
-then
-    echo "Python tests failed!"
-    exit 1
-fi
-echo OK
-
 echo -n "Running Clang build . . . "
 ./clean
 ./build clang >/dev/null
