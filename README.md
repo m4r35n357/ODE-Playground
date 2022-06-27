@@ -3,6 +3,12 @@
 ### (June 2022)
 Since last update:
 
+branch | contents
+----------|-----------
+master | MPFR/c99 code for TSM
+pure_c | Pure c99 code for TSM & RK4, plus symplectic integration and dual numbers for Hamiltonians
+pure_c_python | all the above, plus Python TSM/RK4, plotters, and interactive solvers/plotters for IPython
+
 The arc/ar-functions have been added (and fully tested).
 
 Documentation has been slightly improved.
@@ -39,13 +45,13 @@ This branch is pretty much "finished", or "abandoned", current work (double prec
 
 ### Background
 
-This project is mainly a collection of programs in c and Python for evolving systems of ODEs using the Taylor Series Method (TSM), a rather old but poorly acknowledged technique based on forward mode Automatic Differentiation (AD).
+This project is mainly a collection of programs in c and Python (in the pure_c_python branch only!) for evolving systems of ODEs using the Taylor Series Method (TSM), a rather old but poorly acknowledged technique based on forward mode Automatic Differentiation (AD).
 TSM is a procedure for integrating ODEs using Taylor Series of arbitrary order, calculated to arbitrary precision (the former requires the latter in practice), using recurrence relations between time derivatives of increasing order.
 It is therefore (or should be, if it were better known!) a serious competitor to the fourth-order RK4 for the vast majority of cases.
 
 The code itself is tiny (as are the dynamic executables) and has been partly developed on, and is suitable for running on, a Raspberry Pi 4 computer.
 The c code supports arbitrary precision (using the GNU MPFR library: https://www.mpfr.org), and is most suited to solving systems of ODEs to high accuracy.
-The Python code uses float precision, and is most suited to interactive analysis and plotting of functions and their derivatives.
+The Python code (now in the pure_c_python branch only) uses float precision, and is most suited to interactive analysis and plotting of functions and their derivatives.
 
 For the uninitiated, here is a review of the TSM itself and its history of repeated "discovery" and re-branding.
 https://arxiv.org/abs/1111.7149
@@ -58,13 +64,13 @@ These programs are the result.
 
 Finally, more general resources on automatic differentiation can be found at the following portal: http://www.autodiff.org/ (see specifically the "Applications" and "Tools" sections).
 
-## Taylor Series ODE Solvers, c/MPFR in master branch, pure c and Python in pure_c branch)
+## Taylor Series ODE Solvers, c/MPFR in master branch, pure c and Python in pure_c_python branch)
 
 My primary aim was to be able to solve coupled nonlinear equations and investigate chaotic systems, without relying on "black-box" ODE solvers.
 The resulting c code takes the form of a small (<200 loc) arbitrary precision Taylor Series "library", and the model-specific ODE simulators are tiny client programs to this, typically 25-35 loc each.
 The header file taylor-ode.h contains a terse but complete description of the Taylor Series Method as implemented here, together with derivations of the recurrences that enable analysis of complex composed functions.
 
-I have also duplicated the ODE solving functionality in Python 3 (at float precision), see the pure_c branch, but with extra testing and more advanced function analysis features (enabled by operator overloading and the Python REPL).
+I have also duplicated the ODE solving functionality in Python 3 (at float precision), see the pure_c_python branch, but with extra testing and more advanced function analysis features (enabled by operator overloading and the Python REPL).
 
 The recurrence rules (the "t-functions" in c and Python) are the key to calculating high order derivatives accurately, without needing finite differences.
 They generate "jets" of Taylor Series coefficients iteratively, term by term, using previously calculated lower order values.
@@ -97,26 +103,12 @@ The differences can be plotted for easy visual comparison.
 
 ### Requirements - Debian/Ubuntu packages
 ```
-sudo apt install bc git build-essential pkg-config mesa-utils-extra python3-tk python3-dev libmpc-dev libfreetype6-dev libatlas-base-dev virtualenvwrapper gnuplot-x11 lcov
+sudo apt install bc git build-essential libmpc-dev libfreetype6-dev gnuplot-x11 lcov
 ```
 Download:
 ```
 git clone https://github.com/m4r35n357/ODE-Playground
 cd ODE-Playground
-```
-
-#### Python 3 Packages (for plotting), please use a virtual environment!
-There are some plotting and graphing utilities written in Python 3, (the data itself can come from either c or Python executables, which share output "formats").
-In the example invocations given below, communication between the executable and plotting script uses a Unix pipe.
-The dependencies are:
-* matplotlib for 2D graphs and progressive graphs
-* pi3d for 3D progressive trajectories
-* gnuplot for static 3D trajectories
-
-This is a typical Python virtual environment setup:
-```
-mkvirtualenv --python /usr/bin/python3 taylor
-pip install matplotlib pillow pi3d pytest pytest-cov mutmut ipython
 ```
 
 #### c Build (GCC by default, Clang optional)
@@ -220,14 +212,6 @@ Parameter | Meaning
 6,7,8 | initial conditions, x0,y0,z0
 9+ | Model parameters
 
-##### Run & plot (3D plot using pi3d):
-```
-./tsm-thomas-dbg 6 113 10 0.1 30000 1 0 0 .185 | ./plot3d.py
-```
-##### Run & plot (animated matplotlib graph):
-```
-./tsm-lorenz-dbg 6 113 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
-```
 ##### Run & plot (3D gnuplot graph):
 ```
 ./tsm-thomas-dbg 6 113 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
@@ -288,7 +272,7 @@ the CPU requirement can also be seen as:
 O(required precision^4) or O(order^4) or O(clean simulation time^4)
 ```
 
-##### Make a CNS plot (matplotlib diff graph):
+##### Make a CNS plot:
 
 #### Example output - quadruple precision
 ```
@@ -350,8 +334,13 @@ real 4052.25
 user 6059.11
 sys 2.41
 ```
-
-(matplotlib plot not shown!)
+If you need to re-plot after closing gnuplot, either use the "nosim" argument, or:
+```
+ gnuplot -p << EOF                                                             
+set key horizontal left
+plot '/tmp/$USER/dataA' using 4:1 t 'xA' with lines lc black, '' u 4:2 t 'yA' w l lc black, '' u 4:3 t 'zA' w l lc black, '/tmp/$USER/dataB' using 4:1 t 'xB' with lines, '' u 4:2 t 'yB' w l, '' u 4:3 t 'zB' w l
+EOF
+```
 
 #### CNS Duration Scanning
 
@@ -392,24 +381,3 @@ set y2label 'CPU Time, seconds'
 plot '/tmp/$USER/data' using 1:2 axes x1y1 title 'CNS' with boxes, '/tmp/$USER/data' using 1:3 axes x1y2 title 'CPU' with boxes
 EOF
 ```
-
-#### Sensitivity to Initial Conditions (3D plot using pi3d):
-
-Runs a simulation together with six additional ones (+- deviations in X, Y and Z axes) and plots directly to Pi3D.
-
-**ic** (shell script)
-
-Parameter | Meaning
-----------|-----------
-1 | Initial separation between "original" trajectory and the extra ones
-2 | Precision in decimal places ("scale" variable in bc)
-3+ | ODE call
-
-The simulation is run seven times in parallel processes, the original along with each perturbed x, y, z.
-```
-./ic .001 32 ./tsm-thomas-static 6 53 10 0.1 30000 1 0 0 .185
-```
-```
-./ic .001 32 ./tsm-lorenz-dbg 6 53 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 2>/dev/null
-```
-(3D plots not shown!)
