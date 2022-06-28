@@ -15,7 +15,7 @@ Several cut & paste examples are provided in comments at the top of the followin
 * h-*
 
 A blank initial character is provided to keep these long lines off your history (bash).
-These examples allow simple selection of static & debug executables, and Python versions (where valid).
+These examples allow simple selection of static & debug executables.
 
 There are also yad dialogues for running tests and making executables using zig-build:
 * libad-test.c
@@ -26,8 +26,8 @@ There are also yad dialogues for running tests and making executables using zig-
 
 No planned new features, and no known bugs ;)
 
-All programs are written in pure C99 or Python, apart from the plotting utilities.
-Sources and Executables are tiny (if MUSL is used); the default build is against MUSL libc.
+All programs are written in pure C99.
+Sources and Executables are tiny (if MUSL is used); the default build is against glibc.
 
 All c floating point operations are executed in _long double_ precision.
 This gives a choice of precision and performance on different platforms.
@@ -38,10 +38,6 @@ ix86 | 80 bit hardware float
 x86-64 | 80 bit hardware float
 armhf | 64 bit hardware float
 aarch64 | 128 bit _software_ float
-
-The Python code uses hardware acceleration on all platforms; 80 bit on Intel, 64 bit on ARM.
-In general Python is much too slow for performing actual simulations; it value is mostly in the interactive plotting features, and nonlinear equation solving (using Newton's method or bisection).
-It is also most convenient for demonstrating detailed operation of the TSM method in a debugger.
 
 ### ODE analysis using fourth order Runge-Kutta (RK4) - C only
 
@@ -63,12 +59,6 @@ Investigate the validity of chaotic solutions against integrator order and step 
 
 Plot bifurcation diagrams, to find "interesting" parameter values to study
 
-### Taylor Calculator - Interactive Function Analysis in Python console
-
-For learning about automatic differentiation using Dual Numbers in IPython.
-Also for plotting functions together with their derivatives.
-See the examples at the bottom of this document.
-
 ### Hamiltonian analysis with Symplectic Integrators, using Dual Numbers for Automatic Differentiation
 
 2nd to 10th order integrators, with visualization of the time stepping structure
@@ -89,36 +79,10 @@ Optional:
 sudo apt install yad ffmpeg
 ```
 
-#### Python 3 Packages (for plotting), please use a virtual environment!
-There are some plotting and graphing utilities written in Python 3, (the data itself can come from either c or Python executables, which share output "formats").
-In the example invocations given below, communication between the executable and plotting script uses a Unix pipe.
-The dependencies are:
-* matplotlib for 2D graphs and progressive graphs
-* pi3d for 3D progressive trajectories
-* gnuplot for static 3D trajectories
-
-This is a typical Python virtual environment setup:
-```
-mkvirtualenv --python /usr/bin/python3 taylor
-pip install matplotlib pillow pi3d pytest pytest-cov mutmut ipython
-```
-
-#### Running Python Tests
-Testing Requirements
-* pytest
-* pytest_cov
-* mutmut (optional)
-
-Most of the code is covered several times over.
-Tests have been mutation tested with mutmut.
-```
-pytest ad_test.py solver_test.py -v
-```
-
-#### c Build (MUSL with GCC by default, glibc with GCC or Clang optional)
+#### c Build (glibc by default, MUSL or Clang optional)
 ```
 ./clean
-./build [gcc|clang]
+./build [musl|clang]
 ```
 There should be NO errors or warnings.  [UPDATE: kerr-image.c shows warnings on arm64; it is 3rd party code]
 
@@ -189,7 +153,7 @@ Total: 40, PASSED 40
 for i in .5 0 -.5; do ./libad-test-dbg 10 $i 1e-15; ./libdual-test-dbg $i 1e-15; done
 ```
 #### Code coverage
-Creates web page summaries for both c and Python
+Creates a web page summary.
 ```
 ./coverage
 ```
@@ -312,17 +276,6 @@ set grid back
 plot '/tmp/$USER/bifurcationX' lt rgb 'dark-blue' with dots, '/tmp/$USER/bifurcationx' lt rgb 'dark-green' w d
 EOF
 ```
-If you are curious about Python performance, you can try this:
-```
-time -p ./bifurcation-scan .1 .225 10 ./tsm-thomas.py 6 4 0.1 10000 1 0 0 '$p' >/dev/null                                        
-    ...
-_harmless "missing maxima" gnuplot data errors skipped_
-    ...
-real 1923.69
-user 1915.76
-sys 87.86
-```
-This is why the Python implementation does not identify turning points!
 
 #### Clean Numerical Simulation:
 
@@ -409,159 +362,6 @@ EOF
 #### Sensitivity to Initial Conditions (3D plot using pi3d):
 
 Runs a simulation together with six additional ones (+- deviations in X, Y and Z axes) and plots directly to Pi3D.
-
-**ic** (shell script)
-
-Parameter | Meaning
-----------|-----------
-1 | Initial separation between "original" trajectory and the extra ones
-2 | Precision in decimal places ("scale" variable in bc)
-3+ | ODE call
-
-The simulation is run seven times in parallel processes, the original along with each perturbed x, y, z.
-```
-./ic .001 32 ./tsm-thomas-static 6 10 0.1 30000 1 0 0 .185
-```
-```
-./ic .001 32 ./tsm-lorenz-dbg 6 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 2>/dev/null
-```
-(3D plots not shown!)
-
-### Taylor Series & Dual Numbers Calculator - Interactive Function Analysis with Python
-This use case involves calling the Dual and Series methods and operators from ad.py, together with the functions from plotters.py, from a Python interpreter.
-This is how I like to set things up (pip installed ipython recommended!):
-```
-$ echo '
-from math import *
-from ad import *
-from plotters import *
-' > ipython.py
-$ ipython3 -i ipython.py
-```
-
-### Higher level function analysis
-Plotting function and derivatives, together with root and turning point analysis.
-Scanning and plotting range is -8.0 to 8.0 by default.
-Roots are found via zeros of f[0], turning points by zeros of f[1], and inflections via zeros of f[2].
-scan_d() finds roots only.
-mplot_d() plots the function and its first derivative.
-scan_s() finds roots, turning points and inflections.
-mplot_s() plots the function and its first 12 derivatives by default; 
-
-Partly to verify my own implementation of the Taylor recurrence rules, I have added a demonstration of using series arithmetic to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
-The solver demo can be used to find roots (and also extrema and inflection points by "extending" Newton to higher derivatives) in single variable nonlinear equations.
-Of course it is more generally useful for finding inverse values (where real solutions exist) of complicated functions, not just their roots.
-
-The "higher-level" ad_functions (or the Series class in Python) manipulate entire  Taylor series "jets" at once, so are only useful for univariate functions.
-In Python there is an overloaded operator "~" which extracts the actual derivative values from the taylor series coefficents, as well as additional operators for (negation and **).
-The \*\* (power) operator caters for f(x)^a, a^f(x) and f1(x)^f2(x), subject to domain limitations on f(x).
-There are also functions for (matching the lower-level t_functions):
-* abs
-* sqr
-* sqrt
-* exp
-* sin(h)_cos(h)
-* tan(h)_sec(h)2
-* pwr (f(x)^a, where a is a scalar)
-* ln
-* asin(h), acos(h), atan(h)
-
-Using these "higher level" functions, Newton's method is implemented trivially, but I have also provided an implementation of the bisection method for comparison.
-
-The plotters.py script enables the analysis of a "model" function's derivatives along with the value itself, across a range of the input variable.
-That file contains a selection of example invocations in the comments.
-Optionally it will analyse that range for roots, extrema and inflection points using the lower order derivatives.
-Here is a seventh-degree polynomial model by way of example, and a trigonometric identity as a check of the sin and sqr functions:
-```python
-def septic(a):
-    return (a + 7) * (5 + a) * (a + 2) * a * (a - 1) * (a - 3) * (a - 6)
-
-def trig(a):
-    return (3 * a).sin - 3 * a.sin + 4 * a.sin**3
-```
-Operators on or between jets and numbers are implemented by overloading, and the functions are implemented as _properties_ of a jet.
-These two approaches produce a fairly readable format for coding the models.
-The value parameter allows simple calculation of function inverse values, as well as roots.
-
-```
-$ ipython3 -i ipython.py 
-Python 3.9.2 (default, Feb 28 2021, 17:03:44) 
-Type 'copyright', 'credits' or 'license' for more information
-IPython 7.20.0 -- An enhanced Interactive Python. Type '?' for help.
-ad module loaded
-plotters module loaded
-
-In [1]: f = lambda a: (a.exp + (a.sqr - 4.0).exp).ln
-
-In [2]: scan_s(f)
-NT  x: -1.962e+00  δx: +4.123e-16  f: +1.332e-15  \ ROOT___ 4
-NT  x: -1.312e+00  δx: -0.000e+00  f: +0.000e+00  / MIN_MAX 4
-NT  x: -1.849e-02  δx: -2.714e-13  f: +2.662e-13  / ROOT___ 3
-
-In [3]: mplot_s(f)
-```
-(matplotlib plot not shown!)
-
-### Square root of two
-Here is a quick example of using root finding to invert a function.
-The problem is set up as: [function] - [target value] = 0.
-There is a choice of analysis (root finding) method:
-You need to provide an initial estimate for the Newton solver, or an initial bracket for Bisection.
-```
-$ ipython3 -i ipython.py 
-Python 3.9.2 (default, Feb 28 2021, 17:03:44) 
-Type 'copyright', 'credits' or 'license' for more information
-IPython 7.20.0 -- An enhanced Interactive Python. Type '?' for help.
-ad module loaded
-plotters module loaded
-
-In [1]: newton_d(lambda x: x * x - 2.0, x0=1.0)
-Out[1]: Result(method='NT', x=1.414213562373095, f=4.440892098500626e-16, δx=-1.570092458683775e-16, count=6, sense='_', mode='ROOT___')
-
-In [2]: timeit(newton_d(lambda x: x * x - 2.0, x0=1.0))
-19.2 µs ± 118 ns per loop (mean ± std. dev. of 7 runs, 100000 loops each)
-
-In [3]: bisect_d(lambda x: x * x - 2.0, xa=1.0, xb=2.0)
-Out[3]: Result(method='BI', x=1.414213562372879, f=-6.108447081487611e-13, δx=4.547473508864641e-13, count=41, sense='_', mode='ROOT___')
-
-In [4]: timeit(bisect_d(lambda x: x * x - 2.0, xa=1.0, xb=2.0))
-140 µs ± 691 ns per loop (mean ± std. dev. of 7 runs, 10000 loops each)
-```
-
-### Automatic Differentiation
-Here we calculate the value of a simple cubic in x(5), _all_ its derivatives wrt x(6), followed by the sensitivities to each parameter a(7), b(8), c(9).
-Note that the function value is the same in each case, as you would expect!
-```
-$ ipython3 -i ipython.py 
-Python 3.9.2 (default, Feb 28 2021, 17:03:44) 
-Type 'copyright', 'credits' or 'license' for more information
-IPython 7.20.0 -- An enhanced Interactive Python. Type '?' for help.
-ad module loaded
-plotters module loaded
-
-In [1]: a = Series.get(5, 3.0)
-
-In [2]: b = Series.get(5, 5.0)
-
-In [3]: c = Series.get(5, 7.0)
-
-In [4]: x = Series.get(5, 2.0)
-
-In [5]: print(a * x**3 - b * x**2 + c * x - 5)
-+1.300e+01 +0.000e+00 +0.000e+00 +0.000e+00 +0.000e+00 
-
-In [6]: print(a * x.var**3 - b * x.var**2 + c * x.var - 5)
-+1.300e+01 +2.300e+01 +1.300e+01 +3.000e+00 +0.000e+00 
-
-In [7]: print(a.var * x**3 - b * x**2 + c * x - 5)
-+1.300e+01 +8.000e+00 +0.000e+00 +0.000e+00 +0.000e+00 
-
-In [8]: print(a * x**3 - b.var * x**2 + c * x - 5)
-+1.300e+01 -4.000e+00 +0.000e+00 +0.000e+00 +0.000e+00 
-
-In [9]: print(a * x**3 - b * x**2 + c.var * x - 5)
-+1.300e+01 +2.000e+00 +0.000e+00 +0.000e+00 +0.000e+00 
-```
 
 ##Finally
 For more background on the Taylor Series Method for solving ODEs, see the old README:
