@@ -265,8 +265,9 @@ NOTE: the CPU time required for a clean simulation is of order:
 O(required precision * order^2 * clean simulation time)
 ```
 Since (empirically, for these Lorenz parameters and timestep)
-1. clean simulation time is approximately proportional to the required precision
-2. clean simulation time is approximately proportional to the Taylor series order
+* clean simulation time is approximately proportional to the required precision
+* clean simulation time is approximately proportional to the Taylor series order
+
 the CPU requirement can also be seen as:
 ```
 O(required precision^4) or O(order^4) or O(clean simulation time^4)
