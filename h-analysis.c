@@ -27,16 +27,14 @@ EOF
 
 typedef struct { real c; real d; } parameters;
 
-void *get_p (int argc, char **argv, int va_begin) {
-    (void)argc; (void)argv; (void)va_begin;
+void *get_p (int argc, char **argv, int va_begin) { (void)argc; (void)argv; (void)va_begin;
     parameters *p = malloc(sizeof (parameters));
     p->c = 0.0L;
     p->d = 0.0L;
     return p;
 }
 
-static void plot (int dp, void *params, real t) {
-    (void)dp; (void)t;
+static void plot (int dp, void *params, real t) { (void)dp; (void)t;
     parameters *p = (parameters *)params;
     printf("%+.3Le %+.3Le\n", p->c, p->d);
 }

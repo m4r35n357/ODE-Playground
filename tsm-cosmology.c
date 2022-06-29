@@ -12,17 +12,15 @@
 
 typedef struct { real w; } parameters;
 
-void *get_p (int argc, char **argv, int n) {
+void *get_p (int argc, char **argv, int n) { (void)n;
     assert(argc == 11);
-    (void)n;
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->w);
     return p;
 }
 
-components ode (series x, series y, series z, void *params, int k) {
+components ode (series x, series y, series z, void *params, int k) { (void)z;
     parameters *p = (parameters *)params;
-    (void)z;
     return (components) {  // .x maps to rho, .y to theta
         .x = - (1.0L + p->w) * t_mul(x, y, k),
         .y = - t_sqr(y, k) / 3.0L - 4.0L * MY_PI * (1.0L + 3.0L * p->w) * x[k]

@@ -12,17 +12,15 @@
 
 typedef struct { real a, b, c, d; } parameters;
 
-void *get_p (int argc, char **argv, int n) {
+void *get_p (int argc, char **argv, int n) { (void)n;
     assert(argc == 12);
-    (void)n;
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->a, &p->b, &p->c, &p->d);
     return p;
 }
 
-components ode (series x, series y, series z, void *params, int k) {
+components ode (series x, series y, series z, void *params, int k) { (void)z;
     parameters *p = (parameters *)params;
-    (void)z;
     real xy = t_mul(x, y, k);
     return (components) {
         .x = p->a * x[k] - p->c * xy,

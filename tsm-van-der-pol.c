@@ -20,9 +20,8 @@ void *get_p (int argc, char **argv, int n) {
     return p;
 }
 
-components ode (series x, series y, series z, void *params, int k) {
+components ode (series x, series y, series z, void *params, int k) { (void)z;
     parameters *p = (parameters *)params;
-    (void)z;
     p->x2[k] = t_sqr(x, k);
     return (components) {
         .x = y[k],

@@ -131,8 +131,7 @@ static void plot_view (int dp, void *params, real t) {
            dp, p->p_r, dp, - sinl(p->q_theta) * p->p_theta, dp, p->p_t, dp, p->p_phi);
 }
 
-static void plot_raw (int dp, void *params, real time) {
-    (void)dp;
+static void plot_raw (int dp, void *params, real time) { (void)dp;
     parameters *p = (parameters *)params;
     printf("%.6Le  %+La %+La %+La %+La  %+La %+La %+La %+La\n",
            time, p->q_t, p->q_r, p->q_theta, p->q_phi, p->p_t, p->p_r, p->p_theta, p->p_phi);

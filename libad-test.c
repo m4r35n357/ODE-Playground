@@ -32,8 +32,7 @@ static const real PLUS1 = 1.0L, ZERO = 0.0L, MINUS1 = -1.0L;
 
 typedef struct { real a, b, c; } parameters;
 
-void *get_p (int argc, char **argv, int order) {
-    (void)argc; (void)argv; (void)order;
+void *get_p (int argc, char **argv, int order) { (void)argc; (void)argv; (void)order;
     parameters *p = malloc(sizeof (parameters));
     p->a = PLUS1;
     p->b = ZERO;

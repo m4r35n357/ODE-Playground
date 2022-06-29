@@ -12,9 +12,8 @@
 
 typedef struct { real s, v; } parameters;
 
-void *get_p (int argc, char **argv, int n) {
+void *get_p (int argc, char **argv, int n) { (void)n;
     assert(argc == 10);
-    (void)n;
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->s, &p->v);
     return p;
