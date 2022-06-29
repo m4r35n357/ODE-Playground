@@ -39,9 +39,7 @@ x86-64 | 80 bit hardware float
 armhf | 64 bit hardware float
 aarch64 | 128 bit _software_ float
 
-### ODE analysis using fourth order Runge-Kutta (RK4) - C only
-
-Plot 3D trajectories using Pi3D, including multi-body
+### ODE analysis using fourth order Runge-Kutta (RK4)
 
 Minimal selection of clients (models) included
 
@@ -50,8 +48,6 @@ Investigate the validity of chaotic solutions against step size, and compare to 
 Plot bifurcation diagrams, to find "interesting" parameter values to study
 
 ### ODE analysis using arbitrary-order Taylor Series Method (TSM)
-
-Plot 3D trajectories using Pi3D, including multi-body
 
 Good selection of clients (models) included
 
@@ -79,7 +75,7 @@ Optional:
 sudo apt install yad ffmpeg
 ```
 
-#### c Build (glibc by default, MUSL or Clang optional)
+#### c Build (GCC by default, MUSL & Clang optional)
 ```
 ./clean
 ./build [musl|clang]
@@ -205,14 +201,6 @@ Parameter | Meaning
 5,6,7 | initial conditions, x0,y0,z0
 8+ | Model parameters
 
-##### Run & plot (3D plot using pi3d):
-```
-./tsm-thomas-dbg 6 10 0.1 30000 1 0 0 .185 | ./plot3d.py
-```
-##### Run & plot (animated matplotlib graph):
-```
-./tsm-lorenz-dbg 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
-```
 ##### Run & plot (3D gnuplot graph):
 ```
 ./tsm-thomas-dbg 6 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
@@ -297,7 +285,19 @@ CNS function | Meaning
 step2 | The step size is halved (this is  now the _only_ "better" integrator!)
 nosim | User-defined comparison between /tmp/$USER/dataA and /tmp/$USER/dataB
 
-##### Make a CNS plot (matplotlib diff graph):
+NOTE: the CPU time required for a clean simulation is of order:
+```
+O(required precision * order^2 * clean simulation time)
+```
+Since (empirically, for these Lorenz parameters and timestep)
+* clean simulation time is approximately proportional to the required precision
+* clean simulation time is approximately proportional to the Taylor series order
+
+the CPU requirement can also be seen as:
+```
+O(required precision^4) or O(order^4) or O(clean simulation time^4)
+```
+##### Make a CNS plot:
 
 Here are some comparisons bewtween TSM and RK4 for roughly similar clean simulation times in each case.
 Note that RK4 quickly becomes impractical because of excessive CPU usage, whereas TSM can stay clean up to even higher time values.
@@ -359,11 +359,6 @@ plot '/tmp/$USER/data' using 1:2 axes x1y1 title 'CNS' with boxes, '' u 1:3 axes
 EOF
 ```
 
-#### Sensitivity to Initial Conditions (3D plot using pi3d):
-
-Runs a simulation together with six additional ones (+- deviations in X, Y and Z axes) and plots directly to Pi3D.
-
 ##Finally
 For more background on the Taylor Series Method for solving ODEs, see the old README:
 https://github.com/m4r35n357/ODE-Playground/blob/master/README.md
-and the taylor-ode.h in that branch.
