@@ -27,7 +27,7 @@ There are also yad dialogues for running tests and making executables using zig-
 No planned new features, and no known bugs ;)
 
 All programs are written in pure C99 or Python, apart from the plotting utilities.
-Sources and Executables are tiny (if MUSL is used); the default build is against MUSL libc.
+Sources and Executables are tiny (if MUSL is used); the default build is against glibc.
 
 All c floating point operations are executed in _long double_ precision.
 This gives a choice of precision and performance on different platforms.
@@ -115,10 +115,10 @@ Tests have been mutation tested with mutmut.
 pytest ad_test.py solver_test.py -v
 ```
 
-#### c Build (MUSL with GCC by default, glibc with GCC or Clang optional)
+#### c Build (glibc by default, MUSL or Clang optional)
 ```
 ./clean
-./build [gcc|clang]
+./build [musl|clang]
 ```
 There should be NO errors or warnings.  [UPDATE: kerr-image.c shows warnings on arm64; it is 3rd party code]
 
