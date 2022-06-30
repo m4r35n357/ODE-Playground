@@ -325,7 +325,7 @@ If you need to re-plot after closing gnuplot, either use the "nosim" argument, o
 ```
  gnuplot -p << EOF                                                             
 set key horizontal left
-plot '/tmp/$USER/dataA' using 4:1 t 'xA' with lines lc black, '' u 4:2 t 'yA' w l lc black, '' u 4:3 t 'zA' w l lc black, '/tmp/$USER/dataB' using 4:1 t 'xB' with lines lc 'red', '' u 4:2 t 'yB' w l lc 'green', '' u 4:3 t 'zB' w l lc 'blue'
+plot '/tmp/$USER/dataA' using 4:1 t 'x' with lines lc black, '' u 4:2 t 'y' w l lc black, '' u 4:3 t 'z' w l lc black, '/tmp/$USER/dataB' using 4:1 t 'x' with lines lc 'forest-green', '' u 4:2 t 'y' w l lc 'dark-yellow', '' u 4:3 t 'z' w l lc 'dark-turquoise'
 EOF
 ```
 
