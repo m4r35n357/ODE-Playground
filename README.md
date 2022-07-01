@@ -68,11 +68,16 @@ No formal documentation yet, see the c files for example usage.
 
 ### Requirements - Debian/Ubuntu packages
 ```
-sudo apt install bc git build-essential musl-tools pkg-config mesa-utils-extra python3-tk python3-dev libfreetype6-dev libatlas-base-dev virtualenvwrapper gnuplot-x11 lcov gnuplot-x11
+sudo apt install bc git build-essential musl-tools libfreetype6-dev gnuplot-x11 lcov
 ```
 Optional:
 ```
 sudo apt install yad ffmpeg
+```
+Download:
+```
+git clone https://github.com/m4r35n357/ODE-Playground/pure_c
+cd ODE-Playground
 ```
 
 #### c Build (GCC by default, MUSL & Clang optional)
@@ -216,6 +221,7 @@ EOF
 ##### Run & plot (2D gnuplot graph):
 ```
 ./tsm-lorenz-dbg 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
+
  gnuplot -p << EOF
 set terminal wxt size 1200,900
 plot '/tmp/$USER/data' using 4:1 with lines, '' u 4:2 w l, '' u 4:3 w l
