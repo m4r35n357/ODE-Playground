@@ -16,13 +16,14 @@ case $method in
              halfstep $processed
              $processed >$fileB &
              wait;;
-    'nosim') ;;  # replot existing data or user-supplied
-          *) echo "CNS: Bad Method, should be 'step2' or 'nosim'"; exit 1;;
+    'nosim') ;;  # compare user-supplied data or replot existing
+          *) echo "CNS: Bad Method, should be 'step2' or 'nosim'";
+             exit 1;;
 esac
 
 ./divergence $fileA $fileB $threshold
 
-/usr/bin/gnuplot -p << EOF
+ /usr/bin/gnuplot -p << EOF
 set key horizontal left
-plot '/tmp/$USER/dataA' using 4:1 t 'xA' with lines lc black, '' u 4:2 t 'yA' w l lc black, '' u 4:3 t 'zA' w l lc black, '/tmp/$USER/dataB' using 4:1 t 'xB' with lines, '' u 4:2 t 'yB' w l, '' u 4:3 t 'zB' w l
+plot '/tmp/$USER/dataA' using 4:1 t 'x' with lines lc black, '' u 4:2 t 'y' w l lc black, '' u 4:3 t 'z' w l lc black, '/tmp/$USER/dataB' using 4:1 t 'x' with lines lc 'forest-green', '' u 4:2 t 'y' w l lc 'dark-yellow', '' u 4:3 t 'z' w l lc 'dark-turquoise'
 EOF

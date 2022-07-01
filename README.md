@@ -272,7 +272,6 @@ the CPU requirement can also be seen as:
 ```
 O(required precision^4) or O(order^4) or O(clean simulation time^4)
 ```
-
 ##### Make a CNS plot:
 
 #### Example output - quadruple precision

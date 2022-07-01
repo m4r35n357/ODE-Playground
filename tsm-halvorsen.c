@@ -9,7 +9,7 @@
     --field="x0" --field="y0" --field="z0" \
     --field="a" --field="b" \
     -- './tsm-halvorsen-static!./tsm-halvorsen-dbg' \
-    '6!3..64!3' '237!11..999!2' '16!2..256!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+    '6!3..64!3' '237!11..999!2' '16!2..256!1' '.01!0.001..0.1!0.001!3' '20000!1..1000000!1000' \
     '1.0' '0.0' '0.0' \
     '1.4' '4') >/tmp/$USER/data
  *
@@ -19,7 +19,7 @@
     --field="x0" --field="y0" --field="z0" \
     --field="a" --field="b" \
     -- 'step2!nosim' '1.0' './tsm-halvorsen-static!./tsm-halvorsen-dbg' \
-    '6!3..64!3' 'octuple!quadruple!extended!double!single' '16!2..256!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+    '6!3..64!3' 'octuple!quadruple!extended!double!single' '16!2..256!1' '.01!0.001..0.1!0.001!3' '20000!1..1000000!1000' \
     '1.0' '0.0' '0.0' \
     '1.4' '4')
  *
@@ -29,7 +29,7 @@
     --field="x0" --field="y0" --field="z0" \
     --field="a" --field="b" \
     -- '2!2..256!1' '32!2..256!1' '1.0' './tsm-halvorsen-static!./tsm-halvorsen-dbg' \
-    '6!3..64!3' 'octuple!quadruple!extended!double!single' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+    '6!3..64!3' 'octuple!quadruple!extended!double!single' '_' '.01!0.001..0.1!0.001!3' '20000!1..1000000!1000' \
     '1.0' '0.0' '0.0' \
     '1.4' '4') | tee /tmp/$USER/data
  *
