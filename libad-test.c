@@ -46,8 +46,7 @@ static void libad_test_init (void) {
 
 typedef struct { mpfr_t a, b, c; } parameters;
 
-void *get_p (int argc, char **argv, int order) {
-    (void)argc; (void)argv; (void)order;
+void *get_p (int argc, char **argv, int order) { (void)argc; (void)argv; (void)order;
     parameters *p = malloc(sizeof (parameters));
     mpfr_init_set_si(p->a, 1, RND);
     mpfr_init_set_si(p->b, 0, RND);
