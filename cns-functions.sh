@@ -8,9 +8,10 @@ fileB="/tmp/$USER/dataB"  # results of the requested simulation
 halfstep () {  # step / 2
     algorithm="$1"
     case $algorithm in
-        *tsm-*)	start="$1 $2 $3";;
-        *rk4-*)	start="$1 $2 $(($3 * 2))";;
-        *)      echo "CNS: Bad Executable Name"; exit;;
+        *tsm-*) start="$1 $2 $3";;
+        *rk4-*) start="$1 $2 $(($3 * 2))";;
+             *) echo "CNS: Bad Executable Name";
+                exit;;
     esac
     step=$(echo "scale=9; $4 / 2;" | /usr/bin/bc)
     steps=$(($5 * 2))
@@ -18,7 +19,7 @@ halfstep () {  # step / 2
     end="$*"
     echo 'Better:' $start $step $steps $end >&2
     case $algorithm in
-        *tsm-*)	$start $step $steps $end | sed -n '1~2p' >$fileA &;;
-        *rk4-*)	$start $step $steps $end >$fileA &;;
+        *tsm-*) $start $step $steps $end | sed -n '1~2p' >$fileA &;;
+        *rk4-*) $start $step $steps $end >$fileA &;;
     esac
 }
