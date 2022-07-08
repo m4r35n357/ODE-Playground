@@ -9,13 +9,13 @@
  *
  * Draws a simple solar system, with a sun, planet and moon.
  * Based on sample code from the OpenGL programming guide
- *		by Woo, Neider, Davis.  Addison-Wesley.
+ *      by Woo, Neider, Davis.  Addison-Wesley.
  *
  * Author: Samuel R. Buss
  *
  * Software accompanying the book
- *		3D Computer Graphics: A Mathematical Introduction with OpenGL,
- *		by S. Buss, Cambridge University Press, 2003.
+ *      3D Computer Graphics: A Mathematical Introduction with OpenGL,
+ *      by S. Buss, Cambridge University Press, 2003.
  *
  * Software is "as-is" and carries no warranty.  It may be used without
  *   restriction, but if you modify it, please change the filenames to
@@ -27,18 +27,16 @@
  *    Press "r" key to toggle (off and on) running the animation
  *    Press "s" key to single-step animation
  *    The up arrow key and down array key control the
- *			time step used in the animation rate.  Each key
- *			press multiplies or divides the times by a factor
- *			of two (2).
- *	  Press ESCAPE to exit.
+ *          time step used in the animation rate.  Each key
+ *          press multiplies or divides the times by a factor
+ *          of two (2).
+ *    Press ESCAPE to exit.
  *
  */
 
-
 #include "Solar.h"
 #include <stdlib.h>
-
-#include <GL/glut.h>	// OpenGL Graphics Utility Library
+#include <GL/glut.h>    // OpenGL Graphics Utility Library
 
 static GLenum spinMode = GL_TRUE;
 static GLenum singleStep = GL_FALSE;
@@ -48,188 +46,170 @@ static float HourOfDay = 0.0F;
 static float DayOfYear = 0.0F;
 static float AnimateIncrement = 24.0F;  // Time step for animation (hours)
 
-// glutKeyboardFunc is called below to set this function to handle
-//		all normal key presses.
-static void KeyPressFunc( unsigned char Key, int x, int y )
-{
-	switch ( Key ) {
-	case 'R':
-	case 'r':
-		Key_r();
-		break;
-	case 's':
-	case 'S':
-		Key_s();
-		break;
-	case 27:	// Escape key
-		exit(1);
-	}
+// glutKeyboardFunc is called below to set this function to handle all normal key presses.
+static void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
+    switch (Key) {
+        case 'R':
+        case 'r':
+            Key_r();
+            break;
+        case 's':
+        case 'S':
+            Key_s();
+            break;
+        case 27:    // Escape key
+            exit(1);
+    }
 }
 
 // glutSpecialFunc is called below to set this function to handle
-//		all special key presses.  See glut.h for the names of
-//		special keys.
-static void SpecialKeyFunc( int Key, int x, int y )
-{
-	switch ( Key ) {
-	case GLUT_KEY_UP:
-		Key_up();
-		break;
-	case GLUT_KEY_DOWN:
-		Key_down();
-		break;
-	}
+//      all special key presses.  See glut.h for the names of special keys.
+static void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
+    switch (Key) {
+        case GLUT_KEY_UP:
+            Key_up();
+            break;
+        case GLUT_KEY_DOWN:
+            Key_down();
+            break;
+    }
 }
 
-
-static void Key_r(void)
-{
-	if ( singleStep ) {			// If ending single step mode
-		singleStep = GL_FALSE;
-		spinMode = GL_TRUE;		// Restart animation
-	}
-	else {
-		spinMode = !spinMode;	// Toggle animation on and off.
-	}
+static void Key_r (void) {
+    if (singleStep) {         // If ending single step mode
+        singleStep = GL_FALSE;
+        spinMode = GL_TRUE;     // Restart animation
+    } else {
+        spinMode = !spinMode;   // Toggle animation on and off.
+    }
 }
 
-static void Key_s(void)
-{
-	singleStep = GL_TRUE;
-	spinMode = GL_TRUE;
+static void Key_s (void) {
+    singleStep = GL_TRUE;
+    spinMode = GL_TRUE;
 }
 
-static void Key_up(void)
-{
-    AnimateIncrement *= 2.0F;			// Double the animation time step
+static void Key_up (void) {
+    AnimateIncrement *= 2.0F;           // Double the animation time step
 }
 
-static void Key_down(void)
-{
-    AnimateIncrement /= 2.0F;			// Halve the animation time step
+static void Key_down (void) {
+    AnimateIncrement /= 2.0F;           // Halve the animation time step
 }
 
 /*
- * Animate() handles the animation and the redrawing of the
- *		graphics window contents.
+ * Animate() handles the animation and the redrawing of the graphics window contents.
  */
-static void Animate(void)
-{
-	// Clear the redering window
+static void Animate (void) {
+    // Clear the redering window
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (spinMode) {
-		// Update the animation state
+        // Update the animation state
         HourOfDay += AnimateIncrement;
-        DayOfYear += AnimateIncrement/24.0F;
+        DayOfYear += AnimateIncrement / 24.0F;
 
         HourOfDay = HourOfDay - ((int)(HourOfDay / 24.0F)) * 24.0F;
         DayOfYear = DayOfYear - ((int)(DayOfYear / 365.0F)) * 365.0F;
-		}
+    }
 
-	// Clear the current matrix (Modelview)
+    // Clear the current matrix (Modelview)
     glLoadIdentity();
 
-	// Back off eight units to be able to view from the origin.
-    glTranslatef ( 0.0F, 0.0F, -8.0F );
+    // Back off eight units to be able to view from the origin.
+    glTranslatef(0.0F, 0.0F, -8.0F);
 
-	// Rotate the plane of the elliptic
-	// (rotate the model's plane about the x axis by fifteen degrees)
-	glRotatef( 15.0F, 1.0F, 0.0F, 0.0F );
+    // Rotate the plane of the elliptic
+    // (rotate the model's plane about the x axis by fifteen degrees)
+    glRotatef(15.0F, 1.0F, 0.0F, 0.0F);
 
-    // Draw the sun	-- as a yellow, wireframe sphere
-	glColor3f( 1.0F, 1.0F, 0.0F );
-    glutWireSphere( 1.0F, 15, 15 );
+    // Draw the sun -- as a yellow, wireframe sphere
+    glColor3f(1.0F, 1.0F, 0.0F);
+    glutWireSphere(1.0F, 15, 15);
 
     // Draw the Earth
-	// First position it around the sun
-	//		Use DayOfYear to determine its position
-    glRotatef( 360.0F * DayOfYear / 365.0F, 0.0F, 1.0F, 0.0F );
-    glTranslatef( 4.0F, 0.0F, 0.0F );
-    glPushMatrix();						// Save matrix state
-	// Second, rotate the earth on its axis.
-	//		Use HourOfDay to determine its rotation.
-	glRotatef( 360.0F * HourOfDay / 24.0F, 0.0F, 1.0F, 0.0F );
-	// Third, draw the earth as a wireframe sphere.
-    glColor3f( 0.2F, 0.2F, 1.0F );
-    glutWireSphere( 0.4F, 10, 10);
-    glPopMatrix();						// Restore matrix state
+    // First position it around the sun
+    //      Use DayOfYear to determine its position
+    glRotatef(360.0F * DayOfYear / 365.0F, 0.0F, 1.0F, 0.0F);
+    glTranslatef(4.0F, 0.0F, 0.0F);
+    glPushMatrix();                     // Save matrix state
+    // Second, rotate the earth on its axis.
+    //      Use HourOfDay to determine its rotation.
+    glRotatef(360.0F * HourOfDay / 24.0F, 0.0F, 1.0F, 0.0F);
+    // Third, draw the earth as a wireframe sphere.
+    glColor3f(0.2F, 0.2F, 1.0F);
+    glutWireSphere(0.4F, 10, 10);
+    glPopMatrix();                      // Restore matrix state
 
-	// Draw the moon.
-	//	Use DayOfYear to control its rotation around the earth
-    glRotatef( 360.0F * 12.0F * DayOfYear / 365.0F, 0.0F, 1.0F, 0.0F );
-    glTranslatef( 0.7F, 0.0F, 0.0F );
-    glColor3f( 0.3F, 0.7F, 0.3F );
-    glutWireSphere( 0.1F, 5, 5 );
+    // Draw the moon.
+    //  Use DayOfYear to control its rotation around the earth
+    glRotatef(360.0F * 12.0F * DayOfYear / 365.0F, 0.0F, 1.0F, 0.0F);
+    glTranslatef(0.7F, 0.0F, 0.0F);
+    glColor3f(0.3F, 0.7F, 0.3F);
+    glutWireSphere(0.1F, 5, 5);
 
-	// Flush the pipeline, and swap the buffers
+    // Flush the pipeline, and swap the buffers
     glFlush();
     glutSwapBuffers();
 
-	if ( singleStep ) {
-		spinMode = GL_FALSE;
-	}
+    if ( singleStep ) {
+        spinMode = GL_FALSE;
+    }
 
-	glutPostRedisplay();		// Request a re-draw for animation purposes
-
+    glutPostRedisplay();        // Request a re-draw for animation purposes
 }
 
 // Initialize OpenGL's rendering modes
-void OpenGLInit(void)
-{
-    glShadeModel( GL_FLAT );
-    glClearColor( 0.0F, 0.0F, 0.0F, 0.0F );
-    glClearDepth( 1.0F );
-    glEnable( GL_DEPTH_TEST );
+void OpenGLInit (void) {
+    glShadeModel(GL_FLAT);
+    glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
+    glClearDepth(1.0F);
+    glEnable(GL_DEPTH_TEST);
 }
 
 // ResizeWindow is called when the window is resized
-static void ResizeWindow(int w, int h)
-{
+static void ResizeWindow (int w, int h) {
     float aspectRatio;
-	h = (h == 0) ? 1 : h;
-	w = (w == 0) ? 1 : w;
-	glViewport( 0, 0, w, h );	// View port uses whole window
-	aspectRatio = (float)w/(float)h;
+    h = (h == 0) ? 1 : h;
+    w = (w == 0) ? 1 : w;
+    glViewport(0, 0, w, h);   // View port uses whole window
+    aspectRatio = (float)w / (float)h;
 
-	// Set up the projection view matrix (not very well!)
-    glMatrixMode( GL_PROJECTION );
+    // Set up the projection view matrix (not very well!)
+    glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective( 60.0F, aspectRatio, 1.0F, 30.0F );
+    gluPerspective(60.0F, aspectRatio, 1.0F, 30.0F);
 
-	// Select the Modelview matrix
-    glMatrixMode( GL_MODELVIEW );
+    // Select the Modelview matrix
+    glMatrixMode(GL_MODELVIEW);
 }
 
-
-// Main routine
 // Set up OpenGL, hook up callbacks, and start the main loop
-int main( int argc, char** argv )
-{
-	// Need to double buffer for animation
-	glutInit(&argc,argv);
+int main (int argc, char** argv) {
+    // Need to double buffer for animation
+    glutInit(&argc,argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH );
 
-	// Create and position the graphics window
-    glutInitWindowPosition( 0, 0 );
-    glutInitWindowSize( 600, 360 );
-    glutCreateWindow( "Solar System Demo" );
+    // Create and position the graphics window
+    glutInitWindowPosition(0, 0);
+    glutInitWindowSize(600, 360);
+    glutCreateWindow("Solar System Demo");
 
-	// Initialize OpenGL.
+    // Initialize OpenGL.
     OpenGLInit();
 
-	// Set up callback functions for key presses
-	glutKeyboardFunc( KeyPressFunc );
-	glutSpecialFunc( SpecialKeyFunc );
+    // Set up callback functions for key presses
+    glutKeyboardFunc(KeyPressFunc);
+    glutSpecialFunc(SpecialKeyFunc);
 
-	// Set up the callback function for resizing windows
-    glutReshapeFunc( ResizeWindow );
+    // Set up the callback function for resizing windows
+    glutReshapeFunc(ResizeWindow);
 
-	// Callback for graphics image redrawing
-    glutDisplayFunc( Animate );
+    // Callback for graphics image redrawing
+    glutDisplayFunc(Animate);
 
-	// Start the main loop.  glutMainLoop never returns.
-	glutMainLoop(  );
+    // Start the main loop.  glutMainLoop never returns.
+    glutMainLoop();
 
-    return(0);			// Compiler requires this to be here. (Never reached)
+    return(0);          // Compiler requires this to be here. (Never reached)
 }

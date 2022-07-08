@@ -1,12 +1,11 @@
-
 /*
  * Solar.h
  *
  * Author: Samuel R. Buss
  *
  * Software accompanying the book
- *		3D Computer Graphics: A Mathematical Introduction with OpenGL,
- *		by S. Buss, Cambridge University Press, 2003.
+ *      3D Computer Graphics: A Mathematical Introduction with OpenGL,
+ *      by S. Buss, Cambridge University Press, 2003.
  *
  * Software is "as-is" and carries no warranty.  It may be used without
  *   restriction, but if you modify it, please change the filenames to
@@ -26,4 +25,3 @@ static void ResizeWindow(int w, int h);
 
 static void KeyPressFunc( unsigned char Key, int x, int y );
 static void SpecialKeyFunc( int Key, int x, int y );
-
