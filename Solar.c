@@ -1,5 +1,5 @@
 /*
- *  gcc Solar.c -lglut -lGLU -lGL
+ *  gcc -pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra -Wconversion -Wredundant-decls -Wmissing-field-initializers -Wmissing-declarations -Wuninitialized -Wunsuffixed-float-constants -frounding-math -fsignaling-nans Solar.c -lglut -lGLU -lGL
  *
  * Solar.c
  *
@@ -123,44 +123,44 @@ static void Animate(void)
         HourOfDay += AnimateIncrement;
         DayOfYear += AnimateIncrement/24.0F;
 
-        HourOfDay = HourOfDay - ((int)(HourOfDay/24))*24;
-        DayOfYear = DayOfYear - ((int)(DayOfYear/365))*365;
+        HourOfDay = HourOfDay - ((int)(HourOfDay / 24.0F)) * 24.0F;
+        DayOfYear = DayOfYear - ((int)(DayOfYear / 365.0F)) * 365.0F;
 		}
 
 	// Clear the current matrix (Modelview)
     glLoadIdentity();
 
 	// Back off eight units to be able to view from the origin.
-    glTranslatef ( 0.0, 0.0, -8.0 );
+    glTranslatef ( 0.0F, 0.0F, -8.0F );
 
 	// Rotate the plane of the elliptic
 	// (rotate the model's plane about the x axis by fifteen degrees)
-	glRotatef( 15.0, 1.0, 0.0, 0.0 );
+	glRotatef( 15.0F, 1.0F, 0.0F, 0.0F );
 
     // Draw the sun	-- as a yellow, wireframe sphere
-	glColor3f( 1.0, 1.0, 0.0 );
-    glutWireSphere( 1.0, 15, 15 );
+	glColor3f( 1.0F, 1.0F, 0.0F );
+    glutWireSphere( 1.0F, 15, 15 );
 
     // Draw the Earth
 	// First position it around the sun
 	//		Use DayOfYear to determine its position
-    glRotatef( 360.0*DayOfYear/365.0, 0.0, 1.0, 0.0 );
-    glTranslatef( 4.0, 0.0, 0.0 );
+    glRotatef( 360.0F * DayOfYear / 365.0F, 0.0F, 1.0F, 0.0F );
+    glTranslatef( 4.0F, 0.0F, 0.0F );
     glPushMatrix();						// Save matrix state
 	// Second, rotate the earth on its axis.
 	//		Use HourOfDay to determine its rotation.
-	glRotatef( 360.0*HourOfDay/24.0, 0.0, 1.0, 0.0 );
+	glRotatef( 360.0F * HourOfDay / 24.0F, 0.0F, 1.0F, 0.0F );
 	// Third, draw the earth as a wireframe sphere.
-    glColor3f( 0.2, 0.2, 1.0 );
-    glutWireSphere( 0.4, 10, 10);
+    glColor3f( 0.2F, 0.2F, 1.0F );
+    glutWireSphere( 0.4F, 10, 10);
     glPopMatrix();						// Restore matrix state
 
 	// Draw the moon.
 	//	Use DayOfYear to control its rotation around the earth
-    glRotatef( 360.0*12.0*DayOfYear/365.0, 0.0, 1.0, 0.0 );
-    glTranslatef( 0.7, 0.0, 0.0 );
-    glColor3f( 0.3, 0.7, 0.3 );
-    glutWireSphere( 0.1, 5, 5 );
+    glRotatef( 360.0F * 12.0F * DayOfYear / 365.0F, 0.0F, 1.0F, 0.0F );
+    glTranslatef( 0.7F, 0.0F, 0.0F );
+    glColor3f( 0.3F, 0.7F, 0.3F );
+    glutWireSphere( 0.1F, 5, 5 );
 
 	// Flush the pipeline, and swap the buffers
     glFlush();
@@ -178,8 +178,8 @@ static void Animate(void)
 void OpenGLInit(void)
 {
     glShadeModel( GL_FLAT );
-    glClearColor( 0.0, 0.0, 0.0, 0.0 );
-    glClearDepth( 1.0 );
+    glClearColor( 0.0F, 0.0F, 0.0F, 0.0F );
+    glClearDepth( 1.0F );
     glEnable( GL_DEPTH_TEST );
 }
 
@@ -195,7 +195,7 @@ static void ResizeWindow(int w, int h)
 	// Set up the projection view matrix (not very well!)
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
-    gluPerspective( 60.0, aspectRatio, 1.0, 30.0 );
+    gluPerspective( 60.0F, aspectRatio, 1.0F, 30.0F );
 
 	// Select the Modelview matrix
     glMatrixMode( GL_MODELVIEW );
