@@ -4,7 +4,7 @@
  * Solar.c
  *
  * Program to demonstrate how to use a local
- * coordinate method to position parts of a 
+ * coordinate method to position parts of a
  * model in relation to other model parts.
  *
  * Draws a simple solar system, with a sun, planet and moon.
@@ -28,15 +28,15 @@
  *    Press "s" key to single-step animation
  *    The up arrow key and down array key control the
  *			time step used in the animation rate.  Each key
- *			press multiplies or divides the times by a factor 
+ *			press multiplies or divides the times by a factor
  *			of two (2).
  *	  Press ESCAPE to exit.
  *
  */
 
 
-#include "Solar.h"   
-#include <stdlib.h> 
+#include "Solar.h"
+#include <stdlib.h>
 
 #include <GL/glut.h>	// OpenGL Graphics Utility Library
 
@@ -44,12 +44,12 @@ static GLenum spinMode = GL_TRUE;
 static GLenum singleStep = GL_FALSE;
 
 // These three variables control the animation's state and speed.
-static float HourOfDay = 0.0;
-static float DayOfYear = 0.0;
-static float AnimateIncrement = 24.0;  // Time step for animation (hours)
+static float HourOfDay = 0.0F;
+static float DayOfYear = 0.0F;
+static float AnimateIncrement = 24.0F;  // Time step for animation (hours)
 
 // glutKeyboardFunc is called below to set this function to handle
-//		all normal key presses.  
+//		all normal key presses.
 static void KeyPressFunc( unsigned char Key, int x, int y )
 {
 	switch ( Key ) {
@@ -72,7 +72,7 @@ static void KeyPressFunc( unsigned char Key, int x, int y )
 static void SpecialKeyFunc( int Key, int x, int y )
 {
 	switch ( Key ) {
-	case GLUT_KEY_UP:		
+	case GLUT_KEY_UP:
 		Key_up();
 		break;
 	case GLUT_KEY_DOWN:
@@ -101,13 +101,12 @@ static void Key_s(void)
 
 static void Key_up(void)
 {
-    AnimateIncrement *= 2.0;			// Double the animation time step
+    AnimateIncrement *= 2.0F;			// Double the animation time step
 }
 
 static void Key_down(void)
 {
-    AnimateIncrement /= 2.0;			// Halve the animation time step
-	
+    AnimateIncrement /= 2.0F;			// Halve the animation time step
 }
 
 /*
@@ -122,12 +121,12 @@ static void Animate(void)
     if (spinMode) {
 		// Update the animation state
         HourOfDay += AnimateIncrement;
-        DayOfYear += AnimateIncrement/24.0;
+        DayOfYear += AnimateIncrement/24.0F;
 
         HourOfDay = HourOfDay - ((int)(HourOfDay/24))*24;
         DayOfYear = DayOfYear - ((int)(DayOfYear/365))*365;
 		}
-	
+
 	// Clear the current matrix (Modelview)
     glLoadIdentity();
 
@@ -139,7 +138,7 @@ static void Animate(void)
 	glRotatef( 15.0, 1.0, 0.0, 0.0 );
 
     // Draw the sun	-- as a yellow, wireframe sphere
-	glColor3f( 1.0, 1.0, 0.0 );			
+	glColor3f( 1.0, 1.0, 0.0 );
     glutWireSphere( 1.0, 15, 15 );
 
     // Draw the Earth
@@ -158,7 +157,7 @@ static void Animate(void)
 
 	// Draw the moon.
 	//	Use DayOfYear to control its rotation around the earth
-   	glRotatef( 360.0*12.0*DayOfYear/365.0, 0.0, 1.0, 0.0 );
+    glRotatef( 360.0*12.0*DayOfYear/365.0, 0.0, 1.0, 0.0 );
     glTranslatef( 0.7, 0.0, 0.0 );
     glColor3f( 0.3, 0.7, 0.3 );
     glutWireSphere( 0.1, 5, 5 );
@@ -228,7 +227,7 @@ int main( int argc, char** argv )
 
 	// Callback for graphics image redrawing
     glutDisplayFunc( Animate );
-	
+
 	// Start the main loop.  glutMainLoop never returns.
 	glutMainLoop(  );
 
