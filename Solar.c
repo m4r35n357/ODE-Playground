@@ -42,8 +42,6 @@ static GLenum spinMode = GL_TRUE;
 static GLenum singleStep = GL_FALSE;
 
 // These three variables control the animation's state and speed.
-static float HourOfDay = 0.0F;
-static float DayOfYear = 0.0F;
 static float AnimateIncrement = 24.0F;  // Time step for animation (hours)
 
 // glutKeyboardFunc is called below to set this function to handle all normal key presses.
@@ -104,56 +102,18 @@ static void Animate (void) {
     // Clear the redering window
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if (spinMode) {
-        // Update the animation state
-        HourOfDay += AnimateIncrement;
-        DayOfYear += AnimateIncrement / 24.0F;
-
-        HourOfDay = HourOfDay - ((int)(HourOfDay / 24.0F)) * 24.0F;
-        DayOfYear = DayOfYear - ((int)(DayOfYear / 365.0F)) * 365.0F;
-    }
-
     // Clear the current matrix (Modelview)
     glLoadIdentity();
 
-    // Back off eight units to be able to view from the origin.
     glTranslatef(0.0F, 0.0F, -8.0F);
-
-    // Rotate the plane of the elliptic
-    // (rotate the model's plane about the x axis by fifteen degrees)
-    glRotatef(15.0F, 1.0F, 0.0F, 0.0F);
-
-    // Draw the sun -- as a yellow, wireframe sphere
-    glColor3f(1.0F, 1.0F, 0.0F);
-    glutWireSphere(1.0F, 15, 15);
-
-    // Draw the Earth
-    // First position it around the sun
-    //      Use DayOfYear to determine its position
-    glRotatef(360.0F * DayOfYear / 365.0F, 0.0F, 1.0F, 0.0F);
-    glTranslatef(4.0F, 0.0F, 0.0F);
-    glPushMatrix();                     // Save matrix state
-    // Second, rotate the earth on its axis.
-    //      Use HourOfDay to determine its rotation.
-    glRotatef(360.0F * HourOfDay / 24.0F, 0.0F, 1.0F, 0.0F);
-    // Third, draw the earth as a wireframe sphere.
-    glColor3f(0.2F, 0.2F, 1.0F);
     glutWireSphere(0.4F, 10, 10);
-    glPopMatrix();                      // Restore matrix state
-
-    // Draw the moon.
-    //  Use DayOfYear to control its rotation around the earth
-    glRotatef(360.0F * 12.0F * DayOfYear / 365.0F, 0.0F, 1.0F, 0.0F);
-    glTranslatef(0.7F, 0.0F, 0.0F);
-    glColor3f(0.3F, 0.7F, 0.3F);
-    glutWireSphere(0.1F, 5, 5);
 
     // Flush the pipeline, and swap the buffers
     glFlush();
     glutSwapBuffers();
 
     if ( singleStep ) {
-        spinMode = GL_FALSE;
+        ;
     }
 
     glutPostRedisplay();        // Request a re-draw for animation purposes
