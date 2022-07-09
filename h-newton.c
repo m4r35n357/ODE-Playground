@@ -67,7 +67,13 @@ static void plot (int dp, void *params, real t) {
 }
 
 int main (int argc, char **argv) {
+    parameters *p;
+    
     assert(argc == 8);
-    solve(argv, get_p(argc, argv, 5), plot);
+    p = get_p(argc, argv, 5);
+    solve(argv, p, plot);
+    while ((p = generate(argv, p))) {
+        ;
+    }
     return 0;
 }
