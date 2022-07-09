@@ -1,5 +1,6 @@
 /*
- *  gcc -pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra -Wconversion -Wredundant-decls -Wmissing-field-initializers -Wmissing-declarations -Wuninitialized -Wunsuffixed-float-constants -frounding-math -fsignaling-nans Solar.c -lglut -lGLU -lGL
+ *  gcc -pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra -Wconversion -Wredundant-decls -Wmissing-field-initializers -Wmissing-declarations -Wuninitialized -Wunsuffixed-float-constants -frounding-math -fsignaling-nans symplectic.c dual.c h-newton.c Solar.c -lm -lglut -lGLU -lGL
+
  *
  * Solar.c
  *
@@ -37,6 +38,13 @@
 #include "Solar.h"
 #include <stdlib.h>
 #include <GL/glut.h>    // OpenGL Graphics Utility Library
+#include "math.h"
+#include "symplectic.h"
+#include "h-newton.h"
+#include <stdio.h>
+
+static controls *c;
+static parameters *p;
 
 static GLenum spinMode = GL_TRUE;
 static GLenum singleStep = GL_FALSE;
@@ -102,10 +110,18 @@ static void Animate (void) {
     // Clear the redering window
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	//p = (parameters *)generate(NULL, NULL);
+	//fprintf(stderr, "%Lf %Lf %Lf\n", p->m, p->q_r, p->q_phi);
+	
     // Clear the current matrix (Modelview)
     glLoadIdentity();
-
     glTranslatef(0.0F, 0.0F, -8.0F);
+    glColor3f(1.0F, 0.0F, 0.0F);
+    glutWireSphere(0.4F, 10, 10);
+
+    glLoadIdentity();
+    glTranslatef((float)(p->q_r * cosl(p->q_phi)), (float)(p->q_r * sinl(p->q_phi)), -8.0F);
+    glColor3f(0.0F, 1.0F, 0.0F);
     glutWireSphere(0.4F, 10, 10);
 
     // Flush the pipeline, and swap the buffers
@@ -146,6 +162,20 @@ static void ResizeWindow (int w, int h) {
 
 // Set up OpenGL, hook up callbacks, and start the main loop
 int main (int argc, char** argv) {
+	c = get_c(argv);
+	p = (parameters *)get_p(argc, argv, 5);
+	fprintf(stderr, "%Lf %Lf %Lf\n", p->m, p->q_r, p->q_phi);
+
+	p = (parameters *)generate(c, p);
+	fprintf(stderr, "%Lf %Lf %Lf\n", p->m, p->q_r, p->q_phi);
+	
+	p = (parameters *)generate(c, p);
+	fprintf(stderr, "%Lf %Lf %Lf\n", p->m, p->q_r, p->q_phi);
+
+	p = (parameters *)generate(c, p);
+	fprintf(stderr, "%Lf %Lf %Lf\n", p->m, p->q_r, p->q_phi);
+
+goto bail;
     // Need to double buffer for animation
     glutInit(&argc,argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH );
@@ -171,5 +201,6 @@ int main (int argc, char** argv) {
     // Start the main loop.  glutMainLoop never returns.
     glutMainLoop();
 
+bail:
     return(0);          // Compiler requires this to be here. (Never reached)
 }

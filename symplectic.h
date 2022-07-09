@@ -1,13 +1,24 @@
 
 #include "real.h"
 
+typedef struct {
+    long order;
+    real step_size;
+    long steps;
+} controls;
+
+/*
+ * Get integrator control data from the command to be passed into solve()
+ */
+controls *get_c (char **argv);
+
 /*
  * Bulk set model variables from the command line arguments (start onwards)
  */
 void t_variables (char **argv, int start, int count, ...);
 
 /*
- * Get a blob of parameter data from the model to be passed into solve()
+ * Get a blob of model data from the command to be passed into solve()
  */
 void *get_p (int argc, char **argv, int va_begin);
 
@@ -41,4 +52,4 @@ void update_p (void *params, real d);
  */
 void solve (char **argv, void *p, plotter output);
 
-void *generate (char **argv, void *p);
+void *generate (controls *cont, void *p);

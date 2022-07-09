@@ -23,16 +23,11 @@
 #include <math.h>
 #include "symplectic.h"
 #include "dual.h"
+#include "h-newton.h"
 
 static dual h (real gm, dual q_r, dual p_r, dual p_phi) {
     return d_sub(d_scale(d_add(d_sqr(p_r), d_div(d_sqr(p_phi), d_sqr(q_r))), 0.5L), d_scale(d_inv(q_r), gm));
 }
-
-typedef struct {
-    real m;  // central mass
-    real q_r, p_r, q_phi, p_phi;  // coordinates & momenta
-    real h0;  // stored initial value of Hamiltonian
-} parameters;
 
 void *get_p (int argc, char **argv, int va_begin) {
     parameters *p = malloc(sizeof (parameters));
@@ -66,14 +61,17 @@ static void plot (int dp, void *params, real t) {
            dp, p->q_r * sinl(p->q_phi), dp, p->q_r * cosl(p->q_phi), 0.0L, t, dp, error(h_now - p->h0), dp, h_now);
 }
 
-int main (int argc, char **argv) {
-    parameters *p;
+//int main (int argc, char **argv) {
+//    parameters *p;
+//    controls *c;
     
-    assert(argc == 8);
-    p = get_p(argc, argv, 5);
-    solve(argv, p, plot);
-    while ((p = generate(argv, p))) {
-        fprintf(stderr, "");
-    }
-    return 0;
-}
+//    assert(argc == 8);
+//    c = get_c(argv);
+//    p = get_p(argc, argv, 5);
+//    solve(argv, p, plot);
+//    while ((p = generate(c, p))) {
+//		(void)p;
+//        fprintf(stderr, "");
+//    }
+//    return 0;
+//}

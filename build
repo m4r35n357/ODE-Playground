@@ -37,9 +37,9 @@ build_symp () {
     ${CC} -O0 $WARNINGS -g -o ${name}-dbg ${name}.c symplectic.c dual.c -lm
 }
 
+#h-newton \
 for model in \
 h-spring \
-h-newton \
 h-kerr \
 h-analysis
 do

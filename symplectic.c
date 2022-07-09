@@ -11,6 +11,14 @@
 #include <math.h>
 #include "symplectic.h"
 
+controls *get_c (char **argv) {
+    controls *c = malloc(sizeof (controls));
+    c->order = strtol(argv[2], NULL, 10); assert(c->order >= 2 && c->order <= 10);
+    c->step_size = strtold(argv[3], NULL); assert(c->step_size > 0.0L);
+    c->steps = strtol(argv[4], NULL, 10); assert(c->steps >= 0 && c->steps <= 1000000);
+    return c;
+}
+
 void t_variables (char **argv, int begin, int argc, ...) {
     va_list model_params;
     va_start(model_params, argc);
@@ -105,12 +113,14 @@ void solve (char **argv, void *p, plotter output) {
     output(display_precision, p, steps * step_size);
 }
 
-void *generate (char **argv, void *p) {
+void *generate (controls *cont, void *params) {
+    static controls *c;
+    static void *p;
+    static integrator composer = NULL;
     static long step, resume = 0;
     if (resume) goto resume; else resume = 1;
-    long order = strtol(argv[2], NULL, 10); assert(order >= 2 && order <= 10);
-    real step_size = strtold(argv[3], NULL); assert(step_size > 0.0L);
-    long steps = strtol(argv[4], NULL, 10); assert(steps >= 0 && steps <= 1000000);
+    c = cont;
+    p = params;
     weight_r_1.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 3.0L));
     weight_r_2.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 5.0L));
     weight_r_3.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 7.0L));
@@ -119,21 +129,20 @@ void *generate (char **argv, void *p) {
     weight_r_2.rev = 1.0L - 4.0L * weight_r_2.fwd;
     weight_r_3.rev = 1.0L - 4.0L * weight_r_3.fwd;
     weight_r_4.rev = 1.0L - 4.0L * weight_r_4.fwd;
-    integrator composer = NULL;
-    switch (order) {
+    switch (c->order) {
         case 2: composer = stormer_verlet; break;
         case 4: composer = fourth_order; break;
         case 6: composer = sixth_order; break;
         case 8: composer = eightth_order; break;
         case 10: composer = tenth_order; break;
         default:
-            printf("Order parameter is {%ld} but should be 2, 4, 6, 8, or 10 \n", order);
+            printf("Order parameter is {%ld} but should be 2, 4, 6, 8, or 10 \n", c->order);
             exit(1);
     }
-    for (step = 1; step <= steps; step++) {
-        composer(p, step_size);
+    for (step = 1; step <= c->steps; step++) {
+        composer(p, c->step_size);
         return p;
-        resume:;
+        resume: ;
     }
     resume = 0;
     return NULL;
