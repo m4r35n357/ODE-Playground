@@ -136,5 +136,5 @@ void *generate (char **argv, void *p) {
         resume:;
     }
     resume = 0;
-    return 0;
+    return NULL;
 }

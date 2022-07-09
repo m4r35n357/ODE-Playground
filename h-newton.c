@@ -73,7 +73,7 @@ int main (int argc, char **argv) {
     p = get_p(argc, argv, 5);
     solve(argv, p, plot);
     while ((p = generate(argv, p))) {
-        ;
+        fprintf(stderr, "");
     }
     return 0;
 }
