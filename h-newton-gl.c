@@ -36,7 +36,7 @@
  */
 
 #include <stdlib.h>
-#include <GL/glut.h>    // OpenGL Graphics Utility Library
+#include <GL/freeglut.h>    // OpenGL Graphics Utility Library
 #include "math.h"
 #include "symplectic.h"
 #include "h-newton.h"
@@ -120,7 +120,7 @@ static void Animate (void) {
     glColor3f(0.0F, 1.0F, 0.0F);
     glutWireSphere(0.4F, 10, 10);
 
-    p = (parameters *)generate(c, p);
+    if (!(p = (parameters *)generate(c, p))) glutLeaveMainLoop();
     
     // Flush the pipeline, and swap the buffers
     glFlush();
