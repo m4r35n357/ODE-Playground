@@ -110,20 +110,19 @@ static void Animate (void) {
     // Clear the redering window
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//p = (parameters *)generate(NULL, NULL);
-	//fprintf(stderr, "%Lf %Lf %Lf\n", p->m, p->q_r, p->q_phi);
-	
     // Clear the current matrix (Modelview)
     glLoadIdentity();
-    glTranslatef(0.0F, 0.0F, -8.0F);
+    glTranslatef(0.0F, 0.0F, -20.0F);
     glColor3f(1.0F, 0.0F, 0.0F);
-    glutWireSphere(0.4F, 10, 10);
+    glutWireSphere(1.0F, 10, 10);
 
     glLoadIdentity();
-    glTranslatef((float)(p->q_r * cosl(p->q_phi)), (float)(p->q_r * sinl(p->q_phi)), -8.0F);
+    glTranslatef((float)(p->q_r * cosl(p->q_phi)), (float)(p->q_r * sinl(p->q_phi)), -20.0F);
     glColor3f(0.0F, 1.0F, 0.0F);
     glutWireSphere(0.4F, 10, 10);
 
+	p = (parameters *)generate(c, p);
+	
     // Flush the pipeline, and swap the buffers
     glFlush();
     glutSwapBuffers();
@@ -164,18 +163,7 @@ static void ResizeWindow (int w, int h) {
 int main (int argc, char** argv) {
 	c = get_c(argv);
 	p = (parameters *)get_p(argc, argv, 5);
-	fprintf(stderr, "%Lf %Lf %Lf\n", p->m, p->q_r, p->q_phi);
 
-	p = (parameters *)generate(c, p);
-	fprintf(stderr, "%Lf %Lf %Lf\n", p->m, p->q_r, p->q_phi);
-	
-	p = (parameters *)generate(c, p);
-	fprintf(stderr, "%Lf %Lf %Lf\n", p->m, p->q_r, p->q_phi);
-
-	p = (parameters *)generate(c, p);
-	fprintf(stderr, "%Lf %Lf %Lf\n", p->m, p->q_r, p->q_phi);
-
-goto bail;
     // Need to double buffer for animation
     glutInit(&argc,argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH );
@@ -201,6 +189,5 @@ goto bail;
     // Start the main loop.  glutMainLoop never returns.
     glutMainLoop();
 
-bail:
     return(0);          // Compiler requires this to be here. (Never reached)
 }
