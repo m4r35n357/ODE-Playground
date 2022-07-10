@@ -1,5 +1,5 @@
 /*
- *  gcc -pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra -Wconversion -Wredundant-decls -Wmissing-field-initializers -Wmissing-declarations -Wuninitialized -Wunsuffixed-float-constants -frounding-math -fsignaling-nans symplectic.c dual.c h-newton.c Solar.c -lm -lglut -lGLU -lGL
+ *  gcc -pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra -Wconversion -Wredundant-decls -Wmissing-field-initializers -Wmissing-declarations -Wuninitialized -Wunsuffixed-float-constants -frounding-math -fsignaling-nans symplectic.c dual.c h-newton.c h-newton-gl.c -lm -lglut -lGLU -lGL
 
  *
  * Solar.c
@@ -35,13 +35,12 @@
  *
  */
 
-#include "Solar.h"
 #include <stdlib.h>
 #include <GL/glut.h>    // OpenGL Graphics Utility Library
 #include "math.h"
 #include "symplectic.h"
 #include "h-newton.h"
-#include <stdio.h>
+#include "h-newton-gl.h"
 
 static controls *c;
 static parameters *p;

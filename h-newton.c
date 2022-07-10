@@ -60,18 +60,3 @@ static void plot (int dp, void *params, real t) {
     printf("%+.*Le %+.*Le %+.3Lf %.6Le %+.*Le %+.*Le\n",
            dp, p->q_r * sinl(p->q_phi), dp, p->q_r * cosl(p->q_phi), 0.0L, t, dp, error(h_now - p->h0), dp, h_now);
 }
-
-//int main (int argc, char **argv) {
-//    parameters *p;
-//    controls *c;
-    
-//    assert(argc == 8);
-//    c = get_c(argv);
-//    p = get_p(argc, argv, 5);
-//    solve(argv, p, plot);
-//    while ((p = generate(c, p))) {
-//		(void)p;
-//        fprintf(stderr, "");
-//    }
-//    return 0;
-//}
