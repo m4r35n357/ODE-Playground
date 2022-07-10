@@ -120,8 +120,8 @@ static void Animate (void) {
     glColor3f(0.0F, 1.0F, 0.0F);
     glutWireSphere(0.4F, 10, 10);
 
-	p = (parameters *)generate(c, p);
-	
+    p = (parameters *)generate(c, p);
+    
     // Flush the pipeline, and swap the buffers
     glFlush();
     glutSwapBuffers();
@@ -160,8 +160,8 @@ static void ResizeWindow (int w, int h) {
 
 // Set up OpenGL, hook up callbacks, and start the main loop
 int main (int argc, char** argv) {
-	c = get_c(argv);
-	p = (parameters *)get_p(argc, argv, 5);
+    c = get_c(argv);
+    p = (parameters *)get_p(argc, argv, 5);
 
     // Need to double buffer for animation
     glutInit(&argc,argv);
@@ -169,7 +169,7 @@ int main (int argc, char** argv) {
 
     // Create and position the graphics window
     glutInitWindowPosition(0, 0);
-    glutInitWindowSize(600, 360);
+    glutInitWindowSize(800, 600);
     glutCreateWindow("Solar System Demo");
 
     // Initialize OpenGL.

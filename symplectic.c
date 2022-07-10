@@ -82,11 +82,7 @@ static void tenth_order (void *p, real h) {
     base10(p, h);
 }
 
-void solve (char **argv, void *p, plotter output) {
-    int display_precision = (int)strtol(argv[1], NULL, 10); assert(display_precision >= 1 && display_precision <= 32);
-    long order = strtol(argv[2], NULL, 10); assert(order >= 2 && order <= 10);
-    real step_size = strtold(argv[3], NULL); assert(step_size > 0.0L);
-    long steps = strtol(argv[4], NULL, 10); assert(steps >= 0 && steps <= 1000000);
+static void set_weights (void) {
     weight_r_1.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 3.0L));
     weight_r_2.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 5.0L));
     weight_r_3.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 7.0L));
@@ -95,6 +91,9 @@ void solve (char **argv, void *p, plotter output) {
     weight_r_2.rev = 1.0L - 4.0L * weight_r_2.fwd;
     weight_r_3.rev = 1.0L - 4.0L * weight_r_3.fwd;
     weight_r_4.rev = 1.0L - 4.0L * weight_r_4.fwd;
+}
+
+static integrator set_integrator (long order) {
     integrator composer = NULL;
     switch (order) {
         case 2: composer = stormer_verlet; break;
@@ -106,6 +105,16 @@ void solve (char **argv, void *p, plotter output) {
             printf("Order parameter is {%ld} but should be 2, 4, 6, 8, or 10 \n", order);
             exit(1);
     }
+    return composer;
+}
+
+void solve (char **argv, void *p, plotter output) {
+    int display_precision = (int)strtol(argv[1], NULL, 10); assert(display_precision >= 1 && display_precision <= 32);
+    long order = strtol(argv[2], NULL, 10); assert(order >= 2 && order <= 10);
+    real step_size = strtold(argv[3], NULL); assert(step_size > 0.0L);
+    long steps = strtol(argv[4], NULL, 10); assert(steps >= 0 && steps <= 1000000);
+    set_weights();
+    integrator composer = set_integrator(order);
     for (long step = 0; step < steps; step++) {
         output(display_precision, p, step * step_size);
         composer(p, step_size);
@@ -121,24 +130,8 @@ void *generate (controls *cont, void *params) {
     if (resume) goto resume; else resume = 1;
     c = cont;
     p = params;
-    weight_r_1.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 3.0L));
-    weight_r_2.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 5.0L));
-    weight_r_3.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 7.0L));
-    weight_r_4.fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / 9.0L));
-    weight_r_1.rev = 1.0L - 4.0L * weight_r_1.fwd;
-    weight_r_2.rev = 1.0L - 4.0L * weight_r_2.fwd;
-    weight_r_3.rev = 1.0L - 4.0L * weight_r_3.fwd;
-    weight_r_4.rev = 1.0L - 4.0L * weight_r_4.fwd;
-    switch (c->order) {
-        case 2: composer = stormer_verlet; break;
-        case 4: composer = fourth_order; break;
-        case 6: composer = sixth_order; break;
-        case 8: composer = eightth_order; break;
-        case 10: composer = tenth_order; break;
-        default:
-            printf("Order parameter is {%ld} but should be 2, 4, 6, 8, or 10 \n", c->order);
-            exit(1);
-    }
+    set_weights();
+    composer = set_integrator(c->order);
     for (step = 1; step <= c->steps; step++) {
         composer(p, c->step_size);
         return p;
