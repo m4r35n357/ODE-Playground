@@ -45,7 +45,7 @@
 static controls *c;
 static parameters *p;
 
-static GLenum spinMode = GL_TRUE;
+static GLenum stopped = GL_FALSE;
 static GLenum singleStep = GL_FALSE;
 
 // These three variables control the animation's state and speed.
@@ -85,17 +85,11 @@ static void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
 }
 
 static void Key_r (void) {
-    if (singleStep) {         // If ending single step mode
-        singleStep = GL_FALSE;
-        spinMode = GL_TRUE;     // Restart animation
-    } else {
-        spinMode = !spinMode;   // Toggle animation on and off.
-    }
+    singleStep = !singleStep;
 }
 
 static void Key_s (void) {
-    singleStep = GL_TRUE;
-    spinMode = GL_TRUE;
+    stopped = !stopped;
 }
 
 static void Key_f (void) {
@@ -128,15 +122,13 @@ static void Animate (void) {
     glColor3f(0.0F, 1.0F, 0.0F);
     glutWireSphere(0.4F, 10, 10);
 
-    if (!(p = (parameters *)generate(c, p))) glutLeaveMainLoop();
+    if (!stopped ) {
+        if (!(p = (parameters *)generate(c, p))) glutLeaveMainLoop();
+    }
 
     // Flush the pipeline, and swap the buffers
     glFlush();
     glutSwapBuffers();
-
-    if ( singleStep ) {
-        ;
-    }
 
     glutPostRedisplay();        // Request a re-draw for animation purposes
 }
