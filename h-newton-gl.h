@@ -17,6 +17,7 @@
 void OpenGLInit(void);
 
 static void Animate(void );
+static void Key_f(void );
 static void Key_r(void );
 static void Key_s(void );
 static void Key_up(void );

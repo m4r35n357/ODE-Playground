@@ -62,6 +62,10 @@ static void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
         case 'S':
             Key_s();
             break;
+        case 'F':
+        case 'f':
+            Key_f();
+            break;
         case 27:    // Escape key
             exit(1);
     }
@@ -94,6 +98,10 @@ static void Key_s (void) {
     spinMode = GL_TRUE;
 }
 
+static void Key_f (void) {
+    glutFullScreenToggle();
+}
+
 static void Key_up (void) {
     AnimateIncrement *= 2.0F;           // Double the animation time step
 }
@@ -121,7 +129,7 @@ static void Animate (void) {
     glutWireSphere(0.4F, 10, 10);
 
     if (!(p = (parameters *)generate(c, p))) glutLeaveMainLoop();
-    
+
     // Flush the pipeline, and swap the buffers
     glFlush();
     glutSwapBuffers();
