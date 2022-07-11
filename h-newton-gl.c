@@ -51,6 +51,26 @@ static GLenum singleStep = GL_FALSE;
 // These three variables control the animation's state and speed.
 static float AnimateIncrement = 24.0F;  // Time step for animation (hours)
 
+static void Key_r (void) {
+    singleStep = !singleStep;
+}
+
+static void Key_s (void) {
+    stopped = !stopped;
+}
+
+static void Key_f (void) {
+    glutFullScreenToggle();
+}
+
+static void Key_up (void) {
+    AnimateIncrement *= 2.0F;           // Double the animation time step
+}
+
+static void Key_down (void) {
+    AnimateIncrement /= 2.0F;           // Halve the animation time step
+}
+
 // glutKeyboardFunc is called below to set this function to handle all normal key presses.
 static void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
@@ -82,26 +102,6 @@ static void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
             Key_down();
             break;
     }
-}
-
-static void Key_r (void) {
-    singleStep = !singleStep;
-}
-
-static void Key_s (void) {
-    stopped = !stopped;
-}
-
-static void Key_f (void) {
-    glutFullScreenToggle();
-}
-
-static void Key_up (void) {
-    AnimateIncrement *= 2.0F;           // Double the animation time step
-}
-
-static void Key_down (void) {
-    AnimateIncrement /= 2.0F;           // Halve the animation time step
 }
 
 /*
