@@ -169,8 +169,8 @@ int main (int argc, char** argv) {
 
     // Create and position the graphics window
     glutInitWindowPosition(0, 0);
-    glutInitWindowSize(800, 600);
-    glutCreateWindow("Solar System Demo");
+    glutInitWindowSize(640, 480);
+    glutCreateWindow("Simulator Demo");
 
     // Initialize OpenGL.
     OpenGLInit();
