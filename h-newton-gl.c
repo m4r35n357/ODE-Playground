@@ -46,7 +46,8 @@ static controls *c;
 static parameters *p;
 
 static GLenum stopped = GL_FALSE;
-static GLenum singleStep = GL_FALSE;
+static GLenum running = GL_TRUE;
+static GLenum stepping = GL_FALSE;
 
 // These three variables control the animation's state and speed.
 static float AnimateIncrement = 24.0F;  // Time step for animation (hours)
@@ -64,11 +65,13 @@ static void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
         case 'R':
         case 'r':
-            singleStep = !singleStep;;
+            running = !running;
+            stopped = GL_FALSE;
             break;
         case 's':
         case 'S':
-            stopped = !stopped;
+            stepping = !stepping;
+            stopped = GL_FALSE;
             break;
         case 'F':
         case 'f':
@@ -92,6 +95,10 @@ static void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     }
 }
 
+static void next_step (void) {
+    if (!(p = (parameters *)generate(c, p))) glutLeaveMainLoop();
+}
+
 /*
  * Animate() handles the animation and the redrawing of the graphics window contents.
  */
@@ -110,8 +117,11 @@ static void Animate (void) {
     glColor3f(0.0F, 1.0F, 0.0F);
     glutWireSphere(0.4F, 10, 10);
 
-    if (!stopped ) {
-        if (!(p = (parameters *)generate(c, p))) glutLeaveMainLoop();
+    if (!stopped) {
+        next_step();
+        if (stepping) {
+            stopped = GL_TRUE;
+        }
     }
 
     // Flush the pipeline, and swap the buffers
