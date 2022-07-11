@@ -95,10 +95,6 @@ static void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     }
 }
 
-static void next_step (void) {
-    if (!(p = (parameters *)generate(c, p))) glutLeaveMainLoop();
-}
-
 /*
  * Animate() handles the animation and the redrawing of the graphics window contents.
  */
@@ -118,7 +114,7 @@ static void Animate (void) {
     glutWireSphere(0.4F, 10, 10);
 
     if (!stopped) {
-        next_step();
+        if (!(p = (parameters *)generate(c, p))) glutLeaveMainLoop();
         if (stepping) {
             stopped = GL_TRUE;
         }
