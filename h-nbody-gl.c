@@ -60,6 +60,14 @@ static void Key_down (void) {
     AnimateIncrement /= 2.0F;           // Halve the animation time step
 }
 
+static void Key_left (void) {
+    AnimateIncrement *= 2.0F;           // Double the animation time step
+}
+
+static void Key_right (void) {
+    AnimateIncrement /= 2.0F;           // Halve the animation time step
+}
+
 // glutKeyboardFunc is called below to set this function to handle all normal key presses.
 static void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
@@ -92,6 +100,12 @@ static void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
         case GLUT_KEY_DOWN:
             Key_down();
             break;
+        case GLUT_KEY_LEFT:
+            Key_left();
+            break;
+        case GLUT_KEY_RIGHT:
+            Key_right();
+            break;
     }
 }
 
@@ -102,7 +116,10 @@ static void Animate (void) {
     // Clear the redering window
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Clear the current matrix (Modelview)
+    // Set the camera
+    glLoadIdentity();
+    gluLookAt(20.0F, 20.0F, 0.0F, 0.0F, 0.0F, 20.0F, 0.0F, 0.0F, 1.0F);   // Clear the current matrix (Modelview)
+
     glLoadIdentity();
     glTranslatef((float)nb->bodies[0].q_x, (float)nb->bodies[0].q_y, (float)nb->bodies[0].q_z -20.0F);
     glColor3f(1.0F, 1.0F, 0.0F);
@@ -115,32 +132,32 @@ static void Animate (void) {
 
     glLoadIdentity();
     glTranslatef((float)nb->bodies[2].q_x, (float)nb->bodies[2].q_y, (float)nb->bodies[2].q_z -20.0F);
-    glColor3f(1.0F, 1.0F, 1.0F);
+    glColor3f(1.0F, 0.0F, 1.0F);
     glutWireSphere(0.4F, 10, 10);
 
     glLoadIdentity();
     glTranslatef((float)nb->bodies[3].q_x, (float)nb->bodies[3].q_y, (float)nb->bodies[3].q_z -20.0F);
-    glColor3f(0.0F, 1.0F, 1.0F);
+    glColor3f(1.0F, 0.0F, 0.0F);
     glutWireSphere(0.4F, 10, 10);
 
     glLoadIdentity();
     glTranslatef((float)nb->bodies[4].q_x, (float)nb->bodies[4].q_y, (float)nb->bodies[4].q_z -20.0F);
-    glColor3f(0.0F, 1.0F, 1.0F);
+    glColor3f(0.0F, 1.0F, 0.0F);
     glutWireSphere(0.4F, 10, 10);
 
     glLoadIdentity();
     glTranslatef((float)nb->bodies[5].q_x, (float)nb->bodies[5].q_y, (float)nb->bodies[5].q_z -20.0F);
-    glColor3f(0.0F, 1.0F, 1.0F);
+    glColor3f(0.0F, 0.0F, 1.0F);
     glutWireSphere(0.4F, 10, 10);
 
     glLoadIdentity();
     glTranslatef((float)nb->bodies[6].q_x, (float)nb->bodies[6].q_y, (float)nb->bodies[6].q_z -20.0F);
-    glColor3f(0.0F, 1.0F, 1.0F);
+    glColor3f(0.3F, 0.3F, 0.3F);
     glutWireSphere(0.4F, 10, 10);
 
     glLoadIdentity();
     glTranslatef((float)nb->bodies[7].q_x, (float)nb->bodies[7].q_y, (float)nb->bodies[7].q_z -20.0F);
-    glColor3f(0.0F, 1.0F, 1.0F);
+    glColor3f(0.6F, 0.6F, 0.6F);
     glutWireSphere(0.4F, 10, 10);
 
     if (!stopped) {
