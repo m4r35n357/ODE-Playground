@@ -2,7 +2,7 @@
  * N-body problem using Hamilton's equations
  *
  * Example:  ./h-3body-dbg  6 8 1 10000  >/tmp/$USER/data
- * 
+ *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
@@ -12,6 +12,23 @@
 #include <math.h>
 #include "symplectic.h"
 #include "h-nbody.h"
+
+static void cog (nbody *nb) {
+    real X = 0.0L, Y = 0.0L, Z = 0.0L, mT = 0.0L;
+    for (int i = 0; i < nb->n; i += 1) {
+        body *a = &nb->bodies[i];
+        X += a->q_x * a->m;
+        Y += a->q_y * a->m;
+        Z += a->q_z * a->m;
+        mT += a->m;
+    }
+    for (int i = 0; i < nb->n; i += 1) {
+        body *a = &nb->bodies[i];
+        a->q_x -= X / mT;
+        a->q_y -= Y / mT;
+        a->q_z -= Z / mT;
+    }
+}
 
 static real distance (real xA, real yA, real zA, real xB, real yB, real zB) {
     return sqrtl((xB - xA) * (xB - xA) + (yB - yA) * (yB - yA) + (zB - zA) * (zB - zA));
@@ -61,8 +78,8 @@ void update_q (void *n_body, real c) {
         a->q_y += a->p_y * tmp;
         a->q_z += a->p_z * tmp;
     }
+    cog(nb);
 }
-
 
 void update_p (void *n_body, real c) {
     nbody *nb = (nbody *)n_body;
