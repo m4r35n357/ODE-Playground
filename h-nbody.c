@@ -33,19 +33,21 @@ static real h (nbody *nb) {
 }
 
 void *get_p (int argc, char **argv, int va_begin) { (void)argc; (void)argv; (void)va_begin;
-	int n_bodies = 8;
-    nbody *nb = calloc((size_t)n_bodies, sizeof (body));
-	nb->n = n_bodies;
-    nb->bodies[0] = (body){.m = 100.0L, .q_x = 0.0L, .q_y = 0.0L, .q_z = 0.0L, .p_x = 0.0L, .p_y = 0.0L, .p_z = 0.0L};
-    nb->bodies[1] = (body){.m = 2.0L, .q_x = 0.0L, .q_y = 4.5L, .q_z = 0.4L, .p_x = -0.2L, .p_y = 0.0L, .p_z = 1.8L};
-    nb->bodies[2] = (body){.m = 3.0L, .q_x = -6.0L, .q_y = 0.0L, .q_z = -0.4L, .p_x = 0.0L, .p_y = -2.0L, .p_z = 1.0L};
-    nb->bodies[3] = (body){.m = 5.0L, .q_x = 3.0L, .q_y = 0.0L, .q_z = -0.2L, .p_x = 0.0L, .p_y = 5.8L, .p_z = -0.2L};
-    nb->bodies[4] = (body){.m = 4.0L, .q_x = 0.0L, .q_y = -4.0L, .q_z = 0.1L, .p_x = -3.6L, .p_y = 0.0L, .p_z = 0.2L};
-    nb->bodies[5] = (body){.m = 3.0L, .q_x = -4.0L, .q_y = 0.0L, .q_z = -0.1L, .p_x = 0.0L, .p_y = -0.2L, .p_z = -2.6L};
-    nb->bodies[6] = (body){.m = 3.0L, .q_x = 8.0L, .q_y = 0.0L, .q_z = -0.3L, .p_x = 0.0L, .p_y = 2.0L, .p_z = -0.2L};
-    nb->bodies[7] = (body){.m = 4.0L, .q_x = 0.0L, .q_y = 4.0L, .q_z = -0.2L, .p_x = -4.8L, .p_y = 0.0L, .p_z = -0.2L};
-	nb->g = 0.05L;
-	nb->h0 = h(nb);
+    int n_bodies = 8;
+    body *bodies = calloc((size_t)n_bodies, sizeof (body));
+    bodies[0] = (body){.m = 100.0L, .q_x = 0.0L, .q_y = 0.0L, .q_z = 0.0L, .p_x = 0.0L, .p_y = 0.0L, .p_z = 0.0L};
+    bodies[1] = (body){.m = 2.0L, .q_x = 0.0L, .q_y = 4.5L, .q_z = 0.4L, .p_x = -0.2L, .p_y = 0.0L, .p_z = 1.8L};
+    bodies[2] = (body){.m = 3.0L, .q_x = -6.0L, .q_y = 0.0L, .q_z = -0.4L, .p_x = 0.0L, .p_y = -2.0L, .p_z = 1.0L};
+    bodies[3] = (body){.m = 5.0L, .q_x = 3.0L, .q_y = 0.0L, .q_z = -0.2L, .p_x = 0.0L, .p_y = 5.8L, .p_z = -0.2L};
+    bodies[4] = (body){.m = 4.0L, .q_x = 0.0L, .q_y = -4.0L, .q_z = 0.1L, .p_x = -3.6L, .p_y = 0.0L, .p_z = 0.2L};
+    bodies[5] = (body){.m = 3.0L, .q_x = -4.0L, .q_y = 0.0L, .q_z = -0.1L, .p_x = 0.0L, .p_y = -0.2L, .p_z = -2.6L};
+    bodies[6] = (body){.m = 3.0L, .q_x = 8.0L, .q_y = 0.0L, .q_z = -0.3L, .p_x = 0.0L, .p_y = 2.0L, .p_z = -0.2L};
+    bodies[7] = (body){.m = 4.0L, .q_x = 0.0L, .q_y = 4.0L, .q_z = -0.2L, .p_x = -4.8L, .p_y = 0.0L, .p_z = -0.2L};
+    nbody *nb = malloc(sizeof (nbody));
+    nb->n = n_bodies;
+    nb->bodies = bodies;
+    nb->g = 0.05L;
+    nb->h0 = h(nb);
     return nb;
 }
 

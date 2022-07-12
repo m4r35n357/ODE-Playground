@@ -43,7 +43,7 @@
 #include "h-nbody-gl.h"
 
 static controls *c;
-static nbody *p;
+static nbody *nb;
 
 static GLenum stopped = GL_FALSE;
 static GLenum running = GL_TRUE;
@@ -101,8 +101,6 @@ static void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
 static void Animate (void) {
     // Clear the redering window
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    nbody *nb = (nbody *)p;
 
     // Clear the current matrix (Modelview)
     glLoadIdentity();
@@ -187,7 +185,7 @@ static void ResizeWindow (int w, int h) {
 // Set up OpenGL, hook up callbacks, and start the main loop
 int main (int argc, char** argv) {
     c = get_c(argv);
-    p = (nbody *)get_p(argc, argv, 5);
+    nb = (nbody *)get_p(argc, argv, 5);
 
     // Need to double buffer for animation
     glutInit(&argc,argv);
