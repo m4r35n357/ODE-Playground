@@ -1,5 +1,5 @@
 /*
- *  gcc -pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra -Wconversion -Wredundant-decls -Wmissing-field-initializers -Wmissing-declarations -Wuninitialized -Wunsuffixed-float-constants -frounding-math -fsignaling-nans symplectic.c h-nbody.c h-nbody-gl.c -lm -lglut -lGLU -lGL
+ gcc -pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra -Wconversion -Wredundant-decls -Wmissing-field-initializers -Wmissing-declarations -Wuninitialized -Wunsuffixed-float-constants -frounding-math -fsignaling-nans symplectic.c h-nbody.c h-nbody-gl.c -lm -lglut -lGLU -lGL
 
  *
  * Solar.c
@@ -194,7 +194,7 @@ int main (int argc, char** argv) {
     // Create and position the graphics window
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(640, 480);
-    glutCreateWindow("Simulator Demo");
+    glutCreateWindow("N-Body Demo");
 
     // Initialize OpenGL.
     OpenGLInit();
