@@ -2,7 +2,7 @@
 #include "real.h"
 
 typedef struct Body {
-    real mass;  // central mass
+    real m;  // central mass
     real q_x, q_y, q_z, p_x, p_y, p_z;  // coordinates & momenta
 } body;
 
