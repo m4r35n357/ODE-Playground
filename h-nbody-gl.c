@@ -162,6 +162,7 @@ static void Animate (void) {
 
     if (!stopped) {
         if (!(nb = (nbody *)generate(c, nb))) glutLeaveMainLoop();
+        cog(nb);
         if (stepping) {
             stopped = GL_TRUE;
         }

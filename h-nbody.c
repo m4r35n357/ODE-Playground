@@ -13,7 +13,7 @@
 #include "symplectic.h"
 #include "h-nbody.h"
 
-static void cog (nbody *nb) {
+void cog (nbody *nb) {
     real X = 0.0L, Y = 0.0L, Z = 0.0L, mT = 0.0L;
     for (int i = 0; i < nb->n; i += 1) {
         body *a = &nb->bodies[i];
@@ -78,7 +78,6 @@ void update_q (void *n_body, real c) {
         a->q_y += a->p_y * tmp;
         a->q_z += a->p_z * tmp;
     }
-    cog(nb);
 }
 
 void update_p (void *n_body, real c) {

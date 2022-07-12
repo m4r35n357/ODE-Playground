@@ -11,3 +11,5 @@ typedef struct Nbody {
     body *bodies;
     real g, h0;
 } nbody;
+
+void cog (nbody *nb);
