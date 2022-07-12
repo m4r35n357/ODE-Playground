@@ -1,5 +1,5 @@
 /*
- *  gcc -pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra -Wconversion -Wredundant-decls -Wmissing-field-initializers -Wmissing-declarations -Wuninitialized -Wunsuffixed-float-constants -frounding-math -fsignaling-nans symplectic.c dual.c h-newton.c h-newton-gl.c -lm -lglut -lGLU -lGL
+ *  gcc -pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra -Wconversion -Wredundant-decls -Wmissing-field-initializers -Wmissing-declarations -Wuninitialized -Wunsuffixed-float-constants -frounding-math -fsignaling-nans symplectic.c h-nbody.c h-nbody-gl.c -lm -lglut -lGLU -lGL
 
  *
  * Solar.c
@@ -39,11 +39,11 @@
 #include <GL/freeglut.h>    // OpenGL Graphics Utility Library
 #include "math.h"
 #include "symplectic.h"
-#include "h-newton.h"
-#include "h-newton-gl.h"
+#include "h-nbody.h"
+#include "h-nbody-gl.h"
 
 static controls *c;
-static parameters *p;
+static nbody *p;
 
 static GLenum stopped = GL_FALSE;
 static GLenum running = GL_TRUE;
@@ -102,19 +102,21 @@ static void Animate (void) {
     // Clear the redering window
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    nbody *nb = (nbody *)p;
+
     // Clear the current matrix (Modelview)
     glLoadIdentity();
-    glTranslatef(0.0F, 0.0F, -20.0F);
-    glColor3f(1.0F, 0.0F, 0.0F);
-    glutWireSphere(1.0F, 10, 10);
+    glTranslatef((float)nb->bodies[0].q_x, (float)nb->bodies[0].q_y, (float)nb->bodies[0].q_z -20.0F);
+    glColor3f(1.0F, 1.0F, 0.0F);
+    glutWireSphere(0.4F, 10, 10);
 
     glLoadIdentity();
-    glTranslatef((float)(p->q_r * cosl(p->q_phi)), (float)(p->q_r * sinl(p->q_phi)), -20.0F);
-    glColor3f(0.0F, 1.0F, 0.0F);
+    glTranslatef((float)nb->bodies[0].q_x, (float)nb->bodies[0].q_y, (float)nb->bodies[0].q_z -20.0F);
+    glColor3f(0.0F, 1.0F, 1.0F);
     glutWireSphere(0.4F, 10, 10);
 
     if (!stopped) {
-        if (!(p = (parameters *)generate(c, p))) glutLeaveMainLoop();
+        if (!(nb = (nbody *)generate(c, nb))) glutLeaveMainLoop();
         if (stepping) {
             stopped = GL_TRUE;
         }
@@ -155,7 +157,7 @@ static void ResizeWindow (int w, int h) {
 // Set up OpenGL, hook up callbacks, and start the main loop
 int main (int argc, char** argv) {
     c = get_c(argv);
-    p = (parameters *)get_p(argc, argv, 5);
+    p = (nbody *)get_p(argc, argv, 5);
 
     // Need to double buffer for animation
     glutInit(&argc,argv);
