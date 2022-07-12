@@ -111,7 +111,37 @@ static void Animate (void) {
     glutWireSphere(0.4F, 10, 10);
 
     glLoadIdentity();
-    glTranslatef((float)nb->bodies[0].q_x, (float)nb->bodies[0].q_y, (float)nb->bodies[0].q_z -20.0F);
+    glTranslatef((float)nb->bodies[1].q_x, (float)nb->bodies[1].q_y, (float)nb->bodies[1].q_z -20.0F);
+    glColor3f(0.0F, 1.0F, 1.0F);
+    glutWireSphere(0.4F, 10, 10);
+
+    glLoadIdentity();
+    glTranslatef((float)nb->bodies[2].q_x, (float)nb->bodies[2].q_y, (float)nb->bodies[2].q_z -20.0F);
+    glColor3f(1.0F, 1.0F, 1.0F);
+    glutWireSphere(0.4F, 10, 10);
+
+    glLoadIdentity();
+    glTranslatef((float)nb->bodies[3].q_x, (float)nb->bodies[3].q_y, (float)nb->bodies[3].q_z -20.0F);
+    glColor3f(0.0F, 1.0F, 1.0F);
+    glutWireSphere(0.4F, 10, 10);
+
+    glLoadIdentity();
+    glTranslatef((float)nb->bodies[4].q_x, (float)nb->bodies[4].q_y, (float)nb->bodies[4].q_z -20.0F);
+    glColor3f(0.0F, 1.0F, 1.0F);
+    glutWireSphere(0.4F, 10, 10);
+
+    glLoadIdentity();
+    glTranslatef((float)nb->bodies[5].q_x, (float)nb->bodies[5].q_y, (float)nb->bodies[5].q_z -20.0F);
+    glColor3f(0.0F, 1.0F, 1.0F);
+    glutWireSphere(0.4F, 10, 10);
+
+    glLoadIdentity();
+    glTranslatef((float)nb->bodies[6].q_x, (float)nb->bodies[6].q_y, (float)nb->bodies[6].q_z -20.0F);
+    glColor3f(0.0F, 1.0F, 1.0F);
+    glutWireSphere(0.4F, 10, 10);
+
+    glLoadIdentity();
+    glTranslatef((float)nb->bodies[7].q_x, (float)nb->bodies[7].q_y, (float)nb->bodies[7].q_z -20.0F);
     glColor3f(0.0F, 1.0F, 1.0F);
     glutWireSphere(0.4F, 10, 10);
 
