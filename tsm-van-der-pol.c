@@ -10,7 +10,7 @@
 #include <assert.h>
 #include "taylor-ode.h"
 
-typedef struct { real mu; series x2; } parameters;
+typedef struct Parameters { real mu; series x2; } parameters;
 
 void *get_p (int argc, char **argv, int n) {
     assert(argc == 9);

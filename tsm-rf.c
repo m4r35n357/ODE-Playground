@@ -12,7 +12,7 @@
 #include <assert.h>
 #include "taylor-ode.h"
 
-typedef struct { real alpha, gamma; series a, b, c; } parameters;
+typedef struct Parameters { real alpha, gamma; series a, b, c; } parameters;
 
 void *get_p (int argc, char **argv, int n) {
     assert(argc == 10);
