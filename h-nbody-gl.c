@@ -1,38 +1,9 @@
 /*
- gcc -pedantic -Wall -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wextra -Wconversion -Wredundant-decls -Wmissing-field-initializers -Wmissing-declarations -Wuninitialized -Wunsuffixed-float-constants -frounding-math -fsignaling-nans symplectic.c h-nbody.c h-nbody-gl.c -lm -lglut -lGLU -lGL
-
- *
- * Solar.c
- *
- * Program to demonstrate how to use a local
- * coordinate method to position parts of a
- * model in relation to other model parts.
- *
- * Draws a simple solar system, with a sun, planet and moon.
- * Based on sample code from the OpenGL programming guide
- *      by Woo, Neider, Davis.  Addison-Wesley.
- *
- * Author: Samuel R. Buss
- *
- * Software accompanying the book
- *      3D Computer Graphics: A Mathematical Introduction with OpenGL,
- *      by S. Buss, Cambridge University Press, 2003.
- *
- * Software is "as-is" and carries no warranty.  It may be used without
- *   restriction, but if you modify it, please change the filenames to
- *   prevent confusion between different versions.
- * Bug reports: Sam Buss, sbuss@ucsd.edu.
- * Web page: http://math.ucsd.edu/~sbuss/MathCG
- *
- * USAGE:
- *    Press "r" key to toggle (off and on) running the animation
- *    Press "s" key to single-step animation
- *    The up arrow key and down array key control the
- *          time step used in the animation rate.  Each key
- *          press multiplies or divides the times by a factor
- *          of two (2).
- *    Press ESCAPE to exit.
- *
+ *  N-Body simulator
+ * 
+ * Example: ./h-nbody-gl  6 8 .01 10000
+ * 
+ * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
 #include <stdlib.h>
