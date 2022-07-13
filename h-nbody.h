@@ -12,4 +12,10 @@ typedef struct Nbody {
     real g, h0;
 } nbody;
 
-void cog (nbody *nb);
+typedef struct Components {
+    real x;
+    real y;
+    real z;
+} components;
+
+components cog (nbody *nb);

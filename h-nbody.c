@@ -13,7 +13,7 @@
 #include "symplectic.h"
 #include "h-nbody.h"
 
-void cog (nbody *nb) {
+components cog (nbody *nb) {
     real X = 0.0L, Y = 0.0L, Z = 0.0L, mT = 0.0L;
     for (int i = 0; i < nb->n; i += 1) {
         body *a = &nb->bodies[i];
@@ -22,12 +22,14 @@ void cog (nbody *nb) {
         Z += a->q_z * a->m;
         mT += a->m;
     }
+    components centre = (components) { .x = X / mT, .y = Y / mT, .z = Z / mT };
     for (int i = 0; i < nb->n; i += 1) {
         body *a = &nb->bodies[i];
-        a->q_x -= X / mT;
-        a->q_y -= Y / mT;
-        a->q_z -= Z / mT;
+        a->q_x -= centre.x;
+        a->q_y -= centre.y;
+        a->q_z -= centre.z;
     }
+    return centre;
 }
 
 static real distance (real xA, real yA, real zA, real xB, real yB, real zB) {
