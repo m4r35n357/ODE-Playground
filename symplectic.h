@@ -1,10 +1,15 @@
 
 #include "real.h"
 
-typedef struct {
+typedef struct Weights {
+    real fwd, rev;
+} weights;
+
+typedef struct Controls {
     long order;
     real step_size;
     long steps;
+    weights r1, r2, r3, r4;
 } controls;
 
 /*
@@ -35,7 +40,7 @@ typedef void (*plotter)(int dp, void *params, real t);
 /*
  * To pass an integrator as parameter
  */
-typedef void (*integrator)(void *params, real h);
+typedef void (*integrator)(controls *cont, void *params, real h);
 
 /*
  * Coordinate updater dq = (dH/dp).dt
