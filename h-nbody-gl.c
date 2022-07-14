@@ -41,6 +41,14 @@ static void Key_right (void) {
 // glutKeyboardFunc is called below to set this function to handle all normal key presses.
 static void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
+        case 'A':
+        case 'a':
+            nb->radius -= 0.1L;
+            break;
+        case 'Z':
+        case 'z':
+            nb->radius += 0.1L;
+            break;
         case 'R':
         case 'r':
             running = !running;
@@ -87,7 +95,7 @@ static void Animate (void) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
-    glTranslatef(0.0F, 0.0F, -20.0F);
+    glTranslatef(0.0F, 0.0F, - nb->radius);
     glRotatef(nb->view_latitude, 1.0F, 0.0F, 0.0F);
     glRotatef(nb->view_longitude, 0.0F, 0.0F, 1.0F);
     
