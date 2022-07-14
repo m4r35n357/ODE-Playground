@@ -16,6 +16,8 @@
 static controls *c;
 static nbody *nb;
 
+static const float scale = 0.01F;
+
 static GLenum stopped = GL_FALSE;
 static GLenum running = GL_TRUE;
 static GLenum stepping = GL_FALSE;
@@ -93,49 +95,49 @@ static void Animate (void) {
                  (float)nb->bodies[0].q_y - (float)nb->centre.y,
                  (float)nb->bodies[0].q_z - (float)nb->centre.z);
     glColor3f(1.0F, 1.0F, 0.0F);
-    glutWireSphere(0.4F, 10, 10);
+    glutWireSphere(powl(scale * (float)nb->bodies[0].m, 1.0L/3.0L), 10, 10);
 
     glTranslatef((float)nb->bodies[1].q_x - (float)nb->bodies[0].q_x,
                  (float)nb->bodies[1].q_y - (float)nb->bodies[0].q_y,
                  (float)nb->bodies[1].q_z - (float)nb->bodies[0].q_z);
     glColor3f(0.0F, 1.0F, 1.0F);
-    glutWireSphere(0.4F, 10, 10);
+    glutWireSphere(powl(scale * (float)nb->bodies[1].m, 1.0L/3.0L), 10, 10);
 
     glTranslatef((float)nb->bodies[2].q_x - (float)nb->bodies[1].q_x,
                  (float)nb->bodies[2].q_y - (float)nb->bodies[1].q_y,
                  (float)nb->bodies[2].q_z - (float)nb->bodies[1].q_z);
     glColor3f(1.0F, 0.0F, 1.0F);
-    glutWireSphere(0.4F, 10, 10);
+    glutWireSphere(powl(scale * (float)nb->bodies[2].m, 1.0L/3.0L), 10, 10);
 
     glTranslatef((float)nb->bodies[3].q_x - (float)nb->bodies[2].q_x,
                  (float)nb->bodies[3].q_y - (float)nb->bodies[2].q_y,
                  (float)nb->bodies[3].q_z - (float)nb->bodies[2].q_z);
     glColor3f(1.0F, 0.0F, 0.0F);
-    glutWireSphere(0.4F, 10, 10);
+    glutWireSphere(powl(scale * (float)nb->bodies[3].m, 1.0L/3.0L), 10, 10);
 
     glTranslatef((float)nb->bodies[4].q_x - (float)nb->bodies[3].q_x,
                  (float)nb->bodies[4].q_y - (float)nb->bodies[3].q_y,
                  (float)nb->bodies[4].q_z - (float)nb->bodies[3].q_z);
     glColor3f(0.0F, 1.0F, 0.0F);
-    glutWireSphere(0.4F, 10, 10);
+    glutWireSphere(powl(scale * (float)nb->bodies[4].m, 1.0L/3.0L), 10, 10);
 
     glTranslatef((float)nb->bodies[5].q_x - (float)nb->bodies[4].q_x,
                  (float)nb->bodies[5].q_y - (float)nb->bodies[4].q_y,
                  (float)nb->bodies[5].q_z - (float)nb->bodies[4].q_z);
     glColor3f(0.0F, 0.0F, 1.0F);
-    glutWireSphere(0.4F, 10, 10);
+    glutWireSphere(powl(scale * (float)nb->bodies[5].m, 1.0L/3.0L), 10, 10);
 
     glTranslatef((float)nb->bodies[6].q_x - (float)nb->bodies[5].q_x,
                  (float)nb->bodies[6].q_y - (float)nb->bodies[5].q_y,
                  (float)nb->bodies[6].q_z - (float)nb->bodies[5].q_z);
     glColor3f(0.3F, 0.3F, 0.3F);
-    glutWireSphere(0.4F, 10, 10);
+    glutWireSphere(powl(scale * (float)nb->bodies[6].m, 1.0L/3.0L), 10, 10);
 
     glTranslatef((float)nb->bodies[7].q_x - (float)nb->bodies[6].q_x,
                  (float)nb->bodies[7].q_y - (float)nb->bodies[6].q_y,
                  (float)nb->bodies[7].q_z - (float)nb->bodies[6].q_z);
     glColor3f(0.6F, 0.6F, 0.6F);
-    glutWireSphere(0.4F, 10, 10);
+    glutWireSphere(powl(scale * (float)nb->bodies[7].m, 1.0L/3.0L), 10, 10);
 
     if (!stopped) {
         if (!(nbody *)generate(c, nb)) {
