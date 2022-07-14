@@ -17,6 +17,7 @@ typedef struct Nbody {
     body *bodies;
     real g, h0;
     components centre;
+    real view_latitude, view_longitude;
 } nbody;
 
 void cog (nbody *nb);

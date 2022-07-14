@@ -20,23 +20,20 @@ static GLenum stopped = GL_FALSE;
 static GLenum running = GL_TRUE;
 static GLenum stepping = GL_FALSE;
 
-// These three variables control the animation's state and speed.
-static float AnimateIncrement = 24.0F;  // Time step for animation (hours)
-
 static void Key_up (void) {
-    AnimateIncrement *= 2.0F;           // Double the animation time step
+    nb->view_latitude += 1.0F;
 }
 
 static void Key_down (void) {
-    AnimateIncrement /= 2.0F;           // Halve the animation time step
+    nb->view_latitude -= 1.0F;
 }
 
 static void Key_left (void) {
-    AnimateIncrement *= 2.0F;           // Double the animation time step
+    nb->view_longitude += 1.0F;
 }
 
 static void Key_right (void) {
-    AnimateIncrement /= 2.0F;           // Halve the animation time step
+    nb->view_longitude -= 1.0F;
 }
 
 // glutKeyboardFunc is called below to set this function to handle all normal key presses.
@@ -89,7 +86,8 @@ static void Animate (void) {
 
     glLoadIdentity();
     glTranslatef(0.0F, 0.0F, -20.0F);
-    glRotatef(60.0F, 1.0F, 0.0F, 0.0F);
+    glRotatef(nb->view_latitude, 1.0F, 0.0F, 0.0F);
+    glRotatef(nb->view_longitude, 0.0F, 0.0F, 1.0F);
     
     glTranslatef((float)nb->bodies[0].q_x - (float)nb->centre.x,
                  (float)nb->bodies[0].q_y - (float)nb->centre.y,
