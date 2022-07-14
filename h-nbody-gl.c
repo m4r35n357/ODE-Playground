@@ -91,6 +91,9 @@ static void Animate (void) {
     glTranslatef(0.0F, 0.0F, -20.0F);
     glRotatef(60.0F, 1.0F, 0.0F, 0.0F);
     
+    glTranslatef((float)nb->bodies[0].q_x - (float)nb->centre.x,
+                 (float)nb->bodies[0].q_y - (float)nb->centre.y,
+                 (float)nb->bodies[0].q_z - (float)nb->centre.z);
     glColor3f(1.0F, 1.0F, 0.0F);
     glutWireSphere(0.4F, 10, 10);
 
