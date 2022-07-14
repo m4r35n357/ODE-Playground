@@ -17,7 +17,7 @@ typedef struct Nbody {
     body *bodies;
     real g, h0;
     components centre;
-    real radius, view_latitude, view_longitude;
+    float radius, view_latitude, view_longitude;
     components colour;
 } nbody;
 
