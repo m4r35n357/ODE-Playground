@@ -148,10 +148,10 @@ static void Animate (void) {
     glutWireSphere((float)powl(scale * nb->bodies[7].m, 1.0L/3.0L), 10, 10);
 
     if (!stopped) {
-        if (!(nbody *)generate(c, nb)) {
-            glutLeaveMainLoop();
-        } else {
+        if (generate(c, nb)) {
             cog(nb);
+        } else {
+            glutLeaveMainLoop();
         }
         if (stepping) {
             stopped = GL_TRUE;
