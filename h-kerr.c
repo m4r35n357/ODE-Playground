@@ -32,7 +32,7 @@ EOF
     --field="particle energy" --field="particle momentum" --field="momentum factor" --field="Carter's constant" \
     --field="r0" --field="theta0" \
     -- '6!0..36!3' '4!2..10!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' '0!1!2' "0.8" "1.0" \
-       "0.9455050956749083" "1.434374509531738" "1.0" "7.978759958927879" "12.0" "63.0")
+       "0.9455050956749083" "1.434374509531738" "1.0" "7.978759958927879" "12.0" "63.0") >/tmp/$USER/data
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -44,7 +44,7 @@ EOF
 #include "symplectic.h"
 #include "dual.h"
 
-typedef struct {
+typedef struct Parameters {
     real mu2;  // central mass & particle mass (squared)
     real E, L, Q, K;  // constants of motion
     real a, a2, L2, aL, aE, a2xmu2_E2;  // global constants

@@ -50,7 +50,7 @@
 #include <assert.h>
 #include "taylor-ode.h"
 
-typedef struct { real b; series sx, sy, sz, cx, cy, cz; } parameters;
+typedef struct Parameters { real b; series sx, sy, sz, cx, cy, cz; } parameters;
 
 void *get_p (int argc, char **argv, int n) {
     assert(argc == 9);

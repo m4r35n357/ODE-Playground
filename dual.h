@@ -9,7 +9,7 @@ real elevation_to_colatitude (real elevation);
 /*
  * For returning dual numbers
  */
-typedef struct {
+typedef struct Dual {
     real val;
     real dot;
 } dual;

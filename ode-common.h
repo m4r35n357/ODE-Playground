@@ -25,7 +25,7 @@ void t_params (char **argv, int count, ...);
 /*
  * For returning x, y, z velocities from the model
  */
-typedef struct {
+typedef struct Components {
     real x;
     real y;
     real z;

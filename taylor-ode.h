@@ -197,12 +197,12 @@ real t_exp (series E, series U, int k);
 /*
  * Selects either a trigonometric or hyperbolic version of the function
  */
-typedef enum {TRIG, HYP} geometry;
+typedef enum Geometry {TRIG, HYP} geometry;
 
 /*
  * For returning combined recurrence values
  */
-typedef struct {
+typedef struct Pair {
     real a;
     real b;
 } pair;

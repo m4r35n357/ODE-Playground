@@ -36,9 +36,9 @@ EOF
 #include <math.h>
 #include "dual.h"
 
-typedef struct { real a, b, c; } vector3;
+typedef struct Vector3 { real a, b, c; } vector3;
 
-typedef struct { real a, b, c, d, e, f, g, h, i; } matrix3x3;
+typedef struct Matrix3x3 { real a, b, c, d, e, f, g, h, i; } matrix3x3;
 
 static real det2x2 (real a, real d, real b, real c) {
     real w = b * c;
@@ -98,7 +98,7 @@ static dual THETA (real theta, dual E, dual L, dual Q, real a) {
     return d_sub(Q, d_scale(d_add(d_scale(d_shift(d_sqr(E), - 1.0L), - a * a), d_scale(d_sqr(L), 1.0L / sth2)), 1.0L - sth2));
 }
 
-typedef struct {
+typedef struct Parameters {
     real epsilon;  // precision
     real E, L, Q;  // constants of motion
     real spin;  // global constants

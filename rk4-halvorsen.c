@@ -40,7 +40,7 @@
 #include <assert.h>
 #include "runge-kutta-ode.h"
 
-typedef struct { real a, b; } parameters;
+typedef struct Parameters { real a, b; } parameters;
 
 void *get_p (int argc, char **argv) {
     assert(argc == 10);

@@ -41,7 +41,7 @@
 #include <math.h>
 #include "runge-kutta-ode.h"
 
-typedef struct { real b; } parameters;
+typedef struct Parameters { real b; } parameters;
 
 void *get_p (int argc, char **argv) {
     assert(argc == 9);
