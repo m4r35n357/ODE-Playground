@@ -105,6 +105,7 @@ echo ""
 echo " Building OpenGL stuff"
 ${CC} -O3 -o h-newton-gl symplectic.c dual.c h-newton.c h-newton-gl.c -lm -lglut -lGLU -lGL
 ${CC} -O3 -o h-nbody-gl symplectic.c h-nbody.c h-nbody-gl.c -lm -lglut -lGLU -lGL
+${CC} -g -Og -o h-nbody-gl-dbg symplectic.c h-nbody.c h-nbody-gl.c -lm -lglut -lGLU -lGL
 
 echo " Building dual-test-dbg"
 rm -f libdual-test-dbg

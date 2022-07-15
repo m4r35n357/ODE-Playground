@@ -53,7 +53,7 @@ static real h (nbody *nb) {
 void *get_p (int argc, char **argv, int va_begin) { (void)argc; (void)argv; (void)va_begin;
     int n_bodies = 8;
     body *bodies = calloc((size_t)n_bodies, sizeof (body));
-    bodies[0] = (body){ .m = 100.0L, .colour = (components) { 1.0F, 1.0F, 0.0F },
+    bodies[0] = (body){ .m = 100.0L, .colour = (components) { .x = 1.0F, .y = 1.0F, .z = 0.0F },
                         .q_x = 0.0L, .q_y = 0.0L, .q_z = 0.0L, .p_x = 0.0L, .p_y = 0.0L, .p_z = 0.0L };
     bodies[1] = (body){ .m = 2.0L, .colour = (components) { .x = 0.0F, .y = 1.0F, .z = 1.0F },
                         .q_x = 0.0L, .q_y = 4.5L, .q_z = 0.4L, .p_x = -0.2L, .p_y = 0.0L, .p_z = 1.8L };
