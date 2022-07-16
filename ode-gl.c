@@ -13,14 +13,13 @@
 #include <time.h>
 #include <math.h>
 #include <GL/freeglut.h>    // OpenGL Graphics Utility Library
-#include "symplectic.h"
-#include "h-nbody.h"
+//#include "ode-common.h"
+#include "taylor-ode.h"
 #include "h-nbody-gl.h"
 
 static controls *c;
-static nbody *nb;
-
-static const real scale = 0.01L;
+static body *nb;
+static void *p;
 
 static display d;
 static char hud[128];
@@ -53,11 +52,11 @@ static void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
         case 'A':
         case 'a':
-            nb->radius -= 0.1L;
+            nb->radius -= 0.1F;
             break;
         case 'Z':
         case 'z':
-            nb->radius += 0.1L;
+            nb->radius += 0.1F;
             break;
         case 'R':
         case 'r':
@@ -120,71 +119,23 @@ static void Animate (void) {
     glRotatef(nb->view_longitude, 0.0F, 0.0F, 1.0F);
 
     if (d == BOTH || d == LINES) {
-        for (int i = 0; i < nb->n; i += 1) {
-            body *b = &nb->bodies[i];
-            glBegin( GL_LINE_STRIP );
-            for (int k = 0; k < b->track->newest; k += 1) {
-                components point = b->track->buffer[k];
-                glColor3f(b->colour.x, b->colour.y, b->colour.z);
-                glVertex3f(point.x, point.y, point.z);
-            }
-            glEnd();
+        glBegin( GL_LINE_STRIP );
+        for (int k = 0; k < nb->track->newest; k += 1) {
+            components point = nb->track->buffer[k];
+            glColor3f(nb->colour.x, nb->colour.y, nb->colour.z);
+            glVertex3f(point.x, point.y, point.z);
         }
+        glEnd();
     }
 
     if (d == BOTH || d == BALLS) {
-        body *b = nb->bodies;
-
-        glTranslatef((float)(b[0].q_x - nb->centre.x),
-                     (float)(b[0].q_y - nb->centre.y),
-                     (float)(b[0].q_z - nb->centre.z));
-        glColor3f(b[0].colour.x, b[0].colour.y, b[0].colour.z);
-        glutWireSphere((float)powl(scale * b[0].m, 1.0L/3.0L), 10, 10);
-
-        glTranslatef((float)(b[1].q_x - b[0].q_x),
-                     (float)(b[1].q_y - b[0].q_y),
-                     (float)(b[1].q_z - b[0].q_z));
-        glColor3f(b[1].colour.x, b[1].colour.y, b[1].colour.z);
-        glutWireSphere((float)powl(scale * b[1].m, 1.0L/3.0L), 10, 10);
-
-        glTranslatef((float)(b[2].q_x - b[1].q_x),
-                     (float)(b[2].q_y - b[1].q_y),
-                     (float)(b[2].q_z - b[1].q_z));
-        glColor3f(b[2].colour.x, b[2].colour.y, b[2].colour.z);
-        glutWireSphere((float)powl(scale * b[2].m, 1.0L/3.0L), 10, 10);
-
-        glTranslatef((float)(b[3].q_x - b[2].q_x),
-                     (float)(b[3].q_y - b[2].q_y),
-                     (float)(b[3].q_z - b[2].q_z));
-        glColor3f(b[3].colour.x, b[3].colour.y, b[3].colour.z);
-        glutWireSphere((float)powl(scale * b[3].m, 1.0L/3.0L), 10, 10);
-
-        glTranslatef((float)(b[4].q_x - b[3].q_x),
-                     (float)(b[4].q_y - b[3].q_y),
-                     (float)(b[4].q_z - b[3].q_z));
-        glColor3f(b[4].colour.x, b[4].colour.y, b[4].colour.z);
-        glutWireSphere((float)powl(scale * b[4].m, 1.0L/3.0L), 10, 10);
-
-        glTranslatef((float)(b[5].q_x - b[4].q_x),
-                     (float)(b[5].q_y - b[4].q_y),
-                     (float)(b[5].q_z - b[4].q_z));
-        glColor3f(b[5].colour.x, b[5].colour.y, b[5].colour.z);
-        glutWireSphere((float)powl(scale * b[5].m, 1.0L/3.0L), 10, 10);
-
-        glTranslatef((float)(b[6].q_x - b[5].q_x),
-                     (float)(b[6].q_y - b[5].q_y),
-                     (float)(b[6].q_z - b[5].q_z));
-        glColor3f(b[6].colour.x, b[6].colour.y, b[6].colour.z);
-        glutWireSphere((float)powl(scale * b[6].m, 1.0L/3.0L), 10, 10);
-
-        glTranslatef((float)(b[7].q_x - b[6].q_x),
-                     (float)(b[7].q_y - b[6].q_y),
-                     (float)(b[7].q_z - b[6].q_z));
-        glColor3f(b[7].colour.x, b[7].colour.y, b[7].colour.z);
-        glutWireSphere((float)powl(scale * b[7].m, 1.0L/3.0L), 10, 10);
+        glTranslatef((float)nb->coordinates->x, (float)nb->coordinates->y, (float)nb->coordinates->z);
+        glColor3f(nb->colour.x, nb->colour.y, nb->colour.z);
+        glutWireSphere((float)0.1F, 10, 10);
     }
 
-    sprintf(hud, "h0: %.9Le  h: %.9Le", nb->h0, h(nb));
+    sprintf(hud, "t:%5.1Lf  x:%5.1Lf  y:%5.1Lf  z:%5.1Lf  ",
+                  c->step * c->step_size, nb->coordinates->x, nb->coordinates->y, nb->coordinates->z);
     output(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, 0.0F, 0.5F, 0.5F, hud);
 
     sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.1f %%",
@@ -194,13 +145,9 @@ static void Animate (void) {
     output(10, 10, 0.0F, 0.5F, 0.5F, hud);
 
     if (! finished && !stopped) {
-        if (generate(c, nb)) {
-            cog(nb);
+        if (tsm_gen(c, nb->coordinates, p)) {
             if (d == BOTH || d == LINES) {
-                for (int i = 0; i < nb->n; i += 1) {
-                    body *b = &nb->bodies[i];
-                    b->track->buffer[b->track->newest++] = (components) { b->q_x, b->q_y, b->q_z };
-                }
+                nb->track->buffer[nb->track->newest++] = *nb->coordinates;
             }
         } else {
             finished = GL_TRUE;
@@ -236,7 +183,7 @@ static void ResizeWindow (int w, int h) {
     // Set up the projection view matrix (not very well!)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60.0F, aspectRatio, 1.0F, 30.0F);
+    gluPerspective(60.0F, aspectRatio, 1.0F, 100.0F);
 
     // Select the Modelview matrix
     glMatrixMode(GL_MODELVIEW);
@@ -244,20 +191,26 @@ static void ResizeWindow (int w, int h) {
 
 // Set up OpenGL, hook up callbacks, and start the main loop
 int main (int argc, char** argv) {
-    assert(argc == 5);
-
-    c = get_c(argv);
     d = (int)strtol(argv[1], NULL, 10);
-    nb = (nbody *)get_p(argc, argv, 5);
+    c = get_c(argv);
     since = clock();
 
-    for (int i = 0; i < nb->n; i += 1) {
-        body *b = &nb->bodies[i];
-        b->track = malloc(sizeof (line));
-        b->track->buffer = calloc((size_t)c->steps, sizeof (components));
-        b->track->buffer[b->track->newest++] = (components) { b->q_x, b->q_y, b->q_z };
-        b->track->newest = 0;
-    }
+    nb = malloc(sizeof (body));
+    components *coordinates = malloc(sizeof (components));
+    coordinates->x = strtold(argv[5], NULL);
+    coordinates->y = strtold(argv[6], NULL);
+    coordinates->z = strtold(argv[7], NULL);
+    nb->coordinates = coordinates;
+    nb->track = malloc(sizeof (line));
+    nb->track->buffer = calloc((size_t)c->steps, sizeof (components));
+    nb->track->buffer[nb->track->newest++] = *nb->coordinates;
+    nb->track->newest = 0;
+    nb->colour = (components) { .x = 1.0F, .y = 1.0F, .z = 0.0F };
+    nb->radius = 20.0L;
+    nb->view_longitude = 0.0L;
+    nb->view_latitude = 0.0L;
+
+    p = get_p(argc, argv, c->order);
 
     // Need to double buffer for animation
     glutInit(&argc,argv);
@@ -266,7 +219,7 @@ int main (int argc, char** argv) {
     // Create and position the graphics window
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(640, 480);
-    glutCreateWindow("N-Body Demo");
+    glutCreateWindow("TSM ODE Demo");
 
     // Initialize OpenGL.
     OpenGLInit();

@@ -60,6 +60,11 @@ real t_horner (series S, int n, real h);
 void tsm (int dp, int n, real h, int steps, real x0, real y0, real z0, void *P, clock_t since);
 
 /*
+ * Generator implementation of TSM
+ */
+void *tsm_gen (controls *cont, components *coordinates, void *P);
+
+/*
  * Obligatory client method signatures
  */
 

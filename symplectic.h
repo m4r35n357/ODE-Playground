@@ -6,9 +6,8 @@ typedef struct Weights {
 } weights;
 
 typedef struct Controls {
-    long order;
+    long order, step, steps;
     real step_size;
-    long steps;
     weights r1, r2, r3, r4;
 } controls;
 

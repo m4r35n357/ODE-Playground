@@ -12,6 +12,7 @@ rk4-*-static
 tsm-*-dbg
 tsm-*-static
 tsm-*-dynamic
+tsm-*-gl
 divergence
 
 # Test artifacts
