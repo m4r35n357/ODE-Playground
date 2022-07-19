@@ -201,9 +201,9 @@ int main (int argc, char** argv) {
     nb->coordinates->y = strtold(argv[6], NULL);
     nb->coordinates->z = strtold(argv[7], NULL);
     nb->track = malloc(sizeof (line));
-    nb->track->buffer = calloc((size_t)c->steps, sizeof (components));
-    nb->track->buffer[nb->track->newest++] = *nb->coordinates;
     nb->track->newest = 0;
+    nb->track->buffer = calloc((size_t)c->steps, sizeof (components));
+    nb->track->buffer[nb->track->newest] = *nb->coordinates;
     nb->colour = (components) { .x = 0.0F, .y = 0.5F, .z = 0.0F };
     nb->radius = 20.0L;
     nb->view_longitude = 0.0L;

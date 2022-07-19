@@ -254,9 +254,9 @@ int main (int argc, char** argv) {
     for (int i = 0; i < nb->n; i += 1) {
         body *b = &nb->bodies[i];
         b->track = malloc(sizeof (line));
-        b->track->buffer = calloc((size_t)c->steps, sizeof (components));
-        b->track->buffer[b->track->newest++] = (components) { b->q_x, b->q_y, b->q_z };
         b->track->newest = 0;
+        b->track->buffer = calloc((size_t)c->steps, sizeof (components));
+        b->track->buffer[b->track->newest] = (components) { b->q_x, b->q_y, b->q_z };
     }
 
     // Need to double buffer for animation
