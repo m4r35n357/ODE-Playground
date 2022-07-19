@@ -9,9 +9,9 @@
 int main (int argc, char **argv) {
     int display_precision = (int)strtol(argv[1], NULL, BASE); assert(display_precision >= 0 && display_precision <= 32);
     controls *c = get_c(argv);
+    components xyz = (components) { strtold(argv[5], NULL), strtold(argv[6], NULL), strtold(argv[7], NULL) };
 
-    tsm(display_precision, c,
-        strtold(argv[5], NULL), strtold(argv[6], NULL), strtold(argv[7], NULL), get_p(argc, argv, c->order), clock());
+    tsm(display_precision, c, &xyz, get_p(argc, argv, c->order), clock());
 
     return 0;
 }

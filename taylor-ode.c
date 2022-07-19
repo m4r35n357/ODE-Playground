@@ -33,10 +33,10 @@ static char *tag (series jet, real slope, char *min, char *max) {
     return jet[1] * slope < 0.0L ? (jet[2] > 0.0L ? min : max) : "_";
 }
 
-void tsm (int dp, controls *c, real x0, real y0, real z0, void *p, clock_t t0) {
-    series x = t_jet(c->order + 1); x[0] = x0;
-    series y = t_jet(c->order + 1); y[0] = y0;
-    series z = t_jet(c->order + 1); z[0] = z0;
+void tsm (int dp, controls *c, components *coordinates, void *p, clock_t t0) {
+    series x = t_jet(c->order + 1); x[0] = coordinates->x;
+    series y = t_jet(c->order + 1); y[0] = coordinates->y;
+    series z = t_jet(c->order + 1); z[0] = coordinates->z;
     components s = (components) {0.0L, 0.0L, 0.0L};
     for (int step = 0; step < c->steps; step++) {
         t_out(dp, x[0], y[0], z[0], c->step_size * step, tag(x, s.x, "x", "X"), tag(y, s.y, "y", "Y"), tag(z, s.z, "z", "Z"), t0);
