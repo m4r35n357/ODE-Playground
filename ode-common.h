@@ -13,9 +13,36 @@
 extern const int BASE;
 
 /*
- * Prints a line of data to stdout, with turning point markers
+ * For returning x, y, z velocities from the model
  */
-void t_out (int dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label, clock_t since);
+typedef struct Components {
+    real x, y, z;
+} components;
+
+/*
+ * For returning integrator control parameters
+ */
+typedef struct Controls {
+    long order, step, steps;
+    real step_size;
+} controls;
+
+typedef struct Line {
+    int newest;
+    components *buffer;
+} line;
+
+typedef struct Body {
+    components *coordinates;
+    components colour;
+    line *track;
+    float radius, view_latitude, view_longitude;
+} body;
+
+/*
+ * Retrieves integrator control parameters
+ */
+controls *get_c (char **argv);
 
 /*
  * Retrieves ODE parameters from the tail of the command (arguments 8 onwards)
@@ -23,10 +50,6 @@ void t_out (int dp, real x, real y, real z, real t, char *x_label, char *y_label
 void t_params (char **argv, int count, ...);
 
 /*
- * For returning x, y, z velocities from the model
+ * Prints a line of data to stdout, with turning point markers
  */
-typedef struct Components {
-    real x;
-    real y;
-    real z;
-} components;
+void t_out (int dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label, clock_t since);

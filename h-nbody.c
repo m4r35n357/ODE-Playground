@@ -35,7 +35,7 @@ static real distance (real xA, real yA, real zA, real xB, real yB, real zB) {
     return sqrtl((xB - xA) * (xB - xA) + (yB - yA) * (yB - yA) + (zB - zA) * (zB - zA));
 }
 
-static real h (nbody *nb) {
+real h (nbody *nb) {
     real energy = 0.0L;
     for (int i = 0; i < nb->n; i += 1) {
         body *a = &nb->bodies[i];
@@ -67,7 +67,7 @@ void *get_p (int argc, char **argv, int va_begin) { (void)argc; (void)argv; (voi
                         .q_x = -4.0L, .q_y = 0.0L, .q_z = -0.1L, .p_x = 0.0L, .p_y = -0.2L, .p_z = -2.6L };
     bodies[6] = (body){ .m = 3.0L, .colour = (components) { .x = 0.3F, .y = 0.3F, .z = 0.3F },
                         .q_x = 8.0L, .q_y = 0.0L, .q_z = -0.3L, .p_x = 0.0L, .p_y = 2.0L, .p_z = -0.2L };
-    bodies[7] = (body){ .m = 4.0L, .colour = (components) { .x = 0.6F, .y = 0.6F, .z = 0.6F },
+    bodies[7] = (body){ .m = 4.0L, .colour = (components) { .x = 0.7F, .y = 0.7F, .z = 0.7F },
                         .q_x = 0.0L, .q_y = 4.0L, .q_z = -0.2L, .p_x = -4.8L, .p_y = 0.0L, .p_z = -0.2L };
     nbody *nb = malloc(sizeof (nbody));
     nb->n = n_bodies;

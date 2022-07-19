@@ -54,6 +54,33 @@ void tsm (int dp, int n, real h, int steps, real x0, real y0, real z0, void *p, 
     t_out(dp, x[0], y[0], z[0], h * steps, "_", "_", "_", t0);
 }
 
+void *tsm_gen (controls *cont, components *coordinates, void *p) {
+    static series x, y, z;
+    static controls *c;
+    static long step, resume = 0;
+    if (resume) goto resume; else resume = 1;
+    c = cont;
+    x = t_jet(c->order + 1); x[0] = coordinates->x;
+    y = t_jet(c->order + 1); y[0] = coordinates->y;
+    z = t_jet(c->order + 1); z[0] = coordinates->z;
+    for (step = 0; step < c->steps; step++) {
+        c->step = step;
+        for (int k = 0; k < c->order; k++) {
+            components vk = ode(x, y, z, p, k);
+            x[k + 1] = vk.x / (k + 1);
+            y[k + 1] = vk.y / (k + 1);
+            z[k + 1] = vk.z / (k + 1);
+        }
+        coordinates->x = x[0] = t_horner(x, c->order, c->step_size);
+        coordinates->y = y[0] = t_horner(y, c->order, c->step_size);
+        coordinates->z = z[0] = t_horner(z, c->order, c->step_size);
+        return (void *)coordinates;
+        resume: ;
+    }
+    resume = 0;
+    return NULL;
+}
+
 real t_const (real a, int k) {
     return k == 0 ? a : 0.0L;
 }

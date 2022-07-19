@@ -122,6 +122,7 @@ void *generate (controls *cont, void *params) {
     p = params;
     composer = set_integrator(c->order);
     for (step = 1; step <= c->steps; step++) {
+        c->step = step;
         composer(c, p, c->step_size);
         return p;
         resume: ;

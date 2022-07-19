@@ -2,15 +2,19 @@
 #include "real.h"
 
 typedef struct Components {
-    real x;
-    real y;
-    real z;
+    real x, y, z;
 } components;
+
+typedef struct Line {
+    int newest;
+    components *buffer;
+} line;
 
 typedef struct Body {
     real m;  // mass
     real q_x, q_y, q_z, p_x, p_y, p_z;  // coordinates & momenta
     components colour;
+    line *track;
 } body;
 
 typedef struct Nbody {
@@ -22,3 +26,5 @@ typedef struct Nbody {
 } nbody;
 
 void cog (nbody *nb);
+
+real h (nbody *nb);
