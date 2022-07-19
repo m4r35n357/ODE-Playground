@@ -192,6 +192,7 @@ static void ResizeWindow (int w, int h) {
 int main (int argc, char** argv) {
     d = (int)strtol(argv[1], NULL, 10);
     c = get_c(argv);
+    p = get_p(argc, argv, c->order);
     since = clock();
 
     nb = malloc(sizeof (body));
@@ -203,12 +204,10 @@ int main (int argc, char** argv) {
     nb->track->buffer = calloc((size_t)c->steps, sizeof (components));
     nb->track->buffer[nb->track->newest++] = *nb->coordinates;
     nb->track->newest = 0;
-    nb->colour = (components) { .x = 1.0F, .y = 1.0F, .z = 0.0F };
+    nb->colour = (components) { .x = 0.0F, .y = 0.5F, .z = 0.0F };
     nb->radius = 20.0L;
     nb->view_longitude = 0.0L;
     nb->view_latitude = 0.0L;
-
-    p = get_p(argc, argv, c->order);
 
     // Need to double buffer for animation
     glutInit(&argc,argv);

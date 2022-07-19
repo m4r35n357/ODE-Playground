@@ -8,7 +8,7 @@
     --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
     --field="x0" --field="y0" --field="z0" \
     --field="a" --field="b" \
-    -- './tsm-halvorsen-static!./tsm-halvorsen-dbg!./tsm-halvorsen' \
+    -- './tsm-halvorsen-static!./tsm-halvorsen-dbg!./tsm-halvorsen!./tsm-halvorsen-gl' \
     '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
     '1.0' '0.0' '0.0' \
     '1.4' '4') >/tmp/$USER/data

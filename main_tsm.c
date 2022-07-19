@@ -8,13 +8,10 @@
 
 int main (int argc, char **argv) {
     int display_precision = (int)strtol(argv[1], NULL, BASE); assert(display_precision >= 0 && display_precision <= 32);
-    int order = (int)strtol(argv[2], NULL, BASE); assert(order >= 2 && order <= 64);
+    controls *c = get_c(argv);
 
-    real step_size = strtold(argv[3], NULL); assert(step_size > 0.0L);
-    int steps = (int)strtol(argv[4], NULL, BASE); assert(steps >= 1 && steps <= 1000000);
-
-    tsm(display_precision, order, step_size, steps,
-        strtold(argv[5], NULL), strtold(argv[6], NULL), strtold(argv[7], NULL), get_p(argc, argv, order), clock());
+    tsm(display_precision, c,
+        strtold(argv[5], NULL), strtold(argv[6], NULL), strtold(argv[7], NULL), get_p(argc, argv, c->order), clock());
 
     return 0;
 }

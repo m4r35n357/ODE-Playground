@@ -141,10 +141,11 @@ int main (int argc, char **argv) {
     fprintf(stdout, "\n");
     fprintf(stdout, "%sTaylor Series Method: x'=1  y'=0  z'=-1%s\n", WHT, NRM);
     int dp = 12, steps = 10;
-    real step = 0.1L;
-    tsm(dp, n, step, steps, 1.0L, 1.0L, 1.0L, get_p(argc, argv, n), clock());
+    real step_size = 0.1L;
+    controls c = (controls) { .order=n, .step=0, steps=steps, .step_size=step_size };
+    tsm(dp, &c, 1.0L, 1.0L, 1.0L, get_p(argc, argv, n), clock());
     fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);
-    t_out(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), step * steps, "_", "_", "_", 0.0F);
+    t_out(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), step_size * steps, "_", "_", "_", 0.0F);
 
     fprintf(stderr, "\n");
     fprintf(stderr, "%sRecurrence Relations: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x[0], NRM);

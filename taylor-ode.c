@@ -33,25 +33,25 @@ static char *tag (series jet, real slope, char *min, char *max) {
     return jet[1] * slope < 0.0L ? (jet[2] > 0.0L ? min : max) : "_";
 }
 
-void tsm (int dp, int n, real h, int steps, real x0, real y0, real z0, void *p, clock_t t0) {
-    series x = t_jet(n + 1); x[0] = x0;
-    series y = t_jet(n + 1); y[0] = y0;
-    series z = t_jet(n + 1); z[0] = z0;
+void tsm (int dp, controls *c, real x0, real y0, real z0, void *p, clock_t t0) {
+    series x = t_jet(c->order + 1); x[0] = x0;
+    series y = t_jet(c->order + 1); y[0] = y0;
+    series z = t_jet(c->order + 1); z[0] = z0;
     components s = (components) {0.0L, 0.0L, 0.0L};
-    for (int step = 0; step < steps; step++) {
-        t_out(dp, x[0], y[0], z[0], h * step, tag(x, s.x, "x", "X"), tag(y, s.y, "y", "Y"), tag(z, s.z, "z", "Z"), t0);
+    for (int step = 0; step < c->steps; step++) {
+        t_out(dp, x[0], y[0], z[0], c->step_size * step, tag(x, s.x, "x", "X"), tag(y, s.y, "y", "Y"), tag(z, s.z, "z", "Z"), t0);
         s = (components) {x[1], y[1], z[1]};
-        for (int k = 0; k < n; k++) {
+        for (int k = 0; k < c->order; k++) {
             components vk = ode(x, y, z, p, k);
             x[k + 1] = vk.x / (k + 1);
             y[k + 1] = vk.y / (k + 1);
             z[k + 1] = vk.z / (k + 1);
         }
-        x[0] = t_horner(x, n, h);
-        y[0] = t_horner(y, n, h);
-        z[0] = t_horner(z, n, h);
+        x[0] = t_horner(x, c->order, c->step_size);
+        y[0] = t_horner(y, c->order, c->step_size);
+        z[0] = t_horner(z, c->order, c->step_size);
     }
-    t_out(dp, x[0], y[0], z[0], h * steps, "_", "_", "_", t0);
+    t_out(dp, x[0], y[0], z[0], c->step_size * c->steps, "_", "_", "_", t0);
 }
 
 void *tsm_gen (controls *cont, components *coordinates, void *p) {
