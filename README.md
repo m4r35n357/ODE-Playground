@@ -1,4 +1,8 @@
 
+## NEWS: OpenGL display
+
+There is now an OpenGL executable for all TSM models, and also a separate n-body OpenGL program.
+
 ## NEWS: Default compiler (c99)
 
 Changed to GCC; MUSL is still available as an option (also Clang).

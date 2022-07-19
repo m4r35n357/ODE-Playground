@@ -22,7 +22,7 @@ typedef struct Nbody {
     body *bodies;
     real g, h0;
     components centre;
-    float radius, view_latitude, view_longitude;
+    float ball_scale, view_radius, view_latitude, view_longitude;
 } nbody;
 
 void cog (nbody *nb);

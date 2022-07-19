@@ -74,9 +74,10 @@ void *get_p (int argc, char **argv, int va_begin) { (void)argc; (void)argv; (voi
     nb->bodies = bodies;
     nb->g = 0.05L;
     nb->h0 = h(nb);
-    nb->radius = 20.0L;
-    nb->view_longitude = 0.0L;
-    nb->view_latitude = 90.0L;
+    nb->ball_scale = 0.01F;
+    nb->view_radius = 20.0F;
+    nb->view_longitude = 0.0F;
+    nb->view_latitude = 90.0F;
     return nb;
 }
 

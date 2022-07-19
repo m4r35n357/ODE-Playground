@@ -20,8 +20,6 @@
 static controls *c;
 static nbody *nb;
 
-static const real scale = 0.01L;
-
 static display d;
 static char hud[128];
 static clock_t since;
@@ -51,13 +49,21 @@ static void Key_right (void) {
 // glutKeyboardFunc is called below to set this function to handle all normal key presses.
 static void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
+        case 'B':
+        case 'b':
+            nb->ball_scale /= 1.1F;
+            break;
+        case 'G':
+        case 'g':
+            nb->ball_scale *= 1.1F;
+            break;
         case 'A':
         case 'a':
-            nb->radius -= 0.1L;
+            nb->view_radius -= 0.1L;
             break;
         case 'Z':
         case 'z':
-            nb->radius += 0.1L;
+            nb->view_radius += 0.1L;
             break;
         case 'R':
         case 'r':
@@ -115,7 +121,7 @@ static void Animate (void) {
 
     glLoadIdentity();
 
-    glTranslatef(0.0F, 0.0F, - nb->radius);
+    glTranslatef(0.0F, 0.0F, - nb->view_radius);
     glRotatef(nb->view_latitude, 1.0F, 0.0F, 0.0F);
     glRotatef(nb->view_longitude, 0.0F, 0.0F, 1.0F);
 
@@ -139,49 +145,49 @@ static void Animate (void) {
                      (float)(b[0].q_y - nb->centre.y),
                      (float)(b[0].q_z - nb->centre.z));
         glColor3f(b[0].colour.x, b[0].colour.y, b[0].colour.z);
-        glutWireSphere((float)powl(scale * b[0].m, 1.0L/3.0L), 10, 10);
+        glutWireSphere((float)powl(nb->ball_scale * b[0].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[1].q_x - b[0].q_x),
                      (float)(b[1].q_y - b[0].q_y),
                      (float)(b[1].q_z - b[0].q_z));
         glColor3f(b[1].colour.x, b[1].colour.y, b[1].colour.z);
-        glutWireSphere((float)powl(scale * b[1].m, 1.0L/3.0L), 10, 10);
+        glutWireSphere((float)powl(nb->ball_scale * b[1].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[2].q_x - b[1].q_x),
                      (float)(b[2].q_y - b[1].q_y),
                      (float)(b[2].q_z - b[1].q_z));
         glColor3f(b[2].colour.x, b[2].colour.y, b[2].colour.z);
-        glutWireSphere((float)powl(scale * b[2].m, 1.0L/3.0L), 10, 10);
+        glutWireSphere((float)powl(nb->ball_scale * b[2].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[3].q_x - b[2].q_x),
                      (float)(b[3].q_y - b[2].q_y),
                      (float)(b[3].q_z - b[2].q_z));
         glColor3f(b[3].colour.x, b[3].colour.y, b[3].colour.z);
-        glutWireSphere((float)powl(scale * b[3].m, 1.0L/3.0L), 10, 10);
+        glutWireSphere((float)powl(nb->ball_scale * b[3].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[4].q_x - b[3].q_x),
                      (float)(b[4].q_y - b[3].q_y),
                      (float)(b[4].q_z - b[3].q_z));
         glColor3f(b[4].colour.x, b[4].colour.y, b[4].colour.z);
-        glutWireSphere((float)powl(scale * b[4].m, 1.0L/3.0L), 10, 10);
+        glutWireSphere((float)powl(nb->ball_scale * b[4].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[5].q_x - b[4].q_x),
                      (float)(b[5].q_y - b[4].q_y),
                      (float)(b[5].q_z - b[4].q_z));
         glColor3f(b[5].colour.x, b[5].colour.y, b[5].colour.z);
-        glutWireSphere((float)powl(scale * b[5].m, 1.0L/3.0L), 10, 10);
+        glutWireSphere((float)powl(nb->ball_scale * b[5].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[6].q_x - b[5].q_x),
                      (float)(b[6].q_y - b[5].q_y),
                      (float)(b[6].q_z - b[5].q_z));
         glColor3f(b[6].colour.x, b[6].colour.y, b[6].colour.z);
-        glutWireSphere((float)powl(scale * b[6].m, 1.0L/3.0L), 10, 10);
+        glutWireSphere((float)powl(nb->ball_scale * b[6].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[7].q_x - b[6].q_x),
                      (float)(b[7].q_y - b[6].q_y),
                      (float)(b[7].q_z - b[6].q_z));
         glColor3f(b[7].colour.x, b[7].colour.y, b[7].colour.z);
-        glutWireSphere((float)powl(scale * b[7].m, 1.0L/3.0L), 10, 10);
+        glutWireSphere((float)powl(nb->ball_scale * b[7].m, 1.0L/3.0L), 10, 10);
     }
 
     sprintf(hud, "h0: %.9Le  h: %.9Le", nb->h0, h(nb));

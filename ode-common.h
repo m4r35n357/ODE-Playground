@@ -32,12 +32,12 @@ typedef struct Line {
     components *buffer;
 } line;
 
-typedef struct Body {
+typedef struct Particle {
     components *coordinates;
     components colour;
     line *track;
-    float radius, view_latitude, view_longitude;
-} body;
+    float size, view_radius, view_latitude, view_longitude;
+} particle;
 
 /*
  * Retrieves integrator control parameters

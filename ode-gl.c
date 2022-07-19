@@ -17,7 +17,7 @@
 #include "h-nbody-gl.h"
 
 static controls *c;
-static body *nb;
+static particle *ball;
 static void *p;
 
 static display d;
@@ -31,31 +31,39 @@ static GLenum running = GL_TRUE;
 static GLenum stepping = GL_FALSE;
 
 static void Key_up (void) {
-    nb->view_latitude += 1.0F;
+    ball->view_latitude += 1.0F;
 }
 
 static void Key_down (void) {
-    nb->view_latitude -= 1.0F;
+    ball->view_latitude -= 1.0F;
 }
 
 static void Key_left (void) {
-    nb->view_longitude += 1.0F;
+    ball->view_longitude += 1.0F;
 }
 
 static void Key_right (void) {
-    nb->view_longitude -= 1.0F;
+    ball->view_longitude -= 1.0F;
 }
 
 // glutKeyboardFunc is called below to set this function to handle all normal key presses.
 static void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
+        case 'B':
+        case 'b':
+            ball->size /= 1.1F;
+            break;
+        case 'G':
+        case 'g':
+            ball->size *= 1.1F;
+            break;
         case 'A':
         case 'a':
-            nb->radius -= 0.1F;
+            ball->view_radius -= 0.1F;
             break;
         case 'Z':
         case 'z':
-            nb->radius += 0.1F;
+            ball->view_radius += 0.1F;
             break;
         case 'R':
         case 'r':
@@ -113,28 +121,28 @@ static void Animate (void) {
 
     glLoadIdentity();
 
-    glTranslatef(0.0F, 0.0F, - nb->radius);
-    glRotatef(nb->view_latitude, 1.0F, 0.0F, 0.0F);
-    glRotatef(nb->view_longitude, 0.0F, 0.0F, 1.0F);
+    glTranslatef(0.0F, 0.0F, - ball->view_radius);
+    glRotatef(ball->view_latitude, 1.0F, 0.0F, 0.0F);
+    glRotatef(ball->view_longitude, 0.0F, 0.0F, 1.0F);
 
     if (d == BOTH || d == LINES) {
         glBegin( GL_LINE_STRIP );
-        for (int k = 0; k < nb->track->newest; k += 1) {
-            components point = nb->track->buffer[k];
-            glColor3f(nb->colour.x, nb->colour.y, nb->colour.z);
+        for (int k = 0; k < ball->track->newest; k += 1) {
+            components point = ball->track->buffer[k];
+            glColor3f(ball->colour.x, ball->colour.y, ball->colour.z);
             glVertex3f(point.x, point.y, point.z);
         }
         glEnd();
     }
 
     if (d == BOTH || d == BALLS) {
-        glTranslatef((float)nb->coordinates->x, (float)nb->coordinates->y, (float)nb->coordinates->z);
-        glColor3f(nb->colour.x, nb->colour.y, nb->colour.z);
-        glutWireSphere((float)0.1F, 10, 10);
+        glTranslatef((float)ball->coordinates->x, (float)ball->coordinates->y, (float)ball->coordinates->z);
+        glColor3f(ball->colour.x, ball->colour.y, ball->colour.z);
+        glutSolidSphere(ball->size, 10, 10);
     }
 
     sprintf(hud, "t:%5.1Lf  x:%5.1Lf  y:%5.1Lf  z:%5.1Lf  ",
-                  c->step * c->step_size, nb->coordinates->x, nb->coordinates->y, nb->coordinates->z);
+                  c->step * c->step_size, ball->coordinates->x, ball->coordinates->y, ball->coordinates->z);
     output(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, 0.0F, 0.5F, 0.5F, hud);
 
     sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.1f %%",
@@ -144,9 +152,9 @@ static void Animate (void) {
     output(10, 10, 0.0F, 0.5F, 0.5F, hud);
 
     if (! finished && !stopped) {
-        if (tsm_gen(c, nb->coordinates, p)) {
+        if (tsm_gen(c, ball->coordinates, p)) {
             if (d == BOTH || d == LINES) {
-                nb->track->buffer[nb->track->newest++] = *nb->coordinates;
+                ball->track->buffer[ball->track->newest++] = *ball->coordinates;
             }
         } else {
             finished = GL_TRUE;
@@ -195,19 +203,20 @@ int main (int argc, char** argv) {
     p = get_p(argc, argv, c->order);
     since = clock();
 
-    nb = malloc(sizeof (body));
-    nb->coordinates = malloc(sizeof (components));
-    nb->coordinates->x = strtold(argv[5], NULL);
-    nb->coordinates->y = strtold(argv[6], NULL);
-    nb->coordinates->z = strtold(argv[7], NULL);
-    nb->track = malloc(sizeof (line));
-    nb->track->newest = 0;
-    nb->track->buffer = calloc((size_t)c->steps, sizeof (components));
-    nb->track->buffer[nb->track->newest] = *nb->coordinates;
-    nb->colour = (components) { .x = 0.0F, .y = 0.5F, .z = 0.0F };
-    nb->radius = 20.0L;
-    nb->view_longitude = 0.0L;
-    nb->view_latitude = 0.0L;
+    ball = malloc(sizeof (particle));
+    ball->coordinates = malloc(sizeof (components));
+    ball->coordinates->x = strtold(argv[5], NULL);
+    ball->coordinates->y = strtold(argv[6], NULL);
+    ball->coordinates->z = strtold(argv[7], NULL);
+    ball->track = malloc(sizeof (line));
+    ball->track->newest = 0;
+    ball->track->buffer = calloc((size_t)c->steps, sizeof (components));
+    ball->track->buffer[ball->track->newest] = *ball->coordinates;
+    ball->size = 0.1F;
+    ball->colour = (components) { .x = 0.0F, .y = 0.5F, .z = 0.0F };
+    ball->view_radius = 20.0F;
+    ball->view_longitude = 0.0F;
+    ball->view_latitude = 0.0F;
 
     // Need to double buffer for animation
     glutInit(&argc,argv);
