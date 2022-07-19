@@ -8,7 +8,7 @@
     --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
     --field="x0" --field="y0" --field="z0" \
     --field="b" \
-    -- './tsm-thomas-static!./tsm-thomas-dbg!./tsm-thomas' \
+    -- './tsm-thomas-static!./tsm-thomas-dbg!./tsm-thomas!./tsm-thomas-gl' \
     '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
     '1.0' '0.0' '0.0' \
     '0.185') >/tmp/$USER/data

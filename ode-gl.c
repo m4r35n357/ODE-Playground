@@ -13,7 +13,6 @@
 #include <time.h>
 #include <math.h>
 #include <GL/freeglut.h>    // OpenGL Graphics Utility Library
-//#include "ode-common.h"
 #include "taylor-ode.h"
 #include "h-nbody-gl.h"
 
@@ -196,11 +195,10 @@ int main (int argc, char** argv) {
     since = clock();
 
     nb = malloc(sizeof (body));
-    components *coordinates = malloc(sizeof (components));
-    coordinates->x = strtold(argv[5], NULL);
-    coordinates->y = strtold(argv[6], NULL);
-    coordinates->z = strtold(argv[7], NULL);
-    nb->coordinates = coordinates;
+    nb->coordinates = malloc(sizeof (components));
+    nb->coordinates->x = strtold(argv[5], NULL);
+    nb->coordinates->y = strtold(argv[6], NULL);
+    nb->coordinates->z = strtold(argv[7], NULL);
     nb->track = malloc(sizeof (line));
     nb->track->buffer = calloc((size_t)c->steps, sizeof (components));
     nb->track->buffer[nb->track->newest++] = *nb->coordinates;
