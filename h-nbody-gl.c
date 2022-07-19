@@ -30,76 +30,27 @@ static GLenum stopped = GL_FALSE;
 static GLenum running = GL_TRUE;
 static GLenum stepping = GL_FALSE;
 
-static void Key_up (void) {
-    nb->view_latitude += 1.0F;
-}
-
-static void Key_down (void) {
-    nb->view_latitude -= 1.0F;
-}
-
-static void Key_left (void) {
-    nb->view_longitude += 1.0F;
-}
-
-static void Key_right (void) {
-    nb->view_longitude -= 1.0F;
+// glutSpecialFunc is called below to set this function to handle special key presses - see glut.h for the names of special keys
+static void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
+    switch (Key) {
+        case GLUT_KEY_UP: nb->view_latitude += 1.0F; break;
+        case GLUT_KEY_DOWN: nb->view_latitude -= 1.0F; break;
+        case GLUT_KEY_LEFT: nb->view_longitude += 1.0F; break;
+        case GLUT_KEY_RIGHT: nb->view_longitude -= 1.0F; break;
+    }
 }
 
 // glutKeyboardFunc is called below to set this function to handle all normal key presses.
 static void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
-        case 'B':
-        case 'b':
-            nb->ball_scale /= 1.1F;
-            break;
-        case 'G':
-        case 'g':
-            nb->ball_scale *= 1.1F;
-            break;
-        case 'A':
-        case 'a':
-            nb->view_radius -= 0.1L;
-            break;
-        case 'Z':
-        case 'z':
-            nb->view_radius += 0.1L;
-            break;
-        case 'R':
-        case 'r':
-            running = !running;
-            stopped = GL_FALSE;
-            break;
-        case 's':
-        case 'S':
-            stepping = !stepping;
-            stopped = GL_FALSE;
-            break;
-        case 'F':
-        case 'f':
-            glutFullScreenToggle();
-            break;
-        case 27:    // Escape key
-            exit(1);
-    }
-}
-
-// glutSpecialFunc is called below to set this function to handle
-//      all special key presses.  See glut.h for the names of special keys.
-static void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
-    switch (Key) {
-        case GLUT_KEY_UP:
-            Key_up();
-            break;
-        case GLUT_KEY_DOWN:
-            Key_down();
-            break;
-        case GLUT_KEY_LEFT:
-            Key_left();
-            break;
-        case GLUT_KEY_RIGHT:
-            Key_right();
-            break;
+        case 'B': case 'b': nb->ball_scale /= 1.1F; break;
+        case 'G': case 'g': nb->ball_scale *= 1.1F; break;
+        case 'A': case 'a': nb->view_radius -= 0.1L; break;
+        case 'Z': case 'z': nb->view_radius += 0.1L; break;
+        case 'R': case 'r': running = !running; stopped = GL_FALSE; break;
+        case 'S': case 's': stepping = !stepping; stopped = GL_FALSE; break;
+        case 'F': case 'f': glutFullScreenToggle(); break;
+        case 27: exit(1); // Escape key
     }
 }
 
