@@ -23,7 +23,7 @@ typedef struct Components {
  * For returning integrator control parameters
  */
 typedef struct Controls {
-    long order, step, steps;
+    int order, step, steps;
     real step_size;
 } controls;
 

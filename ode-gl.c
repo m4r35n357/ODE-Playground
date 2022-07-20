@@ -80,15 +80,15 @@ static void Animate (void) {
         glBegin( GL_LINE_STRIP );
         for (int k = 0; k < ball->track->newest; k += 1) {
             components point = ball->track->buffer[k];
-            glColor3f(ball->colour.x, ball->colour.y, ball->colour.z);
-            glVertex3f(point.x, point.y, point.z);
+            glColor3f((float)ball->colour.x, (float)ball->colour.y, (float)ball->colour.z);
+            glVertex3f((float)point.x, (float)point.y, (float)point.z);
         }
         glEnd();
     }
 
     if (d == BOTH || d == BALLS) {
         glTranslatef((float)ball->coordinates->x, (float)ball->coordinates->y, (float)ball->coordinates->z);
-        glColor3f(ball->colour.x, ball->colour.y, ball->colour.z);
+        glColor3f((float)ball->colour.x, (float)ball->colour.y, (float)ball->colour.z);
         glutSolidSphere(ball->size, 10, 10);
     }
 
@@ -97,9 +97,9 @@ static void Animate (void) {
     output(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, 0.0F, 0.5F, 0.5F, hud);
 
     sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.1f %%",
-                  elapsed = finished ? elapsed : glutGet(GLUT_ELAPSED_TIME) / 1000.0F,
+                  elapsed = finished ? elapsed : ((float)(glutGet(GLUT_ELAPSED_TIME)) / 1000.0F),
                   cpu = finished ? cpu : (double)(clock() - since) / CLOCKS_PER_SEC,
-                  (100.0F * c->step) / c->steps);
+                  (float)(100 * c->step) / (float)c->steps);
     output(10, 10, 0.0F, 0.5F, 0.5F, hud);
 
     if (! finished && !stopped) {
@@ -149,7 +149,7 @@ static void ResizeWindow (int w, int h) {
 
 // Set up OpenGL, hook up callbacks, and start the main loop
 int main (int argc, char** argv) {
-    d = (int)strtol(argv[1], NULL, 10);
+    d = (display)strtol(argv[1], NULL, 10);
     c = get_c(argv);
     p = get_p(argc, argv, c->order);
     since = clock();

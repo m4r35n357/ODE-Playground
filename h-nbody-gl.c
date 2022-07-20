@@ -45,8 +45,8 @@ static void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
         case 'B': case 'b': nb->ball_scale /= 1.1F; break;
         case 'G': case 'g': nb->ball_scale *= 1.1F; break;
-        case 'A': case 'a': nb->view_radius -= 0.1L; break;
-        case 'Z': case 'z': nb->view_radius += 0.1L; break;
+        case 'A': case 'a': nb->view_radius -= 0.1F; break;
+        case 'Z': case 'z': nb->view_radius += 0.1F; break;
         case 'R': case 'r': running = !running; stopped = GL_FALSE; break;
         case 'S': case 's': stepping = !stepping; stopped = GL_FALSE; break;
         case 'F': case 'f': glutFullScreenToggle(); break;
@@ -82,8 +82,8 @@ static void Animate (void) {
             glBegin( GL_LINE_STRIP );
             for (int k = 0; k < b->track->newest; k += 1) {
                 components point = b->track->buffer[k];
-                glColor3f(b->colour.x, b->colour.y, b->colour.z);
-                glVertex3f(point.x, point.y, point.z);
+                glColor3f((float)b->colour.x, (float)b->colour.y, (float)b->colour.z);
+                glVertex3f((float)point.x, (float)point.y, (float)point.z);
             }
             glEnd();
         }
@@ -95,49 +95,49 @@ static void Animate (void) {
         glTranslatef((float)(b[0].q_x - nb->centre.x),
                      (float)(b[0].q_y - nb->centre.y),
                      (float)(b[0].q_z - nb->centre.z));
-        glColor3f(b[0].colour.x, b[0].colour.y, b[0].colour.z);
+        glColor3f((float)b[0].colour.x, (float)b[0].colour.y, (float)b[0].colour.z);
         glutWireSphere((float)powl(nb->ball_scale * b[0].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[1].q_x - b[0].q_x),
                      (float)(b[1].q_y - b[0].q_y),
                      (float)(b[1].q_z - b[0].q_z));
-        glColor3f(b[1].colour.x, b[1].colour.y, b[1].colour.z);
+        glColor3f((float)b[1].colour.x, (float)b[1].colour.y, (float)b[1].colour.z);
         glutWireSphere((float)powl(nb->ball_scale * b[1].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[2].q_x - b[1].q_x),
                      (float)(b[2].q_y - b[1].q_y),
                      (float)(b[2].q_z - b[1].q_z));
-        glColor3f(b[2].colour.x, b[2].colour.y, b[2].colour.z);
+        glColor3f((float)b[2].colour.x, (float)b[2].colour.y, (float)b[2].colour.z);
         glutWireSphere((float)powl(nb->ball_scale * b[2].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[3].q_x - b[2].q_x),
                      (float)(b[3].q_y - b[2].q_y),
                      (float)(b[3].q_z - b[2].q_z));
-        glColor3f(b[3].colour.x, b[3].colour.y, b[3].colour.z);
+        glColor3f((float)b[3].colour.x, (float)b[3].colour.y, (float)b[3].colour.z);
         glutWireSphere((float)powl(nb->ball_scale * b[3].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[4].q_x - b[3].q_x),
                      (float)(b[4].q_y - b[3].q_y),
                      (float)(b[4].q_z - b[3].q_z));
-        glColor3f(b[4].colour.x, b[4].colour.y, b[4].colour.z);
+        glColor3f((float)b[4].colour.x, (float)b[4].colour.y, (float)b[4].colour.z);
         glutWireSphere((float)powl(nb->ball_scale * b[4].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[5].q_x - b[4].q_x),
                      (float)(b[5].q_y - b[4].q_y),
                      (float)(b[5].q_z - b[4].q_z));
-        glColor3f(b[5].colour.x, b[5].colour.y, b[5].colour.z);
+        glColor3f((float)b[5].colour.x, (float)b[5].colour.y, (float)b[5].colour.z);
         glutWireSphere((float)powl(nb->ball_scale * b[5].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[6].q_x - b[5].q_x),
                      (float)(b[6].q_y - b[5].q_y),
                      (float)(b[6].q_z - b[5].q_z));
-        glColor3f(b[6].colour.x, b[6].colour.y, b[6].colour.z);
+        glColor3f((float)b[6].colour.x, (float)b[6].colour.y, (float)b[6].colour.z);
         glutWireSphere((float)powl(nb->ball_scale * b[6].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[7].q_x - b[6].q_x),
                      (float)(b[7].q_y - b[6].q_y),
                      (float)(b[7].q_z - b[6].q_z));
-        glColor3f(b[7].colour.x, b[7].colour.y, b[7].colour.z);
+        glColor3f((float)b[7].colour.x, (float)b[7].colour.y, (float)b[7].colour.z);
         glutWireSphere((float)powl(nb->ball_scale * b[7].m, 1.0L/3.0L), 10, 10);
     }
 
@@ -145,9 +145,9 @@ static void Animate (void) {
     output(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, 0.0F, 0.5F, 0.5F, hud);
 
     sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.1f %%",
-                  elapsed = finished ? elapsed : glutGet(GLUT_ELAPSED_TIME) / 1000.0F,
+                  elapsed = finished ? elapsed : ((float)(glutGet(GLUT_ELAPSED_TIME)) / 1000.0F),
                   cpu = finished ? cpu : (double)(clock() - since) / CLOCKS_PER_SEC,
-                  (100.0F * c->step) / c->steps);
+                  (float)(100 * c->step) / (float)c->steps);
     output(10, 10, 0.0F, 0.5F, 0.5F, hud);
 
     if (! finished && !stopped) {
@@ -204,7 +204,7 @@ int main (int argc, char** argv) {
     assert(argc == 5);
 
     c = get_c(argv);
-    d = (int)strtol(argv[1], NULL, 10);
+    d = (display)strtol(argv[1], NULL, 10);
     nb = (nbody *)get_p(argc, argv, 5);
     since = clock();
 

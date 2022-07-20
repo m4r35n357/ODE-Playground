@@ -57,7 +57,7 @@ void tsm (int dp, controls *c, components *coordinates, void *p, clock_t t0) {
 void *tsm_gen (controls *cont, components *coordinates, void *p) {
     static series x, y, z;
     static controls *c;
-    static long step, resume = 0;
+    static int step, resume = 0;
     if (resume) goto resume; else resume = 1;
     c = cont;
     x = t_jet(c->order + 1); x[0] = coordinates->x;
