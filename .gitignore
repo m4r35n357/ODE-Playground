@@ -22,6 +22,7 @@ libdual-test*
 # Symplectic artifacts
 h-*-dbg
 h-*-static
+h-*-gl
 
 # C coverage artifacts
 *.gcov
