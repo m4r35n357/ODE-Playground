@@ -150,7 +150,7 @@ static void Animate (void) {
                   (float)(100 * c->step) / (float)c->steps);
     output(10, 10, 0.0F, 0.5F, 0.5F, hud);
 
-    if (! finished && !stopped) {
+    if (!finished && !stopped) {
         if (generate(c, nb)) {
             cog(nb);
             if (d == BOTH || d == LINES) {
@@ -218,7 +218,7 @@ int main (int argc, char** argv) {
 
     // Need to double buffer for animation
     glutInit(&argc,argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH );
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
     // Create and position the graphics window
     glutInitWindowPosition(0, 0);
