@@ -1,7 +1,7 @@
 
 ## NEWS: OpenGL display
 
-There is now an OpenGL executable for all TSM models, and also a separate n-body OpenGL program.
+There is now an OpenGL executable built for each TSM model, and also a separate n-body OpenGL program.
 
 ## NEWS: Default compiler (c99)
 
@@ -72,7 +72,7 @@ No formal documentation yet, see the c files for example usage.
 
 ### Requirements - Debian/Ubuntu packages
 ```
-sudo apt install bc git build-essential musl-tools libfreetype6-dev gnuplot-x11 lcov
+sudo apt install bc git build-essential musl-tools libfreetype6-dev gnuplot-x11 lcov freeglut3-dev
 ```
 Optional:
 ```
@@ -193,6 +193,17 @@ Each output line consists of a column each for x, y, z, t, followed by three tur
 Parameter | Meaning
 ----------|-----------
 1 | x,y,z output decimal places (0 for full precision binary hex)
+2 | order of Taylor Series
+3 | time step
+4 | number of steps
+5,6,7 | initial conditions, x0,y0,z0
+8+ | Model parameters
+
+**tsm-model-type-gl** (c executables)
+
+Parameter | Meaning
+----------|-----------
+1 | 0=Balls&Tracks 1=BallsOnly 2=LinesOnly
 2 | order of Taylor Series
 3 | time step
 4 | number of steps
