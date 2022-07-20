@@ -3,11 +3,29 @@
 choice=$(yad --columns=2 --title="ODE Playground (TSM)" --form --separator=" " --align=right \
     --field="Model:CB" --field="Analysis type:CB" \
     -- 'Lorenz!^Thomas!RF!Halvorsen' \
-       '^GLplot!CNS!CNSscan!:Bifurcation')
+       '^GLplot!Gnuplot3D!Gnuplot2D!CNS!CNSscan!Bifurcation')
 
 set $choice
 model=$1
 analysis=$2
+
+gnuplot3d () {
+gnuplot -p << EOF
+set xyplane 0
+set view 54.73561,135
+set xlabel 'X'
+set ylabel 'Y'
+set zlabel 'Z'
+splot '/tmp/$USER/data' with lines
+EOF
+}
+
+gnuplot2d () {
+gnuplot -p << EOF
+set terminal wxt size 1200,900
+plot '/tmp/$USER/data' using 4:1 with lines, '' u 4:2 w l, '' u 4:3 w l
+EOF
+}
 
 case $model in
     Lorenz)
@@ -70,6 +88,21 @@ case $model in
                 '0!1!2' '8!4..32!1' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' \
                 '0.185')
+            ;;
+            Gnuplot3D|Gnuplot2D)
+                $(yad --columns=2 --title="Thomas Attractor (TSM)" --form --separator=" " --align=right \
+                --field="Model:CB" \
+                --field="Display Mode":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+                --field="x0" --field="y0" --field="z0" \
+                --field="b" \
+                -- './tsm-thomas-static!./tsm-thomas-dbg!./tsm-thomas' \
+                '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
+                '1.0' '0.0' '0.0' \
+                '0.185') >/tmp/$USER/data
+                case $analysis in
+                    Gnuplot3D) gnuplot3d;;
+                    Gnuplot2D) gnuplot2d;;
+                esac
             ;;
             CNS)
              ./cns $(yad --columns=2 --title="Thomas CNS (TSM)" --form --separator=" " --align=right \
