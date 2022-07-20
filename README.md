@@ -72,7 +72,7 @@ No formal documentation yet, see the c files for example usage.
 
 ### Requirements - Debian/Ubuntu packages
 ```
-sudo apt install bc git build-essential musl-tools libfreetype6-dev gnuplot-x11 lcov freeglut3-dev
+sudo apt install bc git build-essential musl-tools gnuplot-x11 lcov freeglut3-dev glew-utils libglew-dev
 ```
 Optional:
 ```

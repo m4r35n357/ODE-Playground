@@ -10,6 +10,7 @@
 #include <string.h>
 #include <time.h>
 #include <math.h>
+#include <GL/glew.h>
 #include <GL/freeglut.h>    // OpenGL Graphics Utility Library
 #include "taylor-ode.h"
 #include "h-nbody.h"
@@ -175,6 +176,8 @@ int main (int argc, char** argv) {
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(640, 480);
     glutCreateWindow("TSM ODE Demo");
+
+    glewInit();
 
     // Initialize OpenGL.
     OpenGLInit();
