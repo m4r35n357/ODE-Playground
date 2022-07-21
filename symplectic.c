@@ -27,15 +27,6 @@ controls *get_c (char **argv) {
     return c;
 }
 
-void t_variables (char **argv, int begin, int argc, ...) {
-    va_list model_params;
-    va_start(model_params, argc);
-    for (int i = begin; i < argc; i++) {
-        *va_arg(model_params, real *) = strtold(argv[i], NULL);
-    }
-    va_end(model_params);
-}
-
 real error (real e) {
     return 10.0L * log10l(fabsl(e) >= 1e-36L ? fabsl(e) : 1e-36L);
 }

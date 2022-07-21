@@ -65,15 +65,17 @@ static void refresh (parameters *p) {
     p->p_phi = (p->L / p->sth2.val - p->aE) + p->a * P.val / p->delta.val;
 }
 
-void *get_p (int argc, char **argv, int va_begin) {
+void *get_p (int argc, char **argv, int va_begin) { (void)va_begin;
+    assert(argc == 14);
     parameters *p = malloc(sizeof (parameters));
-    real spin, p_mass, energy, momentum, m_factor, carter, r_0, theta_0;
-    t_variables(argv, va_begin, argc, &spin, &p_mass, &energy, &momentum, &m_factor, &carter, &r_0, &theta_0);
+    real p_mass, m_factor;
+    p_mass = strtold(argv[7], NULL);
     p->mu2 = p_mass * p_mass;  // constants
-    p->E = energy;
-    p->L = momentum * m_factor;
-    p->Q = carter * m_factor;
-    p->a = spin;
+    p->E = strtold(argv[8], NULL);
+    m_factor = strtold(argv[10], NULL);
+    p->L = strtold(argv[9], NULL) * m_factor;
+    p->Q = strtold(argv[11], NULL) * m_factor;
+    p->a = strtold(argv[6], NULL);
     p->a2 = p->a * p->a;
     p->L2 = p->L * p->L;
     p->aL = p->a * p->L;
@@ -81,8 +83,8 @@ void *get_p (int argc, char **argv, int va_begin) {
     p->K = p->Q + (p->L - p->aE) * (p->L - p->aE);
     p->a2xmu2_E2 = p->a2 * (p->mu2 - p->E * p->E);
     p->q_t = 0.0L;  // coordinates
-    p->q_r = r_0;
-    p->q_theta = elevation_to_colatitude(theta_0);
+    p->q_r = strtold(argv[12], NULL);;
+    p->q_theta = elevation_to_colatitude(strtold(argv[13], NULL));
     p->q_phi = 0.0L;
     refresh(p);  // variables, t & phi velocities
     p->p_r = - sqrtl(p->R.val >= 0.0L ? p->R.val : - p->R.val);
@@ -138,7 +140,6 @@ static void plot_raw (int dp, void *params, real time) { (void)dp;
 }
 
 int main (int argc, char **argv) {
-    assert(argc == 14);
     int plot_type_position = 5;
     long plot_type = strtol(argv[plot_type_position], NULL, 10);
     plotter plot;

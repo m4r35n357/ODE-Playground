@@ -17,11 +17,6 @@ typedef struct Controls {
 controls *get_c (char **argv);
 
 /*
- * Bulk set model variables from the command line arguments (start onwards)
- */
-void t_variables (char **argv, int start, int count, ...);
-
-/*
  * Get a blob of model data from the command to be passed into solve()
  */
 void *get_p (int argc, char **argv, int va_begin);
