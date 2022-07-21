@@ -55,7 +55,7 @@ static void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
 }
 
 static void output(int x, int y, float r, float g, float b, char *string) {
-    glColor3f( r, g, b );
+    glColor3f(r, g, b);
     glWindowPos2i(x, y);
     int len = (int)strlen(string);
     for (int i = 0; i < len; i++) {
@@ -69,9 +69,7 @@ static void output(int x, int y, float r, float g, float b, char *string) {
 static void Animate (void) {
     // Clear the redering window
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     glLoadIdentity();
-
     glTranslatef(0.0F, 0.0F, - nb->view_radius);
     glRotatef(nb->view_latitude, 1.0F, 0.0F, 0.0F);
     glRotatef(nb->view_longitude, 0.0F, 0.0F, 1.0F);
@@ -82,7 +80,7 @@ static void Animate (void) {
             glBegin( GL_LINE_STRIP );
             for (int k = 0; k < b->track->newest; k += 1) {
                 components point = b->track->buffer[k];
-                glColor3f((float)b->colour.r, (float)b->colour.g, (float)b->colour.b);
+                glColor3f(b->colour.r, b->colour.g, b->colour.b);
                 glVertex3f((float)point.x, (float)point.y, (float)point.z);
             }
             glEnd();
@@ -92,51 +90,35 @@ static void Animate (void) {
     if (d == BOTH || d == BALLS) {
         body *b = nb->bodies;
 
-        glTranslatef((float)(b[0].q_x - nb->centre.x),
-                     (float)(b[0].q_y - nb->centre.y),
-                     (float)(b[0].q_z - nb->centre.z));
+        glTranslatef((float)(b[0].q_x - nb->centre.x), (float)(b[0].q_y - nb->centre.y), (float)(b[0].q_z - nb->centre.z));
         glColor3f(b[0].colour.r, b[0].colour.g, b[0].colour.b);
         glutWireSphere((float)powl(nb->ball_scale * b[0].m, 1.0L/3.0L), 10, 10);
 
-        glTranslatef((float)(b[1].q_x - b[0].q_x),
-                     (float)(b[1].q_y - b[0].q_y),
-                     (float)(b[1].q_z - b[0].q_z));
+        glTranslatef((float)(b[1].q_x - b[0].q_x), (float)(b[1].q_y - b[0].q_y), (float)(b[1].q_z - b[0].q_z));
         glColor3f(b[1].colour.r, b[1].colour.g, b[1].colour.b);
         glutWireSphere((float)powl(nb->ball_scale * b[1].m, 1.0L/3.0L), 10, 10);
 
-        glTranslatef((float)(b[2].q_x - b[1].q_x),
-                     (float)(b[2].q_y - b[1].q_y),
-                     (float)(b[2].q_z - b[1].q_z));
+        glTranslatef((float)(b[2].q_x - b[1].q_x), (float)(b[2].q_y - b[1].q_y), (float)(b[2].q_z - b[1].q_z));
         glColor3f(b[2].colour.r, b[2].colour.g, b[2].colour.b);
         glutWireSphere((float)powl(nb->ball_scale * b[2].m, 1.0L/3.0L), 10, 10);
 
-        glTranslatef((float)(b[3].q_x - b[2].q_x),
-                     (float)(b[3].q_y - b[2].q_y),
-                     (float)(b[3].q_z - b[2].q_z));
+        glTranslatef((float)(b[3].q_x - b[2].q_x), (float)(b[3].q_y - b[2].q_y), (float)(b[3].q_z - b[2].q_z));
         glColor3f(b[3].colour.r, b[3].colour.g, b[3].colour.b);
         glutWireSphere((float)powl(nb->ball_scale * b[3].m, 1.0L/3.0L), 10, 10);
 
-        glTranslatef((float)(b[4].q_x - b[3].q_x),
-                     (float)(b[4].q_y - b[3].q_y),
-                     (float)(b[4].q_z - b[3].q_z));
+        glTranslatef((float)(b[4].q_x - b[3].q_x), (float)(b[4].q_y - b[3].q_y), (float)(b[4].q_z - b[3].q_z));
         glColor3f(b[4].colour.r, b[4].colour.g, b[4].colour.b);
         glutWireSphere((float)powl(nb->ball_scale * b[4].m, 1.0L/3.0L), 10, 10);
 
-        glTranslatef((float)(b[5].q_x - b[4].q_x),
-                     (float)(b[5].q_y - b[4].q_y),
-                     (float)(b[5].q_z - b[4].q_z));
+        glTranslatef((float)(b[5].q_x - b[4].q_x), (float)(b[5].q_y - b[4].q_y), (float)(b[5].q_z - b[4].q_z));
         glColor3f(b[5].colour.r, b[5].colour.g, b[5].colour.b);
         glutWireSphere((float)powl(nb->ball_scale * b[5].m, 1.0L/3.0L), 10, 10);
 
-        glTranslatef((float)(b[6].q_x - b[5].q_x),
-                     (float)(b[6].q_y - b[5].q_y),
-                     (float)(b[6].q_z - b[5].q_z));
+        glTranslatef((float)(b[6].q_x - b[5].q_x), (float)(b[6].q_y - b[5].q_y), (float)(b[6].q_z - b[5].q_z));
         glColor3f(b[6].colour.r, b[6].colour.g, b[6].colour.b);
         glutWireSphere((float)powl(nb->ball_scale * b[6].m, 1.0L/3.0L), 10, 10);
 
-        glTranslatef((float)(b[7].q_x - b[6].q_x),
-                     (float)(b[7].q_y - b[6].q_y),
-                     (float)(b[7].q_z - b[6].q_z));
+        glTranslatef((float)(b[7].q_x - b[6].q_x), (float)(b[7].q_y - b[6].q_y), (float)(b[7].q_z - b[6].q_z));
         glColor3f(b[7].colour.r, b[7].colour.g, b[7].colour.b);
         glutWireSphere((float)powl(nb->ball_scale * b[7].m, 1.0L/3.0L), 10, 10);
     }
@@ -170,7 +152,6 @@ static void Animate (void) {
     // Flush the pipeline, and swap the buffers
     glFlush();
     glutSwapBuffers();
-
     glutPostRedisplay();        // Request a re-draw for animation purposes
 }
 
