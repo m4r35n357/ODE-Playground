@@ -8,10 +8,45 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <assert.h>
 #include <math.h>
 #include "symplectic.h"
 #include "h-nbody.h"
+
+void *get_p (int argc, char **argv, int n_bodies) {
+    assert((argc - 6) % 7 == 0);
+    rgb colours[8];
+    colours[0] = (rgb) { .r = 1.0F, .g = 1.0F, .b = 0.0F };
+    colours[1] = (rgb) { .r = 0.0F, .g = 1.0F, .b = 1.0F };
+    colours[2] = (rgb) { .r = 1.0F, .g = 0.0F, .b = 1.0F };
+    colours[3] = (rgb) { .r = 1.0F, .g = 0.0F, .b = 0.0F };
+    colours[4] = (rgb) { .r = 0.0F, .g = 1.0F, .b = 0.0F };
+    colours[5] = (rgb) { .r = 0.0F, .g = 0.0F, .b = 1.0F };
+    colours[6] = (rgb) { .r = 0.3F, .g = 0.3F, .b = 0.3F };
+    colours[7] = (rgb) { .r = 0.7F, .g = 0.7F, .b = 0.7F };
+    body *bodies = calloc((size_t)n_bodies, sizeof (body));
+    for (int i = 0; i < n_bodies; i += 1) {
+        bodies[i].m = strtold(argv[7 * i + 6], NULL);
+        bodies[i].q_x = strtold(argv[7 * i + 7], NULL);
+        bodies[i].q_y = strtold(argv[7 * i + 8], NULL);
+        bodies[i].q_z = strtold(argv[7 * i + 9], NULL);
+        bodies[i].p_x = strtold(argv[7 * i + 10], NULL);
+        bodies[i].p_y = strtold(argv[7 * i + 11], NULL);
+        bodies[i].p_z = strtold(argv[7 * i + 12], NULL);
+        bodies[i].colour = colours[i];
+    }
+    nbody *nb = malloc(sizeof (nbody));
+    nb->n = n_bodies;
+    nb->bodies = bodies;
+    nb->g = strtold(argv[5], NULL);
+    nb->h0 = h(nb);
+    nb->ball_scale = 0.01F;
+    nb->view_radius = 20.0F;
+    nb->view_longitude = 0.0F;
+    nb->view_latitude = 90.0F;
+    return nb;
+}
 
 void cog (nbody *nb) {
     real X = 0.0L, Y = 0.0L, Z = 0.0L, mT = 0.0L;
@@ -48,37 +83,6 @@ real h (nbody *nb) {
         }
     }
     return energy;
-}
-
-void *get_p (int argc, char **argv, int va_begin) { (void)argc; (void)argv; (void)va_begin;
-    int n_bodies = 8;
-    body *bodies = calloc((size_t)n_bodies, sizeof (body));
-    bodies[0] = (body){ .m = 100.0L, .colour = (components) { .x = 1.0F, .y = 1.0F, .z = 0.0F },
-                        .q_x = 0.0L, .q_y = 0.0L, .q_z = 0.0L, .p_x = 0.0L, .p_y = 0.0L, .p_z = 0.0L };
-    bodies[1] = (body){ .m = 2.0L, .colour = (components) { .x = 0.0F, .y = 1.0F, .z = 1.0F },
-                        .q_x = 0.0L, .q_y = 4.5L, .q_z = 0.4L, .p_x = -0.2L, .p_y = 0.0L, .p_z = 1.8L };
-    bodies[2] = (body){ .m = 3.0L, .colour = (components) { .x = 1.0F, .y = 0.0F, .z = 1.0F },
-                        .q_x = -6.0L, .q_y = 0.0L, .q_z = -0.4L, .p_x = 0.0L, .p_y = -2.0L, .p_z = 1.0L };
-    bodies[3] = (body){ .m = 5.0L, .colour = (components) { .x = 1.0F, .y = 0.0F, .z = 0.0F },
-                        .q_x = 3.0L, .q_y = 0.0L, .q_z = -0.2L, .p_x = 0.0L, .p_y = 5.8L, .p_z = -0.2L };
-    bodies[4] = (body){ .m = 4.0L, .colour = (components) { .x = 0.0F, .y = 1.0F, .z = 0.0F },
-                        .q_x = 0.0L, .q_y = -4.0L, .q_z = 0.1L, .p_x = -3.6L, .p_y = 0.0L, .p_z = 0.2L};
-    bodies[5] = (body){ .m = 3.0L, .colour = (components) { .x = 0.0F, .y = 0.0F, .z = 1.0F },
-                        .q_x = -4.0L, .q_y = 0.0L, .q_z = -0.1L, .p_x = 0.0L, .p_y = -0.2L, .p_z = -2.6L };
-    bodies[6] = (body){ .m = 3.0L, .colour = (components) { .x = 0.3F, .y = 0.3F, .z = 0.3F },
-                        .q_x = 8.0L, .q_y = 0.0L, .q_z = -0.3L, .p_x = 0.0L, .p_y = 2.0L, .p_z = -0.2L };
-    bodies[7] = (body){ .m = 4.0L, .colour = (components) { .x = 0.7F, .y = 0.7F, .z = 0.7F },
-                        .q_x = 0.0L, .q_y = 4.0L, .q_z = -0.2L, .p_x = -4.8L, .p_y = 0.0L, .p_z = -0.2L };
-    nbody *nb = malloc(sizeof (nbody));
-    nb->n = n_bodies;
-    nb->bodies = bodies;
-    nb->g = 0.05L;
-    nb->h0 = h(nb);
-    nb->ball_scale = 0.01F;
-    nb->view_radius = 20.0F;
-    nb->view_longitude = 0.0F;
-    nb->view_latitude = 90.0F;
-    return nb;
 }
 
 void update_q (void *n_body, real c) {

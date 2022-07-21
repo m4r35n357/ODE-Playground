@@ -10,10 +10,14 @@ typedef struct Line {
     components *buffer;
 } line;
 
+typedef struct Rgb {
+    float r, g, b;
+} rgb;
+
 typedef struct Body {
     real m;  // mass
     real q_x, q_y, q_z, p_x, p_y, p_z;  // coordinates & momenta
-    components colour;
+    rgb colour;
     line *track;
 } body;
 

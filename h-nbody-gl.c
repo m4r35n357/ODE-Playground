@@ -1,7 +1,7 @@
 /*
  *  N-Body simulator
  *
- * Example: ./h-nbody-gl  0 10 .01 10000
+ * Example:  ./h-nbody-gl  0 10 .01 10000  .05  100.0 0.0 0.0 0.0 0.0 0.0 0.0 2.0 0.0 4.5 0.4 -0.2 0.0 1.8 3.0 -6.0 0.0 -0.4 0.0 -2.0 1.0 5.0 3.0 0.0 -0.2 0.0 5.8 -0.2 4.0 0.0 -4.0 0.1 -3.6 0.0 0.2 3.0 -4.0 0.0 -0.1 0.0 -0.2 -2.6 3.0 8.0 0.0 -0.3 0.0 2.0 -0.2 4.0 0.0 4.0 -0.2 -4.8 0.0 -0.2
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -82,7 +82,7 @@ static void Animate (void) {
             glBegin( GL_LINE_STRIP );
             for (int k = 0; k < b->track->newest; k += 1) {
                 components point = b->track->buffer[k];
-                glColor3f((float)b->colour.x, (float)b->colour.y, (float)b->colour.z);
+                glColor3f((float)b->colour.r, (float)b->colour.g, (float)b->colour.b);
                 glVertex3f((float)point.x, (float)point.y, (float)point.z);
             }
             glEnd();
@@ -95,49 +95,49 @@ static void Animate (void) {
         glTranslatef((float)(b[0].q_x - nb->centre.x),
                      (float)(b[0].q_y - nb->centre.y),
                      (float)(b[0].q_z - nb->centre.z));
-        glColor3f((float)b[0].colour.x, (float)b[0].colour.y, (float)b[0].colour.z);
+        glColor3f(b[0].colour.r, b[0].colour.g, b[0].colour.b);
         glutWireSphere((float)powl(nb->ball_scale * b[0].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[1].q_x - b[0].q_x),
                      (float)(b[1].q_y - b[0].q_y),
                      (float)(b[1].q_z - b[0].q_z));
-        glColor3f((float)b[1].colour.x, (float)b[1].colour.y, (float)b[1].colour.z);
+        glColor3f(b[1].colour.r, b[1].colour.g, b[1].colour.b);
         glutWireSphere((float)powl(nb->ball_scale * b[1].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[2].q_x - b[1].q_x),
                      (float)(b[2].q_y - b[1].q_y),
                      (float)(b[2].q_z - b[1].q_z));
-        glColor3f((float)b[2].colour.x, (float)b[2].colour.y, (float)b[2].colour.z);
+        glColor3f(b[2].colour.r, b[2].colour.g, b[2].colour.b);
         glutWireSphere((float)powl(nb->ball_scale * b[2].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[3].q_x - b[2].q_x),
                      (float)(b[3].q_y - b[2].q_y),
                      (float)(b[3].q_z - b[2].q_z));
-        glColor3f((float)b[3].colour.x, (float)b[3].colour.y, (float)b[3].colour.z);
+        glColor3f(b[3].colour.r, b[3].colour.g, b[3].colour.b);
         glutWireSphere((float)powl(nb->ball_scale * b[3].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[4].q_x - b[3].q_x),
                      (float)(b[4].q_y - b[3].q_y),
                      (float)(b[4].q_z - b[3].q_z));
-        glColor3f((float)b[4].colour.x, (float)b[4].colour.y, (float)b[4].colour.z);
+        glColor3f(b[4].colour.r, b[4].colour.g, b[4].colour.b);
         glutWireSphere((float)powl(nb->ball_scale * b[4].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[5].q_x - b[4].q_x),
                      (float)(b[5].q_y - b[4].q_y),
                      (float)(b[5].q_z - b[4].q_z));
-        glColor3f((float)b[5].colour.x, (float)b[5].colour.y, (float)b[5].colour.z);
+        glColor3f(b[5].colour.r, b[5].colour.g, b[5].colour.b);
         glutWireSphere((float)powl(nb->ball_scale * b[5].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[6].q_x - b[5].q_x),
                      (float)(b[6].q_y - b[5].q_y),
                      (float)(b[6].q_z - b[5].q_z));
-        glColor3f((float)b[6].colour.x, (float)b[6].colour.y, (float)b[6].colour.z);
+        glColor3f(b[6].colour.r, b[6].colour.g, b[6].colour.b);
         glutWireSphere((float)powl(nb->ball_scale * b[6].m, 1.0L/3.0L), 10, 10);
 
         glTranslatef((float)(b[7].q_x - b[6].q_x),
                      (float)(b[7].q_y - b[6].q_y),
                      (float)(b[7].q_z - b[6].q_z));
-        glColor3f((float)b[7].colour.x, (float)b[7].colour.y, (float)b[7].colour.z);
+        glColor3f(b[7].colour.r, b[7].colour.g, b[7].colour.b);
         glutWireSphere((float)powl(nb->ball_scale * b[7].m, 1.0L/3.0L), 10, 10);
     }
 
@@ -201,11 +201,9 @@ static void ResizeWindow (int w, int h) {
 
 // Set up OpenGL, hook up callbacks, and start the main loop
 int main (int argc, char** argv) {
-    assert(argc == 5);
-
     c = get_c(argv);
     d = (display)strtol(argv[1], NULL, 10);
-    nb = (nbody *)get_p(argc, argv, 5);
+    nb = (nbody *)get_p(argc, argv, (argc - 6) / 7);
     since = clock();
 
     for (int i = 0; i < nb->n; i += 1) {
