@@ -128,6 +128,9 @@ void OpenGLInit (void) {
     glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
     glClearDepth(1.0F);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_COLOR_MATERIAL);
 }
 
 // ResizeWindow is called when the window is resized
