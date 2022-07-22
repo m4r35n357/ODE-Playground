@@ -17,9 +17,9 @@ static real r (int stage) {
 
 controls *get_c (char **argv) {
     controls *c = malloc(sizeof (controls));
-    c->order = strtol(argv[2], NULL, BASE); assert(c->order >= 2 && c->order <= 10);
+    c->order = (int)strtol(argv[2], NULL, BASE); assert(c->order >= 2 && c->order <= 10);
     c->step_size = strtold(argv[3], NULL); assert(c->step_size > 0.0L);
-    c->steps = strtol(argv[4], NULL, BASE); assert(c->steps >= 0 && c->steps <= 1000000);
+    c->steps = (int)strtol(argv[4], NULL, BASE); assert(c->steps >= 0 && c->steps <= 1000000);
     c->r1 = (weights) { .fwd = r(1), .rev = 1.0L - 4.0L * r(1) };
     c->r2 = (weights) { .fwd = r(2), .rev = 1.0L - 4.0L * r(2) };
     c->r3 = (weights) { .fwd = r(3), .rev = 1.0L - 4.0L * r(3) };
@@ -96,7 +96,7 @@ void solve (char **argv, void *p, plotter output) {
     int display_precision = (int)strtol(argv[1], NULL, BASE); assert(display_precision >= 1 && display_precision <= 32);
     controls *c = get_c(argv);
     integrator composer = set_integrator(c->order);
-    for (long step = 0; step < c->steps; step++) {
+    for (int step = 0; step < c->steps; step++) {
         output(display_precision, p, step * c->step_size);
         composer(c, p, c->step_size);
     }
@@ -107,7 +107,7 @@ void *generate (controls *cont, void *params) {
     static controls *c;
     static void *p;
     static integrator composer = NULL;
-    static long step, resume = 0;
+    static int step, resume = 0;
     if (resume) goto resume; else resume = 1;
     c = cont;
     p = params;
