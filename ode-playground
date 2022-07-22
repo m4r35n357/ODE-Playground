@@ -31,7 +31,7 @@ case $model in
     Lorenz)
         case $analysis in
             GLplot)
-                command=$(yad --columns=2 --title="Lorenz Attractor (TSM)" --form --separator=" " --align=right \
+                $(yad --columns=2 --title="Lorenz Attractor (TSM)" --form --separator=" " --align=right \
                 --field="Model:RO" \
                 --field="Display Mode":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
@@ -79,7 +79,7 @@ case $model in
     Rossler)
         case $analysis in
             GLplot)
-                command=$(yad --columns=2 --title="Rossler Attractor (TSM)" --form --separator=" " --align=right \
+                $(yad --columns=2 --title="Rossler Attractor (TSM)" --form --separator=" " --align=right \
                 --field="Model:RO" \
                 --field="Display Mode":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
@@ -190,7 +190,7 @@ case $model in
     RF)
         case $analysis in
             GLplot)
-                command=$(yad --columns=2 --title="Rabinovich–Fabrikant Attractor (TSM)" --form --separator=" " --align=right \
+                $(yad --columns=2 --title="Rabinovich–Fabrikant Attractor (TSM)" --form --separator=" " --align=right \
                 --field="Model:RO" \
                 --field="Display Mode":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
@@ -238,7 +238,7 @@ case $model in
     Halvorsen)
         case $analysis in
             GLplot)
-                command=$(yad --columns=2 --title="Halvorsen Attractor (TSM)" --form --separator=" " --align=right \
+                $(yad --columns=2 --title="Halvorsen Attractor (TSM)" --form --separator=" " --align=right \
                 --field="Model:RO" \
                 --field="Display Mode":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
@@ -284,5 +284,3 @@ case $model in
         esac
     ;;
 esac
-
-$command
