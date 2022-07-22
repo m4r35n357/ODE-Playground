@@ -142,7 +142,7 @@ int main (int argc, char **argv) {
     fprintf(stdout, "%sTaylor Series Method: x'=1  y'=0  z'=-1%s\n", WHT, NRM);
     int dp = 12, steps = 10;
     real step_size = 0.1L;
-    controls c = (controls) { .order=n, .step=0, steps=steps, .step_size=step_size };
+    controls c = (controls) { .order=n, .step=0, .steps=steps, .step_size=step_size };
     components xyz = (components) { 1.0L, 1.0L, 1.0L };
     tsm(dp, &c, &xyz, get_p(argc, argv, n), clock());
     fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);

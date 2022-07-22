@@ -48,27 +48,11 @@ do
 done
 
 echo ""
-build_rk4 () {
-    name=$1
-    ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c ode-common.c runge-kutta-ode.c main_rk4.c -lm -s
-    ${CC} -Og -g $WARNINGS -o ${name}-dbg ${name}.c ode-common.c runge-kutta-ode.c main_rk4.c -lm
-}
-
-for model in \
-rk4-lorenz \
-rk4-halvorsen \
-rk4-thomas
-do
-    echo " Building ${model}"
-    build_rk4 ${model} &
-done
-
-echo ""
 build_tsm () {
     name=$1
-    ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c ode-common.c taylor-ode.c main_tsm.c -lm -s
-    ${CC} -Og -g $WARNINGS -o ${name}-dbg ${name}.c ode-common.c taylor-ode.c main_tsm.c -lm
-    ${CC} -Og -g $WARNINGS -o ${name}-gl ${name}.c ode-common.c taylor-ode.c ode-gl.c -lm -lglut -lGLU -lGL
+    ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c main_tsm.c -lm -s
+    ${CC} -Og -g $WARNINGS -o ${name}-dbg ${name}.c taylor-ode.c main_tsm.c -lm
+    ${CC} -Og -g $WARNINGS -o ${name}-gl ${name}.c taylor-ode.c ode-gl.c -lm -lglut -lGLU -lGL
 }
 
 for model in \
@@ -113,7 +97,7 @@ ${CC} -Og $WARNINGS -g -o libdual-test-dbg dual.c libdual-test.c -lm &
 
 echo " Building libad-test-dbg"
 rm -f libad-test-dbg
-${CC} -Og $WARNINGS -g -o libad-test-dbg ode-common.c taylor-ode.c ad.c libad-test.c -lm &
+${CC} -Og $WARNINGS -g -o libad-test-dbg taylor-ode.c ad.c libad-test.c -lm &
 
 echo " Building libtaylor"
 rm -f libtaylor.so taylor-ode.o

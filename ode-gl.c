@@ -14,6 +14,7 @@
 #include <math.h>
 #include <GL/freeglut.h>    // OpenGL Graphics Utility Library
 #include "taylor-ode.h"
+#include "h-nbody.h"
 
 static controls *c;
 static particle *ball;
