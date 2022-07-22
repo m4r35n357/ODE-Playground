@@ -16,7 +16,7 @@ typedef struct Rgb {
 
 typedef struct Body {
     real m;  // mass
-    real q_x, q_y, q_z, p_x, p_y, p_z;  // coordinates & momenta
+    real x, y, z, px, py, pz;  // coordinates & momenta
     rgb colour;
     line *track;
 } body;

@@ -89,11 +89,11 @@ static void Animate (void) {
 
     if (d == BOTH || d == BALLS) {
         body *b = nb->bodies;
-        glTranslatef((float)(b[0].q_x - nb->centre.x), (float)(b[0].q_y - nb->centre.y), (float)(b[0].q_z - nb->centre.z));
+        glTranslatef((float)(b[0].x - nb->centre.x), (float)(b[0].y - nb->centre.y), (float)(b[0].z - nb->centre.z));
         glColor3f(b[0].colour.r, b[0].colour.g, b[0].colour.b);
         glutWireSphere((float)powl(nb->ball_scale * b[0].m, 1.0L/3.0L), 10, 10);
         for (int i = 1; i < nb->n; i += 1) {
-            glTranslatef((float)(b[i].q_x - b[i - 1].q_x), (float)(b[i].q_y - b[i - 1].q_y), (float)(b[i].q_z - b[i - 1].q_z));
+            glTranslatef((float)(b[i].x - b[i - 1].x), (float)(b[i].y - b[i - 1].y), (float)(b[i].z - b[i - 1].z));
             glColor3f(b[i].colour.r, b[i].colour.g, b[i].colour.b);
             glutWireSphere((float)powl(nb->ball_scale * b[i].m, 1.0L/3.0L), 10, 10);
         }
@@ -114,7 +114,7 @@ static void Animate (void) {
             if (d == BOTH || d == LINES) {
                 for (int i = 0; i < nb->n; i += 1) {
                     body *b = &nb->bodies[i];
-                    b->track->buffer[b->track->newest++] = (components) { b->q_x, b->q_y, b->q_z };
+                    b->track->buffer[b->track->newest++] = (components) { b->x, b->y, b->z };
                 }
             }
         } else {
@@ -168,7 +168,7 @@ int main (int argc, char** argv) {
         b->track = malloc(sizeof (line));
         b->track->newest = 0;
         b->track->buffer = calloc((size_t)c->steps, sizeof (components));
-        b->track->buffer[b->track->newest] = (components) { b->q_x, b->q_y, b->q_z };
+        b->track->buffer[b->track->newest] = (components) { b->x, b->y, b->z };
     }
 
     // Need to double buffer for animation

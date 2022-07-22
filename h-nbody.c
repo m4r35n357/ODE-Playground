@@ -28,12 +28,12 @@ void *get_p (int argc, char **argv, int n_bodies) {
     body *bodies = calloc((size_t)n_bodies, sizeof (body));
     for (int i = 0; i < n_bodies; i += 1) {
         bodies[i].m = strtold(argv[7 * i + 6], NULL);
-        bodies[i].q_x = strtold(argv[7 * i + 7], NULL);
-        bodies[i].q_y = strtold(argv[7 * i + 8], NULL);
-        bodies[i].q_z = strtold(argv[7 * i + 9], NULL);
-        bodies[i].p_x = strtold(argv[7 * i + 10], NULL);
-        bodies[i].p_y = strtold(argv[7 * i + 11], NULL);
-        bodies[i].p_z = strtold(argv[7 * i + 12], NULL);
+        bodies[i].x = strtold(argv[7 * i + 7], NULL);
+        bodies[i].y = strtold(argv[7 * i + 8], NULL);
+        bodies[i].z = strtold(argv[7 * i + 9], NULL);
+        bodies[i].px = strtold(argv[7 * i + 10], NULL);
+        bodies[i].py = strtold(argv[7 * i + 11], NULL);
+        bodies[i].pz = strtold(argv[7 * i + 12], NULL);
         bodies[i].colour = colours[i];
     }
     nbody *nb = malloc(sizeof (nbody));
@@ -52,17 +52,17 @@ void cog (nbody *nb) {
     real X = 0.0L, Y = 0.0L, Z = 0.0L, mT = 0.0L;
     for (int i = 0; i < nb->n; i += 1) {
         body *a = &nb->bodies[i];
-        X += a->q_x * a->m;
-        Y += a->q_y * a->m;
-        Z += a->q_z * a->m;
+        X += a->x * a->m;
+        Y += a->y * a->m;
+        Z += a->z * a->m;
         mT += a->m;
     }
     nb->centre = (components) { .x = X / mT, .y = Y / mT, .z = Z / mT };
     for (int i = 0; i < nb->n; i += 1) {
         body *a = &nb->bodies[i];
-        a->q_x -= nb->centre.x;
-        a->q_y -= nb->centre.y;
-        a->q_z -= nb->centre.z;
+        a->x -= nb->centre.x;
+        a->y -= nb->centre.y;
+        a->z -= nb->centre.z;
     }
 }
 
@@ -74,11 +74,11 @@ real h (nbody *nb) {
     real energy = 0.0L;
     for (int i = 0; i < nb->n; i += 1) {
         body *a = &nb->bodies[i];
-        energy += 0.5L * (a->p_x * a->p_x + a->p_y * a->p_y + a->p_z * a->p_z) / a->m;
+        energy += 0.5L * (a->px * a->px + a->py * a->py + a->pz * a->pz) / a->m;
         for (int j = 0; j < nb->n; j += 1) {
             if (i > j) {
                 body *b = &nb->bodies[j];
-                energy -= nb->g * a->m * b->m / distance(a->q_x, a->q_y, a->q_z, b->q_x, b->q_y, b->q_z);
+                energy -= nb->g * a->m * b->m / distance(a->x, a->y, a->z, b->x, b->y, b->z);
             }
         }
     }
@@ -91,9 +91,9 @@ void update_q (void *n_body, real c) {
     for (int i = 0; i < nb->n; i += 1) {
         body *a = &nb->bodies[i];
         tmp = c / a->m;
-        a->q_x += a->p_x * tmp;
-        a->q_y += a->p_y * tmp;
-        a->q_z += a->p_z * tmp;
+        a->x += a->px * tmp;
+        a->y += a->py * tmp;
+        a->z += a->pz * tmp;
     }
 }
 
@@ -104,17 +104,17 @@ void update_p (void *n_body, real c) {
         for (int j = 0; j < nb->n; j += 1) {
             if (i > j) {
                 body *b = &nb->bodies[j];
-                real d = distance(a->q_x, a->q_y, a->q_z, b->q_x, b->q_y, b->q_z);
+                real d = distance(a->x, a->y, a->z, b->x, b->y, b->z);
                 real tmp = - c * nb->g * a->m * b->m / (d * d * d);
-                real dPx = (b->q_x - a->q_x) * tmp;
-                real dPy = (b->q_y - a->q_y) * tmp;
-                real dPz = (b->q_z - a->q_z) * tmp;
-                a->p_x -= dPx;
-                a->p_y -= dPy;
-                a->p_z -= dPz;
-                b->p_x += dPx;
-                b->p_y += dPy;
-                b->p_z += dPz;
+                real dPx = (b->x - a->x) * tmp;
+                real dPy = (b->y - a->y) * tmp;
+                real dPz = (b->z - a->z) * tmp;
+                a->px -= dPx;
+                a->py -= dPy;
+                a->pz -= dPz;
+                b->px += dPx;
+                b->py += dPy;
+                b->pz += dPz;
             }
         }
     }
