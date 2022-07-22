@@ -63,7 +63,7 @@ int main (int argc, char **argv) {
     assert(argc == 3 || argc == 4);
     dual x = d_var(strtold(argv[1], NULL));
     tolerance = strtold(argv[2], NULL);
-    if (argc == 4) debug = (int)strtol(argv[3], NULL, 10);
+    if (argc == 4) debug = (int)strtol(argv[3], NULL, BASE);
 
     int x_positive = x.val > 0.0L;
     int x_non_zero = x.val != 0.0L;

@@ -15,7 +15,6 @@
 #include <GL/freeglut.h>    // OpenGL Graphics Utility Library
 #include "symplectic.h"
 #include "h-nbody.h"
-#include "h-nbody-gl.h"
 
 static controls *c;
 static nbody *nb;
@@ -159,7 +158,7 @@ static void ResizeWindow (int w, int h) {
 // Set up OpenGL, hook up callbacks, and start the main loop
 int main (int argc, char** argv) {
     c = get_c(argv);
-    d = (display)strtol(argv[1], NULL, 10);
+    d = (display)strtol(argv[1], NULL, BASE);
     nb = (nbody *)get_p(argc, argv, (argc - 6) / 7);
     since = clock();
 

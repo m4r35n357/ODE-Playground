@@ -8,43 +8,6 @@
 #include "real.h"
 
 /*
- * The numerical base for string IO conversions
- */
-extern const int BASE;
-
-/*
- * For returning x, y, z velocities from the model
- */
-typedef struct Components {
-    real x, y, z;
-} components;
-
-/*
- * For returning integrator control parameters
- */
-typedef struct Controls {
-    int order, step, steps;
-    real step_size;
-} controls;
-
-typedef struct Line {
-    int newest;
-    components *buffer;
-} line;
-
-typedef struct Particle {
-    components *coordinates;
-    components colour;
-    line *track;
-    float size, view_radius, view_latitude, view_longitude;
-} particle;
-
-/*
- * Retrieves integrator control parameters
- */
-controls *get_c (char **argv);
-
-/*
  * Retrieves ODE parameters from the tail of the command (arguments 8 onwards)
  */
 void t_params (char **argv, int count, ...);

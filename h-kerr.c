@@ -141,7 +141,7 @@ static void plot_raw (int dp, void *params, real time) { (void)dp;
 
 int main (int argc, char **argv) {
     int plot_type_position = 5;
-    long plot_type = strtol(argv[plot_type_position], NULL, 10);
+    long plot_type = strtol(argv[plot_type_position], NULL, BASE);
     plotter plot;
     switch (plot_type) {
         case 0: plot = plot_path; break;  // for plot3d.py
