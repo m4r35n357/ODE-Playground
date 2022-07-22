@@ -1,8 +1,6 @@
 /*
  *  N-Body simulator
  *
- * Example: ./h-nbody-gl  0 10 .01 10000
- *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
@@ -55,7 +53,7 @@ static void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
 }
 
 static void output(int x, int y, float r, float g, float b, char *string) {
-    glColor3f( r, g, b );
+    glColor3f(r, g, b);
     glWindowPos2i(x, y);
     int len = (int)strlen(string);
     for (int i = 0; i < len; i++) {
@@ -69,9 +67,7 @@ static void output(int x, int y, float r, float g, float b, char *string) {
 static void Animate (void) {
     // Clear the redering window
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     glLoadIdentity();
-
     glTranslatef(0.0F, 0.0F, - ball->view_radius);
     glRotatef(ball->view_latitude, 1.0F, 0.0F, 0.0F);
     glRotatef(ball->view_longitude, 0.0F, 0.0F, 1.0F);
@@ -118,7 +114,6 @@ static void Animate (void) {
     // Flush the pipeline, and swap the buffers
     glFlush();
     glutSwapBuffers();
-
     glutPostRedisplay();        // Request a re-draw for animation purposes
 }
 

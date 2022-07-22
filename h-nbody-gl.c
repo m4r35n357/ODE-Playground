@@ -160,8 +160,8 @@ static void ResizeWindow (int w, int h) {
 
 // Set up OpenGL, hook up callbacks, and start the main loop
 int main (int argc, char** argv) {
-    c = get_c(argv);
     d = (display)strtol(argv[1], NULL, BASE);
+    c = get_c(argv);
     nb = (nbody *)get_p(argc, argv, (argc - 6) / 7);
     since = clock();
 
