@@ -1,21 +1,6 @@
 
 #include "real.h"
 
-typedef struct Weights {
-    real fwd, rev;
-} weights;
-
-typedef struct Controls {
-    long order, step, steps;
-    real step_size;
-    weights r1, r2, r3, r4;
-} controls;
-
-/*
- * Get integrator control data from the command to be passed into solve()
- */
-controls *get_c (char **argv);
-
 /*
  * Get a blob of model data from the command to be passed into solve()
  */

@@ -14,7 +14,6 @@
 #include <math.h>
 #include <GL/freeglut.h>    // OpenGL Graphics Utility Library
 #include "taylor-ode.h"
-#include "h-nbody-gl.h"
 
 static controls *c;
 static particle *ball;
@@ -80,7 +79,7 @@ static void Animate (void) {
         glBegin( GL_LINE_STRIP );
         for (int k = 0; k < ball->track->newest; k += 1) {
             components point = ball->track->buffer[k];
-            glColor3f((float)ball->colour.x, (float)ball->colour.y, (float)ball->colour.z);
+            glColor3f(ball->colour.r, ball->colour.g, ball->colour.b);
             glVertex3f((float)point.x, (float)point.y, (float)point.z);
         }
         glEnd();
@@ -88,7 +87,7 @@ static void Animate (void) {
 
     if (d == BOTH || d == BALLS) {
         glTranslatef((float)ball->coordinates->x, (float)ball->coordinates->y, (float)ball->coordinates->z);
-        glColor3f((float)ball->colour.x, (float)ball->colour.y, (float)ball->colour.z);
+        glColor3f(ball->colour.r, ball->colour.g, ball->colour.b);
         glutSolidSphere(ball->size, 10, 10);
     }
 
@@ -149,7 +148,7 @@ static void ResizeWindow (int w, int h) {
 
 // Set up OpenGL, hook up callbacks, and start the main loop
 int main (int argc, char** argv) {
-    d = (display)strtol(argv[1], NULL, 10);
+    d = (display)strtol(argv[1], NULL, BASE);
     c = get_c(argv);
     p = get_p(argc, argv, c->order);
     since = clock();
@@ -164,7 +163,7 @@ int main (int argc, char** argv) {
     ball->track->buffer = calloc((size_t)c->steps, sizeof (components));
     ball->track->buffer[ball->track->newest] = *ball->coordinates;
     ball->size = 0.1F;
-    ball->colour = (components) { .x = 0.0F, .y = 0.5F, .z = 0.0F };
+    ball->colour = (rgb) { .r = 0.0F, .g = 0.5F, .b = 0.0F };
     ball->view_radius = 20.0F;
     ball->view_longitude = 0.0F;
     ball->view_latitude = 0.0F;

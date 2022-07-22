@@ -8,13 +8,11 @@
 #include <assert.h>
 #include "ode-common.h"
 
-const int BASE = 10;
-
 controls *get_c (char **argv) {
     controls *c = malloc(sizeof (controls));
-    c->order = (int)strtol(argv[2], NULL, 10); assert(c->order >= 2 && c->order <= 64);
+    c->order = (int)strtol(argv[2], NULL, BASE); assert(c->order >= 2 && c->order <= 64);
     c->step_size = strtold(argv[3], NULL); assert(c->step_size > 0.0L);
-    c->steps = (int)strtol(argv[4], NULL, 10); assert(c->steps >= 0 && c->steps <= 1000000);
+    c->steps = (int)strtol(argv[4], NULL, BASE); assert(c->steps >= 0 && c->steps <= 1000000);
     return c;
 }
 
