@@ -111,9 +111,9 @@ static void Animate (void) {
         if (generate(c, nb)) {
             cog(nb);
             if (d == BOTH || d == LINES) {
+                body *b = nb->bodies;
                 for (int i = 0; i < nb->n; i += 1) {
-                    body *b = &nb->bodies[i];
-                    b->track->buffer[b->track->newest++] = (components) { b->x, b->y, b->z };
+                    b[i].track->buffer[b[i].track->newest++] = (components) { b[i].x, b[i].y, b[i].z };
                 }
             }
         } else {
