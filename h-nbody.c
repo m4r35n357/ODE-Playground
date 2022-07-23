@@ -25,20 +25,19 @@ void *get_p (int argc, char **argv, int n_bodies) {
     colours[5] = (rgb) { .r = 0.0F, .g = 0.0F, .b = 1.0F };
     colours[6] = (rgb) { .r = 0.3F, .g = 0.3F, .b = 0.3F };
     colours[7] = (rgb) { .r = 0.7F, .g = 0.7F, .b = 0.7F };
-    body *bodies = calloc((size_t)n_bodies, sizeof (body));
-    for (int i = 0; i < n_bodies; i += 1) {
-        bodies[i].m = strtold(argv[7 * i + 6], NULL);
-        bodies[i].x = strtold(argv[7 * i + 7], NULL);
-        bodies[i].y = strtold(argv[7 * i + 8], NULL);
-        bodies[i].z = strtold(argv[7 * i + 9], NULL);
-        bodies[i].px = strtold(argv[7 * i + 10], NULL);
-        bodies[i].py = strtold(argv[7 * i + 11], NULL);
-        bodies[i].pz = strtold(argv[7 * i + 12], NULL);
-        bodies[i].colour = colours[i];
-    }
     nbody *nb = malloc(sizeof (nbody));
     nb->n = n_bodies;
-    nb->bodies = bodies;
+    nb->bodies = calloc((size_t)n_bodies, sizeof (body));
+    for (int i = 0; i < n_bodies; i += 1) {
+        nb->bodies[i].m = strtold(argv[7 * i + 6], NULL);
+        nb->bodies[i].x = strtold(argv[7 * i + 7], NULL);
+        nb->bodies[i].y = strtold(argv[7 * i + 8], NULL);
+        nb->bodies[i].z = strtold(argv[7 * i + 9], NULL);
+        nb->bodies[i].px = strtold(argv[7 * i + 10], NULL);
+        nb->bodies[i].py = strtold(argv[7 * i + 11], NULL);
+        nb->bodies[i].pz = strtold(argv[7 * i + 12], NULL);
+        nb->bodies[i].colour = colours[i];
+    }
     nb->g = strtold(argv[5], NULL);
     nb->h0 = h(nb);
     nb->ball_scale = 0.01F;

@@ -74,12 +74,12 @@ static void Animate (void) {
     glRotatef(nb->view_longitude, 0.0F, 0.0F, 1.0F);
 
     if (d == BOTH || d == LINES) {
+        body *b = nb->bodies;
         for (int i = 0; i < nb->n; i += 1) {
-            body *b = &nb->bodies[i];
             glBegin( GL_LINE_STRIP );
-            for (int k = 0; k < b->track->newest; k += 1) {
-                components point = b->track->buffer[k];
-                glColor3f(b->colour.r, b->colour.g, b->colour.b);
+            for (int k = 0; k < b[i].track->newest; k += 1) {
+                components point = b[i].track->buffer[k];
+                glColor3f(b[i].colour.r, b[i].colour.g, b[i].colour.b);
                 glVertex3f((float)point.x, (float)point.y, (float)point.z);
             }
             glEnd();
@@ -165,12 +165,12 @@ int main (int argc, char** argv) {
     nb = (nbody *)get_p(argc, argv, (argc - 6) / 7);
     since = clock();
 
+    body *b = nb->bodies;
     for (int i = 0; i < nb->n; i += 1) {
-        body *b = &nb->bodies[i];
-        b->track = malloc(sizeof (line));
-        b->track->newest = 0;
-        b->track->buffer = calloc((size_t)c->steps, sizeof (components));
-        b->track->buffer[b->track->newest] = (components) { b->x, b->y, b->z };
+        b[i].track = malloc(sizeof (line));
+        b[i].track->newest = 0;
+        b[i].track->buffer = calloc((size_t)c->steps, sizeof (components));
+        b[i].track->buffer[b[i].track->newest] = (components) { b[i].x, b[i].y, b[i].z };
     }
 
     // Need to double buffer for animation
