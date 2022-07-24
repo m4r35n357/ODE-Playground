@@ -34,6 +34,6 @@ void update_p (void *params, real d);
 /*
  * Call the integrator
  */
-void solve (char **argv, void *p, plotter output);
+void solve (char **argv, controls *cont, void *p, plotter output);
 
 void *generate (controls *cont, void *p);

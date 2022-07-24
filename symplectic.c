@@ -92,9 +92,8 @@ static integrator set_integrator (long order) {
     return composer;
 }
 
-void solve (char **argv, void *p, plotter output) {
+void solve (char **argv, controls *c, void *p, plotter output) {
     int display_precision = (int)strtol(argv[1], NULL, BASE); assert(display_precision >= 1 && display_precision <= 32);
-    controls *c = get_c(argv);
     integrator composer = set_integrator(c->order);
     for (int step = 0; step < c->steps; step++) {
         output(display_precision, p, step * c->step_size);
@@ -103,14 +102,10 @@ void solve (char **argv, void *p, plotter output) {
     output(display_precision, p, c->steps * c->step_size);
 }
 
-void *generate (controls *cont, void *params) {
-    static controls *c;
-    static void *p;
+void *generate (controls *c, void *p) {
     static integrator composer = NULL;
     static int step, resume = 0;
     if (resume) goto resume; else resume = 1;
-    c = cont;
-    p = params;
     composer = set_integrator(c->order);
     for (step = 1; step <= c->steps; step++) {
         c->step = step;
