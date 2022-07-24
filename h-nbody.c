@@ -99,17 +99,17 @@ void update_p (void *n_body, real c) {
     body *b = nb->bodies;
     for (int i = 0; i < nb->n; i += 1) {
         for (int j = 0; j < i; j += 1) {
-			real d = distance(b[i].x, b[i].y, b[i].z, b[j].x, b[j].y, b[j].z);
-			real _ = - c * nb->g * b[i].m * b[j].m / (d * d * d);
-			real dPx = (b[j].x - b[i].x) * _;
-			real dPy = (b[j].y - b[i].y) * _;
-			real dPz = (b[j].z - b[i].z) * _;
-			b[i].px -= dPx;
-			b[i].py -= dPy;
-			b[i].pz -= dPz;
-			b[j].px += dPx;
-			b[j].py += dPy;
-			b[j].pz += dPz;
+            real d = distance(b[i].x, b[i].y, b[i].z, b[j].x, b[j].y, b[j].z);
+            real _ = - c * nb->g * b[i].m * b[j].m / (d * d * d);
+            real dPx = (b[j].x - b[i].x) * _;
+            real dPy = (b[j].y - b[i].y) * _;
+            real dPz = (b[j].z - b[i].z) * _;
+            b[i].px -= dPx;
+            b[i].py -= dPy;
+            b[i].pz -= dPz;
+            b[j].px += dPx;
+            b[j].py += dPy;
+            b[j].pz += dPz;
         }
     }
 }
