@@ -86,12 +86,10 @@ void tsm (int dp, controls *c, components *coordinates, void *p, clock_t t0) {
     t_out(dp, x[0], y[0], z[0], c->step_size * c->steps, "_", "_", "_", t0);
 }
 
-void *tsm_gen (controls *cont, components *coordinates, void *p) {
+void *tsm_gen (controls *c, components *coordinates, void *p) {
     static series x, y, z;
-    static controls *c;
     static int step, resume = 0;
     if (resume) goto resume; else resume = 1;
-    c = cont;
     x = t_jet(c->order + 1); x[0] = coordinates->x;
     y = t_jet(c->order + 1); y[0] = coordinates->y;
     z = t_jet(c->order + 1); z[0] = coordinates->z;
