@@ -102,7 +102,7 @@ void solve (char **argv, controls *c, void *p, plotter output) {
     output(display_precision, p, c->steps * c->step_size);
 }
 
-void *generate (controls *c, void *p) {
+int generate (controls *c, void *p) {
     static integrator composer = NULL;
     static int step, resume = 0;
     if (resume) goto resume; else resume = 1;
@@ -110,9 +110,9 @@ void *generate (controls *c, void *p) {
     for (step = 1; step <= c->steps; step++) {
         c->step = step;
         composer(c, p, c->step_size);
-        return p;
+        return 1;
         resume: ;
     }
     resume = 0;
-    return NULL;
+    return 0;
 }

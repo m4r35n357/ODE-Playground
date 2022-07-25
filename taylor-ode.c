@@ -86,7 +86,7 @@ void tsm (int dp, controls *c, components *coordinates, void *p, clock_t t0) {
     t_out(dp, x[0], y[0], z[0], c->step_size * c->steps, "_", "_", "_", t0);
 }
 
-void *tsm_gen (controls *c, components *coordinates, void *p) {
+int tsm_gen (controls *c, components *coordinates, void *p) {
     static series x, y, z;
     static int step, resume = 0;
     if (resume) goto resume; else resume = 1;
@@ -104,11 +104,11 @@ void *tsm_gen (controls *c, components *coordinates, void *p) {
         coordinates->x = x[0] = t_horner(x, c->order, c->step_size);
         coordinates->y = y[0] = t_horner(y, c->order, c->step_size);
         coordinates->z = z[0] = t_horner(z, c->order, c->step_size);
-        return (void *)coordinates;
+        return 1;
         resume: ;
     }
     resume = 0;
-    return NULL;
+    return 0;
 }
 
 real t_const (real a, int k) {

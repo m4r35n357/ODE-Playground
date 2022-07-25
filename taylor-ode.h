@@ -73,7 +73,7 @@ void tsm (int dp, controls *cont, components *coordinates, void *P, clock_t sinc
 /*
  * Generator implementation of TSM
  */
-void *tsm_gen (controls *cont, components *coordinates, void *P);
+int tsm_gen (controls *cont, components *coordinates, void *P);
 
 /*
  * Obligatory client method signatures

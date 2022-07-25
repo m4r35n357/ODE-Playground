@@ -36,4 +36,4 @@ void update_p (void *params, real d);
  */
 void solve (char **argv, controls *cont, void *p, plotter output);
 
-void *generate (controls *cont, void *p);
+int generate (controls *cont, void *p);
