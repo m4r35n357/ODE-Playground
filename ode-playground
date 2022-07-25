@@ -1,5 +1,9 @@
 #!/bin/sh
 
+user_dir="/tmp/$USER"
+[ ! -d $user_dir ] && mkdir $user_dir
+user_data="$user_dir/data"
+
 choice=$(yad --columns=2 --title="ODE Playground (TSM)" --form --separator=" " --align=right \
     --field="Model:CB" --field="Analysis type:CB" \
     -- 'Lorenz!Rossler!^Thomas!RF!Halvorsen' \
@@ -16,22 +20,26 @@ set view 54.73561,135
 set xlabel 'X'
 set ylabel 'Y'
 set zlabel 'Z'
-splot '/tmp/$USER/data' with lines
+splot '$user_data' with lines
 EOF
 }
 
 gnuplot2d () {
 gnuplot -p << EOF
 set terminal wxt size 1200,900
-plot '/tmp/$USER/data' using 4:1 with lines, '' u 4:2 w l, '' u 4:3 w l
+plot '$user_data' using 4:1 with lines, '' u 4:2 w l, '' u 4:3 w l
 EOF
+}
+
+missing () {
+    yad --image "dialog-warning" --title "Alert" --button=gtk-ok:0 --text "Not implemented yet"
 }
 
 case $model in
     Lorenz)
         case $analysis in
             GLplot)
-                $(yad --columns=2 --title="Lorenz Attractor (TSM)" --form --separator=" " --align=right \
+                $(yad --columns=2 --title="Lorenz Attractor OpenGL (TSM)" --form --separator=" " --align=right \
                 --field="Model:RO" \
                 --field="Display Mode":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
@@ -40,6 +48,9 @@ case $model in
                 '0!1!2' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '-15.8' '-18.48' '35.64' \
                 '10' '28' '8' '3')
+            ;;
+            Gnuplot3D|Gnuplot2D)
+                missing
             ;;
             CNS)
              ./cns $(yad --columns=2 --title="Lorenz CNS (TSM)" --form --separator=" " --align=right \
@@ -61,7 +72,7 @@ case $model in
                 -- '32!2..32!1' '1.0' './tsm-lorenz-static!./tsm-lorenz-dbg!./tsm-lorenz' \
                 '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '-15.8' '-18.48' '35.64' \
-                '10' '28' '8' '3') | tee /tmp/$USER/data
+                '10' '28' '8' '3') | tee $user_data
             ;;
             Bifurcation)
              ./bifurcation-scan $(yad --columns=2 --title="Lorenz Bifurcation (TSM)" --form --separator=" " --align=right \
@@ -79,7 +90,7 @@ case $model in
     Rossler)
         case $analysis in
             GLplot)
-                $(yad --columns=2 --title="Rossler Attractor (TSM)" --form --separator=" " --align=right \
+                $(yad --columns=2 --title="Rossler Attractor OpenGL (TSM)" --form --separator=" " --align=right \
                 --field="Model:RO" \
                 --field="Display Mode":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
@@ -88,6 +99,9 @@ case $model in
                 '0!1!2' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '0.0' '-6.78' '0.02' \
                 '.2' '.2' '5.7')
+            ;;
+            Gnuplot3D|Gnuplot2D)
+                missing
             ;;
             CNS)
              ./cns $(yad --columns=2 --title="Rossler CNS (TSM)" --form --separator=" " --align=right \
@@ -109,7 +123,7 @@ case $model in
                 -- '32!2..32!1' '1.0' './tsm-rossler-static!./tsm-rossler-dbg!./tsm-rossler' \
                 '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '0.0' '-6.78' '0.02' \
-                '.2' '.2' '5.7') | tee /tmp/$USER/data
+                '.2' '.2' '5.7') | tee $user_data
             ;;
             Bifurcation)
              ./bifurcation-scan $(yad --columns=2 --title="Rossler Bifurcation (TSM)" --form --separator=" " --align=right \
@@ -127,7 +141,7 @@ case $model in
     Thomas)
         case $analysis in
             GLplot)
-                $(yad --columns=2 --title="Thomas Attractor (TSM)" --form --separator=" " --align=right \
+                $(yad --columns=2 --title="Thomas Attractor OpenGL (TSM)" --form --separator=" " --align=right \
                 --field="Model:RO" \
                 --field="Display Mode":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
@@ -138,7 +152,7 @@ case $model in
                 '0.185')
             ;;
             Gnuplot3D|Gnuplot2D)
-                $(yad --columns=2 --title="Thomas Attractor (TSM)" --form --separator=" " --align=right \
+                $(yad --columns=2 --title="Thomas Attractor Gnuplot (TSM)" --form --separator=" " --align=right \
                 --field="Model:CB" \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
@@ -146,7 +160,7 @@ case $model in
                 -- './tsm-thomas-static!./tsm-thomas-dbg!./tsm-thomas' \
                 '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' \
-                '0.185') >/tmp/$USER/data
+                '0.185') >$user_data
                 case $analysis in
                     Gnuplot3D) gnuplot3d;;
                     Gnuplot2D) gnuplot2d;;
@@ -172,7 +186,7 @@ case $model in
                 -- '32!2..64!1' '1.0' './tsm-thomas-static!./tsm-thomas-dbg!./tsm-thomas' \
                 '6!0..36!3' '_' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' \
-                '0.185') | tee /tmp/$USER/data
+                '0.185') | tee $user_data
             ;;
             Bifurcation)
              ./bifurcation-scan $(yad --columns=2 --title="Thomas Bifurcation (TSM)" --form --separator=" " --align=right \
@@ -190,7 +204,7 @@ case $model in
     RF)
         case $analysis in
             GLplot)
-                $(yad --columns=2 --title="Rabinovich–Fabrikant Attractor (TSM)" --form --separator=" " --align=right \
+                $(yad --columns=2 --title="Rabinovich–Fabrikant Attractor OpenGL (TSM)" --form --separator=" " --align=right \
                 --field="Model:RO" \
                 --field="Display Mode":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
@@ -199,6 +213,21 @@ case $model in
                 '0!1!2' '8!4..32!1' '.01!0.001..0.1!0.001!3' '50000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' \
                 '.2873' '.1')
+            ;;
+            Gnuplot3D|Gnuplot2D)
+                $(yad --columns=2 --title="Rabinovich–Fabrikant Gnuplot (TSM)" --form --separator=" " --align=right \
+                --field="Model:CB" \
+                --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+                --field="x0" --field="y0" --field="z0" \
+                --field="alpha" --field="gamma" \
+                -- './tsm-rf-static!./tsm-rf-dbg!./tsm-rf!./tsm-rf-gl' \
+                '6!0..36!3' '8!4..32!1' '0.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
+                '0.05' '-0.05' '0.3' \
+                '.2873' '.1') >$user_data
+                case $analysis in
+                    Gnuplot3D) gnuplot3d;;
+                    Gnuplot2D) gnuplot2d;;
+                esac
             ;;
             CNS)
              ./cns $(yad --columns=2 --title="Rabinovich–Fabrikant CNS (TSM)" --form --separator=" " --align=right \
@@ -220,7 +249,7 @@ case $model in
                 -- '32!2..64!1' '1.0' './tsm-rf-static!./tsm-rf-dbg!./tsm-rf' \
                 '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' \
-                '.2873' '.1') | tee /tmp/$USER/data
+                '.2873' '.1') | tee $user_data
             ;;
             Bifurcation)
              ./bifurcation-scan $(yad --columns=2 --title="Rabinovich–Fabrikant Bifurcation (TSM)" --form --separator=" " --align=right \
@@ -238,7 +267,7 @@ case $model in
     Halvorsen)
         case $analysis in
             GLplot)
-                $(yad --columns=2 --title="Halvorsen Attractor (TSM)" --form --separator=" " --align=right \
+                $(yad --columns=2 --title="Halvorsen Attractor OpenGL (TSM)" --form --separator=" " --align=right \
                 --field="Model:RO" \
                 --field="Display Mode":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
@@ -247,6 +276,21 @@ case $model in
                 '0!1!2' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' \
                 '1.4' '4')
+            ;;
+            Gnuplot3D|Gnuplot2D)
+                $(yad --columns=2 --title="Halvorsen Gnuplot (TSM)" --form --separator=" " --align=right \
+                --field="Model:CB" \
+                --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+                --field="x0" --field="y0" --field="z0" \
+                --field="a" --field="b" \
+                -- './tsm-halvorsen-static!./tsm-halvorsen-dbg!./tsm-halvorsen' \
+                '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                '1.0' '0.0' '0.0' \
+                '1.4' '4') >$user_data
+                case $analysis in
+                    Gnuplot3D) gnuplot3d;;
+                    Gnuplot2D) gnuplot2d;;
+                esac
             ;;
             CNS)
              ./cns $(yad --columns=2 --title="Halvorsen CNS (TSM)" --form --separator=" " --align=right \
@@ -268,7 +312,7 @@ case $model in
                 -- '32!2..64!1' '1.0' './tsm-halvorsen-static!./tsm-halvorsen-dbg!./tsm-halvorsen' \
                 '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' \
-                '1.4' '4') | tee /tmp/$USER/data
+                '1.4' '4') | tee $user_data
             ;;
             Bifurcation)
              ./bifurcation-scan $(yad --columns=2 --title="Halvorsen Bifurcation (TSM)" --form --separator=" " --align=right \
