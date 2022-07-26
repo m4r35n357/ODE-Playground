@@ -101,7 +101,7 @@ void Animate (void) {
         }
     }
 
-    sprintf(hud, "t:%5.1Lf  h: %.6Le  ~sf: %.1Lf",
+    sprintf(hud, "t: %.1Lf  h: %.6Le  ~sf: %.1Lf",
                   c->step * c->step_size, nb->h, error(nb->h - nb->h0));
     output(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, 0.0F, 0.5F, 0.5F, hud);
 

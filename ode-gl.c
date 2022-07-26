@@ -89,7 +89,7 @@ void Animate (void) {
         glutSolidSphere(ball->size, 10, 10);
     }
 
-    sprintf(hud, "t:%5.1Lf  x:%5.1Lf  y:%5.1Lf  z:%5.1Lf  ",
+    sprintf(hud, "t: %.1Lf  x: % .1Lf  y: % .1Lf  z: % .1Lf  ",
                   c->step * c->step_size, ball->coordinates->x, ball->coordinates->y, ball->coordinates->z);
     output(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, 0.0F, 0.5F, 0.5F, hud);
 
