@@ -67,7 +67,7 @@ void output(int x, int y, float r, float g, float b, char *string) {
  * Animate() handles the animation and the redrawing of the graphics window contents.
  */
 void Animate (void) {
-    // Clear the redering window
+    // Clear the rendering window
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     glTranslatef(0.0F, 0.0F, - nb->view_radius);

@@ -104,8 +104,8 @@ void solve (char **argv, controls *c, void *p, plotter output) {
 
 int generate (controls *c, void *p) {
     static integrator composer = NULL;
-    static int step, resume = 0;
-    if (resume) goto resume; else resume = 1;
+    static int step, resuming = 0;
+    if (resuming) goto resume; else resuming = 1;
     composer = set_integrator(c->order);
     for (step = 1; step <= c->steps; step++) {
         c->step = step;
@@ -113,6 +113,6 @@ int generate (controls *c, void *p) {
         return 1;
         resume: ;
     }
-    resume = 0;
+    resuming = 0;
     return 0;
 }

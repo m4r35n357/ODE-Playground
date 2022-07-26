@@ -88,8 +88,8 @@ void tsm (int dp, controls *c, components *coordinates, void *p, clock_t t0) {
 
 int tsm_gen (controls *c, components *coordinates, void *p) {
     static series x, y, z;
-    static int step, resume = 0;
-    if (resume) goto resume; else resume = 1;
+    static int step, resuming = 0;
+    if (resuming) goto resume; else resuming = 1;
     x = t_jet(c->order + 1); x[0] = coordinates->x;
     y = t_jet(c->order + 1); y[0] = coordinates->y;
     z = t_jet(c->order + 1); z[0] = coordinates->z;
@@ -107,7 +107,7 @@ int tsm_gen (controls *c, components *coordinates, void *p) {
         return 1;
         resume: ;
     }
-    resume = 0;
+    resuming = 0;
     return 0;
 }
 
