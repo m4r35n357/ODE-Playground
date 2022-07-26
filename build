@@ -87,10 +87,11 @@ echo " Building divergence"
 ${CC} -O3 $WARNINGS -o divergence divergence.c -lm -s &
 
 echo ""
-echo " Building OpenGL stuff"
-${CC} -O3 -o h-nbody-gl symplectic.c h-nbody.c h-nbody-gl.c -lm -lGLEW -lglut -lGLU -lGL
-${CC} -Og -g $WARNINGS -o h-nbody-gl-dbg symplectic.c h-nbody.c h-nbody-gl.c -lm -lGLEW -lglut -lGLU -lGL
+echo " Building OpenGL N-body"
+${CC} -O3 -o h-nbody-gl symplectic.c h-nbody.c h-nbody-gl.c -lm -lGLEW -lglut -lGLU -lGL &
+${CC} -Og -g $WARNINGS -o h-nbody-gl-dbg symplectic.c h-nbody.c h-nbody-gl.c -lm -lGLEW -lglut -lGLU -lGL &
 
+echo ""
 echo " Building dual-test-dbg"
 rm -f libdual-test-dbg
 ${CC} -Og $WARNINGS -g -o libdual-test-dbg dual.c libdual-test.c -lm &
@@ -99,6 +100,7 @@ echo " Building libad-test-dbg"
 rm -f libad-test-dbg
 ${CC} -Og $WARNINGS -g -o libad-test-dbg taylor-ode.c ad.c libad-test.c -lm &
 
+echo ""
 echo " Building libtaylor"
 rm -f libtaylor.so taylor-ode.o
 ${CC} -O3 -DNDEBUG -c $WARNINGS -fpic taylor-ode.c && ${CC} -shared -o libtaylor.so taylor-ode.o -s &
@@ -118,12 +120,13 @@ if [ -e kerr-image.c ]
 then
     echo ""
     echo " Building kerr-image (third party code)"
-    gcc -o kerr-image kerr-image.c -O6 -Wall -std=c99 -pedantic -Wextra -Wno-unused-result -lm
-    gcc -g -o kerr-image-dbg kerr-image.c -Og -Wall -std=c99 -pedantic -Wextra -Wno-unused-result -lm
+    gcc -o kerr-image kerr-image.c -O6 -Wall -std=c99 -pedantic -Wextra -Wno-unused-result -lm &
+    gcc -g -o kerr-image-dbg kerr-image.c -Og -Wall -std=c99 -pedantic -Wextra -Wno-unused-result -lm &
 fi
 
 echo ""
+echo "Please wait . . ."
 wait
 
-ls -lh --color libad-test-dbg libdual-test-dbg tsm-* rk4-* h-* lib*.so divergence
+ls -lh --color libad-test-dbg libdual-test-dbg tsm-* h-* lib*.so divergence
 echo ""
