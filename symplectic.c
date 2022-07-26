@@ -28,7 +28,7 @@ controls *get_c (char **argv) {
 }
 
 real error (real e) {
-    return 10.0L * log10l(fabsl(e) >= 1e-36L ? fabsl(e) : 1e-36L);
+    return - log10l(fabsl(e) >= 1e-36L ? fabsl(e) : 1e-36L);
 }
 
 static void stormer_verlet (controls *cont, void *p, real cd) { (void)cont;

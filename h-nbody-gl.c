@@ -103,7 +103,7 @@ void Animate (void) {
         }
     }
 
-    sprintf(hud, "t:%5.1Lf  h: %.9Le  e: %.1Lf",
+    sprintf(hud, "t:%5.1Lf  h: %.6Le  ~sf: %.1Lf",
                   c->step * c->step_size, nb->h, error(nb->h - nb->h0));
     output(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, 0.0F, 0.5F, 0.5F, hud);
 
@@ -116,7 +116,7 @@ void Animate (void) {
     if (!finished && !stopped) {
         if (generate(c, nb)) {
             cog(nb);
-            nb->h = h(nb);
+            nb->h = h(nb) > nb->h ? h(nb) : nb->h;
             if (d == BOTH || d == LINES) {
                 body *b = nb->bodies;
                 for (int i = 0; i < nb->n; i += 1) {
@@ -138,7 +138,7 @@ void Animate (void) {
 }
 
 void CloseWindow (void) {
-    fprintf(stderr, "H : %.9Le\n", nb->h);
+    fprintf(stderr, "H : %+.18Le\n", nb->h);
 }
 
 // Initialize OpenGL's rendering modes
@@ -175,7 +175,7 @@ int main (int argc, char** argv) {
     c = get_c(argv);
     nb = (nbody *)get_p(argc, argv, (argc - 6) / 7);
     fprintf(stderr, "\n");
-    fprintf(stderr, "H0: %.9Le\n", nb->h);
+    fprintf(stderr, "H0: %+.18Le\n", nb->h);
     since = clock();
 
     body *b = nb->bodies;
