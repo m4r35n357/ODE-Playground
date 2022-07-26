@@ -42,7 +42,7 @@ void *get_p (int argc, char **argv, int n_bodies) {
         nb->bodies[i].colour = colours[i];
     }
     nb->g = strtold(argv[5], NULL);
-    nb->h0 = h(nb);
+    nb->h = nb->h0 = h(nb);
     nb->ball_scale = 0.01F;
     nb->view_radius = 20.0F;
     nb->view_longitude = 0.0F;

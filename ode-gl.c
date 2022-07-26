@@ -30,7 +30,7 @@ static GLenum running = GL_TRUE;
 static GLenum stepping = GL_FALSE;
 
 // glutSpecialFunc is called below to set this function to handle special key presses - see glut.h for the names of special keys
-static void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
+void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
         case GLUT_KEY_UP: ball->view_latitude += 1.0F; break;
         case GLUT_KEY_DOWN: ball->view_latitude -= 1.0F; break;
@@ -40,7 +40,7 @@ static void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
 }
 
 // glutKeyboardFunc is called below to set this function to handle all normal key presses.
-static void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
+void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
         case 'B': case 'b': ball->size /= 1.1F; break;
         case 'G': case 'g': ball->size *= 1.1F; break;
@@ -53,7 +53,7 @@ static void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     }
 }
 
-static void output(int x, int y, float r, float g, float b, char *string) {
+void output(int x, int y, float r, float g, float b, char *string) {
     glColor3f(r, g, b);
     glWindowPos2i(x, y);
     int len = (int)strlen(string);
@@ -65,7 +65,7 @@ static void output(int x, int y, float r, float g, float b, char *string) {
 /*
  * Animate() handles the animation and the redrawing of the graphics window contents.
  */
-static void Animate (void) {
+void Animate (void) {
     // Clear the redering window
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -130,7 +130,7 @@ void OpenGLInit (void) {
 }
 
 // ResizeWindow is called when the window is resized
-static void ResizeWindow (int w, int h) {
+void ResizeWindow (int w, int h) {
     float aspectRatio;
     h = (h == 0) ? 1 : h;
     w = (w == 0) ? 1 : w;

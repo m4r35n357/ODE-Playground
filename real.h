@@ -51,7 +51,7 @@ typedef struct Body {
 typedef struct Nbody {
     int n;
     body *bodies;
-    real g, h0;
+    real g, h0, h;
     components centre;
     float ball_scale, view_radius, view_latitude, view_longitude;
 } nbody;
