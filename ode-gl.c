@@ -170,7 +170,7 @@ int main (int argc, char** argv) {
     ball->colour = (rgb) { .r = 0.0F, .g = 0.5F, .b = 0.0F };
     ball->view_radius = 20.0F;
     ball->view_longitude = 0.0F;
-    ball->view_latitude = 0.0F;
+    ball->view_latitude = 90.0F;
 
     // Need to double buffer for animation
     glutInit(&argc,argv);
