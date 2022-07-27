@@ -27,9 +27,12 @@ void *get_p (int argc, char **argv, int n_bodies) {
         (rgb) { .r = 0.7F, .g = 0.7F, .b = 0.7F }
     };
     nbody *nb = malloc(sizeof (nbody));
+    nb->max_points = (int)strtol(argv[5], NULL, BASE);
+    nb->oldest = nb->newest = nb->full = 0;
+    nb->g = strtold(argv[6], NULL);
     nb->n = n_bodies;
-    nb->bodies = calloc((size_t)n_bodies, sizeof (body));
-    for (int i = 0; i < n_bodies; i += 1) {
+    nb->bodies = calloc((size_t)nb->n, sizeof (body));
+    for (int i = 0; i < nb->n; i += 1) {
         nb->bodies[i].m = strtold(argv[7 * i + 7], NULL);
         nb->bodies[i].x = strtold(argv[7 * i + 8], NULL);
         nb->bodies[i].y = strtold(argv[7 * i + 9], NULL);
@@ -38,16 +41,16 @@ void *get_p (int argc, char **argv, int n_bodies) {
         nb->bodies[i].py = strtold(argv[7 * i + 12], NULL);
         nb->bodies[i].pz = strtold(argv[7 * i + 13], NULL);
         nb->bodies[i].colour = colours[i];
+        nb->bodies[i].track = malloc(sizeof (line));
+        nb->bodies[i].track->buffer = calloc((size_t)nb->max_points, sizeof (components));
+        nb->bodies[i].track->buffer[nb->newest] = (components) { nb->bodies[i].x, nb->bodies[i].y, nb->bodies[i].z };
     }
     cog(nb);
-    nb->g = strtold(argv[6], NULL);
     nb->h = nb->h0 = h(nb);
     nb->ball_scale = 0.01F;
     nb->view_radius = 20.0F;
     nb->view_longitude = 0.0F;
     nb->view_latitude = 90.0F;
-    nb->max_points = (int)strtol(argv[5], NULL, BASE);
-    nb->oldest = nb->newest = nb->full = 0;
     return nb;
 }
 

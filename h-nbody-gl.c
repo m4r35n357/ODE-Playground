@@ -176,12 +176,6 @@ int main (int argc, char** argv) {
     d = (display)strtol(argv[1], NULL, BASE);
     c = get_c(argv);
     nb = (nbody *)get_p(argc, argv, (argc - 6) / 7);
-    body *b = nb->bodies;
-    for (int i = 0; i < nb->n; i += 1) {
-        b[i].track = malloc(sizeof (line));
-        b[i].track->buffer = calloc((size_t)nb->max_points, sizeof (components));
-        b[i].track->buffer[nb->newest] = (components) { b[i].x, b[i].y, b[i].z };
-    }
 
     fprintf(stderr, "\n");
     fprintf(stderr, "H0: %+.18Le\n", nb->h);
