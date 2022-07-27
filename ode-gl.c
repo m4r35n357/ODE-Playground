@@ -24,6 +24,8 @@ static char hud[128];
 static clock_t since;
 static double elapsed, cpu;
 
+static float light_pos[] = { -100.0f, 100.0f, -100.0f, 0.0f };
+
 static GLenum finished = GL_FALSE;
 static GLenum stopped = GL_FALSE;
 static GLenum running = GL_TRUE;
@@ -72,6 +74,8 @@ void Animate (void) {
     glTranslatef(0.0F, 0.0F, - ball->view_radius);
     glRotatef(ball->view_latitude, 1.0F, 0.0F, 0.0F);
     glRotatef(ball->view_longitude, 0.0F, 0.0F, 1.0F);
+
+    glLightfv(GL_LIGHT0, GL_POSITION, &light_pos[0]);
 
     if (d == BOTH || d == LINES) {
         glBegin( GL_LINE_STRIP );
