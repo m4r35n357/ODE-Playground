@@ -150,7 +150,7 @@ Parameter | Meaning
 3 | (Optional) verbosity: 0: summary (default), 1: list, 2: detail
 
 ```
-./libdual-test-dbg .5 1e-15 1
+./libdual-test-dbg .5 1e-15
 
 Dual Numbers: x = 0.5
 Total: 40, PASSED 40

@@ -80,7 +80,7 @@ void Animate (void) {
         body *b = nb->bodies;
         for (int i = 0; i < nb->n; i += 1) {
             glBegin( GL_LINE_STRIP );
-            for (int k = 0; k < b[i].track->newest; k += 1) {
+            for (int k = nb->oldest; k != nb->newest; k = (k + 1) % nb->max_points) {
                 components point = b[i].track->buffer[k];
                 glColor3f(b[i].colour.r, b[i].colour.g, b[i].colour.b);
                 glVertex3f((float)point.x, (float)point.y, (float)point.z);
@@ -116,9 +116,17 @@ void Animate (void) {
             cog(nb);
             nb->h = h(nb) > nb->h ? h(nb) : nb->h;
             if (d == BOTH || d == LINES) {
+                nb->newest += 1;
+                if (!nb->full && (nb->newest == nb->max_points)) {
+                    nb->full = 1;
+                }
+                if (nb->full) {
+                    nb->oldest = (nb->newest + 1) % nb->max_points;
+                    nb->newest %= nb->max_points;
+                }
                 body *b = nb->bodies;
                 for (int i = 0; i < nb->n; i += 1) {
-                    b[i].track->buffer[b[i].track->newest++] = (components) { b[i].x, b[i].y, b[i].z };
+                    b[i].track->buffer[nb->newest] = (components) { b[i].x, b[i].y, b[i].z };
                 }
             }
         } else {
@@ -172,17 +180,16 @@ int main (int argc, char** argv) {
     d = (display)strtol(argv[1], NULL, BASE);
     c = get_c(argv);
     nb = (nbody *)get_p(argc, argv, (argc - 6) / 7);
-    fprintf(stderr, "\n");
-    fprintf(stderr, "H0: %+.18Le\n", nb->h);
-    since = clock();
-
     body *b = nb->bodies;
     for (int i = 0; i < nb->n; i += 1) {
         b[i].track = malloc(sizeof (line));
-        b[i].track->newest = 0;
         b[i].track->buffer = calloc((size_t)c->steps, sizeof (components));
-        b[i].track->buffer[b[i].track->newest] = (components) { b[i].x, b[i].y, b[i].z };
+        b[i].track->buffer[nb->newest] = (components) { b[i].x, b[i].y, b[i].z };
     }
+
+    fprintf(stderr, "\n");
+    fprintf(stderr, "H0: %+.18Le\n", nb->h);
+    since = clock();
 
     // Need to double buffer for animation
     glutInit(&argc,argv);

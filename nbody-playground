@@ -1,10 +1,10 @@
 #!/bin/sh
 
 choice=$(yad --columns=2 --title="ODE Playground (TSM)" --form --separator=" " --align=right \
-    --field="Model:CB" \
-    --field="Display Mode":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-    -- '^EightBody!FourBodyA!FourBodyB!ThreeBody!TwoBody' \
-       '0!1!2' '8!2..10!2' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000')
+    --field="Model:CB" --field="Display Mode":CB \
+    --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM --field="Track Length":NUM \
+    -- '^EightBody!FourBodyA!FourBodyB!ThreeBody!TwoBody' '0!1!2' \
+       '8!2..10!2' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' '2000!1000..10000!1000')
 
 set $choice
 model=$1

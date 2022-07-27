@@ -13,9 +13,9 @@
 #include "h-nbody.h"
 
 void *get_p (int argc, char **argv, int n_bodies) {
-    assert(n_bodies <= 8);
-    assert(argc == 6 + 7 * n_bodies);
     fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
+    assert(n_bodies <= 8);
+    assert(argc == 7 + 7 * n_bodies);
     rgb colours[] = {
         (rgb) { .r = 1.0F, .g = 1.0F, .b = 0.0F },
         (rgb) { .r = 0.0F, .g = 1.0F, .b = 1.0F },
@@ -30,21 +30,24 @@ void *get_p (int argc, char **argv, int n_bodies) {
     nb->n = n_bodies;
     nb->bodies = calloc((size_t)n_bodies, sizeof (body));
     for (int i = 0; i < n_bodies; i += 1) {
-        nb->bodies[i].m = strtold(argv[7 * i + 6], NULL);
-        nb->bodies[i].x = strtold(argv[7 * i + 7], NULL);
-        nb->bodies[i].y = strtold(argv[7 * i + 8], NULL);
-        nb->bodies[i].z = strtold(argv[7 * i + 9], NULL);
-        nb->bodies[i].px = strtold(argv[7 * i + 10], NULL);
-        nb->bodies[i].py = strtold(argv[7 * i + 11], NULL);
-        nb->bodies[i].pz = strtold(argv[7 * i + 12], NULL);
+        nb->bodies[i].m = strtold(argv[7 * i + 7], NULL);
+        nb->bodies[i].x = strtold(argv[7 * i + 8], NULL);
+        nb->bodies[i].y = strtold(argv[7 * i + 9], NULL);
+        nb->bodies[i].z = strtold(argv[7 * i + 10], NULL);
+        nb->bodies[i].px = strtold(argv[7 * i + 11], NULL);
+        nb->bodies[i].py = strtold(argv[7 * i + 12], NULL);
+        nb->bodies[i].pz = strtold(argv[7 * i + 13], NULL);
         nb->bodies[i].colour = colours[i];
     }
-    nb->g = strtold(argv[5], NULL);
+    nb->g = strtold(argv[6], NULL);
     nb->h = nb->h0 = h(nb);
     nb->ball_scale = 0.01F;
     nb->view_radius = 20.0F;
     nb->view_longitude = 0.0F;
     nb->view_latitude = 90.0F;
+    nb->max_points = (int)strtol(argv[5], NULL, BASE);
+    nb->oldest = nb->newest = 0;
+    nb->full = 0;
     return nb;
 }
 
