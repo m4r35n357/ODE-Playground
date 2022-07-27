@@ -140,12 +140,10 @@ void ResizeWindow (int w, int h) {
     w = (w == 0) ? 1 : w;
     glViewport(0, 0, w, h);   // View port uses whole window
     aspectRatio = (float)w / (float)h;
-
     // Set up the projection view matrix (not very well!)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(60.0F, aspectRatio, 1.0F, 100.0F);
-
     // Select the Modelview matrix
     glMatrixMode(GL_MODELVIEW);
 }
@@ -186,14 +184,10 @@ int main (int argc, char** argv) {
     // Initialize OpenGL.
     OpenGLInit();
 
-    // Set up callback functions for key presses
+    // Set up callback functions
     glutKeyboardFunc(KeyPressFunc);
     glutSpecialFunc(SpecialKeyFunc);
-
-    // Set up the callback function for resizing windows
     glutReshapeFunc(ResizeWindow);
-
-    // Callback for graphics image redrawing
     glutDisplayFunc(Animate);
 
     // Start the main loop.  glutMainLoop never returns.
