@@ -39,6 +39,7 @@ void *get_p (int argc, char **argv, int n_bodies) {
         nb->bodies[i].pz = strtold(argv[7 * i + 13], NULL);
         nb->bodies[i].colour = colours[i];
     }
+    cog(nb);
     nb->g = strtold(argv[6], NULL);
     nb->h = nb->h0 = h(nb);
     nb->ball_scale = 0.01F;
@@ -46,8 +47,7 @@ void *get_p (int argc, char **argv, int n_bodies) {
     nb->view_longitude = 0.0F;
     nb->view_latitude = 90.0F;
     nb->max_points = (int)strtol(argv[5], NULL, BASE);
-    nb->oldest = nb->newest = 0;
-    nb->full = 0;
+    nb->oldest = nb->newest = nb->full = 0;
     return nb;
 }
 
