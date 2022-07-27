@@ -76,8 +76,8 @@ void Animate (void) {
 
     glLightfv(GL_LIGHT0, GL_POSITION, &light_pos[0]);
 
+    body *b = nb->bodies;
     if (d == BOTH || d == LINES) {
-        body *b = nb->bodies;
         for (int i = 0; i < nb->n; i += 1) {
             glBegin( GL_LINE_STRIP );
             for (int k = nb->oldest; k != nb->newest; k = (k + 1) % nb->max_points) {
@@ -90,7 +90,6 @@ void Animate (void) {
     }
 
     if (d == BOTH || d == BALLS) {
-        body *b = nb->bodies;
         glTranslatef((float)(b[0].x - nb->centre.x), (float)(b[0].y - nb->centre.y), (float)(b[0].z - nb->centre.z));
         glColor3f(b[0].colour.r, b[0].colour.g, b[0].colour.b);
         glutSolidSphere((float)powl(nb->ball_scale * b[0].m, 1.0L/3.0L), 10, 10);
@@ -124,7 +123,6 @@ void Animate (void) {
                     nb->oldest = (nb->newest + 1) % nb->max_points;
                     nb->newest %= nb->max_points;
                 }
-                body *b = nb->bodies;
                 for (int i = 0; i < nb->n; i += 1) {
                     b[i].track->buffer[nb->newest] = (components) { b[i].x, b[i].y, b[i].z };
                 }
