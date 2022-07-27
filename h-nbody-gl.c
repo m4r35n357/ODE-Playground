@@ -179,7 +179,7 @@ int main (int argc, char** argv) {
     body *b = nb->bodies;
     for (int i = 0; i < nb->n; i += 1) {
         b[i].track = malloc(sizeof (line));
-        b[i].track->buffer = calloc((size_t)c->steps, sizeof (components));
+        b[i].track->buffer = calloc((size_t)nb->max_points, sizeof (components));
         b[i].track->buffer[nb->newest] = (components) { b[i].x, b[i].y, b[i].z };
     }
 
