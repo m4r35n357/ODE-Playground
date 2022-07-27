@@ -103,7 +103,7 @@ void solve (char **argv, controls *c, void *p, plotter output) {
 }
 
 int generate (controls *c, void *p) {
-    static integrator composer = NULL;
+    static integrator composer;
     static int step, resuming = 0;
     if (resuming) goto resume; else resuming = 1;
     composer = set_integrator(c->order);
