@@ -5,8 +5,6 @@
  */
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
 #include <string.h>
 #include <time.h>
 #include <math.h>
@@ -168,7 +166,7 @@ void ResizeWindow (int w, int h) {
 int main (int argc, char** argv) {
     d = (display)strtol(argv[1], NULL, BASE);
     c = get_c(argv);
-    nb = (nbody *)get_p(argc, argv, (argc - 6) / 7);
+    nb = (nbody *)get_p(argc, argv, (argc - 7) / 7);
 
     fprintf(stderr, "\n");
     fprintf(stderr, "H0: % .18Le\n", nb->h);
