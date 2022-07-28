@@ -31,7 +31,6 @@ static GLenum stopped = GL_FALSE;
 static GLenum running = GL_TRUE;
 static GLenum stepping = GL_FALSE;
 
-// glutSpecialFunc is called below to set this function to handle special key presses - see glut.h for the names of special keys
 void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
         case GLUT_KEY_UP: ball->view_latitude += 1.0F; break;
@@ -41,7 +40,6 @@ void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     }
 }
 
-// glutKeyboardFunc is called below to set this function to handle all normal key presses.
 void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
         case 'B': case 'b': ball->size /= 1.1F; break;
@@ -64,9 +62,6 @@ void osd (int x, int y, float r, float g, float b, char *string) {
     }
 }
 
-/*
- * Animate() handles the animation and the redrawing of the graphics window contents.
- */
 void Animate (void) {
     // Clear the rendering window
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -122,7 +117,6 @@ void Animate (void) {
     glutPostRedisplay();        // Request a re-draw for animation purposes
 }
 
-// Initialize OpenGL's rendering modes
 void OpenGLInit (void) {
     glShadeModel(GL_FLAT);
     glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
@@ -133,7 +127,6 @@ void OpenGLInit (void) {
     glEnable(GL_COLOR_MATERIAL);
 }
 
-// ResizeWindow is called when the window is resized
 void ResizeWindow (int w, int h) {
     float aspectRatio;
     h = (h == 0) ? 1 : h;
@@ -148,7 +141,6 @@ void ResizeWindow (int w, int h) {
     glMatrixMode(GL_MODELVIEW);
 }
 
-// Set up OpenGL, hook up callbacks, and start the main loop
 int main (int argc, char** argv) {
     d = (display)strtol(argv[1], NULL, BASE);
     c = get_c(argv);
