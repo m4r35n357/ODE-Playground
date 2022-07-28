@@ -143,7 +143,7 @@ void Animate (void) {
 }
 
 void CloseWindow (void) {
-    fprintf(stderr, "H : %+.18Le\n", nb->h);
+    fprintf(stderr, "H : % .18Le\n", nb->h);
 }
 
 // Initialize OpenGL's rendering modes
@@ -179,7 +179,7 @@ int main (int argc, char** argv) {
     nb = (nbody *)get_p(argc, argv, (argc - 6) / 7);
 
     fprintf(stderr, "\n");
-    fprintf(stderr, "H0: %+.18Le\n", nb->h);
+    fprintf(stderr, "H0: % .18Le\n", nb->h);
     since = clock();
 
     // Need to double buffer for animation
