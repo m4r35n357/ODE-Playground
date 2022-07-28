@@ -14,6 +14,7 @@
 #include <GL/freeglut.h>    // OpenGL Graphics Utility Library
 #include "symplectic.h"
 #include "h-nbody.h"
+#include "opengl.h"
 
 static controls *c;
 static nbody *nb;
@@ -54,7 +55,7 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     }
 }
 
-void output(int x, int y, float r, float g, float b, char *string) {
+void osd (int x, int y, float r, float g, float b, char *string) {
     glColor3f(r, g, b);
     glWindowPos2i(x, y);
     int len = (int)strlen(string);
@@ -102,13 +103,13 @@ void Animate (void) {
 
     sprintf(hud, "t: %.1Lf  h: %.6Le  ~sf: %.1Lf",
                   c->step * c->step_size, nb->h, error(nb->h - nb->h0));
-    output(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, 0.0F, 0.5F, 0.5F, hud);
+    osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, 0.0F, 0.5F, 0.5F, hud);
 
     sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.1f %%",
                   elapsed = finished ? elapsed : ((float)(glutGet(GLUT_ELAPSED_TIME)) / 1000.0F),
                   cpu = finished ? cpu : (double)(clock() - since) / CLOCKS_PER_SEC,
                   (float)(100 * c->step) / (float)c->steps);
-    output(10, 10, 0.0F, 0.5F, 0.5F, hud);
+    osd(10, 10, 0.0F, 0.5F, 0.5F, hud);
 
     if (!finished && !stopped) {
         if (generate(c, nb)) {

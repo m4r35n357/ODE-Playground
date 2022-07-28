@@ -42,8 +42,8 @@ typedef struct Particle {
 } particle;
 
 typedef struct Body {
-    real m;  // mass
-    real x, y, z, px, py, pz;  // coordinates & momenta
+    real m;
+    real x, y, z, px, py, pz;
     rgb colour;
     line *track;
 } body;
