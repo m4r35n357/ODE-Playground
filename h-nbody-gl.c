@@ -75,7 +75,7 @@ void Animate (void) {
     body *b = nb->bodies;
     if (d == BOTH || d == LINES) {
         for (int i = 0; i < nb->n; i += 1) {
-            glBegin( GL_LINE_STRIP );
+            glBegin(GL_LINE_STRIP);
             for (int k = nb->oldest; k != nb->newest; k = (k + 1) % nb->max_points) {
                 components point = b[i].track->buffer[k];
                 glColor3f(b[i].colour.r, b[i].colour.g, b[i].colour.b);

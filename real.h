@@ -10,8 +10,6 @@ static const int BASE = 10;
 
 static const real MY_PI = 3.1415926535897932384626433832795029L;
 
-typedef enum Display {BOTH=0, BALLS=1, LINES=2} display;
-
 /*
  * General x, y, z components
  */

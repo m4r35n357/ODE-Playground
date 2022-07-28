@@ -73,7 +73,7 @@ void Animate (void) {
     glLightfv(GL_LIGHT0, GL_POSITION, &light_pos[0]);
 
     if (d == BOTH || d == LINES) {
-        glBegin( GL_LINE_STRIP );
+        glBegin(GL_LINE_STRIP);
         for (int k = 0; k < ball->track->newest; k += 1) {
             components point = ball->track->buffer[k];
             glColor3f(ball->colour.r, ball->colour.g, ball->colour.b);

@@ -16,9 +16,11 @@ void *get_p (int argc, char **argv, int n_bodies) {
     fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     assert(argc == 7 + 7 * n_bodies);
     rgb colours[] = {
+        (rgb){.r=0.5F, .g=0.5F, .b=0.0F}, (rgb){.r=0.0F, .g=0.5F, .b=0.5F}, (rgb){.r=0.5F, .g=0.0F, .b=0.5F},
+        (rgb){.r=0.5F, .g=0.0F, .b=0.0F}, (rgb){.r=0.0F, .g=0.5F, .b=0.0F}, (rgb){.r=0.0F, .g=0.0F, .b=0.5F},
+        (rgb){.r=0.3F, .g=0.3F, .b=0.3F}, (rgb){.r=0.7F, .g=0.7F, .b=0.7F}, (rgb){.r=0.5F, .g=0.5F, .b=0.5F},
         (rgb){.r=1.0F, .g=1.0F, .b=0.0F}, (rgb){.r=0.0F, .g=1.0F, .b=1.0F}, (rgb){.r=1.0F, .g=0.0F, .b=1.0F},
-        (rgb){.r=1.0F, .g=0.0F, .b=0.0F}, (rgb){.r=0.0F, .g=1.0F, .b=0.0F}, (rgb){.r=0.0F, .g=0.0F, .b=1.0F},
-        (rgb){.r=0.2F, .g=0.2F, .b=0.2F}, (rgb){.r=0.8F, .g=0.8F, .b=0.8F}, (rgb){.r=0.5F, .g=0.5F, .b=0.5F}
+        (rgb){.r=1.0F, .g=0.0F, .b=0.0F}, (rgb){.r=0.0F, .g=1.0F, .b=0.0F}, (rgb){.r=0.0F, .g=0.0F, .b=1.0F}
     };
     nbody *nb = malloc(sizeof (nbody));
     nb->max_points = (int)strtol(argv[5], NULL, BASE);
@@ -34,7 +36,7 @@ void *get_p (int argc, char **argv, int n_bodies) {
         nb->bodies[i].px = strtold(argv[7 * i + 11], NULL);
         nb->bodies[i].py = strtold(argv[7 * i + 12], NULL);
         nb->bodies[i].pz = strtold(argv[7 * i + 13], NULL);
-        nb->bodies[i].colour = colours[i % 9];
+        nb->bodies[i].colour = colours[i % 15];
     }
     cog(nb);
     for (int i = 0; i < nb->n; i += 1) {

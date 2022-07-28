@@ -32,8 +32,11 @@ void update_q (void *params, real c);
 void update_p (void *params, real d);
 
 /*
- * Call the integrator
+ * Call the symplectic solver
  */
 void solve (char **argv, controls *cont, void *p, plotter output);
 
+/*
+ * Call the symplectic generator
+ */
 int generate (controls *cont, void *p);

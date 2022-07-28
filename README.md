@@ -2,6 +2,11 @@
 ## NEWS: OpenGL display
 
 There is now an OpenGL executable built for each TSM model, and also a separate n-body OpenGL program.
+Once you have built the project, use one of these two yad UI scripts, or read the docs below to drive directly from the shell:
+```
+./nbody-playground
+./ode-playground
+```
 
 ## NEWS: Default compiler (c99)
 
