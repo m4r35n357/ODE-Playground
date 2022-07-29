@@ -15,8 +15,8 @@ void *get_p (int argc, char **argv, int n_bodies) {
     fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     assert(argc == 7 + 7 * n_bodies);
     rgb colours[] = {
-        (rgb){.r=0.5F, .g=0.5F, .b=0.0F}, (rgb){.r=0.0F, .g=0.5F, .b=0.5F}, (rgb){.r=0.5F, .g=0.0F, .b=0.5F},
-        (rgb){.r=0.5F, .g=0.0F, .b=0.0F}, (rgb){.r=0.0F, .g=0.5F, .b=0.0F}, (rgb){.r=0.0F, .g=0.0F, .b=0.8F},
+        (rgb){.r=1.0F, .g=1.0F, .b=0.0F}, (rgb){.r=0.0F, .g=1.0F, .b=1.0F}, (rgb){.r=1.0F, .g=0.0F, .b=1.0F},
+        (rgb){.r=1.0F, .g=0.0F, .b=0.0F}, (rgb){.r=0.0F, .g=1.0F, .b=0.0F}, (rgb){.r=0.0F, .g=0.0F, .b=1.0F},
         (rgb){.r=0.3F, .g=0.3F, .b=0.3F}, (rgb){.r=0.7F, .g=0.7F, .b=0.7F}
     };
     nbody *nb = malloc(sizeof (nbody));
@@ -40,7 +40,7 @@ void *get_p (int argc, char **argv, int n_bodies) {
     for (int i = 0; i < nb->n; i += 1) {
         nb->bodies[i].track = malloc(sizeof (line));
         nb->bodies[i].track->buffer = calloc((size_t)nb->max_points, sizeof (components));
-        nb->bodies[i].track->buffer[nb->newest] = (components) { nb->bodies[i].x, nb->bodies[i].y, nb->bodies[i].z };
+        nb->bodies[i].track->buffer[nb->newest] = (components){nb->bodies[i].x, nb->bodies[i].y, nb->bodies[i].z};
 	}
     nb->h = nb->h0 = h(nb);
     nb->ball_scale = 0.1F;
@@ -59,7 +59,7 @@ void cog (nbody *nb) {
         Z += b[i].z * b[i].m;
         M += b[i].m;
     }
-    nb->centre = (components) { .x = X / M, .y = Y / M, .z = Z / M };
+    nb->centre = (components){.x = X / M, .y = Y / M, .z = Z / M};
     for (int i = 0; i < nb->n; i += 1) {
         b[i].x -= nb->centre.x;
         b[i].y -= nb->centre.y;

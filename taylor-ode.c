@@ -69,10 +69,10 @@ void tsm (int dp, controls *c, components *coordinates, void *p, clock_t t0) {
     series x = t_jet(c->order + 1); x[0] = coordinates->x;
     series y = t_jet(c->order + 1); y[0] = coordinates->y;
     series z = t_jet(c->order + 1); z[0] = coordinates->z;
-    components s = (components) {0.0L, 0.0L, 0.0L};
+    components s = (components){0.0L, 0.0L, 0.0L};
     for (int step = 0; step < c->steps; step++) {
         t_out(dp, x[0], y[0], z[0], c->step_size * step, tag(x, s.x, "x", "X"), tag(y, s.y, "y", "Y"), tag(z, s.z, "z", "Z"), t0);
-        s = (components) {x[1], y[1], z[1]};
+        s = (components){x[1], y[1], z[1]};
         for (int k = 0; k < c->order; k++) {
             components vk = ode(x, y, z, p, k);
             x[k + 1] = vk.x / (k + 1);

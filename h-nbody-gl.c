@@ -117,7 +117,7 @@ void Animate (void) {
                     nb->newest %= nb->max_points;
                 }
                 for (int i = 0; i < nb->n; i += 1) {
-                    b[i].track->buffer[nb->newest] = (components) { b[i].x, b[i].y, b[i].z };
+                    b[i].track->buffer[nb->newest] = (components){b[i].x, b[i].y, b[i].z};
                 }
             }
         } else {
@@ -171,29 +171,24 @@ int main (int argc, char** argv) {
     fprintf(stderr, "H0: % .18Le\n", nb->h);
     since = clock();
 
-    // Need to double buffer for animation
+    // Initialize GLUT
     glutInit(&argc,argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);  // Need to double buffer for animation
     // Create and position the graphics window
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(640, 480);
     glutCreateWindow("N-Body Demo");
-
+    // Initialize GLEW
     glewInit();
-
-    // Initialize OpenGL.
+    // Initialize OpenGL
     OpenGLInit();
-
     // Set up callback functions
     glutKeyboardFunc(KeyPressFunc);
     glutSpecialFunc(SpecialKeyFunc);
     glutReshapeFunc(ResizeWindow);
     glutDisplayFunc(Animate);
     glutCloseFunc(CloseWindow);
-
     // Start the main loop.  glutMainLoop never returns.
     glutMainLoop();
-
     return(0);          // Compiler requires this to be here. (Never reached)
 }

@@ -160,20 +160,17 @@ int main (int argc, char** argv) {
     ball->view_longitude = 0.0F;
     ball->view_latitude = 90.0F;
 
-    // Need to double buffer for animation
+    // Initialize GLUT
     glutInit(&argc,argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);  // Need to double buffer for animation
     // Create and position the graphics window
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(640, 480);
     glutCreateWindow("TSM ODE Demo");
-
+    // Initialize GLEW
     glewInit();
-
-    // Initialize OpenGL.
+    // Initialize OpenGL
     OpenGLInit();
-
     // Set up callback functions
     glutKeyboardFunc(KeyPressFunc);
     glutSpecialFunc(SpecialKeyFunc);
@@ -182,6 +179,5 @@ int main (int argc, char** argv) {
 
     // Start the main loop.  glutMainLoop never returns.
     glutMainLoop();
-
     return(0);          // Compiler requires this to be here. (Never reached)
 }
