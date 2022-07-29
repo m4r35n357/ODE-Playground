@@ -86,11 +86,11 @@ void Animate (void) {
     if (d == BOTH || d == BALLS) {
         glTranslatef((float)(b[0].x - nb->centre.x), (float)(b[0].y - nb->centre.y), (float)(b[0].z - nb->centre.z));
         glColor3f(b[0].colour.r, b[0].colour.g, b[0].colour.b);
-        glutSolidSphere((float)powl(nb->ball_scale * b[0].m, 1.0L/3.0L), 10, 10);
+        glutSolidSphere(nb->ball_scale * b[0].r, 10, 10);
         for (int i = 1; i < nb->n; i += 1) {
             glTranslatef((float)(b[i].x - b[i - 1].x), (float)(b[i].y - b[i - 1].y), (float)(b[i].z - b[i - 1].z));
             glColor3f(b[i].colour.r, b[i].colour.g, b[i].colour.b);
-            glutSolidSphere((float)powl(nb->ball_scale * b[i].m, 1.0L/3.0L), 10, 10);
+            glutSolidSphere(nb->ball_scale * b[i].r, 10, 10);
         }
     }
 

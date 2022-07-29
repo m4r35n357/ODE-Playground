@@ -27,6 +27,7 @@ void *get_p (int argc, char **argv, int n_bodies) {
     nb->bodies = calloc((size_t)nb->n, sizeof (body));
     for (int i = 0; i < nb->n; i += 1) {
         nb->bodies[i].m = strtold(argv[7 * i + 7], NULL);
+        nb->bodies[i].r = (float)powl(nb->bodies[i].m, 1.0L / 3.0L);
         nb->bodies[i].x = strtold(argv[7 * i + 8], NULL);
         nb->bodies[i].y = strtold(argv[7 * i + 9], NULL);
         nb->bodies[i].z = strtold(argv[7 * i + 10], NULL);
@@ -42,7 +43,7 @@ void *get_p (int argc, char **argv, int n_bodies) {
         nb->bodies[i].track->buffer[nb->newest] = (components) { nb->bodies[i].x, nb->bodies[i].y, nb->bodies[i].z };
 	}
     nb->h = nb->h0 = h(nb);
-    nb->ball_scale = 0.01F;
+    nb->ball_scale = 0.1F;
     nb->view_radius = 20.0F;
     nb->view_longitude = 0.0F;
     nb->view_latitude = 90.0F;
