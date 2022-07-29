@@ -21,7 +21,7 @@ void *get_p (int argc, char **argv, int n_bodies) {
     };
     nbody *nb = malloc(sizeof (nbody));
     nb->max_points = (int)strtol(argv[5], NULL, BASE);
-    nb->oldest = nb->newest = nb->full = 0;
+    nb->oldest = nb->newest = nb->buffers_full = 0;
     nb->g = strtold(argv[6], NULL);
     nb->n = n_bodies;
     nb->bodies = calloc((size_t)nb->n, sizeof (body));

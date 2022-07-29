@@ -40,9 +40,8 @@ typedef struct Particle {
 } particle;
 
 typedef struct Body {
-    real m;
+    real m, x, y, z, px, py, pz;
     float r;
-    real x, y, z, px, py, pz;
     rgb colour;
     line *track;
 } body;
@@ -54,7 +53,7 @@ typedef struct Nbody {
     components centre;
     float ball_scale, view_radius, view_latitude, view_longitude;
     int max_points, oldest, newest;
-    _Bool full;
+    _Bool buffers_full;
 } nbody;
 
 /*

@@ -94,8 +94,7 @@ void Animate (void) {
         }
     }
 
-    sprintf(hud, "t: %.1Lf  h: %.6Le  ~sf: %.1Lf",
-                  c->step * c->step_size, nb->h, error(nb->h - nb->h0));
+    sprintf(hud, "t: %.1Lf  h: %.6Le  ~sf: %.1Lf", c->step * c->step_size, nb->h, error(nb->h - nb->h0));
     osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, 0.0F, 0.5F, 0.5F, hud);
 
     sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.1f %%",
@@ -110,10 +109,10 @@ void Animate (void) {
             nb->h = h(nb) > nb->h ? h(nb) : nb->h;
             if (d == BOTH || d == LINES) {
                 nb->newest += 1;
-                if (!nb->full && (nb->newest == nb->max_points)) {
-                    nb->full = 1;
+                if (!nb->buffers_full && (nb->newest == nb->max_points)) {
+                    nb->buffers_full = 1;
                 }
-                if (nb->full) {
+                if (nb->buffers_full) {
                     nb->oldest = (nb->newest + 1) % nb->max_points;
                     nb->newest %= nb->max_points;
                 }
