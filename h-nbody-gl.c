@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
-#include <math.h>
 #include <GL/glew.h>
 #include <GL/freeglut.h>    // OpenGL Graphics Utility Library
 #include "symplectic.h"
@@ -74,7 +73,7 @@ void Animate (void) {
     if (d == BOTH || d == LINES) {
         for (int i = 0; i < nb->n; i += 1) {
             glBegin(GL_LINE_STRIP);
-            for (int k = nb->oldest; k != nb->newest; k = (k + 1) % nb->max_points) {
+            for (int k = nb->oldest; k != nb->newest; k = (k + 1) % nb->max_points) {  // read buffers
                 components point = b[i].track->buffer[k];
                 glColor3f(b[i].colour.r, b[i].colour.g, b[i].colour.b);
                 glVertex3f((float)point.x, (float)point.y, (float)point.z);
@@ -107,7 +106,7 @@ void Animate (void) {
         if (generate(c, nb)) {
             cog(nb);
             nb->h = h(nb) > nb->h ? h(nb) : nb->h;
-            if (d == BOTH || d == LINES) {
+            if (d == BOTH || d == LINES) {  // write buffers
                 nb->newest += 1;
                 if (!nb->buffers_full && (nb->newest == nb->max_points)) {
                     nb->buffers_full = 1;
