@@ -25,38 +25,6 @@ typedef struct Rgb {
 } rgb;
 
 /*
- * Particle/Body tracks
- */
-typedef struct Line {
-	int newest;
-    components *buffer;
-} line;
-
-typedef struct Particle {
-    components *coordinates;
-    rgb colour;
-    line *track;
-    float size, view_radius, view_latitude, view_longitude;
-} particle;
-
-typedef struct Body {
-    real m, x, y, z, px, py, pz;
-    float r;
-    rgb colour;
-    line *track;
-} body;
-
-typedef struct Nbody {
-    int n;
-    body *bodies;
-    real g, h0, h;
-    components centre;
-    float ball_scale, view_radius, view_latitude, view_longitude;
-    int max_points, oldest, newest;
-    _Bool buffers_full;
-} nbody;
-
-/*
  * Integrator control parameters
  */
 typedef struct Weights {

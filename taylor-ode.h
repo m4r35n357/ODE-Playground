@@ -9,6 +9,16 @@
 #include "real.h"
 
 /*
+ * Particle/Body tracks
+ */
+typedef struct Particle {
+    components *coordinates, *track;
+    rgb colour;
+    float size, view_radius, view_latitude, view_longitude;
+    int current;
+} particle;
+
+/*
  * Retrieves ODE parameters from the tail of the command (arguments 8 onwards)
  */
 void t_params (char **argv, int count, ...);
