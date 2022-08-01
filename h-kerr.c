@@ -4,36 +4,6 @@
  *
  * Example:  ./h-kerr-dbg 6 8 .01 10000 0 0.8 1.0 0.9455050956749083 1.434374509531738 1.0 7.978759958927879 12.0 63.0 >/tmp/$USER/data
  *
- gnuplot -p << EOF
-set terminal wxt size 600,450
-splot '/tmp/$USER/data' with lines
-EOF
- *
- gnuplot -p << EOF
-set key left
-set terminal wxt size 600,450
-set yrange [-240:0]
-set xlabel 'time'
-set ylabel 'errors'
-plot '/tmp/$USER/data' using 4:5 title 'v4' with lines, '' u 4:6 t 'r' w l, '' u 4:7 t 'theta' w l
-EOF
- *
- gnuplot -p << EOF
-set key left
-set terminal wxt size 600,450
-set xlabel 'time'
-set ylabel 'gamma & speed'
-plot '/tmp/$USER/data' using 4:8 title 'gamma' with lines, '' u 4:9 t 'speed' w l
-EOF
- *
- ./h-kerr-static $(yad --columns=2 --title="Kerr Orbit" --form --separator=" " --align=right \
-    --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-    --field="Plot type":CB --field="BH spin" --field="particle mass" \
-    --field="particle energy" --field="particle momentum" --field="momentum factor" --field="Carter's constant" \
-    --field="r0" --field="theta0" \
-    -- '6!0..36!3' '4!2..10!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' '0!1!2' "0.8" "1.0" \
-       "0.9455050956749083" "1.434374509531738" "1.0" "7.978759958927879" "12.0" "63.0") >/tmp/$USER/data
- *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
@@ -117,7 +87,7 @@ void plot_path (int dp, void *params, real t) {
     real sigma = p->q_r * p->q_r + p->a * p->a * (1.0L - p->sth2.val);
     real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_theta);
     real gamma = p->p_t / sigma;
-    printf("%+.*Le %+.*Le %+.*Le  %.6Le %+.*Le%+.*Le %+.*Le  %+.*Le %+.*Le\n",
+    printf("%+.*Le %+.*Le %+.*Le  %.6Le %+.*Le %+.*Le %+.*Le  %+.*Le %+.*Le\n",
            dp, ra_sth * cosl(p->q_phi), dp, ra_sth * sinl(p->q_phi), dp, p->q_r * cosl(p->q_theta), t,
            dp, error(1.0L + v_dot_v(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2.val, p->sth2.val, sigma, p->delta.val)),
            dp, error(0.5L * (p->p_r * p->p_r - p->R.val)),              // "H" = p_r^2 / 2 + (- R(q_r) / 2) = 0
