@@ -1,20 +1,23 @@
 /*
- *  N-Body simulator
+ *  Kerr Metric simulator
+ *
+ * Example: ./h-kerr-gl  0 10 .01 10000
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
 #include <stdio.h>
+#include <assert.h>
 #include <string.h>
 #include <time.h>
 #include <GL/glew.h>
 #include <GL/freeglut.h>    // OpenGL Graphics Utility Library
 #include "symplectic.h"
-#include "h-nbody.h"
+#include "h-kerr.h"
 #include "opengl.h"
 
 static controls *c;
-static nbody *nb;
+static parameters *bh;
 
 static display d;
 static char hud[128];
@@ -30,19 +33,19 @@ static GLenum stepping = GL_FALSE;
 
 void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
-        case GLUT_KEY_UP: nb->view_latitude += 1.0F; break;
-        case GLUT_KEY_DOWN: nb->view_latitude -= 1.0F; break;
-        case GLUT_KEY_LEFT: nb->view_longitude += 1.0F; break;
-        case GLUT_KEY_RIGHT: nb->view_longitude -= 1.0F; break;
+        case GLUT_KEY_UP: bh->view_latitude += 1.0F; break;
+        case GLUT_KEY_DOWN: bh->view_latitude -= 1.0F; break;
+        case GLUT_KEY_LEFT: bh->view_longitude += 1.0F; break;
+        case GLUT_KEY_RIGHT: bh->view_longitude -= 1.0F; break;
     }
 }
 
 void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
-        case 'B': case 'b': nb->ball_scale /= 1.1F; break;
-        case 'G': case 'g': nb->ball_scale *= 1.1F; break;
-        case 'A': case 'a': nb->view_radius -= 0.1F; break;
-        case 'Z': case 'z': nb->view_radius += 0.1F; break;
+        case 'B': case 'b': bh->ball_size /= 1.1F; break;
+        case 'G': case 'g': bh->ball_size *= 1.1F; break;
+        case 'A': case 'a': bh->view_radius -= 0.1F; break;
+        case 'Z': case 'z': bh->view_radius += 0.1F; break;
         case 'R': case 'r': running = !running; stopped = GL_FALSE; break;
         case 'S': case 's': stepping = !stepping; stopped = GL_FALSE; break;
         case 'F': case 'f': glutFullScreenToggle(); break;
@@ -63,37 +66,33 @@ void Animate (void) {
     // Clear the rendering window
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    glTranslatef(0.0F, 0.0F, - nb->view_radius);
-    glRotatef(nb->view_latitude, 1.0F, 0.0F, 0.0F);
-    glRotatef(nb->view_longitude, 0.0F, 0.0F, 1.0F);
+    glTranslatef(0.0F, 0.0F, - bh->view_radius);
+    glRotatef(bh->view_latitude, 1.0F, 0.0F, 0.0F);
+    glRotatef(bh->view_longitude, 0.0F, 0.0F, 1.0F);
 
     glLightfv(GL_LIGHT0, GL_POSITION, &light_pos[0]);
 
-    body *b = nb->bodies;
+    glColor3f(0.0F, 0.0F, 0.5F);
+    glutWireSphere(bh->horizon, 20, 20);
+
     if (d == BOTH || d == LINES) {
-        for (int i = 0; i < nb->n; i += 1) {
-            glBegin(GL_LINE_STRIP);
-            for (int k = nb->oldest; k != nb->newest; k = (k + 1) % nb->max_points) {  // read buffers
-                components point = b[i].track[k];
-                glColor3f(b[i].colour.r, b[i].colour.g, b[i].colour.b);
-                glVertex3f((float)point.x, (float)point.y, (float)point.z);
-            }
-            glEnd();
+        glBegin(GL_LINE_STRIP);
+        for (int k = bh->oldest; k != bh->newest; k = (k + 1) % bh->max_points) {  // read buffers
+            components point = bh->track[k];
+            glColor3f(bh->colour.r, bh->colour.g, bh->colour.b);
+            glVertex3f((float)point.x, (float)point.y, (float)point.z);
         }
+        glEnd();
     }
 
+    components point = bh->track[bh->newest];
     if (d == BOTH || d == BALLS) {
-        glTranslatef((float)(b[0].x - nb->centre.x), (float)(b[0].y - nb->centre.y), (float)(b[0].z - nb->centre.z));
-        glColor3f(b[0].colour.r, b[0].colour.g, b[0].colour.b);
-        glutSolidSphere(nb->ball_scale * b[0].r, 10, 10);
-        for (int i = 1; i < nb->n; i += 1) {
-            glTranslatef((float)(b[i].x - b[i - 1].x), (float)(b[i].y - b[i - 1].y), (float)(b[i].z - b[i - 1].z));
-            glColor3f(b[i].colour.r, b[i].colour.g, b[i].colour.b);
-            glutSolidSphere(nb->ball_scale * b[i].r, 10, 10);
-        }
+        glTranslatef((float)point.x, (float)point.y, (float)point.z);
+        glColor3f(bh->colour.r, bh->colour.g, bh->colour.b);
+        glutSolidSphere(bh->ball_size, 10, 10);
     }
 
-    sprintf(hud, "t: %.1Lf  h: %.6Le  ~sf: %.1Lf", c->step * c->step_size, nb->h, error(nb->h - nb->h0));
+    sprintf(hud, "t: %.1Lf  x:%5.1Lf  y:%5.1Lf  z:%5.1Lf  ", c->step * c->step_size, point.x, point.y, point.z);
     osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, 0.0F, 0.5F, 0.5F, hud);
 
     sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.1f %%",
@@ -103,21 +102,17 @@ void Animate (void) {
     osd(10, 10, 0.0F, 0.5F, 0.5F, hud);
 
     if (!finished && !stopped) {
-        if (generate(c, nb)) {
-            cog(nb);
-            nb->h = h(nb) > nb->h ? h(nb) : nb->h;
+        if (generate(c, bh)) {
             if (d == BOTH || d == LINES) {  // write buffers
-                nb->newest += 1;
-                if (!nb->buffers_full && (nb->newest == nb->max_points)) {
-                    nb->buffers_full = 1;
+                bh->newest += 1;
+                if (!bh->buffers_full && (bh->newest == bh->max_points)) {
+                    bh->buffers_full = 1;
                 }
-                if (nb->buffers_full) {
-                    nb->oldest = (nb->newest + 1) % nb->max_points;
-                    nb->newest %= nb->max_points;
+                if (bh->buffers_full) {
+                    bh->oldest = (bh->newest + 1) % bh->max_points;
+                    bh->newest %= bh->max_points;
                 }
-                for (int i = 0; i < nb->n; i += 1) {
-                    b[i].track[nb->newest] = (components){b[i].x, b[i].y, b[i].z};
-                }
+                bh->track[bh->newest] = to_xyz(bh);
             }
         } else {
             finished = GL_TRUE;
@@ -133,9 +128,9 @@ void Animate (void) {
     glutPostRedisplay();        // Request a re-draw for animation purposes
 }
 
-void CloseWindow (void) {
-    fprintf(stderr, "H : % .18Le\n", nb->h);
-}
+//void CloseWindow (void) {
+//    fprintf(stderr, "H : % .18Le\n", bh->h);
+//}
 
 void OpenGLInit (void) {
     glShadeModel(GL_FLAT);
@@ -156,7 +151,7 @@ void ResizeWindow (int w, int h) {
     // Set up the projection view matrix (not very well!)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60.0F, aspectRatio, 1.0F, 30.0F);
+    gluPerspective(60.0F, aspectRatio, 1.0F, 100.0F);
     // Select the Modelview matrix
     glMatrixMode(GL_MODELVIEW);
 }
@@ -164,11 +159,18 @@ void ResizeWindow (int w, int h) {
 int main (int argc, char** argv) {
     d = (display)strtol(argv[1], NULL, BASE);
     c = get_c(argv);
-    nb = (nbody *)get_p(argc, argv, (argc - 7) / 7);
-
-    fprintf(stderr, "\n");
-    fprintf(stderr, "H0: % .18Le\n", nb->h);
+    bh = get_p(argc, argv, 5);
     since = clock();
+
+    bh->max_points = (int)strtol(argv[5], NULL, BASE);
+    bh->oldest = bh->newest = bh->buffers_full = 0;
+    bh->colour = (rgb){.r=0.0F, .g=0.5F, .b=0.0F};
+    bh->track = calloc((size_t)bh->max_points, sizeof (components));
+    bh->track[bh->newest] = to_xyz(bh);
+    bh->ball_size = 0.1F;
+    bh->view_radius = 20.0F;
+    bh->view_longitude = 0.0F;
+    bh->view_latitude = 90.0F;
 
     // Initialize GLUT
     glutInit(&argc,argv);
@@ -186,7 +188,7 @@ int main (int argc, char** argv) {
     glutSpecialFunc(SpecialKeyFunc);
     glutReshapeFunc(ResizeWindow);
     glutDisplayFunc(Animate);
-    glutCloseFunc(CloseWindow);
+    //glutCloseFunc(CloseWindow);
     // Start the main loop.  glutMainLoop never returns.
     glutMainLoop();
     return(0);          // Compiler requires this to be here. (Never reached)

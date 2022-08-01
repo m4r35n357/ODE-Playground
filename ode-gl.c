@@ -72,8 +72,8 @@ void Animate (void) {
 
     if (d == BOTH || d == LINES) {
         glBegin(GL_LINE_STRIP);
-        for (int k = 0; k < ball->track->newest; k += 1) {
-            components point = ball->track->buffer[k];
+        for (int k = 0; k < ball->current; k += 1) {
+            components point = ball->track[k];
             glColor3f(ball->colour.r, ball->colour.g, ball->colour.b);
             glVertex3f((float)point.x, (float)point.y, (float)point.z);
         }
@@ -99,7 +99,7 @@ void Animate (void) {
     if (!finished && !stopped) {
         if (tsm_gen(c, ball->coordinates, p)) {
             if (d == BOTH || d == LINES) {
-                ball->track->buffer[ball->track->newest++] = *ball->coordinates;
+                ball->track[ball->current++] = *ball->coordinates;
             }
         } else {
             finished = GL_TRUE;
@@ -150,10 +150,9 @@ int main (int argc, char** argv) {
     ball->coordinates->x = strtold(argv[5], NULL);
     ball->coordinates->y = strtold(argv[6], NULL);
     ball->coordinates->z = strtold(argv[7], NULL);
-    ball->track = malloc(sizeof (line));
-    ball->track->newest = 0;
-    ball->track->buffer = calloc((size_t)c->steps, sizeof (components));
-    ball->track->buffer[ball->track->newest] = *ball->coordinates;
+    ball->current = 0;
+    ball->track = calloc((size_t)c->steps, sizeof (components));
+    ball->track[ball->current] = *ball->coordinates;
     ball->size = 0.1F;
     ball->colour = (rgb) { .r = 0.0F, .g = 0.5F, .b = 0.0F };
     ball->view_radius = 20.0F;

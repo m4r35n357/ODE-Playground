@@ -42,15 +42,12 @@ EOF
 #include <assert.h>
 #include <math.h>
 #include "symplectic.h"
-#include "dual.h"
+#include "h-kerr.h"
 
-typedef struct Parameters {
-    real mu2;  // central mass & particle mass (squared)
-    real E, L, Q, K;  // constants of motion
-    real a, a2, L2, aL, aE, a2xmu2_E2;  // global constants
-    real q_t, q_r, q_theta, q_phi, p_t, p_r, p_theta, p_phi;  // coordinates & velocities
-    dual ra2, delta, sth2, R, THETA;  // global variables & potentials
-} parameters;
+components to_xyz (parameters *p) {
+    real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_theta);
+    return (components){ra_sth * cosl(p->q_phi), ra_sth * sinl(p->q_phi), p->q_r * cosl(p->q_theta)};
+}
 
 static void refresh (parameters *p) {
     dual r = d_var(p->q_r);
@@ -66,6 +63,7 @@ static void refresh (parameters *p) {
 }
 
 void *get_p (int argc, char **argv, int va_begin) { (void)va_begin;
+    fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     assert(argc == 14);
     parameters *p = malloc(sizeof (parameters));
     real p_mass, m_factor;
@@ -89,6 +87,7 @@ void *get_p (int argc, char **argv, int va_begin) { (void)va_begin;
     refresh(p);  // variables, t & phi velocities
     p->p_r = - sqrtl(p->R.val >= 0.0L ? p->R.val : - p->R.val);
     p->p_theta = - sqrtl(p->THETA.val >= 0.0L ? p->THETA.val : - p->THETA.val);
+    p->horizon = 1.0F + (float)sqrtl(1.0L - p->a * p->a);
     return p;
 }
 
@@ -113,7 +112,7 @@ static real v_dot_v (real vt, real vr, real vth, real vph, real a, real ra2, rea
     return sth2 / sigma * v1 * v1 + vr * vr / delta / sigma + vth * vth / sigma - delta / sigma * v4 * v4;
 }
 
-static void plot_path (int dp, void *params, real t) {
+void plot_path (int dp, void *params, real t) {
     parameters *p = (parameters *)params;
     real sigma = p->q_r * p->q_r + p->a * p->a * (1.0L - p->sth2.val);
     real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_theta);
@@ -126,31 +125,15 @@ static void plot_path (int dp, void *params, real t) {
            dp, gamma, dp, sqrtl(1.0L - 1.0L / (gamma * gamma)));
 }
 
-static void plot_view (int dp, void *params, real t) {
+void plot_view (int dp, void *params, real t) {
     parameters *p = (parameters *)params;
     printf("%.6Le 2  %+.*Le %+.*Le %+.*Le %+.*Le  %+.*Le %+.*Le %+.*Le %+.*Le  -1 0 0 0  0 0 0 1  0 1 0 0\n",
            t, dp, p->q_r, dp, cosl(p->q_theta), dp, p->q_t, dp, p->q_phi,
            dp, p->p_r, dp, - sinl(p->q_theta) * p->p_theta, dp, p->p_t, dp, p->p_phi);
 }
 
-static void plot_raw (int dp, void *params, real time) { (void)dp;
+void plot_raw (int dp, void *params, real time) { (void)dp;
     parameters *p = (parameters *)params;
     printf("%.6Le  %+La %+La %+La %+La  %+La %+La %+La %+La\n",
            time, p->q_t, p->q_r, p->q_theta, p->q_phi, p->p_t, p->p_r, p->p_theta, p->p_phi);
-}
-
-int main (int argc, char **argv) {
-    int plot_type_position = 5;
-    long plot_type = strtol(argv[plot_type_position], NULL, BASE);
-    plotter plot;
-    switch (plot_type) {
-        case 0: plot = plot_path; break;  // for plot3d.py
-        case 1: plot = plot_view; break;  // for kerr-image
-        case 2: plot = plot_raw; break;   // for debugging
-        default:
-            printf("Plot type is {%ld} but should be 0 (x,y,z,error,speed), 1 (view), or 2 (raw)\n", plot_type);
-            exit(2);
-    }
-    solve(argv, get_c(argv), get_p(argc, argv, plot_type_position + 1), plot);
-    return 0;
 }

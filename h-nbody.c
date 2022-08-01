@@ -38,10 +38,9 @@ void *get_p (int argc, char **argv, int n_bodies) {
     }
     cog(nb);
     for (int i = 0; i < nb->n; i += 1) {
-        nb->bodies[i].track = malloc(sizeof (line));
-        nb->bodies[i].track->buffer = calloc((size_t)nb->max_points, sizeof (components));
-        nb->bodies[i].track->buffer[nb->newest] = (components){nb->bodies[i].x, nb->bodies[i].y, nb->bodies[i].z};
-	}
+        nb->bodies[i].track = calloc((size_t)nb->max_points, sizeof (components));
+        nb->bodies[i].track[nb->newest] = (components){nb->bodies[i].x, nb->bodies[i].y, nb->bodies[i].z};
+    }
     nb->h = nb->h0 = h(nb);
     nb->ball_scale = 0.1F;
     nb->view_radius = 20.0F;
