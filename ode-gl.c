@@ -73,16 +73,15 @@ void Animate (void) {
     if (d == BOTH || d == LINES) {
         glBegin(GL_LINE_STRIP);
         for (int k = 0; k < ball->current; k += 1) {
-            components point = ball->track[k];
-            glColor3f(ball->colour.r, ball->colour.g, ball->colour.b);
-            glVertex3f((float)point.x, (float)point.y, (float)point.z);
+            glColor3f(ball->colour.a, ball->colour.b, ball->colour.c);
+            glVertex3f(ball->track[k].a, ball->track[k].b, ball->track[k].c);
         }
         glEnd();
     }
 
     if (d == BOTH || d == BALLS) {
         glTranslatef((float)ball->coordinates->x, (float)ball->coordinates->y, (float)ball->coordinates->z);
-        glColor3f(ball->colour.r, ball->colour.g, ball->colour.b);
+        glColor3f(ball->colour.a, ball->colour.b, ball->colour.c);
         glutSolidSphere(ball->size, 10, 10);
     }
 
@@ -99,7 +98,7 @@ void Animate (void) {
     if (!finished && !stopped) {
         if (tsm_gen(c, ball->coordinates, p)) {
             if (d == BOTH || d == LINES) {
-                ball->track[ball->current++] = *ball->coordinates;
+                ball->track[ball->current++] = (rgb){(float)ball->coordinates->x, (float)ball->coordinates->y, (float)ball->coordinates->z};
             }
         } else {
             finished = GL_TRUE;
@@ -152,9 +151,9 @@ int main (int argc, char** argv) {
     ball->coordinates->z = strtold(argv[7], NULL);
     ball->current = 0;
     ball->track = calloc((size_t)c->steps, sizeof (components));
-    ball->track[ball->current] = *ball->coordinates;
+    ball->track[ball->current] = (rgb){(float)ball->coordinates->x, (float)ball->coordinates->y, (float)ball->coordinates->z};
     ball->size = 0.1F;
-    ball->colour = (rgb) { .r = 0.0F, .g = 0.5F, .b = 0.0F };
+    ball->colour = (rgb){0.0F, 0.5F, 0.0F };
     ball->view_radius = 20.0F;
     ball->view_longitude = 0.0F;
     ball->view_latitude = 90.0F;

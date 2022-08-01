@@ -78,21 +78,20 @@ void Animate (void) {
     if (d == BOTH || d == LINES) {
         glBegin(GL_LINE_STRIP);
         for (int k = bh->oldest; k != bh->newest; k = (k + 1) % bh->max_points) {  // read buffers
-            components point = bh->track[k];
-            glColor3f(bh->colour.r, bh->colour.g, bh->colour.b);
-            glVertex3f((float)point.x, (float)point.y, (float)point.z);
+            glColor3f(bh->colour.a, bh->colour.b, bh->colour.c);
+            glVertex3f(bh->track[k].a, bh->track[k].b, bh->track[k].c);
         }
         glEnd();
     }
 
-    components point = bh->track[bh->newest];
+    rgb point = bh->track[bh->newest];
     if (d == BOTH || d == BALLS) {
-        glTranslatef((float)point.x, (float)point.y, (float)point.z);
-        glColor3f(bh->colour.r, bh->colour.g, bh->colour.b);
+        glTranslatef(point.a, point.b, point.c);
+        glColor3f(bh->colour.a, bh->colour.b, bh->colour.c);
         glutSolidSphere(bh->ball_size, 10, 10);
     }
 
-    sprintf(hud, "t: %.1Lf  x:%5.1Lf  y:%5.1Lf  z:%5.1Lf  ", c->step * c->step_size, point.x, point.y, point.z);
+    sprintf(hud, "t: %.1Lf  x:%5.1f  y:%5.1f  z:%5.1f  ", c->step * c->step_size, point.a, point.b, point.c);
     osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, 0.0F, 0.5F, 0.5F, hud);
 
     sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.1f %%",
@@ -164,7 +163,7 @@ int main (int argc, char** argv) {
 
     bh->max_points = (int)strtol(argv[5], NULL, BASE);
     bh->oldest = bh->newest = bh->buffers_full = 0;
-    bh->colour = (rgb){.r=0.0F, .g=0.5F, .b=0.0F};
+    bh->colour = (rgb){0.0F, 0.5F, 0.0F};
     bh->track = calloc((size_t)bh->max_points, sizeof (components));
     bh->track[bh->newest] = to_xyz(bh);
     bh->ball_size = 0.1F;

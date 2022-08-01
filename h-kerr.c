@@ -44,9 +44,9 @@ EOF
 #include "symplectic.h"
 #include "h-kerr.h"
 
-components to_xyz (parameters *p) {
+rgb to_xyz (parameters *p) {
     real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_theta);
-    return (components){ra_sth * cosl(p->q_phi), ra_sth * sinl(p->q_phi), p->q_r * cosl(p->q_theta)};
+    return (rgb){(float)(ra_sth * cosl(p->q_phi)), (float)(ra_sth * sinl(p->q_phi)), (float)(p->q_r * cosl(p->q_theta))};
 }
 
 static void refresh (parameters *p) {

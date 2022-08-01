@@ -5,7 +5,7 @@ typedef struct Body {
     real m, x, y, z, px, py, pz;
     float r;
     rgb colour;
-    components *track;
+    rgb *track;
 } body;
 
 typedef struct Nbody {

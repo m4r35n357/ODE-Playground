@@ -21,7 +21,7 @@ typedef struct Components {
  * Colour r, g, b values
  */
 typedef struct Rgb {
-    float r, g, b;
+    float a, b, c;
 } rgb;
 
 /*

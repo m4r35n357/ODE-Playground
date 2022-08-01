@@ -74,9 +74,8 @@ void Animate (void) {
         for (int i = 0; i < nb->n; i += 1) {
             glBegin(GL_LINE_STRIP);
             for (int k = nb->oldest; k != nb->newest; k = (k + 1) % nb->max_points) {  // read buffers
-                components point = b[i].track[k];
-                glColor3f(b[i].colour.r, b[i].colour.g, b[i].colour.b);
-                glVertex3f((float)point.x, (float)point.y, (float)point.z);
+                glColor3f(b[i].colour.a, b[i].colour.b, b[i].colour.c);
+                glVertex3f(b[i].track[k].a, b[i].track[k].b, b[i].track[k].c);
             }
             glEnd();
         }
@@ -84,11 +83,11 @@ void Animate (void) {
 
     if (d == BOTH || d == BALLS) {
         glTranslatef((float)(b[0].x - nb->centre.x), (float)(b[0].y - nb->centre.y), (float)(b[0].z - nb->centre.z));
-        glColor3f(b[0].colour.r, b[0].colour.g, b[0].colour.b);
+        glColor3f(b[0].colour.a, b[0].colour.b, b[0].colour.c);
         glutSolidSphere(nb->ball_scale * b[0].r, 10, 10);
         for (int i = 1; i < nb->n; i += 1) {
             glTranslatef((float)(b[i].x - b[i - 1].x), (float)(b[i].y - b[i - 1].y), (float)(b[i].z - b[i - 1].z));
-            glColor3f(b[i].colour.r, b[i].colour.g, b[i].colour.b);
+            glColor3f(b[i].colour.a, b[i].colour.b, b[i].colour.c);
             glutSolidSphere(nb->ball_scale * b[i].r, 10, 10);
         }
     }
@@ -116,7 +115,7 @@ void Animate (void) {
                     nb->newest %= nb->max_points;
                 }
                 for (int i = 0; i < nb->n; i += 1) {
-                    b[i].track[nb->newest] = (components){b[i].x, b[i].y, b[i].z};
+                    b[i].track[nb->newest] = (rgb){(float)b[i].x, (float)b[i].y, (float)b[i].z};
                 }
             }
         } else {
