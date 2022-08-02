@@ -7,6 +7,7 @@ Once you have built the project, use one of these two yad UI scripts, or read th
 ./ode-playground
 ./nbody-playground
 ./blackhole-playground
+./blackhole-generator
 ```
 The n-body and black hole programs will most probably not be documented here, so the yad UI effectively _is_ the documentation.
 
