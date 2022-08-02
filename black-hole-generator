@@ -1,0 +1,22 @@
+#!/bin/sh
+
+choice=$(yad --columns=2 --title="Black Hole Playground" --form --separator=" " --align=right \
+    --field="Geodesic Type":CB \
+    -- '^Timelike!Lightlike')
+
+set $choice
+type=$1
+
+case $type in
+    Timelike) ./h-kerr-gen-particle-dbg \
+        $(yad --columns=2 --title="Generate Parameters (particle)" --form --separator=" " --align=right \
+        --field="Solver Tolerance" --field="Rmin" --field="Rmax (-1 for circular)" \
+        --field="Elevation (degrees)" --field="BH spin (-ve for retrograde)":NUM \
+        -- "1.0e-9" "4.0" "12.0" "63.0" '0.8!-1.0..1.0!0.1!1') >/tmp/$USER/data
+    ;;
+    Lightlike) ./h-kerr-gen-light-dbg \
+        $(yad --columns=2 --title="Generate Parameters (light)" --form --separator=" " --align=right \
+        --field="r":NUM --field="BH spin":NUM \
+        -- '3.0!1.0..4.0!0.1!1' '0.8!-1.0..1.0!0.1!1')
+    ;;
+esac
