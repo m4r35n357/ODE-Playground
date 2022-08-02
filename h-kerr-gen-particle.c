@@ -173,12 +173,12 @@ int main (int argc, char **argv) {
     fprintf(stderr, "./h-kerr-dbg 6 8 .01 10000 0 %.3Lf 1.0 %La %La 1.0 %La %.3Lf 0.0 >/tmp/$USER/data\n",
             p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax));
     fprintf(stderr, "\n");
-    fprintf(stderr, "./h-kerr-dbg $(yad --columns=2 --title='Kerr Orbit (particle)' --form --separator=' ' --align=right ");
-    fprintf(stderr, "--field='Display Places':NUM ");
+    fprintf(stderr, "./h-kerr-gl $(yad --columns=2 --title='Kerr Particle Orbit GL' --form --separator=' ' --align=right ");
+    fprintf(stderr, "--field='Display Mode':CB ");
     fprintf(stderr, "--field='Order':NUM ");
     fprintf(stderr, "--field='Step Size':NUM ");
     fprintf(stderr, "--field='Steps':NUM ");
-    fprintf(stderr, "--field='Plot type':CB ");
+    fprintf(stderr, "--field='Track Length':NUM ");
     fprintf(stderr, "--field='BH spin':NUM ");
     fprintf(stderr, "--field='particle mass':RO ");
     fprintf(stderr, "--field='particle energy' ");
@@ -187,8 +187,8 @@ int main (int argc, char **argv) {
     fprintf(stderr, "--field='Carter constant' ");
     fprintf(stderr, "--field='r0' ");
     fprintf(stderr, "--field='theta0' ");
-    fprintf(stderr, "-- '6!3..64!3' '4!2..10!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' '0!1!2' "),
-    fprintf(stderr, "'%.3Lf!-1.0..1.0!0.1!1' 1.0 %.9Le %.9Le 1.0 %.9Le %.3Lf 0.0) >/tmp/$USER/data\n",
+    fprintf(stderr, "-- '0!1!2' '4!2..10!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' '1000!1..100000!1' "),
+    fprintf(stderr, "'%.3Lf!-1.0..1.0!0.1!1' 1.0 %.9Le %.9Le 1.0 %.9Le %.3Lf 0.0)\n",
             p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax));
     fprintf(stderr, "\n");
     fprintf(stderr, "Generate ICs:\n");
