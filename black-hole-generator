@@ -7,12 +7,32 @@ choice=$(yad --columns=2 --title="Black Hole Playground" --form --separator=" " 
 set $choice
 type=$1
 
+plot_potentials () {
+gnuplot -p << EOF
+set key left
+set terminal wxt size 600,450
+set yrange [*:10]
+set xlabel 'r'
+set ylabel 'R potential'
+plot 0.0 title 'zero ref.', '/tmp/$USER/data' using 1:2 title 'R' with lines
+EOF
+gnuplot -p << EOF
+set key left
+set terminal wxt size 600,450
+set yrange [*:1]
+set xlabel 'theta'
+set ylabel 'THETA potential'
+plot 0.0 title 'zero ref.', '/tmp/$USER/data' using 3:4 title 'THETA' with lines
+EOF
+}
+
 case $type in
     Timelike) ./h-kerr-gen-particle-dbg \
         $(yad --columns=2 --title="Generate Parameters (particle)" --form --separator=" " --align=right \
         --field="Solver Tolerance" --field="Rmin" --field="Rmax (-1 for circular)" \
         --field="Elevation (degrees)" --field="BH spin (-ve for retrograde)":NUM \
         -- "1.0e-9" "4.0" "12.0" "63.0" '0.8!-1.0..1.0!0.1!1') >/tmp/$USER/data
+        plot_potentials
     ;;
     Lightlike) ./h-kerr-gen-light-dbg \
         $(yad --columns=2 --title="Generate Parameters (light)" --form --separator=" " --align=right \
