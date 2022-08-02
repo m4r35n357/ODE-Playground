@@ -1,12 +1,14 @@
 
 ## NEWS: OpenGL display
 
-There is now an OpenGL executable built for each TSM model, and also a separate n-body OpenGL program.
+There is now an OpenGL executable built for each TSM model, and also separate n-body and black hole OpenGL programs.
 Once you have built the project, use one of these two yad UI scripts, or read the docs below to drive directly from the shell:
 ```
-./nbody-playground
 ./ode-playground
+./nbody-playground
+./blackhole-playground
 ```
+The n-body and black hole programs will most probably not be documented here, so the yad UI effectively _is_ the documentation.
 
 ## NEWS: Default compiler (c99)
 
@@ -48,14 +50,6 @@ x86-64 | 80 bit hardware float
 armhf | 64 bit hardware float
 aarch64 | 128 bit _software_ float
 
-### ODE analysis using fourth order Runge-Kutta (RK4)
-
-Minimal selection of clients (models) included
-
-Investigate the validity of chaotic solutions against step size, and compare to TSM
-
-Plot bifurcation diagrams, to find "interesting" parameter values to study
-
 ### ODE analysis using arbitrary-order Taylor Series Method (TSM)
 
 Good selection of clients (models) included
@@ -68,10 +62,13 @@ Plot bifurcation diagrams, to find "interesting" parameter values to study
 
 2nd to 10th order integrators, with visualization of the time stepping structure
 
-Three examples; Mass-spring system, Newton orbits and Kerr (black hole) orbits.
+Three examples; Mass-spring system, Newton orbits, plus an analysis example to illustrate the symplectic time-stepping sequence for each order of integration.
+No formal documentation yet, see the yad and c files for example usage.
 
-No formal documentation yet, see the c files for example usage.
+### Spinning Black Hole (Kerr) orbits
 
+This example uses symplectic integration, but not Dual numbers, because the differentiation is trivial in this case.
+No formal documentation yet, see the yad and c files for example usage.
 
 ## Quick Start
 

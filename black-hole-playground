@@ -21,7 +21,7 @@ gnuplot -p << EOF
 set key left
 set terminal wxt size 600,450
 set yrange [24:0]
-set xlabel 'errors'
+set xlabel 'Mino time'
 set ylabel 'approximate places'
 plot '/tmp/$USER/data' using 4:5 title 'v4' with lines, '' u 4:6 t 'r' w l, '' u 4:7 t 'theta' w l
 EOF
@@ -31,7 +31,7 @@ plot_speed () {
 gnuplot -p << EOF
 set key left
 set terminal wxt size 600,450
-set xlabel 'time'
+set xlabel 'Mino time'
 set ylabel 'gamma & speed'
 plot '/tmp/$USER/data' using 4:8 title 'gamma' with lines, '' u 4:9 t 'speed' w l
 EOF
