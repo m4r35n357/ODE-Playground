@@ -177,7 +177,7 @@ int main (int argc, char** argv) {
     // Create and position the graphics window
     glutInitWindowPosition(0, 0);
     glutInitWindowSize(640, 480);
-    glutCreateWindow("N-Body Demo");
+    glutCreateWindow("Black Hole Demo");
     // Initialize GLEW
     glewInit();
     // Initialize OpenGL
