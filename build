@@ -49,8 +49,8 @@ done
 echo ""
 build_tsm () {
     name=$1
-    ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c main_tsm.c -lm -s
-    ${CC} -Og -g $WARNINGS -o ${name}-dbg ${name}.c taylor-ode.c main_tsm.c -lm
+    ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c main-tsm.c -lm -s
+    ${CC} -Og -g $WARNINGS -o ${name}-dbg ${name}.c taylor-ode.c main-tsm.c -lm
     ${CC} -Og -g $WARNINGS -o ${name}-gl ${name}.c taylor-ode.c ode-gl.c -lm -lGLEW -lglut -lGLU -lGL
 }
 
