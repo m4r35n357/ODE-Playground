@@ -51,7 +51,7 @@ build_tsm () {
     name=$1
     ${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c taylor-ode.c main-tsm.c -lm -s
     ${CC} -Og -g $WARNINGS -o ${name}-dbg ${name}.c taylor-ode.c main-tsm.c -lm
-    ${CC} -Og -g $WARNINGS -o ${name}-gl ${name}.c taylor-ode.c ode-gl.c -lm -lGLEW -lglut -lGLU -lGL
+    ${CC} -Og -g $WARNINGS -o ${name}-gl ${name}.c taylor-ode.c opengl.c ode-gl.c -lm -lGLEW -lglut -lGLU -lGL
 }
 
 for model in \
@@ -87,15 +87,15 @@ ${CC} -O3 $WARNINGS -o divergence divergence.c -lm -s &
 
 echo ""
 echo " Building OpenGL N-body"
-${CC} -O3 -o h-nbody-gl symplectic.c h-nbody.c h-nbody-gl.c -lm -lGLEW -lglut -lGLU -lGL &
-${CC} -Og -g $WARNINGS -o h-nbody-gl-dbg symplectic.c h-nbody.c h-nbody-gl.c -lm -lGLEW -lglut -lGLU -lGL &
+${CC} -O3 -o h-nbody-gl symplectic.c opengl.c h-nbody.c h-nbody-gl.c -lm -lGLEW -lglut -lGLU -lGL &
+${CC} -Og -g $WARNINGS -o h-nbody-gl-dbg symplectic.c opengl.c h-nbody.c h-nbody-gl.c -lm -lGLEW -lglut -lGLU -lGL &
 
 echo ""
 echo " Building Kerr & Kerr GL"
 ${CC} -O3 -DNDEBUG -static -o h-kerr-static main-kerr.c dual.c symplectic.c h-kerr.c -lm &
 ${CC} -Og -ggdb -o h-kerr-dbg main-kerr.c dual.c symplectic.c h-kerr.c -lm &
-${CC} -O3 -o h-kerr-gl h-kerr-gl.c dual.c symplectic.c h-kerr.c -lm -lGLEW -lglut -lGLU -lGL &
-${CC} -Og -ggdb -o h-kerr-gl-dbg h-kerr-gl.c dual.c symplectic.c h-kerr.c -lm -lGLEW -lglut -lGLU -lGL &
+${CC} -O3 -o h-kerr-gl h-kerr-gl.c dual.c symplectic.c opengl.c h-kerr.c -lm -lGLEW -lglut -lGLU -lGL &
+${CC} -Og -ggdb -o h-kerr-gl-dbg h-kerr-gl.c dual.c symplectic.c opengl.c h-kerr.c -lm -lGLEW -lglut -lGLU -lGL &
 
 echo ""
 echo " Building dual-test-dbg"
