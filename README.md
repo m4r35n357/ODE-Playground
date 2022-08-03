@@ -5,7 +5,7 @@ There is now an OpenGL executable built for each TSM model, and also separate n-
 Once you have built the project, use one of these yad UI scripts, or read the docs below to drive directly from the shell:
 ```
 ./ode-playground
-./nbody-playground
+./hamiltonian-playground
 ./blackhole-playground
 ./blackhole-generator
 ```

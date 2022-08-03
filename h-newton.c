@@ -3,17 +3,6 @@
  *
  * Example:  ./h-newton-dbg  6 8 1 10000  1 12 .6 >/tmp/$USER/data
  *
- * Example:  gnuplot -p -e "set terminal wxt size 600,450; splot '/tmp/$USER/data' with lines"
- *
- * Example:  gnuplot -p -e "set terminal wxt size 600,450; plot '/tmp/$USER/data' using 1:2 with lines"
- *
- * Example:  gnuplot -p -e "set terminal wxt size 600,450; set yrange [-240:0]; plot '/tmp/$USER/data' using 4:5 with lines"
- *
- ./h-newton-static $(yad --title="Newtonian Orbit" --form --separator=" " --align=right \
-    --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-    --field="mass" --field="r0" --field="L factor":NUM \
-    -- '6!3..64!3' '4!2..10!2' '0.2!0.1..1!0.1!1' '10000!1..100000!1' "1" "12" '0.6!0.0..1.0!0.1!1') >/tmp/$USER/data
- *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 

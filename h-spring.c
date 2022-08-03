@@ -3,29 +3,6 @@
  *
  * Example:  ./h-spring-dbg  6 8 1 10000  1 1 1 >/tmp/$USER/data
  *
- ./h-spring-static $(yad --title="Mass-Spring System" --form --separator=" " --align=right \
-    --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-    --field="mass" --field="spring constant" --field="length" \
-    -- '6!3..64!3' '4!2..10!2' '0.1!0.1..1!0.1!1' '10000!1..100000!1' "1" "1" "1") >/tmp/$USER/data
- *
- gnuplot -p << EOF
-set terminal wxt size 600,450
-splot '/tmp/$USER/data' with lines
-EOF
- *
- gnuplot -p << EOF
-set terminal wxt size 600,450
-splot '/tmp/$USER/data' using 1:2 with lines
-EOF
- *
- gnuplot -p << EOF
-set terminal wxt size 600,450
-set yrange [-240:0]
-set xlabel 'time'
-set ylabel 'error'
-plot '/tmp/$USER/data' using 4:5 with lines
-EOF
- *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 

@@ -1,0 +1,117 @@
+#!/bin/sh
+
+choice=$(yad --columns=2 --title="ODE Playground (TSM)" --form --separator=" " --align=right \
+    --field="Model:CB" --field="Display Mode":CB \
+    --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM --field="Track Length":NUM \
+    -- 'Newton!Spring!Analysis!^EightBody!FourBodyA!FourBodyB!ThreeBody!TwoBody' '0!1!2' \
+       '8!2..10!2' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' '2000!1000..10000!1000')
+
+set $choice
+model=$1
+shift
+
+plot_analysis () {
+gnuplot -p << EOF
+set key left
+set terminal wxt size 600,450
+set xrange [-0.1:1.1]
+set yrange [-0.1:1.1]
+set xlabel 'coordinate steps'
+set ylabel 'momentum steps'
+plot '/tmp/$USER/data' using 1:2 title 'time step sequence' with linespoints pt 7 ps 0
+EOF
+}
+
+plot3d () {
+gnuplot -p << EOF
+set terminal wxt size 600,450
+splot '/tmp/$USER/data' with lines
+EOF
+}
+
+plot_errors () {
+gnuplot -p << EOF
+set key left
+set terminal wxt size 600,450
+set yrange [24:0]
+set xlabel 'time'
+set ylabel 'approximate places'
+plot '/tmp/$USER/data' using 4:5 title 'hamiltonian error' with lines
+EOF
+}
+
+case $model in
+    Newton) ./h-newton-static \
+        $(yad --title="Newtonian Orbit" --form --separator=" " --align=right \
+        --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+        --field="mass" --field="r0" --field="L factor":NUM \
+        -- '6!3..64!3' '4!2..10!2' '0.2!0.1..1!0.1!1' '10000!1..100000!1' "1" "12" '0.6!0.0..1.0!0.1!1') >/tmp/$USER/data
+        plot3d
+        plot_errors
+    ;;
+    Spring) ./h-spring-static \
+        $(yad --title="Mass-Spring System" --form --separator=" " --align=right \
+        --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+        --field="mass" --field="spring constant" --field="length" \
+        -- '6!3..64!3' '4!2..10!2' '0.1!0.1..1!0.1!1' '10000!1..100000!1' "1" "1" "1") >/tmp/$USER/data
+        plot3d
+        plot_errors
+    ;;
+    Analysis) ./h-analysis-dbg \
+        $(yad --title="Step Analysis" --form --separator=" " --align=right \
+        --field="Display Places":RO --field="Order":NUM --field="Step Size":RO --field="Steps":RO \
+        -- '6' '4!2..10!2' "1.0" "1") >/tmp/$USER/data
+        plot_analysis
+    ;;
+    EightBody)
+        ./h-nbody-gl $* .05 \
+        $(yad --width=350 --height=280 --list --title="Eight Bodies" --separator=" " \
+        --print-all --grid-lines=BOTH --no-click --editable \
+        --column=Mass --column=X --column=Y --column=Z --column=pX --column=pY --column=pZ \
+        -- 100.0  0.0  0.0  0.0  0.0  0.0  0.0 \
+             2.0  0.0  4.5  0.4 -0.2  0.0  1.8 \
+             3.0 -6.0  0.0 -0.4  0.0 -2.0  1.0 \
+             5.0  3.0  0.0 -0.2  0.0  5.8 -0.2 \
+             4.0  0.0 -4.0  0.1 -3.6  0.0  0.2 \
+             3.0 -4.0  0.0 -0.1  0.0 -0.2 -2.6 \
+             3.0  8.0  0.0 -0.3  0.0  2.0 -0.2 \
+             4.0  0.0  4.0 -0.2 -4.8  0.0 -0.2)
+    ;;
+    FourBodyA)
+        ./h-nbody-gl $* 1 \
+        $(yad --width=450 --height=180 --list --title="Four Body A" --separator=" " \
+        --print-all --grid-lines=BOTH --no-click --editable \
+        --column=mass --column=x --column=y --column=z --column=px --column=py --column=pz \
+        -- 1.0 0.0 -0.69548  0.69548  0.87546 -0.31950 -0.31950 \
+           1.0 0.0  0.69548 -0.69548  0.87546  0.31950  0.31950 \
+           1.0 0.0 -0.69548 -0.69548 -0.87546 -0.31950  0.31950 \
+           1.0 0.0  0.69548  0.69548 -0.87546  0.31950 -0.31950)
+    ;;
+    FourBodyB)
+        ./h-nbody-gl $* 3.5 \
+        $(yad --width=350 --height=180 --list --title="Four Body B" --separator=" " \
+        --print-all --grid-lines=BOTH --no-click --editable \
+        --column=mass --column=x --column=y --column=z --column=px --column=py --column=pz \
+        -- 1.0  1.0  1.0  1.0 -1.0  1.0 -1.0 \
+           1.0 -1.0 -1.0  1.0  1.0 -1.0 -1.0 \
+           1.0  1.0 -1.0 -1.0  1.0  1.0  1.0 \
+           1.0 -1.0  1.0 -1.0 -1.0 -1.0  1.0)
+    ;;
+    ThreeBody)
+        ./h-nbody-gl $* 1 \
+        $(yad --width=400 --height=150 --list --title="Three Body" --separator=" " \
+        --print-all --grid-lines=BOTH --no-click --editable \
+        --column=mass --column=x --column=y --column=z --column=px --column=py --column=pz \
+        -- 1.0 -1.0 0.0 0.0  0.08058  0.58884  0.2 \
+           1.0  1.0 0.0 0.0  0.08058  0.58884 -0.2 \
+           1.0  0.0 0.0 0.0 -0.16116 -1.17768  0.0)
+    ;;
+    TwoBody)
+        ./h-nbody-gl $* 4 \
+        $(yad --width=350 --height=120 --list --title="Two Body" --separator=" " \
+        --print-all --grid-lines=BOTH --no-click --editable \
+        --column=mass --column=x --column=y --column=z --column=px --column=py --column=pz \
+        -- 1.0 0.0  1.0 0.0  1.0 0.0 0.0 \
+           1.0 0.0 -1.0 0.0 -1.0 0.0 0.0)
+    ;;
+esac
