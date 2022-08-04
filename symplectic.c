@@ -19,10 +19,10 @@ controls *get_c (char **argv) {
     c->order = (int)strtol(argv[2], NULL, BASE); assert(c->order >= 2 && c->order <= 10);
     c->step_size = strtold(argv[3], NULL); assert(c->step_size > 0.0L);
     c->steps = (int)strtol(argv[4], NULL, BASE); assert(c->steps >= 0 && c->steps <= 1000000);
-    c->r1 = (weights) { .fwd = r(1), .rev = 1.0L - 4.0L * r(1) };
-    c->r2 = (weights) { .fwd = r(2), .rev = 1.0L - 4.0L * r(2) };
-    c->r3 = (weights) { .fwd = r(3), .rev = 1.0L - 4.0L * r(3) };
-    c->r4 = (weights) { .fwd = r(4), .rev = 1.0L - 4.0L * r(4) };
+    c->r1 = (weights){.fwd = r(1), .rev = 1.0L - 4.0L * r(1)};
+    c->r2 = (weights){.fwd = r(2), .rev = 1.0L - 4.0L * r(2)};
+    c->r3 = (weights){.fwd = r(3), .rev = 1.0L - 4.0L * r(3)};
+    c->r4 = (weights){.fwd = r(4), .rev = 1.0L - 4.0L * r(4)};
     return c;
 }
 
@@ -76,7 +76,7 @@ static void tenth_order (controls *c, void *p, real h) {
     base10(c, p, h);
 }
 
-static integrator set_integrator (long order) {
+static integrator get_integrator (long order) {
     integrator composer = NULL;
     switch (order) {
         case 2: composer = stormer_verlet; break;
@@ -93,7 +93,7 @@ static integrator set_integrator (long order) {
 
 void solve (char **argv, controls *c, void *p, plotter output) {
     int display_precision = (int)strtol(argv[1], NULL, BASE); assert(display_precision >= 1 && display_precision <= 32);
-    integrator composer = set_integrator(c->order);
+    integrator composer = get_integrator(c->order);
     for (int step = 0; step < c->steps; step++) {
         output(display_precision, p, step * c->step_size);
         composer(c, p, c->step_size);
@@ -105,7 +105,7 @@ int generate (controls *c, void *p) {
     static integrator composer;
     static int step, resuming = 0;
     if (resuming) goto resume; else resuming = 1;
-    composer = set_integrator(c->order);
+    composer = get_integrator(c->order);
     for (step = 1; step <= c->steps; step++) {
         c->step = step;
         composer(c, p, c->step_size);

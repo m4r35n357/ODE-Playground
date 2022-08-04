@@ -92,7 +92,7 @@ void Animate (void) {
     }
 
     sprintf(hud, "t: %.1Lf  r:% 5.1Lf  theta:% 6.1Lf  phi:% 6.1Lf  ",
-            c->step * c->step_size, bh->q_r, theta(bh->q_theta), phi(bh->q_phi));
+                  c->step * c->step_size, bh->q_r, theta(bh->q_theta), phi(bh->q_phi));
     osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, 0.0F, 0.5F, 0.5F, hud);
 
     sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.1f %%",
@@ -127,10 +127,6 @@ void Animate (void) {
     glutSwapBuffers();
     glutPostRedisplay();        // Request a re-draw for animation purposes
 }
-
-//void CloseWindow (void) {
-//    fprintf(stderr, "H : % .18Le\n", bh->h);
-//}
 
 void OpenGLInit (void) {
     glShadeModel(GL_FLAT);
@@ -188,7 +184,6 @@ int main (int argc, char** argv) {
     glutSpecialFunc(SpecialKeyFunc);
     glutReshapeFunc(ResizeWindow);
     glutDisplayFunc(Animate);
-    //glutCloseFunc(CloseWindow);
     // Start the main loop.  glutMainLoop never returns.
     glutMainLoop();
     return(0);          // Compiler requires this to be here. (Never reached)
