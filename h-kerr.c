@@ -19,6 +19,18 @@ rgb to_xyz (parameters *p) {
     return (rgb){(float)(ra_sth * cosl(p->q_phi)), (float)(ra_sth * sinl(p->q_phi)), (float)(p->q_r * cosl(p->q_theta))};
 }
 
+static real degrees (real radians) {
+    return radians * 180.0L / MY_PI;
+}
+
+real theta (real radians) {
+    return degrees(radians) - 90.0L;
+}
+
+real phi (real radians) {
+    return fmodl(degrees(radians) + 180.0L, 360.0L);
+}
+
 static void refresh (parameters *p) {
     dual r = d_var(p->q_r);
     dual r2 = d_sqr(r);

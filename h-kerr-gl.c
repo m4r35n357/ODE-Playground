@@ -24,7 +24,7 @@ static char hud[128];
 static clock_t since;
 static double elapsed, cpu;
 
-static float light_pos[] = { -100.0f, 100.0f, -100.0f, 0.0f };
+static float light_pos[] = { -100.0F, 100.0F, -100.0F, 0.0F };
 
 static GLenum finished = GL_FALSE;
 static GLenum stopped = GL_FALSE;
@@ -91,7 +91,8 @@ void Animate (void) {
         glutSolidSphere(bh->ball_size, 10, 10);
     }
 
-    sprintf(hud, "t: %.1Lf  x:%5.1f  y:%5.1f  z:%5.1f  ", c->step * c->step_size, point.a, point.b, point.c);
+    sprintf(hud, "t: %.1Lf  r:% 5.1Lf  theta:% 6.1Lf  phi:% 6.1Lf  ",
+            c->step * c->step_size, bh->q_r, theta(bh->q_theta), phi(bh->q_phi));
     osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, 0.0F, 0.5F, 0.5F, hud);
 
     sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.1f %%",

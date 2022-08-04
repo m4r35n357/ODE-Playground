@@ -16,6 +16,9 @@ typedef struct Parameters {
 
 rgb to_xyz (parameters *bh);
 
+real theta (real radians);
+real phi (real radians);
+
 void plot_path (int dp, void *params, real t);
 void plot_view (int dp, void *params, real t);
 void plot_raw (int dp, void *params, real time);

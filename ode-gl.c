@@ -22,7 +22,7 @@ static char hud[128];
 static clock_t since;
 static double elapsed, cpu;
 
-static float light_pos[] = { -100.0f, 100.0f, -100.0f, 0.0f };
+static float light_pos[] = { -100.0F, 100.0F, -100.0F, 0.0F };
 
 static GLenum finished = GL_FALSE;
 static GLenum stopped = GL_FALSE;
