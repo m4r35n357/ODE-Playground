@@ -11,7 +11,7 @@
 #include <assert.h>
 #include "symplectic.h"
 
-typedef struct Parameters { real c; real d; } parameters;
+typedef struct Parameters { real c, d; } parameters;
 
 void *get_p (int argc, char **argv, int va_begin) { (void)argc; (void)argv; (void)va_begin;
     parameters *p = malloc(sizeof (parameters));

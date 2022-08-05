@@ -23,14 +23,14 @@ static real det2x2 (real a, real d, real b, real c) {
 }
 
 static matrix3x3 m_invert (matrix3x3 m) {
-    matrix3x3 c = (matrix3x3) {
+    matrix3x3 c = (matrix3x3){
         .a =  det2x2(m.e, m.i, m.f, m.h), .b = -det2x2(m.d, m.i, m.f, m.g), .c =  det2x2(m.d, m.h, m.e, m.g),
         .d = -det2x2(m.b, m.i, m.c, m.h), .e =  det2x2(m.a, m.i, m.c, m.g), .f = -det2x2(m.a, m.h, m.b, m.g),
         .g =  det2x2(m.b, m.f, m.c, m.e), .h = -det2x2(m.a, m.f, m.c, m.d), .i =  det2x2(m.a, m.e, m.b, m.d)
     };
     real d = m.a * c.a + m.b * c.b + m.c * c.c;
     assert(d != 0.0L);
-    return (matrix3x3) {
+    return (matrix3x3){
         .a = c.a / d, .b = c.d / d, .c = c.g / d,
         .d = c.b / d, .e = c.e / d, .f = c.h / d,
         .g = c.c / d, .h = c.f / d, .i = c.i / d
@@ -38,7 +38,7 @@ static matrix3x3 m_invert (matrix3x3 m) {
 }
 
 static vector3 mv_mult (matrix3x3 m, vector3 v) {
-    return (vector3) {
+    return (vector3){
         .a = m.a * v.a + m.b * v.b + m.c * v.c,
         .b = m.d * v.a + m.e * v.b + m.f * v.c,
         .c = m.g * v.a + m.h * v.b + m.i * v.c
@@ -46,7 +46,7 @@ static vector3 mv_mult (matrix3x3 m, vector3 v) {
 }
 
 static vector3 v_sub (vector3 u, vector3 v) {
-    return (vector3) {
+    return (vector3){
         .a = u.a - v.a,
         .b = u.b - v.b,
         .c = u.c - v.c
@@ -99,13 +99,13 @@ int main (int argc, char **argv) {
     assert(argc == 6);
     parameters *p = get_p(argv);
     matrix3x3 J;
-    vector3 x = (vector3) {.a = p->E, .b = p->L, .c = p->Q};
-    vector3 f = (vector3) {.a = 1.0L, .b = 1.0L, .c = 1.0L};
+    vector3 x = (vector3){.a = p->E, .b = p->L, .c = p->Q};
+    vector3 f = (vector3){.a = 1.0L, .b = 1.0L, .c = 1.0L};
     fprintf(stderr, "\n");
     long count = 0L;
     _Bool circular = p->rmin * p->rmax < 0.0L;
     while (! converged(f, p->epsilon)) {
-        J = (matrix3x3) {
+        J = (matrix3x3){
             .a = R(p->rmin,  d_var(p->E), d_dual(p->L), d_dual(p->Q), p->spin).dot,
             .b = R(p->rmin, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->spin).dot,
             .c = R(p->rmin, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->spin).dot,
@@ -113,7 +113,7 @@ int main (int argc, char **argv) {
             .h = THETA(p->thmax, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->spin).dot,
             .i = THETA(p->thmax, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->spin).dot
         };
-        f = (vector3) {
+        f = (vector3){
             .a = R(p->rmin, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->spin).val,
             .c = THETA(p->thmax, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->spin).val
         };

@@ -229,8 +229,7 @@ typedef enum Geometry {TRIG, HYP} geometry;
  * For returning combined recurrence values
  */
 typedef struct Pair {
-    real a;
-    real b;
+    real a, b;
 } pair;
 
 /*

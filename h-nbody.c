@@ -58,7 +58,7 @@ void cog (nbody *nb) {
         Z += b[i].z * b[i].m;
         M += b[i].m;
     }
-    nb->centre = (components){.x = X / M, .y = Y / M, .z = Z / M};
+    nb->centre = (components){X / M, Y / M, Z / M};
     for (int i = 0; i < nb->n; i += 1) {
         b[i].x -= nb->centre.x;
         b[i].y -= nb->centre.y;

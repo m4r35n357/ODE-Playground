@@ -170,7 +170,7 @@ int main (int argc, char** argv) {
     since = clock();
 
     // Initialize GLUT
-    glutInit(&argc,argv);
+    glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);  // Need to double buffer for animation
     // Create and position the graphics window
     glutInitWindowPosition(0, 0);
