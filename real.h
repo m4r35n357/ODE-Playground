@@ -10,6 +10,15 @@ static const int BASE = 10;
 
 static const real MY_PI = 3.1415926535897932384626433832795029L;
 
+static const real RAD_TO_DEG = 180.0L / MY_PI;
+
+/*
+ * For returning combined values
+ */
+typedef struct Pair {
+    real a, b;
+} pair;
+
 /*
  * General x, y, z components
  */

@@ -226,13 +226,6 @@ real t_exp (series E, series U, int k);
 typedef enum Geometry {TRIG, HYP} geometry;
 
 /*
- * For returning combined recurrence values
- */
-typedef struct Pair {
-    real a, b;
-} pair;
-
-/*
  * Returns kth elements of both sine and cosine of U, results stored in user-supplied jets S and C
  *
  *      S' =       C.U'

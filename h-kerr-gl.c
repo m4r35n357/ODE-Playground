@@ -91,9 +91,13 @@ void Animate (void) {
         glutSolidSphere(bh->ball_size, 10, 10);
     }
 
-    sprintf(hud, "t: %.1Lf  r:% 5.1Lf  theta:% 6.1Lf  phi:% 6.1Lf  ",
-                  c->step * c->step_size, bh->q_r, theta(bh->q_theta), phi(bh->q_phi));
-    osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, 0.0F, 0.5F, 0.5F, hud);
+    int window_height = glutGet(GLUT_WINDOW_HEIGHT);
+    sprintf(hud, "t: %.1Lf  r:% 5.1Lf  theta:% 6.1Lf  phi:% 6.1Lf  ", c->step * c->step_size, r(bh), theta(bh), phi(bh));
+    osd(10, window_height - 20, 0.0F, 0.5F, 0.5F, hud);
+
+    pair speed = gamma(bh);
+    sprintf(hud, "gamma: %.1Lf  speed:% .9Lf", speed.a, speed.b);
+    osd(10, window_height - 40, 0.0F, 0.5F, 0.5F, hud);
 
     sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.1f %%",
                   elapsed = finished ? elapsed : ((float)(glutGet(GLUT_ELAPSED_TIME)) / 1000.0F),
