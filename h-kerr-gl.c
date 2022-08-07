@@ -96,7 +96,7 @@ void Animate (void) {
     osd(10, window_height - 20, 0.0F, 0.5F, 0.5F, hud);
 
     pair speed = gamma(bh);
-    sprintf(hud, "gamma: %.1Lf  speed:% .9Lf", speed.a, speed.b);
+    sprintf(hud, "gamma: %.1Lf  v:% .6Lf", speed.a, speed.b);
     osd(10, window_height - 40, 0.0F, 0.5F, 0.5F, hud);
 
     sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.1f %%",
