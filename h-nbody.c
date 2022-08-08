@@ -17,7 +17,7 @@ void *get_p (int argc, char **argv, int n_bodies) {
     rgb colours[] = {
         (rgb){1.0F, 1.0F, 0.0F}, (rgb){0.0F, 1.0F, 1.0F}, (rgb){1.0F, 0.0F, 1.0F},
         (rgb){1.0F, 0.0F, 0.0F}, (rgb){0.0F, 1.0F, 0.0F}, (rgb){0.0F, 0.0F, 1.0F},
-        (rgb){0.3F, 0.3F, 0.3F}, (rgb){0.7F, 0.7F, 0.7F}
+        (rgb){0.2F, 0.2F, 0.2F}, (rgb){0.8F, 0.8F, 0.8F}, (rgb){0.5F, 0.5F, 0.5F}
     };
     nbody *nb = malloc(sizeof (nbody));
     nb->max_points = (int)strtol(argv[5], NULL, BASE);
@@ -34,7 +34,7 @@ void *get_p (int argc, char **argv, int n_bodies) {
         nb->bodies[i].px = strtold(argv[7 * i + 11], NULL);
         nb->bodies[i].py = strtold(argv[7 * i + 12], NULL);
         nb->bodies[i].pz = strtold(argv[7 * i + 13], NULL);
-        nb->bodies[i].colour = colours[i % 8];
+        nb->bodies[i].colour = colours[i % 9];
     }
     cog(nb);
     for (int i = 0; i < nb->n; i += 1) {
