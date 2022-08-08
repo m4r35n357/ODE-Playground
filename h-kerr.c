@@ -14,9 +14,9 @@
 #include "symplectic.h"
 #include "h-kerr.h"
 
-rgb to_xyz (parameters *p) {
+point to_xyz (parameters *p) {
     real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_theta);
-    return (rgb){(float)(ra_sth * cosl(p->q_phi)), (float)(ra_sth * sinl(p->q_phi)), (float)(p->q_r * cosl(p->q_theta))};
+    return (point){(float)(ra_sth * cosl(p->q_phi)), (float)(ra_sth * sinl(p->q_phi)), (float)(p->q_r * cosl(p->q_theta))};
 }
 
 real r (parameters *p) {

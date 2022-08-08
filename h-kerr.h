@@ -8,13 +8,13 @@ typedef struct Parameters {
     real q_t, q_r, q_theta, q_phi, p_t, p_r, p_theta, p_phi;  // coordinates & velocities
     dual ra2, delta, sth2, R, THETA;  // global variables & potentials
     components *coordinates;
-    rgb colour, *track;
+    struct triple_f colour, *track;
     float ball_size, view_radius, view_latitude, view_longitude, horizon;
-    int max_points, oldest, newest;
+    int max_points, oldest, current;
     _Bool buffers_full;
 } parameters;
 
-rgb to_xyz (parameters *bh);
+point to_xyz (parameters *bh);
 real r (parameters *bh);
 real theta (parameters *bh);
 real phi (parameters *bh);

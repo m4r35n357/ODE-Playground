@@ -4,8 +4,7 @@
 typedef struct Body {
     real m, x, y, z, px, py, pz;
     float r;
-    rgb colour;
-    rgb *track;
+    struct triple_f colour, *track;
 } body;
 
 typedef struct Nbody {
@@ -14,7 +13,7 @@ typedef struct Nbody {
     real g, h0, h;
     components centre;
     float ball_scale, view_radius, view_latitude, view_longitude;
-    int max_points, oldest, newest;
+    int max_points, oldest, current;
     _Bool buffers_full;
 } nbody;
 

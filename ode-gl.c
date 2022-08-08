@@ -98,7 +98,7 @@ void Animate (void) {
     if (!finished && !stopped) {
         if (tsm_gen(c, ball->coordinates, p)) {
             if (d == BOTH || d == LINES) {
-                ball->track[ball->current++] = (rgb){(float)ball->coordinates->x, (float)ball->coordinates->y, (float)ball->coordinates->z};
+                ball->track[ball->current++] = (point){(float)ball->coordinates->x, (float)ball->coordinates->y, (float)ball->coordinates->z};
             }
         } else {
             finished = GL_TRUE;
@@ -151,7 +151,7 @@ int main (int argc, char** argv) {
     ball->coordinates->z = strtold(argv[7], NULL);
     ball->current = 0;
     ball->track = calloc((size_t)c->steps, sizeof (components));
-    ball->track[ball->current] = (rgb){(float)ball->coordinates->x, (float)ball->coordinates->y, (float)ball->coordinates->z};
+    ball->track[ball->current] = (point){(float)ball->coordinates->x, (float)ball->coordinates->y, (float)ball->coordinates->z};
     ball->size = 0.1F;
     ball->colour = (rgb){0.0F, 0.5F, 0.0F };
     ball->view_radius = 20.0F;

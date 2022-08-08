@@ -73,7 +73,7 @@ void Animate (void) {
     if (d == BOTH || d == LINES) {
         for (int i = 0; i < nb->n; i += 1) {
             glBegin(GL_LINE_STRIP);
-            for (int k = nb->oldest; k != nb->newest; k = (k + 1) % nb->max_points) {  // read buffers
+            for (int k = nb->oldest; k != nb->current; k = (k + 1) % nb->max_points) {  // read buffers
                 glColor3f(b[i].colour.a, b[i].colour.b, b[i].colour.c);
                 glVertex3f(b[i].track[k].a, b[i].track[k].b, b[i].track[k].c);
             }
@@ -106,16 +106,16 @@ void Animate (void) {
             cog(nb);
             nb->h = h(nb) > nb->h ? h(nb) : nb->h;
             if (d == BOTH || d == LINES) {  // write buffers
-                nb->newest += 1;
-                if (!nb->buffers_full && (nb->newest == nb->max_points)) {
+                nb->current += 1;
+                if (!nb->buffers_full && (nb->current == nb->max_points)) {
                     nb->buffers_full = 1;
                 }
                 if (nb->buffers_full) {
-                    nb->oldest = (nb->newest + 1) % nb->max_points;
-                    nb->newest %= nb->max_points;
+                    nb->oldest = (nb->current + 1) % nb->max_points;
+                    nb->current %= nb->max_points;
                 }
                 for (int i = 0; i < nb->n; i += 1) {
-                    b[i].track[nb->newest] = (rgb){(float)b[i].x, (float)b[i].y, (float)b[i].z};
+                    b[i].track[nb->current] = (point){(float)b[i].x, (float)b[i].y, (float)b[i].z};
                 }
             }
         } else {

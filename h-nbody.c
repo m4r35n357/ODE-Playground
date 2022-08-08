@@ -21,7 +21,7 @@ void *get_p (int argc, char **argv, int n_bodies) {
     };
     nbody *nb = malloc(sizeof (nbody));
     nb->max_points = (int)strtol(argv[5], NULL, BASE);
-    nb->oldest = nb->newest = nb->buffers_full = 0;
+    nb->oldest = nb->current = nb->buffers_full = 0;
     nb->g = strtold(argv[6], NULL);
     nb->n = n_bodies;
     nb->bodies = calloc((size_t)nb->n, sizeof (body));
@@ -39,7 +39,7 @@ void *get_p (int argc, char **argv, int n_bodies) {
     cog(nb);
     for (int i = 0; i < nb->n; i += 1) {
         nb->bodies[i].track = calloc((size_t)nb->max_points, sizeof (components));
-        nb->bodies[i].track[nb->newest] = (rgb){(float)nb->bodies[i].x, (float)nb->bodies[i].y, (float)nb->bodies[i].z};
+        nb->bodies[i].track[nb->current] = (point){(float)nb->bodies[i].x, (float)nb->bodies[i].y, (float)nb->bodies[i].z};
     }
     nb->h = nb->h0 = h(nb);
     nb->ball_scale = 0.1F;

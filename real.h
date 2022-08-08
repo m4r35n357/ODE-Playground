@@ -15,23 +15,23 @@ static const real RAD_TO_DEG = 180.0L / MY_PI;
 /*
  * For returning combined values
  */
-typedef struct Pair {
+typedef struct pair_l {
     real a, b;
 } pair;
 
 /*
  * General x, y, z components
  */
-typedef struct Components {
+typedef struct triple_l {
     real x, y, z;
 } components;
 
 /*
  * Colour r, g, b values
  */
-typedef struct Rgb {
+typedef struct triple_f {
     float a, b, c;
-} rgb;
+} rgb, point;
 
 /*
  * Integrator control parameters
