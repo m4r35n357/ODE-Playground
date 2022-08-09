@@ -9,7 +9,7 @@ typedef struct Parameters {
     dual ra2, delta, sth2, R, THETA;  // global variables & potentials
     components *coordinates;
     struct triple_f colour, *track;
-    float ball_size, view_radius, view_latitude, view_longitude, horizon;
+    float ball_scale, view_radius, view_latitude, view_longitude, horizon;
     int max_points, oldest, newest;
     _Bool buffers_full;
 } parameters;
