@@ -113,7 +113,7 @@ int main (int argc, char** argv) {
     ball->coordinates->x = strtold(argv[5], NULL);
     ball->coordinates->y = strtold(argv[6], NULL);
     ball->coordinates->z = strtold(argv[7], NULL);
-    ball->max_points = 5000;
+    ball->max_points = c->steps / 2;
     ball->oldest = ball->newest = ball->buffers_full = 0;
     ball->colour = (rgb){0.0F, 0.5F, 0.0F };
     ball->track = calloc((size_t)ball->max_points, sizeof (components));
