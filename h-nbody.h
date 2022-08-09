@@ -13,7 +13,7 @@ typedef struct Nbody {
     real g, h0, h;
     components centre;
     float ball_scale, view_radius, view_latitude, view_longitude;
-    int max_points, oldest, current;
+    int max_points, oldest, newest;
     _Bool buffers_full;
 } nbody;
 

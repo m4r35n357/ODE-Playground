@@ -10,7 +10,7 @@ typedef struct Parameters {
     components *coordinates;
     struct triple_f colour, *track;
     float ball_size, view_radius, view_latitude, view_longitude, horizon;
-    int max_points, oldest, current;
+    int max_points, oldest, newest;
     _Bool buffers_full;
 } parameters;
 

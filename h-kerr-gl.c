@@ -77,14 +77,14 @@ void Animate (void) {
 
     if (d == BOTH || d == LINES) {
         glBegin(GL_LINE_STRIP);
-        for (int k = bh->oldest; k != bh->current; k = (k + 1) % bh->max_points) {  // read buffers
+        for (int k = bh->oldest; k != bh->newest; k = (k + 1) % bh->max_points) {  // read buffers
             glColor3f(bh->colour.a, bh->colour.b, bh->colour.c);
             glVertex3f(bh->track[k].a, bh->track[k].b, bh->track[k].c);
         }
         glEnd();
     }
 
-    point p = bh->track[bh->current];
+    point p = bh->track[bh->newest];
     if (d == BOTH || d == BALLS) {
         glTranslatef(p.a, p.b, p.c);
         glColor3f(bh->colour.a, bh->colour.b, bh->colour.c);
@@ -108,15 +108,15 @@ void Animate (void) {
     if (!finished && !stopped) {
         if (generate(c, bh)) {
             if (d == BOTH || d == LINES) {  // write buffers
-                bh->current += 1;
-                if (!bh->buffers_full && (bh->current == bh->max_points)) {
+                bh->newest += 1;
+                if (!bh->buffers_full && (bh->newest == bh->max_points)) {
                     bh->buffers_full = 1;
                 }
                 if (bh->buffers_full) {
-                    bh->oldest = (bh->current + 1) % bh->max_points;
-                    bh->current %= bh->max_points;
+                    bh->oldest = (bh->newest + 1) % bh->max_points;
+                    bh->newest %= bh->max_points;
                 }
-                bh->track[bh->current] = to_xyz(bh);
+                bh->track[bh->newest] = to_xyz(bh);
             }
         } else {
             finished = GL_TRUE;
@@ -163,10 +163,10 @@ int main (int argc, char** argv) {
     since = clock();
 
     bh->max_points = (int)strtol(argv[5], NULL, BASE);
-    bh->oldest = bh->current = bh->buffers_full = 0;
+    bh->oldest = bh->newest = bh->buffers_full = 0;
     bh->colour = (rgb){0.0F, 0.5F, 0.0F};
     bh->track = calloc((size_t)bh->max_points, sizeof (components));
-    bh->track[bh->current] = to_xyz(bh);
+    bh->track[bh->newest] = to_xyz(bh);
     bh->ball_size = 0.1F;
     bh->view_radius = 20.0F;
     bh->view_longitude = 0.0F;
