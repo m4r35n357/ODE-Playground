@@ -7,11 +7,8 @@
  */
 
 #include <stdio.h>
-#include <assert.h>
-#include <string.h>
 #include <time.h>
-#include <GL/glew.h>
-#include <GL/freeglut.h>    // OpenGL Graphics Utility Library
+#include <GL/freeglut.h>
 #include "symplectic.h"
 #include "h-kerr.h"
 #include "opengl.h"
@@ -50,15 +47,6 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
         case 'S': case 's': stepping = !stepping; stopped = GL_FALSE; break;
         case 'F': case 'f': glutFullScreenToggle(); break;
         case 27: exit(1); // Escape key
-    }
-}
-
-void osd (int x, int y, float r, float g, float b, char *string) {
-    glColor3f(r, g, b);
-    glWindowPos2i(x, y);
-    int len = (int)strlen(string);
-    for (int i = 0; i < len; i++) {
-        glutBitmapCharacter(GLUT_BITMAP_9_BY_15, string[i]);
     }
 }
 
@@ -108,14 +96,7 @@ void Animate (void) {
     if (!finished && !stopped) {
         if (generate(c, bh)) {
             if (d == BOTH || d == LINES) {  // write buffers
-                bh->newest += 1;
-                if (!bh->buffers_full && (bh->newest == bh->max_points)) {
-                    bh->buffers_full = 1;
-                }
-                if (bh->buffers_full) {
-                    bh->oldest = (bh->newest + 1) % bh->max_points;
-                    bh->newest %= bh->max_points;
-                }
+                buffer_point(bh->max_points, &bh->oldest, &bh->newest, &bh->buffers_full);
                 bh->track[bh->newest] = to_xyz(bh);
             }
         } else {
@@ -130,30 +111,6 @@ void Animate (void) {
     glFlush();
     glutSwapBuffers();
     glutPostRedisplay();        // Request a re-draw for animation purposes
-}
-
-void OpenGLInit (void) {
-    glShadeModel(GL_FLAT);
-    glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
-    glClearDepth(1.0F);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_COLOR_MATERIAL);
-}
-
-void ResizeWindow (int w, int h) {
-    float aspectRatio;
-    h = (h == 0) ? 1 : h;
-    w = (w == 0) ? 1 : w;
-    glViewport(0, 0, w, h);   // View port uses whole window
-    aspectRatio = (float)w / (float)h;
-    // Set up the projection view matrix (not very well!)
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(60.0F, aspectRatio, 1.0F, 100.0F);
-    // Select the Modelview matrix
-    glMatrixMode(GL_MODELVIEW);
 }
 
 int main (int argc, char** argv) {
@@ -172,22 +129,7 @@ int main (int argc, char** argv) {
     bh->view_longitude = 0.0F;
     bh->view_latitude = 90.0F;
 
-    // Initialize GLUT
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);  // Need to double buffer for animation
-    // Create and position the graphics window
-    glutInitWindowPosition(0, 0);
-    glutInitWindowSize(640, 480);
-    glutCreateWindow("Black Hole Demo");
-    // Initialize GLEW
-    glewInit();
-    // Initialize OpenGL
-    OpenGLInit();
-    // Set up callback functions
-    glutKeyboardFunc(KeyPressFunc);
-    glutSpecialFunc(SpecialKeyFunc);
-    glutReshapeFunc(ResizeWindow);
-    glutDisplayFunc(Animate);
+	ApplicationInit(argc, argv, "Black Hole Demo");
     // Start the main loop.  glutMainLoop never returns.
     glutMainLoop();
     return(0);          // Compiler requires this to be here. (Never reached)

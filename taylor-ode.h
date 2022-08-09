@@ -13,9 +13,10 @@
  */
 typedef struct Particle {
     components *coordinates;
-    rgb colour, *track;
-    float size, view_radius, view_latitude, view_longitude;
-    int current;
+    struct triple_f colour, *track;
+    float ball_size, view_radius, view_latitude, view_longitude;
+    int max_points, oldest, newest;
+    _Bool buffers_full;
 } particle;
 
 /*

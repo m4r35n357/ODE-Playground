@@ -5,10 +5,8 @@
  */
 
 #include <stdio.h>
-#include <string.h>
 #include <time.h>
 #include <math.h>
-#include <GL/glew.h>
 #include <GL/freeglut.h>    // OpenGL Graphics Utility Library
 #include "taylor-ode.h"
 #include "opengl.h"
@@ -40,23 +38,14 @@ void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
 
 void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
-        case 'B': case 'b': ball->size /= 1.1F; break;
-        case 'G': case 'g': ball->size *= 1.1F; break;
+        case 'B': case 'b': ball->ball_size /= 1.1F; break;
+        case 'G': case 'g': ball->ball_size *= 1.1F; break;
         case 'A': case 'a': ball->view_radius -= 0.1F; break;
         case 'Z': case 'z': ball->view_radius += 0.1F; break;
         case 'R': case 'r': running = !running; stopped = GL_FALSE; break;
         case 'S': case 's': stepping = !stepping; stopped = GL_FALSE; break;
         case 'F': case 'f': glutFullScreenToggle(); break;
         case 27: exit(1); // Escape key
-    }
-}
-
-void osd (int x, int y, float r, float g, float b, char *string) {
-    glColor3f(r, g, b);
-    glWindowPos2i(x, y);
-    int len = (int)strlen(string);
-    for (int i = 0; i < len; i++) {
-        glutBitmapCharacter(GLUT_BITMAP_9_BY_15, string[i]);
     }
 }
 
@@ -72,7 +61,7 @@ void Animate (void) {
 
     if (d == BOTH || d == LINES) {
         glBegin(GL_LINE_STRIP);
-        for (int k = 0; k < ball->current; k += 1) {
+        for (int k = ball->oldest; k != ball->newest; k = (k + 1) % ball->max_points) {
             glColor3f(ball->colour.a, ball->colour.b, ball->colour.c);
             glVertex3f(ball->track[k].a, ball->track[k].b, ball->track[k].c);
         }
@@ -82,7 +71,7 @@ void Animate (void) {
     if (d == BOTH || d == BALLS) {
         glTranslatef((float)ball->coordinates->x, (float)ball->coordinates->y, (float)ball->coordinates->z);
         glColor3f(ball->colour.a, ball->colour.b, ball->colour.c);
-        glutSolidSphere(ball->size, 10, 10);
+        glutSolidSphere(ball->ball_size, 10, 10);
     }
 
     sprintf(hud, "t: %.1Lf  x: % .1Lf  y: % .1Lf  z: % .1Lf  ",
@@ -97,8 +86,9 @@ void Animate (void) {
 
     if (!finished && !stopped) {
         if (tsm_gen(c, ball->coordinates, p)) {
-            if (d == BOTH || d == LINES) {
-                ball->track[ball->current++] = (point){(float)ball->coordinates->x, (float)ball->coordinates->y, (float)ball->coordinates->z};
+            if (d == BOTH || d == LINES) {  // write buffers
+                buffer_point(ball->max_points, &ball->oldest, &ball->newest, &ball->buffers_full);
+                ball->track[ball->newest] = (point){(float)ball->coordinates->x, (float)ball->coordinates->y, (float)ball->coordinates->z};
             }
         } else {
             finished = GL_TRUE;
@@ -114,30 +104,6 @@ void Animate (void) {
     glutPostRedisplay();        // Request a re-draw for animation purposes
 }
 
-void OpenGLInit (void) {
-    glShadeModel(GL_FLAT);
-    glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
-    glClearDepth(1.0F);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_COLOR_MATERIAL);
-}
-
-void ResizeWindow (int w, int h) {
-    float aspectRatio;
-    h = (h == 0) ? 1 : h;
-    w = (w == 0) ? 1 : w;
-    glViewport(0, 0, w, h);   // View port uses whole window
-    aspectRatio = (float)w / (float)h;
-    // Set up the projection view matrix (not very well!)
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(60.0F, aspectRatio, 1.0F, 100.0F);
-    // Select the Modelview matrix
-    glMatrixMode(GL_MODELVIEW);
-}
-
 int main (int argc, char** argv) {
     d = (display)strtol(argv[1], NULL, BASE);
     c = get_c(argv);
@@ -149,32 +115,17 @@ int main (int argc, char** argv) {
     ball->coordinates->x = strtold(argv[5], NULL);
     ball->coordinates->y = strtold(argv[6], NULL);
     ball->coordinates->z = strtold(argv[7], NULL);
-    ball->current = 0;
-    ball->track = calloc((size_t)c->steps, sizeof (components));
-    ball->track[ball->current] = (point){(float)ball->coordinates->x, (float)ball->coordinates->y, (float)ball->coordinates->z};
-    ball->size = 0.1F;
+    ball->max_points = 5000;
+    ball->oldest = ball->newest = ball->buffers_full = 0;
     ball->colour = (rgb){0.0F, 0.5F, 0.0F };
+    ball->track = calloc((size_t)ball->max_points, sizeof (components));
+    ball->track[ball->newest] = (point){(float)ball->coordinates->x, (float)ball->coordinates->y, (float)ball->coordinates->z};
+    ball->ball_size = 0.1F;
     ball->view_radius = 20.0F;
     ball->view_longitude = 0.0F;
     ball->view_latitude = 90.0F;
 
-    // Initialize GLUT
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);  // Need to double buffer for animation
-    // Create and position the graphics window
-    glutInitWindowPosition(0, 0);
-    glutInitWindowSize(640, 480);
-    glutCreateWindow("TSM ODE Demo");
-    // Initialize GLEW
-    glewInit();
-    // Initialize OpenGL
-    OpenGLInit();
-    // Set up callback functions
-    glutKeyboardFunc(KeyPressFunc);
-    glutSpecialFunc(SpecialKeyFunc);
-    glutReshapeFunc(ResizeWindow);
-    glutDisplayFunc(Animate);
-
+	ApplicationInit(argc, argv, "ODE Demo");
     // Start the main loop.  glutMainLoop never returns.
     glutMainLoop();
     return(0);          // Compiler requires this to be here. (Never reached)
