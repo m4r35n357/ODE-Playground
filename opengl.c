@@ -52,6 +52,15 @@ void ApplicationInit (int argc, char** argv, char *title) {
     glutDisplayFunc(Animate);
 }
 
+void SetupView (float view_radius, float view_latitude, float view_longitude, float *light_pos) {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the rendering window
+    glLoadIdentity();
+    glTranslatef(0.0F, 0.0F, - view_radius);
+    glRotatef(view_latitude, 1.0F, 0.0F, 0.0F);
+    glRotatef(view_longitude, 0.0F, 0.0F, 1.0F);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
+}
+
 void osd (int x, int y, float r, float g, float b, char *string) {
     glColor3f(r, g, b);
     glWindowPos2i(x, y);
@@ -70,4 +79,10 @@ void buffer_point (int max_points, int *oldest, int *newest, _Bool *full) {
         *oldest = (*newest + 1) % max_points;
         *newest %= max_points;
     }
+}
+
+void ReDraw (void) {
+    glFlush();                  // Flush the pipeline, and swap the buffers
+    glutSwapBuffers();
+    glutPostRedisplay();        // Request a re-draw for animation purposes
 }

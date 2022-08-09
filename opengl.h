@@ -23,8 +23,21 @@ void Animate (void);
 void CloseWindow (void);
 
 /*
+ * View/Camera boilerplate (no logic)
+ */
+void SetupView (float view_radius, float view_latitude, float view_longitude, float *light_pos);
+
+/*
  * OSD/HUD
  */
 void osd (int x, int y, float r, float g, float b, char *string);
 
+/*
+ * Push point to track buffer
+ */
 void buffer_point (int max_points, int *oldest, int *newest, _Bool *full);
+
+/*
+ * Re-draw boilerplate (no logic)
+ */
+void ReDraw (void);

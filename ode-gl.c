@@ -50,13 +50,7 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
 }
 
 void Animate (void) {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the rendering window
-    glLoadIdentity();
-    glTranslatef(0.0F, 0.0F, - ball->view_radius);
-    glRotatef(ball->view_latitude, 1.0F, 0.0F, 0.0F);
-    glRotatef(ball->view_longitude, 0.0F, 0.0F, 1.0F);
-
-    glLightfv(GL_LIGHT0, GL_POSITION, &light_pos[0]);
+    SetupView(ball->view_radius, ball->view_latitude, ball->view_longitude, light_pos);
 
     if (d == BOTH || d == LINES) {
         glBegin(GL_LINE_STRIP);
@@ -97,9 +91,7 @@ void Animate (void) {
         }
     }
 
-    glFlush();                  // Flush the pipeline, and swap the buffers
-    glutSwapBuffers();
-    glutPostRedisplay();        // Request a re-draw for animation purposes
+    ReDraw();
 }
 
 int main (int argc, char** argv) {
@@ -123,7 +115,7 @@ int main (int argc, char** argv) {
     ball->view_longitude = 0.0F;
     ball->view_latitude = 90.0F;
 
-	ApplicationInit(argc, argv, "ODE Demo");
+    ApplicationInit(argc, argv, "ODE Demo");
     glutMainLoop();     // Start the main loop.  glutMainLoop never returns.
     return(0);          // Compiler requires this to be here. (Never reached)
 }

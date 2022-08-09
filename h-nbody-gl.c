@@ -49,13 +49,7 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
 }
 
 void Animate (void) {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the rendering window
-    glLoadIdentity();
-    glTranslatef(0.0F, 0.0F, - nb->view_radius);
-    glRotatef(nb->view_latitude, 1.0F, 0.0F, 0.0F);
-    glRotatef(nb->view_longitude, 0.0F, 0.0F, 1.0F);
-
-    glLightfv(GL_LIGHT0, GL_POSITION, &light_pos[0]);
+    SetupView(nb->view_radius, nb->view_latitude, nb->view_longitude, light_pos);
 
     body *b = nb->bodies;
     if (d == BOTH || d == LINES) {
@@ -107,9 +101,7 @@ void Animate (void) {
         }
     }
 
-    glFlush();                  // Flush the pipeline, and swap the buffers
-    glutSwapBuffers();
-    glutPostRedisplay();        // Request a re-draw for animation purposes
+    ReDraw();
 }
 
 void CloseWindow (void) {
@@ -125,7 +117,7 @@ int main (int argc, char** argv) {
     fprintf(stderr, "H0: % .18Le\n", nb->h);
     since = clock();
 
-	ApplicationInit(argc, argv, "N-Body Demo");
+    ApplicationInit(argc, argv, "N-Body Demo");
     glutCloseFunc(CloseWindow);
     glutMainLoop();     // Start the main loop.  glutMainLoop never returns.
     return(0);          // Compiler requires this to be here. (Never reached)
