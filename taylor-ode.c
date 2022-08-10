@@ -86,24 +86,20 @@ void tsm (int dp, controls *c, components *coordinates, void *p, clock_t t0) {
     t_out(dp, x[0], y[0], z[0], c->step_size * c->steps, "_", "_", "_", t0);
 }
 
-int tsm_gen (controls *c, components *coordinates, void *p) {
-    static series x, y, z;
+int tsm_gen (controls *c, series3 *jets, void *p) {
     static int step, resuming = 0;
     if (resuming) goto resume; else resuming = 1;
-    x = t_jet(c->order + 1); x[0] = coordinates->x;
-    y = t_jet(c->order + 1); y[0] = coordinates->y;
-    z = t_jet(c->order + 1); z[0] = coordinates->z;
     for (step = 0; step < c->steps; step++) {
         c->step = step;
         for (int k = 0; k < c->order; k++) {
-            components vk = ode(x, y, z, p, k);
-            x[k + 1] = vk.x / (k + 1);
-            y[k + 1] = vk.y / (k + 1);
-            z[k + 1] = vk.z / (k + 1);
+            components vk = ode(jets->x, jets->y, jets->z, p, k);
+            jets->x[k + 1] = vk.x / (k + 1);
+            jets->y[k + 1] = vk.y / (k + 1);
+            jets->z[k + 1] = vk.z / (k + 1);
         }
-        coordinates->x = x[0] = t_horner(x, c->order, c->step_size);
-        coordinates->y = y[0] = t_horner(y, c->order, c->step_size);
-        coordinates->z = z[0] = t_horner(z, c->order, c->step_size);
+        jets->x[0] = t_horner(jets->x, c->order, c->step_size);
+        jets->y[0] = t_horner(jets->y, c->order, c->step_size);
+        jets->z[0] = t_horner(jets->z, c->order, c->step_size);
         return 1;
         resume: ;
     }

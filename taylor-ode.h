@@ -9,10 +9,22 @@
 #include "real.h"
 
 /*
+ * Type for Taylor Series coordinate jets
+ */
+typedef real *series;
+
+/*
+ * Combined x, y, z series
+ */
+typedef struct triple_s {
+    series x, y, z;
+} series3;
+
+/*
  * Particle/Body tracks
  */
 typedef struct Particle {
-    components *coordinates;
+    series3 *jets;
     struct triple_f colour, *track;
     float ball_size, view_radius, view_latitude, view_longitude;
     int max_points, oldest, newest;
@@ -28,11 +40,6 @@ void t_params (char **argv, int count, ...);
  * Prints a line of data to stdout, with turning point markers
  */
 void t_out (int dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label, clock_t since);
-
-/*
- * Type for Taylor Series coordinate jets
- */
-typedef real *series;
 
 /*
  * Creates a zeroed Taylor Series jet with the specified number of elements
@@ -84,7 +91,7 @@ void tsm (int dp, controls *cont, components *coordinates, void *P, clock_t sinc
 /*
  * Generator implementation of TSM
  */
-int tsm_gen (controls *cont, components *coordinates, void *P);
+int tsm_gen (controls *cont, series3 *jets, void *P);
 
 /*
  * Obligatory client method signatures
