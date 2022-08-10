@@ -147,7 +147,7 @@ int main (int argc, char **argv) {
     jets->x = t_jet(n + 1); jets->x[0] = 1.0L;
     jets->y = t_jet(n + 1); jets->y[0] = 1.0L;
     jets->z = t_jet(n + 1); jets->z[0] = 1.0L;
-    tsm(dp, &c, jets, get_p(argc, argv, n), clock());
+    tsm_stdout(dp, &c, jets, get_p(argc, argv, n), clock());
     fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);
     t_out(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), step_size * steps, "_", "_", "_", 0.0F);
 

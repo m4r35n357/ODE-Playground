@@ -15,7 +15,7 @@ int main (int argc, char **argv) {
     jets->y = t_jet(c->order + 1); jets->y[0] = strtold(argv[6], NULL);
     jets->z = t_jet(c->order + 1); jets->z[0] = strtold(argv[7], NULL);
 
-    tsm(display_precision, c, jets, get_p(argc, argv, c->order), clock());
+    tsm_stdout(display_precision, c, jets, get_p(argc, argv, c->order), clock());
 
     return 0;
 }

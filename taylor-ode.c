@@ -65,21 +65,25 @@ static char *tag (series jet, real slope, char *min, char *max) {
     return jet[1] * slope < 0.0L ? (jet[2] > 0.0L ? min : max) : "_";
 }
 
-void tsm (int dp, controls *c, series3 *jets, void *p, clock_t t0) {
+static void tsm_step (series3 *j, void *p, int n, real h) {
+    for (int k = 0; k < n; k++) {
+        components v = ode(j->x, j->y, j->z, p, k);
+        j->x[k + 1] = v.x / (k + 1);
+        j->y[k + 1] = v.y / (k + 1);
+        j->z[k + 1] = v.z / (k + 1);
+    }
+    j->x[0] = t_horner(j->x, n, h);
+    j->y[0] = t_horner(j->y, n, h);
+    j->z[0] = t_horner(j->z, n, h);
+}
+
+void tsm_stdout (int dp, controls *c, series3 *jets, void *p, clock_t t0) {
     components s = (components){0.0L, 0.0L, 0.0L};
     for (int step = 0; step < c->steps; step++) {
         t_out(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * step,
               tag(jets->x, s.x, "x", "X"), tag(jets->y, s.y, "y", "Y"), tag(jets->z, s.z, "z", "Z"), t0);
         s = (components){jets->x[1], jets->y[1], jets->z[1]};
-        for (int k = 0; k < c->order; k++) {
-            components vk = ode(jets->x, jets->y, jets->z, p, k);
-            jets->x[k + 1] = vk.x / (k + 1);
-            jets->y[k + 1] = vk.y / (k + 1);
-            jets->z[k + 1] = vk.z / (k + 1);
-        }
-        jets->x[0] = t_horner(jets->x, c->order, c->step_size);
-        jets->y[0] = t_horner(jets->y, c->order, c->step_size);
-        jets->z[0] = t_horner(jets->z, c->order, c->step_size);
+        tsm_step(jets, p, c->order, c->step_size);
     }
     t_out(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * c->steps, "_", "_", "_", t0);
 }
@@ -89,15 +93,7 @@ int tsm_gen (controls *c, series3 *jets, void *p) {
     if (resuming) goto resume; else resuming = 1;
     for (step = 0; step < c->steps; step++) {
         c->step = step;
-        for (int k = 0; k < c->order; k++) {
-            components vk = ode(jets->x, jets->y, jets->z, p, k);
-            jets->x[k + 1] = vk.x / (k + 1);
-            jets->y[k + 1] = vk.y / (k + 1);
-            jets->z[k + 1] = vk.z / (k + 1);
-        }
-        jets->x[0] = t_horner(jets->x, c->order, c->step_size);
-        jets->y[0] = t_horner(jets->y, c->order, c->step_size);
-        jets->z[0] = t_horner(jets->z, c->order, c->step_size);
+        tsm_step(jets, p, c->order, c->step_size);
         return 1;
         resume: ;
     }
