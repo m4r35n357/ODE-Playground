@@ -143,8 +143,11 @@ int main (int argc, char **argv) {
     int dp = 12, steps = 10;
     real step_size = 0.1L;
     controls c = (controls){.order=n, .step=0, .steps=steps, .step_size=step_size};
-    components xyz = (components){1.0L, 1.0L, 1.0L};
-    tsm(dp, &c, &xyz, get_p(argc, argv, n), clock());
+    series3 *jets = malloc(sizeof (series3));
+    jets->x = t_jet(n + 1); jets->x[0] = 1.0L;
+    jets->y = t_jet(n + 1); jets->y[0] = 1.0L;
+    jets->z = t_jet(n + 1); jets->z[0] = 1.0L;
+    tsm(dp, &c, jets, get_p(argc, argv, n), clock());
     fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);
     t_out(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), step_size * steps, "_", "_", "_", 0.0F);
 

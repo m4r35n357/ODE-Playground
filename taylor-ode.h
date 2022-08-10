@@ -86,7 +86,7 @@ real t_horner (series S, int n, real h);
  *
  * 2. Apply Horner's method to calculate the new values x(t0 + h), which become X[0] for the next time step.
  */
-void tsm (int dp, controls *cont, components *coordinates, void *P, clock_t since);
+void tsm (int dp, controls *cont, series3 *jets, void *P, clock_t since);
 
 /*
  * Generator implementation of TSM
