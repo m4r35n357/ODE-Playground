@@ -1,5 +1,5 @@
 /*
- *  N-Body simulator
+ *  N-Body Plotter
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -11,8 +11,8 @@
 #include "h-nbody.h"
 #include "opengl.h"
 
-static controls *c;    // integrator controls
-static nbody *m;  // the model
+static controls *c;  // integrator controls
+static nbody *m;     // the model
 
 static display d;
 static char hud[128];
@@ -117,7 +117,7 @@ int main (int argc, char** argv) {
     fprintf(stderr, "H0: % .18Le\n", m->h);
     since = clock();
 
-    ApplicationInit(argc, argv, "N-Body Demo");
+    ApplicationInit(argc, argv, "N-Body Plotter");
     glutCloseFunc(CloseWindow);
     glutMainLoop();     // Start the main loop.  glutMainLoop never returns.
     return(0);          // Compiler requires this to be here. (Never reached)

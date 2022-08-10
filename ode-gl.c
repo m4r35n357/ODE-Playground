@@ -1,5 +1,5 @@
 /*
- *  N-Body simulator
+ *  ODE plotter
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -115,7 +115,7 @@ int main (int argc, char** argv) {
     ball->view_longitude = 0.0F;
     ball->view_latitude = 90.0F;
 
-    ApplicationInit(argc, argv, "ODE Demo");
+    ApplicationInit(argc, argv, "ODE Plottter");
     glutMainLoop();     // Start the main loop.  glutMainLoop never returns.
     return(0);          // Compiler requires this to be here. (Never reached)
 }

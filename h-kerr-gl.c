@@ -1,5 +1,5 @@
 /*
- *  Kerr Metric simulator
+ *  Kerr Metric Plotter
  *
  * Example: ./h-kerr-gl  0 10 .01 10000
  *
@@ -119,7 +119,7 @@ int main (int argc, char** argv) {
     m->view_longitude = 0.0F;
     m->view_latitude = 90.0F;
 
-    ApplicationInit(argc, argv, "Black Hole Demo");
+    ApplicationInit(argc, argv, "Black Hole Orbit Plotter");
     glutMainLoop();     // Start the main loop.  glutMainLoop never returns.
     return(0);          // Compiler requires this to be here. (Never reached)
 }
