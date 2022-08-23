@@ -17,24 +17,12 @@ Changed to GCC; MUSL is still available as an option (also Clang).
 
 ## NEWS: Basic dialogue box UI for many operations using yad
 
-Several cut & paste examples are provided in comments at the top of the following source files:
-* tsm-lorenz.c
-* tsm-thomas.c
-* tsm-halvorsen.c
-* rk4-lorenz.c
-* rk4-thomas.c
-* rk4-halvorsen.c
-* h-*
-
-A blank initial character is provided to keep these long lines off your history (bash).
-These examples allow simple selection of static & debug executables.
-
 There are also yad dialogues for running tests and making executables using zig-build:
 * libad-test.c
 * libdual-test.c
 * zig-builds
 
-## ODE/Hamiltonian Playground, Now feature-complete
+## Now feature-complete
 
 No planned new features, and no known bugs ;)
 
@@ -59,6 +47,10 @@ Investigate the validity of chaotic solutions against integrator order and step 
 
 Plot bifurcation diagrams, to find "interesting" parameter values to study
 
+```
+./ode-playground
+```
+
 ### Hamiltonian analysis with Symplectic Integrators, using Dual Numbers for Automatic Differentiation
 
 2nd to 10th order integrators, with visualization of the time stepping structure
@@ -66,10 +58,19 @@ Plot bifurcation diagrams, to find "interesting" parameter values to study
 Three examples; Mass-spring system, Newton orbits, plus an analysis example to illustrate the symplectic time-stepping sequence for each order of integration.
 No formal documentation yet, see the yad and c files for example usage.
 
+```
+./hamiltonian-playground
+```
+
 ### Spinning Black Hole (Kerr) orbits
 
 This example uses symplectic integration, but not Dual numbers, because the differentiation is trivial in this case.
 No formal documentation yet, see the yad and c files for example usage.
+
+```
+./blackhole-playground
+./blackhole-generator
+```
 
 ## Quick Start
 
