@@ -55,7 +55,7 @@ Plot bifurcation diagrams, to find "interesting" parameter values to study
 
 2nd to 10th order integrators, with visualization of the time stepping structure
 
-Three examples; Mass-spring system, Newton orbits, plus an analysis example to illustrate the symplectic time-stepping sequence for each order of integration.
+Examples; N-Body system, Mass-spring system, Newton orbits, plus an analysis example to illustrate the symplectic time-stepping sequence for each order of integration.
 No formal documentation yet, see the yad and c files for example usage.
 
 ```
