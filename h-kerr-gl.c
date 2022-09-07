@@ -30,9 +30,9 @@ static GLenum stepping = GL_FALSE;
 
 void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
-        case GLUT_KEY_UP: m->view_latitude += 1.0F; break;
-        case GLUT_KEY_DOWN: m->view_latitude -= 1.0F; break;
-        case GLUT_KEY_LEFT: m->view_longitude += 1.0F; break;
+        case    GLUT_KEY_UP: m->view_latitude += 1.0F; break;
+        case  GLUT_KEY_DOWN: m->view_latitude -= 1.0F; break;
+        case  GLUT_KEY_LEFT: m->view_longitude += 1.0F; break;
         case GLUT_KEY_RIGHT: m->view_longitude -= 1.0F; break;
     }
 }
@@ -46,7 +46,7 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
         case 'R': case 'r': running = !running; stopped = GL_FALSE; break;
         case 'S': case 's': stepping = !stepping; stopped = GL_FALSE; break;
         case 'F': case 'f': glutFullScreenToggle(); break;
-        case 27: exit(1); // Escape key
+        case  27: exit(1); // Escape key
     }
 }
 

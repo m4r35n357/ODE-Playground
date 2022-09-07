@@ -79,10 +79,10 @@ static void tenth_order (controls *c, void *p, real h) {
 static integrator get_integrator (long order) {
     integrator composer = NULL;
     switch (order) {
-        case 2: composer = stormer_verlet; break;
-        case 4: composer = fourth_order; break;
-        case 6: composer = sixth_order; break;
-        case 8: composer = eightth_order; break;
+        case  2: composer = stormer_verlet; break;
+        case  4: composer = fourth_order; break;
+        case  6: composer = sixth_order; break;
+        case  8: composer = eightth_order; break;
         case 10: composer = tenth_order; break;
         default:
             printf("Order parameter is {%ld} but should be 2, 4, 6, 8, or 10 \n", order);
