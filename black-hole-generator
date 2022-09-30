@@ -4,6 +4,10 @@ choice=$(yad --columns=2 --title="Black Hole Playground" --form --separator=" " 
     --field="Geodesic Type":CB \
     -- '^Timelike!Lightlike')
 
+case $? in
+	1) exit;;
+esac
+
 set $choice
 type=$1
 

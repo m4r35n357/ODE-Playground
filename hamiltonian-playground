@@ -6,6 +6,10 @@ choice=$(yad --columns=2 --title="ODE Playground (TSM)" --form --separator=" " -
     -- 'Newton!Spring!Analysis!^EightBody!FourBodyA!FourBodyB!ThreeBody!TwoBody' '0!1!2' \
        '8!2..10!2' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' '2000!1000..10000!1000')
 
+case $? in
+	1) exit;;
+esac
+
 set $choice
 model=$1
 shift
@@ -45,7 +49,8 @@ case $model in
         $(yad --title="Newtonian Orbit" --form --separator=" " --align=right \
         --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
         --field="mass" --field="r0" --field="L factor":NUM \
-        -- '6!3..64!3' '4!2..10!2' '0.2!0.1..1!0.1!1' '10000!1..100000!1' "1" "12" '0.6!0.0..1.0!0.1!1') >/tmp/$USER/data
+        -- '6!3..64!3' '4!2..10!2' '0.2!0.1..1!0.1!1' '10000!1..100000!1' \
+           "1" "12" '0.6!0.0..1.0!0.1!1') >/tmp/$USER/data
         plot3d
         plot_errors
     ;;
@@ -53,7 +58,8 @@ case $model in
         $(yad --title="Mass-Spring System" --form --separator=" " --align=right \
         --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
         --field="mass" --field="spring constant" --field="length" \
-        -- '6!3..64!3' '4!2..10!2' '0.1!0.1..1!0.1!1' '10000!1..100000!1' "1" "1" "1") >/tmp/$USER/data
+        -- '6!3..64!3' '4!2..10!2' '0.1!0.1..1!0.1!1' '10000!1..100000!1' \
+           "1" "1" "1") >/tmp/$USER/data
         plot3d
         plot_errors
     ;;

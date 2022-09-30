@@ -5,6 +5,10 @@ choice=$(yad --columns=2 --title="Black Hole Playground" --form --separator=" " 
     -- '^Timelike!Lightlike' \
        '^GLplot!Geodesic!Errors!Speed')
 
+case $? in
+	1) exit;;
+esac
+
 set $choice
 type=$1
 analysis=$2

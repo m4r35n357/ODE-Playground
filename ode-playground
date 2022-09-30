@@ -9,6 +9,10 @@ choice=$(yad --columns=2 --title="ODE Playground (TSM)" --form --separator=" " -
     -- 'Lorenz!Rossler!^Thomas!RF!Halvorsen' \
        '^GLplot!Gnuplot3D!Gnuplot2D!CNS!CNSscan!Bifurcation')
 
+case $? in
+	1) exit;;
+esac
+
 set $choice
 model=$1
 analysis=$2
