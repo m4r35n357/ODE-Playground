@@ -66,8 +66,8 @@ void cog (nbody *nb) {
     }
 }
 
-static real distance (real xA, real yA, real zA, real xB, real yB, real zB) {
-    return sqrtl((xB - xA) * (xB - xA) + (yB - yA) * (yB - yA) + (zB - zA) * (zB - zA));
+static real distance (real x, real y, real z, real X, real Y, real Z) {
+    return sqrtl((x - X) * (x - X) + (y - Y) * (y - Y) + (z - Z) * (z - Z));
 }
 
 real h (nbody *nb) {
