@@ -5,7 +5,7 @@ choice=$(yad --columns=2 --title="Black Hole Playground" --form --separator=" " 
     -- '^Timelike!Lightlike')
 
 case $? in
-	1) exit;;
+    1) exit;;
 esac
 
 set $choice

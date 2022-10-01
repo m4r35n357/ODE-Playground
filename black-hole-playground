@@ -6,7 +6,7 @@ choice=$(yad --columns=2 --title="Black Hole Playground" --form --separator=" " 
        '^GLplot!Geodesic!Errors!Speed')
 
 case $? in
-	1) exit;;
+    1) exit;;
 esac
 
 set $choice

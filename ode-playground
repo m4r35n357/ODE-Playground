@@ -10,7 +10,7 @@ choice=$(yad --columns=2 --title="ODE Playground (TSM)" --form --separator=" " -
        '^GLplot!Gnuplot3D!Gnuplot2D!CNS!CNSscan!Bifurcation')
 
 case $? in
-	1) exit;;
+    1) exit;;
 esac
 
 set $choice
