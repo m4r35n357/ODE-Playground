@@ -24,6 +24,7 @@ typedef struct Parameters {
 } parameters;
 
 void *get_p (int argc, char **argv, int va_begin) { (void)argc; (void)va_begin;
+    fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     assert(argc == 8);
     parameters *p = malloc(sizeof (parameters));
     p->m = strtold(argv[5], NULL);
