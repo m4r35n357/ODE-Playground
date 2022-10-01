@@ -30,6 +30,9 @@ EOF
 plot3d () {
 gnuplot -p << EOF
 set terminal wxt size 600,450
+set xlabel 'X'
+set ylabel 'Y'
+set zlabel 'Z'
 splot '/tmp/$USER/data' with lines
 EOF
 }
