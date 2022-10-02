@@ -1,5 +1,9 @@
 #!/bin/sh
 
+user_dir="/tmp/$USER"
+[ ! -d $user_dir ] && mkdir $user_dir
+user_data="$user_dir/data"
+
 choice=$(yad --columns=2 --title="Black Hole Playground" --form --separator=" " --align=right \
     --field="Geodesic Type":CB --field="Output Type":CB \
     -- '^Timelike!Lightlike' \
@@ -19,7 +23,7 @@ set terminal wxt size 600,450
 set xlabel 'X'
 set ylabel 'Y'
 set zlabel 'Z'
-splot '/tmp/$USER/data' with lines
+splot '$user_data' with lines
 EOF
 }
 
@@ -30,7 +34,7 @@ set terminal wxt size 600,450
 set yrange [24:0]
 set xlabel 'Mino time'
 set ylabel 'approximate places'
-plot '/tmp/$USER/data' using 4:5 title 'v4' with lines, '' u 4:6 t 'r' w l, '' u 4:7 t 'theta' w l
+plot '$user_data' using 4:5 title 'v4' with lines, '' u 4:6 t 'r' w l, '' u 4:7 t 'theta' w l
 EOF
 }
 
@@ -40,7 +44,7 @@ set key left
 set terminal wxt size 600,450
 set xlabel 'Mino time'
 set ylabel 'gamma & speed'
-plot '/tmp/$USER/data' using 4:8 title 'gamma' with lines, '' u 4:9 t 'speed' w l
+plot '$user_data' using 4:8 title 'gamma' with lines, '' u 4:9 t 'speed' w l
 EOF
 }
 
@@ -67,7 +71,7 @@ case $type in
                 -- '6!0..36!3' '4!2..10!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' \
                    '0!1!2' "0.8!-1.0..1.0!0.1!1" "1.0" \
                    "0.9455050956749083" "1.434374509531738" "1.0" "7.978759958927879" \
-                   "12.0" "63.0") >/tmp/$USER/data
+                   "12.0" "63.0") >$user_data
                 case $analysis in
                     Geodesic) plot3d;;
                     Errors) plot_errors;;
@@ -98,7 +102,7 @@ case $type in
                 -- '6!0..36!3' '4!2..10!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' \
                    '0!1!2' "0.8!-1.0..1.0!0.1!1" "0.0" \
                    "1.0" "-1.6" "1.0" "27.0" \
-                   "3.0" "0.0") >/tmp/$USER/data
+                   "3.0" "0.0") >$user_data
                 case $analysis in
                     Geodesic) plot3d;;
                     Errors) plot_errors;;

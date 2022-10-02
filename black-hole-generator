@@ -1,5 +1,9 @@
 #!/bin/sh
 
+user_dir="/tmp/$USER"
+[ ! -d $user_dir ] && mkdir $user_dir
+user_data="$user_dir/data"
+
 choice=$(yad --columns=2 --title="Black Hole Playground" --form --separator=" " --align=right \
     --field="Geodesic Type":CB \
     -- '^Timelike!Lightlike')
@@ -18,7 +22,7 @@ set terminal wxt size 600,450
 set yrange [*:10]
 set xlabel 'r'
 set ylabel 'R potential'
-plot 0.0 title 'zero ref.', '/tmp/$USER/data' using 1:2 title 'R' with lines
+plot 0.0 title 'zero ref.', '$user_data' using 1:2 title 'R' with lines
 EOF
 gnuplot -p << EOF
 set key left
@@ -26,7 +30,7 @@ set terminal wxt size 600,450
 set yrange [*:1]
 set xlabel 'theta'
 set ylabel 'THETA potential'
-plot 0.0 title 'zero ref.', '/tmp/$USER/data' using 3:4 title 'THETA' with lines
+plot 0.0 title 'zero ref.', '$user_data' using 3:4 title 'THETA' with lines
 EOF
 }
 
@@ -36,7 +40,7 @@ case $type in
         --field="Solver Tolerance" --field="Rmin" --field="Rmax (-1 for circular)" \
         --field="Elevation (degrees)" --field="BH spin (-ve for retrograde)":NUM \
         -- "1.0e-9" "4.0" "12.0" \
-           "63.0" '0.8!-1.0..1.0!0.1!1') >/tmp/$USER/data
+           "63.0" '0.8!-1.0..1.0!0.1!1') >$user_data
         plot_potentials
     ;;
     Lightlike) ./h-kerr-gen-light-dbg \

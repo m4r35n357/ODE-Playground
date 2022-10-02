@@ -1,5 +1,9 @@
 #!/bin/sh
 
+user_dir="/tmp/$USER"
+[ ! -d $user_dir ] && mkdir $user_dir
+user_data="$user_dir/data"
+
 choice=$(yad --columns=2 --title="ODE Playground (TSM)" --form --separator=" " --align=right \
     --field="Model:CB" --field="Display Mode":CB \
     --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM --field="Track Length":NUM \
@@ -23,7 +27,7 @@ set xrange [-0.1:1.1]
 set yrange [-0.1:1.1]
 set xlabel 'coordinate steps'
 set ylabel 'momentum steps'
-plot '/tmp/$USER/data' using 1:2 title 'time step sequence' with linespoints pt 7 ps 0
+plot '$user_data' using 1:2 title 'time step sequence' with linespoints pt 7 ps 0
 EOF
 }
 
@@ -33,7 +37,7 @@ set terminal wxt size 600,450
 set xlabel 'X'
 set ylabel 'Y'
 set zlabel 'Z'
-splot '/tmp/$USER/data' with lines
+splot '$user_data' with lines
 EOF
 }
 
@@ -44,7 +48,7 @@ set terminal wxt size 600,450
 set yrange [24:0]
 set xlabel 'time'
 set ylabel 'approximate places'
-plot '/tmp/$USER/data' using 4:5 title 'hamiltonian error' with lines
+plot '$user_data' using 4:5 title 'hamiltonian error' with lines
 EOF
 }
 
@@ -54,7 +58,7 @@ case $model in
         --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
         --field="mass" --field="r0" --field="L factor":NUM \
         -- '6!3..64!3' '4!2..10!2' '0.2!0.1..1!0.1!1' '10000!1..100000!1' \
-           "1" "12" '0.6!0.0..1.0!0.1!1') >/tmp/$USER/data
+           "1" "12" '0.6!0.0..1.0!0.1!1') >$user_data
         plot3d
         plot_errors
     ;;
@@ -63,14 +67,14 @@ case $model in
         --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
         --field="mass" --field="spring constant" --field="length" \
         -- '6!3..64!3' '4!2..10!2' '0.1!0.1..1!0.1!1' '10000!1..100000!1' \
-           "1" "1" "1") >/tmp/$USER/data
+           "1" "1" "1") >$user_data
         plot3d
         plot_errors
     ;;
     Analysis) ./h-analysis-dbg \
         $(yad --title="Step Analysis" --form --separator=" " --align=right \
         --field="Display Places":RO --field="Order":NUM --field="Step Size":RO --field="Steps":RO \
-        -- '6' '4!2..10!2' "1.0" "1") >/tmp/$USER/data
+        -- '6' '4!2..10!2' "1.0" "1") >$user_data
         plot_analysis
     ;;
     EightBody)
