@@ -53,28 +53,28 @@ void *get_p (int argc, char **argv, int va_begin) { (void)va_begin;
     fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     assert(argc == 14);
     parameters *p = malloc(sizeof (parameters));
-    real p_mass, m_factor;
-    p_mass = strtold(argv[7], NULL);
-    p->mu2 = p_mass * p_mass;  // constants
+    p->step = strtold(argv[3], NULL);  // constants
+    real p_mass = strtold(argv[7], NULL);
+    p->mu2 = p_mass * p_mass;
     p->E = strtold(argv[8], NULL);
-    m_factor = strtold(argv[10], NULL);
+    real m_factor = strtold(argv[10], NULL);
     p->L = strtold(argv[9], NULL) * m_factor;
     p->Q = strtold(argv[11], NULL) * m_factor;
     p->a = strtold(argv[6], NULL);
+    p->horizon = 1.0F + (float)sqrtl(1.0L - p->a * p->a);
     p->a2 = p->a * p->a;
     p->L2 = p->L * p->L;
     p->aL = p->a * p->L;
     p->aE = p->a * p->E;
     p->K = p->Q + (p->L - p->aE) * (p->L - p->aE);
     p->a2xmu2_E2 = p->a2 * (p->mu2 - p->E * p->E);
-    p->q_t = 0.0L;  // coordinates
+    p->q_t = p->tau = 0.0L;  // coordinates & proper time
     p->q_r = strtold(argv[12], NULL);;
     p->q_theta = elevation_to_colatitude(strtold(argv[13], NULL));
     p->q_phi = 0.0L;
-    refresh(p);  // variables, t & phi velocities
-    p->p_r = - sqrtl(p->R.val >= 0.0L ? p->R.val : - p->R.val);
+    refresh(p);  // update variables, t & phi velocities
+    p->p_r = - sqrtl(p->R.val >= 0.0L ? p->R.val : - p->R.val);  // potentials
     p->p_theta = - sqrtl(p->THETA.val >= 0.0L ? p->THETA.val : - p->THETA.val);
-    p->horizon = 1.0F + (float)sqrtl(1.0L - p->a * p->a);
     return p;
 }
 
@@ -99,28 +99,29 @@ static real v_dot_v (real vt, real vr, real vth, real vph, real a, real ra2, rea
     return sth2 / sigma * v1 * v1 + vr * vr / delta / sigma + vth * vth / sigma - delta / sigma * v4 * v4;
 }
 
-void plot_path (int dp, void *params, real t) {
+void plot_path (int dp, void *params, real mino) {
     parameters *p = (parameters *)params;
     real sigma = p->q_r * p->q_r + p->a * p->a * (1.0L - p->sth2.val);
     real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_theta);
     real gamma = p->p_t / sigma;
-    printf("%+.*Le %+.*Le %+.*Le  %.6Le %+.*Le %+.*Le %+.*Le  %+.*Le %+.*Le\n",
-           dp, ra_sth * cosl(p->q_phi), dp, ra_sth * sinl(p->q_phi), dp, p->q_r * cosl(p->q_theta), t,
+    p->tau += p->step * sigma;
+    printf("%+.*Le %+.*Le %+.*Le  %.6Le %+.*Le %+.*Le %+.*Le  %+.*Le %+.*Le  %.6Le %.6Le\n",
+           dp, ra_sth * cosl(p->q_phi), dp, ra_sth * sinl(p->q_phi), dp, p->q_r * cosl(p->q_theta), mino,
            dp, error(1.0L + v_dot_v(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2.val, p->sth2.val, sigma, p->delta.val)),
            dp, error(0.5L * (p->p_r * p->p_r - p->R.val)),              // "H" = p_r^2 / 2 + (- R(q_r) / 2) = 0
            dp, error(0.5L * (p->p_theta * p->p_theta - p->THETA.val)),  // "H" = p_theta^2 / 2 + (- THETA(q_theta) / 2) = 0
-           dp, gamma, dp, sqrtl(1.0L - 1.0L / (gamma * gamma)));
+           dp, gamma, dp, sqrtl(1.0L - 1.0L / (gamma * gamma)), p->tau, p->q_t);
 }
 
-void plot_view (int dp, void *params, real t) {
+void plot_view (int dp, void *params, real mino) {
     parameters *p = (parameters *)params;
     printf("%.6Le 2  %+.*Le %+.*Le %+.*Le %+.*Le  %+.*Le %+.*Le %+.*Le %+.*Le  -1 0 0 0  0 0 0 1  0 1 0 0\n",
-           t, dp, p->q_r, dp, cosl(p->q_theta), dp, p->q_t, dp, p->q_phi,
+           mino, dp, p->q_r, dp, cosl(p->q_theta), dp, p->q_t, dp, p->q_phi,
            dp, p->p_r, dp, - sinl(p->q_theta) * p->p_theta, dp, p->p_t, dp, p->p_phi);
 }
 
-void plot_raw (int dp, void *params, real time) { (void)dp;
+void plot_raw (int dp, void *params, real mino) { (void)dp;
     parameters *p = (parameters *)params;
     printf("%.6Le  %+La %+La %+La %+La  %+La %+La %+La %+La\n",
-           time, p->q_t, p->q_r, p->q_theta, p->q_phi, p->p_t, p->p_r, p->p_theta, p->p_phi);
+           mino, p->q_t, p->q_r, p->q_theta, p->q_phi, p->p_t, p->p_r, p->p_theta, p->p_phi);
 }
