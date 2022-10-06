@@ -18,11 +18,7 @@ controls *get_c (char **argv) {
 }
 
 void t_params (char **argv, int argc, ...) {
-    fprintf(stderr, "[ ");
-    for (int i = 0; i < argc; i++) {
-        fprintf(stderr, "%s ", argv[i]);
-    }
-    fprintf(stderr, "]\n");
+    fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) { fprintf(stderr, "%s ", argv[i]); } fprintf(stderr, "]\n");
     va_list model;
     va_start(model, argc);
     for (int i = 8; i < argc; i++) {
