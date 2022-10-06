@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+#  Example: ./profile-nbody ./h-nbody-gl 0 10 0.010 10000 2000 .05 100.0 0.0 0.0 0.0 0.0 0.0 0.0 2.0 0.0 4.5 0.4 -0.2 0.0 1.8 3.0 -6.0 0.0 -0.4 0.0 -2.0 1.0 5.0 3.0 0.0 -0.2 0.0 5.8 -0.2 4.0 0.0 -4.0 0.1 -3.6 0.0 0.2 3.0 -4.0 0.0 -0.1 0.0 -0.2 -2.6 3.0 8.0 0.0 -0.3 0.0 2.0 -0.2 4.0 0.0 4.0 -0.2 -4.8 0.0 -0.2
+#
+#  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+
+shift
+progname="h-nbody_gl_gprof"
+
+uname -a
+/usr/bin/gcc --version
+
+/usr/bin/gcc -Wall -pg -g -o $progname symplectic.c opengl.c h-nbody.c h-nbody-gl.c -lm -lGLEW -lglut -lGLU -lGL
+
+time -p ./$progname $* >/dev/null
+
+/usr/bin/gprof -p -b ./$progname gmon.out
