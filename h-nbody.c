@@ -39,7 +39,7 @@ void *get_p (int argc, char **argv, int n_bodies) {
     cog(nb);
     for (int i = 0; i < nb->n; i += 1) {
         nb->bodies[i].track = calloc((size_t)nb->max_points, sizeof (components));
-        nb->bodies[i].track[nb->newest] = (point){(float)nb->bodies[i].x, (float)nb->bodies[i].y, (float)nb->bodies[i].z};
+        nb->bodies[i].track[0] = (point){(float)nb->bodies[i].x, (float)nb->bodies[i].y, (float)nb->bodies[i].z};
     }
     nb->h = nb->h0 = h(nb);
     nb->ball_scale = 0.1F;
