@@ -23,10 +23,7 @@ static double elapsed, cpu;
 
 static float light_pos[] = { -100.0F, 100.0F, -100.0F, 0.0F };
 
-static GLenum finished = GL_FALSE;
-static GLenum stopped = GL_FALSE;
-static GLenum running = GL_TRUE;
-static GLenum stepping = GL_FALSE;
+static _Bool finished = 0, stopped = 0, stepping = 0, running = 1;
 
 void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
@@ -43,8 +40,8 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
         case 'G': case 'g': ball->ball_size *= 1.1F; break;
         case 'A': case 'a': ball->view_radius -= 0.1F; break;
         case 'Z': case 'z': ball->view_radius += 0.1F; break;
-        case 'R': case 'r': running = !running; stopped = GL_FALSE; break;
-        case 'S': case 's': stepping = !stepping; stopped = GL_FALSE; break;
+        case 'R': case 'r': running = !running; stopped = 0; break;
+        case 'S': case 's': stepping = !stepping; stopped = 0; break;
         case 'F': case 'f': glutFullScreenToggle(); break;
         case  27: exit(1); // Escape key
     }
@@ -85,10 +82,10 @@ void Animate (void) {
                 ball->track[ball->newest] = (point){(float)jets->x[0], (float)jets->y[0], (float)jets->z[0]};
             }
         } else {
-            finished = GL_TRUE;
+            finished = 1;
         }
         if (stepping) {
-            stopped = GL_TRUE;
+            stopped = 1;
         }
     }
 
