@@ -9,8 +9,42 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "symplectic.h"
 #include "h-kerr.h"
+
+static real v_dot_v (real vt, real vr, real vth, real vph, real a, real ra2, real sth2, real sigma, real delta) {  // conserved
+    real v1 = a * vt / sigma - ra2 * vph / sigma;
+    real v4 = vt / sigma - a * sth2 * vph / sigma;
+    return sth2 / sigma * v1 * v1 + vr * vr / delta / sigma + vth * vth / sigma - delta / sigma * v4 * v4;
+}
+
+static void plot_path (int dp, void *params, real mino) {
+    parameters *p = (parameters *)params;
+    real S = sigma(p);
+    real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_theta);
+    pair Y = gamma_v(p, S);
+    p->tau += p->step * S;
+    printf("%+.*Le %+.*Le %+.*Le  %.6Le %+.*Le %+.*Le %+.*Le  %+.*Le %+.*Le  %.6Le %.6Le\n",
+           dp, ra_sth * cosl(p->q_phi), dp, ra_sth * sinl(p->q_phi), dp, p->q_r * cosl(p->q_theta), mino,
+           dp, error(1.0L + v_dot_v(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2.val, p->sth2.val, S, p->delta.val)),
+           dp, error(0.5L * (p->p_r * p->p_r - p->R.val)),              // "H" = p_r^2 / 2 + (- R(r) / 2) = 0
+           dp, error(0.5L * (p->p_theta * p->p_theta - p->THETA.val)),  // "H" = p_theta^2 / 2 + (- THETA(theta) / 2) = 0
+           dp, Y.a, dp, Y.b, p->tau, p->q_t);
+}
+
+static void plot_view (int dp, void *params, real mino) {
+    parameters *p = (parameters *)params;
+    printf("%.6Le 2  %+.*Le %+.*Le %+.*Le %+.*Le  %+.*Le %+.*Le %+.*Le %+.*Le  -1 0 0 0  0 0 0 1  0 1 0 0\n",
+           mino, dp, p->q_r, dp, cosl(p->q_theta), dp, p->q_t, dp, p->q_phi,
+           dp, p->p_r, dp, - sinl(p->q_theta) * p->p_theta, dp, p->p_t, dp, p->p_phi);
+}
+
+static void plot_raw (int dp, void *params, real mino) { (void)dp;
+    parameters *p = (parameters *)params;
+    printf("%.6Le  %+La %+La %+La %+La  %+La %+La %+La %+La\n",
+           mino, p->q_t, p->q_r, p->q_theta, p->q_phi, p->p_t, p->p_r, p->p_theta, p->p_phi);
+}
 
 int main (int argc, char **argv) {
     int plot_type_position = 5;

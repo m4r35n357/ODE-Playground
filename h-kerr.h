@@ -15,11 +15,11 @@ typedef struct Parameters {
 } parameters;
 
 point to_xyz (parameters *bh);
+
 real r (parameters *bh);
 real theta (parameters *bh);
 real phi (parameters *bh);
-pair gamma (parameters *bh);
 
-void plot_path (int dp, void *params, real t);
-void plot_view (int dp, void *params, real t);
-void plot_raw (int dp, void *params, real time);
+real sigma (parameters *bh);
+
+pair gamma_v (parameters *bh, real sigma);

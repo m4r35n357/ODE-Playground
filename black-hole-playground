@@ -59,21 +59,21 @@ gnuplot -p << EOF
 set key left
 set terminal wxt size 600,450
 set xlabel 'Mino time'
-set ylabel 'gamma & speed'
+set ylabel 'gamma \& speed'
 plot '$user_data' using 4:8 title 'gamma' with lines, '' u 4:9 t 'speed' w l
 EOF
 gnuplot -p << EOF
 set key left
 set terminal wxt size 600,450
 set xlabel 'Proper time'
-set ylabel 'gamma & speed'
+set ylabel 'gamma \& speed'
 plot '$user_data' using 10:8 title 'gamma' with lines, '' u 10:9 t 'speed' w l
 EOF
 gnuplot -p << EOF
 set key left
 set terminal wxt size 600,450
 set xlabel 'Coordinate time'
-set ylabel 'gamma & speed'
+set ylabel 'gamma \& speed'
 plot '$user_data' using 11:8 title 'gamma' with lines, '' u 11:9 t 'speed' w l
 EOF
 }

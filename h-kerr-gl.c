@@ -70,10 +70,12 @@ void Animate (void) {
     }
 
     int window_height = glutGet(GLUT_WINDOW_HEIGHT);
-    sprintf(hud, "t: %.1Lf  r:% 5.1Lf  theta:% 6.1Lf  phi:% 6.1Lf  ", c->step * c->step_size, r(m), theta(m), phi(m));
+    real S = sigma(m);
+    m->tau += m->step * S;
+    sprintf(hud, "tau: %.1Lf  t: %.1Lf  r:% 5.1Lf  theta:% 6.1Lf  phi:% 6.1Lf  ", m->tau, m->q_t, r(m), theta(m), phi(m));
     osd(10, window_height - 20, 0.0F, 0.5F, 0.5F, hud);
 
-    pair speed = gamma(m);
+    pair speed = gamma_v(m, S);
     sprintf(hud, "gamma: %.1Lf  v:% .6Lf", speed.a, speed.b);
     osd(10, window_height - 40, 0.0F, 0.5F, 0.5F, hud);
 
