@@ -18,6 +18,11 @@ typedef struct Nbody {
 } nbody;
 
 /*
+ * Get a blob of model data from the command to be passed into solve()
+ */
+void *get_p_nbody (int argc, char **argv, int va_begin);
+
+/*
  * Calculate the centre of mass of the system
  */
 void cog (nbody *nb);

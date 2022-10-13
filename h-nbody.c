@@ -11,7 +11,7 @@
 #include "symplectic.h"
 #include "h-nbody.h"
 
-void *get_p (int argc, char **argv, int n_bodies) {
+void *get_p_nbody (int argc, char **argv, int n_bodies) {
     fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     assert(argc == 7 + 7 * n_bodies);
     rgb colours[] = {

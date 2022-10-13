@@ -40,7 +40,7 @@ static void refresh (parameters *p) {
     p->p_phi = (p->L / p->sth2.val - p->aE) + p->a * P.val / p->delta.val;
 }
 
-void *get_p (int argc, char **argv, int va_begin) { (void)va_begin;
+void *get_p_kerr (int argc, char **argv, int va_begin) { (void)va_begin;
     fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     assert(argc == 14);
     parameters *p = malloc(sizeof (parameters));

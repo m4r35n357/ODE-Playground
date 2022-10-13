@@ -15,6 +15,11 @@ typedef struct Parameters {
     real rmin, rmax, thmax, epsilon;  // generator constraints and precision
 } parameters;
 
+/*
+ * Get a blob of model data from the command to be passed into solve()
+ */
+void *get_p_kerr (int argc, char **argv, int va_begin);
+
 real elevation_to_colatitude (real elevation);
 
 real sigma (parameters *bh);

@@ -112,7 +112,7 @@ void Animate (void) {
 int main (int argc, char** argv) {
     d = (display)strtol(argv[1], NULL, BASE);
     c = get_c_symp(argv);
-    m = get_p(argc, argv, 5);
+    m = get_p_kerr(argc, argv, 5);
     since = clock();
 
     m->max_points = (int)strtol(argv[5], NULL, BASE);

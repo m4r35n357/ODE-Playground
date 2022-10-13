@@ -108,7 +108,7 @@ void CloseWindow (void) {
 int main (int argc, char** argv) {
     d = (display)strtol(argv[1], NULL, BASE);
     c = get_c_symp(argv);
-    m = (nbody *)get_p(argc, argv, (argc - 7) / 7);
+    m = (nbody *)get_p_nbody(argc, argv, (argc - 7) / 7);
 
     fprintf(stderr, "\n");
     fprintf(stderr, "H0: % .18Le\n", m->h);
