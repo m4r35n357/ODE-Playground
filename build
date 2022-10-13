@@ -20,6 +20,7 @@ case $1 in
            CC="/usr/bin/gcc -std=$STD";;
 esac
 ${CC} --version
+echo ""
 
 name='h-kerr-gen-particle'
 echo " Building ${name}"
