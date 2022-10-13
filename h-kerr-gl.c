@@ -1,7 +1,5 @@
 /*
- *  Kerr Metric Plotter
- *
- * Example: ./h-kerr-gl  0 10 .01 10000
+ *  Kerr Metric OpenGL display
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
