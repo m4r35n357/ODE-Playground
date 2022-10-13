@@ -39,7 +39,7 @@ zig_build_exe="./zig build-exe -fno-lto"
 
 for source in tsm-*.c
 do
-    $zig_build_exe $source taylor-ode.c main_tsm.c $CCOPTS
+    $zig_build_exe $source taylor-ode.c main-tsm.c $CCOPTS
 done
 
 $zig_build_exe divergence.c $CCOPTS
@@ -49,7 +49,7 @@ $zig_build_exe libdual-test.c dual.c $CCOPTS
 $zig_build_exe h-analysis.c symplectic.c $CCOPTS
 $zig_build_exe h-kerr.c symplectic.c dual.c $CCOPTS
 $zig_build_exe h-newton.c symplectic.c dual.c $CCOPTS
-$zig_build_exe h-kerr-gen-particle.c dual.c $CCOPTS
+$zig_build_exe h-kerr-gen-particle.c h-kerr.c dual.c $CCOPTS
 $zig_build_exe h-kerr-gen-light.c $CCOPTS
 
 #$zig_build_exe h-nbody-gl.c symplectic.c h-nbody.c $CCOPTS --library GLEW --library glut --library GLU --library GL
