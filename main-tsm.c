@@ -8,7 +8,7 @@
 
 int main (int argc, char **argv) {
     int display_precision = (int)strtol(argv[1], NULL, BASE); assert(display_precision >= 0 && display_precision <= 32);
-    controls *c = get_c(argv);
+    controls *c = get_c_tsm(argv);
 
     series3 *jets = malloc(sizeof (series3));
     jets->x = t_jet(c->order + 1); jets->x[0] = strtold(argv[5], NULL);

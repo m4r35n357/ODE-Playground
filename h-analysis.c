@@ -41,6 +41,6 @@ void update_p (void *params, real d) {
 
 int main (int argc, char **argv) {
     assert(argc == 5);
-    solve(argv, get_c(argv), get_p(argc, argv, 5), plot);
+    solve(argv, get_c_symp(argv), get_p(argc, argv, 5), plot);
     return 0;
 }

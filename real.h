@@ -45,8 +45,3 @@ typedef struct Controls {
     real step_size;
     weights r1, r2, r3, r4;
 } controls;
-
-/*
- * Retrieves integrator control parameters
- */
-controls *get_c (char **argv);

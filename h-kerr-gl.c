@@ -111,7 +111,7 @@ void Animate (void) {
 
 int main (int argc, char** argv) {
     d = (display)strtol(argv[1], NULL, BASE);
-    c = get_c(argv);
+    c = get_c_symp(argv);
     m = get_p(argc, argv, 5);
     since = clock();
 

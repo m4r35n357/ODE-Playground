@@ -58,6 +58,6 @@ int main (int argc, char **argv) {
             printf("Plot type is {%ld} but should be 0 (x,y,z,error,speed), 1 (view), or 2 (raw)\n", plot_type);
             exit(2);
     }
-    solve(argv, get_c(argv), get_p(argc, argv, plot_type_position + 1), plot);
+    solve(argv, get_c_symp(argv), get_p(argc, argv, plot_type_position + 1), plot);
     return 0;
 }

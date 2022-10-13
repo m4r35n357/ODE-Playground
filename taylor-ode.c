@@ -9,7 +9,7 @@
 #include <math.h>
 #include "taylor-ode.h"
 
-controls *get_c (char **argv) {
+controls *get_c_tsm (char **argv) {
     controls *c = malloc(sizeof (controls));
     c->order = (int)strtol(argv[2], NULL, BASE); assert(c->order >= 2 && c->order <= 64);
     c->step_size = strtold(argv[3], NULL); assert(c->step_size > 0.0L);

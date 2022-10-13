@@ -94,7 +94,7 @@ void Animate (void) {
 
 int main (int argc, char** argv) {
     d = (display)strtol(argv[1], NULL, BASE);
-    c = get_c(argv);
+    c = get_c_tsm(argv);
     p = get_p(argc, argv, c->order);
     since = clock();
 

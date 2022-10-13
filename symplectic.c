@@ -14,7 +14,7 @@ static real r (int stage) {
     return 1.0L / (4.0L - powl(4.0L, 1.0L / (2.0L * (real)stage + 1.0L)));
 }
 
-controls *get_c (char **argv) {
+controls *get_c_symp (char **argv) {
     controls *c = malloc(sizeof (controls));
     c->order = (int)strtol(argv[2], NULL, BASE); assert(c->order >= 2 && c->order <= 10);
     c->step_size = strtold(argv[3], NULL); assert(c->step_size > 0.0L);

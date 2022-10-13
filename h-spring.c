@@ -53,6 +53,6 @@ static void plot (int dp, void *params, real t) {
 }
 
 int main (int argc, char **argv) {
-    solve(argv, get_c(argv), get_p(argc, argv, 5), plot);
+    solve(argv, get_c_symp(argv), get_p(argc, argv, 5), plot);
     return 0;
 }

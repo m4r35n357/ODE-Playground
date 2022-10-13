@@ -2,6 +2,11 @@
 #include "real.h"
 
 /*
+ * Retrieves integrator control parameters
+ */
+controls *get_c_symp (char **argv);
+
+/*
  * Get a blob of model data from the command to be passed into solve()
  */
 void *get_p (int argc, char **argv, int va_begin);
