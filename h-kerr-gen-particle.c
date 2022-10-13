@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
-#include "dual.h"
+#include "h-kerr.h"
 
 typedef struct Vector3 { real a, b, c; } vector3;
 
@@ -75,20 +75,13 @@ static dual THETA (real theta, dual E, dual L, dual Q, real a) {
     return d_sub(Q, d_scale(d_add(d_scale(d_shift(d_sqr(E), - 1.0L), - a * a), d_scale(d_sqr(L), 1.0L / sth2)), 1.0L - sth2));
 }
 
-typedef struct Parameters {
-    real epsilon;  // precision
-    real E, L, Q;  // constants of motion
-    real spin;  // global constants
-    real rmin, rmax, thmax;  // constraints
-} parameters;
-
 static parameters *get_p (char **argv) {
     parameters *p = malloc(sizeof (parameters));
     p->epsilon = strtold(argv[1], NULL);
     p->rmin = strtold(argv[2], NULL);
     p->rmax = strtold(argv[3], NULL);
     p->thmax = elevation_to_colatitude(strtold(argv[4], NULL));
-    p->spin = strtold(argv[5], NULL);
+    p->a = strtold(argv[5], NULL);
     p->E = 1.0L;
     p->L = 5.0L;
     p->Q = 0.0L;
@@ -106,27 +99,27 @@ int main (int argc, char **argv) {
     _Bool circular = p->rmin * p->rmax < 0.0L;
     while (! converged(f, p->epsilon)) {
         J = (matrix3x3){
-            .a = R(p->rmin,  d_var(p->E), d_dual(p->L), d_dual(p->Q), p->spin).dot,
-            .b = R(p->rmin, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->spin).dot,
-            .c = R(p->rmin, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->spin).dot,
-            .g = THETA(p->thmax,  d_var(p->E), d_dual(p->L), d_dual(p->Q), p->spin).dot,
-            .h = THETA(p->thmax, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->spin).dot,
-            .i = THETA(p->thmax, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->spin).dot
+            .a = R(p->rmin,  d_var(p->E), d_dual(p->L), d_dual(p->Q), p->a).dot,
+            .b = R(p->rmin, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->a).dot,
+            .c = R(p->rmin, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->a).dot,
+            .g = THETA(p->thmax,  d_var(p->E), d_dual(p->L), d_dual(p->Q), p->a).dot,
+            .h = THETA(p->thmax, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->a).dot,
+            .i = THETA(p->thmax, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->a).dot
         };
         f = (vector3){
-            .a = R(p->rmin, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->spin).val,
-            .c = THETA(p->thmax, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->spin).val
+            .a = R(p->rmin, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->a).val,
+            .c = THETA(p->thmax, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->a).val
         };
         if (! circular) {
-            J.d = R(p->rmax,  d_var(p->E), d_dual(p->L), d_dual(p->Q), p->spin).dot;
-            J.e = R(p->rmax, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->spin).dot;
-            J.f = R(p->rmax, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->spin).dot;
-            f.b = R(p->rmax, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->spin).val;
+            J.d = R(p->rmax,  d_var(p->E), d_dual(p->L), d_dual(p->Q), p->a).dot;
+            J.e = R(p->rmax, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->a).dot;
+            J.f = R(p->rmax, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->a).dot;
+            f.b = R(p->rmax, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->a).val;
         } else {
-            J.d = dR_dr(p->rmin,  d_var(p->E), d_dual(p->L), d_dual(p->Q), p->spin).dot;
-            J.e = dR_dr(p->rmin, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->spin).dot;
-            J.f = dR_dr(p->rmin, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->spin).dot;
-            f.b = dR_dr(p->rmin, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->spin).val;
+            J.d = dR_dr(p->rmin,  d_var(p->E), d_dual(p->L), d_dual(p->Q), p->a).dot;
+            J.e = dR_dr(p->rmin, d_dual(p->E),  d_var(p->L), d_dual(p->Q), p->a).dot;
+            J.f = dR_dr(p->rmin, d_dual(p->E), d_dual(p->L),  d_var(p->Q), p->a).dot;
+            f.b = dR_dr(p->rmin, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->a).val;
         }
         x = v_sub(x, mv_mult(m_invert(J), f));
         fprintf(stderr, "%.18Lf %.18Lf %.18Lf\n", x.a, x.b, x.c);
@@ -137,18 +130,18 @@ int main (int argc, char **argv) {
     }
     _Bool valid = 1;
     if (! circular) {
-        valid = ! (dR_dr(p->rmin, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->spin).val < 0.0L &&
-                   dR_dr(p->rmax, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->spin).val > 0.0L);
+        valid = ! (dR_dr(p->rmin, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->a).val < 0.0L &&
+                   dR_dr(p->rmax, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->a).val > 0.0L);
     }
     fprintf(stderr, "%.ld iterations, precision %.1Le %s\n",
-            count, p->epsilon, valid ? (p->spin * p->L < 0.0L ? "RETROGRADE" : "PROGRADE") : "INVALID");
+            count, p->epsilon, valid ? (p->a * p->L < 0.0L ? "RETROGRADE" : "PROGRADE") : "INVALID");
     fprintf(stderr, "\n");
     fprintf(stderr, "Simulate:\n");
     fprintf(stderr, "./h-kerr-dbg 6 8 .01 10000 0 %.3Lf 1.0 %.9Le %.9Le 1.0 %.9Le %.3Lf 0.0 >/tmp/$USER/data\n",
-            p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax));
+            p->a, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax));
     fprintf(stderr, "\n");
     fprintf(stderr, "./h-kerr-dbg 6 8 .01 10000 0 %.3Lf 1.0 %La %La 1.0 %La %.3Lf 0.0 >/tmp/$USER/data\n",
-            p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax));
+            p->a, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax));
     fprintf(stderr, "\n");
     fprintf(stderr, "./h-kerr-gl $(yad --columns=2 --title='Kerr Particle Orbit GL' --form --separator=' ' --align=right ");
     fprintf(stderr, "--field='Display Mode':CB --field='Order':NUM --field='Step Size':NUM --field='Steps':NUM ");
@@ -157,19 +150,19 @@ int main (int argc, char **argv) {
     fprintf(stderr, "--field='r0' --field='theta0' ");
     fprintf(stderr, "-- '0!1!2' '4!2..10!2' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' '1000!1..100000!1' "),
     fprintf(stderr, "'%.3Lf!-1.0..1.0!0.1!1' 1.0 %.9Le %.9Le 1.0 %.9Le %.3Lf 0.0)\n",
-            p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax));
+            p->a, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax));
     fprintf(stderr, "\n");
     fprintf(stderr, "Generate ICs:\n");
     fprintf(stderr, "./h-kerr-dbg 15 8 .01 0 2 %.3Lf 1.0 %La %La 1.0 %La %.3Lf 0.0\n",
-            p->spin, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax));
+            p->a, p->E, p->L, p->Q, circular ? p->rmin : 0.5L * (p->rmin + p->rmax));
     fprintf(stderr, "\n");
 
     real r_range = (circular ? p->rmin + 1.0L : p->rmax + 1.0L);
     for (int i = 1; i < 1000; i++) {
         real r_plot = r_range * i / 1000.0L;
-        real R_plot = R(r_plot, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->spin).val;
+        real R_plot = R(r_plot, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->a).val;
         real theta_plot = MY_PI * i / 1000.0L;
-        real THETA_plot = THETA(theta_plot, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->spin).val;
+        real THETA_plot = THETA(theta_plot, d_dual(p->E), d_dual(p->L), d_dual(p->Q), p->a).val;
         fprintf(stdout, "%.6Lf %.12Lf %.6Lf %.12Lf\n", r_plot, -0.5L * R_plot, theta_plot, -0.5L * THETA_plot);
     }
     return 0;

@@ -23,8 +23,8 @@ ${CC} --version
 
 name='h-kerr-gen-particle'
 echo " Building ${name}"
-${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c dual.c -lm -s &
-${CC} -Og $WARNINGS -g -o ${name}-dbg ${name}.c dual.c -lm &
+${CC} -O3 -DNDEBUG -static -o ${name}-static ${name}.c dual.c h-kerr.c -lm -s &
+${CC} -Og $WARNINGS -g -o ${name}-dbg ${name}.c dual.c h-kerr.c -lm &
 
 name='h-kerr-gen-light'
 echo " Building ${name}"

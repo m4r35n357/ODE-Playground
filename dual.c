@@ -2,16 +2,9 @@
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
 #include <assert.h>
 #include <math.h>
 #include "dual.h"
-
-real elevation_to_colatitude (real elevation) {
-    return (90.0L - elevation) * MY_PI  / 180.0L;
-}
 
 dual d_dual (real a) {
     return (dual){a, 0.0L};

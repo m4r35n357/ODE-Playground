@@ -4,15 +4,10 @@
 
 #include "real.h"
 
-real elevation_to_colatitude (real elevation);
-
 /*
  * For returning dual numbers
  */
-typedef struct Dual {
-    real val;
-    real dot;
-} dual;
+typedef struct Dual { real val, dot; } dual;
 
 dual d_dual (real a);
 

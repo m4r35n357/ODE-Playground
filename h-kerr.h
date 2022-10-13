@@ -12,13 +12,10 @@ typedef struct Parameters {
     float ball_scale, view_radius, view_latitude, view_longitude, horizon;
     int max_points, oldest, newest;
     _Bool buffers_full;
+    real rmin, rmax, thmax, epsilon;  // generator constraints and precision
 } parameters;
 
-point to_xyz (parameters *bh);
-
-real r (parameters *bh);
-real theta (parameters *bh);
-real phi (parameters *bh);
+real elevation_to_colatitude (real elevation);
 
 real sigma (parameters *bh);
 

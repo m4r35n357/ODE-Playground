@@ -14,21 +14,8 @@
 #include "symplectic.h"
 #include "h-kerr.h"
 
-point to_xyz (parameters *p) {
-    real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_theta);
-    return (point){(float)(ra_sth * cosl(p->q_phi)), (float)(ra_sth * sinl(p->q_phi)), (float)(p->q_r * cosl(p->q_theta))};
-}
-
-real r (parameters *p) {
-    return p->q_r;
-}
-
-real theta (parameters *p) {
-    return p->q_theta * RAD_TO_DEG - 90.0L;
-}
-
-real phi (parameters *p) {
-    return fmodl(p->q_phi * RAD_TO_DEG + 180.0L, 360.0L);
+real elevation_to_colatitude (real elevation) {
+    return (90.0L - elevation) * MY_PI  / 180.0L;
 }
 
 real sigma (parameters *p) {

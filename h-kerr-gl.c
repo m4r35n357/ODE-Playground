@@ -7,6 +7,7 @@
  */
 
 #include <stdio.h>
+#include <math.h>
 #include <time.h>
 #include <GL/freeglut.h>
 #include "symplectic.h"
@@ -47,6 +48,11 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     }
 }
 
+static point to_xyz (parameters *p) {
+    real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_theta);
+    return (point){(float)(ra_sth * cosl(p->q_phi)), (float)(ra_sth * sinl(p->q_phi)), (float)(p->q_r * cosl(p->q_theta))};
+}
+
 void Animate (void) {
     SetupView(m->view_radius, m->view_latitude, m->view_longitude, light_pos);
 
@@ -72,7 +78,8 @@ void Animate (void) {
     int window_height = glutGet(GLUT_WINDOW_HEIGHT);
     real S = sigma(m);
     m->tau += m->step * S;
-    sprintf(hud, "tau: %.1Lf  t: %.1Lf  r:% 5.1Lf  theta:% 6.1Lf  phi:% 6.1Lf  ", m->tau, m->q_t, r(m), theta(m), phi(m));
+    sprintf(hud, "tau: %.1Lf  t: %.1Lf  r:% 5.1Lf  theta:% 6.1Lf  phi:% 6.1Lf  ",
+                  m->tau, m->q_t, m->q_r, m->q_theta * RAD_TO_DEG - 90.0L, fmodl(m->q_phi * RAD_TO_DEG + 180.0L, 360.0L));
     osd(10, window_height - 20, 0.0F, 0.5F, 0.5F, hud);
 
     pair speed = gamma_v(m, S);
