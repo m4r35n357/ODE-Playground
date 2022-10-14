@@ -14,6 +14,7 @@ controls *get_c_tsm (char **argv) {
     c->order = (int)strtol(argv[2], NULL, BASE); assert(c->order >= 2 && c->order <= 64);
     c->step_size = strtold(argv[3], NULL); assert(c->step_size > 0.0L);
     c->steps = (int)strtol(argv[4], NULL, BASE); assert(c->steps >= 0 && c->steps <= 1000000);
+    c->generating = 0;
     return c;
 }
 
@@ -84,16 +85,13 @@ void tsm_stdout (int dp, controls *c, series3 *jets, void *p, clock_t t0) {
 }
 
 int tsm_gen (controls *c, series3 *jets, void *p) {
-    static int step, resuming = 0;
-    if (resuming) goto resume; else resuming = 1;
-    for (step = 0; step < c->steps; step++) {
-        c->step = step;
+    if (c->generating) goto resume; else c->generating = 1;
+    for (c->step = 0; c->step < c->steps; c->step++) {
         tsm_step(jets, p, c->order, c->step_size);
         return 1;
         resume: ;
     }
-    resuming = 0;
-    return 0;
+    return c->generating = 0;
 }
 
 real t_const (real a, int k) {

@@ -149,18 +149,18 @@ real t_abs (series U, int k);
 /*
  * Returns kth element of the product of U and V, no user-supplied jet storage needed
  *
- *  P = U.V
+ *     P = U.V
  *
- *  P = sum{j=0->k} U[j].V[k-j]
+ *  P[k] = sum{j=0->k} U[j].V[k-j]
  */
 real t_mul (series U, series V, int k);
 
 /*
  * Returns kth element of the square of U, no user-supplied jet storage needed
  *
- *  S = U.U
+ *     S = U.U
  *
- *  S = sum{j=0->k} U[j].U[k-j]
+ *  S[k] = sum{j=0->k} U[j].U[k-j]
  */
 real t_sqr (series U, int k);
 

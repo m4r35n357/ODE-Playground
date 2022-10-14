@@ -23,6 +23,7 @@ controls *get_c_symp (char **argv) {
     c->r2 = (weights){.fwd = r(2), .rev = 1.0L - 4.0L * r(2)};
     c->r3 = (weights){.fwd = r(3), .rev = 1.0L - 4.0L * r(3)};
     c->r4 = (weights){.fwd = r(4), .rev = 1.0L - 4.0L * r(4)};
+    c->generating = 0;
     return c;
 }
 
@@ -30,7 +31,7 @@ real error (real e) {
     return - log10l(fabsl(e) >= 1e-36L ? fabsl(e) : 1e-36L);
 }
 
-static void stormer_verlet (controls *cont, void *p, real cd) { (void)cont;
+static void second_order (controls *cont, void *p, real cd) { (void)cont;
     update_q(p, cd * 0.5L);
     update_p(p, cd);
     update_q(p, cd * 0.5L);
@@ -45,7 +46,7 @@ static void suzuki (controls *c, void *p, integrator base, real cd, weights w) {
 }
 
 static void base4 (controls *c, void *p, real cd) {
-    suzuki(c, p, stormer_verlet, cd, c->r1);
+    suzuki(c, p, second_order, cd, c->r1);
 }
 
 static void fourth_order (controls *c, void *p, real h) {
@@ -79,11 +80,11 @@ static void tenth_order (controls *c, void *p, real h) {
 static integrator get_integrator (long order) {
     integrator composer = NULL;
     switch (order) {
-        case  2: composer = stormer_verlet; break;
-        case  4: composer = fourth_order; break;
-        case  6: composer = sixth_order; break;
+        case  2: composer =  second_order; break;
+        case  4: composer =  fourth_order; break;
+        case  6: composer =   sixth_order; break;
         case  8: composer = eightth_order; break;
-        case 10: composer = tenth_order; break;
+        case 10: composer =   tenth_order; break;
         default:
             printf("Order parameter is {%ld} but should be 2, 4, 6, 8, or 10 \n", order);
             exit(1);
@@ -103,15 +104,12 @@ void solve (char **argv, controls *c, void *p, plotter output) {
 
 int generate (controls *c, void *p) {
     static integrator composer;
-    static int step, resuming = 0;
-    if (resuming) goto resume; else resuming = 1;
+    if (c->generating) goto resume; else c->generating = 1;
     composer = get_integrator(c->order);
-    for (step = 1; step <= c->steps; step++) {
-        c->step = step;
+    for (c->step = 0; c->step < c->steps; c->step++) {
         composer(c, p, c->step_size);
         return 1;
         resume: ;
     }
-    resuming = 0;
-    return 0;
+    return c->generating = 0;
 }
