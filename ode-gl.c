@@ -12,7 +12,6 @@
 
 static particle *ball;
 static void *m;
-static series3 *jets;
 
 void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
@@ -65,7 +64,7 @@ void Animate (void) {
     }
 
     sprintf(hud, "t: %.1Lf  x: % .1Lf  y: % .1Lf  z: % .1Lf  ",
-                  c->step * c->step_size, jets->x[0], jets->y[0], jets->z[0]);
+                  c->step * c->step_size, ball->jets->x[0], ball->jets->y[0], ball->jets->z[0]);
     osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, 0.0F, 0.5F, 0.5F, hud);
 
     sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.1f %%",
@@ -75,9 +74,9 @@ void Animate (void) {
     osd(10, 10, 0.0F, 0.5F, 0.5F, hud);
 
     if (!finished && !stopped) {
-        if (tsm_gen(c, jets, m)) {
+        if (tsm_gen(c, ball->jets, m)) {
             buffer_point(ball->max_points, &ball->oldest, &ball->newest, &ball->buffers_full);
-            ball->track[ball->newest] = point_from_model(jets);
+            ball->track[ball->newest] = point_from_model(ball->jets);
         } else {
             finished = 1;
         }
@@ -95,17 +94,16 @@ int main (int argc, char** argv) {
     m = get_p(argc, argv, c->order);
     since = clock();
 
-    jets = malloc(sizeof (series3));
-    jets->x = t_jet(c->order + 1); jets->x[0] = strtold(argv[5], NULL);
-    jets->y = t_jet(c->order + 1); jets->y[0] = strtold(argv[6], NULL);
-    jets->z = t_jet(c->order + 1); jets->z[0] = strtold(argv[7], NULL);
-
     ball = malloc(sizeof (particle));
+    ball->jets = malloc(sizeof (series3));
+    ball->jets->x = t_jet(c->order + 1); ball->jets->x[0] = strtold(argv[5], NULL);
+    ball->jets->y = t_jet(c->order + 1); ball->jets->y[0] = strtold(argv[6], NULL);
+    ball->jets->z = t_jet(c->order + 1); ball->jets->z[0] = strtold(argv[7], NULL);
     ball->max_points = c->steps / 2;
     ball->oldest = ball->newest = ball->buffers_full = 0;
     ball->colour = (rgb){0.0F, 0.5F, 0.0F };
     ball->track = calloc((size_t)ball->max_points, sizeof (components));
-    ball->track[ball->newest] = point_from_model(jets);
+    ball->track[ball->newest] = point_from_model(ball->jets);
     ball->ball_size = 0.1F;
     ball->view_radius = 20.0F;
     ball->view_longitude = 0.0F;
