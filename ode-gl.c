@@ -39,6 +39,12 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
 void Animate (void) {
     SetupView(ball->view_radius, ball->view_latitude, ball->view_longitude, light_position);
 
+    glBegin(GL_LINES);
+    glColor3f(0.3F, 0.3F, 0.3F);
+    glVertex3f(0.0F, 0.0F, 0.0F);
+    glVertex3f((float)jets->x[0], (float)jets->y[0], (float)jets->z[0]);
+    glEnd();
+
     if (mode == BOTH || mode == LINES) {
         glBegin(GL_LINE_STRIP);
         for (int k = ball->oldest; k != ball->newest; k = (k + 1) % ball->max_points) {  // read buffers
