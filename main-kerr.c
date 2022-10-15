@@ -20,7 +20,7 @@ static real v_dot_v (real vt, real vr, real vth, real vph, real a, real ra2, rea
 }
 
 static void plot_path (int dp, void *params, real mino) {
-    parameters *p = (parameters *)params;
+    kerr *p = (kerr *)params;
     real S = sigma(p);
     pair Y = gamma_v(p, S);
     p->tau += p->step * S;
@@ -34,14 +34,14 @@ static void plot_path (int dp, void *params, real mino) {
 }
 
 static void plot_view (int dp, void *params, real mino) {
-    parameters *p = (parameters *)params;
+    kerr *p = (kerr *)params;
     printf("%.6Le 2  %+.*Le %+.*Le %+.*Le %+.*Le  %+.*Le %+.*Le %+.*Le %+.*Le  -1 0 0 0  0 0 0 1  0 1 0 0\n",
            mino, dp, p->q_r, dp, cosl(p->q_theta), dp, p->q_t, dp, p->q_phi,
            dp, p->p_r, dp, - sinl(p->q_theta) * p->p_theta, dp, p->p_t, dp, p->p_phi);
 }
 
 static void plot_raw (int dp, void *params, real mino) { (void)dp;
-    parameters *p = (parameters *)params;
+    kerr *p = (kerr *)params;
     printf("%.6Le  %+La %+La %+La %+La  %+La %+La %+La %+La\n",
            mino, p->q_t, p->q_r, p->q_theta, p->q_phi, p->p_t, p->p_r, p->p_theta, p->p_phi);
 }

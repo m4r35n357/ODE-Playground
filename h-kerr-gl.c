@@ -11,7 +11,7 @@
 #include "h-kerr.h"
 #include "opengl.h"
 
-static parameters *m;  // the model
+static kerr *m;  // the model
 
 void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
@@ -35,7 +35,7 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     }
 }
 
-static point point_from_model (parameters *p) {
+static point point_from_model (kerr *p) {
     real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_theta);
     return (point){(float)(ra_sth * cosl(p->q_phi)), (float)(ra_sth * sinl(p->q_phi)), (float)(p->q_r * cosl(p->q_theta))};
 }

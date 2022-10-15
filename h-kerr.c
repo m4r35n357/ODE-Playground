@@ -18,16 +18,16 @@ real elevation_to_colatitude (real elevation) {
     return (90.0L - elevation) * MY_PI  / 180.0L;
 }
 
-real sigma (parameters *p) {
+real sigma (kerr *p) {
     return p->q_r * p->q_r + p->a * p->a * (1.0L - p->sth2.val);
 }
 
-pair gamma_v (parameters *p, real sigma) {
+pair gamma_v (kerr *p, real sigma) {
     real g = p->p_t / sigma;
     return (pair){g, sqrtl(1.0L - 1.0L / (g * g))};
 }
 
-static void refresh (parameters *p) {
+static void refresh (kerr *p) {
     dual r = d_var(p->q_r);
     dual r2 = d_sqr(r);
     p->ra2 = d_shift(r2, p->a2);
@@ -40,10 +40,10 @@ static void refresh (parameters *p) {
     p->p_phi = (p->L / p->sth2.val - p->aE) + p->a * P.val / p->delta.val;
 }
 
-parameters *get_p_kerr (int argc, char **argv) {
+kerr *get_p_kerr (int argc, char **argv) {
     fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     assert(argc == 14);
-    parameters *p = malloc(sizeof (parameters));
+    kerr *p = malloc(sizeof (kerr));
     p->step = strtold(argv[3], NULL);  // constants
     p->a = strtold(argv[6], NULL);
     real p_mass = strtold(argv[7], NULL);
@@ -70,7 +70,7 @@ parameters *get_p_kerr (int argc, char **argv) {
 }
 
 void update_q (void *params, real c) {  // dq / dt = d"H" / dp
-    parameters *p = (parameters *)params;
+    kerr *p = (kerr *)params;
     p->q_t += c * p->p_t;
     p->q_r += c * p->p_r;
     p->q_theta += c * p->p_theta;
@@ -79,7 +79,7 @@ void update_q (void *params, real c) {  // dq / dt = d"H" / dp
 }
 
 void update_p (void *params, real d) {  // dp / dt = - d"H" / dq = - (- 0.5 dX / dq) where X is R or THETA
-    parameters *p = (parameters *)params;
+    kerr *p = (kerr *)params;
     p->p_r += d * 0.5L * p->R.dot;
     p->p_theta += d * 0.5L * p->THETA.dot;
 }

@@ -75,8 +75,8 @@ static dual THETA (real theta, dual E, dual L, dual Q, real a) {
     return d_sub(Q, d_scale(d_add(d_scale(d_shift(d_sqr(E), - 1.0L), - a * a), d_scale(d_sqr(L), 1.0L / sth2)), 1.0L - sth2));
 }
 
-static parameters *get_p_gen (char **argv) {
-    parameters *p = malloc(sizeof (parameters));
+static kerr *get_p_gen (char **argv) {
+    kerr *p = malloc(sizeof (kerr));
     p->epsilon = strtold(argv[1], NULL);
     p->rmin = strtold(argv[2], NULL);
     p->rmax = strtold(argv[3], NULL);
@@ -90,7 +90,7 @@ static parameters *get_p_gen (char **argv) {
 
 int main (int argc, char **argv) {
     assert(argc == 6);
-    parameters *p = get_p_gen(argv);
+    kerr *p = get_p_gen(argv);
     matrix3x3 J;
     vector3 x = (vector3){.a = p->E, .b = p->L, .c = p->Q};
     vector3 f = (vector3){.a = 1.0L, .b = 1.0L, .c = 1.0L};

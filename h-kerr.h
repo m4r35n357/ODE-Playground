@@ -1,7 +1,7 @@
 
 #include "dual.h"
 
-typedef struct Parameters {
+typedef struct Kerr {
     real mu2;  // central mass & particle mass (squared)
     real E, L, Q, K;  // constants of motion
     real a, a2, L2, aL, aE, a2xmu2_E2;  // global constants
@@ -13,15 +13,15 @@ typedef struct Parameters {
     int max_points, oldest, newest;
     _Bool buffers_full;
     real rmin, rmax, thmax, epsilon;  // generator constraints and precision
-} parameters;
+} kerr;
 
 /*
  * Get a blob of model data from the command to be passed into solve()
  */
-parameters *get_p_kerr (int argc, char **argv);
+kerr *get_p_kerr (int argc, char **argv);
 
 real elevation_to_colatitude (real elevation);
 
-real sigma (parameters *bh);
+real sigma (kerr *bh);
 
-pair gamma_v (parameters *bh, real sigma);
+pair gamma_v (kerr *bh, real sigma);
