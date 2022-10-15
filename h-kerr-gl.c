@@ -6,23 +6,12 @@
 
 #include <stdio.h>
 #include <math.h>
-#include <time.h>
 #include <GL/freeglut.h>
 #include "symplectic.h"
 #include "h-kerr.h"
 #include "opengl.h"
 
-static controls *c;    // integrator controls
 static parameters *m;  // the model
-
-static display d;
-static char hud[128];
-static clock_t since;
-static double elapsed, cpu;
-
-static float light_pos[] = { -100.0F, 100.0F, -100.0F, 0.0F };
-
-static _Bool finished = 0, stopped = 0, stepping = 0, running = 1;
 
 void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
@@ -52,12 +41,12 @@ static point to_xyz (parameters *p) {
 }
 
 void Animate (void) {
-    SetupView(m->view_radius, m->view_latitude, m->view_longitude, light_pos);
+    SetupView(m->view_radius, m->view_latitude, m->view_longitude, light_position);
 
     glColor3f(0.0F, 0.0F, 0.5F);
     glutWireSphere(m->horizon, 20, 20);
 
-    if (d == BOTH || d == LINES) {
+    if (mode == BOTH || mode == LINES) {
         glBegin(GL_LINE_STRIP);
         for (int k = m->oldest; k != m->newest; k = (k + 1) % m->max_points) {  // read buffers
             glColor3f(m->colour.a, m->colour.b, m->colour.c);
@@ -67,7 +56,7 @@ void Animate (void) {
     }
 
     point p = m->track[m->newest];
-    if (d == BOTH || d == BALLS) {
+    if (mode == BOTH || mode == BALLS) {
         glTranslatef(p.a, p.b, p.c);
         glColor3f(m->colour.a, m->colour.b, m->colour.c);
         glutSolidSphere(m->ball_scale, 10, 10);
@@ -92,7 +81,7 @@ void Animate (void) {
 
     if (!finished && !stopped) {
         if (generate(c, m)) {
-            if (d == BOTH || d == LINES) {  // write buffers
+            if (mode == BOTH || mode == LINES) {  // write buffers
                 buffer_point(m->max_points, &m->oldest, &m->newest, &m->buffers_full);
                 m->track[m->newest] = to_xyz(m);
             }
@@ -108,7 +97,7 @@ void Animate (void) {
 }
 
 int main (int argc, char** argv) {
-    d = (display)strtol(argv[1], NULL, BASE);
+    mode = (display)strtol(argv[1], NULL, BASE);
     c = get_c_symp(argv);
     m = get_p_kerr(argc, argv);
     since = clock();

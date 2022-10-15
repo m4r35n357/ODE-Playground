@@ -5,23 +5,12 @@
  */
 
 #include <stdio.h>
-#include <time.h>
 #include <GL/freeglut.h>
 #include "symplectic.h"
 #include "h-nbody.h"
 #include "opengl.h"
 
-static controls *c;  // integrator controls
 static nbody *m;     // the model
-
-static display d;
-static char hud[128];
-static clock_t since;
-static double elapsed, cpu;
-
-static float light_pos[] = { -100.0F, 100.0F, -100.0F, 0.0F };
-
-static _Bool finished = 0, stopped = 0, stepping = 0, running = 1;
 
 void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
@@ -46,10 +35,10 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
 }
 
 void Animate (void) {
-    SetupView(m->view_radius, m->view_latitude, m->view_longitude, light_pos);
+    SetupView(m->view_radius, m->view_latitude, m->view_longitude, light_position);
 
     body *b = m->bodies;
-    if (d == BOTH || d == LINES) {
+    if (mode == BOTH || mode == LINES) {
         for (int i = 0; i < m->n; i += 1) {
             glBegin(GL_LINE_STRIP);
             for (int k = m->oldest; k != m->newest; k = (k + 1) % m->max_points) {  // read buffers
@@ -60,7 +49,7 @@ void Animate (void) {
         }
     }
 
-    if (d == BOTH || d == BALLS) {
+    if (mode == BOTH || mode == BALLS) {
         glTranslatef((float)(b[0].x - m->centre.x), (float)(b[0].y - m->centre.y), (float)(b[0].z - m->centre.z));
         glColor3f(b[0].colour.a, b[0].colour.b, b[0].colour.c);
         glutSolidSphere(m->ball_scale * b[0].r, 10, 10);
@@ -84,7 +73,7 @@ void Animate (void) {
         if (generate(c, m)) {
             cog(m);
             m->h = h(m) > m->h ? h(m) : m->h;
-            if (d == BOTH || d == LINES) {  // write buffers
+            if (mode == BOTH || mode == LINES) {  // write buffers
                 buffer_point(m->max_points, &m->oldest, &m->newest, &m->buffers_full);
                 for (int i = 0; i < m->n; i += 1) {
                     b[i].track[m->newest] = (point){(float)b[i].x, (float)b[i].y, (float)b[i].z};
@@ -106,7 +95,7 @@ void CloseWindow (void) {
 }
 
 int main (int argc, char** argv) {
-    d = (display)strtol(argv[1], NULL, BASE);
+    mode = (display)strtol(argv[1], NULL, BASE);
     c = get_c_symp(argv);
     m = get_p_nbody(argc, argv, (argc - 7) / 7);
 

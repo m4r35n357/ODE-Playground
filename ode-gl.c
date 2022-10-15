@@ -5,25 +5,14 @@
  */
 
 #include <stdio.h>
-#include <time.h>
 #include <math.h>
 #include <GL/freeglut.h>    // OpenGL Graphics Utility Library
 #include "taylor-ode.h"
 #include "opengl.h"
 
-static controls *c;
 static particle *ball;
 static void *p;
 static series3 *jets;
-
-static display d;
-static char hud[128];
-static clock_t since;
-static double elapsed, cpu;
-
-static float light_pos[] = { -100.0F, 100.0F, -100.0F, 0.0F };
-
-static _Bool finished = 0, stopped = 0, stepping = 0, running = 1;
 
 void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
@@ -48,9 +37,9 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
 }
 
 void Animate (void) {
-    SetupView(ball->view_radius, ball->view_latitude, ball->view_longitude, light_pos);
+    SetupView(ball->view_radius, ball->view_latitude, ball->view_longitude, light_position);
 
-    if (d == BOTH || d == LINES) {
+    if (mode == BOTH || mode == LINES) {
         glBegin(GL_LINE_STRIP);
         for (int k = ball->oldest; k != ball->newest; k = (k + 1) % ball->max_points) {  // read buffers
             glColor3f(ball->colour.a, ball->colour.b, ball->colour.c);
@@ -59,7 +48,7 @@ void Animate (void) {
         glEnd();
     }
 
-    if (d == BOTH || d == BALLS) {
+    if (mode == BOTH || mode == BALLS) {
         glTranslatef((float)jets->x[0], (float)jets->y[0], (float)jets->z[0]);
         glColor3f(ball->colour.a, ball->colour.b, ball->colour.c);
         glutSolidSphere(ball->ball_size, 10, 10);
@@ -77,7 +66,7 @@ void Animate (void) {
 
     if (!finished && !stopped) {
         if (tsm_gen(c, jets, p)) {
-            if (d == BOTH || d == LINES) {  // write buffers
+            if (mode == BOTH || mode == LINES) {  // write buffers
                 buffer_point(ball->max_points, &ball->oldest, &ball->newest, &ball->buffers_full);
                 ball->track[ball->newest] = (point){(float)jets->x[0], (float)jets->y[0], (float)jets->z[0]};
             }
@@ -93,7 +82,7 @@ void Animate (void) {
 }
 
 int main (int argc, char** argv) {
-    d = (display)strtol(argv[1], NULL, BASE);
+    mode = (display)strtol(argv[1], NULL, BASE);
     c = get_c_tsm(argv);
     p = get_p(argc, argv, c->order);
     since = clock();
