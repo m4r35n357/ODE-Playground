@@ -11,7 +11,7 @@
 #include "opengl.h"
 
 static particle *ball;
-static void *p;
+static void *m;
 static series3 *jets;
 
 void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
@@ -39,10 +39,12 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
 void Animate (void) {
     SetupView(ball->view_radius, ball->view_latitude, ball->view_longitude, light_position);
 
+    point p = ball->track[ball->newest];
+
     glBegin(GL_LINES);
     glColor3f(0.3F, 0.3F, 0.3F);
     glVertex3f(0.0F, 0.0F, 0.0F);
-    glVertex3f((float)jets->x[0], (float)jets->y[0], (float)jets->z[0]);
+    glVertex3f(p.a, p.b, p.c);
     glEnd();
 
     if (mode == BOTH || mode == LINES) {
@@ -55,7 +57,7 @@ void Animate (void) {
     }
 
     if (mode == BOTH || mode == BALLS) {
-        glTranslatef((float)jets->x[0], (float)jets->y[0], (float)jets->z[0]);
+        glTranslatef(p.a, p.b, p.c);
         glColor3f(ball->colour.a, ball->colour.b, ball->colour.c);
         glutSolidSphere(ball->ball_size, 10, 10);
     }
@@ -71,7 +73,7 @@ void Animate (void) {
     osd(10, 10, 0.0F, 0.5F, 0.5F, hud);
 
     if (!finished && !stopped) {
-        if (tsm_gen(c, jets, p)) {
+        if (tsm_gen(c, jets, m)) {
             buffer_point(ball->max_points, &ball->oldest, &ball->newest, &ball->buffers_full);
             ball->track[ball->newest] = (point){(float)jets->x[0], (float)jets->y[0], (float)jets->z[0]};
         } else {
@@ -88,7 +90,7 @@ void Animate (void) {
 int main (int argc, char** argv) {
     mode = (display)strtol(argv[1], NULL, BASE);
     c = get_c_tsm(argv);
-    p = get_p(argc, argv, c->order);
+    m = get_p(argc, argv, c->order);
     since = clock();
 
     jets = malloc(sizeof (series3));
