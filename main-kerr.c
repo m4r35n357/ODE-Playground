@@ -22,9 +22,9 @@ static real v_dot_v (real vt, real vr, real vth, real vph, real a, real ra2, rea
 static void plot_path (int dp, void *params, real mino) {
     parameters *p = (parameters *)params;
     real S = sigma(p);
-    real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_theta);
     pair Y = gamma_v(p, S);
     p->tau += p->step * S;
+    real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_theta);
     printf("%+.*Le %+.*Le %+.*Le  %.6Le %+.*Le %+.*Le %+.*Le  %+.*Le %+.*Le  %.6Le %.6Le\n",
            dp, ra_sth * cosl(p->q_phi), dp, ra_sth * sinl(p->q_phi), dp, p->q_r * cosl(p->q_theta), mino,
            dp, error(1.0L + v_dot_v(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2.val, p->sth2.val, S, p->delta.val)),
