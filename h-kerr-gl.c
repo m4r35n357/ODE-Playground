@@ -81,10 +81,8 @@ void Animate (void) {
 
     if (!finished && !stopped) {
         if (generate(c, m)) {
-            if (mode == BOTH || mode == LINES) {  // write buffers
-                buffer_point(m->max_points, &m->oldest, &m->newest, &m->buffers_full);
-                m->track[m->newest] = to_xyz(m);
-            }
+            buffer_point(m->max_points, &m->oldest, &m->newest, &m->buffers_full);
+            m->track[m->newest] = to_xyz(m);
         } else {
             finished = 1;
         }

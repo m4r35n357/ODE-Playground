@@ -73,11 +73,9 @@ void Animate (void) {
         if (generate(c, m)) {
             cog(m);
             m->h = h(m) > m->h ? h(m) : m->h;
-            if (mode == BOTH || mode == LINES) {  // write buffers
-                buffer_point(m->max_points, &m->oldest, &m->newest, &m->buffers_full);
-                for (int i = 0; i < m->n; i += 1) {
-                    b[i].track[m->newest] = (point){(float)b[i].x, (float)b[i].y, (float)b[i].z};
-                }
+            buffer_point(m->max_points, &m->oldest, &m->newest, &m->buffers_full);
+            for (int i = 0; i < m->n; i += 1) {
+                b[i].track[m->newest] = (point){(float)b[i].x, (float)b[i].y, (float)b[i].z};
             }
         } else {
             finished = 1;

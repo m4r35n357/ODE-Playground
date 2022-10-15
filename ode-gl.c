@@ -72,10 +72,8 @@ void Animate (void) {
 
     if (!finished && !stopped) {
         if (tsm_gen(c, jets, p)) {
-            if (mode == BOTH || mode == LINES) {  // write buffers
-                buffer_point(ball->max_points, &ball->oldest, &ball->newest, &ball->buffers_full);
-                ball->track[ball->newest] = (point){(float)jets->x[0], (float)jets->y[0], (float)jets->z[0]};
-            }
+            buffer_point(ball->max_points, &ball->oldest, &ball->newest, &ball->buffers_full);
+            ball->track[ball->newest] = (point){(float)jets->x[0], (float)jets->y[0], (float)jets->z[0]};
         } else {
             finished = 1;
         }
