@@ -36,6 +36,10 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     }
 }
 
+static point point_from_model (series3 *j) {
+    return (point){(float)j->x[0], (float)j->y[0], (float)j->z[0]};
+}
+
 void Animate (void) {
     SetupView(ball->view_radius, ball->view_latitude, ball->view_longitude, light_position);
 
@@ -73,7 +77,7 @@ void Animate (void) {
     if (!finished && !stopped) {
         if (tsm_gen(c, jets, m)) {
             buffer_point(ball->max_points, &ball->oldest, &ball->newest, &ball->buffers_full);
-            ball->track[ball->newest] = (point){(float)jets->x[0], (float)jets->y[0], (float)jets->z[0]};
+            ball->track[ball->newest] = point_from_model(jets);
         } else {
             finished = 1;
         }
@@ -101,7 +105,7 @@ int main (int argc, char** argv) {
     ball->oldest = ball->newest = ball->buffers_full = 0;
     ball->colour = (rgb){0.0F, 0.5F, 0.0F };
     ball->track = calloc((size_t)ball->max_points, sizeof (components));
-    ball->track[ball->newest] = (point){(float)jets->x[0], (float)jets->y[0], (float)jets->z[0]};
+    ball->track[ball->newest] = point_from_model(jets);
     ball->ball_size = 0.1F;
     ball->view_radius = 20.0F;
     ball->view_longitude = 0.0F;

@@ -34,6 +34,10 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     }
 }
 
+static point point_from_model (body *b) {
+    return (point){(float)b->x, (float)b->y, (float)b->z};
+}
+
 void Animate (void) {
     SetupView(m->view_radius, m->view_latitude, m->view_longitude, light_position);
 
@@ -75,7 +79,7 @@ void Animate (void) {
             m->h = h(m) > m->h ? h(m) : m->h;
             buffer_point(m->max_points, &m->oldest, &m->newest, &m->buffers_full);
             for (int i = 0; i < m->n; i += 1) {
-                b[i].track[m->newest] = (point){(float)b[i].x, (float)b[i].y, (float)b[i].z};
+                b[i].track[m->newest] = point_from_model(&b[i]);
             }
         } else {
             finished = 1;

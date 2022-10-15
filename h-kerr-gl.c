@@ -35,7 +35,7 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     }
 }
 
-static point to_xyz (parameters *p) {
+static point point_from_model (parameters *p) {
     real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_theta);
     return (point){(float)(ra_sth * cosl(p->q_phi)), (float)(ra_sth * sinl(p->q_phi)), (float)(p->q_r * cosl(p->q_theta))};
 }
@@ -81,7 +81,7 @@ void Animate (void) {
     if (!finished && !stopped) {
         if (generate(c, m)) {
             buffer_point(m->max_points, &m->oldest, &m->newest, &m->buffers_full);
-            m->track[m->newest] = to_xyz(m);
+            m->track[m->newest] = point_from_model(m);
         } else {
             finished = 1;
         }
@@ -103,7 +103,7 @@ int main (int argc, char** argv) {
     m->oldest = m->newest = m->buffers_full = 0;
     m->colour = (rgb){0.0F, 0.5F, 0.0F};
     m->track = calloc((size_t)m->max_points, sizeof (components));
-    m->track[m->newest] = to_xyz(m);
+    m->track[m->newest] = point_from_model(m);
     m->ball_scale = 0.1F;
     m->view_radius = 20.0F;
     m->view_longitude = 0.0F;
