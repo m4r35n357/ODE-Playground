@@ -14,14 +14,7 @@
 nbody *get_p_nbody (int argc, char **argv, int n_bodies) {
     fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     assert(argc == 7 + 7 * n_bodies);
-    rgb colours[] = {
-        (rgb){1.0F, 1.0F, 0.0F}, (rgb){0.0F, 1.0F, 1.0F}, (rgb){1.0F, 0.0F, 1.0F},
-        (rgb){1.0F, 0.0F, 0.0F}, (rgb){0.0F, 1.0F, 0.0F}, (rgb){0.0F, 0.0F, 1.0F},
-        (rgb){0.2F, 0.2F, 0.2F}, (rgb){0.8F, 0.8F, 0.8F}, (rgb){0.5F, 0.5F, 0.5F}
-    };
     nbody *nb = malloc(sizeof (nbody));
-    nb->max_points = (int)strtol(argv[5], NULL, BASE);
-    nb->oldest = nb->newest = nb->buffers_full = 0;
     nb->g = strtold(argv[6], NULL);
     nb->n = n_bodies;
     nb->bodies = calloc((size_t)nb->n, sizeof (body));
@@ -34,18 +27,9 @@ nbody *get_p_nbody (int argc, char **argv, int n_bodies) {
         nb->bodies[i].px = strtold(argv[7 * i + 11], NULL);
         nb->bodies[i].py = strtold(argv[7 * i + 12], NULL);
         nb->bodies[i].pz = strtold(argv[7 * i + 13], NULL);
-        nb->bodies[i].colour = colours[i % 9];
     }
     cog(nb);
-    for (int i = 0; i < nb->n; i += 1) {
-        nb->bodies[i].track = calloc((size_t)nb->max_points, sizeof (components));
-        nb->bodies[i].track[0] = (point){(float)nb->bodies[i].x, (float)nb->bodies[i].y, (float)nb->bodies[i].z};
-    }
     nb->h = nb->h0 = h(nb);
-    nb->ball_scale = 0.1F;
-    nb->view_radius = 20.0F;
-    nb->view_longitude = 0.0F;
-    nb->view_latitude = 90.0F;
     return nb;
 }
 
