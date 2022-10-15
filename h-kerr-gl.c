@@ -45,11 +45,11 @@ void Animate (void) {
 
     glColor3f(0.0F, 0.0F, 0.5F);
     glutWireSphere(m->horizon, 20, 20);
+    glColor3f(m->colour.a, m->colour.b, m->colour.c);
 
     if (mode == BOTH || mode == LINES) {
         glBegin(GL_LINE_STRIP);
         for (int k = m->oldest; k != m->newest; k = (k + 1) % m->max_points) {  // read buffers
-            glColor3f(m->colour.a, m->colour.b, m->colour.c);
             glVertex3f(m->track[k].a, m->track[k].b, m->track[k].c);
         }
         glEnd();
@@ -58,7 +58,6 @@ void Animate (void) {
     point p = m->track[m->newest];
     if (mode == BOTH || mode == BALLS) {
         glTranslatef(p.a, p.b, p.c);
-        glColor3f(m->colour.a, m->colour.b, m->colour.c);
         glutSolidSphere(m->ball_scale, 10, 10);
     }
 

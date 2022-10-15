@@ -40,17 +40,16 @@ void Animate (void) {
     SetupView(ball->view_radius, ball->view_latitude, ball->view_longitude, light_position);
 
     point p = ball->track[ball->newest];
-
     glBegin(GL_LINES);
     glColor3f(0.3F, 0.3F, 0.3F);
     glVertex3f(0.0F, 0.0F, 0.0F);
     glVertex3f(p.a, p.b, p.c);
     glEnd();
+    glColor3f(ball->colour.a, ball->colour.b, ball->colour.c);
 
     if (mode == BOTH || mode == LINES) {
         glBegin(GL_LINE_STRIP);
         for (int k = ball->oldest; k != ball->newest; k = (k + 1) % ball->max_points) {  // read buffers
-            glColor3f(ball->colour.a, ball->colour.b, ball->colour.c);
             glVertex3f(ball->track[k].a, ball->track[k].b, ball->track[k].c);
         }
         glEnd();
@@ -58,7 +57,6 @@ void Animate (void) {
 
     if (mode == BOTH || mode == BALLS) {
         glTranslatef(p.a, p.b, p.c);
-        glColor3f(ball->colour.a, ball->colour.b, ball->colour.c);
         glutSolidSphere(ball->ball_size, 10, 10);
     }
 
