@@ -40,18 +40,18 @@ static void refresh (parameters *p) {
     p->p_phi = (p->L / p->sth2.val - p->aE) + p->a * P.val / p->delta.val;
 }
 
-void *get_p_kerr (int argc, char **argv, int va_begin) { (void)va_begin;
+void *get_p_kerr (int argc, char **argv) {
     fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     assert(argc == 14);
     parameters *p = malloc(sizeof (parameters));
     p->step = strtold(argv[3], NULL);  // constants
+    p->a = strtold(argv[6], NULL);
     real p_mass = strtold(argv[7], NULL);
     p->mu2 = p_mass * p_mass;
     p->E = strtold(argv[8], NULL);
     real m_factor = strtold(argv[10], NULL);
     p->L = strtold(argv[9], NULL) * m_factor;
     p->Q = strtold(argv[11], NULL) * m_factor;
-    p->a = strtold(argv[6], NULL);
     p->horizon = 1.0F + (float)sqrtl(1.0L - p->a * p->a);
     p->a2 = p->a * p->a;
     p->L2 = p->L * p->L;

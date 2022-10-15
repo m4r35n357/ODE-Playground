@@ -13,7 +13,7 @@
 
 typedef struct Parameters { real c, d; } parameters;
 
-void *get_p (int argc, char **argv, int va_begin) { (void)argc; (void)argv; (void)va_begin;
+void *get_p (int argc, char **argv) { (void)argc; (void)argv;
     fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     assert(argc == 5);
     parameters *p = malloc(sizeof (parameters));
@@ -41,6 +41,6 @@ void update_p (void *params, real d) {
 
 int main (int argc, char **argv) {
     assert(argc == 5);
-    solve(argv, get_c_symp(argv), get_p(argc, argv, 5), plot);
+    solve(argv, get_c_symp(argv), get_p(argc, argv), plot);
     return 0;
 }

@@ -7,9 +7,9 @@
 controls *get_c_symp (char **argv);
 
 /*
- * Get a blob of model data from the command to be passed into solve()
+ * Get model data from the command to be passed into solve()
  */
-void *get_p (int argc, char **argv, int va_begin);
+void *get_p (int argc, char **argv);
 
 /*
  * "Logarithmic" error function

@@ -18,7 +18,7 @@ typedef struct Parameters {
 /*
  * Get a blob of model data from the command to be passed into solve()
  */
-void *get_p_kerr (int argc, char **argv, int va_begin);
+void *get_p_kerr (int argc, char **argv);
 
 real elevation_to_colatitude (real elevation);
 

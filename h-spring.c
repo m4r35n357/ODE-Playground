@@ -22,7 +22,7 @@ typedef struct Parameters {
     real h0;  // stored initial value of Hamiltonian
 } parameters;
 
-void *get_p (int argc, char **argv, int va_begin) { (void)argc; (void)va_begin;
+void *get_p (int argc, char **argv) { (void)argc;
     fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     assert(argc == 8);
     parameters *p = malloc(sizeof (parameters));
@@ -53,6 +53,6 @@ static void plot (int dp, void *params, real t) {
 }
 
 int main (int argc, char **argv) {
-    solve(argv, get_c_symp(argv), get_p(argc, argv, 5), plot);
+    solve(argv, get_c_symp(argv), get_p(argc, argv), plot);
     return 0;
 }

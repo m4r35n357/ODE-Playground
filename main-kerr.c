@@ -47,8 +47,7 @@ static void plot_raw (int dp, void *params, real mino) { (void)dp;
 }
 
 int main (int argc, char **argv) {
-    int plot_type_position = 5;
-    long plot_type = strtol(argv[plot_type_position], NULL, BASE);
+    long plot_type = strtol(argv[5], NULL, BASE);
     plotter plot;
     switch (plot_type) {
         case 0: plot = plot_path; break;  // for plot3d.py
@@ -58,6 +57,6 @@ int main (int argc, char **argv) {
             printf("Plot type is {%ld} but should be 0 (x,y,z,error,speed), 1 (view), or 2 (raw)\n", plot_type);
             exit(2);
     }
-    solve(argv, get_c_symp(argv), get_p_kerr(argc, argv, plot_type_position + 1), plot);
+    solve(argv, get_c_symp(argv), get_p_kerr(argc, argv), plot);
     return 0;
 }
