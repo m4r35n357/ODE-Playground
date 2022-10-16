@@ -43,6 +43,11 @@ void CloseWindow (void);
 void SetupView (float view_radius, float view_latitude, float view_longitude, float *light_pos);
 
 /*
+ * Colours
+ */
+rgb get_colour (int index);
+
+/*
  * OSD/HUD
  */
 void osd (int x, int y, float r, float g, float b, char *string);

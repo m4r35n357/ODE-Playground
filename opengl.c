@@ -61,6 +61,15 @@ void SetupView (float view_radius, float view_latitude, float view_longitude, fl
     glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
 }
 
+rgb get_colour (int index) {
+    rgb colours[] = {
+        (rgb){1.0F, 1.0F, 0.0F}, (rgb){0.0F, 1.0F, 1.0F}, (rgb){1.0F, 0.0F, 1.0F},
+        (rgb){1.0F, 0.0F, 0.0F}, (rgb){0.0F, 1.0F, 0.0F}, (rgb){0.0F, 0.0F, 1.0F},
+        (rgb){0.2F, 0.2F, 0.2F}, (rgb){0.8F, 0.8F, 0.8F}, (rgb){0.5F, 0.5F, 0.5F}
+    };
+    return colours[index % 9];
+}
+
 void osd (int x, int y, float r, float g, float b, char *string) {
     glColor3f(r, g, b);
     glWindowPos2i(x, y);

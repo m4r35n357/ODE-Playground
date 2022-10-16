@@ -52,8 +52,8 @@ void Animate (void) {
 
     if (mode == BOTH || mode == LINES) {
         glBegin(GL_LINE_STRIP);
-        for (int k = ball->oldest; k != ball->newest; k = (k + 1) % ball->max_points) {  // read buffers
-            glVertex3f(ball->track[k].a, ball->track[k].b, ball->track[k].c);
+        for (int i = ball->oldest; i != ball->newest; i = (i + 1) % ball->max_points) {  // read buffers
+            glVertex3f(ball->track[i].a, ball->track[i].b, ball->track[i].c);
         }
         glEnd();
     }

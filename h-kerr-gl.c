@@ -35,9 +35,9 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     }
 }
 
-static point point_from_model (kerr *p) {
-    real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_theta);
-    return (point){(float)(ra_sth * cosl(p->q_phi)), (float)(ra_sth * sinl(p->q_phi)), (float)(p->q_r * cosl(p->q_theta))};
+static point point_from_model (kerr *k) {
+    real ra_sth = sqrtl(k->ra2.val) * sinl(k->q_theta);
+    return (point){(float)(ra_sth * cosl(k->q_phi)), (float)(ra_sth * sinl(k->q_phi)), (float)(k->q_r * cosl(k->q_theta))};
 }
 
 void Animate (void) {

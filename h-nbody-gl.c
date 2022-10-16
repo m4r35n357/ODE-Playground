@@ -104,15 +104,10 @@ int main (int argc, char** argv) {
     fprintf(stderr, "H0: % .18Le\n", m->h);
     since = clock();
 
-    rgb colours[] = {
-        (rgb){1.0F, 1.0F, 0.0F}, (rgb){0.0F, 1.0F, 1.0F}, (rgb){1.0F, 0.0F, 1.0F},
-        (rgb){1.0F, 0.0F, 0.0F}, (rgb){0.0F, 1.0F, 0.0F}, (rgb){0.0F, 0.0F, 1.0F},
-        (rgb){0.2F, 0.2F, 0.2F}, (rgb){0.8F, 0.8F, 0.8F}, (rgb){0.5F, 0.5F, 0.5F}
-    };
     m->max_points = (int)strtol(argv[5], NULL, BASE);
     m->oldest = m->newest = m->buffers_full = 0;
     for (int i = 0; i < m->n; i += 1) {
-        m->bodies[i].colour = colours[i % 9];
+        m->bodies[i].colour = get_colour(i);
         m->bodies[i].track = calloc((size_t)m->max_points, sizeof (components));
         m->bodies[i].track[0] = point_from_model(&m->bodies[i]);
     }
