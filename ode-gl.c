@@ -13,6 +13,8 @@
 static particle *ball;
 static void *m;
 
+static int colour_index = 13;
+
 void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
         case    GLUT_KEY_UP: ball->view_latitude += 1.0F; break;
@@ -24,10 +26,12 @@ void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
 
 void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
-        case 'B': case 'b': ball->ball_size /= 1.1F; break;
-        case 'G': case 'g': ball->ball_size *= 1.1F; break;
         case 'A': case 'a': ball->view_radius -= 0.1F; break;
         case 'Z': case 'z': ball->view_radius += 0.1F; break;
+        case 'D': case 'd': colour_index += 1; break;
+        case 'C': case 'c': colour_index -= 1; break;
+        case 'G': case 'g': ball->ball_size *= 1.1F; break;
+        case 'B': case 'b': ball->ball_size /= 1.1F; break;
         case 'R': case 'r': running = !running; stopped = 0; break;
         case 'S': case 's': stepping = !stepping; stopped = 0; break;
         case 'F': case 'f': glutFullScreenToggle(); break;
@@ -48,6 +52,8 @@ void Animate (void) {
     glVertex3f(0.0F, 0.0F, 0.0F);
     glVertex3f(p.a, p.b, p.c);
     glEnd();
+
+    ball->colour = get_colour(colour_index);
     glColor3f(ball->colour.a, ball->colour.b, ball->colour.c);
 
     if (mode == BOTH || mode == LINES) {
@@ -101,7 +107,6 @@ int main (int argc, char** argv) {
     ball->jets->z = t_jet(c->order + 1); ball->jets->z[0] = strtold(argv[7], NULL);
     ball->max_points = c->steps / 2;
     ball->oldest = ball->newest = ball->buffers_full = 0;
-    ball->colour = (rgb){0.0F, 0.5F, 0.0F };
     ball->track = calloc((size_t)ball->max_points, sizeof (components));
     ball->track[ball->newest] = point_from_model(ball->jets);
     ball->ball_size = 0.1F;
