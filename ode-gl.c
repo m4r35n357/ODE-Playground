@@ -69,8 +69,7 @@ void Animate (void) {
         glutSolidSphere(ball->ball_size, 10, 10);
     }
 
-    sprintf(hud, "t: %.1Lf  x: % .1Lf  y: % .1Lf  z: % .1Lf  ",
-                  c->step * c->step_size, ball->jets->x[0], ball->jets->y[0], ball->jets->z[0]);
+    sprintf(hud, "t: %.1Lf  x: % .1lf  y: % .1lf  z: % .1lf  ", c->step * c->step_size, p.a, p.b, p.c);
     osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, 0.0F, 0.5F, 0.5F, hud);
 
     sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.1f %%",
