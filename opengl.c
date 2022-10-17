@@ -72,8 +72,7 @@ rgb get_colour (int index) {
     return colours[index % 15];
 }
 
-void osd (int x, int y, float r, float g, float b, char *string) {
-    glColor3f(r, g, b);
+void osd (int x, int y, char *string) {
     glWindowPos2i(x, y);
     int len = (int)strlen(string);
     for (int i = 0; i < len; i++) {

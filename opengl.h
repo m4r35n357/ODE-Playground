@@ -50,7 +50,7 @@ rgb get_colour (int index);
 /*
  * OSD/HUD
  */
-void osd (int x, int y, float r, float g, float b, char *string);
+void osd (int x, int y, char *string);
 
 /*
  * Push latest point to the track buffer
