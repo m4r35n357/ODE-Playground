@@ -1,21 +1,38 @@
+/*
+ * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ */
+
+#pragma once
+
 #include <time.h>
 #include "real.h"
 
 /*
  * Global variables
  */
-static controls *c;
+extern controls *c;
 
 typedef enum Display {BOTH=0, BALLS=1, LINES=2} display;
 
-static display mode;
-static char hud[128];
-static clock_t since;
-static double elapsed, cpu;
+extern display mode;
 
-static float light_position[] = { -100.0F, 100.0F, -100.0F, 0.0F };
+extern char hud[];
 
-static _Bool finished = 0, stopped = 0, stepping = 0, running = 1;
+extern clock_t since;
+
+extern double elapsed, cpu;
+
+extern float light_position[];
+
+extern _Bool finished, stopped, stepping, running;
+
+extern float ball_scale, view_radius, view_latitude, view_longitude;
+
+extern int colour_index;
+
+extern int max_points, oldest, newest;
+
+extern _Bool buffers_full;
 
 /*
  * OpenGL set-up functions

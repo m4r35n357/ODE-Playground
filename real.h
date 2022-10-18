@@ -20,14 +20,14 @@ typedef struct pair_l {
 } pair;
 
 /*
- * General x, y, z components
+ * Triple of long doubles
  */
 typedef struct triple_l {
     real x, y, z;
 } components;
 
 /*
- * Colour r, g, b values
+ * Triple of floats
  */
 typedef struct triple_f {
     float a, b, c;

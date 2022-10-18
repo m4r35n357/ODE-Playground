@@ -5,6 +5,8 @@
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
+#pragma once
+
 #include <time.h>
 #include "real.h"
 
@@ -19,17 +21,6 @@ typedef real *series;
 typedef struct triple_s {
     series x, y, z;
 } series3;
-
-/*
- * Particle/Body tracks
- */
-typedef struct Particle {
-    series3 *jets;
-    struct triple_f colour, *track;
-    float ball_size, view_radius, view_latitude, view_longitude;
-    int max_points, oldest, newest;
-    _Bool buffers_full;
-} particle;
 
 /*
  * Retrieves integrator control parameters

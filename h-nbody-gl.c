@@ -7,45 +7,23 @@
 #include <stdio.h>
 #include <GL/freeglut.h>
 #include "symplectic.h"
-#include "h-nbody.h"
 #include "opengl.h"
+#include "h-nbody.h"
 
 static nbody *m;     // the model
-
-void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
-    switch (Key) {
-        case    GLUT_KEY_UP: m->view_latitude += 1.0F; break;
-        case  GLUT_KEY_DOWN: m->view_latitude -= 1.0F; break;
-        case  GLUT_KEY_LEFT: m->view_longitude += 1.0F; break;
-        case GLUT_KEY_RIGHT: m->view_longitude -= 1.0F; break;
-    }
-}
-
-void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
-    switch (Key) {
-        case 'B': case 'b': m->ball_scale /= 1.1F; break;
-        case 'G': case 'g': m->ball_scale *= 1.1F; break;
-        case 'A': case 'a': m->view_radius -= 0.1F; break;
-        case 'Z': case 'z': m->view_radius += 0.1F; break;
-        case 'R': case 'r': running = !running; stopped = 0; break;
-        case 'S': case 's': stepping = !stepping; stopped = 0; break;
-        case 'F': case 'f': glutFullScreenToggle(); break;
-        case  27: exit(1); // Escape key
-    }
-}
 
 static point point_from_model (body *b) {
     return (point){(float)b->x, (float)b->y, (float)b->z};
 }
 
 void Animate (void) {
-    SetupView(m->view_radius, m->view_latitude, m->view_longitude, light_position);
+    SetupView(view_radius, view_latitude, view_longitude, light_position);
 
     body *b = m->bodies;
     if (mode == BOTH || mode == LINES) {
         for (int i = 0; i < m->n; i += 1) {
             glBegin(GL_LINE_STRIP);
-            for (int k = m->oldest; k != m->newest; k = (k + 1) % m->max_points) {  // read buffers
+            for (int k = oldest; k != newest; k = (k + 1) % max_points) {  // read buffers
                 glColor3f(b[i].colour.a, b[i].colour.b, b[i].colour.c);
                 glVertex3f(b[i].track[k].a, b[i].track[k].b, b[i].track[k].c);
             }
@@ -56,11 +34,11 @@ void Animate (void) {
     if (mode == BOTH || mode == BALLS) {
         glTranslatef((float)(b[0].x - m->centre.x), (float)(b[0].y - m->centre.y), (float)(b[0].z - m->centre.z));
         glColor3f(b[0].colour.a, b[0].colour.b, b[0].colour.c);
-        glutSolidSphere(m->ball_scale * b[0].r, 10, 10);
+        glutSolidSphere(ball_scale * b[0].r, 10, 10);
         for (int i = 1; i < m->n; i += 1) {
             glTranslatef((float)(b[i].x - b[i - 1].x), (float)(b[i].y - b[i - 1].y), (float)(b[i].z - b[i - 1].z));
             glColor3f(b[i].colour.a, b[i].colour.b, b[i].colour.c);
-            glutSolidSphere(m->ball_scale * b[i].r, 10, 10);
+            glutSolidSphere(ball_scale * b[i].r, 10, 10);
         }
     }
 
@@ -78,9 +56,9 @@ void Animate (void) {
         if (generate(c, m)) {
             cog(m);
             m->h = h(m) > m->h ? h(m) : m->h;
-            buffer_point(m->max_points, &m->oldest, &m->newest, &m->buffers_full);
+            buffer_point(max_points, &oldest, &newest, &buffers_full);
             for (int i = 0; i < m->n; i += 1) {
-                b[i].track[m->newest] = point_from_model(&b[i]);
+                b[i].track[newest] = point_from_model(&b[i]);
             }
         } else {
             finished = 1;
@@ -105,17 +83,13 @@ int main (int argc, char** argv) {
     fprintf(stderr, "H0: % .18Le\n", m->h);
     since = clock();
 
-    m->max_points = (int)strtol(argv[5], NULL, BASE);
-    m->oldest = m->newest = m->buffers_full = 0;
+    max_points = (int)strtol(argv[5], NULL, BASE);
+    oldest = newest = buffers_full = 0;
     for (int i = 0; i < m->n; i += 1) {
         m->bodies[i].colour = get_colour(i);
-        m->bodies[i].track = calloc((size_t)m->max_points, sizeof (components));
+        m->bodies[i].track = calloc((size_t)max_points, sizeof (components));
         m->bodies[i].track[0] = point_from_model(&m->bodies[i]);
     }
-    m->ball_scale = 0.1F;
-    m->view_radius = 20.0F;
-    m->view_longitude = 0.0F;
-    m->view_latitude = 90.0F;
 
     ApplicationInit(argc, argv, "N-Body Plotter");
     glutCloseFunc(CloseWindow);

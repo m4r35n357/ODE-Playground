@@ -1,3 +1,8 @@
+/*
+ * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ */
+
+#pragma once
 
 #include "dual.h"
 
@@ -8,11 +13,9 @@ typedef struct Kerr {
     real step, tau, q_t, q_r, q_theta, q_phi, p_t, p_r, p_theta, p_phi;  // proper time, coordinates & velocities
     dual ra2, delta, sth2, R, THETA;  // global variables & potentials
     components *coordinates;
-    struct triple_f colour, *track;
-    float ball_scale, view_radius, view_latitude, view_longitude, horizon;
-    int max_points, oldest, newest;
-    _Bool buffers_full;
     real rmin, rmax, thmax, epsilon;  // generator constraints and precision
+    struct triple_f colour, *track;
+    float horizon;
 } kerr;
 
 /*

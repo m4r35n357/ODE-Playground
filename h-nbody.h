@@ -1,3 +1,8 @@
+/*
+ * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ */
+
+#pragma once
 
 #include "real.h"
 
@@ -12,9 +17,6 @@ typedef struct Nbody {
     body *bodies;
     real g, h0, h;
     components centre;
-    float ball_scale, view_radius, view_latitude, view_longitude;
-    int max_points, oldest, newest;
-    _Bool buffers_full;
 } nbody;
 
 /*

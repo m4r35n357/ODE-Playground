@@ -9,6 +9,55 @@
 #include <GL/freeglut.h>
 #include "opengl.h"
 
+/*
+ * Global variables
+ */
+controls *c;
+
+display mode;
+
+char hud[128];
+
+clock_t since;
+
+double elapsed, cpu;
+
+float light_position[] = { -100.0F, 100.0F, -100.0F, 0.0F };
+
+_Bool finished = 0, stopped = 0, stepping = 0, running = 1;
+
+float ball_scale = 0.1F, view_radius = 20.0F, view_latitude = 90.0F, view_longitude = 0.0F;
+
+int colour_index;
+
+int max_points, oldest, newest;
+
+_Bool buffers_full;
+
+void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
+    switch (Key) {
+        case    GLUT_KEY_UP: view_latitude += 1.0F; break;
+        case  GLUT_KEY_DOWN: view_latitude -= 1.0F; break;
+        case  GLUT_KEY_LEFT: view_longitude += 1.0F; break;
+        case GLUT_KEY_RIGHT: view_longitude -= 1.0F; break;
+    }
+}
+
+void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
+    switch (Key) {
+        case 'A': case 'a': view_radius -= 0.1F; break;
+        case 'Z': case 'z': view_radius += 0.1F; break;
+        case 'D': case 'd': colour_index += 1; break;
+        case 'C': case 'c': colour_index -= 1; break;
+        case 'G': case 'g': ball_scale *= 1.1F; break;
+        case 'B': case 'b': ball_scale /= 1.1F; break;
+        case 'R': case 'r': running = !running; stopped = 0; break;
+        case 'S': case 's': stepping = !stepping; stopped = 0; break;
+        case 'F': case 'f': glutFullScreenToggle(); break;
+        case  27: exit(1); // Escape key
+    }
+}
+
 void OpenGLInit (void) {
     glShadeModel(GL_FLAT);
     glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
@@ -52,13 +101,13 @@ void ApplicationInit (int argc, char** argv, char *title) {
     glutDisplayFunc(Animate);
 }
 
-void SetupView (float view_radius, float view_latitude, float view_longitude, float *light_pos) {
+void SetupView (float radius, float latitude, float longitude, float *light) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the rendering window
     glLoadIdentity();
-    glTranslatef(0.0F, 0.0F, - view_radius);
-    glRotatef(view_latitude, 1.0F, 0.0F, 0.0F);
-    glRotatef(view_longitude, 0.0F, 0.0F, 1.0F);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
+    glTranslatef(0.0F, 0.0F, - radius);
+    glRotatef(latitude, 1.0F, 0.0F, 0.0F);
+    glRotatef(longitude, 0.0F, 0.0F, 1.0F);
+    glLightfv(GL_LIGHT0, GL_POSITION, light);
 }
 
 rgb get_colour (int index) {
@@ -80,14 +129,14 @@ void osd (int x, int y, char *string) {
     }
 }
 
-void buffer_point (int max_points, int *oldest, int *newest, _Bool *full) {
-    *newest += 1;
-    if (! *full && (*newest == max_points)) {
+void buffer_point (int points, int *last, int *latest, _Bool *full) {
+    *latest += 1;
+    if (! *full && (*latest == points)) {
         *full = 1;
     }
     if (*full) {
-        *oldest = (*newest + 1) % max_points;
-        *newest %= max_points;
+        *last = (*latest + 1) % points;
+        *latest %= max_points;
     }
 }
 

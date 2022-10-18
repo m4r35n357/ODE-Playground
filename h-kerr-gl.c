@@ -8,32 +8,10 @@
 #include <math.h>
 #include <GL/freeglut.h>
 #include "symplectic.h"
-#include "h-kerr.h"
 #include "opengl.h"
+#include "h-kerr.h"
 
 static kerr *k;  // the model
-
-void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
-    switch (Key) {
-        case    GLUT_KEY_UP: k->view_latitude += 1.0F; break;
-        case  GLUT_KEY_DOWN: k->view_latitude -= 1.0F; break;
-        case  GLUT_KEY_LEFT: k->view_longitude += 1.0F; break;
-        case GLUT_KEY_RIGHT: k->view_longitude -= 1.0F; break;
-    }
-}
-
-void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
-    switch (Key) {
-        case 'B': case 'b': k->ball_scale /= 1.1F; break;
-        case 'G': case 'g': k->ball_scale *= 1.1F; break;
-        case 'A': case 'a': k->view_radius -= 0.1F; break;
-        case 'Z': case 'z': k->view_radius += 0.1F; break;
-        case 'R': case 'r': running = !running; stopped = 0; break;
-        case 'S': case 's': stepping = !stepping; stopped = 0; break;
-        case 'F': case 'f': glutFullScreenToggle(); break;
-        case  27: exit(1); // Escape key
-    }
-}
 
 static point point_from_model (kerr *k) {
     real ra_sth = sqrtl(k->ra2.val) * sinl(k->q_theta);
@@ -41,7 +19,7 @@ static point point_from_model (kerr *k) {
 }
 
 void Animate (void) {
-    SetupView(k->view_radius, k->view_latitude, k->view_longitude, light_position);
+    SetupView(view_radius, view_latitude, view_longitude, light_position);
 
     glColor3f(0.0F, 0.0F, 0.5F);
     glutWireSphere(k->horizon, 20, 20);
@@ -49,16 +27,16 @@ void Animate (void) {
 
     if (mode == BOTH || mode == LINES) {
         glBegin(GL_LINE_STRIP);
-        for (int i = k->oldest; i != k->newest; i = (i + 1) % k->max_points) {  // read buffers
+        for (int i = oldest; i != newest; i = (i + 1) % max_points) {  // read buffers
             glVertex3f(k->track[i].a, k->track[i].b, k->track[i].c);
         }
         glEnd();
     }
 
-    point p = k->track[k->newest];
+    point p = k->track[newest];
     if (mode == BOTH || mode == BALLS) {
         glTranslatef(p.a, p.b, p.c);
-        glutSolidSphere(k->ball_scale, 10, 10);
+        glutSolidSphere(ball_scale, 10, 10);
     }
 
     int window_height = glutGet(GLUT_WINDOW_HEIGHT);
@@ -81,8 +59,8 @@ void Animate (void) {
 
     if (!finished && !stopped) {
         if (generate(c, k)) {
-            buffer_point(k->max_points, &k->oldest, &k->newest, &k->buffers_full);
-            k->track[k->newest] = point_from_model(k);
+            buffer_point(max_points, &oldest, &newest, &buffers_full);
+            k->track[newest] = point_from_model(k);
         } else {
             finished = 1;
         }
@@ -100,15 +78,11 @@ int main (int argc, char** argv) {
     k = get_p_kerr(argc, argv);
     since = clock();
 
-    k->max_points = (int)strtol(argv[5], NULL, BASE);
-    k->oldest = k->newest = k->buffers_full = 0;
+    max_points = (int)strtol(argv[5], NULL, BASE);
+    oldest = newest = buffers_full = 0;
     k->colour = (rgb){0.0F, 0.5F, 0.0F};
-    k->track = calloc((size_t)k->max_points, sizeof (components));
-    k->track[k->newest] = point_from_model(k);
-    k->ball_scale = 0.1F;
-    k->view_radius = 20.0F;
-    k->view_longitude = 0.0F;
-    k->view_latitude = 90.0F;
+    k->track = calloc((size_t)max_points, sizeof (components));
+    k->track[newest] = point_from_model(k);
 
     ApplicationInit(argc, argv, "Black Hole Orbit Plotter");
     glutMainLoop();     // Start the main loop.  glutMainLoop never returns.
