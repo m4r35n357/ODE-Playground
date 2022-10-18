@@ -85,9 +85,7 @@ static integrator get_integrator (long order) {
         case  6: composer =   sixth_order; break;
         case  8: composer = eightth_order; break;
         case 10: composer =   tenth_order; break;
-        default:
-            printf("Order parameter is {%ld} but should be 2, 4, 6, 8, or 10 \n", order);
-            exit(1);
+        default: printf("Order parameter is {%ld} but should be 2, 4, 6, 8, or 10 \n", order); exit(1);
     }
     return composer;
 }

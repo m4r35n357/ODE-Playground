@@ -53,9 +53,7 @@ int main (int argc, char **argv) {
         case 0: plot = plot_path; break;  // for plot3d.py
         case 1: plot = plot_view; break;  // for kerr-image
         case 2: plot = plot_raw; break;   // for debugging
-        default:
-            printf("Plot type is {%ld} but should be 0 (x,y,z,error,speed), 1 (view), or 2 (raw)\n", plot_type);
-            exit(2);
+        default: printf("Plot type is {%ld} but should be 0 (standard), 1 (view), or 2 (raw)\n", plot_type); exit(2);
     }
     solve(argv, get_c_symp(argv), get_p_kerr(argc, argv), plot);
     return 0;
