@@ -13,7 +13,8 @@
 
 static kerr *k;  // the model
 
-static point point_from_model (kerr *k) {
+point point_from_model (void *model) {
+	kerr *k = (kerr *)model;
     real ra_sth = sqrtl(k->ra2.val) * sinl(k->q_theta);
     return (point){(float)(ra_sth * cosl(k->q_phi)), (float)(ra_sth * sinl(k->q_phi)), (float)(k->q_r * cosl(k->q_theta))};
 }

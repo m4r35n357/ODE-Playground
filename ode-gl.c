@@ -21,7 +21,8 @@ typedef struct Particle {
 static particle *p;
 static void *m;
 
-static point point_from_model (series3 *j) {
+point point_from_model (void *model) {
+	series3 *j = (series3 *)model;
     return (point){(float)j->x[0], (float)j->y[0], (float)j->z[0]};
 }
 

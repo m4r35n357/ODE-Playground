@@ -66,6 +66,11 @@ rgb get_colour (int index);
 void osd (int x, int y, char *string);
 
 /*
+ * Extract current coordinates from model
+ */
+point point_from_model (void *model);
+
+/*
  * Push latest point to the track buffer
  */
 void buffer_point (int max_points, int *oldest, int *newest, _Bool *full);
