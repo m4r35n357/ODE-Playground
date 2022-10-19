@@ -10,6 +10,8 @@
 #include <math.h>
 #include "symplectic.h"
 
+const int BASE = 10;
+
 static real r (int stage) {
     return 1.0L / (4.0L - powl(4.0L, 1.0L / (2.0L * (real)stage + 1.0L)));
 }

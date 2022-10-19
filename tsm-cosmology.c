@@ -8,14 +8,16 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#include <math.h>
 #include "taylor-ode.h"
 
-typedef struct Parameters { real w; } parameters;
+typedef struct Parameters { real w, PI; } parameters;
 
 void *get_p (int argc, char **argv, int n) { (void)n;
     assert(argc == 11);
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->w);
+    p->PI = acosl(-1.0L);
     return p;
 }
 
@@ -23,6 +25,6 @@ components ode (series x, series y, series z, void *params, int k) { (void)z;
     parameters *p = (parameters *)params;
     return (components) {  // .x maps to rho, .y to theta
         .x = - (1.0L + p->w) * t_mul(x, y, k),
-        .y = - t_sqr(y, k) / 3.0L - 4.0L * MY_PI * (1.0L + 3.0L * p->w) * x[k]
+        .y = - t_sqr(y, k) / 3.0L - 4.0L * p->PI * (1.0L + 3.0L * p->w) * x[k]
     };
 }

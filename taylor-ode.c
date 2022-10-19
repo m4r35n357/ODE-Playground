@@ -9,6 +9,8 @@
 #include <math.h>
 #include "taylor-ode.h"
 
+const int BASE = 10;
+
 controls *get_c_tsm (char **argv) {
     controls *c = malloc(sizeof (controls));
     c->order = (int)strtol(argv[2], NULL, BASE); assert(c->order >= 2 && c->order <= 64);

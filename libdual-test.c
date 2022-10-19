@@ -23,6 +23,8 @@
 #define RED "\x1B[1;31m"
 #define CYN "\x1B[0;36m"
 
+const int BASE = 10;
+
 static int debug = 0, total = 0, passed = 0, skipped = 0;
 
 static real delta_val, delta_dot, tolerance;
@@ -53,7 +55,7 @@ static void compare (char* name, dual a, dual b) {
 }
 
 int main (int argc, char **argv) {
-    real PI_2 = 0.5L * MY_PI;
+    real PI_2 = 0.5L * acosl(-1.0L);
 
     fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) { fprintf(stderr, "%s ", argv[i]); } fprintf(stderr, "]\n");
     assert(argc == 3 || argc == 4);

@@ -13,6 +13,8 @@
 
 static kerr *k;  // the model
 
+static real RAD_TO_DEG;
+
 point point_from_model (void *model) {
 	kerr *k = (kerr *)model;
     real ra_sth = sqrtl(k->ra2.val) * sinl(k->q_theta);
@@ -78,6 +80,7 @@ int main (int argc, char** argv) {
     c = get_c_symp(argv);
     k = get_p_kerr(argc, argv);
     since = clock();
+    RAD_TO_DEG = 180.0L / acosl(-1.0L);
 
     max_points = (int)strtol(argv[5], NULL, BASE);
     oldest = newest = buffers_full = 0;

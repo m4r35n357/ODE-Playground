@@ -15,7 +15,7 @@
 #include "h-kerr.h"
 
 real elevation_to_colatitude (real elevation) {
-    return (90.0L - elevation) * MY_PI  / 180.0L;
+    return (90.0L - elevation) * acosl(-1.0L)  / 180.0L;
 }
 
 real sigma (kerr *k) {
