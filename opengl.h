@@ -14,6 +14,9 @@ extern controls *c;
 
 typedef enum Display {BOTH=0, BALLS=1, LINES=2} display;
 
+typedef enum CName {YELLOW=0, CYAN=1, MAGENTA=2, RED=3, GREEN=4, BLUE=5, DARK_GREY=6, LIGHT_GREY=7, GREY=8,
+                    DARK_YELLOW=9, DARK_CYAN=10, DARK_MAGENTA=11, DARK_RED=12, DARK_GREEN=13, DARK_BLUE=14 } colour_name;
+
 extern display mode;
 
 extern char hud[];

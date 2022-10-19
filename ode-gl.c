@@ -82,7 +82,7 @@ int main (int argc, char** argv) {
     c = get_c_tsm(argv);
     m = get_p(argc, argv, c->order);
     since = clock();
-    colour_index = 13;
+    colour_index = DARK_GREEN;
 
     p = malloc(sizeof (particle));
     p->jets = malloc(sizeof (series3));

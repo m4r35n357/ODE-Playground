@@ -84,7 +84,7 @@ int main (int argc, char** argv) {
 
     max_points = (int)strtol(argv[5], NULL, BASE);
     oldest = newest = buffers_full = 0;
-    k->colour = (rgb){0.0F, 0.5F, 0.0F};
+    k->colour = get_colour(DARK_GREEN);
     k->track = calloc((size_t)max_points, sizeof (components));
     k->track[newest] = point_from_model(k);
 
