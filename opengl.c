@@ -24,15 +24,11 @@ double elapsed, cpu;
 
 float light_position[] = { -100.0F, 100.0F, -100.0F, 0.0F };
 
-_Bool finished = 0, stopped = 0, stepping = 0, running = 1;
+_Bool finished = 0, stopped = 0, stepping = 0, running = 1, buffers_full;
 
 float ball_scale = 0.1F, view_radius = 20.0F, view_latitude = 90.0F, view_longitude = 0.0F;
 
-int colour_index;
-
-int max_points, oldest, newest;
-
-_Bool buffers_full;
+int max_points, oldest, newest, colour_index;
 
 void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     switch (Key) {

@@ -24,15 +24,11 @@ extern double elapsed, cpu;
 
 extern float light_position[];
 
-extern _Bool finished, stopped, stepping, running;
+extern _Bool finished, stopped, stepping, running, buffers_full;
 
 extern float ball_scale, view_radius, view_latitude, view_longitude;
 
-extern int colour_index;
-
-extern int max_points, oldest, newest;
-
-extern _Bool buffers_full;
+extern int max_points, oldest, newest, colour_index;
 
 /*
  * OpenGL set-up functions
