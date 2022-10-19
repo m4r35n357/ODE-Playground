@@ -25,8 +25,17 @@ point point_from_model (void *model) {
 void Animate (void) {
     SetupView(view_radius, view_latitude, view_longitude, light_position);
 
+    point p = t->points[newest];
+    glBegin(GL_LINES);
+    glColor3f(0.3F, 0.3F, 0.3F);
+    glVertex3f(0.0F, 0.0F, 0.0F);
+    glVertex3f(p.a, p.b, p.c);
+    glEnd();
+
     glColor3f(0.0F, 0.0F, 0.5F);
     glutWireSphere(k->horizon, 20, 20);
+
+    t->colour = get_colour(colour_index);
     glColor3f(t->colour.a, t->colour.b, t->colour.c);
 
     if (mode == BOTH || mode == LINES) {
@@ -37,7 +46,6 @@ void Animate (void) {
         glEnd();
     }
 
-    point p = t->points[newest];
     if (mode == BOTH || mode == BALLS) {
         glTranslatef(p.a, p.b, p.c);
         glutSolidSphere(ball_scale, 10, 10);
@@ -81,13 +89,13 @@ int main (int argc, char** argv) {
     c = get_c_symp(argv);
     k = get_p_kerr(argc, argv);
     since = clock();
+    colour_index = DARK_GREEN;
     RAD_TO_DEG = 180.0L / acosl(-1.0L);
 
     max_points = (int)strtol(argv[5], NULL, BASE);
     oldest = newest = buffers_full = 0;
     t = malloc(sizeof (track));
     t->points = calloc((size_t)max_points, sizeof (point));
-    t->colour = get_colour(DARK_GREEN);
     t->points[newest] = point_from_model(k);
 
     ApplicationInit(argc, argv, "Black Hole Orbit Plotter");
