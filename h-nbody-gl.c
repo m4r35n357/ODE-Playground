@@ -11,6 +11,7 @@
 #include "h-nbody.h"
 
 static nbody *m;     // the model
+static track *t;
 
 point point_from_model (void *model) {
     body *b = (body *)model;
@@ -25,8 +26,8 @@ void Animate (void) {
         for (int i = 0; i < m->n; i += 1) {
             glBegin(GL_LINE_STRIP);
             for (int k = oldest; k != newest; k = (k + 1) % max_points) {  // read buffers
-                glColor3f(b[i].colour.a, b[i].colour.b, b[i].colour.c);
-                glVertex3f(b[i].track[k].a, b[i].track[k].b, b[i].track[k].c);
+                glColor3f(t[i].colour.a, t[i].colour.b, t[i].colour.c);
+                glVertex3f(t[i].points[k].a, t[i].points[k].b, t[i].points[k].c);
             }
             glEnd();
         }
@@ -34,11 +35,11 @@ void Animate (void) {
 
     if (mode == BOTH || mode == BALLS) {
         glTranslatef((float)(b[0].x - m->centre.x), (float)(b[0].y - m->centre.y), (float)(b[0].z - m->centre.z));
-        glColor3f(b[0].colour.a, b[0].colour.b, b[0].colour.c);
+        glColor3f(t[0].colour.a, t[0].colour.b, t[0].colour.c);
         glutSolidSphere(ball_scale * b[0].r, 10, 10);
         for (int i = 1; i < m->n; i += 1) {
             glTranslatef((float)(b[i].x - b[i - 1].x), (float)(b[i].y - b[i - 1].y), (float)(b[i].z - b[i - 1].z));
-            glColor3f(b[i].colour.a, b[i].colour.b, b[i].colour.c);
+            glColor3f(t[i].colour.a, t[i].colour.b, t[i].colour.c);
             glutSolidSphere(ball_scale * b[i].r, 10, 10);
         }
     }
@@ -59,7 +60,7 @@ void Animate (void) {
             m->h = h(m) > m->h ? h(m) : m->h;
             buffer_point(max_points, &oldest, &newest, &buffers_full);
             for (int i = 0; i < m->n; i += 1) {
-                b[i].track[newest] = point_from_model(&b[i]);
+                t[i].points[newest] = point_from_model(&b[i]);
             }
         } else {
             finished = 1;
@@ -86,10 +87,11 @@ int main (int argc, char** argv) {
 
     max_points = (int)strtol(argv[5], NULL, BASE);
     oldest = newest = buffers_full = 0;
+    t = calloc((size_t)m->n, sizeof (track));
     for (int i = 0; i < m->n; i += 1) {
-        m->bodies[i].colour = get_colour(i);
-        m->bodies[i].track = calloc((size_t)max_points, sizeof (components));
-        m->bodies[i].track[0] = point_from_model(&m->bodies[i]);
+        t[i].colour = get_colour(i);
+        t[i].points = calloc((size_t)max_points, sizeof (point));
+        t[i].points[0] = point_from_model(&m->bodies[i]);
     }
 
     ApplicationInit(argc, argv, "N-Body Plotter");

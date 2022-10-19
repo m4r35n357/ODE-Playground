@@ -9,7 +9,6 @@
 typedef struct Body {
     real m, x, y, z, px, py, pz;
     float r;
-    struct triple_f colour, *track;
 } body;
 
 typedef struct Nbody {

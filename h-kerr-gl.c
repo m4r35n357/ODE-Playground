@@ -12,6 +12,7 @@
 #include "h-kerr.h"
 
 static kerr *k;  // the model
+static track *t;
 
 static real RAD_TO_DEG;
 
@@ -26,17 +27,17 @@ void Animate (void) {
 
     glColor3f(0.0F, 0.0F, 0.5F);
     glutWireSphere(k->horizon, 20, 20);
-    glColor3f(k->colour.a, k->colour.b, k->colour.c);
+    glColor3f(t->colour.a, t->colour.b, t->colour.c);
 
     if (mode == BOTH || mode == LINES) {
         glBegin(GL_LINE_STRIP);
         for (int i = oldest; i != newest; i = (i + 1) % max_points) {  // read buffers
-            glVertex3f(k->track[i].a, k->track[i].b, k->track[i].c);
+            glVertex3f(t->points[i].a, t->points[i].b, t->points[i].c);
         }
         glEnd();
     }
 
-    point p = k->track[newest];
+    point p = t->points[newest];
     if (mode == BOTH || mode == BALLS) {
         glTranslatef(p.a, p.b, p.c);
         glutSolidSphere(ball_scale, 10, 10);
@@ -63,7 +64,7 @@ void Animate (void) {
     if (!finished && !stopped) {
         if (generate(c, k)) {
             buffer_point(max_points, &oldest, &newest, &buffers_full);
-            k->track[newest] = point_from_model(k);
+            t->points[newest] = point_from_model(k);
         } else {
             finished = 1;
         }
@@ -84,9 +85,10 @@ int main (int argc, char** argv) {
 
     max_points = (int)strtol(argv[5], NULL, BASE);
     oldest = newest = buffers_full = 0;
-    k->colour = get_colour(DARK_GREEN);
-    k->track = calloc((size_t)max_points, sizeof (components));
-    k->track[newest] = point_from_model(k);
+    t = malloc(sizeof (track));
+    t->points = calloc((size_t)max_points, sizeof (point));
+    t->colour = get_colour(DARK_GREEN);
+    t->points[newest] = point_from_model(k);
 
     ApplicationInit(argc, argv, "Black Hole Orbit Plotter");
     glutMainLoop();     // Start the main loop.  glutMainLoop never returns.

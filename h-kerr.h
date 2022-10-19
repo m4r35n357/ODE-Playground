@@ -14,7 +14,6 @@ typedef struct Kerr {
     dual ra2, delta, sth2, R, THETA;  // global variables & potentials
     components *coordinates;
     real rmin, rmax, thmax, epsilon;  // generator constraints and precision
-    struct triple_f colour, *track;
     float horizon;
 } kerr;
 

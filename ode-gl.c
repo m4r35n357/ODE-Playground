@@ -5,20 +5,12 @@
  */
 
 #include <stdio.h>
-#include <math.h>
 #include <GL/freeglut.h>    // OpenGL Graphics Utility Library
 #include "taylor-ode.h"
 #include "opengl.h"
 
-/*
- * Particle/Body tracks
- */
-typedef struct Particle {
-    series3 *jets;
-    struct triple_f colour, *track;
-} particle;
-
-static particle *p;
+static series3 *jets;
+static track *t;
 static void *m;
 
 point point_from_model (void *model) {
@@ -29,31 +21,31 @@ point point_from_model (void *model) {
 void Animate (void) {
     SetupView(view_radius, view_latitude, view_longitude, light_position);
 
-    point q = p->track[newest];
+    point p = t->points[newest];
     glBegin(GL_LINES);
     glColor3f(0.3F, 0.3F, 0.3F);
     glVertex3f(0.0F, 0.0F, 0.0F);
-    glVertex3f(q.a, q.b, q.c);
+    glVertex3f(p.a, p.b, p.c);
     glEnd();
 
-    p->colour = get_colour(colour_index);
-    glColor3f(p->colour.a, p->colour.b, p->colour.c);
+    t->colour = get_colour(colour_index);
+    glColor3f(t->colour.a, t->colour.b, t->colour.c);
 
     if (mode == BOTH || mode == LINES) {
         glBegin(GL_LINE_STRIP);
         for (int i = oldest; i != newest; i = (i + 1) % max_points) {  // read buffers
-            glVertex3f(p->track[i].a, p->track[i].b, p->track[i].c);
+            glVertex3f(t->points[i].a, t->points[i].b, t->points[i].c);
         }
         glEnd();
     }
 
     if (mode == BOTH || mode == BALLS) {
-        glTranslatef(q.a, q.b, q.c);
+        glTranslatef(p.a, p.b, p.c);
         glutSolidSphere(ball_scale, 10, 10);
     }
 
     glColor3f(0.0F, 0.5F, 0.5F);
-    sprintf(hud, "t: %.1Lf  x: % .1lf  y: % .1lf  z: % .1lf  ", c->step * c->step_size, q.a, q.b, q.c);
+    sprintf(hud, "t: %.1Lf  x: % .1lf  y: % .1lf  z: % .1lf  ", c->step * c->step_size, p.a, p.b, p.c);
     osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, hud);
 
     sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.1f %%",
@@ -63,9 +55,9 @@ void Animate (void) {
     osd(10, 10, hud);
 
     if (!finished && !stopped) {
-        if (tsm_gen(c, p->jets, m)) {
+        if (tsm_gen(c, jets, m)) {
             buffer_point(max_points, &oldest, &newest, &buffers_full);
-            p->track[newest] = point_from_model(p->jets);
+            t->points[newest] = point_from_model(jets);
         } else {
             finished = 1;
         }
@@ -84,15 +76,15 @@ int main (int argc, char** argv) {
     since = clock();
     colour_index = DARK_GREEN;
 
-    p = malloc(sizeof (particle));
-    p->jets = malloc(sizeof (series3));
-    p->jets->x = t_jet(c->order + 1); p->jets->x[0] = strtold(argv[5], NULL);
-    p->jets->y = t_jet(c->order + 1); p->jets->y[0] = strtold(argv[6], NULL);
-    p->jets->z = t_jet(c->order + 1); p->jets->z[0] = strtold(argv[7], NULL);
+    jets = malloc(sizeof (series3));
+    jets->x = t_jet(c->order + 1); jets->x[0] = strtold(argv[5], NULL);
+    jets->y = t_jet(c->order + 1); jets->y[0] = strtold(argv[6], NULL);
+    jets->z = t_jet(c->order + 1); jets->z[0] = strtold(argv[7], NULL);
     max_points = c->steps / 2;
     oldest = newest = buffers_full = 0;
-    p->track = calloc((size_t)max_points, sizeof (components));
-    p->track[newest] = point_from_model(p->jets);
+    t = malloc(sizeof (track));
+    t->points = calloc((size_t)max_points, sizeof (point));
+    t->points[newest] = point_from_model(jets);
 
     ApplicationInit(argc, argv, "ODE Plottter");
     glutMainLoop();     // Start the main loop.  glutMainLoop never returns.
