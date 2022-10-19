@@ -32,17 +32,17 @@ int max_points, oldest, newest, colour_index;
 
 void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
-        case    GLUT_KEY_UP: view_latitude += 1.0F; break;
-        case  GLUT_KEY_DOWN: view_latitude -= 1.0F; break;
+        case    GLUT_KEY_UP: view_latitude  += 1.0F; break;
+        case  GLUT_KEY_DOWN: view_latitude  -= 1.0F; break;
         case  GLUT_KEY_LEFT: view_longitude += 1.0F; break;
         case GLUT_KEY_RIGHT: view_longitude -= 1.0F; break;
+        case  GLUT_KEY_HOME: view_radius    -= 1.0F; break;
+        case   GLUT_KEY_END: view_radius    += 1.0F; break;
     }
 }
 
 void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
-        case 'A': case 'a': view_radius -= 0.1F; break;
-        case 'Z': case 'z': view_radius += 0.1F; break;
         case 'D': case 'd': colour_index += 1; break;
         case 'C': case 'c': colour_index -= 1; break;
         case 'G': case 'g': ball_scale *= 1.1F; break;
