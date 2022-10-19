@@ -16,7 +16,7 @@ static kerr *k;  // the model
 static real RAD_TO_DEG;
 
 point point_from_model (void *model) {
-	kerr *k = (kerr *)model;
+    kerr *k = (kerr *)model;
     real ra_sth = sqrtl(k->ra2.val) * sinl(k->q_theta);
     return (point){(float)(ra_sth * cosl(k->q_phi)), (float)(ra_sth * sinl(k->q_phi)), (float)(k->q_r * cosl(k->q_theta))};
 }
@@ -46,7 +46,7 @@ void Animate (void) {
     real S = sigma(k);
     k->tau += k->step * S;
     glColor3f(0.0F, 0.5F, 0.5F);
-    sprintf(hud, "tau: %.1Lf  t: %.1Lf  r:% 5.1Lf  theta:% 6.1Lf  phi:% 6.1Lf  ",
+    sprintf(hud, "tau: %.1Lf  t: %.1Lf  r:% 5.1Lf  theta:% 4.0Lf  phi:% 4.0Lf  ",
                   k->tau, k->q_t, k->q_r, k->q_theta * RAD_TO_DEG - 90.0L, fmodl(k->q_phi * RAD_TO_DEG + 180.0L, 360.0L));
     osd(10, window_height - 20, hud);
 

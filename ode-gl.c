@@ -22,7 +22,7 @@ static particle *p;
 static void *m;
 
 point point_from_model (void *model) {
-	series3 *j = (series3 *)model;
+    series3 *j = (series3 *)model;
     return (point){(float)j->x[0], (float)j->y[0], (float)j->z[0]};
 }
 

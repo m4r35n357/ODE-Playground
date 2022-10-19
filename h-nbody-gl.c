@@ -13,7 +13,7 @@
 static nbody *m;     // the model
 
 point point_from_model (void *model) {
-	body *b = (body *)model;
+    body *b = (body *)model;
     return (point){(float)b->x, (float)b->y, (float)b->z};
 }
 
