@@ -48,10 +48,10 @@ void Animate (void) {
     sprintf(hud, "t: %.1Lf  x: % .1lf  y: % .1lf  z: % .1lf  ", c->step * c->step_size, p.a, p.b, p.c);
     osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, hud);
 
-    sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.1f %%",
+    sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.0f %%",
                   elapsed = finished ? elapsed : ((float)(glutGet(GLUT_ELAPSED_TIME)) / 1000.0F),
                   cpu = finished ? cpu : (double)(clock() - since) / CLOCKS_PER_SEC,
-                  (float)(100 * c->step) / (float)c->steps);
+                  (float)(100 * c->step / c->steps));
     osd(10, 10, hud);
 
     if (!finished && !stopped) {
