@@ -86,7 +86,7 @@ int main (int argc, char** argv) {
     t->points = calloc((size_t)max_points, sizeof (point));
     t->points[newest] = point_from_model(jets);
 
-    ApplicationInit(argc, argv, "ODE Plottter");
+    ApplicationInit(argc, argv, "ODE Plotter");
     glutMainLoop();     // Start the main loop.  glutMainLoop never returns.
     return(0);          // Compiler requires this to be here. (Never reached)
 }

@@ -23,11 +23,11 @@ void Animate (void) {
 
     body *b = m->bodies;
     if (mode == BOTH || mode == LINES) {
-        for (int i = 0; i < m->n; i += 1) {
+        for (int j = 0; j < m->n; j += 1) {
             glBegin(GL_LINE_STRIP);
-            for (int k = oldest; k != newest; k = (k + 1) % max_points) {  // read buffers
-                glColor3f(t[i].colour.a, t[i].colour.b, t[i].colour.c);
-                glVertex3f(t[i].points[k].a, t[i].points[k].b, t[i].points[k].c);
+            for (int i = oldest; i != newest; i = (i + 1) % max_points) {  // read buffers
+                glColor3f(t[j].colour.a, t[j].colour.b, t[j].colour.c);
+                glVertex3f(t[j].points[i].a, t[j].points[i].b, t[j].points[i].c);
             }
             glEnd();
         }
@@ -37,10 +37,10 @@ void Animate (void) {
         glTranslatef((float)(b[0].x - m->centre.x), (float)(b[0].y - m->centre.y), (float)(b[0].z - m->centre.z));
         glColor3f(t[0].colour.a, t[0].colour.b, t[0].colour.c);
         glutSolidSphere(ball_scale * b[0].r, 10, 10);
-        for (int i = 1; i < m->n; i += 1) {
-            glTranslatef((float)(b[i].x - b[i - 1].x), (float)(b[i].y - b[i - 1].y), (float)(b[i].z - b[i - 1].z));
-            glColor3f(t[i].colour.a, t[i].colour.b, t[i].colour.c);
-            glutSolidSphere(ball_scale * b[i].r, 10, 10);
+        for (int j = 1; j < m->n; j += 1) {
+            glTranslatef((float)(b[j].x - b[j - 1].x), (float)(b[j].y - b[j - 1].y), (float)(b[j].z - b[j - 1].z));
+            glColor3f(t[j].colour.a, t[j].colour.b, t[j].colour.c);
+            glutSolidSphere(ball_scale * b[j].r, 10, 10);
         }
     }
 
@@ -59,8 +59,8 @@ void Animate (void) {
             cog(m);
             m->h = h(m) > m->h ? h(m) : m->h;
             buffer_point(max_points, &oldest, &newest, &buffers_full);
-            for (int i = 0; i < m->n; i += 1) {
-                t[i].points[newest] = point_from_model(&b[i]);
+            for (int j = 0; j < m->n; j += 1) {
+                t[j].points[newest] = point_from_model(&b[j]);
             }
         } else {
             finished = 1;
@@ -81,17 +81,16 @@ int main (int argc, char** argv) {
     mode = (display)strtol(argv[1], NULL, BASE);
     c = get_c_symp(argv);
     m = get_p_nbody(argc, argv, (argc - 7) / 7);
-    fprintf(stderr, "\n");
-    fprintf(stderr, "H0: % .18Le\n", m->h);
     since = clock();
+    fprintf(stderr, "\nH0: % .18Le\n", m->h);
 
     max_points = (int)strtol(argv[5], NULL, BASE);
     oldest = newest = buffers_full = 0;
     t = calloc((size_t)m->n, sizeof (track));
-    for (int i = 0; i < m->n; i += 1) {
-        t[i].colour = get_colour(i);
-        t[i].points = calloc((size_t)max_points, sizeof (point));
-        t[i].points[0] = point_from_model(&m->bodies[i]);
+    for (int j = 0; j < m->n; j += 1) {
+        t[j].colour = get_colour(j);
+        t[j].points = calloc((size_t)max_points, sizeof (point));
+        t[j].points[0] = point_from_model(&m->bodies[j]);
     }
 
     ApplicationInit(argc, argv, "N-Body Plotter");

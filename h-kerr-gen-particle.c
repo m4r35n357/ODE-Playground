@@ -135,15 +135,12 @@ int main (int argc, char **argv) {
     }
     fprintf(stderr, "%.ld iterations, precision %.1Le %s\n",
             count, k->epsilon, valid ? (k->a * k->L < 0.0L ? "RETROGRADE" : "PROGRADE") : "INVALID");
-    fprintf(stderr, "\n");
-    fprintf(stderr, "Simulate:\n");
+    fprintf(stderr, "\nSimulate:\n");
     fprintf(stderr, "./h-kerr-dbg 6 8 .01 10000 0 %.3Lf 1.0 %.9Le %.9Le 1.0 %.9Le %.3Lf 0.0 >/tmp/$USER/data\n",
             k->a, k->E, k->L, k->Q, circular ? k->rmin : 0.5L * (k->rmin + k->rmax));
-    fprintf(stderr, "\n");
-    fprintf(stderr, "./h-kerr-dbg 6 8 .01 10000 0 %.3Lf 1.0 %La %La 1.0 %La %.3Lf 0.0 >/tmp/$USER/data\n",
+    fprintf(stderr, "\n./h-kerr-dbg 6 8 .01 10000 0 %.3Lf 1.0 %La %La 1.0 %La %.3Lf 0.0 >/tmp/$USER/data\n",
             k->a, k->E, k->L, k->Q, circular ? k->rmin : 0.5L * (k->rmin + k->rmax));
-    fprintf(stderr, "\n");
-    fprintf(stderr, "./h-kerr-gl $(yad --columns=2 --title='Kerr Particle Orbit GL' --form --separator=' ' --align=right ");
+    fprintf(stderr, "\n./h-kerr-gl $(yad --columns=2 --title='Kerr Particle Orbit GL' --form --separator=' ' --align=right ");
     fprintf(stderr, "--field='Display Mode':CB --field='Order':NUM --field='Step Size':NUM --field='Steps':NUM ");
     fprintf(stderr, "--field='Track Length':NUM --field='BH spin':NUM --field='particle mass':RO ");
     fprintf(stderr, "--field='energy' --field='momentum' --field='momentum factor' --field='Carter constant' ");
@@ -151,11 +148,9 @@ int main (int argc, char **argv) {
     fprintf(stderr, "-- '0!1!2' '4!2..10!2' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' '1000!1..100000!1' "),
     fprintf(stderr, "'%.3Lf!-1.0..1.0!0.1!1' 1.0 %.9Le %.9Le 1.0 %.9Le %.3Lf 0.0)\n",
             k->a, k->E, k->L, k->Q, circular ? k->rmin : 0.5L * (k->rmin + k->rmax));
-    fprintf(stderr, "\n");
-    fprintf(stderr, "Generate ICs:\n");
-    fprintf(stderr, "./h-kerr-dbg 15 8 .01 0 2 %.3Lf 1.0 %La %La 1.0 %La %.3Lf 0.0\n",
+    fprintf(stderr, "\nGenerate ICs:\n");
+    fprintf(stderr, "./h-kerr-dbg 15 8 .01 0 2 %.3Lf 1.0 %La %La 1.0 %La %.3Lf 0.0\n\n",
             k->a, k->E, k->L, k->Q, circular ? k->rmin : 0.5L * (k->rmin + k->rmax));
-    fprintf(stderr, "\n");
 
     real r_range = (circular ? k->rmin + 1.0L : k->rmax + 1.0L);
     real PI = acosl(-1.0L);
