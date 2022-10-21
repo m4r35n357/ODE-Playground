@@ -34,17 +34,12 @@ void Animate (void) {
     }
 
     if (mode == BOTH || mode == BALLS) {
-        point p = t[0].points[newest];
-        glBegin(GL_LINES);
-        glColor3f(0.3F, 0.3F, 0.3F);
-        glVertex3f(0.0F, 0.0F, 0.0F);
-        glVertex3f(p.a, p.b, p.c);
-        glEnd();
-        for (int j = 1; j < m->n; j += 1) {
-            p = t[j].points[newest];
+        point o = (point){(float)m->centre.x, (float)m->centre.y, (float)m->centre.z};
+        for (int j = 0; j < m->n; j += 1) {
+            point p = t[j].points[newest];
             glBegin(GL_LINES);
             glColor3f(0.3F, 0.3F, 0.3F);
-            glVertex3f(0.0F, 0.0F, 0.0F);
+            glVertex3f(o.a, o.b, o.c);
             glVertex3f(p.a, p.b, p.c);
             glEnd();
         }

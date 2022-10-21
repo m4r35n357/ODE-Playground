@@ -22,7 +22,7 @@ clock_t since;
 
 double elapsed, cpu;
 
-_Bool finished = 0, stopped = 0, stepping = 0, running = 1, osd_active = 1, solid = 0;
+_Bool finished = 0, stopped = 0, stepping = 0, running = 1, osd_active = 1, solid = 1;
 
 int max_points, oldest = 0, newest = 0, colour_index = DARK_GREEN, detail = 10;
 
