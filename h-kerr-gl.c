@@ -71,7 +71,7 @@ void Animate (void) {
 
     if (!finished && !stopped) {
         if (generate(c, k)) {
-            buffer_point(max_points, &oldest, &newest, &buffers_full);
+            buffer_point();
             t->points[newest] = point_from_model(k);
         } else {
             finished = 1;
@@ -92,7 +92,6 @@ int main (int argc, char** argv) {
     RAD_TO_DEG = 180.0L / acosl(-1.0L);
 
     max_points = (int)strtol(argv[5], NULL, BASE);
-    oldest = newest = buffers_full = 0;
     t = malloc(sizeof (track));
     t->points = calloc((size_t)max_points, sizeof (point));
     t->points[newest] = point_from_model(k);

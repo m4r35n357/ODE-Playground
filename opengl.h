@@ -34,7 +34,7 @@ extern double elapsed, cpu;
 
 extern float light_position[];
 
-extern _Bool finished, stopped, stepping, running, buffers_full;
+extern _Bool finished, stopped, stepping, running;
 
 extern float ball_scale, view_radius, view_latitude, view_longitude;
 
@@ -83,7 +83,7 @@ point point_from_model (void *model);
 /*
  * Push latest point to the track buffer
  */
-void buffer_point (int max_points, int *oldest, int *newest, _Bool *full);
+void buffer_point (void);
 
 /*
  * Re-draw boilerplate (no logic)

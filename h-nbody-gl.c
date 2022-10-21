@@ -58,7 +58,7 @@ void Animate (void) {
         if (generate(c, m)) {
             cog(m);
             m->h = h(m) > m->h ? h(m) : m->h;
-            buffer_point(max_points, &oldest, &newest, &buffers_full);
+            buffer_point();
             for (int j = 0; j < m->n; j += 1) {
                 t[j].points[newest] = point_from_model(&b[j]);
             }
@@ -84,7 +84,6 @@ int main (int argc, char** argv) {
     fprintf(stderr, "\nH0: % .18Le\n", m->h);
 
     max_points = (int)strtol(argv[5], NULL, BASE);
-    oldest = newest = buffers_full = 0;
     t = calloc((size_t)m->n, sizeof (track));
     for (int j = 0; j < m->n; j += 1) {
         t[j].colour = get_colour(j);

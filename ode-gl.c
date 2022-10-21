@@ -56,7 +56,7 @@ void Animate (void) {
 
     if (!finished && !stopped) {
         if (tsm_gen(c, jets, m)) {
-            buffer_point(max_points, &oldest, &newest, &buffers_full);
+            buffer_point();
             t->points[newest] = point_from_model(jets);
         } else {
             finished = 1;
@@ -75,12 +75,11 @@ int main (int argc, char** argv) {
     since = clock();
     colour_index = DARK_GREEN;
 
+    max_points = c->steps / 2;
     jets = malloc(sizeof (series3));
     jets->x = t_jet(c->order + 1); jets->x[0] = strtold(argv[5], NULL);
     jets->y = t_jet(c->order + 1); jets->y[0] = strtold(argv[6], NULL);
     jets->z = t_jet(c->order + 1); jets->z[0] = strtold(argv[7], NULL);
-    max_points = c->steps / 2;
-    oldest = newest = buffers_full = 0;
     t = malloc(sizeof (track));
     t->points = calloc((size_t)max_points, sizeof (point));
     t->points[newest] = point_from_model(jets);
