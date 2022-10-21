@@ -41,7 +41,7 @@ void Animate (void) {
         glEnd();
         glColor3f(t->colour.a, t->colour.b, t->colour.c);
         glTranslatef(p.a, p.b, p.c);
-        glutSolidSphere(ball_scale, detail, detail);
+        solid ? glutSolidSphere(ball_scale, mesh, mesh) : glutWireSphere(ball_scale, mesh, mesh);
     }
 
     if (osd_active) {

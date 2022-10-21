@@ -27,7 +27,7 @@ void Animate (void) {
 
     point p = t->points[newest];
     glColor3f(0.0F, 0.0F, 0.5F);
-    glutWireSphere(k->horizon, 20, 20);
+    solid ? glutSolidSphere(k->horizon, 2.0L * mesh, 2.0* mesh) : glutWireSphere(k->horizon, 2.0L * mesh, 2.0* mesh);
     t->colour = get_colour(colour_index);
     glColor3f(t->colour.a, t->colour.b, t->colour.c);
 
@@ -47,7 +47,7 @@ void Animate (void) {
         glEnd();
         glColor3f(t->colour.a, t->colour.b, t->colour.c);
         glTranslatef(p.a, p.b, p.c);
-        glutSolidSphere(ball_scale, detail, detail);
+        solid ? glutSolidSphere(ball_scale, mesh, mesh) : glutWireSphere(ball_scale, mesh, mesh);
     }
 
     if (osd_active) {
