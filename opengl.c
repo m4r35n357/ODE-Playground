@@ -22,11 +22,13 @@ clock_t since;
 
 double elapsed, cpu;
 
-float light_position[] = { -100.0F, 100.0F, -100.0F, 0.0F };
+static float light_position[] = { -100.0F, 100.0F, -100.0F, 0.0F };
 
 _Bool finished = 0, stopped = 0, stepping = 0, running = 1;
 
-float ball_scale = 0.1F, view_radius = 20.0F, view_latitude = 90.0F, view_longitude = 0.0F;
+float ball_scale = 0.1F;
+
+static float view_radius = 20.0F, view_latitude = 90.0F, view_longitude = 0.0F;
 
 int max_points, oldest = 0, newest = 0, colour_index;
 
@@ -98,13 +100,13 @@ void ApplicationInit (int argc, char** argv, char *title) {
     glutDisplayFunc(Animate);
 }
 
-void SetupView (float radius, float latitude, float longitude, float *light) {
+void SetupView () {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the rendering window
     glLoadIdentity();
-    glTranslatef(0.0F, 0.0F, - radius);
-    glRotatef(latitude, 1.0F, 0.0F, 0.0F);
-    glRotatef(longitude, 0.0F, 0.0F, 1.0F);
-    glLightfv(GL_LIGHT0, GL_POSITION, light);
+    glTranslatef(0.0F, 0.0F, - view_radius);
+    glRotatef(view_latitude, 1.0F, 0.0F, 0.0F);
+    glRotatef(view_longitude, 0.0F, 0.0F, 1.0F);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 }
 
 rgb get_colour (int index) {

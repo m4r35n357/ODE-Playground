@@ -19,7 +19,7 @@ point point_from_model (void *model) {
 }
 
 void Animate (void) {
-    SetupView(view_radius, view_latitude, view_longitude, light_position);
+    SetupView();
 
     point p = t->points[newest];
     glBegin(GL_LINES);

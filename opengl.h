@@ -32,11 +32,9 @@ extern clock_t since;
 
 extern double elapsed, cpu;
 
-extern float light_position[];
-
 extern _Bool finished, stopped, stepping, running;
 
-extern float ball_scale, view_radius, view_latitude, view_longitude;
+extern float ball_scale;
 
 extern int max_points, oldest, newest, colour_index;
 
@@ -63,7 +61,7 @@ void CloseWindow (void);
 /*
  * View/Camera boilerplate (no logic)
  */
-void SetupView (float view_radius, float view_latitude, float view_longitude, float *light_pos);
+void SetupView (void);
 
 /*
  * Colours
