@@ -73,7 +73,6 @@ int main (int argc, char** argv) {
     c = get_c_tsm(argv);
     m = get_p(argc, argv, c->order);
     since = clock();
-    colour_index = DARK_GREEN;
 
     max_points = c->steps / 2;
     jets = malloc(sizeof (series3));

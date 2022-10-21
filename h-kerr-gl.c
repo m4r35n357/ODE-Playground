@@ -88,7 +88,6 @@ int main (int argc, char** argv) {
     c = get_c_symp(argv);
     k = get_p_kerr(argc, argv);
     since = clock();
-    colour_index = DARK_GREEN;
     RAD_TO_DEG = 180.0L / acosl(-1.0L);
 
     max_points = (int)strtol(argv[5], NULL, BASE);

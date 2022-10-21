@@ -22,24 +22,22 @@ clock_t since;
 
 double elapsed, cpu;
 
-static float light_position[] = { -100.0F, 100.0F, -100.0F, 0.0F };
-
 _Bool finished = 0, stopped = 0, stepping = 0, running = 1;
+
+int max_points, oldest = 0, newest = 0, colour_index = DARK_GREEN;
 
 float ball_scale = 0.1F;
 
-static float view_radius = 20.0F, view_latitude = 90.0F, view_longitude = 0.0F;
-
-int max_points, oldest = 0, newest = 0, colour_index;
+static float radius = 20.0F, latitude = 90.0F, longitude = 0.0F, light[] = {-100.0F, 100.0F, -100.0F, 0.0F};
 
 void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
-        case    GLUT_KEY_UP: view_latitude  += 1.0F; break;
-        case  GLUT_KEY_DOWN: view_latitude  -= 1.0F; break;
-        case  GLUT_KEY_LEFT: view_longitude += 1.0F; break;
-        case GLUT_KEY_RIGHT: view_longitude -= 1.0F; break;
-        case  GLUT_KEY_HOME: view_radius    -= 1.0F; break;
-        case   GLUT_KEY_END: view_radius    += 1.0F; break;
+        case    GLUT_KEY_UP: latitude  += 1.0F; break;
+        case  GLUT_KEY_DOWN: latitude  -= 1.0F; break;
+        case  GLUT_KEY_LEFT: longitude += 1.0F; break;
+        case GLUT_KEY_RIGHT: longitude -= 1.0F; break;
+        case  GLUT_KEY_HOME: radius    -= 1.0F; break;
+        case   GLUT_KEY_END: radius    += 1.0F; break;
     }
 }
 
@@ -53,11 +51,11 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
         case 'S': case 's': stepping = !stepping; stopped = 0; break;
         case 'F': case 'f': glutFullScreenToggle(); break;
         case 'V': case 'v': mode = (mode + 1) % 3; break;
-        case  27: exit(1); // Escape key
+        case  27: exit(1);  // Escape key
     }
 }
 
-void OpenGLInit (void) {
+void OpenGLInit () {
     glShadeModel(GL_FLAT);
     glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
     glClearDepth(1.0F);
@@ -68,45 +66,36 @@ void OpenGLInit (void) {
 }
 
 void ResizeWindow (int w, int h) {
-    float aspectRatio;
     h = (h == 0) ? 1 : h;
     w = (w == 0) ? 1 : w;
-    glViewport(0, 0, w, h);   // View port uses whole window
-    aspectRatio = (float)w / (float)h;
-    // Set up the projection view matrix (not very well!)
-    glMatrixMode(GL_PROJECTION);
+    glViewport(0, 0, w, h);  // View port uses whole window
+    glMatrixMode(GL_PROJECTION);  // Set up the projection view matrix (not very well!)
     glLoadIdentity();
-    gluPerspective(60.0F, aspectRatio, 1.0F, 100.0F);
-    // Select the Modelview matrix
-    glMatrixMode(GL_MODELVIEW);
+    gluPerspective(60.0F, (float)w / (float)h, 1.0F, 100.0F);
+    glMatrixMode(GL_MODELVIEW);  // Select the Modelview matrix
 }
 
 void ApplicationInit (int argc, char** argv, char *title) {
-    // Initialize GLUT
-    glutInit(&argc, argv);
+    glutInit(&argc, argv);  // Initialize GLUT
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);  // Need to double buffer for animation
-    // Create and position the graphics window
-    glutInitWindowPosition(0, 0);
+    glutInitWindowPosition(0, 0);  // Create and position the graphics window
     glutInitWindowSize(640, 480);
     glutCreateWindow(title);
-    // Initialize GLEW
-    glewInit();
-    // Initialize OpenGL
-    OpenGLInit();
-    // Set up callback functions
-    glutKeyboardFunc(KeyPressFunc);
+    glewInit();  // Initialize GLEW
+    OpenGLInit();  // Initialize OpenGL
+    glutKeyboardFunc(KeyPressFunc);  // Set up callback functions
     glutSpecialFunc(SpecialKeyFunc);
     glutReshapeFunc(ResizeWindow);
     glutDisplayFunc(Animate);
 }
 
 void SetupView () {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the rendering window
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clear the rendering window
     glLoadIdentity();
-    glTranslatef(0.0F, 0.0F, - view_radius);
-    glRotatef(view_latitude, 1.0F, 0.0F, 0.0F);
-    glRotatef(view_longitude, 0.0F, 0.0F, 1.0F);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glTranslatef(0.0F, 0.0F, - radius);
+    glRotatef(latitude, 1.0F, 0.0F, 0.0F);
+    glRotatef(longitude, 0.0F, 0.0F, 1.0F);
+    glLightfv(GL_LIGHT0, GL_POSITION, light);
 }
 
 rgb get_colour (int index) {
@@ -140,8 +129,8 @@ void buffer_point () {
     }
 }
 
-void ReDraw (void) {
-    glFlush();                  // Flush the pipeline, and swap the buffers
+void ReDraw () {
+    glFlush();  // Flush the pipeline, and swap the buffers
     glutSwapBuffers();
-    glutPostRedisplay();        // Request a re-draw for animation purposes
+    glutPostRedisplay();  // Request a re-draw for animation purposes
 }
