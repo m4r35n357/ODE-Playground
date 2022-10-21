@@ -51,23 +51,26 @@ void Animate (void) {
         glutSolidSphere(ball_scale, 10, 10);
     }
 
-    int window_height = glutGet(GLUT_WINDOW_HEIGHT);
-    real S = sigma(k);
-    k->tau += k->step * S;
-    glColor3f(0.0F, 0.5F, 0.5F);
-    sprintf(hud, "tau: %.0Lf  t: %.0Lf  r:% 5.1Lf  theta:% 4.0Lf  phi:% 4.0Lf  ",
-                  k->tau, k->q_t, k->q_r, k->q_theta * RAD_TO_DEG - 90.0L, fmodl(k->q_phi * RAD_TO_DEG + 180.0L, 360.0L));
-    osd(10, window_height - 20, hud);
+    if (osd_active) {
+        int window_height = glutGet(GLUT_WINDOW_HEIGHT);
+        real S = sigma(k);
+        k->tau += k->step * S;
+        glColor3f(0.0F, 0.5F, 0.5F);
 
-    pair speed = gamma_v(k, S);
-    sprintf(hud, "gamma: %.1Lf  v:% .6Lf", speed.a, speed.b);
-    osd(10, window_height - 40, hud);
+        sprintf(hud, "tau: %.0Lf  t: %.0Lf  r:% 5.1Lf  theta:% 4.0Lf  phi:% 4.0Lf  ",
+                      k->tau, k->q_t, k->q_r, k->q_theta * RAD_TO_DEG - 90.0L, fmodl(k->q_phi * RAD_TO_DEG + 180.0L, 360.0L));
+        osd(10, window_height - 20, hud);
 
-    sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.0f %%",
-                  elapsed = finished ? elapsed : ((float)(glutGet(GLUT_ELAPSED_TIME)) / 1000.0F),
-                  cpu = finished ? cpu : (double)(clock() - since) / CLOCKS_PER_SEC,
-                  (float)(100 * c->step / c->steps));
-    osd(10, 10, hud);
+        pair speed = gamma_v(k, S);
+        sprintf(hud, "gamma: %.1Lf  v:% .6Lf", speed.a, speed.b);
+        osd(10, window_height - 40, hud);
+
+        sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.0f %%",
+                      elapsed = finished ? elapsed : ((float)(glutGet(GLUT_ELAPSED_TIME)) / 1000.0F),
+                      cpu = finished ? cpu : (double)(clock() - since) / CLOCKS_PER_SEC,
+                      (float)(100 * c->step / c->steps));
+        osd(10, 10, hud);
+    }
 
     if (!finished && !stopped) {
         if (generate(c, k)) {
