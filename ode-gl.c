@@ -22,12 +22,6 @@ void Animate (void) {
     SetupView();
 
     point p = t->points[newest];
-    glBegin(GL_LINES);
-    glColor3f(0.3F, 0.3F, 0.3F);
-    glVertex3f(0.0F, 0.0F, 0.0F);
-    glVertex3f(p.a, p.b, p.c);
-    glEnd();
-
     t->colour = get_colour(colour_index);
     glColor3f(t->colour.a, t->colour.b, t->colour.c);
 
@@ -40,6 +34,12 @@ void Animate (void) {
     }
 
     if (mode == BOTH || mode == BALLS) {
+        glBegin(GL_LINES);
+        glColor3f(0.3F, 0.3F, 0.3F);
+        glVertex3f(0.0F, 0.0F, 0.0F);
+        glVertex3f(p.a, p.b, p.c);
+        glEnd();
+        glColor3f(t->colour.a, t->colour.b, t->colour.c);
         glTranslatef(p.a, p.b, p.c);
         glutSolidSphere(ball_scale, 10, 10);
     }
