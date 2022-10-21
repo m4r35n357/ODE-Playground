@@ -32,11 +32,11 @@ extern clock_t since;
 
 extern double elapsed, cpu;
 
-extern _Bool finished, stopped, stepping, running, osd_active;
+extern _Bool finished, stopped, stepping, running, osd_active, solid;
 
 extern float ball_scale;
 
-extern int max_points, oldest, newest, colour_index;
+extern int max_points, oldest, newest, colour_index, detail;
 
 /*
  * OpenGL set-up functions

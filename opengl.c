@@ -22,9 +22,9 @@ clock_t since;
 
 double elapsed, cpu;
 
-_Bool finished = 0, stopped = 0, stepping = 0, running = 1, osd_active = 1;
+_Bool finished = 0, stopped = 0, stepping = 0, running = 1, osd_active = 1, solid = 0;
 
-int max_points, oldest = 0, newest = 0, colour_index = DARK_GREEN;
+int max_points, oldest = 0, newest = 0, colour_index = DARK_GREEN, detail = 10;
 
 float ball_scale = 0.1F;
 
@@ -52,6 +52,9 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
         case 'F': case 'f': glutFullScreenToggle(); break;
         case 'V': case 'v': mode = (mode + 1) % 3; break;
         case 'H': case 'h': osd_active = !osd_active; break;
+        case 'W': case 'w': solid = !solid; break;
+        case 'Q': case 'q': detail += 1; break;
+        case 'A': case 'a': if (detail > 1) detail -= 1; break;
         case  27: exit(1);  // Escape key
     }
 }

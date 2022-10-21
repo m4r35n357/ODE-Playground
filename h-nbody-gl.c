@@ -50,11 +50,11 @@ void Animate (void) {
         }
         glTranslatef((float)(b[0].x - m->centre.x), (float)(b[0].y - m->centre.y), (float)(b[0].z - m->centre.z));
         glColor3f(t[0].colour.a, t[0].colour.b, t[0].colour.c);
-        glutSolidSphere(ball_scale * b[0].r, 10, 10);
+        solid ? glutSolidSphere(ball_scale * b[0].r, detail, detail) : glutWireSphere(ball_scale * b[0].r, detail, detail);
         for (int j = 1; j < m->n; j += 1) {
             glTranslatef((float)(b[j].x - b[j - 1].x), (float)(b[j].y - b[j - 1].y), (float)(b[j].z - b[j - 1].z));
             glColor3f(t[j].colour.a, t[j].colour.b, t[j].colour.c);
-            glutSolidSphere(ball_scale * b[j].r, 10, 10);
+            solid ? glutSolidSphere(ball_scale * b[j].r, detail, detail) : glutWireSphere(ball_scale * b[j].r, detail, detail);
         }
     }
 
