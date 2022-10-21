@@ -31,7 +31,7 @@ void Animate (void) {
     t->colour = get_colour(colour_index);
     glColor3f(t->colour.a, t->colour.b, t->colour.c);
 
-    if (mode == BOTH || mode == LINES) {
+    if (mode == BOTH || mode == TRACKS) {
         glBegin(GL_LINE_STRIP);
         for (int i = oldest; i != newest; i = (i + 1) % max_points) {  // read buffers
             glVertex3f(t->points[i].a, t->points[i].b, t->points[i].c);

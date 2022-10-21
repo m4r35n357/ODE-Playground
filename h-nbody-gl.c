@@ -22,7 +22,7 @@ void Animate (void) {
     SetupView();
 
     body *b = m->bodies;
-    if (mode == BOTH || mode == LINES) {
+    if (mode == BOTH || mode == TRACKS) {
         for (int j = 0; j < m->n; j += 1) {
             glBegin(GL_LINE_STRIP);
             for (int i = oldest; i != newest; i = (i + 1) % max_points) {  // read buffers
@@ -34,6 +34,20 @@ void Animate (void) {
     }
 
     if (mode == BOTH || mode == BALLS) {
+        point p = t[0].points[newest];
+        glBegin(GL_LINES);
+        glColor3f(0.3F, 0.3F, 0.3F);
+        glVertex3f(0.0F, 0.0F, 0.0F);
+        glVertex3f(p.a, p.b, p.c);
+        glEnd();
+        for (int j = 1; j < m->n; j += 1) {
+            p = t[j].points[newest];
+            glBegin(GL_LINES);
+            glColor3f(0.3F, 0.3F, 0.3F);
+            glVertex3f(0.0F, 0.0F, 0.0F);
+            glVertex3f(p.a, p.b, p.c);
+            glEnd();
+        }
         glTranslatef((float)(b[0].x - m->centre.x), (float)(b[0].y - m->centre.y), (float)(b[0].z - m->centre.z));
         glColor3f(t[0].colour.a, t[0].colour.b, t[0].colour.c);
         glutSolidSphere(ball_scale * b[0].r, 10, 10);
