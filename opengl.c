@@ -14,7 +14,7 @@
  */
 controls *c;
 
-display mode;
+display mode = BOTH;
 
 char hud[128];
 
@@ -50,6 +50,7 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
         case 'R': case 'r': running = !running; stopped = 0; break;
         case 'S': case 's': stepping = !stepping; stopped = 0; break;
         case 'F': case 'f': glutFullScreenToggle(); break;
+        case 'V': case 'v': mode = (mode + 1) % 3; break;
         case  27: exit(1); // Escape key
     }
 }

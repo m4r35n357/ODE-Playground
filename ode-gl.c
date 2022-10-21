@@ -70,7 +70,6 @@ void Animate (void) {
 }
 
 int main (int argc, char** argv) {
-    mode = (display)strtol(argv[1], NULL, BASE);
     c = get_c_tsm(argv);
     m = get_p(argc, argv, c->order);
     since = clock();

@@ -85,7 +85,6 @@ void Animate (void) {
 }
 
 int main (int argc, char** argv) {
-    mode = (display)strtol(argv[1], NULL, BASE);
     c = get_c_symp(argv);
     k = get_p_kerr(argc, argv);
     since = clock();

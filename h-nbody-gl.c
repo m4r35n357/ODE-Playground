@@ -78,7 +78,6 @@ void CloseWindow (void) {
 }
 
 int main (int argc, char** argv) {
-    mode = (display)strtol(argv[1], NULL, BASE);
     c = get_c_symp(argv);
     m = get_p_nbody(argc, argv, (argc - 7) / 7);
     since = clock();
