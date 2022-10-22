@@ -34,9 +34,9 @@ then
 fi
 echo -n "Debug"
 
-if ! ./tsm-lorenz-static 9 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
+if ! ./tsm-lorenz-std 9 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
 then
-    echo "\033[31;1mLorenz(STATIC) failed!\033[0m"
+    echo "\033[31;1mLorenz(STD) failed!\033[0m"
     exit 1
 fi
 echo ", Static OK"

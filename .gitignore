@@ -6,12 +6,11 @@
 
 # RK4 artifacts
 rk4-*-dbg
-rk4-*-static
+rk4-*-std
 
 # TSM artifacts
 tsm-*-dbg
-tsm-*-static
-tsm-*-dynamic
+tsm-*-std
 tsm-*-gl
 divergence
 
@@ -21,7 +20,7 @@ libdual-test*
 
 # Symplectic artifacts
 h-*-dbg
-h-*-static
+h-*-std
 h-*-gl
 
 # C coverage artifacts

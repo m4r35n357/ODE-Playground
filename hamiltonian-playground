@@ -53,7 +53,7 @@ EOF
 }
 
 case $model in
-    Newton) ./h-newton-static \
+    Newton) ./h-newton-std \
         $(yad --title="Newtonian Orbit" --form --separator=" " --align=right \
         --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
         --field="mass" --field="r0" --field="L factor":NUM \
@@ -62,7 +62,7 @@ case $model in
         plot3d
         plot_errors
     ;;
-    Spring) ./h-spring-static \
+    Spring) ./h-spring-std \
         $(yad --title="Mass-Spring System" --form --separator=" " --align=right \
         --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
         --field="mass" --field="spring constant" --field="length" \

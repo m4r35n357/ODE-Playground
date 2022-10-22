@@ -92,7 +92,7 @@ case $type in
                    "0.9455050956749083" "1.434374509531738" "1.0" "7.978759958927879" \
                    "12.0" "63.0")
             ;;
-            Geodesic|Errors|Speed) ./h-kerr-static \
+            Geodesic|Errors|Speed) ./h-kerr-std \
                 $(yad --columns=2 --title="Kerr Particle Orbit Gnuplot" --form --separator=" " --align=right \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="Plot type":CB --field="BH spin":NUM --field="particle mass":RO \
@@ -123,7 +123,7 @@ case $type in
                    "1.0" "-1.6" "1.0" "27.0" \
                    "3.0" "0.0")
             ;;
-            Geodesic|Errors|Speed) ./h-kerr-static \
+            Geodesic|Errors|Speed) ./h-kerr-std \
                 $(yad --columns=2 --title="Kerr Light Orbit Gnuplot" --form --separator=" " --align=right \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="Plot type":CB --field="BH spin":NUM --field="particle mass":RO \

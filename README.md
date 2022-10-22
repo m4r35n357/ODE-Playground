@@ -99,7 +99,7 @@ There should be NO errors or warnings.  [UPDATE: kerr-image.c shows warnings on 
 
 [UPDATE] kerr-image.c shows warnings on arm64; it is 3rd party code
 
-Each non-GL client is built _both_ as a dynamic executable with asserts and debug symbols, and as a stripped static executable with asserts disabled.
+Each non-GL client is built _both_ in debug and non-debug versions.
 
 #### Running c Tests
 
@@ -269,8 +269,8 @@ The general idea is to replace one of the model parameters with the string '$p' 
 A fourth-order integrator is sufficient for bifurcation diagrams and will run faster; for this scenario we only care about transitions into and out of chaos, not accuracy within the chaotic regions.
 Progress output is sent to /dev/null in the examples below for brevity, but is useful in most situations.
 ```
-time -p ./bifurcation-scan .1 .225 10 ./tsm-thomas-static 6 4 0.1 10000 1 0 0 '$p' >/dev/null
-Bifurcation Diagrams: [.1 .225 10 ./tsm-thomas-static 6 4 0.1 10000 1 0 0 $p]
+time -p ./bifurcation-scan .1 .225 10 ./tsm-thomas-std 6 4 0.1 10000 1 0 0 '$p' >/dev/null
+Bifurcation Diagrams: [.1 .225 10 ./tsm-thomas-std 6 4 0.1 10000 1 0 0 $p]
 real 194.46
 user 195.12
 sys 116.62
@@ -328,22 +328,22 @@ Note that RK4 quickly becomes impractical because of excessive CPU usage, wherea
 These specific results require 128-bit precision, i.e. aarch64 long double (software).
 In hardware 80-bit (x86-64) or 64-bit (armhf) floating point, the maximum clean simulation time will be correspondingly lower.
 ```
-./cns step2 1.0 ./rk4-lorenz-static 6 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
-./cns step2 1.0 ./tsm-lorenz-static 6 4 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./rk4-lorenz-std 6 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./tsm-lorenz-std 6 4 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 
-./cns step2 1.0 ./rk4-lorenz-static 6 10 .001 100000 -15.8 -17.48 35.64 10 28 8 3
-./cns step2 1.0 ./tsm-lorenz-static 6 8 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./rk4-lorenz-std 6 10 .001 100000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./tsm-lorenz-std 6 8 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 
-./cns step2 1.0 ./rk4-lorenz-static 6 100 .0001 1000000 -15.8 -17.48 35.64 10 28 8 3
-./cns step2 1.0 ./tsm-lorenz-static 6 12 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./rk4-lorenz-std 6 100 .0001 1000000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./tsm-lorenz-std 6 12 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 
-./cns step2 1.0 ./rk4-lorenz-static 6 1000 .00001 10000000 -15.8 -17.48 35.64 10 28 8 3 
-./cns step2 1.0 ./tsm-lorenz-static 6 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./rk4-lorenz-std 6 1000 .00001 10000000 -15.8 -17.48 35.64 10 28 8 3 
+./cns step2 1.0 ./tsm-lorenz-std 6 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 
-./cns step2 1.0 ./rk4-lorenz-static 6 10000 .000001 100000000 -15.8 -17.48 35.64 10 28 8 3 
-./cns step2 1.0 ./tsm-lorenz-static 6 20 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./rk4-lorenz-std 6 10000 .000001 100000000 -15.8 -17.48 35.64 10 28 8 3 
+./cns step2 1.0 ./tsm-lorenz-std 6 20 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 
-./cns step2 1.0 ./tsm-lorenz-static 6 28 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./tsm-lorenz-std 6 28 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 ```
 If you need to re-plot after closing gnuplot, either use the "nosim" argument, or:
 ```
@@ -370,7 +370,7 @@ Parameter | Meaning
 
 The following commands perform a scan, and plot the simulation time and cpu time as histograms against integrator order:
 ```
-./cns-scan 32 1 ./tsm-lorenz-static 6 _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | tee /tmp/$USER/data
+./cns-scan 32 1 ./tsm-lorenz-std 6 _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | tee /tmp/$USER/data
 
  gnuplot -p << EOF
 set key left
