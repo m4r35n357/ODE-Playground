@@ -47,13 +47,13 @@ $zig_build_exe libad-test.c taylor-ode.c ad.c $CCOPTS
 $zig_build_exe libdual-test.c dual.c $CCOPTS
 
 $zig_build_exe h-analysis.c symplectic.c $CCOPTS
-$zig_build_exe h-kerr.c symplectic.c dual.c $CCOPTS
 $zig_build_exe h-newton.c symplectic.c dual.c $CCOPTS
+$zig_build_exe h-kerr.c symplectic.c dual.c main-kerr.c $CCOPTS
 $zig_build_exe h-kerr-gen-particle.c h-kerr.c dual.c $CCOPTS
 $zig_build_exe h-kerr-gen-light.c $CCOPTS
 
 #$zig_build_exe h-nbody-gl.c symplectic.c h-nbody.c $CCOPTS --library GLEW --library glut --library GLU --library GL
 
-ls -lh --color divergence* libad-test libdual-test tsm-* rk4-* h-*
+ls -lh --color divergence* libad-test libdual-test tsm-* h-*
 
 echo OK
