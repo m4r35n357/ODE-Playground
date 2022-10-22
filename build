@@ -105,21 +105,6 @@ echo " Building libad-test-dbg"
 rm -f libad-test-dbg
 ${CC} -Og -g -o libad-test-dbg taylor-ode.c ad.c libad-test.c -lm &
 
-echo ""
-echo " Building libtaylor"
-rm -f libtaylor.so taylor-ode.o
-${CC} -O3 -c -fpic taylor-ode.c && ${CC} -shared -o libtaylor.so taylor-ode.o -s &
-#  Example: musl-gcc -O3 -L. -Wall -Wextra -o test tsm-lorenz.c main.c -ltaylor -lm -s
-#  Example: LD_LIBRARY_PATH=. ./test 15 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | gnuplot -p -e "splot '<cat' with lines"
-
-echo " Building libdual"
-rm -f libdual.so dual.o
-${CC} -O3 -c -fpic dual.c && ${CC} -shared -o libdual.so dual.o -s &
-
-echo " Building libsymp"
-rm -f libsymp.so symp.o
-${CC} -O3 -c -fpic symplectic.c && ${CC} -shared -o libsymp.so symplectic.o -s &
-
 # wget -c ftp://ftp.madore.org/pub/madore/misc/kerr-image.c
 if [ -e kerr-image.c ]
 then
@@ -133,5 +118,5 @@ echo ""
 echo "Please wait . . ."
 wait
 
-ls -lh --color libad-test-dbg libdual-test-dbg tsm-* h-* lib*.so divergence
+ls -lh --color libad-test-dbg libdual-test-dbg tsm-* h-* divergence
 echo ""
