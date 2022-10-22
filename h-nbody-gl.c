@@ -11,7 +11,7 @@
 #include "h-nbody.h"
 
 static nbody *m;     // the model
-static track *t;
+static trail *t;
 
 point point_from_model (void *model) {
     body *b = (body *)model;
@@ -22,7 +22,7 @@ void Animate (void) {
     SetupView();
 
     body *b = m->bodies;
-    if (mode == BOTH || mode == TRACKS) {
+    if (mode == BOTH || mode == TRAIL) {
         for (int j = 0; j < m->n; j += 1) {
             glBegin(GL_LINE_STRIP);
             for (int i = oldest; i != newest; i = (i + 1) % max_points) {  // read buffers
@@ -33,7 +33,7 @@ void Animate (void) {
         }
     }
 
-    if (mode == BOTH || mode == BALLS) {
+    if (mode == BOTH || mode == POSITION) {
         point o = (point){(float)m->centre.x, (float)m->centre.y, (float)m->centre.z};
         for (int j = 0; j < m->n; j += 1) {
             point p = t[j].points[newest];
@@ -96,7 +96,7 @@ int main (int argc, char** argv) {
     fprintf(stderr, "\nH0: % .18Le\n", m->h);
 
     max_points = (int)strtol(argv[5], NULL, BASE);
-    t = calloc((size_t)m->n, sizeof (track));
+    t = calloc((size_t)m->n, sizeof (trail));
     for (int j = 0; j < m->n; j += 1) {
         t[j].colour = get_colour(j);
         t[j].points = calloc((size_t)max_points, sizeof (point));

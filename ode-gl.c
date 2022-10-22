@@ -10,7 +10,7 @@
 #include "opengl.h"
 
 static series3 *jets;
-static track *t;
+static trail *t;
 static void *m;
 
 point point_from_model (void *model) {
@@ -25,7 +25,7 @@ void Animate (void) {
     t->colour = get_colour(colour_index);
     glColor3f(t->colour.a, t->colour.b, t->colour.c);
 
-    if (mode == BOTH || mode == TRACKS) {
+    if (mode == BOTH || mode == TRAIL) {
         glBegin(GL_LINE_STRIP);
         for (int i = oldest; i != newest; i = (i + 1) % max_points) {  // read buffers
             glVertex3f(t->points[i].a, t->points[i].b, t->points[i].c);
@@ -33,7 +33,7 @@ void Animate (void) {
         glEnd();
     }
 
-    if (mode == BOTH || mode == BALLS) {
+    if (mode == BOTH || mode == POSITION) {
         glBegin(GL_LINES);
         glColor3f(0.3F, 0.3F, 0.3F);
         glVertex3f(0.0F, 0.0F, 0.0F);
@@ -82,7 +82,7 @@ int main (int argc, char** argv) {
     jets->x = t_jet(c->order + 1); jets->x[0] = strtold(argv[5], NULL);
     jets->y = t_jet(c->order + 1); jets->y[0] = strtold(argv[6], NULL);
     jets->z = t_jet(c->order + 1); jets->z[0] = strtold(argv[7], NULL);
-    t = malloc(sizeof (track));
+    t = malloc(sizeof (trail));
     t->points = calloc((size_t)max_points, sizeof (point));
     t->points[newest] = point_from_model(jets);
 
