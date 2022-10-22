@@ -60,7 +60,7 @@ void Animate (void) {
         osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, hud);
 
         sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.0f %%",
-                      elapsed = finished ? elapsed : ((float)(glutGet(GLUT_ELAPSED_TIME)) / 1000.0F),
+                      elapsed = finished ? elapsed : 0.001F * (float)glutGet(GLUT_ELAPSED_TIME),
                       cpu = finished ? cpu : (double)(clock() - since) / CLOCKS_PER_SEC,
                       (float)(100 * c->step / c->steps));
         osd(10, 10, hud);
