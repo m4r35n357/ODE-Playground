@@ -88,7 +88,7 @@ git clone https://github.com/m4r35n357/ODE-Playground/pure_c
 cd ODE-Playground
 ```
 
-#### c Build (GCC by default, MUSL & Clang optional)
+#### c Build (GCC or Clang)
 ```
 ./clean
 ./build [musl|clang]
@@ -99,8 +99,7 @@ There should be NO errors or warnings.  [UPDATE: kerr-image.c shows warnings on 
 
 [UPDATE] kerr-image.c shows warnings on arm64; it is 3rd party code
 
-Each client is built _both_ as a dynamic executable with asserts and debug symbols, and as a stripped static executable with asserts disabled.
-The (default) MUSL static binaries are particularly tiny!
+Each non-GL client is built _both_ as a dynamic executable with asserts and debug symbols, and as a stripped static executable with asserts disabled.
 
 #### Running c Tests
 
