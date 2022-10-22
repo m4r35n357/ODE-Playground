@@ -26,23 +26,16 @@ do
 done
 echo OK
 
-echo -n "Running Lorenz executables . . . "
-if ! ./tsm-lorenz-dbg 9 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
-then
-    echo "\033[31;1mLorenz(DBG) failed!\033[0m"
-    exit 1
-fi
-echo -n "Debug"
-
+echo -n "Running Lorenz executable . . . "
 if ! ./tsm-lorenz-std 9 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
 then
-    echo "\033[31;1mLorenz(STD) failed!\033[0m"
+    echo "\033[31;1mLorenz failed!\033[0m"
     exit 1
 fi
-echo ", Static OK"
+echo ", OK"
 
 echo -n "Running Rabinovich-Fabrikant executable . . . "
-if [ 50001 -ne $(./tsm-rf-dbg 9 16 .01 50000 .05 -.05 .3 .105 .1 2>/dev/null | wc -l) ]
+if [ 50001 -ne $(./tsm-rf-std 9 16 .01 50000 .05 -.05 .3 .105 .1 2>/dev/null | wc -l) ]
 then
     echo "\033[31;1mRabinovich-Fabrikant test failed!\033[0m"
     exit 1

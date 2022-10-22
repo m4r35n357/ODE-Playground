@@ -25,17 +25,14 @@ echo ""
 name='h-kerr-gen-particle'
 echo " Building ${name}"
 ${CC} -O3 -o ${name}-std ${name}.c dual.c h-kerr.c -lm -s &
-${CC} -Og -g -o ${name}-dbg ${name}.c dual.c h-kerr.c -lm &
 
 name='h-kerr-gen-light'
 echo " Building ${name}"
 ${CC} -O3 -o ${name}-std ${name}.c -lm -s &
-${CC} -Og -g -o ${name}-dbg ${name}.c -lm &
 
 build_symp () {
     name=$1
     ${CC} -O3 -o ${name}-std ${name}.c symplectic.c dual.c -lm -s
-    ${CC} -Og -g -o ${name}-dbg ${name}.c symplectic.c dual.c -lm
 }
 
 for model in \
@@ -51,7 +48,6 @@ echo ""
 build_tsm () {
     name=$1
     ${CC} -O3 -o ${name}-std ${name}.c taylor-ode.c main-tsm.c -lm -s
-    ${CC} -Og -g -o ${name}-dbg ${name}.c taylor-ode.c main-tsm.c -lm
     ${CC} -O3 -o ${name}-gl ${name}.c taylor-ode.c opengl.c ode-gl.c -lm -lGLEW -lglut -lGLU -lGL
 }
 
@@ -93,7 +89,6 @@ ${CC} -O3 -o h-nbody-gl symplectic.c opengl.c h-nbody.c h-nbody-gl.c -lm -lGLEW 
 echo ""
 echo " Building Kerr & Kerr GL"
 ${CC} -O3 -o h-kerr-std main-kerr.c dual.c symplectic.c h-kerr.c -lm &
-${CC} -Og -g -o h-kerr-dbg main-kerr.c dual.c symplectic.c h-kerr.c -lm &
 ${CC} -O3 -o h-kerr-gl h-kerr-gl.c dual.c symplectic.c opengl.c h-kerr.c -lm -lGLEW -lglut -lGLU -lGL &
 
 echo ""
