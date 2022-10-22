@@ -21,7 +21,6 @@ point point_from_model (void *model) {
 void Animate (void) {
     SetupView();
 
-    point p = t->points[newest];
     t->colour = get_colour(colour_index);
     glColor3f(t->colour.a, t->colour.b, t->colour.c);
 
@@ -33,6 +32,7 @@ void Animate (void) {
         glEnd();
     }
 
+    point p = t->points[newest];
     if (mode == BOTH || mode == POSITION) {
         glBegin(GL_LINES);
         glColor3f(0.3F, 0.3F, 0.3F);

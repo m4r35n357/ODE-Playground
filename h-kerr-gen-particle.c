@@ -88,7 +88,7 @@ static kerr *get_p_gen (char **argv) {
     return k;
 }
 
-int main (int argc, char **argv) {
+int main (int argc, char **argv) { (void)argc;
     assert(argc == 6);
     kerr *k = get_p_gen(argv);
     matrix3x3 J;

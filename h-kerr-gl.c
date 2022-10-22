@@ -17,17 +17,17 @@ static trail *t;
 static real RAD_TO_DEG;
 
 point point_from_model (void *model) {
-    kerr *k = (kerr *)model;
-    real ra_sth = sqrtl(k->ra2.val) * sinl(k->q_theta);
-    return (point){(float)(ra_sth * cosl(k->q_phi)), (float)(ra_sth * sinl(k->q_phi)), (float)(k->q_r * cosl(k->q_theta))};
+    kerr *m = (kerr *)model;
+    real ra_sth = sqrtl(m->ra2.val) * sinl(m->q_theta);
+    return (point){(float)(ra_sth * cosl(m->q_phi)), (float)(ra_sth * sinl(m->q_phi)), (float)(m->q_r * cosl(m->q_theta))};
 }
 
 void Animate (void) {
     SetupView();
 
-    point p = t->points[newest];
     glColor3f(0.0F, 0.0F, 0.5F);
-    solid ? glutSolidSphere(k->horizon, 2.0L * mesh, 2.0* mesh) : glutWireSphere(k->horizon, 2.0L * mesh, 2.0* mesh);
+    solid ? glutSolidSphere(k->horizon, 2 * mesh, 2 * mesh) : glutWireSphere(k->horizon, 2 * mesh, 2 * mesh);
+
     t->colour = get_colour(colour_index);
     glColor3f(t->colour.a, t->colour.b, t->colour.c);
 
@@ -39,6 +39,7 @@ void Animate (void) {
         glEnd();
     }
 
+    point p = t->points[newest];
     if (mode == BOTH || mode == POSITION) {
         glBegin(GL_LINES);
         glColor3f(0.3F, 0.3F, 0.3F);

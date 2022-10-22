@@ -12,7 +12,7 @@
 #include <math.h>
 #include "real.h"
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv) { (void)argc;
     assert(argc == 3);
     real r = strtold(argv[1], NULL);
     real a = strtold(argv[2], NULL);
