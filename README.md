@@ -56,6 +56,8 @@ Plot bifurcation diagrams, to find "interesting" parameter values to study
 2nd to 10th order integrators, with visualization of the time stepping structure
 
 Examples; N-Body system, Mass-spring system, Newton orbits, plus an analysis example to illustrate the symplectic time-stepping sequence for each order of integration.
+The N-body example uses symplectic integration, but not dual numbers, because the differentiation is trivial in this case.
+
 No formal documentation yet, see the yad and c files for example usage.
 
 ```
@@ -64,7 +66,8 @@ No formal documentation yet, see the yad and c files for example usage.
 
 ### Spinning Black Hole (Kerr) orbits
 
-This example uses symplectic integration, but not Dual numbers, because the differentiation is trivial in this case.
+This example uses a "pseudo-Hamiltonian" approach with Dual Numbers to solve Carter's first-order equations of motion, separated in r and theta using Mino time.
+
 No formal documentation yet, see the yad and c files for example usage.
 
 ```
