@@ -34,13 +34,13 @@ void Animate (void) {
 
     point p = t->points[newest];
     if (mode == BOTH || mode == POSITION) {
-        glBegin(GL_LINES);
         glColor3f(0.3F, 0.3F, 0.3F);
+        glBegin(GL_LINES);
         glVertex3f(0.0F, 0.0F, 0.0F);
         glVertex3f(p.a, p.b, p.c);
         glEnd();
-        glColor3f(t->colour.a, t->colour.b, t->colour.c);
         glTranslatef(p.a, p.b, p.c);
+        glColor3f(t->colour.a, t->colour.b, t->colour.c);
         solid ? glutSolidSphere(ball_scale, mesh, mesh) : glutWireSphere(ball_scale, mesh, mesh);
     }
 

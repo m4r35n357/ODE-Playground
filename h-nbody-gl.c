@@ -36,9 +36,9 @@ void Animate (void) {
     if (mode == BOTH || mode == POSITION) {
         point o = (point){(float)m->centre.x, (float)m->centre.y, (float)m->centre.z};
         for (int j = 0; j < m->n; j += 1) {
+            glColor3f(0.3F, 0.3F, 0.3F);
             point p = t[j].points[newest];
             glBegin(GL_LINES);
-            glColor3f(0.3F, 0.3F, 0.3F);
             glVertex3f(o.a, o.b, o.c);
             glVertex3f(p.a, p.b, p.c);
             glEnd();
