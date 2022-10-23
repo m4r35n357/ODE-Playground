@@ -32,7 +32,7 @@ ${CC} -O3 -o ${name}-std ${name}.c -lm -s &
 
 build_symp () {
     name=$1
-    ${CC} -O3 -o ${name}-std ${name}.c symplectic.c dual.c -lm -s
+    ${CC} -O3 -o ${name}-std ${name}.c symplectic.c dual.c -lm -s &
 }
 
 for model in \
@@ -41,14 +41,14 @@ h-newton \
 h-analysis
 do
     echo " Building ${model}"
-    build_symp ${model} &
+    build_symp ${model}
 done
 
 echo ""
 build_tsm () {
     name=$1
-    ${CC} -O3 -o ${name}-std ${name}.c taylor-ode.c main-tsm.c -lm -s
-    ${CC} -O3 -o ${name}-gl ${name}.c taylor-ode.c opengl.c ode-gl.c -lm -lGLEW -lglut -lGLU -lGL
+    ${CC} -O3 -o ${name}-std ${name}.c taylor-ode.c main-tsm.c -lm -s &
+    ${CC} -O3 -o ${name}-gl ${name}.c taylor-ode.c opengl.c ode-gl.c -lm -lGLEW -lglut -lGLU -lGL &
 }
 
 for model in \
@@ -75,7 +75,7 @@ tsm-wimol-banlue \
 tsm-yu-wang
 do
     echo " Building ${model}"
-    build_tsm ${model} &
+    build_tsm ${model}
 done
 
 echo ""
