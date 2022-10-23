@@ -18,7 +18,7 @@ point point_from_model (void *model) {
     return (point){(float)j->x[0], (float)j->y[0], (float)j->z[0]};
 }
 
-void Animate (void) {
+void Animate () {
     SetupView();
 
     t->colour = get_colour(colour_index);

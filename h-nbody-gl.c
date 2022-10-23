@@ -18,7 +18,7 @@ point point_from_model (void *model) {
     return (point){(float)b->x, (float)b->y, (float)b->z};
 }
 
-void Animate (void) {
+void Animate () {
     SetupView();
 
     body *b = m->bodies;
@@ -85,7 +85,7 @@ void Animate (void) {
     ReDraw();
 }
 
-void CloseWindow (void) {
+void CloseWindow () {
     fprintf(stderr, "H : % .18Le\n", m->h);
 }
 

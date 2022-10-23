@@ -22,7 +22,7 @@ point point_from_model (void *model) {
     return (point){(float)(ra_sth * cosl(m->q_phi)), (float)(ra_sth * sinl(m->q_phi)), (float)(m->q_r * cosl(m->q_theta))};
 }
 
-void Animate (void) {
+void Animate () {
     SetupView();
 
     glColor3f(0.0F, 0.0F, 0.5F);
