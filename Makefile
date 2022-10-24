@@ -5,6 +5,8 @@ CFLAGS=-I. -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict
 LIBS=-lm
 GL_LIBS=-lGLEW -lglut -lGLU -lGL
 
+all: tsm tsm-gl h generators h-kerr-gl h-nbody-gl divergence tests
+
 tsm-%.o: tsm-%.c taylor-ode.h real.h
 	$(CC) -c -o $@ $< $(CFLAGS)
 
@@ -68,10 +70,6 @@ libdual-test: libdual-test.o dual.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 tests: libad-test libdual-test
-
-all: tsm tsm-gl h generators h-kerr-gl h-nbody-gl divergence tests
-
-default: all
 
 .PHONY: clean
 
