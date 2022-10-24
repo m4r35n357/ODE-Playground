@@ -1,8 +1,8 @@
 #!/bin/sh
 
 echo -n "Running make . . ."
-make clean
-make -j 4 all
+make -s clean
+make -s -j 4 all
 
 for x in .5 0 -.5
 do
