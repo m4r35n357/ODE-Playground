@@ -21,7 +21,7 @@ tsm-%-gl: tsm-%.o taylor-ode.o opengl.o ode-gl.o
 
 tsm-gl: tsm-halvorsen-gl tsm-lorenz-gl tsm-thomas-gl tsm-rf-gl tsm-rossler-gl
 
-h-%.o: h-%.c symplectic.h real.h
+h-%.o: h-%.c symplectic.h dual.h real.h
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 h-%-std: h-%.o symplectic.o dual.o
@@ -32,10 +32,10 @@ h: h-analysis-std h-newton-std h-spring-std
 h-kerr-gen-light: h-kerr-gen-light.c real.h
 	$(CC) -o $@ $< $(CFLAGS) $(LIBS)
 
-h-kerr-gen-particle.o: h-kerr-gen-particle.c real.h
+h-kerr-gen-particle.o: h-kerr-gen-particle.c h-kerr.h dual.h real.h
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-h-kerr-gen-particle: h-kerr-gen-particle.o dual.o h-kerr.o
+h-kerr-gen-particle: h-kerr-gen-particle.o h-kerr.o dual.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 h-kerr-gl.o: h-kerr-gl.c opengl.h h-kerr.h symplectic.h dual.h real.h
