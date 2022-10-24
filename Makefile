@@ -1,39 +1,30 @@
 
 CC=gcc -std=c99
-CFLAGS=-I. -Wall -Wextra -pedantic
+CFLAGS=-I. -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wconversion -Wredundant-decls -Wmissing-declarations -Wunsuffixed-float-constants -frounding-math -fsignaling-nans
 
 LIBS=-lm
 GL_LIBS=-lGLEW -lglut -lGLU -lGL
 
-TSM_DEPS = taylor-ode.h real.h
-TSM_OBJ = taylor-ode.o main-tsm.o
-
-tsm-%.o: tsm-%.c $(TSM_DEPS)
+tsm-%.o: tsm-%.c taylor-ode.h real.h
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-tsm-%-std: tsm-%.o $(TSM_OBJ)
+tsm-%-std: tsm-%.o taylor-ode.o main-tsm.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 tsm: tsm-halvorsen-std tsm-lorenz-std tsm-thomas-std tsm-rf-std tsm-rossler-std
 
-TSM_GL_DEPS = opengl.h taylor-ode.h real.h
-TSM_GL_OBJ = taylor-ode.o opengl.o ode-gl.o
-
-tsm-%-gl.o: tsm-%.c $(TSM_GL_DEPS)
+tsm-%-gl.o: tsm-%.c opengl.h taylor-ode.h real.h
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-tsm-%-gl: tsm-%.o $(TSM_GL_OBJ)
+tsm-%-gl: tsm-%.o taylor-ode.o opengl.o ode-gl.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS) $(GL_LIBS)
 
 tsm-gl: tsm-halvorsen-gl tsm-lorenz-gl tsm-thomas-gl tsm-rf-gl tsm-rossler-gl
 
-H_DEPS = symplectic.h real.h
-H_OBJ = symplectic.o dual.o
-
-h-%.o: h-%.c $(H_DEPS)
+h-%.o: h-%.c symplectic.h real.h
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-h-%-std: h-%.o $(H_OBJ)
+h-%-std: h-%.o symplectic.o dual.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 h: h-analysis-std h-newton-std h-spring-std
@@ -47,43 +38,31 @@ h-kerr-gen-particle.o: h-kerr-gen-particle.c real.h
 h-kerr-gen-particle: h-kerr-gen-particle.o dual.o h-kerr.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
-H_KERR_GL_DEPS = opengl.h h-kerr.h symplectic.h dual.h real.h
-H_KERR_GL_OBJ = opengl.o symplectic.o dual.o h-kerr.o
-
-h-kerr-gl.o: h-kerr-gl.c $(H_KERR_GL_DEPS)
+h-kerr-gl.o: h-kerr-gl.c opengl.h h-kerr.h symplectic.h dual.h real.h
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-h-kerr-gl: h-kerr-gl.o $(H_KERR_GL_OBJ)
+h-kerr-gl: h-kerr-gl.o opengl.o symplectic.o dual.o h-kerr.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS) $(GL_LIBS)
 
-H_NBODY_GL_DEPS = opengl.h h-nbody.h symplectic.h real.h
-H_NBODY_GL_OBJ = opengl.o symplectic.o h-nbody.o
-
-h-nbody-gl.o: h-nbody-gl.c $(H_NBODY_GL_DEPS)
+h-nbody-gl.o: h-nbody-gl.c opengl.h h-nbody.h symplectic.h real.h
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-h-nbody-gl: h-nbody-gl.o $(H_NBODY_GL_OBJ)
+h-nbody-gl: h-nbody-gl.o opengl.o symplectic.o h-nbody.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS) $(GL_LIBS)
 
 divergence: divergence.c real.h
 	$(CC) -o $@ $< $(CFLAGS) $(LIBS)
 
-AD_TEST_DEPS = taylor-ode.h ad.h real.h
-AD_TEST_OBJ = taylor-ode.o ad.o
-
-libad-test.o: libad-test.c $(AD_TEST_DEPS)
+libad-test.o: libad-test.c taylor-ode.h ad.h real.h
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-libad-test: libad-test.o $(AD_TEST_OBJ)
+libad-test: libad-test.o taylor-ode.o ad.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
-DUAL_TEST_DEPS = dual.h real.h
-DUAL_TEST_OBJ = dual.o
-
-libdual-test.o: libdual-test.c $(DUAL_TEST_DEPS)
+libdual-test.o: libdual-test.c dual.h real.h
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-libdual-test: libdual-test.o $(DUAL_TEST_OBJ)
+libdual-test: libdual-test.o dual.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 all: tsm tsm-gl h h-kerr-gen-light h-kerr-gen-particle h-kerr-gl h-nbody-gl divergence libad-test libdual-test
