@@ -11,7 +11,7 @@ tsm-%.o: tsm-%.c taylor-ode.h real.h
 tsm-%-std: tsm-%.o taylor-ode.o main-tsm.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
-tsm: tsm-halvorsen-std tsm-lorenz-std tsm-thomas-std tsm-rf-std tsm-rossler-std
+tsm: tsm-bouali-std tsm-burke-shaw-std tsm-cosmology-std tsm-genesio-tesi-std tsm-halvorsen-std tsm-isuc-std tsm-logistic-std tsm-kom-std tsm-lorenz-std tsm-lotka-volterra-std tsm-nose-hoover-std tsm-rf-std tsm-rossler-std tsm-rucklidge-std tsm-sj-std tsm-sprott-minimal-std tsm-sprott-thomas-std tsm-thomas-std tsm-van-der-pol-std tsm-wimol-banlue-std tsm-yu-wang-std
 
 tsm-%-gl.o: tsm-%.c opengl.h taylor-ode.h real.h
 	$(CC) -c -o $@ $< $(CFLAGS)
@@ -19,7 +19,7 @@ tsm-%-gl.o: tsm-%.c opengl.h taylor-ode.h real.h
 tsm-%-gl: tsm-%.o taylor-ode.o opengl.o ode-gl.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS) $(GL_LIBS)
 
-tsm-gl: tsm-halvorsen-gl tsm-lorenz-gl tsm-thomas-gl tsm-rf-gl tsm-rossler-gl
+tsm-gl: tsm-bouali-gl tsm-burke-shaw-gl tsm-cosmology-gl tsm-genesio-tesi-gl tsm-halvorsen-gl tsm-isuc-gl tsm-logistic-gl tsm-kom-gl tsm-lorenz-gl tsm-lotka-volterra-gl tsm-nose-hoover-gl tsm-rf-gl tsm-rossler-gl tsm-rucklidge-gl tsm-sj-gl tsm-sprott-minimal-gl tsm-sprott-thomas-gl tsm-thomas-gl tsm-van-der-pol-gl tsm-wimol-banlue-gl tsm-yu-wang-gl
 
 h-%.o: h-%.c symplectic.h dual.h real.h
 	$(CC) -c -o $@ $< $(CFLAGS)
