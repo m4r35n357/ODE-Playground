@@ -38,6 +38,8 @@ h-kerr-gen-particle.o: h-kerr-gen-particle.c h-kerr.h dual.h real.h
 h-kerr-gen-particle: h-kerr-gen-particle.o h-kerr.o dual.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
+generators: h-kerr-gen-light h-kerr-gen-particle
+
 h-kerr-gl.o: h-kerr-gl.c opengl.h h-kerr.h symplectic.h dual.h real.h
 	$(CC) -c -o $@ $< $(CFLAGS)
 
@@ -65,7 +67,9 @@ libdual-test.o: libdual-test.c dual.h real.h
 libdual-test: libdual-test.o dual.o
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
-all: tsm tsm-gl h h-kerr-gen-light h-kerr-gen-particle h-kerr-gl h-nbody-gl divergence libad-test libdual-test
+tests: libad-test libdual-test
+
+all: tsm tsm-gl h generators h-kerr-gl h-nbody-gl divergence tests
 
 default: all
 
