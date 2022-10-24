@@ -14,6 +14,8 @@ tsm-%.o: tsm-%.c $(TSM_DEPS)
 tsm-%-std: tsm-%.o $(TSM_OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
+tsm: tsm-halvorsen-std tsm-lorenz-std tsm-thomas-std tsm-rf-std tsm-rossler-std
+
 TSM_GL_DEPS = opengl.h taylor-ode.h real.h
 TSM_GL_OBJ = taylor-ode.o opengl.o ode-gl.o
 
@@ -22,8 +24,6 @@ tsm-%-gl.o: tsm-%.c $(TSM_GL_DEPS)
 
 tsm-%-gl: tsm-%.o $(TSM_GL_OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS) $(GL_LIBS)
-
-tsm: tsm-halvorsen-std tsm-lorenz-std tsm-thomas-std tsm-rf-std tsm-rossler-std
 
 tsm-gl: tsm-halvorsen-gl tsm-lorenz-gl tsm-thomas-gl tsm-rf-gl tsm-rossler-gl
 
@@ -37,6 +37,15 @@ h-%-std: h-%.o $(H_OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 h: h-analysis-std h-newton-std h-spring-std
+
+h-kerr-gen-light: h-kerr-gen-light.c real.h
+	$(CC) -o $@ $< $(CFLAGS) $(LIBS)
+
+h-kerr-gen-particle.o: h-kerr-gen-particle.c real.h
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+h-kerr-gen-particle: h-kerr-gen-particle.o dual.o h-kerr.o
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 H_KERR_GL_DEPS = opengl.h h-kerr.h symplectic.h dual.h real.h
 H_KERR_GL_OBJ = opengl.o symplectic.o dual.o h-kerr.o
@@ -77,7 +86,7 @@ libdual-test.o: libdual-test.c $(DUAL_TEST_DEPS)
 libdual-test: libdual-test.o $(DUAL_TEST_OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
-all: tsm tsm-gl h h-kerr-gl h-nbody-gl divergence libad-test libdual-test
+all: tsm tsm-gl h h-kerr-gen-light h-kerr-gen-particle h-kerr-gl h-nbody-gl divergence libad-test libdual-test
 
 default: all
 
@@ -88,4 +97,5 @@ clean:
 	rm -f *-std
 	rm -f *-gl
 	rm -f divergence
+	rm -f h-kerr-gen-light h-kerr-gen-particle
 	rm -f libad-test libdual-test
