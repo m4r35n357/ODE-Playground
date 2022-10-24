@@ -1,6 +1,9 @@
 
-CC=gcc -std=c99
-CFLAGS=-I. -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wconversion -Wredundant-decls -Wmissing-declarations -Wunsuffixed-float-constants -frounding-math -fsignaling-nans
+CC=clang -std=c99
+CFLAGS=-I. -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wconversion -Wredundant-decls -Wmissing-declarations
+
+CFLAGS += -ffp-model=precise
+#CFLAGS += -Wunsuffixed-float-constants -frounding-math -fsignaling-nans
 
 LIBS=-lm
 GL_LIBS=-lGLEW -lglut -lGLU -lGL
