@@ -91,18 +91,16 @@ git clone https://github.com/m4r35n357/ODE-Playground/pure_c
 cd ODE-Playground
 ```
 
-#### c Build (GCC or Clang)
-```
-./clean
-./build [musl|clang]
-```
-There should be NO errors or warnings.  [UPDATE: kerr-image.c shows warnings on arm64; it is 3rd party code]
+#### c Build (Clang)
 
-[UPDATE] clang shows warnings for the unsupported -Wunsuffixed-float-constants warning!
+You can edit the comments in the top part of the Makefile to get a GCC build.
+```
+make clean
+make all
+```
+There should be NO errors or warnings.
 
 [UPDATE] kerr-image.c shows warnings on arm64; it is 3rd party code
-
-Each non-GL client is built _both_ in debug and non-debug versions.
 
 #### Running c Tests
 

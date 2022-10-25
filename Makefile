@@ -1,6 +1,9 @@
 
 CC=clang -std=c99 -O3
+#CC=gcc -std=c99 -O3
+
 CCDBG=clang -std=c99 -g -Og
+#CCDBG=gcc -std=c99 -g -Og
 
 CFLAGS=-I. -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wconversion -Wredundant-decls -Wmissing-declarations
 
