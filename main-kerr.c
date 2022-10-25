@@ -55,6 +55,7 @@ int main (int argc, char **argv) {
         case 2: plot = plot_raw; break;   // for debugging
         default: printf("Plot type is {%ld} but should be 0 (standard), 1 (view), or 2 (raw)\n", plot_type); exit(2);
     }
-    solve(argv, get_c_symp(argv), get_p_kerr(argc, argv), plot);
+    controls *c = get_c_symp(argv);
+    solve(argv, c, get_p_kerr(argc, argv, c->step_size), plot);
     return 0;
 }

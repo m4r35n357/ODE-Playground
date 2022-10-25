@@ -90,7 +90,7 @@ void Animate () {
 
 int main (int argc, char** argv) {
     c = get_c_symp(argv);
-    k = get_p_kerr(argc, argv);
+    k = get_p_kerr(argc, argv, c->step_size);
     since = clock();
     RAD_TO_DEG = 180.0L / acosl(-1.0L);
 
