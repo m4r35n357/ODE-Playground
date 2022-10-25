@@ -1,7 +1,7 @@
 /*
  * Dual numbers, newest validation checks
  *
- * Example: ./libdual-test-dbg 1 1e-18 [ 0 | 1 | 2 ]
+ * Example: ./libdual-test 1 1e-18 [ 0 | 1 | 2 ]
  *
  ./libdual-test-dbg $(yad --columns=2 --title="Dual Tests" --form --separator=" " --align=right \
     --field="Value":NUM --field="Max. Error":CB --field="Detail":CB \

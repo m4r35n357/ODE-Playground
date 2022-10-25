@@ -1,7 +1,7 @@
 /*
  * Automatic Differentiation of Taylor Series, newest validation checks
  *
- * Example: ./libad-test-dbg 20 .5 1e-18 [ 0 | 1 | 2 ]
+ * Example: ./libad-test 20 .5 1e-18 [ 0 | 1 | 2 ]
  *
  ./libad-test-dbg $(yad --columns=2 --title="Taylor Tests" --form --separator=" " --align=right \
     --field="Order":NUM --field="Value":NUM --field="Max. Error":CB --field="Detail":CB \
