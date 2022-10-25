@@ -24,11 +24,12 @@ void Animate () {
     body *b = m->bodies;
     if (mode == BOTH || mode == TRAIL) {
         for (int j = 0; j < m->n; j += 1) {
+            glColor3f(t[j].colour.a, t[j].colour.b, t[j].colour.c);
             glBegin(GL_LINE_STRIP);
             for (int i = oldest; i != newest; i = (i + 1) % max_points) {  // read buffers
-                glColor3f(t[j].colour.a, t[j].colour.b, t[j].colour.c);
                 glVertex3f(t[j].points[i].a, t[j].points[i].b, t[j].points[i].c);
             }
+            glVertex3f(t[j].points[newest].a, t[j].points[newest].b, t[j].points[newest].c);
             glEnd();
         }
     }

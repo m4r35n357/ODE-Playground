@@ -36,6 +36,7 @@ void Animate () {
         for (int i = oldest; i != newest; i = (i + 1) % max_points) {  // read buffers
             glVertex3f(t->points[i].a, t->points[i].b, t->points[i].c);
         }
+        glVertex3f(t->points[newest].a, t->points[newest].b, t->points[newest].c);
         glEnd();
     }
 
