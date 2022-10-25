@@ -13,7 +13,7 @@ CFLAGS += -ffp-model=precise
 LIBS=-lm
 GL_LIBS=-lGLEW -lglut -lGLU -lGL
 
-all: tsm tsm-gl h generators h-kerr-gl h-nbody-gl divergence tests
+all: ctags tsm tsm-gl h generators h-kerr-gl h-nbody-gl divergence tests
 
 tsm-%.o: tsm-%.c taylor-ode.h real.h
 	$(CC) -c -o $@ $< $(CFLAGS)
@@ -82,7 +82,10 @@ tests: libad-test libdual-test
 kerr-image: kerr-image.c
 	$(CC) -o $@ $< $(CFLAGS) $(LIBS)
 
-.PHONY: clean
+.PHONY: clean ctags
+
+ctags:
+	/usr/bin/ctags *.h *.c
 
 clean:
 	rm -f *.o *~ core
