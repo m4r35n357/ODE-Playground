@@ -32,7 +32,7 @@ extern clock_t since;
 
 extern double elapsed, cpu;
 
-extern _Bool finished, stopped, stepping, running, osd_active, solid;
+extern _Bool finished, paused, stepping, running, osd_active, solid;
 
 extern float ball_scale;
 

@@ -22,7 +22,7 @@ clock_t since;
 
 double elapsed, cpu;
 
-_Bool finished = 0, stopped = 0, stepping = 0, running = 1, osd_active = 1, solid = 1;
+_Bool finished = 0, paused = 0, stepping = 0, running = 1, osd_active = 1, solid = 1;
 
 int max_points, oldest = 0, newest = 0, colour_index = DARK_GREEN, mesh = 10;
 
@@ -50,8 +50,8 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
         case 'C': case 'c': colour_index -= 1; break;
         case 'G': case 'g': ball_scale *= 1.1F; break;
         case 'B': case 'b': ball_scale /= 1.1F; break;
-        case 'R': case 'r': running = !running; stopped = 0; break;
-        case 'S': case 's': stepping = !stepping; stopped = 0; break;
+        case 'S': case 's': running = !running; paused = 0; break;
+        case 'P': case 'p': stepping = !stepping; paused = 0; break;
         case 'F': case 'f': glutFullScreenToggle(); break;
         case 'V': case 'v': mode = (mode + 1) % 3; break;
         case 'H': case 'h': osd_active = !osd_active; break;

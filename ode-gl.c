@@ -57,7 +57,7 @@ void Animate () {
         osd(10, 10, hud);
     }
 
-    if (!finished && !stopped) {
+    if (!finished && !paused) {
         if (tsm_gen(c, jets, m)) {
             buffer_point();
             t->points[newest] = point_from_model(jets);
@@ -65,7 +65,7 @@ void Animate () {
             finished = 1;
         }
         if (stepping) {
-            stopped = 1;
+            paused = 1;
         }
     }
 
@@ -77,11 +77,12 @@ int main (int argc, char** argv) {
     m = get_p(argc, argv, c->order);
     since = clock();
 
-    max_points = c->steps / 2;
     jets = malloc(sizeof (series3));
     jets->x = t_jet(c->order + 1); jets->x[0] = strtold(argv[5], NULL);
     jets->y = t_jet(c->order + 1); jets->y[0] = strtold(argv[6], NULL);
     jets->z = t_jet(c->order + 1); jets->z[0] = strtold(argv[7], NULL);
+
+    max_points = c->steps / 2;
     t = malloc(sizeof (trail));
     t->points = calloc((size_t)max_points, sizeof (point));
     t->points[newest] = point_from_model(jets);

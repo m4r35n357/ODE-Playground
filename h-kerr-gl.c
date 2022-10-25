@@ -72,7 +72,7 @@ void Animate () {
         osd(10, 10, hud);
     }
 
-    if (!finished && !stopped) {
+    if (!finished && !paused) {
         if (generate(c, k)) {
             buffer_point();
             t->points[newest] = point_from_model(k);
@@ -80,7 +80,7 @@ void Animate () {
             finished = 1;
         }
         if (stepping) {
-            stopped = 1;
+            paused = 1;
         }
     }
 

@@ -66,7 +66,7 @@ void Animate () {
         osd(10, 10, hud);
     }
 
-    if (!finished && !stopped) {
+    if (!finished && !paused) {
         if (generate(c, m)) {
             cog(m);
             m->h = h(m) > m->h ? h(m) : m->h;
@@ -78,7 +78,7 @@ void Animate () {
             finished = 1;
         }
         if (stepping) {
-            stopped = 1;
+            paused = 1;
         }
     }
 
