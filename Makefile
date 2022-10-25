@@ -74,6 +74,9 @@ libdual-test: libdual-test.o dual.o
 
 tests: libad-test libdual-test
 
+kerr-image: kerr-image.c
+	$(CC) -o $@ $< $(CFLAGS) $(LIBS)
+
 .PHONY: clean
 
 clean:
