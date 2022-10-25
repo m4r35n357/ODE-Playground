@@ -1,5 +1,5 @@
 
-CC=clang -std=c99
+CC=clang -std=c99 -O3
 CFLAGS=-I. -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wconversion -Wredundant-decls -Wmissing-declarations
 
 CFLAGS += -ffp-model=precise
