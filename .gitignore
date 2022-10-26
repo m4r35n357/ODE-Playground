@@ -22,6 +22,7 @@ libdual-test*
 h-*-dbg
 h-*-std
 h-*-gl
+h-kerr-gen-*
 
 # C coverage artifacts
 *.gcov
