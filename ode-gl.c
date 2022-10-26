@@ -10,7 +10,6 @@
 #include "opengl.h"
 
 static series3 *jets;
-static trail *t;
 static void *m;
 
 point point_from_model (void *model) {

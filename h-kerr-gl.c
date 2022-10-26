@@ -12,7 +12,6 @@
 #include "h-kerr.h"
 
 static kerr *k;  // the model
-static trail *t;
 
 static real RAD_TO_DEG;
 

@@ -14,6 +14,8 @@
  */
 controls *c;
 
+trail *t;
+
 display mode = BOTH;
 
 char hud[128];

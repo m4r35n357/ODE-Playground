@@ -11,7 +11,6 @@
 #include "h-nbody.h"
 
 static nbody *m;     // the model
-static trail *t;
 
 point point_from_model (void *model) {
     body *b = (body *)model;

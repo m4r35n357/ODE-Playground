@@ -19,6 +19,8 @@ typedef struct Trail {
  */
 extern controls *c;
 
+extern trail *t;
+
 typedef enum Display {BOTH=0, POSITION=1, TRAIL=2} display;
 
 typedef enum CName {YELLOW=0, CYAN=1, MAGENTA=2, RED=3, GREEN=4, BLUE=5, DARK_GREY=6, LIGHT_GREY=7, GREY=8,
