@@ -87,7 +87,7 @@ case $type in
                 --field="BH spin":NUM --field="particle mass":RO \
                 --field="particle energy" --field="particle momentum" --field="momentum factor" --field="Carter's constant" \
                 --field="r0" --field="theta0" \
-                -- '4!2..10!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' '1000!1..100000!1' \
+                -- '4!2..10!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' '2000!1..100000!1' \
                    "0.8!-1.0..1.0!0.1!1" "1.0" \
                    "0.9455050956749083" "1.434374509531738" "1.0" "7.978759958927879" \
                    "12.0" "63.0")
@@ -118,7 +118,7 @@ case $type in
                 --field="BH spin":NUM --field="particle mass":RO \
                 --field="particle energy":RO --field="particle momentum" --field="momentum factor" --field="Carter's constant" \
                 --field="r0" --field="theta0" \
-                -- '4!2..10!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' '1000!1..100000!1' \
+                -- '4!2..10!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' '2000!1..100000!1' \
                    "0.8!-1.0..1.0!0.1!1" "0.0" \
                    "1.0" "-1.6" "1.0" "27.0" \
                    "3.0" "0.0")
