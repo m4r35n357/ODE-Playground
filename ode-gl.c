@@ -5,12 +5,12 @@
  */
 
 #include <stdio.h>
-#include <GL/freeglut.h>    // OpenGL Graphics Utility Library
+#include <GL/freeglut.h>
 #include "taylor-ode.h"
 #include "opengl.h"
 
+static void *m;  // the model
 static series3 *jets;
-static void *m;
 
 point point_from_model (void *model) {
     series3 *j = (series3 *)model;

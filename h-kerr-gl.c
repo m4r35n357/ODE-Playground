@@ -8,8 +8,8 @@
 #include <math.h>
 #include <GL/freeglut.h>
 #include "symplectic.h"
-#include "opengl.h"
 #include "h-kerr.h"
+#include "opengl.h"
 
 static kerr *k;  // the model
 

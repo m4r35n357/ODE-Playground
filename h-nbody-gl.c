@@ -10,7 +10,7 @@
 #include "opengl.h"
 #include "h-nbody.h"
 
-static nbody *m;     // the model
+static nbody *m;  // the model
 
 point point_from_model (void *model) {
     body *b = (body *)model;
