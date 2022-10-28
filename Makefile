@@ -1,9 +1,6 @@
 
 CC=clang -std=c99 -O3
-#CC=gcc -std=c99 -O3
-
-CCDBG=clang -std=c99 -g -Og
-#CCDBG=gcc -std=c99 -g -Og
+#CC=gcc -std=c99 -Og -g
 
 CFLAGS=-I. -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wconversion -Wredundant-decls -Wmissing-declarations
 
@@ -66,16 +63,16 @@ divergence: divergence.c real.h
 	$(CC) -o $@ $< $(CFLAGS) $(LIBS)
 
 libad-test.o: libad-test.c taylor-ode.h ad.h real.h
-	$(CCDBG) -c -o $@ $< $(CFLAGS)
+	$(CC) -c -o $@ $< $(CFLAGS)
 
 libad-test: libad-test.o taylor-ode.o ad.o
-	$(CCDBG) -o $@ $^ $(CFLAGS) $(LIBS)
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 libdual-test.o: libdual-test.c dual.h real.h
-	$(CCDBG) -c -o $@ $< $(CFLAGS)
+	$(CC) -c -o $@ $< $(CFLAGS)
 
 libdual-test: libdual-test.o dual.o
-	$(CCDBG) -o $@ $^ $(CFLAGS) $(LIBS)
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 tests: libad-test libdual-test
 
