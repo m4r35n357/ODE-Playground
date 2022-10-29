@@ -25,7 +25,6 @@ controls *get_c_symp (char **argv) {
     c->r2 = (weights){.fwd = r(2), .rev = 1.0L - 4.0L * r(2)};
     c->r3 = (weights){.fwd = r(3), .rev = 1.0L - 4.0L * r(3)};
     c->r4 = (weights){.fwd = r(4), .rev = 1.0L - 4.0L * r(4)};
-    c->generating = 0;
     return c;
 }
 
@@ -103,13 +102,14 @@ void solve (char **argv, controls *c, void *p, plotter output) {
 }
 
 int generate (controls *c, void *p) {
+    static _Bool generating = 0;
     static integrator composer;
-    if (c->generating) goto resume; else c->generating = 1;
+    if (generating) goto resume; else generating = 1;
     composer = get_integrator(c->order);
     for (c->step = 0; c->step < c->steps; c->step++) {
         composer(c, p, c->step_size);
         return 1;
         resume: ;
     }
-    return c->generating = 0;
+    return generating = 0;
 }

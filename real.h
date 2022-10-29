@@ -37,7 +37,7 @@ typedef struct Weights {
 } weights;
 
 typedef struct Controls {
-    int order, step, steps, generating;
+    int order, step, steps;
     real step_size;
     weights r1, r2, r3, r4;
 } controls;

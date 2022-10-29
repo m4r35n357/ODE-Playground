@@ -30,7 +30,7 @@ int max_points, oldest = 0, newest = 0, colour_index = DARK_GREEN, mesh = 10;
 
 float ball_scale = 0.1F;
 
-static float radius = 20.0F, latitude = 90.0F, longitude = 0.0F, light[] = {-100.0F, 100.0F, -100.0F, 0.0F};
+static float radius = 20.0F, latitude = 90.0F, longitude = 0.0F;
 
 void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
@@ -101,7 +101,7 @@ void SetupView () {
     glTranslatef(0.0F, 0.0F, - radius);
     glRotatef(latitude, 1.0F, 0.0F, 0.0F);
     glRotatef(longitude, 0.0F, 0.0F, 1.0F);
-    glLightfv(GL_LIGHT0, GL_POSITION, light);
+    glLightfv(GL_LIGHT0, GL_POSITION, (float []){-100.0F, 100.0F, -100.0F, 0.0F});
 }
 
 rgb get_colour (int index) {
