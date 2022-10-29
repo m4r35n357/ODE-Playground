@@ -1,3 +1,6 @@
+#
+#  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#
 
 CC=clang -std=c99 -O3 -flto
 #CC=gcc -std=c99 -Og -g
