@@ -49,4 +49,4 @@ void solve (char **argv, controls *cont, void *p, plotter output);
 /*
  * Call the symplectic generator
  */
-int generate (controls *cont, void *p);
+_Bool generate (controls *cont, void *p);

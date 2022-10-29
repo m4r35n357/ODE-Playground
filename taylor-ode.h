@@ -87,7 +87,7 @@ void tsm_stdout (int dp, controls *cont, series3 *jets, void *P, clock_t since);
 /*
  * Generator implementation of TSM
  */
-int tsm_gen (controls *cont, series3 *jets, void *P);
+_Bool tsm_gen (controls *cont, series3 *jets, void *P);
 
 /*
  * Obligatory client method signatures

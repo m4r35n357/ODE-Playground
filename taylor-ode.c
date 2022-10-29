@@ -85,7 +85,7 @@ void tsm_stdout (int dp, controls *c, series3 *jets, void *p, clock_t t0) {
     t_out(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * c->steps, "_", "_", "_", t0);
 }
 
-int tsm_gen (controls *c, series3 *jets, void *p) {
+_Bool tsm_gen (controls *c, series3 *jets, void *p) {
     static _Bool generating = 0;
     if (generating) goto resume; else generating = 1;
     for (c->step = 0; c->step < c->steps; c->step++) {

@@ -101,7 +101,7 @@ void solve (char **argv, controls *c, void *p, plotter output) {
     output(display_precision, p, c->steps * c->step_size);
 }
 
-int generate (controls *c, void *p) {
+_Bool generate (controls *c, void *p) {
     static _Bool generating = 0;
     static integrator composer;
     if (generating) goto resume; else generating = 1;
