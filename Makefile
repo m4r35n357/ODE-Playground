@@ -1,5 +1,5 @@
 
-CC=clang -std=c99 -O3
+CC=clang -std=c99 -O3 -flto
 #CC=gcc -std=c99 -Og -g
 
 CFLAGS=-I. -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wconversion -Wredundant-decls -Wmissing-declarations
