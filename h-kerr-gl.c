@@ -54,7 +54,7 @@ void Animate () {
     if (osd_active) {
         int window_height = glutGet(GLUT_WINDOW_HEIGHT);
         real S = sigma(k);
-        k->tau += k->step * S;
+        k->tau += k->step_size * S;
         glColor3f(0.0F, 0.5F, 0.5F);
 
         sprintf(hud, "tau: %.0Lf  t: %.0Lf  r:% 5.1Lf  theta:% 4.0Lf  phi:% 4.0Lf  ",

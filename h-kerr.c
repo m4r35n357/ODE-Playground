@@ -40,11 +40,11 @@ static void refresh (kerr *k) {
     k->p_phi = (k->L / k->sth2.val - k->aE) + k->a * P.val / k->delta.val;
 }
 
-kerr *get_p_kerr (int argc, char **argv, real step) {
+kerr *get_p_kerr (int argc, char **argv, real step_size) {
     fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     assert(argc == 14);
     kerr *k = malloc(sizeof (kerr));
-    k->step = step;
+    k->step_size = step_size;
     k->a = strtold(argv[6], NULL);  // constants
     real p_mass = strtold(argv[7], NULL);
     k->mu2 = p_mass * p_mass;
