@@ -116,10 +116,7 @@ rgb get_colour (int index) {
 
 void osd (int x, int y, char *string) {
     glWindowPos2i(x, y);
-    int len = (int)strlen(string);
-    for (int i = 0; i < len; i++) {
-        glutBitmapCharacter(GLUT_BITMAP_9_BY_15, string[i]);
-    }
+    glutBitmapString(GLUT_BITMAP_9_BY_15, (const unsigned char *)string);
 }
 
 void buffer_point () {
