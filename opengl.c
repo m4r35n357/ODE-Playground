@@ -26,7 +26,7 @@ double elapsed, cpu;
 
 _Bool finished = 0, paused = 0, stepping = 0, running = 1, osd_active = 1, solid = 1;
 
-int max_points, oldest = 0, newest = 0, colour_index = DARK_GREEN, mesh = 10;
+int length, oldest = 0, newest = 0, colour_index = DARK_GREEN, mesh = 10;
 
 float ball_scale = 0.1F;
 
@@ -120,14 +120,12 @@ void osd (int x, int y, char *string) {
 }
 
 void buffer_point () {
-    static _Bool buffers_full = 0;
+    static _Bool full = 0;
     newest += 1;
-    if (! buffers_full && (newest == max_points)) {
-        buffers_full = 1;
-    }
-    if (buffers_full) {
-        oldest = (newest + 1) % max_points;
-        newest %= max_points;
+    full = (!full && (newest == length)) ? 1 : full;
+    if (full) {
+        oldest = (newest + 1) % length;
+        newest %= length;
     }
 }
 

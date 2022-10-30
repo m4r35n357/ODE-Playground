@@ -32,7 +32,7 @@ void Animate () {
 
     if (mode == BOTH || mode == TRAIL) {
         glBegin(GL_LINE_STRIP);
-        for (int i = oldest; i != newest; i = (i + 1) % max_points) {  // read buffers
+        for (int i = oldest; i != newest; i = (i + 1) % length) {  // read buffers
             glVertex3f(t->points[i].a, t->points[i].b, t->points[i].c);
         }
         glVertex3f(t->points[newest].a, t->points[newest].b, t->points[newest].c);
@@ -93,9 +93,9 @@ int main (int argc, char** argv) {
     since = clock();
     RAD_TO_DEG = 180.0L / acosl(-1.0L);
 
-    max_points = (int)strtol(argv[5], NULL, BASE);
+    length = (int)strtol(argv[5], NULL, BASE);
     t = malloc(sizeof (trail));
-    t->points = calloc((size_t)max_points, sizeof (point));
+    t->points = calloc((size_t)length, sizeof (point));
     t->points[newest] = point_from_model(k);
 
     ApplicationInit(argc, argv, "Black Hole Orbit Plotter");

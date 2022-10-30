@@ -25,7 +25,7 @@ void Animate () {
         for (int j = 0; j < m->n; j += 1) {
             glColor3f(t[j].colour.a, t[j].colour.b, t[j].colour.c);
             glBegin(GL_LINE_STRIP);
-            for (int i = oldest; i != newest; i = (i + 1) % max_points) {  // read buffers
+            for (int i = oldest; i != newest; i = (i + 1) % length) {  // read buffers
                 glVertex3f(t[j].points[i].a, t[j].points[i].b, t[j].points[i].c);
             }
             glVertex3f(t[j].points[newest].a, t[j].points[newest].b, t[j].points[newest].c);
@@ -95,11 +95,11 @@ int main (int argc, char** argv) {
     since = clock();
     fprintf(stderr, "\nH0: % .18Le\n", m->h);
 
-    max_points = (int)strtol(argv[5], NULL, BASE);
+    length = (int)strtol(argv[5], NULL, BASE);
     t = calloc((size_t)m->n, sizeof (trail));
     for (int j = 0; j < m->n; j += 1) {
         t[j].colour = get_colour(j);
-        t[j].points = calloc((size_t)max_points, sizeof (point));
+        t[j].points = calloc((size_t)length, sizeof (point));
         t[j].points[0] = point_from_model(&m->bodies[j]);
     }
 

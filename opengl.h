@@ -38,7 +38,7 @@ extern _Bool finished, paused, stepping, running, osd_active, solid;
 
 extern float ball_scale;
 
-extern int max_points, oldest, newest, colour_index, mesh;
+extern int length, oldest, newest, colour_index, mesh;
 
 /*
  * OpenGL set-up functions
