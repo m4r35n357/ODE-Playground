@@ -91,12 +91,11 @@ git clone https://github.com/m4r35n357/ODE-Playground/pure_c
 cd ODE-Playground
 ```
 
-#### c Build (Clang)
+#### c Build (Clang by default)
 
-You can edit the comments in the top part of the Makefile to get a GCC build.
 ```
 make clean
-make all
+make OR make CCC=gcc OR make CCC=clang
 ```
 There should be NO errors or warnings.
 

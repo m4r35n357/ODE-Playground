@@ -2,13 +2,18 @@
 #  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
-CC=clang -std=c99 -O3 -flto
-#CC=gcc -std=c99 -Og -g
-
 CFLAGS=-I. -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wconversion -Wredundant-decls -Wmissing-declarations
 
-CFLAGS += -ffp-model=precise
-#CFLAGS += -Wunsuffixed-float-constants -frounding-math -fsignaling-nans
+ifeq ($(CCC),gcc)
+  CC=gcc -std=c99 -O3 -flto
+  CFLAGS += -Wunsuffixed-float-constants -frounding-math -fsignaling-nans
+else ifeq ($(CCC),clang)
+  CC=clang -std=c99 -O3 -flto
+  CFLAGS += -ffp-model=precise
+else
+  CC=clang -std=c99 -O3 -flto
+  CFLAGS += -ffp-model=precise
+endif
 
 LIBS=-lm
 GL_LIBS=-lGLEW -lglut -lGLU -lGL
