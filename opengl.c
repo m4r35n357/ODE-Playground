@@ -122,7 +122,7 @@ void osd (int x, int y, char *string) {
 void buffer_point () {
     static _Bool full = 0;
     newest += 1;
-    full = (!full && (newest == length)) ? 1 : full;
+    if (!full && newest == length) full = 1;
     if (full) {
         oldest = (newest + 1) % length;
         newest %= length;
