@@ -126,7 +126,7 @@ int main (int argc, char **argv) { (void)argc;
         k->E = x.a;
         k->L = x.b;
         k->Q = x.c;
-        count += 1;
+        count++;
     }
     _Bool valid = 1;
     if (! circular) {

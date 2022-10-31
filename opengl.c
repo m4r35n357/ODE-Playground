@@ -9,9 +9,6 @@
 #include <GL/freeglut.h>
 #include "opengl.h"
 
-/*
- * Global variables
- */
 controls *c;
 
 trail *t;
@@ -41,15 +38,15 @@ void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
         case      GLUT_KEY_HOME: radius -= 0.2F; break;
         case       GLUT_KEY_END: radius += 0.2F; break;
         case    GLUT_KEY_INSERT: solid = !solid; break;
-        case   GLUT_KEY_PAGE_UP: mesh += 1; break;
+        case   GLUT_KEY_PAGE_UP: mesh++; break;
         case GLUT_KEY_PAGE_DOWN: mesh = mesh > 2 ? mesh - 1 : mesh; break;
     }
 }
 
 void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
-        case 'D': case 'd': colour_index += 1; break;
-        case 'C': case 'c': colour_index -= 1; break;
+        case 'D': case 'd': colour_index++; break;
+        case 'C': case 'c': colour_index--; break;
         case 'G': case 'g': ball_scale *= 1.1F; break;
         case 'B': case 'b': ball_scale /= 1.1F; break;
         case 'S': case 's': running = !running; paused = 0; break;
@@ -121,7 +118,7 @@ void osd (int x, int y, char *string) {
 
 void buffer_point () {
     static _Bool full = 0;
-    newest += 1;
+    newest++;
     if (!full && newest == length) full = 1;
     if (full) {
         oldest = (newest + 1) % length;

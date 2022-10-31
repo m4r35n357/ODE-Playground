@@ -73,7 +73,7 @@ static void compare (char* name, series a, series b) {
 }
 
 static series bad_value (series jet) {
-    for (int i = 0; i < n; i += 1) {
+    for (int i = 0; i < n; i++) {
         jet[i] = INFINITY;
     }
     return jet;
