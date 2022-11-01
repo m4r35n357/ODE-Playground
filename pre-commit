@@ -1,30 +1,26 @@
 #!/bin/sh
 
-echo -n "Running make . . ."
+echo -n "Clean build . . . "
 make -s clean
 make -s -j 4 all
+echo "Done!"
+echo ""
 
 for x in .5 0 -.5
 do
-    echo "Running Dual Test, x = $x . . . "
-    if ! ./libdual-test $x 1e-12 0
+    if ! ./libdual-test $x 1e-12 0 2>/dev/null
     then
         echo "Dual Test failed!"
         exit 1
     fi
-done
-echo OK
 
-for x in .5 0 -.5
-do
-    echo "Running Taylor Test, x = $x . . . "
-    if ! ./libad-test 10 $x 1e-12 0 >/dev/null
+    if ! ./libad-test 10 $x 1e-12 0 >/dev/null 2>/dev/null
     then
         echo "\033[31;1mTaylor Test failed!\033[0m"
         exit 1
     fi
 done
-echo OK
+echo "OK"
 
 echo -n "Running Lorenz executable . . . "
 if ! ./tsm-lorenz-std 9 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
@@ -32,7 +28,7 @@ then
     echo "\033[31;1mLorenz failed!\033[0m"
     exit 1
 fi
-echo ", OK"
+echo "OK"
 
 echo -n "Running Rabinovich-Fabrikant executable . . . "
 if [ 50001 -ne $(./tsm-rf-std 9 16 .01 50000 .05 -.05 .3 .105 .1 2>/dev/null | wc -l) ]
@@ -40,7 +36,7 @@ then
     echo "\033[31;1mRabinovich-Fabrikant test failed!\033[0m"
     exit 1
 fi
-echo OK
+echo "OK"
 
 echo "\033[37;1mCommitting . . .\033[0m"
 exit 0
