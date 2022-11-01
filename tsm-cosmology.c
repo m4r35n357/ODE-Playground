@@ -1,7 +1,7 @@
 /*
  * No-frills cosmology (https://www.youtube.com/watch?v=vcGDqRm7ZK4&list=PLaNkJORnlhZkgIyPFNxhJPIVewGckJCGr&index=7)
  *
- * Example:  ./tsm-cosmology-dbg 15 10 .01 10000  1.0 1.0 0.0  0.0
+ * Example:  ./tsm-cosmology-std 15 10 .01 10000  1.0 1.0 0.0  0.0
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */

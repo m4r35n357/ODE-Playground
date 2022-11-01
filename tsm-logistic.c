@@ -1,7 +1,7 @@
 /*
  * Logistic Equation
  *
- * Example:  ./tsm-logistic-dbg 9 10 0.005 10000 .001 0 0 .5
+ * Example:  ./tsm-logistic-std 9 10 0.005 10000 .001 0 0 .5
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */

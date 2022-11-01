@@ -60,7 +60,7 @@ case $model in
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
-                --  'step2!nosim' '1.0' './tsm-lorenz-std!./tsm-lorenz-dbg!./tsm-lorenz' \
+                --  'step2!nosim' '1.0' './tsm-lorenz-std!./tsm-lorenz' \
                     '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                     '-15.8' '-18.48' '35.64' \
                     '10' '28' '8' '3')
@@ -71,7 +71,7 @@ case $model in
                 --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
-                --  '32!2..32!1' '1.0' './tsm-lorenz-std!./tsm-lorenz-dbg!./tsm-lorenz' \
+                --  '32!2..32!1' '1.0' './tsm-lorenz-std!./tsm-lorenz' \
                     '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                     '-15.8' '-18.48' '35.64' \
                     '10' '28' '8' '3') | tee $user_data
@@ -82,7 +82,7 @@ case $model in
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="sigma" --field="rho:RO" --field="beta (numerator)" --field="beta (denominator)" \
-                --  '0.0' '50.0' '10' './tsm-lorenz-std!./tsm-lorenz-dbg!./tsm-lorenz' \
+                --  '0.0' '50.0' '10' './tsm-lorenz-std!./tsm-lorenz' \
                     '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                     '-15.8' '-18.48' '35.64' \
                     '10' '$p' '8' '3')
@@ -109,7 +109,7 @@ case $model in
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="a" --field="b" --field="c" \
-                --  'step2!nosim' '1.0' './tsm-rossler-std!./tsm-rossler-dbg!./tsm-rossler' \
+                --  'step2!nosim' '1.0' './tsm-rossler-std!./tsm-rossler' \
                     '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                     '0.0' '-6.78' '0.02' \
                     '.2' '.2' '5.7')
@@ -120,7 +120,7 @@ case $model in
                 --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="a" --field="b" --field="c" \
-                --  '32!2..32!1' '1.0' './tsm-rossler-std!./tsm-rossler-dbg!./tsm-rossler' \
+                --  '32!2..32!1' '1.0' './tsm-rossler-std!./tsm-rossler' \
                     '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                     '0.0' '-6.78' '0.02' \
                     '.2' '.2' '5.7') | tee $user_data
@@ -131,7 +131,7 @@ case $model in
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="a" --field="b" --field="c":RO \
-                --  '0.0' '50.0' '10' './tsm-rossler-std!./tsm-rossler-dbg!./tsm-rossler' \
+                --  '0.0' '50.0' '10' './tsm-rossler-std!./tsm-rossler' \
                     '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                     '0.0' '-6.78' '0.02' \
                     '.2' '.2' '$p')
@@ -155,7 +155,7 @@ case $model in
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="b" \
-                --  './tsm-thomas-std!./tsm-thomas-dbg!./tsm-thomas' \
+                --  './tsm-thomas-std!./tsm-thomas' \
                     '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
                     '1.0' '0.0' '0.0' \
                     '0.185') >$user_data
@@ -170,7 +170,7 @@ case $model in
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="b" \
-                --  'step2!nosim' '1.0' './tsm-thomas-std!./tsm-thomas-dbg!./tsm-thomas' \
+                --  'step2!nosim' '1.0' './tsm-thomas-std!./tsm-thomas' \
                     '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
                     '1.0' '0.0' '0.0' \
                     '0.185')
@@ -181,7 +181,7 @@ case $model in
                 --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="b" \
-                --  '32!2..64!1' '1.0' './tsm-thomas-std!./tsm-thomas-dbg!./tsm-thomas' \
+                --  '32!2..64!1' '1.0' './tsm-thomas-std!./tsm-thomas' \
                     '6!0..36!3' '_' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
                     '1.0' '0.0' '0.0' \
                     '0.185') | tee $user_data
@@ -192,7 +192,7 @@ case $model in
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="b:RO" \
-                --  '0.1' '0.23' '10' './tsm-thomas-std!./tsm-thomas-dbg!./tsm-thomas' \
+                --  '0.1' '0.23' '10' './tsm-thomas-std!./tsm-thomas' \
                     '6!0..36!3' '4!4..32!1' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
                     '1.0' '0.0' '0.0' \
                     '$p')
@@ -216,7 +216,7 @@ case $model in
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="alpha" --field="gamma" \
-                --  './tsm-rf-std!./tsm-rf-dbg!./tsm-rf!./tsm-rf-gl' \
+                --  './tsm-rf-std!./tsm-rf' \
                     '6!0..36!3' '8!4..32!1' '0.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
                     '0.05' '-0.05' '0.3' \
                     '.2873' '.1') >$user_data
@@ -231,7 +231,7 @@ case $model in
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="alpha" --field="gamma" \
-                --  'step2!nosim' '1.0' './tsm-rf-std!./tsm-rf-dbg!./tsm-rf!./tsm-rf-gl' \
+                --  'step2!nosim' '1.0' './tsm-rf-std!./tsm-rf' \
                     '6!0..36!3' '8!4..32!1' '0.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
                     '0.05' '-0.05' '0.3' \
                     '.2873' '.1')
@@ -242,7 +242,7 @@ case $model in
                 --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="alpha" --field="gamma" \
-                --  '32!2..64!1' '1.0' './tsm-rf-std!./tsm-rf-dbg!./tsm-rf' \
+                --  '32!2..64!1' '1.0' './tsm-rf-std!./tsm-rf' \
                     '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
                     '0.05' '-0.05' '0.3' \
                     '.2873' '.1') | tee $user_data
@@ -253,7 +253,7 @@ case $model in
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="alpha":RO --field="gamma" \
-                --  '0.1' '0.23' '10' './tsm-rf-std!./tsm-rf-dbg!./tsm-rf' \
+                --  '0.1' '0.23' '10' './tsm-rf-std!./tsm-rf' \
                     '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
                     '0.05' '-0.05' '0.3' \
                     '$p' '.1')
@@ -277,7 +277,7 @@ case $model in
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="a" --field="b" \
-                --  './tsm-halvorsen-std!./tsm-halvorsen-dbg!./tsm-halvorsen' \
+                --  './tsm-halvorsen-std!./tsm-halvorsen' \
                     '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                     '1.0' '0.0' '0.0' \
                     '1.4' '4') >$user_data
@@ -292,7 +292,7 @@ case $model in
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="a" --field="b" \
-                --  'step2!nosim' '1.0' './tsm-halvorsen-std!./tsm-halvorsen-dbg!./tsm-halvorsen' \
+                --  'step2!nosim' '1.0' './tsm-halvorsen-std!./tsm-halvorsen' \
                     '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                     '1.0' '0.0' '0.0' \
                     '1.4' '4')
@@ -303,7 +303,7 @@ case $model in
                 --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="a" --field="b" \
-                --  '32!2..64!1' '1.0' './tsm-halvorsen-std!./tsm-halvorsen-dbg!./tsm-halvorsen' \
+                --  '32!2..64!1' '1.0' './tsm-halvorsen-std!./tsm-halvorsen' \
                     '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                     '1.0' '0.0' '0.0' \
                     '1.4' '4') | tee $user_data
@@ -314,7 +314,7 @@ case $model in
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="a:RO" --field="b" \
-                --  '1' '4' '10' './tsm-halvorsen-std!./tsm-halvorsen-dbg!./tsm-halvorsen' \
+                --  '1' '4' '10' './tsm-halvorsen-std!./tsm-halvorsen' \
                     '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                     '1.0' '0.0' '0.0' \
                     '$p' '4')

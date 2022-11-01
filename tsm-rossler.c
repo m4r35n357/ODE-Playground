@@ -1,7 +1,7 @@
 /*
  * Rossler System
  *
- * Example: ./tsm-rossler-dbg 15 10 0.01 50000 0.0 -6.78 0.02 .2 .2 5.7
+ * Example: ./tsm-rossler-std 15 10 0.01 50000 0.0 -6.78 0.02 .2 .2 5.7
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */

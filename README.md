@@ -105,7 +105,7 @@ There should be NO errors or warnings.
 
 The tests enforce a redundant web of densely interrelated functionality that cannot exist in the presence of coding errors! ;)
 
-**libad-test-dbg** (c executable)
+**libad-test** (c executable)
 
 Parameter | Meaning
 ----------|-----------
@@ -118,7 +118,7 @@ The final parameter can be set to 0 (or left absent) for a summary, 1 for indivi
 Depending on the x value, some tests might be skipped owing to domain restrictions on some of the functions involved.
 
 ```
-./libad-test-dbg 20 .5 1e-15
+./libad-test 20 .5 1e-15
 
 Horner
  23   23.000
@@ -144,7 +144,7 @@ Recurrence Relations: x = 0.5
 Total: 44, PASSED 44
 ```
 
-**libdual-test-dbg** (c executable)
+**libdual-test** (c executable)
 
 Parameter | Meaning
 ----------|-----------
@@ -153,12 +153,12 @@ Parameter | Meaning
 3 | (Optional) verbosity: 0: summary (default), 1: list, 2: detail
 
 ```
-./libdual-test-dbg .5 1e-15
+./libdual-test .5 1e-15
 
 Dual Numbers: x = 0.5
 Total: 40, PASSED 40
 
-for i in .5 0 -.5; do ./libad-test-dbg 10 $i 1e-15; ./libdual-test-dbg $i 1e-15; done
+for i in .5 0 -.5; do ./libad-test 10 $i 1e-15; ./libdual-test $i 1e-15; done
 ```
 #### Code coverage
 Creates a web page summary.
@@ -182,7 +182,7 @@ grep Example *
 ## Solving and Plotting ODEs
 This use case only involves calling the "t-functions" in ad.py or taylor-ode.c.
 No differentiation happens in these functions (they only implement the recurrence relations); it is the responsibility of the calling program to organize this properly.
-Refer to tsm-lorenz-dbg and tsm-*.c for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors.
+Refer to tsm-*.c for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors.
 
 Where CPU timings are given, they are made on a Raspberry Pi 400, mildly overclocked to 2100MHz, and writing output to a tmpfs file.
 
@@ -226,7 +226,7 @@ Parameter | Meaning
 
 ##### Run & plot (3D gnuplot graph):
 ```
-./tsm-thomas-dbg 6 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
+./tsm-thomas-std 6 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
  gnuplot -p << EOF
 set xyplane 0
 set view 54.73561,135
@@ -238,7 +238,7 @@ EOF
 ```
 ##### Run & plot (2D gnuplot graph):
 ```
-./tsm-lorenz-dbg 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
+./tsm-lorenz-std 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
 
  gnuplot -p << EOF
 set terminal wxt size 1200,900

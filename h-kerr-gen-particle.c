@@ -1,8 +1,8 @@
 /*
  * Command generation for Kerr spacetime particle simulations
  *
- * Example:  ./h-kerr-gen-particle-dbg 1e-9 4 12 63 1 1 .8 >/tmp/$USER/data
- * Example:  ./h-kerr-gen-particle-dbg 1e-9 12 -1 63 1 1 .8 >/tmp/$USER/data
+ * Example:  ./h-kerr-gen-particle 1e-9 4 12 63 1 1 .8 >/tmp/$USER/data
+ * Example:  ./h-kerr-gen-particle 1e-9 12 -1 63 1 1 .8 >/tmp/$USER/data
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -136,9 +136,9 @@ int main (int argc, char **argv) { (void)argc;
     fprintf(stderr, "%.ld iterations, precision %.1Le %s\n",
             count, k->epsilon, valid ? (k->a * k->L < 0.0L ? "RETROGRADE" : "PROGRADE") : "INVALID");
     fprintf(stderr, "\nSimulate:\n");
-    fprintf(stderr, "./h-kerr-dbg 6 8 .01 10000 0 %.3Lf 1.0 %.9Le %.9Le 1.0 %.9Le %.3Lf 0.0 >/tmp/$USER/data\n",
+    fprintf(stderr, "./h-kerr-std 6 8 .01 10000 0 %.3Lf 1.0 %.9Le %.9Le 1.0 %.9Le %.3Lf 0.0 >/tmp/$USER/data\n",
             k->a, k->E, k->L, k->Q, circular ? k->rmin : 0.5L * (k->rmin + k->rmax));
-    fprintf(stderr, "\n./h-kerr-dbg 6 8 .01 10000 0 %.3Lf 1.0 %La %La 1.0 %La %.3Lf 0.0 >/tmp/$USER/data\n",
+    fprintf(stderr, "\n./h-kerr-std 6 8 .01 10000 0 %.3Lf 1.0 %La %La 1.0 %La %.3Lf 0.0 >/tmp/$USER/data\n",
             k->a, k->E, k->L, k->Q, circular ? k->rmin : 0.5L * (k->rmin + k->rmax));
     fprintf(stderr, "\n./h-kerr-gl _ $(yad --columns=2 --title='Kerr Particle Orbit GL' --form --separator=' ' --align=right ");
     fprintf(stderr, "--field='Order':NUM --field='Step Size':NUM --field='Steps':NUM ");
@@ -149,7 +149,7 @@ int main (int argc, char **argv) { (void)argc;
     fprintf(stderr, "'%.3Lf!-1.0..1.0!0.1!1' 1.0 %.9Le %.9Le 1.0 %.9Le %.3Lf 0.0)\n",
             k->a, k->E, k->L, k->Q, circular ? k->rmin : 0.5L * (k->rmin + k->rmax));
     fprintf(stderr, "\nGenerate ICs:\n");
-    fprintf(stderr, "./h-kerr-dbg 15 8 .01 0 2 %.3Lf 1.0 %La %La 1.0 %La %.3Lf 0.0\n\n",
+    fprintf(stderr, "./h-kerr-std 15 8 .01 0 2 %.3Lf 1.0 %La %La 1.0 %La %.3Lf 0.0\n\n",
             k->a, k->E, k->L, k->Q, circular ? k->rmin : 0.5L * (k->rmin + k->rmax));
 
     real r_range = (circular ? k->rmin + 1.0L : k->rmax + 1.0L);

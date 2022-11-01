@@ -1,7 +1,7 @@
 /*
  * Burke & Shaw System http://www.atomosyd.net/spip.php?article33
  *
- * Example: ./tsm-burke-shaw-dbg 9 10 .01 10000 1 1 1 10 4.272
+ * Example: ./tsm-burke-shaw-std 9 10 .01 10000 1 1 1 10 4.272
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */

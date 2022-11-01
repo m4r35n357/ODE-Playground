@@ -1,7 +1,7 @@
 /*
  * Inverted smooth unimodal chaos http://www.atomosyd.net/spip.php?article218
  *
- * Example: ./tsm-isuc-dbg 9 10 .01 10000 .05 -.05 .3 .1 .1 4.2
+ * Example: ./tsm-isuc-std 9 10 .01 10000 .05 -.05 .3 .1 .1 4.2
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */

@@ -1,7 +1,7 @@
 /*
  * Yu-Wang System
  *
- * Example: ./tsm-yu-wang-dbg 15 10 .001 50000 1 0 0 10 40 2 2.5
+ * Example: ./tsm-yu-wang-std 15 10 .001 50000 1 0 0 10 40 2 2.5
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */

@@ -71,7 +71,7 @@ case $model in
         plot3d
         plot_errors
     ;;
-    Analysis) ./h-analysis-dbg \
+    Analysis) ./h-analysis-std \
         $(yad --title="Step Analysis" --form --separator=" " --align=right \
         --field="Display Places":RO --field="Order":NUM --field="Step Size":RO --field="Steps":RO \
         -- '6' '4!2..10!2' "1.0" "1") >$user_data

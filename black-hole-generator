@@ -35,7 +35,7 @@ EOF
 }
 
 case $type in
-    Timelike) ./h-kerr-gen-particle-dbg \
+    Timelike) ./h-kerr-gen-particle \
         $(yad --columns=2 --title="Generate Parameters (particle)" --form --separator=" " --align=right \
         --field="Solver Tolerance" --field="Rmin" --field="Rmax (-1 for circular)" \
         --field="Elevation (degrees)" --field="BH spin (-ve for retrograde)":NUM \
@@ -43,7 +43,7 @@ case $type in
            "63.0" '0.8!-1.0..1.0!0.1!1') >$user_data
         plot_potentials
     ;;
-    Lightlike) ./h-kerr-gen-light-dbg \
+    Lightlike) ./h-kerr-gen-light \
         $(yad --columns=2 --title="Generate Parameters (light)" --form --separator=" " --align=right \
         --field="r":NUM --field="BH spin":NUM \
         -- '3.0!1.0..4.0!0.1!1' '0.8!-1.0..1.0!0.1!1')

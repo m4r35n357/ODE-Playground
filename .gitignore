@@ -5,11 +5,11 @@
 *~
 
 # RK4 artifacts
-rk4-*-dbg
+rk4-*-std
 rk4-*-std
 
 # TSM artifacts
-tsm-*-dbg
+tsm-*-std
 tsm-*-std
 tsm-*-gl
 divergence
@@ -19,7 +19,7 @@ libad-test*
 libdual-test*
 
 # Symplectic artifacts
-h-*-dbg
+h-*-std
 h-*-std
 h-*-gl
 h-kerr-gen-*

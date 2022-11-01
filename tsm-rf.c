@@ -1,9 +1,9 @@
 /*
  * Rabinovich–Fabrikant System
  *
- * Example: ./tsm-rf-dbg 15 10 .01 50000 .05 -.05 .3 .2873 .1
- * Example: ./tsm-rf-dbg 15 12 .01 100000 .05 -.05 .3 .116364 .1
- * Example: ./tsm-rf-dbg 15 16 .01 50000 .05 -.05 .3 .105 .1
+ * Example: ./tsm-rf-std 15 10 .01 50000 .05 -.05 .3 .2873 .1
+ * Example: ./tsm-rf-std 15 12 .01 100000 .05 -.05 .3 .116364 .1
+ * Example: ./tsm-rf-std 15 16 .01 50000 .05 -.05 .3 .105 .1
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
