@@ -3,7 +3,8 @@
 #
 
 CFLAGS=-Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wconversion -Wredundant-decls -Wmissing-declarations
-
+LIBS=-lm
+GL_LIBS=-lGLEW -lglut -lGLU -lGL
 STRIP=-s
 
 ifeq ($(CCC),gcc)
@@ -20,9 +21,6 @@ else
   CC=clang -std=c99 -O3 -flto
   CFLAGS += -ffp-model=precise
 endif
-
-LIBS=-lm
-GL_LIBS=-lGLEW -lglut -lGLU -lGL
 
 %.o: %.c
 	$(CC) -c -o $@ $< $(CFLAGS)
