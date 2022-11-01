@@ -23,7 +23,7 @@ static void plot_path (int dp, void *params, real mino) {
     kerr *p = (kerr *)params;
     real S = sigma(p);
     pair Y = gamma_v(p, S);
-    p->tau += p->step-size * S;
+    p->tau += p->step_size * S;
     real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_theta);
     printf("%+.*Le %+.*Le %+.*Le  %.6Le %+.*Le %+.*Le %+.*Le  %+.*Le %+.*Le  %.6Le %.6Le\n",
            dp, ra_sth * cosl(p->q_phi), dp, ra_sth * sinl(p->q_phi), dp, p->q_r * cosl(p->q_theta), mino,
