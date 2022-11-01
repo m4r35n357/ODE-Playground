@@ -19,13 +19,11 @@ char hud[128];
 
 clock_t since;
 
-double elapsed, cpu;
-
 _Bool finished = 0, paused = 0, stepping = 0, running = 1, osd_active = 1, solid = 1;
 
 int length, oldest = 0, newest = 0, colour_index = DARK_GREEN, mesh = 10;
 
-float ball_scale = 0.1F;
+float elapsed, cpu, ball_scale = 0.1F;
 
 static float radius = 20.0F, latitude = 90.0F, longitude = 0.0F;
 

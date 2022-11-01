@@ -32,11 +32,9 @@ extern char hud[];
 
 extern clock_t since;
 
-extern double elapsed, cpu;
-
 extern _Bool finished, paused, stepping, running, osd_active, solid;
 
-extern float ball_scale;
+extern float elapsed, cpu, ball_scale;
 
 extern int length, oldest, newest, colour_index, mesh;
 
