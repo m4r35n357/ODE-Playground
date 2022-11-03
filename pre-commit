@@ -3,14 +3,14 @@
 echo -n "Clean build . . . "
 make -s clean
 make -s -j 4 all
-echo "Done!"
-echo ""
+echo "OK"
 
+echo -n "Run tests . . . "
 for x in .5 0 -.5
 do
     if ! ./libdual-test $x 1e-12 0 2>/dev/null
     then
-        echo "Dual Test failed!"
+        echo "\033[31;1mDual Test failed!\033[0m"
         exit 1
     fi
 
@@ -23,7 +23,7 @@ done
 echo "OK"
 
 echo -n "Running Lorenz executable . . . "
-if ! ./tsm-lorenz-std 9 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null 2>&1
+if [ 10001 -ne $(./tsm-lorenz-std 9 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3 2>/dev/null | wc -l) ]
 then
     echo "\033[31;1mLorenz failed!\033[0m"
     exit 1
@@ -34,6 +34,14 @@ echo -n "Running Rabinovich-Fabrikant executable . . . "
 if [ 50001 -ne $(./tsm-rf-std 9 16 .01 50000 .05 -.05 .3 .105 .1 2>/dev/null | wc -l) ]
 then
     echo "\033[31;1mRabinovich-Fabrikant test failed!\033[0m"
+    exit 1
+fi
+echo "OK"
+
+echo -n "Running Kerr executable . . . "
+if [ 10001 -ne $(./h-kerr-std 6 8 .01 10000 0 0.8 1.0 0.9455050956749083 1.434374509531738 1.0 7.978759958927879 12.0 63.0 2>/dev/null | wc -l) ]
+then
+    echo "\033[31;1mKerr failed!\033[0m"
     exit 1
 fi
 echo "OK"
