@@ -38,6 +38,7 @@ void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
         case    GLUT_KEY_INSERT: solid = !solid; break;
         case   GLUT_KEY_PAGE_UP: mesh++; break;
         case GLUT_KEY_PAGE_DOWN: mesh = mesh > 2 ? mesh - 1 : mesh; break;
+        default: break;
     }
 }
 
@@ -53,6 +54,7 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
         case 'V': case 'v': mode = (mode + 1) % 3; break;
         case 'H': case 'h': osd_active = !osd_active; break;
         case  27: exit(1);  // Escape key
+        default: break;
     }
 }
 
