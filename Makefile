@@ -6,6 +6,7 @@ CFLAGS=-Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-pro
 LIB_M=-lm
 LIB_GL=-lGLEW -lglut -lGLU -lGL
 STRIP=-s
+DEPFLAGS = -MT $@ -MMD -MP
 
 ifeq ($(CCC),gcc)
   CC=gcc -std=c99 -O3 -flto
@@ -23,7 +24,7 @@ else
 endif
 
 %.o: %.c
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) $(DEPFLAGS) -c -o $@ $< $(CFLAGS)
 
 all: ctags tsm tsm-gl h generators h-kerr-std h-kerr-gl h-nbody-gl divergence tests
 
@@ -88,9 +89,11 @@ ctags:
 	/usr/bin/ctags *.h *.c
 
 clean:
-	rm -f *.o *~ core
+	rm -f *.o *.d *~ core
 	rm -f *-std
 	rm -f *-gl
 	rm -f divergence
 	rm -f h-kerr-gen-light h-kerr-gen-particle
 	rm -f libad-test libdual-test
+
+-include *.d
