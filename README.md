@@ -22,6 +22,8 @@ There are also yad dialogues for running tests and making executables using zig-
 * libdual-test.c
 * zig-builds
 
+See comments at the top of the source files for examples
+
 ## Now feature-complete
 
 No planned new features, and no known bugs ;)
@@ -103,7 +105,7 @@ There should be NO errors or warnings.
 
 #### Running c Tests
 
-The tests enforce a redundant web of densely interrelated functionality that cannot exist in the presence of coding errors! ;)
+The tests enforce a "redundant web of densely interrelated functionality that cannot exist in the presence of coding errors"!
 
 **libad-test** (c executable)
 
@@ -160,20 +162,6 @@ Total: 40, PASSED 40
 
 for i in .5 0 -.5; do ./libad-test 10 $i 1e-15; ./libdual-test $i 1e-15; done
 ```
-#### Code coverage
-Creates a web page summary.
-```
-./coverage
-```
-The output contains file system links to the HTML results
-
-#### C Code profiling
-Very basic information, included just for completeness
-```
-./profile
-```
-The results are printed to stdout
-
 #### Find examples for ODE parameters and many other things:
 Useful commands are frequently added to the comments in source headings.
 ```
