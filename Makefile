@@ -6,7 +6,6 @@ CFLAGS=-Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-pro
 LIB_M=-lm
 LIB_GL=-lGLEW -lglut -lGLU -lGL
 STRIP=-s
-DEPFLAGS = -MT $@ -MMD -MP
 
 ifeq ($(CCC),gcc)
   CC=gcc -std=c99 -O3 -flto
@@ -24,7 +23,7 @@ else
 endif
 
 %.o: %.c
-	$(CC) $(DEPFLAGS) -c -o $@ $< $(CFLAGS)
+	$(CC) -MT $@ -MMD -MP -c -o $@ $< $(CFLAGS)
 
 all: ctags tsm tsm-gl h generators h-kerr-std h-kerr-gl h-nbody-gl divergence tests
 
