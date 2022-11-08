@@ -27,6 +27,7 @@ endif
 
 all: ctags tsm tsm-gl h generators h-kerr-std h-kerr-gl h-nbody-gl divergence tests
 
+
 tsm-%-std: tsm-%.o taylor-ode.o main-tsm.o
 	$(CC) -o $@ $^ $(LIB_M) $(STRIP)
 
@@ -88,12 +89,7 @@ ctags:
 	@/usr/bin/ctags *.h *.c
 
 clean:
-	@rm -f *.o *~ core
-	@rm -f *-std
-	@rm -f *-gl
-	@rm -f divergence
-	@rm -f h-kerr-gen-light h-kerr-gen-particle
-	@rm -f libad-test libdual-test
+	@rm -f *.o *~ core *-std *-gl h-kerr-gen-light h-kerr-gen-particle divergence libad-test libdual-test
 
 depclean: clean
 	@rm -f *.d
