@@ -82,17 +82,20 @@ kerr-image: kerr-image.o
 	$(CC) -o $@ $< $(LIB_M) $(STRIP)
 
 
-.PHONY: clean ctags
+.PHONY: clean depclean ctags
 
 ctags:
-	/usr/bin/ctags *.h *.c
+	@/usr/bin/ctags *.h *.c
 
 clean:
-	rm -f *.o *.d *~ core
-	rm -f *-std
-	rm -f *-gl
-	rm -f divergence
-	rm -f h-kerr-gen-light h-kerr-gen-particle
-	rm -f libad-test libdual-test
+	@rm -f *.o *~ core
+	@rm -f *-std
+	@rm -f *-gl
+	@rm -f divergence
+	@rm -f h-kerr-gen-light h-kerr-gen-particle
+	@rm -f libad-test libdual-test
+
+depclean: clean
+	@rm -f *.d
 
 -include *.d
