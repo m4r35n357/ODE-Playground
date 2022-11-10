@@ -12,8 +12,8 @@
 
 const int BASE = 10;
 
-static real r (int stage) {
-    return 1.0L / (4.0L - powl(4.0L, 1.0L / (2.0L * (real)stage + 1.0L)));
+static real w (int order) {  // composition increases order by one, then symmetry bumps that to the next even order!
+    return 1.0L / (4.0L - powl(4.0L, 1.0L / (order + 1)));
 }
 
 controls *get_c_symp (char **argv) {
@@ -21,10 +21,10 @@ controls *get_c_symp (char **argv) {
     c->order = (int)strtol(argv[2], NULL, BASE); assert(c->order >= 2 && c->order <= 10);
     c->step_size = strtold(argv[3], NULL); assert(c->step_size > 0.0L);
     c->steps = (int)strtol(argv[4], NULL, BASE); assert(c->steps >= 0 && c->steps <= 1000000);
-    c->r1 = (weights){.fwd = r(1), .rev = 1.0L - 4.0L * r(1)};
-    c->r2 = (weights){.fwd = r(2), .rev = 1.0L - 4.0L * r(2)};
-    c->r3 = (weights){.fwd = r(3), .rev = 1.0L - 4.0L * r(3)};
-    c->r4 = (weights){.fwd = r(4), .rev = 1.0L - 4.0L * r(4)};
+    c->r2 = (weights){.fwd = w(2), .rev = 1.0L - 4.0L * w(2)};
+    c->r4 = (weights){.fwd = w(4), .rev = 1.0L - 4.0L * w(4)};
+    c->r6 = (weights){.fwd = w(6), .rev = 1.0L - 4.0L * w(6)};
+    c->r8 = (weights){.fwd = w(8), .rev = 1.0L - 4.0L * w(8)};
     return c;
 }
 
@@ -47,7 +47,7 @@ static void suzuki (controls *c, void *p, integrator base, real cd, weights w) {
 }
 
 static void base4 (controls *c, void *p, real cd) {
-    suzuki(c, p, second_order, cd, c->r1);
+    suzuki(c, p, second_order, cd, c->r2);
 }
 
 static void fourth_order (controls *c, void *p, real h) {
@@ -55,7 +55,7 @@ static void fourth_order (controls *c, void *p, real h) {
 }
 
 static void base6 (controls *c, void *p, real cd) {
-    suzuki(c, p, base4, cd, c->r2);
+    suzuki(c, p, base4, cd, c->r4);
 }
 
 static void sixth_order (controls *c, void *p, real h) {
@@ -63,7 +63,7 @@ static void sixth_order (controls *c, void *p, real h) {
 }
 
 static void base8 (controls *c, void *p, real cd) {
-    suzuki(c, p, base6, cd, c->r3);
+    suzuki(c, p, base6, cd, c->r6);
 }
 
 static void eightth_order (controls *c, void *p, real h) {
@@ -71,7 +71,7 @@ static void eightth_order (controls *c, void *p, real h) {
 }
 
 static void base10 (controls *c, void *p, real cd) {
-    suzuki(c, p, base8, cd, c->r4);
+    suzuki(c, p, base8, cd, c->r8);
 }
 
 static void tenth_order (controls *c, void *p, real h) {
