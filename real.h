@@ -23,13 +23,6 @@ typedef struct triple_l {
 } components;
 
 /*
- * Triple of floats
- */
-typedef struct triple_f {
-    float a, b, c;
-} rgb, point;
-
-/*
  * Integrator control parameters
  */
 typedef struct Weights {

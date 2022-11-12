@@ -8,6 +8,13 @@
 #include "real.h"
 
 /*
+ * Triple of floats
+ */
+typedef struct triple_f {
+    float a, b, c;
+} rgb, point;
+
+/*
  * Particle/Body tracks
  */
 typedef struct Trail {
