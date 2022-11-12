@@ -12,8 +12,9 @@
 
 const int BASE = 10;
 
-static real w (int order) {  // composition increases order by one, then symmetry bumps that to the next even order!
-    return 1.0L / (4.0L - powl(4.0L, 1.0L / (order + 1)));
+static weights w (int order) {  // composition increases order by one, then symmetry bumps that to the next even order!
+    real w = 1.0L / (4.0L - powl(4.0L, 1.0L / (order + 1)));
+    return (weights){.fwd = w, .rev = 1.0L - 4.0L * w};
 }
 
 controls *get_c_symp (char **argv) {
@@ -21,10 +22,6 @@ controls *get_c_symp (char **argv) {
     c->order = (int)strtol(argv[2], NULL, BASE); assert(c->order >= 2 && c->order <= 10);
     c->step_size = strtold(argv[3], NULL); assert(c->step_size > 0.0L);
     c->steps = (int)strtol(argv[4], NULL, BASE); assert(c->steps >= 0 && c->steps <= 1000000);
-    c->r2 = (weights){.fwd = w(2), .rev = 1.0L - 4.0L * w(2)};
-    c->r4 = (weights){.fwd = w(4), .rev = 1.0L - 4.0L * w(4)};
-    c->r6 = (weights){.fwd = w(6), .rev = 1.0L - 4.0L * w(6)};
-    c->r8 = (weights){.fwd = w(8), .rev = 1.0L - 4.0L * w(8)};
     return c;
 }
 
@@ -78,22 +75,22 @@ static void tenth_order (controls *c, void *p, real h) {
     base10(c, p, h);
 }
 
-static integrator get_integrator (long order) {
+static integrator get_integrator (controls *c) {
     integrator composer = NULL;
-    switch (order) {
+    switch (c->order) {
         case  2: composer =  second_order; break;
-        case  4: composer =  fourth_order; break;
-        case  6: composer =   sixth_order; break;
-        case  8: composer = eightth_order; break;
-        case 10: composer =   tenth_order; break;
-        default: printf("Order parameter is {%ld} but should be 2, 4, 6, 8, or 10 \n", order); exit(1);
+        case  4: composer =  fourth_order; c->r2 = w(2); break;
+        case  6: composer =   sixth_order; c->r2 = w(2); c->r4 = w(4); break;
+        case  8: composer = eightth_order; c->r2 = w(2); c->r4 = w(4); c->r6 = w(6); break;
+        case 10: composer =   tenth_order; c->r2 = w(2); c->r4 = w(4); c->r6 = w(6); c->r8 = w(8); break;
+        default: printf("Order parameter is {%d} but should be 2, 4, 6, 8, or 10 \n", c->order); exit(1);
     }
     return composer;
 }
 
 void solve (char **argv, controls *c, void *p, plotter output) {
     int display_precision = (int)strtol(argv[1], NULL, BASE); assert(display_precision >= 1 && display_precision <= 32);
-    integrator composer = get_integrator(c->order);
+    integrator composer = get_integrator(c);
     for (int step = 0; step < c->steps; step++) {
         output(display_precision, p, step * c->step_size);
         composer(c, p, c->step_size);
@@ -105,7 +102,7 @@ _Bool generate (controls *c, void *p) {
     static _Bool generating = 0;
     static integrator composer;
     if (generating) goto resume; else generating = 1;
-    composer = get_integrator(c->order);
+    composer = get_integrator(c);
     for (c->step = 0; c->step < c->steps; c->step++) {
         composer(c, p, c->step_size);
         return 1;
