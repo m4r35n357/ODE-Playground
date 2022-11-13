@@ -12,11 +12,6 @@
 
 const int BASE = 10;
 
-static weights w (int order) {  // composition increases order by one, then symmetry bumps that to the next even order!
-    real w = 1.0L / (4.0L - powl(4.0L, 1.0L / (order + 1)));
-    return (weights){.fwd = w, .rev = 1.0L - 4.0L * w};
-}
-
 controls *get_c_symp (char **argv) {
     controls *c = malloc(sizeof (controls));
     c->order = (int)strtol(argv[2], NULL, BASE); assert(c->order >= 2 && c->order <= 10);
@@ -73,6 +68,11 @@ static void base10 (controls *c, void *p, real cd) {
 
 static void tenth_order (controls *c, void *p, real h) {
     base10(c, p, h);
+}
+
+static weights w (int order) {  // composition increases order by one, then symmetry bumps that to the next even order!
+    real w = 1.0L / (4.0L - powl(4.0L, 1.0L / (order + 1)));
+    return (weights){.fwd = w, .rev = 1.0L - 4.0L * w};
 }
 
 static integrator get_integrator (controls *c) {
