@@ -31,11 +31,9 @@ static void second_order (controls *cont, void *p, real cd) { (void)cont;
 }
 
 static void suzuki (controls *c, void *p, integrator base, real cd, weights w) {
-    base(c, p, cd * w.fwd);
-    base(c, p, cd * w.fwd);
-    base(c, p, cd * w.rev);
-    base(c, p, cd * w.fwd);
-    base(c, p, cd * w.fwd);
+    for (int step = 0; step < 5; step++) {
+        base(c, p, cd * (step == 2 ? w.rev : w.fwd));
+    }
 }
 
 static void base4 (controls *c, void *p, real cd) {
