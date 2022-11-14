@@ -48,6 +48,7 @@ $zig_build_exe libdual-test.c dual.c $CCOPTS
 
 $zig_build_exe h-analysis.c symplectic.c $CCOPTS
 $zig_build_exe h-newton.c symplectic.c dual.c $CCOPTS
+$zig_build_exe h-nbody.c symplectic.c main-nbody.c $CCOPTS
 $zig_build_exe h-kerr.c symplectic.c dual.c main-kerr.c $CCOPTS
 $zig_build_exe h-kerr-gen-particle.c h-kerr.c dual.c $CCOPTS
 $zig_build_exe h-kerr-gen-light.c $CCOPTS
