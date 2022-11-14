@@ -25,7 +25,7 @@ endif
 %.o: %.c
 	$(CC) -MT $@ -MMD -MP -c -o $@ $< $(CFLAGS)
 
-all: ctags tsm tsm-gl h generators h-kerr-std h-kerr-gl h-nbody-gl divergence tests
+all: ctags tsm tsm-gl h generators h-kerr-std h-kerr-gl h-nbody-std h-nbody-gl divergence tests
 
 
 tsm-%-std: tsm-%.o taylor-ode.o main-tsm.o
@@ -61,6 +61,9 @@ h-kerr-std: symplectic.o dual.o h-kerr.o main-kerr.o
 h-kerr-gl: symplectic.o dual.o h-kerr.o opengl.o h-kerr-gl.o
 	$(CC) -o $@ $^ $(LIB_M) $(LIB_GL) $(STRIP)
 
+
+h-nbody-std: symplectic.o h-nbody.o main-nbody.o
+	$(CC) -o $@ $^ $(LIB_M) $(LIB_GL) $(STRIP)
 
 h-nbody-gl: symplectic.o h-nbody.o opengl.o h-nbody-gl.o
 	$(CC) -o $@ $^ $(LIB_M) $(LIB_GL) $(STRIP)
