@@ -138,10 +138,10 @@ int main (int argc, char **argv) {
     x_positive ? compare(name, d_mul(sqr_x, d_pow(x, -3.0L)), inv_x) : skip(name);
 
     name = "sqr(x)^0.5 == |x|";
-    x_non_zero ? compare(name, d_pow(sqr_x, 0.5L), d_abs(x)) : skip(name);
+    x_non_zero ? compare(name, d_pow(sqr_x, 0.5L), abs_x) : skip(name);
 
     name = "sqrt(sqr(x) == |x|";
-    x_non_zero ? compare(name, d_sqrt(sqr_x), d_abs(x)) : skip(name);
+    x_non_zero ? compare(name, d_sqrt(sqr_x), abs_x) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
     exp_x = d_exp(x);
