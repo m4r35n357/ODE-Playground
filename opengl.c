@@ -53,7 +53,7 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
         case 'F': case 'f': glutFullScreenToggle(); break;
         case 'V': case 'v': mode = (mode + 1) % 3; break;
         case 'H': case 'h': osd_active = !osd_active; break;
-        case  27: exit(1);  // Escape key
+        case 'Q': case 'q': case 27: exit(1);  // Code 27 is the Escape key
         default: break;
     }
 }
