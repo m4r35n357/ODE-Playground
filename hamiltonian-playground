@@ -41,35 +41,36 @@ splot '$user_data' with lines
 EOF
 }
 
-plot_errors () {
+plot_hamiltonian_error () {
 gnuplot -p << EOF
 set key left
 set terminal wxt size 600,450
-set yrange [24:0]
 set xlabel 'time'
 set ylabel 'approximate places'
-plot '$user_data' using 4:5 title 'hamiltonian error' with lines
+plot '$user_data' using $1:$2 with linespoints pt 7 ps 0
 EOF
 }
 
 case $model in
-    Newton) ./h-newton-std \
-        $(yad --title="Newtonian Orbit" --form --separator=" " --align=right \
+    Newton)
+        bodies=$(yad --title="Newtonian Orbit" --form --separator=" " --align=right \
         --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
         --field="mass" --field="r0" --field="L factor":NUM \
         -- '6!3..64!3' '4!2..10!2' '0.2!0.1..1!0.1!1' '10000!1..100000!1' \
-           "1" "12" '0.6!0.0..1.0!0.1!1') >$user_data
+           "1" "12" '0.6!0.0..1.0!0.1!1')
+        ./h-newton-std $bodies >$user_data
         plot3d
-        plot_errors
+        plot_hamiltonian_error 4 5
     ;;
-    Spring) ./h-spring-std \
-        $(yad --title="Mass-Spring System" --form --separator=" " --align=right \
+    Spring)
+        bodies=$(yad --title="Mass-Spring System" --form --separator=" " --align=right \
         --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
         --field="mass" --field="spring constant" --field="length" \
         -- '6!3..64!3' '4!2..10!2' '0.1!0.1..1!0.1!1' '10000!1..100000!1' \
-           "1" "1" "1") >$user_data
+           "1" "1" "1")
+        ./h-spring-std $bodies >$user_data
         plot3d
-        plot_errors
+        plot_hamiltonian_error 4 5
     ;;
     Analysis) ./h-analysis-std \
         $(yad --title="Step Analysis" --form --separator=" " --align=right \
@@ -78,8 +79,7 @@ case $model in
         plot_analysis
     ;;
     EightBody)
-        ./h-nbody-gl _ $control .05 \
-        $(yad --width=350 --height=280 --list --title="Eight Bodies" --separator=" " \
+        bodies=$(yad --width=350 --height=280 --list --title="Eight Bodies" --separator=" " \
         --print-all --grid-lines=BOTH --no-click --editable \
         --column=Mass --column=X --column=Y --column=Z --column=pX --column=pY --column=pZ \
         -- 100.0  0.0  0.0  0.0  0.0  0.0  0.0 \
@@ -90,42 +90,48 @@ case $model in
              3.0 -4.0  0.0 -0.1  0.0 -0.2 -2.6 \
              3.0  8.0  0.0 -0.3  0.0  2.0 -0.2 \
              4.0  0.0  4.0 -0.2 -4.8  0.0 -0.2)
+        (./h-nbody-std 6 $control .05 $bodies >$user_data; plot_hamiltonian_error 1 2) &
+        ./h-nbody-gl _ $control .05 $bodies
     ;;
     FourBodyA)
-        ./h-nbody-gl _ $control 1 \
-        $(yad --width=450 --height=180 --list --title="Four Body A" --separator=" " \
+        bodies=$(yad --width=450 --height=180 --list --title="Four Body A" --separator=" " \
         --print-all --grid-lines=BOTH --no-click --editable \
         --column=mass --column=x --column=y --column=z --column=px --column=py --column=pz \
         -- 1.0 0.0 -0.69548  0.69548  0.87546 -0.31950 -0.31950 \
            1.0 0.0  0.69548 -0.69548  0.87546  0.31950  0.31950 \
            1.0 0.0 -0.69548 -0.69548 -0.87546 -0.31950  0.31950 \
            1.0 0.0  0.69548  0.69548 -0.87546  0.31950 -0.31950)
+        (./h-nbody-std 6 $control 1 $bodies >$user_data; plot_hamiltonian_error 1 2) &
+        ./h-nbody-gl _ $control 1 $bodies
     ;;
     FourBodyB)
-        ./h-nbody-gl _ $control 3.5 \
-        $(yad --width=350 --height=180 --list --title="Four Body B" --separator=" " \
+        bodies=$(yad --width=350 --height=180 --list --title="Four Body B" --separator=" " \
         --print-all --grid-lines=BOTH --no-click --editable \
         --column=mass --column=x --column=y --column=z --column=px --column=py --column=pz \
         -- 1.0  1.0  1.0  1.0 -1.0  1.0 -1.0 \
            1.0 -1.0 -1.0  1.0  1.0 -1.0 -1.0 \
            1.0  1.0 -1.0 -1.0  1.0  1.0  1.0 \
            1.0 -1.0  1.0 -1.0 -1.0 -1.0  1.0)
+        (./h-nbody-std 6 $control 3.5 $bodies >$user_data; plot_hamiltonian_error 1 2) &
+        ./h-nbody-gl _ $control 3.5 $bodies
     ;;
     ThreeBody)
-        ./h-nbody-gl _ $control 1 \
-        $(yad --width=400 --height=150 --list --title="Three Body" --separator=" " \
+        bodies=$(yad --width=400 --height=150 --list --title="Three Body" --separator=" " \
         --print-all --grid-lines=BOTH --no-click --editable \
         --column=mass --column=x --column=y --column=z --column=px --column=py --column=pz \
         -- 1.0 -1.0 0.0 0.0  0.08058  0.58884  0.2 \
            1.0  1.0 0.0 0.0  0.08058  0.58884 -0.2 \
            1.0  0.0 0.0 0.0 -0.16116 -1.17768  0.0)
+        (./h-nbody-std 6 $control 1 $bodies >$user_data; plot_hamiltonian_error 1 2) &
+        ./h-nbody-gl _ $control 1 $bodies
     ;;
     TwoBody)
-        ./h-nbody-gl _ $control 4 \
-        $(yad --width=350 --height=120 --list --title="Two Body" --separator=" " \
+        bodies=$(yad --width=350 --height=120 --list --title="Two Body" --separator=" " \
         --print-all --grid-lines=BOTH --no-click --editable \
         --column=mass --column=x --column=y --column=z --column=px --column=py --column=pz \
         -- 1.0 0.0  1.0 0.0  1.0 0.0 0.0 \
            1.0 0.0 -1.0 0.0 -1.0 0.0 0.0)
+        (./h-nbody-std 6 $control 4 $bodies >$user_data; plot_hamiltonian_error 1 2) &
+        ./h-nbody-gl _ $control 4 $bodies
     ;;
 esac
