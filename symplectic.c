@@ -69,8 +69,8 @@ static void tenth_order (controls *c, void *p, real h) {
 }
 
 static weights w (int order) {  // composition increases order by one, then symmetry bumps that to the next even order!
-    real w = 1.0L / (4.0L - powl(4.0L, 1.0L / (order + 1)));
-    return (weights){.fwd = w, .rev = 1.0L - 4.0L * w};
+    real fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / (order + 1)));
+    return (weights){.fwd = fwd, .rev = 1.0L - 4.0L * fwd};
 }
 
 static integrator get_integrator (controls *c) {
