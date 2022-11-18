@@ -13,7 +13,7 @@ The n-body and black hole programs will most probably not be documented here, so
 
 ## NEWS: Default compiler (c99)
 
-Changed to GCC; MUSL is still available as an option (also Clang).
+Choice of Clang or GCC.
 
 ## NEWS: Basic dialogue box UI for many operations using yad
 
@@ -28,13 +28,12 @@ See comments at the top of the source files for examples
 
 No planned new features, and no known bugs ;)
 
-All programs are written in pure C99.
-Sources and Executables are tiny (if MUSL is used); the default build is against glibc.
+All programs are written in pure C99 and Posix shell.
 
 All c floating point operations are executed in _long double_ precision.
 This gives a choice of precision and performance on different platforms.
 
-Platform | FP Implementation
+Platform | Long Double Implementation
 ----------|-----------
 ix86 | 80 bit hardware float
 x86-64 | 80 bit hardware float
@@ -43,11 +42,9 @@ aarch64 | 128 bit _software_ float
 
 ### ODE analysis using arbitrary-order Taylor Series Method (TSM)
 
-Good selection of clients (models) included
-
-Investigate the validity of chaotic solutions against integrator order and step size
-
-Plot bifurcation diagrams, to find "interesting" parameter values to study
+* Good selection of clients (models) included
+* Investigate the validity of chaotic solutions against integrator order and step size
+* Plot bifurcation diagrams, to find "interesting" parameter values to study
 
 ```
 ./ode-playground
@@ -57,8 +54,14 @@ Plot bifurcation diagrams, to find "interesting" parameter values to study
 
 2nd to 10th order integrators, with visualization of the time stepping structure
 
-Examples; N-Body system, Mass-spring system, Newton orbits, plus an analysis example to illustrate the symplectic time-stepping sequence for each order of integration.
-The N-body example uses symplectic integration, but not dual numbers, because the differentiation is trivial in this case.
+Examples:
+* Kerr Black Hole orbits (using a "pseudo-Hamiltonian" approach)
+* N-Body system
+* Mass-spring system
+* Central mass Newtonian system
+* an analysis example to visualize the symplectic time-stepping sequence for each order of integration.
+
+(The N-body example uses symplectic integration, but not dual numbers, because the differentiation is trivial in this case.)
 
 No formal documentation yet, see the yad and c files for example usage.
 
@@ -71,9 +74,11 @@ No formal documentation yet, see the yad and c files for example usage.
 This example uses a "pseudo-Hamiltonian" approach with Dual Numbers to solve Carter's first-order equations of motion, separated in r and theta using Mino time.
 
 No formal documentation yet, see the yad and c files for example usage.
-
 ```
 ./blackhole-playground
+```
+There are also programs to create model parameters and initial conditions for bounded particle and light orbits
+```
 ./blackhole-generator
 ```
 
