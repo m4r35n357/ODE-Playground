@@ -28,7 +28,7 @@ See comments at the top of the source files for examples
 
 No planned new features, and no known bugs ;)
 
-All programs are written in pure C99 and Posix shell.
+All programs are written in c99, and all scripts are in Posix shell syntax.
 
 All c floating point operations are executed in _long double_ precision.
 This gives a choice of precision and performance on different platforms.
@@ -55,7 +55,6 @@ aarch64 | 128 bit _software_ float
 2nd to 10th order integrators, with visualization of the time stepping structure
 
 Examples:
-* Kerr Black Hole orbits (using a "pseudo-Hamiltonian" approach)
 * N-Body system
 * Mass-spring system
 * Central mass Newtonian system
