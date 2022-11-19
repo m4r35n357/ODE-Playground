@@ -5,6 +5,7 @@
  */
 
 #include <string.h>
+#include <stdio.h>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include "opengl.h"
@@ -90,6 +91,9 @@ void ApplicationInit (int argc, char** argv, char *title) {
     glutSpecialFunc(SpecialKeyFunc);
     glutReshapeFunc(ResizeWindow);
     glutDisplayFunc(Animate);
+    fprintf(stderr, "\n  OpenGL: %s\n", glGetString(GL_VERSION));
+    fprintf(stderr, "FreeGLUT: %d\n", glutGet(GLUT_VERSION));
+    fprintf(stderr, "    GLEW: %s\n\n", glewGetString(GLEW_VERSION));
 }
 
 void SetupView () {
