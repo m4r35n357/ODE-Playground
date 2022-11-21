@@ -25,7 +25,7 @@ endif
 %.o: %.c
 	$(CC) -MT $@ -MMD -MP -c -o $@ $< $(CFLAGS)
 
-all: ctags tsm tsm-gl h generators h-kerr-std h-kerr-gl h-nbody-std h-nbody-gl divergence tests
+all: tsm tsm-gl h generators h-kerr-std h-kerr-gl h-nbody-std h-nbody-gl divergence tests
 
 
 tsm-%-std: tsm-%.o taylor-ode.o main-tsm.o
@@ -90,6 +90,13 @@ kerr-image: kerr-image.o
 
 ctags:
 	@/usr/bin/ctags *.h *.c
+
+ctags-system:
+#	@/usr/bin/ctags /usr/include/*.h /usr/include/GL/*.h *.h *.c
+	@/usr/bin/ctags --c-kinds=+p --fields=+iaS --extras=+q /usr/include/*.h /usr/include/GL/*.h *.h *.c
+
+ctags-system-all:
+	@/usr/bin/ctags -R --c-kinds=+p --fields=+iaS --extras=+q /usr/include .
 
 clean:
 	@rm -f *.o *~ core *-std *-gl h-kerr-gen-light h-kerr-gen-particle divergence libad-test libdual-test
