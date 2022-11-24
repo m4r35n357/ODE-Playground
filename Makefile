@@ -86,13 +86,12 @@ kerr-image: kerr-image.o
 	$(CC) -o $@ $< $(LIB_M) $(STRIP)
 
 
-.PHONY: clean depclean ctags
+.PHONY: clean depclean ctags ctags-system ctags-system-all
 
 ctags:
 	@/usr/bin/ctags *.h *.c
 
 ctags-system:
-#	@/usr/bin/ctags /usr/include/*.h /usr/include/GL/*.h *.h *.c
 	@/usr/bin/ctags --c-kinds=+p --fields=+iaS --extras=+q /usr/include/*.h /usr/include/GL/*.h *.h *.c
 
 ctags-system-all:
