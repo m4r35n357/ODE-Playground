@@ -1,9 +1,9 @@
 /*
  * Dual numbers, newest validation checks
  *
- * Example: ./libdual-test 1 1e-18 [ 0 | 1 | 2 ]
+ * Example: ./libdual-test .5 1e-15 [ 0 | 1 | 2 ]
  *
- ./libdual-test-std $(yad --columns=2 --title="Dual Tests" --form --separator=" " --align=right \
+ ./libdual-test $(yad --columns=2 --title="Dual Tests" --form --separator=" " --align=right \
     --field="Value":NUM --field="Max. Error":CB --field="Detail":CB \
     -- '0.5!-1.0..1.0!0.1!1' '1.0e-15!1.0e-18!1.0e-21!1.0e-24!1.0e-27!1.0e-30!1.0e-36' '0!1!2')
  *

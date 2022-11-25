@@ -90,7 +90,7 @@ case $model in
              3.0 -4.0  0.0 -0.1  0.0 -0.2 -2.6 \
              3.0  8.0  0.0 -0.3  0.0  2.0 -0.2 \
              4.0  0.0  4.0 -0.2 -4.8  0.0 -0.2)
-        (./h-nbody-std 6 $control .05 $bodies >$user_data; plot_hamiltonian_error 1 2) &
+        (./h-nbody-std 6 $control .05 $bodies >$user_data; plot_hamiltonian_error 1 2) 2>/dev/null &
         ./h-nbody-gl _ $control .05 $bodies
     ;;
     FourBodyA)
@@ -101,7 +101,7 @@ case $model in
            1.0 0.0  0.69548 -0.69548  0.87546  0.31950  0.31950 \
            1.0 0.0 -0.69548 -0.69548 -0.87546 -0.31950  0.31950 \
            1.0 0.0  0.69548  0.69548 -0.87546  0.31950 -0.31950)
-        (./h-nbody-std 6 $control 1 $bodies >$user_data; plot_hamiltonian_error 1 2) &
+        (./h-nbody-std 6 $control 1 $bodies >$user_data; plot_hamiltonian_error 1 2) 2>/dev/null &
         ./h-nbody-gl _ $control 1 $bodies
     ;;
     FourBodyB)
@@ -112,7 +112,7 @@ case $model in
            1.0 -1.0 -1.0  1.0  1.0 -1.0 -1.0 \
            1.0  1.0 -1.0 -1.0  1.0  1.0  1.0 \
            1.0 -1.0  1.0 -1.0 -1.0 -1.0  1.0)
-        (./h-nbody-std 6 $control 3.5 $bodies >$user_data; plot_hamiltonian_error 1 2) &
+        (./h-nbody-std 6 $control 3.5 $bodies >$user_data; plot_hamiltonian_error 1 2) 2>/dev/null &
         ./h-nbody-gl _ $control 3.5 $bodies
     ;;
     ThreeBody)
@@ -122,7 +122,7 @@ case $model in
         -- 1.0 -1.0 0.0 0.0  0.08058  0.58884  0.2 \
            1.0  1.0 0.0 0.0  0.08058  0.58884 -0.2 \
            1.0  0.0 0.0 0.0 -0.16116 -1.17768  0.0)
-        (./h-nbody-std 6 $control 1 $bodies >$user_data; plot_hamiltonian_error 1 2) &
+        (./h-nbody-std 6 $control 1 $bodies >$user_data; plot_hamiltonian_error 1 2) 2>/dev/null &
         ./h-nbody-gl _ $control 1 $bodies
     ;;
     TwoBody)
@@ -131,7 +131,7 @@ case $model in
         --column=mass --column=x --column=y --column=z --column=px --column=py --column=pz \
         -- 1.0 0.0  1.0 0.0  1.0 0.0 0.0 \
            1.0 0.0 -1.0 0.0 -1.0 0.0 0.0)
-        (./h-nbody-std 6 $control 4 $bodies >$user_data; plot_hamiltonian_error 1 2) &
+        (./h-nbody-std 6 $control 4 $bodies >$user_data; plot_hamiltonian_error 1 2) 2>/dev/null &
         ./h-nbody-gl _ $control 4 $bodies
     ;;
 esac

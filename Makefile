@@ -86,7 +86,11 @@ kerr-image: kerr-image.o
 	$(CC) -o $@ $< $(LIB_M) $(STRIP)
 
 
-.PHONY: clean depclean ctags ctags-system ctags-system-all
+.PHONY: test clean depclean ctags ctags-system ctags-system-all
+
+test:
+	./libad-test 20 .5 1e-15
+	./libdual-test .5 1e-15
 
 ctags:
 	@/usr/bin/ctags *.h *.c
