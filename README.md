@@ -40,6 +40,33 @@ x86-64 | 80 bit hardware float
 armhf | 64 bit hardware float
 aarch64 | 128 bit _software_ float
 
+## Quick Start
+
+### Requirements - Debian/Ubuntu packages
+```
+sudo apt install bc git build-essential musl-tools gnuplot-x11 lcov freeglut3-dev glew-utils libglew-dev
+```
+Optional:
+```
+sudo apt install yad ffmpeg
+```
+Download:
+```
+git clone https://github.com/m4r35n357/ODE-Playground/pure_c
+cd ODE-Playground
+```
+
+#### c Build (Clang by default)
+
+```
+make clean
+make OR make CCC=gcc OR make CCC=clang OR make CCC=dbg
+make test
+```
+There should be NO errors or warnings.
+
+[UPDATE] kerr-image.c (not built automatically) shows warnings on arm64; it is 3rd party code
+
 ### ODE analysis using arbitrary-order Taylor Series Method (TSM)
 
 * Good selection of clients (models) included
@@ -81,31 +108,7 @@ There are also programs to create model parameters and initial conditions for bo
 ./blackhole-generator
 ```
 
-## Quick Start
-
-### Requirements - Debian/Ubuntu packages
-```
-sudo apt install bc git build-essential musl-tools gnuplot-x11 lcov freeglut3-dev glew-utils libglew-dev
-```
-Optional:
-```
-sudo apt install yad ffmpeg
-```
-Download:
-```
-git clone https://github.com/m4r35n357/ODE-Playground/pure_c
-cd ODE-Playground
-```
-
-#### c Build (Clang by default)
-
-```
-make clean
-make OR make CCC=gcc OR make CCC=clang
-```
-There should be NO errors or warnings.
-
-[UPDATE] kerr-image.c shows warnings on arm64; it is 3rd party code
+## Grubby details
 
 #### Running c Tests
 
