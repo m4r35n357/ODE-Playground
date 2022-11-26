@@ -23,10 +23,10 @@ f4 = 4.0
 f05 = 0.5
 i5 = 5
 
-d_0, s_0 = Dual.get().var, Series.get(order).var
-d_05, s_05 = Dual.get(f05).var, Series.get(order, f05).var
-d_4, s_4 = Dual.get(f4).var, Series.get(order, f4).var
-d_3, s_3 = Dual.get(f3).var, Series.get(order, f3).var
+d_0, s_0 = Dual().var, Series.get(order).var
+d_05, s_05 = Dual(f05).var, Series.get(order, f05).var
+d_4, s_4 = Dual(f4).var, Series.get(order, f4).var
+d_3, s_3 = Dual(f3).var, Series.get(order, f3).var
 
 s_1 = Series.get(order, f1).var
 s_2 = Series.get(order, f2).var
@@ -145,11 +145,9 @@ def test_get_default():
 
 @mark.parametrize('number', [zero, -zero, f05, -f05, i5, -i5])
 def test_get(number):
-    dual = Dual.get(number)
+    dual = Dual(number)
     series = Series.get(order, number)
     assert len(series.jet) == order
-    assert isinstance(dual.val, float)
-    assert isinstance(dual.dot, float)
     for term in series.jet:
         assert isinstance(term, float)
     assert dual.val == approx(number)
@@ -194,7 +192,7 @@ def test_abs():
     dual = abs(d_05)
     assert dual.val == approx(f05)
     assert dual.dot == approx(1.0)
-    dual = abs(Dual.get(- f05).var)
+    dual = abs(Dual(- f05).var)
     assert dual.val == approx(f05)
     assert dual.dot == approx(- 1.0)
     dual = abs(- d_05)
@@ -315,14 +313,14 @@ def test_multiply_number_object(number):
 @mark.domain
 @mark.parametrize('number', [i5, δ, - δ, - i5])
 def test_divide_domain_object_good(number):
-    _ = data1_d / Dual.get(number).var
+    _ = data1_d / Dual(number).var
     _ = data1_s / Series.get(order, number).var
 
 @mark.domain
 @mark.parametrize('number', [zero, -zero])
 def test_divide_domain_object_bad(number):
     with raises(AssertionError):
-        _ = data1_d / Dual.get(number).var
+        _ = data1_d / Dual(number).var
     with raises(AssertionError):
         _ = data1_s / Series.get(order, number).var
 
@@ -367,14 +365,14 @@ def test_divide_object_number(number):
 @mark.domain
 @mark.parametrize('number', [1, δ, -δ, -1])
 def test_divide_domain_number_object_good(number):
-    _ = 1.0 / Dual.get(number).var
+    _ = 1.0 / Dual(number).var
     _ = 1.0 / Series.get(order, number).var
 
 @mark.domain
 @mark.parametrize('number', [zero, - zero])
 def test_divide_domain_number_object_bad(number):
     with raises(AssertionError):
-        _ = 1.0 / Dual.get(number).var
+        _ = 1.0 / Dual(number).var
     with raises(AssertionError):
         _ = 1.0 / Series.get(order, number).var
 
@@ -423,46 +421,46 @@ def test_pow_object_neg1_number(number):
 @mark.domain
 @mark.parametrize('number', [1, δ, 0, zero, - zero, - δ, - 1])
 def test_pow_domain_object_int_good(number):
-    _ = Dual.get(number).var**2
+    _ = Dual(number).var**2
     _ = Series.get(order, number).var**2
 
 @mark.domain
 @mark.parametrize('number', [1, δ, - δ, - 1])
 def test_pow_domain_object_int_neg_good(number):
-    _ = Dual.get(number).var**-2
+    _ = Dual(number).var**-2
     _ = Series.get(order, number).var**-2
 
 @mark.domain
 @mark.parametrize('number', [0, zero, - zero])
 def test_pow_domain_object_int_neg_bad(number):
     with raises(AssertionError):
-        _ = Dual.get(number).var**-2
+        _ = Dual(number).var**-2
     with raises(AssertionError):
         _ = Series.get(order, number).var**-2
 
 @mark.domain
 @mark.parametrize('number', [1, δ])
 def test_pow_domain_object_anything_good(number):
-    _ = Dual.get(number).var**data1_d
+    _ = Dual(number).var**data1_d
     _ = Series.get(order, number).var**data1_s
-    _ = Dual.get(number).var**2.0
+    _ = Dual(number).var**2.0
     _ = Series.get(order, number).var**2.0
-    _ = Dual.get(number).var**-2.0
+    _ = Dual(number).var**-2.0
     _ = Series.get(order, number).var**-2.0
 
 @mark.domain
 @mark.parametrize('number', [0, zero, - zero, - δ, -1])
 def test_pow_domain_object_anything_bad(number):
     with raises(AssertionError):
-        _ = Dual.get(number).var**data1_d
+        _ = Dual(number).var**data1_d
     with raises(AssertionError):
         _ = Series.get(order, number).var**data1_s
     with raises(AssertionError):
-        _ = Dual.get(number).var**2.0
+        _ = Dual(number).var**2.0
     with raises(AssertionError):
         _ = Series.get(order, number).var**2.0
     with raises(AssertionError):
-        _ = Dual.get(number).var**-2.0
+        _ = Dual(number).var**-2.0
     with raises(AssertionError):
         _ = Series.get(order, number).var**-2.0
 
@@ -557,14 +555,14 @@ def test_minus_exp():
 @mark.domain
 @mark.parametrize('number', [1, δ])
 def test_ln_domain_good(number):
-    _ = Dual.get(number).var.ln
+    _ = Dual(number).var.ln
     _ = Series.get(order, number).var.ln
 
 @mark.domain
 @mark.parametrize('number', [zero, - zero, - δ, - 1])
 def test_ln_domain_bad(number):
     with raises(AssertionError):
-        _ = Dual.get(number).var.ln
+        _ = Dual(number).var.ln
     with raises(AssertionError):
         _ = Series.get(order, number).var.ln
 
@@ -594,7 +592,7 @@ def test_sin():
         sine[k], cosine[k] = t_sin_cos(sine, cosine, s_3.jet, k)
         assert sine[k] == approx(t_series_sin.jet[k])
         assert cosine[k] == approx(t_series_cos.jet[k])
-    dual = Dual.get(pi / f3).var.sin
+    dual = Dual(pi / f3).var.sin
     assert dual.val == approx(sin(pi / f3))
     assert dual.dot == approx(cos(pi / f3))
     series = ~ Series.get(order, pi / f3).var.sin
@@ -610,7 +608,7 @@ def test_sin():
             assert series.jet[k] == approx(- cos(pi / f3))
 
 def test_cos():
-    dual = Dual.get(pi / f3).var.cos
+    dual = Dual(pi / f3).var.cos
     assert dual.val == approx(cos(pi / f3))
     assert dual.dot == approx(- sin(pi / f3))
     series = ~ Series.get(order, pi / f3).var.cos
@@ -633,7 +631,7 @@ def test_tan():
         tangent[k], secant2[k] = t_tan_sec2(tangent, secant2, s_3.jet, k)
         assert tangent[k] == approx(t_series_tan.jet[k])
         assert secant2[k] == approx(t_series_sec2.jet[k])
-    dual = Dual.get(pi / f4).var.tan
+    dual = Dual(pi / f4).var.tan
     assert dual.val == approx(tan(pi / f4))
     assert dual.dot == approx((1.0 + tan(pi / f4) ** 2))
     series = ~ Series.get(order, pi / f4).var.tan
@@ -649,7 +647,7 @@ def test_sinh():
         h_sine[k], h_cosine[k] = t_sin_cos(h_sine, h_cosine, s_3.jet, k, hyp=True)
         assert h_sine[k] == approx(t_series_sinh.jet[k])
         assert h_cosine[k] == approx(t_series_cosh.jet[k])
-    dual = Dual.get(pi / f3).var.sinh
+    dual = Dual(pi / f3).var.sinh
     assert dual.val == approx(sinh(pi / f3))
     assert dual.dot == approx(cosh(pi / f3))
     series = ~ Series.get(order, pi / f3).var.sinh
@@ -661,7 +659,7 @@ def test_sinh():
             assert series.jet[k] == approx(cosh(pi / f3))
 
 def test_cosh():
-    dual = Dual.get(pi / f3).var.cosh
+    dual = Dual(pi / f3).var.cosh
     assert dual.val == approx(cosh(pi / f3))
     assert dual.dot == approx(sinh(pi / f3))
     series = ~ Series.get(order, pi / f3).var.cosh
@@ -680,7 +678,7 @@ def test_tanh():
         h_tangent[k], h_secant2[k] = t_tan_sec2(h_tangent, h_secant2, s_3.jet, k, hyp=True)
         assert h_tangent[k] == approx(t_series_tanh.jet[k])
         assert h_secant2[k] == approx(t_series_sech2.jet[k])
-    dual = Dual.get(pi / f4).var.tanh
+    dual = Dual(pi / f4).var.tanh
     assert dual.val == approx(tanh(pi / f4))
     assert dual.dot == approx((1.0 - tanh(pi / f4) ** 2))
     series = ~ Series.get(order, pi / f4).var.tanh
@@ -691,14 +689,14 @@ def test_tanh():
 @mark.domain
 @mark.parametrize('number', [1.0 - δ, -1.0 + δ])
 def test_asin_domain_good(number):
-    _ = Dual.get(number).var.asin
+    _ = Dual(number).var.asin
     _ = Series.get(order, number).var.asin
 
 @mark.domain
 @mark.parametrize('number', [3.0, 1.0, -1.0, -3.0, 3, 1, -1, -3])
 def test_asin_domain_bad(number):
     with raises(AssertionError):
-        _ = Dual.get(number).var.asin
+        _ = Dual(number).var.asin
         _ = Series.get(order, number).var.asin
 
 def test_asin():
@@ -712,14 +710,14 @@ def test_asin():
 @mark.domain
 @mark.parametrize('number', [1.0 - δ, -1.0 + δ])
 def test_acos_domain_good(number):
-    _ = Dual.get(number).var.acos
+    _ = Dual(number).var.acos
     _ = Series.get(order, number).var.acos
 
 @mark.domain
 @mark.parametrize('number', [3.0, 1.0, -1.0, -3.0, 3, 1, -1, -3])
 def test_acos_domain_bad(number):
     with raises(AssertionError):
-        _ = Dual.get(number).var.acos
+        _ = Dual(number).var.acos
         _ = Series.get(order, number).var.acos
 
 def test_acos():
@@ -749,14 +747,14 @@ def test_asinh():
 @mark.domain
 @mark.parametrize('number', [1.0 + δ])
 def test_acosh_domain_good(number):
-    _ = Dual.get(number).var.acosh
+    _ = Dual(number).var.acosh
     _ = Series.get(order, number).var.acosh
 
 @mark.domain
 @mark.parametrize('number', [zero, - zero, 1.0 - δ, 1.0])
 def test_acosh_domain_bad(number):
     with raises(AssertionError):
-        _ = Dual.get(number).var.acosh
+        _ = Dual(number).var.acosh
         _ = Series.get(order, number).var.acosh
 
 def test_acosh():
@@ -770,14 +768,14 @@ def test_acosh():
 @mark.domain
 @mark.parametrize('number', [1.0 - δ, -1.0 + δ])
 def test_atanh_domain_good(number):
-    _ = Dual.get(number).var.atanh
+    _ = Dual(number).var.atanh
     _ = Series.get(order, number).var.atanh
 
 @mark.domain
 @mark.parametrize('number', [1.0, -1.0, 1, -1])
 def test_atanh_domain_bad(number):
     with raises(AssertionError):
-        _ = Dual.get(number).var.atanh
+        _ = Dual(number).var.atanh
         _ = Series.get(order, number).var.atanh
 
 def test_atanh():
@@ -806,7 +804,7 @@ def test_sqrt_domain_bad_value(number):
         _ = Series.get(order, number).var.sqrt
 
 def test_var():
-    dual = Dual.get(f3).var
+    dual = Dual(f3).var
     assert dual.val == approx(f3)
     assert dual.dot == approx(1.0)
     series = Series.get(order, f3).var

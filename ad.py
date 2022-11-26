@@ -334,13 +334,9 @@ class Series:
 
 class Dual:
 
-    def __init__(self, value, derivative):
+    def __init__(self, value=0.0, derivative=0.0):
         self.val = value
         self.dot = derivative
-
-    @classmethod
-    def get(cls, value=0.0):
-        return cls(value if isinstance(value, float) else float(value), 0.0)
 
     def __str__(self):
         return f'{self.val:+.{Context.places}e} {self.dot:+.{Context.places}e}'

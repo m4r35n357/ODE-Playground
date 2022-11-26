@@ -71,7 +71,7 @@ def _analyze_d(model, method, x0, x1, steps, εf, εx, limit, console, debug):
     x_prev = f0_prev = None
     step = (x1 - x0) / (steps - 1)
     for k in range(steps):
-        x = Dual.get(x0 + k * step).var
+        x = Dual(x0 + k * step).var
         f = model(x)
         if not console:
             print(f'{x.val:.{Context.places}e} {f}')
@@ -117,7 +117,7 @@ def _plot_d(model, x_min, x_max, steps, y_min, y_max):
     data = [[] for _ in range(3)]
     step = (x_max - x_min) / (steps - 1)
     for k in range(steps):
-        x = Dual.get(x_min + k * step).var
+        x = Dual(x_min + k * step).var
         y = model(x)
         for d_term, p_term in zip(data, [x.val] + [y.val] + [y.dot]):
             d_term.append(p_term)
@@ -145,8 +145,8 @@ def bisect_s(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, m
     return Result(method=Solver.BI.name, count=i-1, sense=sense.value, mode=mode.name, x=c.val, f=fc, δx=δx)
 
 def bisect_d(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug=False):
-    a, b, c = Dual.get(xa), Dual.get(xb), Dual.get(3)
-    f_sign = model(Dual.get(xa)).val
+    a, b, c = Dual(xa), Dual(xb), Dual(3)
+    f_sign = model(Dual(xa)).val
     δx = fc = i = 1
     while i <= limit and (abs(fc) > εf or abs(δx) > εx):
         c = 0.5 * (a + b)
@@ -176,7 +176,7 @@ def newton_s(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=
     return Result(method=Solver.NT.name, count=i-1, sense=sense.value, mode=mode.name, x=x.val, f=f[0], δx=δx)
 
 def newton_d(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug=False):
-    x, f = Dual.get(x0).var, Dual.get(1)
+    x, f = Dual(x0).var, Dual(1)
     δx = i = 1
     while i <= limit and (abs(f.val) > εf or abs(δx) > εx):
         f = model(x)
@@ -233,7 +233,7 @@ a = Series.get(4, 3.0).var
 print(a)
 print(~(a * a))
 
-b = Dual.get(3.0).var
+b = Dual(3.0).var
 print(b)
 print(b * b)
 
