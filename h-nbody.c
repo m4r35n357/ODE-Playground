@@ -28,8 +28,8 @@ nbody *get_p_nbody (int argc, char **argv, int n_bodies) {
         nb->bodies[i].py = strtold(argv[7 * i + 12], NULL);
         nb->bodies[i].pz = strtold(argv[7 * i + 13], NULL);
     }
+    nb->h0 = h(nb);
     cog(nb);
-    nb->h = nb->h0 = h(nb);
     return nb;
 }
 

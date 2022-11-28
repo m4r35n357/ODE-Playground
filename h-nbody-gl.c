@@ -56,7 +56,7 @@ void Animate () {
     if (osd_active) {
         glColor3f(0.0F, 0.5F, 0.5F);
 
-        sprintf(hud, "t: %.1Lf  h: %.6Le  ~sf: %.1Lf", c->step * c->step_size, m->h, error(m->h - m->h0));
+        sprintf(hud, "t: %.1Lf  h: %.6Le  ~sf: %.1Lf", c->step * c->step_size, h(m), error(h(m) - m->h0));
         osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, hud);
 
         sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.0f %%",
@@ -69,7 +69,6 @@ void Animate () {
     if (!finished && !paused) {
         if (generate(c, m)) {
             cog(m);
-            m->h = h(m) > m->h ? h(m) : m->h;
             buffer_point();
             for (int j = 0; j < m->n; j++) {
                 t[j].points[newest] = point_from_model(&b[j]);
@@ -86,14 +85,14 @@ void Animate () {
 }
 
 void CloseWindow () {
-    fprintf(stderr, "H : % .18Le\n", m->h);
+    fprintf(stderr, "H : % .18Le\n", h(m));
 }
 
 int main (int argc, char** argv) {
     c = get_c_symp(argv);
     m = get_p_nbody(argc, argv, (argc - 7) / 7);
     since = clock();
-    fprintf(stderr, "\nH0: % .18Le\n", m->h);
+    fprintf(stderr, "\nH0: % .18Le\n", h(m));
 
     length = (int)strtol(argv[5], NULL, BASE);
     t = calloc((size_t)m->n, sizeof (trail));

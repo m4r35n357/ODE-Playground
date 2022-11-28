@@ -14,7 +14,7 @@ typedef struct Body {
 typedef struct Nbody {
     int n;
     body *bodies;
-    real g, h0, h;
+    real g, h0;
     components centre;
 } nbody;
 
