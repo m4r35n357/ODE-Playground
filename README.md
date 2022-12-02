@@ -208,17 +208,6 @@ Parameter | Meaning
 5,6,7 | initial conditions, x0,y0,z0
 8+ | Model parameters
 
-**rk4-model-type** (c executables)
-
-Parameter | Meaning
-----------|-----------
-1 | x,y,z output decimal places (0 for full precision binary hex)
-2 | only plot every ? lines of output (for smaller internal step than plot step)
-3 | time step
-4 | number of steps
-5,6,7 | initial conditions, x0,y0,z0
-8+ | Model parameters
-
 ##### Run & plot (3D gnuplot graph):
 ```
 ./tsm-thomas-std 6 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
@@ -318,24 +307,17 @@ O(required precision^4) or O(order^4) or O(clean simulation time^4)
 ```
 ##### Make a CNS plot:
 
-Here are some comparisons bewtween TSM and RK4 for roughly similar clean simulation times in each case.
-Note that RK4 quickly becomes impractical because of excessive CPU usage, whereas TSM can stay clean up to even higher time values.
-These specific results require 128-bit precision, i.e. aarch64 long double (software).
+These results for higher orders (16+) require 128-bit precision, i.e. aarch64 long double (software).
 In hardware 80-bit (x86-64) or 64-bit (armhf) floating point, the maximum clean simulation time will be correspondingly lower.
 ```
-./cns step2 1.0 ./rk4-lorenz-std 6 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 ./cns step2 1.0 ./tsm-lorenz-std 6 4 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 
-./cns step2 1.0 ./rk4-lorenz-std 6 10 .001 100000 -15.8 -17.48 35.64 10 28 8 3
 ./cns step2 1.0 ./tsm-lorenz-std 6 8 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 
-./cns step2 1.0 ./rk4-lorenz-std 6 100 .0001 1000000 -15.8 -17.48 35.64 10 28 8 3
 ./cns step2 1.0 ./tsm-lorenz-std 6 12 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 
-./cns step2 1.0 ./rk4-lorenz-std 6 1000 .00001 10000000 -15.8 -17.48 35.64 10 28 8 3 
 ./cns step2 1.0 ./tsm-lorenz-std 6 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 
-./cns step2 1.0 ./rk4-lorenz-std 6 10000 .000001 100000000 -15.8 -17.48 35.64 10 28 8 3 
 ./cns step2 1.0 ./tsm-lorenz-std 6 20 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 
 ./cns step2 1.0 ./tsm-lorenz-std 6 28 .01 10000 -15.8 -17.48 35.64 10 28 8 3
