@@ -131,7 +131,7 @@ int main (int argc, char **argv) {
 
     series S1 = ad_const(bad_value(t_jet(n)), 1.0L);
 
-    fprintf(stdout, "\n%sHorner%s\n", WHT, NRM);
+    fprintf(stdout, "%sHorner%s\n", WHT, NRM);
     series p = t_jet(n >= 7 ? n : 7);
     p[0] = 1.0L; p[1] = 3.0L; p[2] = 0.0L; p[3] = 2.0L;
     fprintf(stdout, " 23 %8.3Lf\n", t_horner(p, 3, 2.0L));
@@ -140,7 +140,7 @@ int main (int argc, char **argv) {
     p[0] = 1.0L; p[1] = -4.0L; p[2] = 0.0L; p[3] = 0.0L; p[4] = 2.0L; p[5] = 3.0L; p[6] = 0.0L; p[7] = -2.0L;
     fprintf(stdout, "201 %8.3Lf\n", t_horner(p, 7, -2.0L));
 
-    fprintf(stdout, "\n%sTaylor Series Method: x'=1  y'=0  z'=-1%s\n", WHT, NRM);
+    fprintf(stdout, "%sTaylor Series Method: x'=1  y'=0  z'=-1%s\n", WHT, NRM);
     int dp = 12, steps = 10;
     real step_size = 0.1L;
     controls c = (controls){.order=n, .step=0, .steps=steps, .step_size=step_size};
@@ -152,7 +152,7 @@ int main (int argc, char **argv) {
     fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);
     t_out(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), step_size * steps, "_", "_", "_", 0.0F);
 
-    fprintf(stderr, "\n%sRecurrence Relations: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x[0], NRM);
+    fprintf(stderr, "%sRecurrence Relations: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x[0], NRM);
 
     ad_sqr(sqr_x, x);
     if (x_non_zero) ad_inv(inv_x, x);
@@ -341,7 +341,7 @@ int main (int argc, char **argv) {
         fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
     }
     if (passed == total - skipped) {
-        fprintf(stderr, "\n\n");
+        fprintf(stderr, "\n");
         return 0;
     } else {
         fprintf(stderr, ", %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);

@@ -87,7 +87,7 @@ int main (int argc, char **argv) {
     dual d1 = d_dual(1.0L);
     dual xpx = d_scale(x, 2.0L);
 
-    fprintf(stderr, "\n%sDual Numbers: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x.val, NRM);
+    fprintf(stderr, "%sDual Numbers: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x.val, NRM);
 
     sqr_x = d_sqr(x);
     if (x_non_zero) inv_x = d_inv(x);
@@ -256,7 +256,7 @@ int main (int argc, char **argv) {
         fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
     }
     if (passed == total - skipped) {
-        fprintf(stderr, "\n\n");
+        fprintf(stderr, "\n");
         return 0;
     } else {
         fprintf(stderr, ", %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);
