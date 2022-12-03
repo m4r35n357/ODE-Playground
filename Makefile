@@ -89,8 +89,9 @@ kerr-image: kerr-image.o
 .PHONY: test clean depclean ctags ctags-system ctags-system-all
 
 test:
-	./libad-test 20 .5 1e-15
-	./libdual-test .5 1e-15
+	for x in -.5 0 .5; do \
+		./libad-test 20 $$x 1e-15 >/dev/null || exit 1; ./libdual-test $$x 1e-15 >/dev/null || exit 1; \
+	done
 
 ctags:
 	@/usr/bin/ctags *.h *.c
