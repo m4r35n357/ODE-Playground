@@ -119,8 +119,8 @@ case $model in
         bodies=$(yad --width=400 --height=150 --list --title="Three Body" --separator=" " \
         --print-all --grid-lines=BOTH --no-click --editable \
         --column=mass --column=x --column=y --column=z --column=px --column=py --column=pz \
-        -- 1.0 -1.0 0.0 0.0  0.08058  0.58884  0.2 \
-           1.0  1.0 0.0 0.0  0.08058  0.58884 -0.2 \
+        -- 1.0 -1.6 0.0 0.0  0.08058  0.58884  0.2 \
+           1.0  1.6 0.0 0.0  0.08058  0.58884 -0.2 \
            1.0  0.0 0.0 0.0 -0.16116 -1.17768  0.0)
         (./h-nbody-std 6 $control 1 $bodies >$user_data; plot_hamiltonian_error 1 2) 2>/dev/null &
         ./h-nbody-gl _ $control 1 $bodies
