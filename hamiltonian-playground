@@ -53,29 +53,23 @@ EOF
 
 case $model in
     Newton)
-        bodies=$(yad --title="Newtonian Orbit" --form --separator=" " --align=right \
-        --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+        parameters=$(yad --title="Newtonian Orbit" --form --separator=" " --align=right \
         --field="mass" --field="r0" --field="L factor":NUM \
-        -- '6!3..64!3' '4!2..10!2' '0.2!0.1..1!0.1!1' '10000!1..100000!1' \
-           "1" "12" '0.6!0.0..1.0!0.1!1')
-        ./h-newton-std $bodies >$user_data
+        -- "1" "12" '0.6!0.0..1.0!0.1!1')
+        ./h-newton-std 6 "$1" "$2" "$3" $parameters >$user_data
         plot3d
         plot_hamiltonian_error 4 5
     ;;
     Spring)
-        bodies=$(yad --title="Mass-Spring System" --form --separator=" " --align=right \
-        --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+        parameters=$(yad --title="Mass-Spring System" --form --separator=" " --align=right \
         --field="mass" --field="spring constant" --field="length" \
-        -- '6!3..64!3' '4!2..10!2' '0.1!0.1..1!0.1!1' '10000!1..100000!1' \
-           "1" "1" "1")
-        ./h-spring-std $bodies >$user_data
+        -- "1" "1" "1")
+        ./h-spring-std 6 "$1" "$2" "$3" $parameters >$user_data
         plot3d
         plot_hamiltonian_error 4 5
     ;;
-    Analysis) ./h-analysis-std \
-        $(yad --title="Step Analysis" --form --separator=" " --align=right \
-        --field="Display Places":RO --field="Order":NUM --field="Step Size":RO --field="Steps":RO \
-        -- '6' '4!2..10!2' "1.0" "1") >$user_data
+    Analysis)
+        ./h-analysis-std 6 "$1" 1.0 1 >$user_data
         plot_analysis
     ;;
     EightBody)
