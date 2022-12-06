@@ -23,7 +23,7 @@ static real det2x2 (real a, real d, real b, real c) {
 }
 
 static matrix3x3 m_invert (matrix3x3 m) {
-    matrix3x3 c = (matrix3x3){
+    matrix3x3 c = {
         .a =  det2x2(m.e, m.i, m.f, m.h), .b = -det2x2(m.d, m.i, m.f, m.g), .c =  det2x2(m.d, m.h, m.e, m.g),
         .d = -det2x2(m.b, m.i, m.c, m.h), .e =  det2x2(m.a, m.i, m.c, m.g), .f = -det2x2(m.a, m.h, m.b, m.g),
         .g =  det2x2(m.b, m.f, m.c, m.e), .h = -det2x2(m.a, m.f, m.c, m.d), .i =  det2x2(m.a, m.e, m.b, m.d)
@@ -92,8 +92,8 @@ int main (int argc, char **argv) { (void)argc;
     assert(argc == 6);
     kerr *k = get_p_gen(argv);
     matrix3x3 J;
-    vector3 x = (vector3){.a = k->E, .b = k->L, .c = k->Q};
-    vector3 f = (vector3){.a = 1.0L, .b = 1.0L, .c = 1.0L};
+    vector3 x = {.a = k->E, .b = k->L, .c = k->Q};
+    vector3 f = {.a = 1.0L, .b = 1.0L, .c = 1.0L};
     fprintf(stderr, "\n");
     long count = 0L;
     _Bool circular = k->rmin * k->rmax < 0.0L;

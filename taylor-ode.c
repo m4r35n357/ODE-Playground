@@ -75,7 +75,7 @@ static void tsm_step (series3 *j, void *p, int n, real h) {
 }
 
 void tsm_stdout (int dp, controls *c, series3 *jets, void *p, clock_t t0) {
-    components s = (components){0.0L, 0.0L, 0.0L};
+    components s = {0.0L, 0.0L, 0.0L};
     for (int step = 0; step < c->steps; step++) {
         t_out(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * step,
               tag(jets->x, s.x, "x", "X"), tag(jets->y, s.y, "y", "Y"), tag(jets->z, s.z, "z", "Z"), t0);

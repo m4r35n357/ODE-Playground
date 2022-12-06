@@ -34,7 +34,7 @@ void Animate () {
     }
 
     if (mode == BOTH || mode == POSITION) {
-        point o = (point){(float)m->centre.x, (float)m->centre.y, (float)m->centre.z};
+        point o = {(float)m->centre.x, (float)m->centre.y, (float)m->centre.z};
         for (int j = 0; j < m->n; j++) {
             glColor3f(0.3F, 0.3F, 0.3F);
             point p = t[j].points[newest];

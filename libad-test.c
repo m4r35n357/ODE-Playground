@@ -143,7 +143,7 @@ int main (int argc, char **argv) {
     fprintf(stdout, "%sTaylor Series Method: x'=1  y'=0  z'=-1%s\n", WHT, NRM);
     int dp = 12, steps = 10;
     real step_size = 0.1L;
-    controls c = (controls){.order=n, .step=0, .steps=steps, .step_size=step_size};
+    controls c = {.order=n, .step=0, .steps=steps, .step_size=step_size};
     series3 *jets = malloc(sizeof (series3));
     jets->x = t_jet(n + 1); jets->x[0] = 1.0L;
     jets->y = t_jet(n + 1); jets->y[0] = 1.0L;
