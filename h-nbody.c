@@ -12,21 +12,20 @@
 #include "h-nbody.h"
 
 nbody *get_p_nbody (int argc, char **argv, int n_bodies) {
-    fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
-    assert(argc == 7 + 7 * n_bodies);
+    assert(argc == 6 + 7 * n_bodies);
     nbody *nb = malloc(sizeof (nbody));
-    nb->g = strtold(argv[6], NULL);
+    nb->g = strtold(argv[5], NULL);
     nb->n = n_bodies;
     nb->bodies = calloc((size_t)nb->n, sizeof (body));
     for (int i = 0; i < nb->n; i++) {
-        nb->bodies[i].m = strtold(argv[7 * i + 7], NULL);
+        nb->bodies[i].m = strtold(argv[7 * i + 6], NULL);
         nb->bodies[i].r = (float)powl(nb->bodies[i].m, 1.0L / 3.0L);
-        nb->bodies[i].x = strtold(argv[7 * i + 8], NULL);
-        nb->bodies[i].y = strtold(argv[7 * i + 9], NULL);
-        nb->bodies[i].z = strtold(argv[7 * i + 10], NULL);
-        nb->bodies[i].px = strtold(argv[7 * i + 11], NULL);
-        nb->bodies[i].py = strtold(argv[7 * i + 12], NULL);
-        nb->bodies[i].pz = strtold(argv[7 * i + 13], NULL);
+        nb->bodies[i].x = strtold(argv[7 * i + 7], NULL);
+        nb->bodies[i].y = strtold(argv[7 * i + 8], NULL);
+        nb->bodies[i].z = strtold(argv[7 * i + 9], NULL);
+        nb->bodies[i].px = strtold(argv[7 * i + 10], NULL);
+        nb->bodies[i].py = strtold(argv[7 * i + 11], NULL);
+        nb->bodies[i].pz = strtold(argv[7 * i + 12], NULL);
     }
     nb->h0 = h(nb);
     cog(nb);

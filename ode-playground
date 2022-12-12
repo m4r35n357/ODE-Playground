@@ -42,12 +42,12 @@ missing () {
 case $model in
     Lorenz)
         case $analysis in
-            GLplot) ./tsm-lorenz-gl _ \
+            GLplot) ./tsm-lorenz-gl \
                 $(yad --columns=2 --title="Lorenz Attractor OpenGL (TSM)" --form --separator=" " --align=right \
-                --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+                --field="Track Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
-                --  '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                --  '2000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                     '-15.8' '-18.48' '35.64' \
                     '10' '28' '8' '3')
             ;;
@@ -91,12 +91,12 @@ case $model in
     ;;
     Rossler)
         case $analysis in
-            GLplot) ./tsm-rossler-gl _ \
+            GLplot) ./tsm-rossler-gl \
                 $(yad --columns=2 --title="Rossler Attractor OpenGL (TSM)" --form --separator=" " --align=right \
-                --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+                --field="Track Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="a" --field="b" --field="c" \
-                --  '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                --  '2000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                     '0.0' '-6.78' '0.02' \
                     '.2' '.2' '5.7')
             ;;
@@ -140,12 +140,12 @@ case $model in
     ;;
     Thomas)
         case $analysis in
-            GLplot) ./tsm-thomas-gl _ \
+            GLplot) ./tsm-thomas-gl \
                 $(yad --columns=2 --title="Thomas Attractor OpenGL (TSM)" --form --separator=" " --align=right \
-                --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+                --field="Track Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="b" \
-                --  '8!4..32!1' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
+                --  '2000!1000..10000!1000' '8!4..32!1' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
                     '1.0' '0.0' '0.0' \
                     '0.185')
             ;;
@@ -201,12 +201,12 @@ case $model in
     ;;
     RF)
         case $analysis in
-            GLplot) ./tsm-rf-gl _ \
+            GLplot) ./tsm-rf-gl \
                 $(yad --columns=2 --title="Rabinovich–Fabrikant Attractor OpenGL (TSM)" --form --separator=" " --align=right \
-                --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+                --field="Track Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="alpha" --field="gamma" \
-                --  '8!4..32!1' '.01!0.001..0.1!0.001!3' '50000!1..1000000!1000' \
+                --  '2000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '50000!1..1000000!1000' \
                     '0.05' '-0.05' '0.3' \
                     '.2873' '.1')
             ;;
@@ -262,12 +262,12 @@ case $model in
     ;;
     Halvorsen)
         case $analysis in
-            GLplot) ./tsm-halvorsen-gl _ \
+            GLplot) ./tsm-halvorsen-gl \
                 $(yad --columns=2 --title="Halvorsen Attractor OpenGL (TSM)" --form --separator=" " --align=right \
-                --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+                --field="Track Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" \
                 --field="a" --field="b" \
-                --  '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                --  '2000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                     '1.0' '0.0' '0.0' \
                     '1.4' '4')
             ;;

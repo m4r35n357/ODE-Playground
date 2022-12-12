@@ -41,7 +41,6 @@ static void refresh (kerr *k) {
 }
 
 kerr *get_p_kerr (int argc, char **argv, real step_size) {
-    fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     assert(argc == 14);
     kerr *k = malloc(sizeof (kerr));
     k->step_size = step_size;

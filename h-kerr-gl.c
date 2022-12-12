@@ -5,6 +5,7 @@
  */
 
 #include <stdio.h>
+#include <assert.h>
 #include <math.h>
 #include <GL/freeglut.h>
 #include "symplectic.h"
@@ -88,12 +89,12 @@ void Animate () {
 }
 
 int main (int argc, char** argv) {
-    c = get_c_symp(argv);
+    c = get_c_symp(argc, argv);
     k = get_p_kerr(argc, argv, c->step_size);
     since = clock();
     RAD_TO_DEG = 180.0L / acosl(-1.0L);
 
-    length = (int)strtol(argv[5], NULL, BASE);
+    length = (int)strtol(argv[1], NULL, BASE); assert(length >= 0 && length <= c->steps);
     t = malloc(sizeof (trail));
     t->points = calloc((size_t)length, sizeof (point));
     t->points[newest] = point_from_model(k);

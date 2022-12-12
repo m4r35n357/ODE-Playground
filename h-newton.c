@@ -24,7 +24,6 @@ typedef struct Parameters {
 } parameters;
 
 void *get_p (int argc, char **argv) { (void)argc;
-    fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     assert(argc == 8);
     parameters *p = malloc(sizeof (parameters));
     p->m = strtold(argv[5], NULL);
@@ -57,6 +56,6 @@ static void plot (int dp, void *params, real t) {
 }
 
 int main (int argc, char **argv) {
-    solve(argv, get_c_symp(argv), get_p(argc, argv), plot);
+    solve(argv, get_c_symp(argc, argv), get_p(argc, argv), plot);
     return 0;
 }

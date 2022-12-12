@@ -25,7 +25,7 @@ typedef struct triple_s {
 /*
  * Retrieves integrator control parameters
  */
-controls *get_c_tsm (char **argv);
+controls *get_c_tsm (int argc, char **argv);
 
 /*
  * Retrieves ODE parameters from the tail of the command (arguments 8 onwards)

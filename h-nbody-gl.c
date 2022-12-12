@@ -5,6 +5,7 @@
  */
 
 #include <stdio.h>
+#include <assert.h>
 #include <GL/freeglut.h>
 #include "symplectic.h"
 #include "opengl.h"
@@ -89,12 +90,12 @@ void CloseWindow () {
 }
 
 int main (int argc, char** argv) {
-    c = get_c_symp(argv);
-    m = get_p_nbody(argc, argv, (argc - 7) / 7);
+    c = get_c_symp(argc, argv);
+    m = get_p_nbody(argc, argv, (argc - 6) / 7);
     since = clock();
     fprintf(stderr, "\nH0: % .18Le\n", h(m));
 
-    length = (int)strtol(argv[5], NULL, BASE);
+    length = (int)strtol(argv[1], NULL, BASE); assert(length >= 0 && length <= c->steps);
     t = calloc((size_t)m->n, sizeof (trail));
     for (int j = 0; j < m->n; j++) {
         t[j].colour = get_colour(j);

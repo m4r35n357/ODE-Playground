@@ -5,6 +5,7 @@
  */
 
 #include <stdio.h>
+#include <assert.h>
 #include <GL/freeglut.h>
 #include "taylor-ode.h"
 #include "opengl.h"
@@ -73,7 +74,7 @@ void Animate () {
 }
 
 int main (int argc, char** argv) {
-    c = get_c_tsm(argv);
+    c = get_c_tsm(argc, argv);
     m = get_p(argc, argv, c->order);
     since = clock();
 
@@ -82,7 +83,7 @@ int main (int argc, char** argv) {
     jets->y = t_jet(c->order + 1); jets->y[0] = strtold(argv[6], NULL);
     jets->z = t_jet(c->order + 1); jets->z[0] = strtold(argv[7], NULL);
 
-    length = c->steps / 2;
+    length = (int)strtol(argv[1], NULL, BASE); assert(length >= 0 && length <= c->steps);
     t = malloc(sizeof (trail));
     t->points = calloc((size_t)length, sizeof (point));
     t->points[newest] = point_from_model(jets);

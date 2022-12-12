@@ -9,7 +9,7 @@
 /*
  * Retrieves integrator control parameters
  */
-controls *get_c_symp (char **argv);
+controls *get_c_symp (int argc, char **argv);
 
 /*
  * Get model data from the command to be passed into solve()

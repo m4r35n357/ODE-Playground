@@ -81,14 +81,14 @@ EOF
 case $type in
     Timelike)
         case $analysis in
-            GLplot) ./h-kerr-gl _ \
+            GLplot) ./h-kerr-gl \
                 $(yad --columns=2 --title="Kerr Particle Orbit GL" --form --separator=" " --align=right \
-                --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM --field="Track Length":NUM \
-                --field="BH spin":NUM --field="particle mass":RO \
+                --field="Track Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+                --field="Plot type":RO --field="BH spin":NUM --field="particle mass":RO \
                 --field="particle energy" --field="particle momentum" --field="momentum factor" --field="Carter's constant" \
                 --field="r0" --field="theta0" \
-                -- '4!2..10!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' '2000!1..100000!1' \
-                   "0.8!-1.0..1.0!0.1!1" "1.0" \
+                -- '2000!1000..10000!1000' '4!2..10!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' \
+                   '_' "0.8!-1.0..1.0!0.1!1" "1.0" \
                    "0.9455050956749083" "1.434374509531738" "1.0" "7.978759958927879" \
                    "12.0" "63.0")
             ;;
@@ -112,14 +112,14 @@ case $type in
     ;;
     Lightlike)
         case $analysis in
-            GLplot) ./h-kerr-gl _ \
+            GLplot) ./h-kerr-gl \
                 $(yad --columns=2 --title="Kerr Light Orbit GL" --form --separator=" " --align=right \
-                --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM --field="Track Length":NUM \
-                --field="BH spin":NUM --field="particle mass":RO \
+                --field="Track Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+                --field="Plot type":RO --field="BH spin":NUM --field="particle mass":RO \
                 --field="particle energy":RO --field="particle momentum" --field="momentum factor" --field="Carter's constant" \
                 --field="r0" --field="theta0" \
-                -- '4!2..10!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' '2000!1..100000!1' \
-                   "0.8!-1.0..1.0!0.1!1" "0.0" \
+                -- '2000!1000..10000!1000' '4!2..10!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' \
+                   '_' "0.8!-1.0..1.0!0.1!1" "0.0" \
                    "1.0" "-1.6" "1.0" "27.0" \
                    "3.0" "0.0")
             ;;

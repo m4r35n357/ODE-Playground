@@ -186,22 +186,27 @@ Where CPU timings are given, they are made on a Raspberry Pi 400, mildly overclo
 Runs a named simulation, and prints results to stdout.
 Each output line consists of a column each for x, y, z, t, followed by three turning point tags for generating bifurcation diagrams, and cumulative CPU usage.
 
-**tsm-model-type** (c executables)
+**tsm-model-type-gl** (c executables)
 
 Parameter | Meaning
 ----------|-----------
-1 | x,y,z output decimal places (0 for full precision binary hex)
+1 | Length of track(s)
 2 | order of Taylor Series
 3 | time step
 4 | number of steps
 5,6,7 | initial conditions, x0,y0,z0
 8+ | Model parameters
 
-**tsm-model-type-gl** (c executables)
+##### Run & plot (OpenGL plot):
+```
+./tsm-thomas-gl 2000 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
+```
+
+**tsm-model-type** (c executables)
 
 Parameter | Meaning
 ----------|-----------
-1 | 0=Balls&Tracks 1=BallsOnly 2=LinesOnly
+1 | x,y,z output decimal places (0 for full precision binary hex)
 2 | order of Taylor Series
 3 | time step
 4 | number of steps
