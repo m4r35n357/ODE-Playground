@@ -37,10 +37,8 @@ void *get_p (int argc, char **argv) { (void)argc;
 
 void update_q (void *params, real c) {
     parameters *p = (parameters *)params;
-    real q_r = c * h(p->m, d_dual(p->q_r), d_var(p->p_r), d_dual(p->p_phi)).dot;
-    real q_phi = c * h(p->m, d_dual(p->q_r), d_dual(p->p_r), d_var(p->p_phi)).dot;
-    p->q_r += q_r;
-    p->q_phi += q_phi;
+    p->q_r += c * h(p->m, d_dual(p->q_r), d_var(p->p_r), d_dual(p->p_phi)).dot;
+    p->q_phi += c * h(p->m, d_dual(p->q_r), d_dual(p->p_r), d_var(p->p_phi)).dot;
 }
 
 void update_p (void *params, real d) {
