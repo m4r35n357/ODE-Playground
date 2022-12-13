@@ -31,13 +31,13 @@ all: tsm tsm-gl h generators h-kerr-std h-kerr-gl h-nbody-std h-nbody-gl diverge
 tsm-%-std: tsm-%.o taylor-ode.o main-tsm.o
 	$(CC) -o $@ $^ $(LIB_M) $(STRIP)
 
-tsm: tsm-bouali-std tsm-burke-shaw-std tsm-cosmology-std tsm-genesio-tesi-std tsm-halvorsen-std tsm-isuc-std tsm-logistic-std tsm-kom-std tsm-lorenz-std tsm-lotka-volterra-std tsm-nose-hoover-std tsm-rf-std tsm-rossler-std tsm-rucklidge-std tsm-sj-std tsm-sprott-minimal-std tsm-sprott-thomas-std tsm-thomas-std tsm-van-der-pol-std tsm-wimol-banlue-std tsm-yu-wang-std
+tsm: tsm-bouali-std tsm-burke-shaw-std tsm-cosmology-std tsm-genesio-tesi-std tsm-halvorsen-std tsm-isuc-std tsm-logistic-std tsm-kom-std tsm-lorenz-std tsm-lotka-volterra-std tsm-nose-hoover-std tsm-rf-std tsm-rossler-std tsm-rucklidge-std tsm-sprott-minimal-std tsm-sprott-thomas-std tsm-thomas-std tsm-van-der-pol-std tsm-wimol-banlue-std tsm-yu-wang-std
 
 
 tsm-%-gl: tsm-%.o taylor-ode.o opengl.o ode-gl.o
 	$(CC) -o $@ $^ $(LIB_M) $(LIB_GL) $(STRIP)
 
-tsm-gl: tsm-bouali-gl tsm-burke-shaw-gl tsm-cosmology-gl tsm-genesio-tesi-gl tsm-halvorsen-gl tsm-isuc-gl tsm-logistic-gl tsm-kom-gl tsm-lorenz-gl tsm-lotka-volterra-gl tsm-nose-hoover-gl tsm-rf-gl tsm-rossler-gl tsm-rucklidge-gl tsm-sj-gl tsm-sprott-minimal-gl tsm-sprott-thomas-gl tsm-thomas-gl tsm-van-der-pol-gl tsm-wimol-banlue-gl tsm-yu-wang-gl
+tsm-gl: tsm-bouali-gl tsm-burke-shaw-gl tsm-cosmology-gl tsm-genesio-tesi-gl tsm-halvorsen-gl tsm-isuc-gl tsm-logistic-gl tsm-kom-gl tsm-lorenz-gl tsm-lotka-volterra-gl tsm-nose-hoover-gl tsm-rf-gl tsm-rossler-gl tsm-rucklidge-gl tsm-sprott-minimal-gl tsm-sprott-thomas-gl tsm-thomas-gl tsm-van-der-pol-gl tsm-wimol-banlue-gl tsm-yu-wang-gl
 
 
 h-%-std: h-%.o symplectic.o dual.o
