@@ -38,6 +38,14 @@ then
 fi
 echo "OK"
 
+echo -n "Running Three-body executable . . . "
+if [ 10001 -ne $(./h-nbody-std 6 8 0.010 10000 1 1.0 -1.6 0.0 0.0 0.08058 0.58884 0.2 1.0 1.6 0.0 0.0 0.08058 0.58884 -0.2 1.0 0.0 0.0 0.0 -0.16116 -1.17768 0.0 2>/dev/null | wc -l) ]
+then
+    echo "\033[31;1mThree-body failed!\033[0m"
+    exit 1
+fi
+echo "OK"
+
 echo -n "Running Kerr executable . . . "
 if [ 10001 -ne $(./h-kerr-std 6 8 .01 10000 0 0.8 1.0 0.9455050956749083 1.434374509531738 1.0 7.978759958927879 12.0 63.0 2>/dev/null | wc -l) ]
 then
