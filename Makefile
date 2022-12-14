@@ -11,7 +11,7 @@ ifeq ($(CCC),gcc)
   CC=gcc -std=c99 -O3 -flto
   CFLAGS += -Wunsuffixed-float-constants -frounding-math -fsignaling-nans
 else ifeq ($(CCC),dbg)
-  CC=gcc -std=c99 -Og -g
+  CC=gcc -std=c99 -Og -g -pg --coverage
   CFLAGS += -Wunsuffixed-float-constants -frounding-math -fsignaling-nans
   STRIP=
 else ifeq ($(CCC),clang)
@@ -86,7 +86,7 @@ kerr-image: kerr-image.o
 	$(CC) -o $@ $< $(LIB_M) $(STRIP)
 
 
-.PHONY: test clean depclean ctags ctags-system ctags-system-all
+.PHONY: test clean depclean ctags ctags-system ctags-system-all coverage
 
 test:
 	@for x in -.5 0 .5; do \
@@ -103,9 +103,16 @@ ctags-system-all:
 	@/usr/bin/ctags -R --c-kinds=+p --fields=+iaS --extras=+q /usr/include .
 
 clean:
-	@rm -f *.o *~ core *-std *-gl h-kerr-gen-light h-kerr-gen-particle divergence libad-test libdual-test
+	@rm -f *.o *.gcda *.gcno *~ core *-std *-gl h-kerr-gen-light h-kerr-gen-particle divergence libad-test libdual-test
 
 depclean: clean
 	@rm -f *.d
+
+C_OUT_DIR=coverage-out
+C_OUT_FILE=coverage.info
+coverage: test
+	@lcov --capture --directory . --output-file $(C_OUT_FILE)
+	@genhtml $(C_OUT_FILE) --output-directory $(C_OUT_DIR)
+	@echo "C:      file://$(CURDIR)/$(C_OUT_DIR)/index.html"
 
 -include *.d
