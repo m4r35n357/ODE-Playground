@@ -14,6 +14,7 @@
 
 int main(int argc, char **argv) { (void)argc;
     assert(argc == 3);
+    fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     real r = strtold(argv[1], NULL);
     real a = strtold(argv[2], NULL);
     real r3 = r * r * r;

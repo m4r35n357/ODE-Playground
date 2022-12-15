@@ -90,6 +90,7 @@ static kerr *get_p_gen (char **argv) {
 
 int main (int argc, char **argv) { (void)argc;
     assert(argc == 6);
+    fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     kerr *k = get_p_gen(argv);
     matrix3x3 J;
     vector3 x = {.a = k->E, .b = k->L, .c = k->Q};
