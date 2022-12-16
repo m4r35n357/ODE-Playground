@@ -1,5 +1,5 @@
 /*
- * Burke & Shaw System http://www.atomosyd.net/spip.php?article33
+ * Burke & Shaw System - http://www.atomosyd.net/spip.php?article33
  *
  * Example: ./tsm-burke-shaw-std 9 10 .01 10000 1 1 1 10 4.272
  *

@@ -1,5 +1,5 @@
 /*
- * Nose-Hoover System
+ * Nose-Hoover System (Sprott A) - http://www.atomosyd.net/spip.php?article193
  *
  * Example: ./tsm-nose-hoover-std 15 10 0.01 10000 1 0 0 6.0
  *
