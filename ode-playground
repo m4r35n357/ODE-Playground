@@ -6,8 +6,7 @@ user_data="$user_dir/data"
 
 choice=$(yad --columns=2 --title="ODE Playground (TSM)" --form --separator=" " --align=right \
     --field="Model:CB" --field="Analysis type:CB" \
-    -- 'Lorenz!Rossler!^Thomas!RF!Halvorsen' \
-       '^GLplot!Gnuplot3D!Gnuplot2D!CNS!CNSscan!Bifurcation')
+    -- 'Lorenz!Rossler!^Thomas!RF!Halvorsen!WimolBanlue' '^GLplot!Gnuplot3D!Gnuplot2D!CNS!CNSscan!Bifurcation')
 
 case $? in
     1) exit;;
@@ -45,47 +44,39 @@ case $model in
             GLplot) ./tsm-lorenz-gl \
                 $(yad --columns=2 --title="Lorenz Attractor OpenGL (TSM)" --form --separator=" " --align=right \
                 --field="Track Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
+                --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
                 --  '2000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '-15.8' '-18.48' '35.64' \
-                    '10' '28' '8' '3')
+                    '-15.8' '-18.48' '35.64' '10' '28' '8' '3')
             ;;
             Gnuplot3D|Gnuplot2D)
                 missing
             ;;
             CNS) ./cns \
                 $(yad --columns=2 --title="Lorenz CNS (TSM)" --form --separator=" " --align=right \
-                --field="Mode":CB --field="Separation" --field="Model:CB" \
+                --field="Mode":CB --field="Separation" --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
-                --  'step2!nosim' '1.0' './tsm-lorenz-std!./tsm-lorenz' \
+                --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
+                --  'step2!nosim' '1.0' './tsm-lorenz-std' \
                     '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '-15.8' '-18.48' '35.64' \
-                    '10' '28' '8' '3')
+                    '-15.8' '-18.48' '35.64' '10' '28' '8' '3')
             ;;
             CNSscan) ./cns-scan \
                 $(yad --columns=2 --title="Lorenz CNS Scan (TSM)" --form --separator=" " --align=right \
-                --field="Maxium Order":NUM --field="Separation" --field="Model:CB" \
+                --field="Maxium Order":NUM --field="Separation" --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="sigma" --field="rho" --field="beta (numerator)" --field="beta (denominator)" \
-                --  '32!2..32!1' '1.0' './tsm-lorenz-std!./tsm-lorenz' \
+                --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
+                --  '32!2..32!1' '1.0' './tsm-lorenz-std' \
                     '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '-15.8' '-18.48' '35.64' \
-                    '10' '28' '8' '3') | tee $user_data
+                    '-15.8' '-18.48' '35.64' '10' '28' '8' '3') | tee $user_data
             ;;
             Bifurcation) ./bifurcation-scan \
                 $(yad --columns=2 --title="Lorenz Bifurcation (TSM)" --form --separator=" " --align=right \
-                --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:CB" \
+                --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="sigma" --field="rho:RO" --field="beta (numerator)" --field="beta (denominator)" \
-                --  '0.0' '50.0' '10' './tsm-lorenz-std!./tsm-lorenz' \
+                --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
+                --  '0.0' '50.0' '10' './tsm-lorenz-std' \
                     '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '-15.8' '-18.48' '35.64' \
-                    '10' '$p' '8' '3')
+                    '-15.8' '-18.48' '35.64' '10' '$p' '8' '3')
             ;;
         esac
     ;;
@@ -94,47 +85,39 @@ case $model in
             GLplot) ./tsm-rossler-gl \
                 $(yad --columns=2 --title="Rossler Attractor OpenGL (TSM)" --form --separator=" " --align=right \
                 --field="Track Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="a" --field="b" --field="c" \
+                --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
                 --  '2000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '0.0' '-6.78' '0.02' \
-                    '.2' '.2' '5.7')
+                    '0.0' '-6.78' '0.02' '.2' '.2' '5.7')
             ;;
             Gnuplot3D|Gnuplot2D)
                 missing
             ;;
             CNS) ./cns \
                 $(yad --columns=2 --title="Rossler CNS (TSM)" --form --separator=" " --align=right \
-                --field="Mode":CB --field="Separation" --field="Model:CB" \
+                --field="Mode":CB --field="Separation" --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="a" --field="b" --field="c" \
-                --  'step2!nosim' '1.0' './tsm-rossler-std!./tsm-rossler' \
+                --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
+                --  'step2!nosim' '1.0' './tsm-rossler-std' \
                     '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '0.0' '-6.78' '0.02' \
-                    '.2' '.2' '5.7')
+                    '0.0' '-6.78' '0.02' '.2' '.2' '5.7')
             ;;
             CNSscan) ./cns-scan \
                 $(yad --columns=2 --title="Rossler CNS Scan (TSM)" --form --separator=" " --align=right \
-                --field="Maxium Order":NUM --field="Separation" --field="Model:CB" \
+                --field="Maxium Order":NUM --field="Separation" --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="a" --field="b" --field="c" \
-                --  '32!2..32!1' '1.0' './tsm-rossler-std!./tsm-rossler' \
+                --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
+                --  '32!2..32!1' '1.0' './tsm-rossler-std' \
                     '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '0.0' '-6.78' '0.02' \
-                    '.2' '.2' '5.7') | tee $user_data
+                    '0.0' '-6.78' '0.02' '.2' '.2' '5.7') | tee $user_data
             ;;
             Bifurcation) ./bifurcation-scan \
                 $(yad --columns=2 --title="Rossler Bifurcation (TSM)" --form --separator=" " --align=right \
-                --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:CB" \
+                --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="a" --field="b" --field="c":RO \
-                --  '0.0' '50.0' '10' './tsm-rossler-std!./tsm-rossler' \
+                --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c":RO \
+                --  '0.0' '50.0' '10' './tsm-rossler-std' \
                     '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '0.0' '-6.78' '0.02' \
-                    '.2' '.2' '$p')
+                    '0.0' '-6.78' '0.02' '.2' '.2' '$p')
             ;;
         esac
     ;;
@@ -143,22 +126,18 @@ case $model in
             GLplot) ./tsm-thomas-gl \
                 $(yad --columns=2 --title="Thomas Attractor OpenGL (TSM)" --form --separator=" " --align=right \
                 --field="Track Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="b" \
+                --field="x0" --field="y0" --field="z0" --field="b" \
                 --  '2000!1000..10000!1000' '8!4..32!1' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' \
-                    '0.185')
+                    '1.0' '0.0' '0.0' '0.185')
             ;;
             Gnuplot3D|Gnuplot2D)
                 $(yad --columns=2 --title="Thomas Attractor Gnuplot (TSM)" --form --separator=" " --align=right \
-                --field="Model:CB" \
+                --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="b" \
-                --  './tsm-thomas-std!./tsm-thomas' \
+                --field="x0" --field="y0" --field="z0" --field="b" \
+                --  './tsm-thomas-std' \
                     '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' \
-                    '0.185') >$user_data
+                    '1.0' '0.0' '0.0' '0.185') >$user_data
                 case $analysis in
                     Gnuplot3D) gnuplot3d;;
                     Gnuplot2D) gnuplot2d;;
@@ -166,36 +145,79 @@ case $model in
             ;;
             CNS) ./cns \
                 $(yad --columns=2 --title="Thomas CNS (TSM)" --form --separator=" " --align=right \
-                --field="Mode":CB --field="Separation" --field="Model:CB" \
+                --field="Mode":CB --field="Separation" --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="b" \
-                --  'step2!nosim' '1.0' './tsm-thomas-std!./tsm-thomas' \
+                --field="x0" --field="y0" --field="z0" --field="b" \
+                --  'step2!nosim' '1.0' './tsm-thomas-std' \
                     '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' \
-                    '0.185')
+                    '1.0' '0.0' '0.0' '0.185')
             ;;
             CNSscan) ./cns-scan \
                 $(yad --columns=2 --title="Thomas CNS Scan (TSM)" --form --separator=" " --align=right \
-                --field="Maxium Order":NUM --field="Separation" --field="Model:CB" \
+                --field="Maxium Order":NUM --field="Separation" --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="b" \
-                --  '32!2..64!1' '1.0' './tsm-thomas-std!./tsm-thomas' \
+                --field="x0" --field="y0" --field="z0" --field="b" \
+                --  '32!2..64!1' '1.0' './tsm-thomas-std' \
                     '6!0..36!3' '_' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' \
-                    '0.185') | tee $user_data
+                    '1.0' '0.0' '0.0' '0.185') | tee $user_data
             ;;
             Bifurcation) ./bifurcation-scan \
                 $(yad --columns=2 --title="Thomas Bifurcation (TSM)" --form --separator=" " --align=right \
-                --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:CB" \
+                --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="b:RO" \
-                --  '0.1' '0.23' '10' './tsm-thomas-std!./tsm-thomas' \
+                --field="x0" --field="y0" --field="z0" --field="b:RO" \
+                --  '0.1' '0.23' '10' './tsm-thomas-std' \
                     '6!0..36!3' '4!4..32!1' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' \
-                    '$p')
+                    '1.0' '0.0' '0.0' '$p')
+            ;;
+        esac
+    ;;
+    WimolBanlue)
+        case $analysis in
+            GLplot) ./tsm-wimol-banlue-gl \
+                $(yad --columns=2 --title="Wimol-Banlue Attractor OpenGL (TSM)" --form --separator=" " --align=right \
+                --field="Track Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+                --field="x0" --field="y0" --field="z0" --field="a" \
+                --  '2000!1000..10000!1000' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                    '1.0' '0.0' '0.0' '1.0')
+            ;;
+            Gnuplot3D|Gnuplot2D) ./tsm-wimol-banlue-std \
+                $(yad --columns=2 --title="Wimol-Banlue Attractor Gnuplot (TSM)" --form --separator=" " --align=right \
+                --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+                --field="x0" --field="y0" --field="z0" --field="a" \
+                --  '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                    '1.0' '0.0' '0.0' '1.0') >$user_data
+                case $analysis in
+                    Gnuplot3D) gnuplot3d;;
+                    Gnuplot2D) gnuplot2d;;
+                esac
+            ;;
+            CNS) ./cns \
+                $(yad --columns=2 --title="Wimol-Banlue CNS (TSM)" --form --separator=" " --align=right \
+                --field="Mode":CB --field="Separation" --field="Model:RO" \
+                --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+                --field="x0" --field="y0" --field="z0" --field="a" \
+                --  'step2!nosim' '1.0' './tsm-wimol-banlue-std' \
+                    '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                    '1.0' '0.0' '0.0' '1.0')
+            ;;
+            CNSscan) ./cns-scan \
+                $(yad --columns=2 --title="Wimol-Banlue CNS Scan (TSM)" --form --separator=" " --align=right \
+                --field="Maxium Order":NUM --field="Separation" --field="Model:RO" \
+                --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
+                --field="x0" --field="y0" --field="z0" --field="a" \
+                --  '32!2..64!1' '1.0' './tsm-wimol-banlue-std' \
+                    '6!0..36!3' '_' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                    '1.0' '0.0' '0.0' '1.0') | tee $user_data
+            ;;
+            Bifurcation) ./bifurcation-scan \
+                $(yad --columns=2 --title="Wimol-Banlue Bifurcation (TSM)" --form --separator=" " --align=right \
+                --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:RO" \
+                --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+                --field="x0" --field="y0" --field="z0" --field="a:RO" \
+                --  '0.0' '10.0' '10' './tsm-wimol-banlue-std' \
+                    '6!0..36!3' '4!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                    '1.0' '0.0' '0.0' '$p')
             ;;
         esac
     ;;
@@ -204,22 +226,18 @@ case $model in
             GLplot) ./tsm-rf-gl \
                 $(yad --columns=2 --title="Rabinovich–Fabrikant Attractor OpenGL (TSM)" --form --separator=" " --align=right \
                 --field="Track Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="alpha" --field="gamma" \
+                --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
                 --  '2000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '50000!1..1000000!1000' \
-                    '0.05' '-0.05' '0.3' \
-                    '.2873' '.1')
+                    '0.05' '-0.05' '0.3' '.2873' '.1')
             ;;
             Gnuplot3D|Gnuplot2D)
                 $(yad --columns=2 --title="Rabinovich–Fabrikant Gnuplot (TSM)" --form --separator=" " --align=right \
-                --field="Model:CB" \
+                --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="alpha" --field="gamma" \
-                --  './tsm-rf-std!./tsm-rf' \
+                --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
+                --  './tsm-rf-std' \
                     '6!0..36!3' '8!4..32!1' '0.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
-                    '0.05' '-0.05' '0.3' \
-                    '.2873' '.1') >$user_data
+                    '0.05' '-0.05' '0.3' '.2873' '.1') >$user_data
                 case $analysis in
                     Gnuplot3D) gnuplot3d;;
                     Gnuplot2D) gnuplot2d;;
@@ -227,36 +245,30 @@ case $model in
             ;;
             CNS) ./cns \
                 $(yad --columns=2 --title="Rabinovich–Fabrikant CNS (TSM)" --form --separator=" " --align=right \
-                --field="Mode":CB --field="Separation" --field="Model:CB" \
+                --field="Mode":CB --field="Separation" --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="alpha" --field="gamma" \
-                --  'step2!nosim' '1.0' './tsm-rf-std!./tsm-rf' \
+                --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
+                --  'step2!nosim' '1.0' './tsm-rf-std' \
                     '6!0..36!3' '8!4..32!1' '0.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
-                    '0.05' '-0.05' '0.3' \
-                    '.2873' '.1')
+                    '0.05' '-0.05' '0.3' '.2873' '.1')
             ;;
             CNSscan) ./cns-scan \
                 $(yad --columns=2 --title="Rabinovich–Fabrikant CNS Scan (TSM)" --form --separator=" " --align=right \
-                --field="Maxium Order":NUM --field="Separation" --field="Model:CB" \
+                --field="Maxium Order":NUM --field="Separation" --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="alpha" --field="gamma" \
-                --  '32!2..64!1' '1.0' './tsm-rf-std!./tsm-rf' \
+                --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
+                --  '32!2..64!1' '1.0' './tsm-rf-std' \
                     '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
-                    '0.05' '-0.05' '0.3' \
-                    '.2873' '.1') | tee $user_data
+                    '0.05' '-0.05' '0.3' '.2873' '.1') | tee $user_data
             ;;
             Bifurcation) ./bifurcation-scan \
                 $(yad --columns=2 --title="Rabinovich–Fabrikant Bifurcation (TSM)" --form --separator=" " --align=right \
-                --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:CB" \
+                --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="alpha":RO --field="gamma" \
-                --  '0.1' '0.23' '10' './tsm-rf-std!./tsm-rf' \
+                --field="x0" --field="y0" --field="z0" --field="alpha":RO --field="gamma" \
+                --  '0.1' '0.23' '10' './tsm-rf-std' \
                     '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
-                    '0.05' '-0.05' '0.3' \
-                    '$p' '.1')
+                    '0.05' '-0.05' '0.3' '$p' '.1')
             ;;
         esac
     ;;
@@ -265,22 +277,16 @@ case $model in
             GLplot) ./tsm-halvorsen-gl \
                 $(yad --columns=2 --title="Halvorsen Attractor OpenGL (TSM)" --form --separator=" " --align=right \
                 --field="Track Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="a" --field="b" \
+                --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
                 --  '2000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' \
-                    '1.4' '4')
+                    '1.0' '0.0' '0.0' '1.4' '4')
             ;;
-            Gnuplot3D|Gnuplot2D)
+            Gnuplot3D|Gnuplot2D) ./tsm-halvorsen-std \
                 $(yad --columns=2 --title="Halvorsen Gnuplot (TSM)" --form --separator=" " --align=right \
-                --field="Model:CB" \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="a" --field="b" \
-                --  './tsm-halvorsen-std!./tsm-halvorsen' \
-                    '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' \
-                    '1.4' '4') >$user_data
+                --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
+                --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                    '1.0' '0.0' '0.0' '1.4' '4') >$user_data
                 case $analysis in
                     Gnuplot3D) gnuplot3d;;
                     Gnuplot2D) gnuplot2d;;
@@ -288,36 +294,30 @@ case $model in
             ;;
             CNS) ./cns \
                 $(yad --columns=2 --title="Halvorsen CNS (TSM)" --form --separator=" " --align=right \
-                --field="Mode":CB --field="Separation" --field="Model:CB" \
+                --field="Mode":CB --field="Separation" --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="a" --field="b" \
-                --  'step2!nosim' '1.0' './tsm-halvorsen-std!./tsm-halvorsen' \
+                --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
+                --  'step2!nosim' '1.0' './tsm-halvorsen-std' \
                     '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' \
-                    '1.4' '4')
+                    '1.0' '0.0' '0.0' '1.4' '4')
             ;;
             CNSscan) ./cns-scan \
                 $(yad --columns=2 --title="Halvorsen CNS Scan (TSM)" --form --separator=" " --align=right \
-                --field="Maxium Order":NUM --field="Separation" --field="Model:CB" \
+                --field="Maxium Order":NUM --field="Separation" --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="a" --field="b" \
-                --  '32!2..64!1' '1.0' './tsm-halvorsen-std!./tsm-halvorsen' \
+                --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
+                --  '32!2..64!1' '1.0' './tsm-halvorsen-std' \
                     '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' \
-                    '1.4' '4') | tee $user_data
+                    '1.0' '0.0' '0.0' '1.4' '4') | tee $user_data
             ;;
             Bifurcation) ./bifurcation-scan \
                 $(yad --columns=2 --title="Halvorsen Bifurcation (TSM)" --form --separator=" " --align=right \
-                --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:CB" \
+                --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" \
-                --field="a:RO" --field="b" \
-                --  '1' '4' '10' './tsm-halvorsen-std!./tsm-halvorsen' \
+                --field="x0" --field="y0" --field="z0" --field="a:RO" --field="b" \
+                --  '1' '4' '10' './tsm-halvorsen-std' \
                     '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' \
-                    '$p' '4')
+                    '1.0' '0.0' '0.0' '$p' '4')
             ;;
         esac
     ;;
