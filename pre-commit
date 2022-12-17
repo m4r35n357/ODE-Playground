@@ -5,3 +5,6 @@ set -e
 make clean
 time -p make CCC=dbg -s -j 4 all
 make test
+
+echo ""
+echo "\033[37;1mCommitting . . .\033[0m"
