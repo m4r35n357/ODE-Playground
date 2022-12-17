@@ -1,4 +1,6 @@
 /*
+ * Arbitrary-Order Taylor Series Integrator, together with a well-tested set of recurrence relations
+ *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
