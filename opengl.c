@@ -4,7 +4,6 @@
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
-#include <string.h>
 #include <stdio.h>
 #include <GL/glew.h>
 #include <GL/freeglut.h>

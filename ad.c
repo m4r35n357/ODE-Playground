@@ -2,9 +2,6 @@
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
 #include "taylor-ode.h"
 #include "ad.h"
 
