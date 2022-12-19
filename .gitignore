@@ -4,10 +4,6 @@
 *.so
 *~
 
-# RK4 artifacts
-rk4-*-std
-rk4-*-std
-
 # TSM artifacts
 tsm-*-std
 tsm-*-std
@@ -38,13 +34,7 @@ gmon.out
 
 # Vim/Python/Pycharm stuff
 tags
-.idea/
-__pycache__/
-.coverage
-cov_html/
 
 # Optional
-zig
-zig-cache/
 kerr-image.c
 RaytracingOutput/
