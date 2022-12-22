@@ -1,8 +1,6 @@
 /*
  * Parameter (L, Q) generation for Kerr spacetime
  *
- * Example:  ./h-kerr-gen-light-std 3 .8
- *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 

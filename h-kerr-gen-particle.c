@@ -1,9 +1,6 @@
 /*
  * Command generation for Kerr spacetime particle simulations
  *
- * Example:  ./h-kerr-gen-particle 1e-9 4 12 63 1 1 .8 >/tmp/$USER/data
- * Example:  ./h-kerr-gen-particle 1e-9 12 -1 63 1 1 .8 >/tmp/$USER/data
- *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 

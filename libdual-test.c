@@ -1,11 +1,5 @@
 /*
- * Dual numbers, newest validation checks
- *
- * Example: ./libdual-test .5 1e-15 [ 0 | 1 | 2 ]
- *
- ./libdual-test $(yad --columns=2 --title="Dual Tests" --form --separator=" " --align=right \
-    --field="Value":NUM --field="Max. Error":CB --field="Detail":CB \
-    -- '0.5!-1.0..1.0!0.1!1' '1.0e-15!1.0e-18!1.0e-21!1.0e-24!1.0e-27!1.0e-30!1.0e-36' '0!1!2')
+ * Dual numbers, validation checks
  *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
