@@ -101,5 +101,5 @@ int main (int argc, char** argv) {
 
     ApplicationInit(argc, argv, "Black Hole Orbit Plotter");
     glutMainLoop();     // Start the main loop.  glutMainLoop never returns.
-    return(0);          // Compiler requires this to be here. (Never reached)
+    return 0 ;          // Compiler requires this to be here. (Never reached)
 }

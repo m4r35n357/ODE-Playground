@@ -63,4 +63,3 @@ wait
 /usr/bin/display ${tmpdir}/X.png &
 /usr/bin/display ${tmpdir}/Y.png &
 /usr/bin/display ${tmpdir}/Z.png &
-wait

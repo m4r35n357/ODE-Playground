@@ -24,5 +24,5 @@ static void plot (int dp, void *n_body, real t) {
 
 int main (int argc, char** argv) {
     solve(argv, get_c_symp(argc, argv), get_p_nbody(argc, argv, (argc - 6) / 7), plot);
-    return(0);
+    return 0 ;
 }
