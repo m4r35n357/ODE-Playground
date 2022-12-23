@@ -25,6 +25,6 @@ esac
 
  /usr/bin/gnuplot -p << EOF
 set key horizontal left
-plot '$fileA' using 4:1 t 'x' w l lc black, '' u 4:2 t 'y' w l lc black, '' u 4:3 t 'z' w l lc black, \
+plot '$fileA' using 4:1 t 'x' w l lc 'dark-red', '' u 4:2 t 'y' w l lc 'dark-red', '' u 4:3 t 'z' w l lc 'dark-red', \
      '$fileB' using 4:1 t 'x' w l lc 'forest-green', '' u 4:2 t 'y' w l lc 'dark-yellow', '' u 4:3 t 'z' w l lc 'dark-turquoise'
 EOF

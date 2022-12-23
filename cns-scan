@@ -34,7 +34,7 @@ do
             echo $n $4 $6;;
     esac
     n=$((n + 1))
-done 2>/dev/null
+done 2>/dev/null | tee /tmp/$USER/data
 
  /usr/bin/gnuplot -p << EOF
 set key left
