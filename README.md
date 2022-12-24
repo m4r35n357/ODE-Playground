@@ -1,5 +1,8 @@
 
-## NEWS: OpenGL display
+## STATUS: feature-complete
+No planned new features, and no known bugs ;)
+
+## OpenGL display
 
 There is now an OpenGL executable built for each TSM model, and also separate n-body and black hole OpenGL programs.
 Once you have built the project, use one of these yad UI scripts, or read the docs below to drive directly from the shell:
@@ -9,26 +12,16 @@ Once you have built the project, use one of these yad UI scripts, or read the do
 ./blackhole-playground
 ./blackhole-generator
 ```
-The n-body and black hole programs will most probably not be documented here, so the yad UI effectively _is_ the documentation.
+The n-body and black hole programs will most probably not be documented here, so in these cases the yad UI currently _is_ the documentation.
 
-## NEWS: Default compiler (c99)
+## yad UI
+Form or list-based dialogue boxes for launching most common operations using yad
+
+## Pure c99 (plus OpenGL)
 
 Choice of Clang or GCC.
-
-## NEWS: Basic dialogue box UI for many operations using yad
-
-There are also yad dialogues for running tests and making executables using zig-build:
-* libad-test.c
-* libdual-test.c
-* zig-builds
-
-See comments at the top of the source files for examples
-
-## Now feature-complete
-
-No planned new features, and no known bugs ;)
-
-All programs are written in c99, and all scripts are in Posix shell syntax.
+All console programs are written to and depend _only_ on the c99 standard and library.
+External dependencies (OpenGL, FreeGLUT & GLEW) are only needed for plotters (*-gl).
 
 All c floating point operations are executed in _long double_ precision.
 This gives a choice of precision and performance on different platforms.
@@ -39,6 +32,8 @@ ix86 | 80 bit hardware float
 x86-64 | 80 bit hardware float
 armhf | 64 bit hardware float
 aarch64 | 128 bit _software_ float
+
+All scripts are in _Posix_ shell syntax.
 
 ## Quick Start
 
@@ -67,7 +62,9 @@ There should be NO errors or warnings.
 
 [UPDATE] kerr-image.c (not built automatically) shows warnings on arm64; it is 3rd party code
 
-### ODE analysis using arbitrary-order Taylor Series Method (TSM)
+### ODE analysis with Taylor Integrators
+
+These models use the arbitrary-order Taylor Series Method (TSM)
 
 * Good selection of clients (models) included
 * Investigate the validity of chaotic solutions against integrator order and step size
@@ -77,9 +74,10 @@ There should be NO errors or warnings.
 ./ode-playground
 ```
 
-### Hamiltonian analysis with Symplectic Integrators, using Dual Numbers for Automatic Differentiation
+### Hamiltonian analysis with Symplectic Integrators
 
-2nd to 10th order integrators, with visualization of the time stepping structure
+2nd to 10th order Suzuki integrators, with a model to help in visualization
+All models except N-Body use Dual Numbers for Automatic Differentiation
 
 Examples:
 * N-Body system
@@ -95,7 +93,7 @@ No formal documentation yet, see the yad and c files for example usage.
 ./hamiltonian-playground
 ```
 
-### Spinning Black Hole (Kerr) orbits
+### Spinning Black Hole (Kerr) orbits using Symplectic Integrators
 
 This example uses a "pseudo-Hamiltonian" approach with Dual Numbers to solve Carter's first-order equations of motion, separated in r and theta using Mino time.
 
@@ -329,7 +327,7 @@ In hardware 80-bit (x86-64) or 64-bit (armhf) floating point, the maximum clean 
 ```
 If you need to re-plot after closing gnuplot, either use the "nosim" argument, or:
 ```
- gnuplot -p << EOF                                                             
+ gnuplot -p << EOF
 set key horizontal left
 plot '/tmp/$USER/dataA' using 4:1 t 'x' with lines lc black, '' u 4:2 t 'y' w l lc black, '' u 4:3 t 'z' w l lc black, '/tmp/$USER/dataB' using 4:1 t 'x' with lines lc 'forest-green', '' u 4:2 t 'y' w l lc 'dark-yellow', '' u 4:3 t 'z' w l lc 'dark-turquoise'
 EOF
@@ -340,7 +338,7 @@ EOF
 Runs a simulation repeatedly with increasing order of integration, for each order showing the simulation time when the deviation threshold is exceeded.
 You can run this to determine the maximum _useful_ integrator order to use, for a given step size.
 
-**cns-scan** (shell script) 
+**cns-scan** (shell script)
 
 Parameter | Meaning
 ----------|-----------
