@@ -3,7 +3,7 @@
  *
  * Example:  ./h-spring-std  6 8 1 10000  1 1 1 >/tmp/$USER/data
  *
- * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
 #include <stdio.h>
