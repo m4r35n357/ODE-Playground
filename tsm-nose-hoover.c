@@ -3,7 +3,7 @@
  *
  * Example: ./tsm-nose-hoover-std 15 10 0.01 10000 1 0 0 6.0
  *
- * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
 #include <stdlib.h>
