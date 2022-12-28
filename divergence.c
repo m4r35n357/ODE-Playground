@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
         real threshold = strtold(argv[i], NULL);
         while(fscanf(fileA, "%Le %Le %Le %Le %s %s %s %Le", &xA, &yA, &zA, &tA, tag, tag, tag, &cpuA) != EOF &&
               fscanf(fileB, "%Le %Le %Le %Le %s %s %s %Le", &xB, &yB, &zB, &tB, tag, tag, tag, &cpuB) != EOF) {
-            assert(fabsl(tB - tA) <= 1.0e-99L);
+            assert(tB == tA);
             if (sqrtl((xA - xB) * (xA - xB) + (yA - yB) * (yA - yB) + (zA - zB) * (zA - zB)) > threshold) {
                 printf("%s %.1Le  %s %6.3Lf  %s %.3Lf\n", "threshold:", threshold, "t:", tB, "cpu:", cpuB);
                 break;
