@@ -37,7 +37,7 @@ tsm: tsm-bouali-std tsm-burke-shaw-std tsm-cosmology-std tsm-genesio-tesi-std ts
 tsm-%-gl: tsm-%.o taylor-ode.o opengl.o ode-gl.o
 	$(CC) -o $@ $^ $(LIB_M) $(LIB_GL) $(STRIP)
 
-tsm-gl: tsm-bouali-gl tsm-burke-shaw-gl tsm-cosmology-gl tsm-genesio-tesi-gl tsm-halvorsen-gl tsm-isuc-gl tsm-logistic-gl tsm-kom-gl tsm-lorenz-gl tsm-lotka-volterra-gl tsm-nose-hoover-gl tsm-rf-gl tsm-rossler-gl tsm-rucklidge-gl tsm-sprott-minimal-gl tsm-sprott-thomas-gl tsm-thomas-gl tsm-van-der-pol-gl tsm-wimol-banlue-gl tsm-yu-wang-gl
+tsm-gl: tsm-bouali-gl tsm-burke-shaw-gl tsm-genesio-tesi-gl tsm-halvorsen-gl tsm-isuc-gl tsm-kom-gl tsm-lorenz-gl tsm-nose-hoover-gl tsm-rf-gl tsm-rossler-gl tsm-rucklidge-gl tsm-sprott-minimal-gl tsm-sprott-thomas-gl tsm-thomas-gl tsm-wimol-banlue-gl tsm-yu-wang-gl
 
 
 h-%-std: h-%.o symplectic.o dual.o
