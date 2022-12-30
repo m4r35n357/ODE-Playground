@@ -25,13 +25,13 @@ endif
 %.o: %.c
 	$(CC) -MT $@ -MMD -MP -c -o $@ $< $(CFLAGS)
 
-all: tsm tsm-gl h generators h-kerr-std h-kerr-gl h-nbody-std h-nbody-gl divergence tests
+all: tsm-std tsm-gl hamiltonian generators h-kerr-std h-kerr-gl h-nbody-std h-nbody-gl divergence tests
 
 
 tsm-%-std: tsm-%.o taylor-ode.o main-tsm.o
 	$(CC) -o $@ $^ $(LIB_M) $(STRIP)
 
-tsm: tsm-bouali-std tsm-burke-shaw-std tsm-cosmology-std tsm-genesio-tesi-std tsm-halvorsen-std tsm-isuc-std tsm-logistic-std tsm-kom-std tsm-lorenz-std tsm-lotka-volterra-std tsm-nose-hoover-std tsm-rf-std tsm-rossler-std tsm-rucklidge-std tsm-sprott-minimal-std tsm-sprott-thomas-std tsm-thomas-std tsm-van-der-pol-std tsm-wimol-banlue-std tsm-yu-wang-std
+tsm-std: tsm-bouali-std tsm-burke-shaw-std tsm-cosmology-std tsm-genesio-tesi-std tsm-halvorsen-std tsm-isuc-std tsm-logistic-std tsm-kom-std tsm-lorenz-std tsm-lotka-volterra-std tsm-nose-hoover-std tsm-rf-std tsm-rossler-std tsm-rucklidge-std tsm-sprott-minimal-std tsm-sprott-thomas-std tsm-thomas-std tsm-van-der-pol-std tsm-wimol-banlue-std tsm-yu-wang-std
 
 
 tsm-%-gl: tsm-%.o taylor-ode.o opengl.o ode-gl.o
@@ -43,7 +43,7 @@ tsm-gl: tsm-bouali-gl tsm-burke-shaw-gl tsm-genesio-tesi-gl tsm-halvorsen-gl tsm
 h-%-std: h-%.o symplectic.o dual.o
 	$(CC) -o $@ $^ $(LIB_M) $(STRIP)
 
-h: h-analysis-std h-newton-std h-spring-std
+hamiltonian: h-analysis-std h-newton-std h-spring-std
 
 
 h-kerr-gen-light: h-kerr-gen-light.o
