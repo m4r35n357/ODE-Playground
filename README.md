@@ -60,8 +60,6 @@ make test
 ```
 There should be NO errors or warnings.
 
-[UPDATE] kerr-image.c (not built automatically) shows warnings on arm64; it is 3rd party code
-
 ### ODE analysis with Taylor Integrators
 
 These models use the arbitrary-order Taylor Series Method (TSM)
