@@ -12,7 +12,7 @@
 static void plot (int dp, void *n_body, real t) {
     nbody *nb = (nbody *)n_body;
     body *b = nb->bodies;
-    printf("%.6Le %+*Le", t, dp, error(h(nb) - nb->h0));
+    printf("%.6Le %+*Le", t, dp, error(hamiltonian(nb) - nb->h0));
     for (int i = 0; i < nb->n; i++) {
         printf("  %+*Le %+*Le %+*Le %+*Le %+*Le %+*Le",
                dp, b[i].x, dp, b[i].y, dp, b[i].z, dp, b[i].px, dp, b[i].py, dp, b[i].pz);

@@ -31,4 +31,4 @@ void cog (nbody *nb);
 /*
  * Hamiltonian
  */
-real h (nbody *nb);
+real hamiltonian (nbody *nb);

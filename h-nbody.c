@@ -24,7 +24,7 @@ nbody *get_p_nbody (int argc, char **argv, int n_bodies) {
         nb->bodies[i].py = strtold(argv[7 * i + 11], NULL);
         nb->bodies[i].pz = strtold(argv[7 * i + 12], NULL);
     }
-    nb->h0 = h(nb);
+    nb->h0 = hamiltonian(nb);
     cog(nb);
     return nb;
 }
@@ -50,7 +50,7 @@ static real distance (real x, real y, real z, real X, real Y, real Z) {
     return sqrtl((x - X) * (x - X) + (y - Y) * (y - Y) + (z - Z) * (z - Z));
 }
 
-real h (nbody *nb) {
+real hamiltonian (nbody *nb) {
     body *b = nb->bodies;
     real e = 0.0L;
     for (int i = 0; i < nb->n; i++) {
