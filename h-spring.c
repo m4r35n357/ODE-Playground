@@ -12,14 +12,12 @@
 #include "symplectic.h"
 #include "dual.h"
 
-static dual h (real M, real k, real l, dual q, dual p) {
+static dual hamiltonian (real M, real k, real l, dual q, dual p) {
     return d_add(d_scale(d_sqr(p), 0.5L / M), d_scale(d_sqr(d_shift(q, -l)), 0.5L * k));
 }
 
 typedef struct Parameters {
-    real m, k, l;  // mass, spring constant & length
-    real q, p;  // coordinate & momentum
-    real h0;  // stored initial value of Hamiltonian
+    real m, k, l, q, p, h0;  // mass, spring constant, length, coordinate, momentum, initial hamiltonian
 } parameters;
 
 void *get_p (int argc, char **argv) { (void)argc;
@@ -30,25 +28,24 @@ void *get_p (int argc, char **argv) { (void)argc;
     p->l = strtold(argv[7], NULL);
     p->q = p->l + 1.0L;
     p->p = 0.0L;
-    p->h0 = h(p->m, p->k, p->l, d_dual(p->q), d_dual(p->p)).val;
+    p->h0 = hamiltonian(p->m, p->k, p->l, d_dual(p->q), d_dual(p->p)).val;
     return p;
 }
 
 void update_q (void *params, real c) {
     parameters *p = (parameters *)params;
-    p->q += c * h(p->m, p->k, p->l, d_dual(p->q), d_var(p->p)).dot;
+    p->q += c * hamiltonian(p->m, p->k, p->l, d_dual(p->q), d_var(p->p)).dot;
 }
 
 void update_p (void *params, real d) {
     parameters *p = (parameters *)params;
-    p->p -= d * h(p->m, p->k, p->l, d_var(p->q), d_dual(p->p)).dot;
+    p->p -= d * hamiltonian(p->m, p->k, p->l, d_var(p->q), d_dual(p->p)).dot;
 }
 
 static void plot (int dp, void *params, real t) {
     parameters *p = (parameters *)params;
-    real h_now = h(p->m, p->k, p->l, d_dual(p->q), d_dual(p->p)).val;
-    printf("%+.*Le %+.*Le %+.3Lf %.6Le %+.*Le %+.*Le\n",
-           dp, p->q, dp, p->p, 0.0L, t, dp, error(h_now - p->h0), dp, h_now);
+    real h_now = hamiltonian(p->m, p->k, p->l, d_dual(p->q), d_dual(p->p)).val;
+    printf("%+.*Le %+.*Le %+.3Lf %.6Le %+.*Le %+.*Le\n", dp, p->q, dp, p->p, 0.0L, t, dp, error(h_now - p->h0), dp, h_now);
 }
 
 int main (int argc, char **argv) {
