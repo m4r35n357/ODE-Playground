@@ -5,7 +5,7 @@
 set -e
 
 make clean
-time -p make CCC=dbg -s -j 4 all
+time -p make -s -j 4 all
 make test
 
 echo ""

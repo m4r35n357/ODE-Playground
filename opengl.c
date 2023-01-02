@@ -130,9 +130,9 @@ void line_position (point p, rgb colour, float scale) {
     glVertex3f(0.0F, 0.0F, 0.0F);
     glVertex3f(p.a, p.b, p.c);
     glEnd();
+    glColor3f(colour.a, colour.b, colour.c);
     glPushMatrix();
     glTranslatef(p.a, p.b, p.c);
-    glColor3f(colour.a, colour.b, colour.c);
     solid ? glutSolidSphere(ball_size * scale, mesh, mesh) : glutWireSphere(ball_size * scale, mesh, mesh);
     glPopMatrix();
 }

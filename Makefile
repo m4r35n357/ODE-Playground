@@ -10,16 +10,21 @@ STRIP=-s
 ifeq ($(CCC),gcc)
   CC=gcc -std=c99 -O3 -flto
   CFLAGS += -Wunsuffixed-float-constants -frounding-math -fsignaling-nans
-else ifeq ($(CCC),dbg)
-  CC=gcc -std=c99 -Og -g -pg --coverage
+else ifeq ($(CCC),cov)
+  CC=gcc -std=c99 -Og -g --coverage
+  CFLAGS += -Wunsuffixed-float-constants -frounding-math -fsignaling-nans
+  STRIP=
+else ifeq ($(CCC),prof)
+  CC=gcc -std=c99 -Og -g -pg
   CFLAGS += -Wunsuffixed-float-constants -frounding-math -fsignaling-nans
   STRIP=
 else ifeq ($(CCC),clang)
   CC=clang -std=c99 -O3 -flto
   CFLAGS += -ffp-model=precise
 else
-  CC=clang -std=c99 -O3 -flto
+  CC=clang -std=c99 -Og -g
   CFLAGS += -ffp-model=precise
+  STRIP=
 endif
 
 %.o: %.c
