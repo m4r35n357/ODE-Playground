@@ -25,11 +25,11 @@ nbody *get_p_nbody (int argc, char **argv, int n_bodies) {
         nb->bodies[i].pz = strtold(argv[7 * i + 12], NULL);
     }
     nb->h0 = hamiltonian(nb);
-    cog(nb);
+    reset_cog(nb);
     return nb;
 }
 
-void cog (nbody *nb) {
+void reset_cog (nbody *nb) {
     body *b = nb->bodies;
     real X = 0.0L, Y = 0.0L, Z = 0.0L, M = 0.0L;
     for (int i = 0; i < nb->n; i++) {
@@ -38,11 +38,10 @@ void cog (nbody *nb) {
         Z += b[i].z * b[i].m;
         M += b[i].m;
     }
-    nb->centre = (components){X / M, Y / M, Z / M};
     for (int i = 0; i < nb->n; i++) {
-        b[i].x -= nb->centre.x;
-        b[i].y -= nb->centre.y;
-        b[i].z -= nb->centre.z;
+        b[i].x -= X / M;
+        b[i].y -= Y / M;
+        b[i].z -= Z / M;
     }
 }
 

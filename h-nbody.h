@@ -15,7 +15,6 @@ typedef struct Nbody {
     int n;
     body *bodies;
     real g, h0;
-    components centre;
 } nbody;
 
 /*
@@ -26,7 +25,7 @@ nbody *get_p_nbody (int argc, char **argv, int va_begin);
 /*
  * Calculate the centre of mass of the system
  */
-void cog (nbody *nb);
+void reset_cog (nbody *nb);
 
 /*
  * Hamiltonian

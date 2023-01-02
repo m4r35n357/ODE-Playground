@@ -23,9 +23,9 @@ _Bool finished = 0, paused = 0, stepping = 0, running = 1, osd_active = 1, solid
 
 int length, oldest = 0, newest = 0, colour_index = DARK_GREEN, mesh = 10;
 
-float elapsed, cpu, ball_scale = 0.1F;
+float elapsed, cpu;
 
-static float radius = 20.0F, latitude = 90.0F, longitude = 0.0F;
+static float radius = 20.0F, latitude = 90.0F, longitude = 0.0F, ball_size = 0.1F;
 
 void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
@@ -46,8 +46,8 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
         case 'D': case 'd': colour_index++; break;
         case 'C': case 'c': colour_index--; break;
-        case 'G': case 'g': ball_scale *= 1.1F; break;
-        case 'B': case 'b': ball_scale /= 1.1F; break;
+        case 'G': case 'g': ball_size *= 1.1F; break;
+        case 'B': case 'b': ball_size /= 1.1F; break;
         case 'S': case 's': running = !running; paused = 0; break;
         case 'P': case 'p': stepping = !stepping; paused = 0; break;
         case 'F': case 'f': glutFullScreenToggle(); break;
@@ -112,6 +112,29 @@ rgb get_colour (int index) {
         (rgb){0.5F, 0.5F, 0.0F}, (rgb){0.0F, 0.5F, 0.5F}, (rgb){0.5F, 0.0F, 0.5F},
         (rgb){0.5F, 0.0F, 0.0F}, (rgb){0.0F, 0.5F, 0.0F}, (rgb){0.0F, 0.0F, 0.5F}
     }[index % 15];
+}
+
+void line_trail (trail *track) {
+    glColor3f(track->colour.a, track->colour.b, track->colour.c);
+    glBegin(GL_LINE_STRIP);
+    for (int i = oldest; i != newest; i = (i + 1) % length) {  // read buffers
+        glVertex3f(track->points[i].a, track->points[i].b, track->points[i].c);
+    }
+    glVertex3f(track->points[newest].a, track->points[newest].b, track->points[newest].c);
+    glEnd();
+}
+
+void line_position (point p, rgb colour, float scale) {
+    glColor3f(0.3F, 0.3F, 0.3F);
+    glBegin(GL_LINES);
+    glVertex3f(0.0F, 0.0F, 0.0F);
+    glVertex3f(p.a, p.b, p.c);
+    glEnd();
+    glPushMatrix();
+    glTranslatef(p.a, p.b, p.c);
+    glColor3f(colour.a, colour.b, colour.c);
+    solid ? glutSolidSphere(ball_size * scale, mesh, mesh) : glutWireSphere(ball_size * scale, mesh, mesh);
+    glPopMatrix();
 }
 
 void osd (int x, int y, char *string) {

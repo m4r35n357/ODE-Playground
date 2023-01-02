@@ -22,27 +22,14 @@ void Animate () {
     SetupView();
 
     t->colour = get_colour(colour_index);
-    glColor3f(t->colour.a, t->colour.b, t->colour.c);
 
     if (mode == BOTH || mode == TRAIL) {
-        glBegin(GL_LINE_STRIP);
-        for (int i = oldest; i != newest; i = (i + 1) % length) {  // read buffers
-            glVertex3f(t->points[i].a, t->points[i].b, t->points[i].c);
-        }
-        glVertex3f(t->points[newest].a, t->points[newest].b, t->points[newest].c);
-        glEnd();
+        line_trail(t);
     }
 
     point p = t->points[newest];
     if (mode == BOTH || mode == POSITION) {
-        glColor3f(0.3F, 0.3F, 0.3F);
-        glBegin(GL_LINES);
-        glVertex3f(0.0F, 0.0F, 0.0F);
-        glVertex3f(p.a, p.b, p.c);
-        glEnd();
-        glTranslatef(p.a, p.b, p.c);
-        glColor3f(t->colour.a, t->colour.b, t->colour.c);
-        solid ? glutSolidSphere(ball_scale, mesh, mesh) : glutWireSphere(ball_scale, mesh, mesh);
+        line_position(p, t->colour, 1.0F);
     }
 
     if (osd_active) {
@@ -51,7 +38,7 @@ void Animate () {
         sprintf(hud, "t: %.1Lf  x: % .1lf  y: % .1lf  z: % .1lf  ", c->step * c->step_size, p.a, p.b, p.c);
         osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, hud);
 
-        sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.0f %%",
+        sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.0f%%",
                       elapsed = finished ? elapsed : 0.001F * (float)glutGet(GLUT_ELAPSED_TIME),
                       cpu = finished ? cpu : (float)(clock() - since) / CLOCKS_PER_SEC,
                       (float)(100.0L * c->step / c->steps));

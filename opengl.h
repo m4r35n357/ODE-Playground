@@ -41,7 +41,7 @@ extern clock_t since;
 
 extern _Bool finished, paused, stepping, running, osd_active, solid;
 
-extern float elapsed, cpu, ball_scale;
+extern float elapsed, cpu;
 
 extern int length, oldest, newest, colour_index, mesh;
 
@@ -74,6 +74,13 @@ void SetupView (void);
  * Colours
  */
 rgb get_colour (int index);
+
+/*
+ * Lines & balls
+ */
+void line_trail (trail *track);
+
+void line_position (point p, rgb colour, float scale);
 
 /*
  * OSD/HUD

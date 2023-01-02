@@ -24,33 +24,13 @@ void Animate () {
     body *b = m->bodies;
     if (mode == BOTH || mode == TRAIL) {
         for (int j = 0; j < m->n; j++) {
-            glColor3f(t[j].colour.a, t[j].colour.b, t[j].colour.c);
-            glBegin(GL_LINE_STRIP);
-            for (int i = oldest; i != newest; i = (i + 1) % length) {  // read buffers
-                glVertex3f(t[j].points[i].a, t[j].points[i].b, t[j].points[i].c);
-            }
-            glVertex3f(t[j].points[newest].a, t[j].points[newest].b, t[j].points[newest].c);
-            glEnd();
+            line_trail(&t[j]);
         }
     }
 
     if (mode == BOTH || mode == POSITION) {
-        point o = {(float)m->centre.x, (float)m->centre.y, (float)m->centre.z};
         for (int j = 0; j < m->n; j++) {
-            glColor3f(0.3F, 0.3F, 0.3F);
-            point p = t[j].points[newest];
-            glBegin(GL_LINES);
-            glVertex3f(o.a, o.b, o.c);
-            glVertex3f(p.a, p.b, p.c);
-            glEnd();
-        }
-        glTranslatef((float)(b[0].x - m->centre.x), (float)(b[0].y - m->centre.y), (float)(b[0].z - m->centre.z));
-        glColor3f(t[0].colour.a, t[0].colour.b, t[0].colour.c);
-        solid ? glutSolidSphere(ball_scale * b[0].r, mesh, mesh) : glutWireSphere(ball_scale * b[0].r, mesh, mesh);
-        for (int j = 1; j < m->n; j++) {
-            glTranslatef((float)(b[j].x - b[j - 1].x), (float)(b[j].y - b[j - 1].y), (float)(b[j].z - b[j - 1].z));
-            glColor3f(t[j].colour.a, t[j].colour.b, t[j].colour.c);
-            solid ? glutSolidSphere(ball_scale * b[j].r, mesh, mesh) : glutWireSphere(ball_scale * b[j].r, mesh, mesh);
+            line_position(t[j].points[newest], t[j].colour, b[j].r);
         }
     }
 
@@ -61,7 +41,7 @@ void Animate () {
         sprintf(hud, "t: %.1Lf  h: %.6Le  ~sf: %.1Lf", c->step * c->step_size, h, error(h - m->h0));
         osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, hud);
 
-        sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.0f %%",
+        sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.0f%%",
                       elapsed = finished ? elapsed : 0.001F * (float)glutGet(GLUT_ELAPSED_TIME),
                       cpu = finished ? cpu : (float)(clock() - since) / CLOCKS_PER_SEC,
                       (float)(100.0L * c->step / c->steps));
@@ -70,7 +50,7 @@ void Animate () {
 
     if (!finished && !paused) {
         if (generate(c, m)) {
-            cog(m);
+            reset_cog(m);
             buffer_point();
             for (int j = 0; j < m->n; j++) {
                 t[j].points[newest] = point_from_model(&b[j]);
