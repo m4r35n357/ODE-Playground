@@ -28,6 +28,11 @@ typedef struct triple_s {
 controls *get_c_tsm (int argc, char **argv);
 
 /*
+ * Inital values for Taylor Series'
+ */
+series3 *initial_values (char **argv, int order);
+
+/*
  * Retrieves ODE parameters from the tail of the command (arguments 8 onwards)
  */
 void t_params (char **argv, int count, ...);

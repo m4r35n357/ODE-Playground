@@ -22,6 +22,14 @@ controls *get_c_tsm (int argc, char **argv) {
     return c;
 }
 
+series3 *initial_values (char **argv, int order) {
+    series3 *jets = malloc(sizeof (series3));
+    jets->x = t_jet(order + 1); jets->x[0] = strtold(argv[5], NULL);
+    jets->y = t_jet(order + 1); jets->y[0] = strtold(argv[6], NULL);
+    jets->z = t_jet(order + 1); jets->z[0] = strtold(argv[7], NULL);
+    return jets;
+}
+
 void t_params (char **argv, int argc, ...) {
     va_list model;
     va_start(model, argc);
