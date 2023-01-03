@@ -43,7 +43,7 @@ sudo apt install bc git build-essential musl-tools gnuplot-x11 lcov freeglut3-de
 ```
 Optional:
 ```
-sudo apt install yad ffmpeg
+sudo apt install yad ffmpeg google-perftools libgoogle-perftools-dev
 ```
 Download:
 ```

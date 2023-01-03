@@ -18,6 +18,11 @@ else ifeq ($(CCC),prof)
   CC=gcc -std=c99 -Og -g -pg
   CFLAGS += -Wunsuffixed-float-constants -frounding-math -fsignaling-nans
   STRIP=
+else ifeq ($(CCC),gpt)
+  CC=clang -std=c99 -Og -g
+  CFLAGS += -ffp-model=precise
+  LIB_M += -lprofiler
+  STRIP=
 else ifeq ($(CCC),clang)
   CC=clang -std=c99 -O3 -flto
   CFLAGS += -ffp-model=precise
