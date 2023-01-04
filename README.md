@@ -19,19 +19,20 @@ Form or list-based dialogue boxes for launching most common operations using yad
 
 ## Pure c99 (plus OpenGL)
 
-Choice of Clang or GCC.
+The programs can be built either with Clang or GCC.
 All console programs are written to and depend _only_ on the c99 standard and library.
 External dependencies (OpenGL, FreeGLUT & GLEW) are only needed for plotters (*-gl).
 
-All c floating point operations are executed in _long double_ precision.
+All simulation floating point operations are executed in _long double_ precision.
 This gives a choice of precision and performance on different platforms.
 
 Platform | Long Double Implementation
 ----------|-----------
-ix86 | 80 bit hardware float
-x86-64 | 80 bit hardware float
+x86 / x86-64 | 80 bit hardware float
 armhf | 64 bit hardware float
 aarch64 | 128 bit _software_ float
+
+These are converted to _float_ for use by OpenGL.
 
 All scripts are in _Posix_ shell syntax.
 
@@ -39,23 +40,22 @@ All scripts are in _Posix_ shell syntax.
 
 ### Requirements - Debian/Ubuntu packages
 ```
-sudo apt install bc git build-essential musl-tools gnuplot-x11 lcov freeglut3-dev glew-utils libglew-dev
+sudo apt install bc git build-essential gnuplot-x11 lcov freeglut3-dev glew-utils libglew-dev
 ```
 Optional:
 ```
 sudo apt install yad ffmpeg google-perftools libgoogle-perftools-dev
 ```
-Download:
+### Download
 ```
 git clone https://github.com/m4r35n357/ODE-Playground/pure_c
 cd ODE-Playground
 ```
 
-#### c Build (Clang by default)
+### c Build (Clang by default)
 
 ```
-make clean
-make OR make CCC=gcc OR make CCC=clang OR make CCC=dbg
+make clean && make CCC=gcc
 make test
 ```
 There should be NO errors or warnings.
@@ -108,9 +108,9 @@ There are also programs to create model parameters and initial conditions for bo
 
 ## Grubby details
 
-#### Running c Tests
+### Running c Tests
 
-The tests enforce a "redundant web of densely interrelated functionality that cannot exist in the presence of coding errors"!
+The tests enforce a "redundant mesh of densely interrelated functionality that cannot exist in the presence of coding errors"!
 
 **libad-test** (c executable)
 
@@ -167,15 +167,57 @@ Total: 40, PASSED 40
 
 for i in .5 0 -.5; do ./libad-test 10 $i 1e-15; ./libdual-test $i 1e-15; done
 ```
-#### Find examples for ODE parameters and many other things:
+
+### Code coverage
+
+```
+make clean && make CCC=cov
+make coverage
+```
+see local HTML link at the end of the output.
+Note that any of the programs that you run from this point will add to the coverage output.
+
+### Profiling examples
+
+#### Google performance tools:
+```
+make clean && make CCC=gpt
+export CPUPROFILE=/tmp/$USER/prof.out
+./tsm-lorenz-std  6 16 .01 1000000  -15.8 -17.48 35.64  10 28 8 3 >/tmp/$USER/data
+google-pprof --text ./tsm-lorenz-std $CPUPROFILE
+```
+
+#### GCC gprof
+```
+make clean && make CCC=prof
+./tsm-lorenz-std  6 16 .01 1000000  -15.8 -17.48 35.64  10 28 8 3 >/tmp/$USER/data
+gprof -p -b ./tsm-lorenz-std gmon.out 
+```
+
+### Find examples for ODE parameters and many other things:
 Useful commands are frequently added to the comments in source headings.
 ```
 grep Example *
 ```
-## Solving and Plotting ODEs
+
+### Development
+
+There is an optional git pre-commit script that you can use automatically by copying:
+```
+cp pre-commit .git/hooks
+```
+or it can be run manually:
+```
+./pre-commit
+```
+It does a clean build, runs tests, and performs basic sanity checks on key executables.
+
+## Running the programs
+
+### Solving and Plotting ODEs
 This use case only involves calling the "t-functions" in ad.py or taylor-ode.c.
 No differentiation happens in these functions (they only implement the recurrence relations); it is the responsibility of the calling program to organize this properly.
-Refer to tsm-*.c for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors.
+Refer to tsm-*.c for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors and http://www.atomosyd.net/spip.php?rubrique5.
 
 Where CPU timings are given, they are made on a Raspberry Pi 400, mildly overclocked to 2100MHz, and writing output to a tmpfs file.
 
@@ -195,7 +237,7 @@ Parameter | Meaning
 5,6,7 | initial conditions, x0,y0,z0
 8+ | Model parameters
 
-##### Run & plot (OpenGL plot):
+#### Run & plot (OpenGL plot):
 ```
 ./tsm-thomas-gl 2000 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
 ```
@@ -211,7 +253,7 @@ Parameter | Meaning
 5,6,7 | initial conditions, x0,y0,z0
 8+ | Model parameters
 
-##### Run & plot (3D gnuplot graph):
+#### Run & plot (3D gnuplot graph):
 ```
 ./tsm-thomas-std 6 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
  gnuplot -p << EOF
@@ -223,7 +265,7 @@ set zlabel 'Z'
 splot '/tmp/$USER/data' with lines
 EOF
 ```
-##### Run & plot (2D gnuplot graph):
+#### Run & plot (2D gnuplot graph):
 ```
 ./tsm-lorenz-std 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
 
@@ -276,7 +318,7 @@ plot '/tmp/$USER/bifurcationX' lt rgb 'dark-blue' with dots, '/tmp/$USER/bifurca
 EOF
 ```
 
-#### Clean Numerical Simulation:
+### Clean Numerical Simulation:
 
 In a chaotic system, accuracy can only be maintained for a finite simulation time.
 This script runs a given simulation twice, the second time with a "better" integrator, and shows the differences graphically.
