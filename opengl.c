@@ -23,9 +23,7 @@ _Bool finished = 0, paused = 0, stepping = 0, running = 1, osd_active = 1, solid
 
 int length, oldest = 0, newest = 0, colour_index = DARK_GREEN, mesh = 10;
 
-float elapsed, cpu;
-
-static float radius = 20.0F, latitude = 90.0F, longitude = 0.0F, ball_size = 0.1F;
+static float elapsed, cpu, radius = 20.0F, latitude = 90.0F, longitude = 0.0F, ball_size = 0.1F;
 
 void SpecialKeyFunc (int Key, int x, int y) { (void)x; (void)y;
     switch (Key) {
@@ -104,6 +102,12 @@ void SetupView () {
     glLightfv(GL_LIGHT0, GL_POSITION, (float []){-100.0F, 100.0F, -100.0F, 0.0F});
 }
 
+void ReDraw () {
+    glFlush();  // Flush the pipeline, and swap the buffers
+    glutSwapBuffers();
+    glutPostRedisplay();  // Request a re-draw for animation purposes
+}
+
 rgb get_colour (int index) {
     return (rgb []){
         (rgb){1.0F, 1.0F, 0.0F}, (rgb){0.0F, 1.0F, 1.0F}, (rgb){1.0F, 0.0F, 1.0F},
@@ -142,6 +146,14 @@ void osd (int x, int y, char *string) {
     glutBitmapString(GLUT_BITMAP_9_BY_15, (const unsigned char *)string);
 }
 
+void osd_summary () {
+    sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.0f%%",
+                  elapsed = finished ? elapsed : 0.001F * (float)glutGet(GLUT_ELAPSED_TIME),
+                  cpu = finished ? cpu : (float)(clock() - since) / CLOCKS_PER_SEC,
+                  (float)(100.0L * c->step / c->steps));
+    osd(10, 10, hud);
+}
+
 void buffer_point () {
     static _Bool full = 0;
     newest++;
@@ -150,10 +162,4 @@ void buffer_point () {
         oldest = (newest + 1) % length;
         newest %= length;
     }
-}
-
-void ReDraw () {
-    glFlush();  // Flush the pipeline, and swap the buffers
-    glutSwapBuffers();
-    glutPostRedisplay();  // Request a re-draw for animation purposes
 }

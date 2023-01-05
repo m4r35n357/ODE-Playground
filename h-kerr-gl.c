@@ -44,20 +44,13 @@ void Animate () {
         real S = sigma(k);
         k->tau += k->step_size * S;
         glColor3f(0.0F, 0.5F, 0.5F);
-
         sprintf(hud, "tau: %.0Lf  t: %.0Lf  r:% 5.1Lf  theta:% 4.0Lf  phi:% 4.0Lf  ",
                       k->tau, k->q_t, k->q_r, k->q_theta * RAD_TO_DEG - 90.0L, fmodl(k->q_phi * RAD_TO_DEG + 180.0L, 360.0L));
         osd(10, window_height - 20, hud);
-
         pair speed = gamma_v(k, S);
         sprintf(hud, "gamma: %.1Lf  v:% .6Lf", speed.a, speed.b);
         osd(10, window_height - 40, hud);
-
-        sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.0f%%",
-                      elapsed = finished ? elapsed : 0.001F * (float)glutGet(GLUT_ELAPSED_TIME),
-                      cpu = finished ? cpu : (float)(clock() - since) / CLOCKS_PER_SEC,
-                      (float)(100.0L * c->step / c->steps));
-        osd(10, 10, hud);
+        osd_summary();
     }
 
     if (!finished && !paused) {
@@ -76,9 +69,9 @@ void Animate () {
 }
 
 int main (int argc, char** argv) {
+    since = clock();
     c = get_c_symp(argc, argv);
     k = get_p_kerr(argc, argv, c->step_size);
-    since = clock();
     RAD_TO_DEG = 180.0L / acosl(-1.0L);
 
     length = (int)strtol(argv[1], NULL, BASE); assert(length >= 0 && length <= c->steps);

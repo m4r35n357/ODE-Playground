@@ -36,16 +36,10 @@ void Animate () {
 
     if (osd_active) {
         glColor3f(0.0F, 0.5F, 0.5F);
-
         real h = hamiltonian(m);
         sprintf(hud, "t: %.1Lf  h: %.6Le  ~sf: %.1Lf", c->step * c->step_size, h, error(h - m->h0));
         osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, hud);
-
-        sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.0f%%",
-                      elapsed = finished ? elapsed : 0.001F * (float)glutGet(GLUT_ELAPSED_TIME),
-                      cpu = finished ? cpu : (float)(clock() - since) / CLOCKS_PER_SEC,
-                      (float)(100.0L * c->step / c->steps));
-        osd(10, 10, hud);
+        osd_summary();
     }
 
     if (!finished && !paused) {
@@ -71,9 +65,9 @@ void CloseWindow () {
 }
 
 int main (int argc, char** argv) {
+    since = clock();
     c = get_c_symp(argc, argv);
     m = get_p_nbody(argc, argv, (argc - 6) / 7);
-    since = clock();
     fprintf(stderr, "\nH0: % .18Le\n", hamiltonian(m));
 
     length = (int)strtol(argv[1], NULL, BASE); assert(length >= 0 && length <= c->steps);

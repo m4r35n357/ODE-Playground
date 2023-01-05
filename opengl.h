@@ -41,8 +41,6 @@ extern clock_t since;
 
 extern _Bool finished, paused, stepping, running, osd_active, solid;
 
-extern float elapsed, cpu;
-
 extern int length, oldest, newest, colour_index, mesh;
 
 /*
@@ -86,6 +84,8 @@ void line_position (point p, rgb colour, float scale);
  * OSD/HUD
  */
 void osd (int x, int y, char *string);
+
+void osd_summary (void);
 
 /*
  * Extract current coordinates from model

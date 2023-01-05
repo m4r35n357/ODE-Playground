@@ -34,15 +34,9 @@ void Animate () {
 
     if (osd_active) {
         glColor3f(0.0F, 0.5F, 0.5F);
-
         sprintf(hud, "t: %.1Lf  x: % .1lf  y: % .1lf  z: % .1lf  ", c->step * c->step_size, p.a, p.b, p.c);
         osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, hud);
-
-        sprintf(hud, "Elapsed: %.1fs  CPU: %.1fs  %.0f%%",
-                      elapsed = finished ? elapsed : 0.001F * (float)glutGet(GLUT_ELAPSED_TIME),
-                      cpu = finished ? cpu : (float)(clock() - since) / CLOCKS_PER_SEC,
-                      (float)(100.0L * c->step / c->steps));
-        osd(10, 10, hud);
+        osd_summary();
     }
 
     if (!finished && !paused) {
@@ -61,9 +55,9 @@ void Animate () {
 }
 
 int main (int argc, char** argv) {
+    since = clock();
     c = get_c_tsm(argc, argv);
     m = get_p(argc, argv, c->order);
-    since = clock();
 
     jets = initial_values(argv, c->order);
 
