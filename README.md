@@ -350,7 +350,7 @@ the CPU requirement can also be seen as:
 ```
 O(required precision^4) or O(order^4) or O(clean simulation time^4)
 ```
-##### Make a CNS plot:
+#### Make a CNS plot
 
 These results for higher orders (16+) require 128-bit precision, i.e. aarch64 long double (software).
 In hardware 80-bit (x86-64) or 64-bit (armhf) floating point, the maximum clean simulation time will be correspondingly lower.

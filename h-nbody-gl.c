@@ -49,12 +49,8 @@ void Animate () {
             for (int j = 0; j < m->n; j++) {
                 t[j].points[newest] = point_from_model(&b[j]);
             }
-        } else {
-            finished = 1;
-        }
-        if (stepping) {
-            paused = 1;
-        }
+        } else finished = 1;
+        if (stepping) paused = 1;
     }
 
     ReDraw();

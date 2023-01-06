@@ -95,7 +95,7 @@ int main (int argc, char **argv) { (void)argc;
     fprintf(stderr, "\n");
     long count = 0L;
     _Bool circular = k->rmin * k->rmax < 0.0L;
-    while (! converged(f, k->epsilon)) {
+    while (!converged(f, k->epsilon)) {
         J = (matrix3x3){
             .a = R(k->rmin,  d_var(k->E), d_dual(k->L), d_dual(k->Q), k->a).dot,
             .b = R(k->rmin, d_dual(k->E),  d_var(k->L), d_dual(k->Q), k->a).dot,
@@ -127,7 +127,7 @@ int main (int argc, char **argv) { (void)argc;
         count++;
     }
     _Bool valid = 1;
-    if (! circular) {
+    if (!circular) {
         valid = ! (dR_dr(k->rmin, d_dual(k->E), d_dual(k->L), d_dual(k->Q), k->a).val < 0.0L &&
                    dR_dr(k->rmax, d_dual(k->E), d_dual(k->L), d_dual(k->Q), k->a).val > 0.0L);
     }

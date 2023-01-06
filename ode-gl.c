@@ -23,14 +23,10 @@ void Animate () {
 
     t->colour = get_colour(colour_index);
 
-    if (mode == BOTH || mode == TRAIL) {
-        line_trail(t);
-    }
+    if (mode == BOTH || mode == TRAIL) line_trail(t);
 
     point p = t->points[newest];
-    if (mode == BOTH || mode == POSITION) {
-        line_position(p, t->colour, 1.0F);
-    }
+    if (mode == BOTH || mode == POSITION) line_position(p, t->colour, 1.0F);
 
     if (osd_active) {
         glColor3f(0.0F, 0.5F, 0.5F);
@@ -43,12 +39,8 @@ void Animate () {
         if (tsm_gen(c, jets, m)) {
             buffer_point();
             t->points[newest] = point_from_model(jets);
-        } else {
-            finished = 1;
-        }
-        if (stepping) {
-            paused = 1;
-        }
+        } else finished = 1;
+        if (stepping) paused = 1;
     }
 
     ReDraw();

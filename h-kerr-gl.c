@@ -30,14 +30,10 @@ void Animate () {
 
     t->colour = get_colour(colour_index);
 
-    if (mode == BOTH || mode == TRAIL) {
-        line_trail(t);
-    }
+    if (mode == BOTH || mode == TRAIL) line_trail(t);
 
     point p = t->points[newest];
-    if (mode == BOTH || mode == POSITION) {
-        line_position(p, t->colour, 1.0F);
-    }
+    if (mode == BOTH || mode == POSITION) line_position(p, t->colour, 1.0F);
 
     if (osd_active) {
         int window_height = glutGet(GLUT_WINDOW_HEIGHT);
@@ -57,12 +53,8 @@ void Animate () {
         if (generate(c, k)) {
             buffer_point();
             t->points[newest] = point_from_model(k);
-        } else {
-            finished = 1;
-        }
-        if (stepping) {
-            paused = 1;
-        }
+        } else finished = 1;
+        if (stepping) paused = 1;
     }
 
     ReDraw();
