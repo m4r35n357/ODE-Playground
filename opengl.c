@@ -76,7 +76,7 @@ void ResizeWindow (int w, int h) {
     glMatrixMode(GL_MODELVIEW);  // Select the Modelview matrix
 }
 
-void ApplicationInit (int argc, char** argv, char *title) {
+void ApplicationInit (int argc, char **argv, char *title) {
     glutInit(&argc, argv);  // Initialize GLUT
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);  // Need to double buffer for animation
     glutInitWindowPosition(0, 0);  // Create and position the graphics window

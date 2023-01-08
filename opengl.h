@@ -48,7 +48,7 @@ extern int length, oldest, newest, colour_index, mesh;
  */
 void OpenGLInit (void);
 
-void ApplicationInit (int argc, char** argv, char *title);
+void ApplicationInit (int argc, char **argv, char *title);
 
 /*
  * Callbacks

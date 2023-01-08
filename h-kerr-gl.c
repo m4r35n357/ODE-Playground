@@ -60,7 +60,7 @@ void Animate () {
     ReDraw();
 }
 
-int main (int argc, char** argv) {
+int main (int argc, char **argv) {
     since = clock();
     c = get_c_symp(argc, argv);
     k = get_p_kerr(argc, argv, c->step_size);

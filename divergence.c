@@ -9,7 +9,7 @@
 #include "real.h"
 
 int main(int argc, char **argv) {
-    fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) { fprintf(stderr, "%s ", argv[i]); } fprintf(stderr, "]\n");
+    fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     assert(argc >= 4);
     FILE *fileA, *fileB;
     if ((fileA = fopen(argv[1], "r")) == NULL || (fileB = fopen(argv[2], "r")) == NULL) {

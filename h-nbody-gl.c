@@ -60,7 +60,7 @@ void CloseWindow () {
     fprintf(stderr, "H : % .18Le\n", hamiltonian(m));
 }
 
-int main (int argc, char** argv) {
+int main (int argc, char **argv) {
     since = clock();
     c = get_c_symp(argc, argv);
     m = get_p_nbody(argc, argv, (argc - 6) / 7);

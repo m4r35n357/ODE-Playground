@@ -76,7 +76,7 @@ static series bad_value (series jet) {
 int main (int argc, char **argv) {
     real PI_2 = 0.5L * acosl(-1.0L);
 
-    fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) { fprintf(stderr, "%s ", argv[i]); } fprintf(stderr, "]\n");
+    fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     assert(argc == 4 || argc == 5);
     n = (int)strtol(argv[1], NULL, BASE);
     assert(n > 1);
