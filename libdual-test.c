@@ -57,26 +57,17 @@ int main (int argc, char **argv) {
     tolerance = strtold(argv[2], NULL);
     if (argc == 4) debug = (int)strtol(argv[3], NULL, BASE);
 
-    int x_positive = x.val > 0.0L;
-    int x_non_zero = x.val != 0.0L;
-    int x_lt_pi_2 = x.val < PI_2;
+    _Bool x_positive = x.val > 0.0L;
+    _Bool x_non_zero = x.val != 0.0L;
+    _Bool x_lt_pi_2 = x.val < PI_2;
 
-    dual BAD_VALUE = {INFINITY, INFINITY};
-    dual abs_x = BAD_VALUE;
-    dual inv_x = BAD_VALUE;
-    dual sqr_x = BAD_VALUE;
-    dual sqr_sin_x = BAD_VALUE;
-    dual sqr_cos_x = BAD_VALUE;
-    dual sqrt_x = BAD_VALUE;
-    dual exp_x = BAD_VALUE;
-    dual neg_exp_x = BAD_VALUE;
-    dual ln_x = BAD_VALUE;
-    dual sin = BAD_VALUE;
-    dual sin_2x = BAD_VALUE;
-    dual cos = BAD_VALUE;
-    dual cos_2x = BAD_VALUE;
-    dual tan = BAD_VALUE;
-    dual gd_1 = BAD_VALUE;
+    dual abs_x = d_dual(0.0L), inv_x = d_dual(0.0L), sqr_x = d_dual(0.0L), sqrt_x = d_dual(0.0L);
+    dual sqr_sin_x = d_dual(0.0L), sqr_cos_x = d_dual(0.0L);
+    dual exp_x = d_dual(0.0L), neg_exp_x = d_dual(0.0L), ln_x = d_dual(0.0L);
+    dual sin = d_dual(0.0L), sin_2x = d_dual(0.0L);
+    dual cos = d_dual(0.0L), cos_2x = d_dual(0.0L);
+    dual tan = d_dual(0.0L);
+    dual gd_1 = d_dual(0.0L);
 
     dual d1 = d_dual(1.0L);
     dual xpx = d_scale(x, 2.0L);

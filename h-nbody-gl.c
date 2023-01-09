@@ -67,10 +67,10 @@ int main (int argc, char **argv) {
     fprintf(stderr, "\nH0: % .18Le\n", hamiltonian(m));
 
     length = (int)strtol(argv[1], NULL, BASE); assert(length >= 0 && length <= c->steps);
-    t = calloc((size_t)m->n, sizeof (trail));
+    t = malloc((size_t)m->n * sizeof (trail));
     for (int j = 0; j < m->n; j++) {
         t[j].colour = get_colour(j);
-        t[j].points = calloc((size_t)length, sizeof (point));
+        t[j].points = malloc((size_t)length * sizeof (point));
         t[j].points[0] = point_from_model(&m->bodies[j]);
     }
 

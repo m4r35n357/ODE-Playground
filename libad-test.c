@@ -66,13 +66,6 @@ static void compare (char* name, series a, series b) {
     passed++;
 }
 
-static series bad_value (series jet) {
-    for (int i = 0; i < n; i++) {
-        jet[i] = INFINITY;
-    }
-    return jet;
-}
-
 int main (int argc, char **argv) {
     real PI_2 = 0.5L * acosl(-1.0L);
 
@@ -89,41 +82,24 @@ int main (int argc, char **argv) {
     tolerance = strtold(argv[3], NULL);
     if (argc == 5) debug = (int)strtol(argv[4], NULL, BASE);
 
-    int x_positive = x[0] > 0.0L;
-    int x_non_zero = x[0] != 0.0L;
-    int x_lt_pi_2 = x[0] < PI_2;
+    _Bool x_positive = x[0] > 0.0L;
+    _Bool x_non_zero = x[0] != 0.0L;
+    _Bool x_lt_pi_2 = x[0] < PI_2;
 
-    series r1 = bad_value(t_jet(n));
-    series r2 = bad_value(t_jet(n));
-    series r3 = bad_value(t_jet(n));
-    series abs_x = bad_value(t_jet(n));
-    series inv_x = bad_value(t_jet(n));
-    series sqr_x = bad_value(t_jet(n));
-    series sqr_sin_x = bad_value(t_jet(n));
-    series sqr_cos_x = bad_value(t_jet(n));
-    series sqr_tan_x = bad_value(t_jet(n));
-    series sqr_sinh_x = bad_value(t_jet(n));
-    series sqr_cosh_x = bad_value(t_jet(n));
-    series sqr_tanh_x = bad_value(t_jet(n));
-    series sqrt_x = bad_value(t_jet(n));
-    series exp_x = bad_value(t_jet(n));
-    series neg_exp_x = bad_value(t_jet(n));
-    series ln_x = bad_value(t_jet(n));
-    series sin = bad_value(t_jet(n));
-    series sin_2x = bad_value(t_jet(n));
-    series cos = bad_value(t_jet(n));
-    series cos_2x = bad_value(t_jet(n));
-    series tan = bad_value(t_jet(n));
-    series sec2 = bad_value(t_jet(n));
-    series sinh = bad_value(t_jet(n));
-    series sinh_2x = bad_value(t_jet(n));
-    series cosh = bad_value(t_jet(n));
-    series cosh_2x = bad_value(t_jet(n));
-    series tanh = bad_value(t_jet(n));
-    series sech2 = bad_value(t_jet(n));
-    series gd_1 = bad_value(t_jet(n));
+    series r1 = t_jet(n), r2 = t_jet(n), r3 = t_jet(n);
+    series abs_x = t_jet(n), inv_x = t_jet(n), sqr_x = t_jet(n), sqrt_x = t_jet(n);
+    series sqr_sin_x = t_jet(n), sqr_cos_x = t_jet(n), sqr_tan_x = t_jet(n);
+    series sqr_sinh_x = t_jet(n), sqr_cosh_x = t_jet(n), sqr_tanh_x = t_jet(n);
+    series exp_x = t_jet(n), neg_exp_x = t_jet(n), ln_x = t_jet(n);
+    series sin = t_jet(n), sin_2x = t_jet(n);
+    series cos = t_jet(n), cos_2x = t_jet(n);
+    series tan = t_jet(n), sec2 = t_jet(n);
+    series sinh = t_jet(n), sinh_2x = t_jet(n);
+    series cosh = t_jet(n), cosh_2x = t_jet(n);
+    series tanh = t_jet(n), sech2 = t_jet(n);
+    series gd_1 = t_jet(n);
 
-    series S1 = ad_const(bad_value(t_jet(n)), 1.0L);
+    series S1 = ad_const(t_jet(n), 1.0L);
 
     fprintf(stdout, "%sHorner Summation%s\n", WHT, NRM);
     series s = t_jet(n >= 7 ? n : 7);

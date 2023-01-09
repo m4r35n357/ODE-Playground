@@ -68,7 +68,7 @@ int main (int argc, char **argv) {
 
     length = (int)strtol(argv[1], NULL, BASE); assert(length >= 0 && length <= c->steps);
     t = malloc(sizeof (trail));
-    t->points = calloc((size_t)length, sizeof (point));
+    t->points = malloc((size_t)length * sizeof (point));
     t->points[newest] = point_from_model(k);
 
     ApplicationInit(argc, argv, "Black Hole Orbit Plotter");

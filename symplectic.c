@@ -98,14 +98,14 @@ void solve (char **argv, controls *c, void *p, plotter output) {
 }
 
 _Bool generate (controls *c, void *p) {
-    static _Bool generating = 0;
+    static _Bool looping = 0;
     static integrator composer;
-    if (generating) goto resume; else generating = 1;
+    if (looping) goto resume; else looping = 1;
     composer = get_integrator(c);
     for (c->step = 0; c->step < c->steps; c->step++) {
         composer(c, p, c->step_size);
         return 1;
         resume: ;
     }
-    return generating = 0;
+    return looping = 0;
 }

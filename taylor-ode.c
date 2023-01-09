@@ -54,7 +54,7 @@ static void error_exit (int code, char *message) {
 }
 
 series t_jet (int n) {
-    series s = calloc((size_t)n, sizeof (real));
+    series s = malloc((size_t)n * sizeof (real));
     if (!s) error_exit(1, "Jet allocation failure!\n");
     return s;
 }
@@ -96,14 +96,14 @@ void tsm_stdout (int dp, controls *c, series3 *jets, void *p, clock_t t0) {
 }
 
 _Bool tsm_gen (controls *c, series3 *jets, void *p) {
-    static _Bool generating = 0;
-    if (generating) goto resume; else generating = 1;
+    static _Bool looping = 0;
+    if (looping) goto resume; else looping = 1;
     for (c->step = 0; c->step < c->steps; c->step++) {
         tsm_step(jets, p, c->order, c->step_size);
         return 1;
         resume: ;
     }
-    return generating = 0;
+    return looping = 0;
 }
 
 real t_const (real a, int k) {
