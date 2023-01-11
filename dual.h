@@ -35,7 +35,7 @@ dual d_div (dual a, dual b);
 
 dual d_exp (dual a);
 
-dual d_log (dual a);
+dual d_ln (dual a);
 
 dual d_sqrt (dual a);
 

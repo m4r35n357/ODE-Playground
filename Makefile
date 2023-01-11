@@ -83,7 +83,7 @@ divergence: divergence.o
 	$(CC) -o $@ $< $(LIB_M) $(STRIP)
 
 
-libad-test: libad-test.o taylor-ode.o ad.o
+libad-test: libad-test.o taylor-ode.o
 	$(CC) -o $@ $^ $(LIB_M) $(STRIP)
 
 libdual-test: libdual-test.o dual.o

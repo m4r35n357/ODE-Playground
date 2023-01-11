@@ -57,9 +57,7 @@ int main (int argc, char **argv) {
     tolerance = strtold(argv[2], NULL);
     if (argc == 4) debug = (int)strtol(argv[3], NULL, BASE);
 
-    _Bool x_positive = x.val > 0.0L;
-    _Bool x_non_zero = x.val != 0.0L;
-    _Bool x_lt_pi_2 = x.val < PI_2;
+    _Bool positive = x.val > 0.0L, non_zero = x.val != 0.0L, lt_pi_2 = fabsl(x.val) < PI_2;
 
     dual abs_x = d_dual(0.0L), inv_x = d_dual(0.0L), sqr_x = d_dual(0.0L), sqrt_x = d_dual(0.0L);
     dual sqr_sin_x = d_dual(0.0L), sqr_cos_x = d_dual(0.0L);
@@ -75,77 +73,57 @@ int main (int argc, char **argv) {
     fprintf(stderr, "%sDual Numbers: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x.val, NRM);
 
     sqr_x = d_sqr(x);
-    if (x_non_zero) inv_x = d_inv(x);
-    if (x_positive) sqrt_x = d_sqrt(x);
+    if (non_zero) inv_x = d_inv(x);
+    if (positive) sqrt_x = d_sqrt(x);
 
-    char* name = "x * x == sqr(x)";
-    compare(name, d_mul(x, x), sqr_x);
+    char* name = "x * x == sqr(x)"; compare(name, d_mul(x, x), sqr_x);
 
-    name = "sqr(x) / x == x";
-    x_non_zero ? compare(name, d_div(sqr_x, x), x) : skip(name);
+    name = "sqr(x) / x == x"; non_zero ? compare(name, d_div(sqr_x, x), x) : skip(name);
 
-    name = "x * 1 / x == 1";
-    x_non_zero ? compare(name, d_mul(x, inv_x), d1) : skip(name);
+    name = "x * 1 / x == 1"; non_zero ? compare(name, d_mul(x, inv_x), d1) : skip(name);
 
-    name = "sqrt(x) * sqrt(x) == x";
-    x_positive ? compare(name, d_mul(sqrt_x, sqrt_x), x) : skip(name);
+    name = "sqrt(x) * sqrt(x) == x"; positive ? compare(name, d_mul(sqrt_x, sqrt_x), x) : skip(name);
 
-    name = "x / sqrt(x) == sqrt(x)";
-    x_positive ? compare(name, d_div(x, sqrt_x), sqrt_x) : skip(name);
+    name = "x / sqrt(x) == sqrt(x)"; positive ? compare(name, d_div(x, sqrt_x), sqrt_x) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
 
-    name = "x^2.0 == sqr(x)";
-    x_positive ? compare(name, d_pow(x, 2.0L), sqr_x) : skip(name);
+    name = "x^2.0 == sqr(x)"; positive ? compare(name, d_pow(x, 2.0L), sqr_x) : skip(name);
 
-    name = "x^1.0 == x";
-    x_positive ? compare(name, d_pow(x, 1.0L), x) : skip(name);
+    name = "x^1.0 == x"; positive ? compare(name, d_pow(x, 1.0L), x) : skip(name);
 
-    name = "x^0.5 == sqrt(x)";
-    x_positive ? compare(name, d_pow(x, 0.5L), sqrt_x): skip(name);
+    name = "x^0.5 == sqrt(x)"; positive ? compare(name, d_pow(x, 0.5L), sqrt_x): skip(name);
 
-    name = "x^0.0 == 1";
-    x_positive ? compare(name, d_pow(x, 0.0L), d1) : skip(name);
+    name = "x^0.0 == 1"; positive ? compare(name, d_pow(x, 0.0L), d1) : skip(name);
 
-    name = "x^-0.5 == 1 / sqrt(x)";
-    x_positive ? compare(name, d_pow(x, -0.5L), d_inv(sqrt_x)) : skip(name);
+    name = "x^-0.5 == 1 / sqrt(x)"; positive ? compare(name, d_pow(x, -0.5L), d_inv(sqrt_x)) : skip(name);
 
-    name = "x^-1.0 == 1 / x";
-    x_positive ? compare(name, d_pow(x, -1.0L), inv_x) : skip(name);
+    name = "x^-1.0 == 1 / x"; positive ? compare(name, d_pow(x, -1.0L), inv_x) : skip(name);
 
-    name = "x^-2.0 == 1 / sqr(x)";
-    x_positive ? compare(name, d_pow(x, -2.0L), d_inv(sqr_x)) : skip(name);
+    name = "x^-2.0 == 1 / sqr(x)"; positive ? compare(name, d_pow(x, -2.0L), d_inv(sqr_x)) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
     abs_x = d_abs(x);
 
-    name = "sqr(x) * x^-3 == 1 / x";
-    x_positive ? compare(name, d_mul(sqr_x, d_pow(x, -3.0L)), inv_x) : skip(name);
+    name = "sqr(x) * x^-3 == 1 / x"; positive ? compare(name, d_mul(sqr_x, d_pow(x, -3.0L)), inv_x) : skip(name);
 
-    name = "sqr(x)^0.5 == |x|";
-    x_non_zero ? compare(name, d_pow(sqr_x, 0.5L), abs_x) : skip(name);
+    name = "sqr(x)^0.5 == |x|"; non_zero ? compare(name, d_pow(sqr_x, 0.5L), abs_x) : skip(name);
 
-    name = "sqrt(sqr(x) == |x|";
-    x_non_zero ? compare(name, d_sqrt(sqr_x), abs_x) : skip(name);
+    name = "sqrt(sqr(x) == |x|"; non_zero ? compare(name, d_sqrt(sqr_x), abs_x) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
     exp_x = d_exp(x);
-    if (x_positive) ln_x = d_log(x);
+    if (positive) ln_x = d_ln(x);
 
-    name = "log(e^x) == x";
-    compare(name, d_log(d_exp(x)), x);
+    name = "ln(e^x) == x"; compare(name, d_ln(d_exp(x)), x);
 
-    name = "log(sqr(x)) == log(x) * 2";
-    x_positive ? compare(name, d_log(sqr_x), d_scale(ln_x, 2.0L)) : skip(name);
+    name = "ln(sqr(x)) == ln(x) * 2"; positive ? compare(name, d_ln(sqr_x), d_scale(ln_x, 2.0L)) : skip(name);
 
-    name = "log(sqrt(x)) == log(x) / 2";
-    x_positive ? compare(name, d_log(sqrt_x), d_scale(ln_x, 0.5L)) : skip(name);
+    name = "ln(sqrt(x)) == ln(x) / 2"; positive ? compare(name, d_ln(sqrt_x), d_scale(ln_x, 0.5L)) : skip(name);
 
-    name = "log(1 / x) == - log(x)";
-    x_positive ? compare(name, d_log(inv_x), d_scale(ln_x, -1.0L)) : skip(name);
+    name = "ln(1 / x) == - ln(x)"; positive ? compare(name, d_ln(inv_x), d_scale(ln_x, -1.0L)) : skip(name);
 
-    name = "log(x^-3) == - 3 * log(x)";
-    x_positive ? compare(name, d_log(d_pow(x, -3.0L)), d_scale(ln_x, -3.0L)) : skip(name);
+    name = "ln(x^-3) == -3*ln(x)"; positive ? compare(name, d_ln(d_pow(x, -3.0L)), d_scale(ln_x, -3.0L)) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
     sin = d_sinh(x);
@@ -156,37 +134,28 @@ int main (int argc, char **argv) {
     sin_2x = d_sinh(xpx);
     cos_2x = d_cosh(xpx);
 
-    name = "cosh^2(x) - sinh^2(x) == 1";
-    compare(name, d_sub(sqr_cos_x, sqr_sin_x), d1);
+    name = "cosh^2(x) - sinh^2(x) == 1"; compare(name, d_sub(sqr_cos_x, sqr_sin_x), d1);
 
-    name = "tanh(x) == sinh(x) / cosh(x)";
-    compare(name, tan, d_div(sin, cos));
+    name = "tanh(x) == sinh(x) / cosh(x)"; compare(name, tan, d_div(sin, cos));
 
-    name = "sinh(2x) == 2 * sinh(x) * cosh(x)";
-    compare(name, sin_2x, d_scale(d_mul(sin, cos), 2.0L));
+    name = "sinh(2x) == 2 * sinh(x) * cosh(x)"; compare(name, sin_2x, d_scale(d_mul(sin, cos), 2.0L));
 
-    name = "cosh(2x) == cosh^2(x) + sinh^2(x)";
-    compare(name, cos_2x, d_add(sqr_cos_x, sqr_sin_x));
+    name = "cosh(2x) == cosh^2(x) + sinh^2(x)"; compare(name, cos_2x, d_add(sqr_cos_x, sqr_sin_x));
 
     if (debug != 0) fprintf(stderr, "\n");
     neg_exp_x = d_exp(d_scale(x, -1.0L));
 
-    name = "cosh(x) == (e^x + e^-x) / 2";
-    compare(name, cos, d_scale(d_add(exp_x, neg_exp_x), 0.5L));
+    name = "cosh(x) == (e^x + e^-x) / 2"; compare(name, cos, d_scale(d_add(exp_x, neg_exp_x), 0.5L));
 
-    name = "sinh(x) == (e^x - e^-x) / 2";
-    compare(name, sin, d_scale(d_sub(exp_x, neg_exp_x), 0.5L));
+    name = "sinh(x) == (e^x - e^-x) / 2"; compare(name, sin, d_scale(d_sub(exp_x, neg_exp_x), 0.5L));
 
     if (debug != 0) fprintf(stderr, "\n");
 
-    name = "arcsinh(sinh(x)) == x";
-    compare(name, d_asinh(sin), x);
+    name = "arcsinh(sinh(x)) == x"; compare(name, d_asinh(sin), x);
 
-    name = "arccosh(cosh(x)) == |x|";
-    compare(name, d_acosh(cos), abs_x);
+    name = "arccosh(cosh(x)) == |x|"; compare(name, d_acosh(cos), abs_x);
 
-    name = "arctanh(tanh(x)) == x";
-    compare(name, d_atanh(tan), x);
+    name = "arctanh(tanh(x)) == x"; compare(name, d_atanh(tan), x);
 
     if (debug != 0) fprintf(stderr, "\n");
     sin = d_sin(x);
@@ -197,43 +166,32 @@ int main (int argc, char **argv) {
     sin_2x = d_sin(xpx);
     cos_2x = d_cos(xpx);
 
-    name = "cos^2(x) + sin^2(x) == 1";
-    compare(name, d_add(sqr_cos_x, sqr_sin_x), d1);
+    name = "cos^2(x) + sin^2(x) == 1"; compare(name, d_add(sqr_cos_x, sqr_sin_x), d1);
 
-    name = "tan(x) == sin(x) / cos(x)";
-    x_lt_pi_2 ? compare(name, tan, d_div(sin, cos)) : skip(name);
+    name = "tan(x) == sin(x) / cos(x)"; lt_pi_2 ? compare(name, tan, d_div(sin, cos)) : skip(name);
 
-    name = "sin(2x) == 2 * sin(x) * cos(x)";
-    compare(name, sin_2x, d_scale(d_mul(sin, cos), 2.0L));
+    name = "sin(2x) == 2 * sin(x) * cos(x)"; compare(name, sin_2x, d_scale(d_mul(sin, cos), 2.0L));
 
-    name = "cos(2x) == cos^2(x) - sin^2(x)";
-    compare(name, cos_2x, d_sub(sqr_cos_x, sqr_sin_x));
+    name = "cos(2x) == cos^2(x) - sin^2(x)"; compare(name, cos_2x, d_sub(sqr_cos_x, sqr_sin_x));
 
     if (debug != 0) fprintf(stderr, "\n");
 
-    name = "arcsin(sin(x)) == x";
-    compare(name, d_asin(sin), x);
+    name = "arcsin(sin(x)) == x"; compare(name, d_asin(sin), x);
 
-    name = "arccos(cos(x)) == |x|";
-    compare(name, d_acos(cos), abs_x);
+    name = "arccos(cos(x)) == |x|"; compare(name, d_acos(cos), abs_x);
 
-    name = "arcsin(tan(x)) == x";
-    compare(name, d_atan(tan), x);
+    name = "arcsin(tan(x)) == x"; compare(name, d_atan(tan), x);
 
     if (debug != 0) fprintf(stderr, "\n");
-    gd_1 = d_log(d_abs(d_div(d_add(sin, d1), cos)));
+    gd_1 = d_ln(d_abs(d_div(d_add(sin, d1), cos)));
 
-    name = "arsin(tan(x)) == gd^-1 x";
-    compare(name, gd_1, d_asinh(tan));
+    name = "arsin(tan(x)) == gd^-1 x"; compare(name, gd_1, d_asinh(tan));
 
-    name = "artan(sin(x)) == gd^-1 x";
-    compare(name, gd_1, d_atanh(sin));
+    name = "artan(sin(x)) == gd^-1 x"; compare(name, gd_1, d_atanh(sin));
 
-    name = "arcsin(tanh(gd^-1 x)) == x";
-    compare(name, d_asin(d_tanh(gd_1)), x);
+    name = "arcsin(tanh(gd^-1 x)) == x"; compare(name, d_asin(d_tanh(gd_1)), x);
 
-    name = "arctan(sinh(gd^-1 x)) == x";
-    compare(name, d_atan(d_sinh(gd_1)), x);
+    name = "arctan(sinh(gd^-1 x)) == x"; compare(name, d_atan(d_sinh(gd_1)), x);
 
     if (debug != 0) fprintf(stderr, "\n");
     fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);

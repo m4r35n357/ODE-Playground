@@ -9,7 +9,6 @@
 #include <assert.h>
 #include <math.h>
 #include "taylor-ode.h"
-#include "ad.h"
 
 #define NRM "\x1B[0;37m"
 #define WHT "\x1B[1;37m"
@@ -25,6 +24,91 @@ static real delta, tolerance;
 static const real PLUS1 = 1.0L, ZERO = 0.0L, MINUS1 = -1.0L;
 
 typedef struct Parameters { real a, b, c; } parameters;
+
+static series ad_const (series c, real a) {
+    for (int k = 0; k < n; k++) c[k] = t_const(a, k);
+    return c;
+}
+
+static series ad_scale (series s, series u, real a) {
+    for (int k = 0; k < n; k++) s[k] = u[k] * a;
+    return s;
+}
+
+static series ad_add (series p, series u, series v) {
+    for (int k = 0; k < n; k++) p[k] = u[k] + v[k];
+    return p;
+}
+
+static series ad_sub (series m, series u, series v) {
+    for (int k = 0; k < n; k++) m[k] = u[k] - v[k];
+    return m;
+}
+
+static series ad_abs (series a, series u) {
+    for (int k = 0; k < n; k++) a[k] = t_abs(u, k);
+    return a;
+}
+
+static series ad_mul (series p, series u, series v) {
+    for (int k = 0; k < n; k++) p[k] = t_mul(u, v, k);
+    return p;
+}
+
+static series ad_div (series q, series u, series v) {
+    for (int k = 0; k < n; k++) t_div(q, u, v, k);
+    return q;
+}
+
+static series ad_inv (series i, series v) {
+    for (int k = 0; k < n; k++) t_div(i, NULL, v, k);
+    return i;
+}
+
+static series ad_sqr (series s, series u) {
+    for (int k = 0; k < n; k++) s[k] = t_sqr(u, k);
+    return s;
+}
+
+static series ad_sqrt (series r, series u) {
+    for (int k = 0; k < n; k++) t_sqrt(r, u, k);
+    return r;
+}
+
+static series ad_exp (series e, series u) {
+    for (int k = 0; k < n; k++) t_exp(e, u, k);
+    return e;
+}
+
+static void ad_sin_cos (series s, series c, series u, geometry g) {
+    for (int k = 0; k < n; k++) t_sin_cos(s, c, u, k, g);
+}
+
+static void ad_tan_sec2 (series t, series s2, series u, geometry g) {
+    for (int k = 0; k < n; k++) t_tan_sec2(t, s2, u, k, g);
+}
+
+static series ad_pwr (series p, series u, real a) {
+    for (int k = 0; k < n; k++) t_pwr(p, u, a, k);
+    return p;
+}
+
+static series ad_ln (series l, series u) {
+    for (int k = 0; k < n; k++) t_ln(l, u, k);
+    return l;
+}
+
+static void ad_asin (series as, series du_df, series u, geometry g) {
+    for (int k = 0; k < n; k++) t_asin(as, du_df, u, k, g);
+}
+
+static void ad_acos (series ac, series du_df, series u, geometry g) {
+    for (int k = 0; k < n; k++) t_acos(ac, du_df, u, k, g);
+}
+
+static void ad_atan (series at, series du_df, series u, geometry g) {
+    for (int k = 0; k < n; k++) t_atan(at, du_df, u, k, g);
+}
 
 void *get_p (int argc, char **argv, int order) { (void)argc; (void)argv; (void)order;
     parameters *p = malloc(sizeof (parameters));
@@ -73,7 +157,6 @@ int main (int argc, char **argv) {
     assert(argc == 4 || argc == 5);
     n = (int)strtol(argv[1], NULL, BASE);
     assert(n > 1);
-    ad_init(n);
     series x = t_jet(n + 1);
     x[0] = strtold(argv[2], NULL);
     for (int k = 1; k <= n; k++) {
@@ -82,21 +165,16 @@ int main (int argc, char **argv) {
     tolerance = strtold(argv[3], NULL);
     if (argc == 5) debug = (int)strtol(argv[4], NULL, BASE);
 
-    _Bool x_positive = x[0] > 0.0L;
-    _Bool x_non_zero = x[0] != 0.0L;
-    _Bool x_lt_pi_2 = x[0] < PI_2;
+    _Bool positive = x[0] > 0.0L, non_zero = x[0] != 0.0L, lt_pi_2 = fabsl(x[0]) < PI_2;
 
     series r1 = t_jet(n), r2 = t_jet(n), r3 = t_jet(n);
     series abs_x = t_jet(n), inv_x = t_jet(n), sqr_x = t_jet(n), sqrt_x = t_jet(n);
     series sqr_sin_x = t_jet(n), sqr_cos_x = t_jet(n), sqr_tan_x = t_jet(n);
     series sqr_sinh_x = t_jet(n), sqr_cosh_x = t_jet(n), sqr_tanh_x = t_jet(n);
     series exp_x = t_jet(n), neg_exp_x = t_jet(n), ln_x = t_jet(n);
-    series sin = t_jet(n), sin_2x = t_jet(n);
-    series cos = t_jet(n), cos_2x = t_jet(n);
-    series tan = t_jet(n), sec2 = t_jet(n);
-    series sinh = t_jet(n), sinh_2x = t_jet(n);
-    series cosh = t_jet(n), cosh_2x = t_jet(n);
-    series tanh = t_jet(n), sech2 = t_jet(n);
+    series sin = t_jet(n), sin_2x = t_jet(n), sinh = t_jet(n), sinh_2x = t_jet(n);
+    series cos = t_jet(n), cos_2x = t_jet(n), cosh = t_jet(n), cosh_2x = t_jet(n);
+    series tan = t_jet(n), sec2 = t_jet(n), tanh = t_jet(n), sech2 = t_jet(n);
     series gd_1 = t_jet(n);
 
     series S1 = ad_const(t_jet(n), 1.0L);
@@ -110,105 +188,83 @@ int main (int argc, char **argv) {
     s[0] = 1.0L; s[1] = -4.0L; s[2] = 0.0L; s[3] = 0.0L; s[4] = 2.0L; s[5] = 3.0L; s[6] = 0.0L; s[7] = -2.0L;
     fprintf(stdout, "201 %8.3Lf\n", t_horner(s, 7, -2.0L));
 
-    int dp = 12, steps = 10;
-    real step_size = 0.1L;
-    controls c = {.order=n, .step=0, .steps=steps, .step_size=step_size};
+    int dp = 12;
+    controls c = {.order=n, .step=0, .steps=10, .step_size=0.1L};
     void *p = get_p(argc, argv, n);
-    series3 *jets = malloc(sizeof (series3));
+    series3 *j = malloc(sizeof (series3));
 
     fprintf(stdout, "%sTaylor Series Method (stdout): x'=1  y'=0  z'=-1%s\n", WHT, NRM);
-    jets->x = t_jet(n + 1); jets->x[0] = 1.0L;
-    jets->y = t_jet(n + 1); jets->y[0] = 1.0L;
-    jets->z = t_jet(n + 1); jets->z[0] = 1.0L;
-    tsm_stdout(dp, &c, jets, p, clock());
+    j->x = t_jet(n + 1); j->x[0] = 1.0L;
+    j->y = t_jet(n + 1); j->y[0] = 1.0L;
+    j->z = t_jet(n + 1); j->z[0] = 1.0L;
+    tsm_stdout(dp, &c, j, p, clock());
 
     fprintf(stdout, "%sTaylor Series Method (generator): x'=1  y'=0  z'=-1%s\n", WHT, NRM);
-    jets->x[0] = 1.0L;
-    jets->y[0] = 1.0L;
-    jets->z[0] = 1.0L;
-    fprintf(stdout, "%+.*Le %+.*Le %+.*Le %.6Le\n", dp, jets->x[0], dp, jets->y[0], dp, jets->z[0], 0.0L);
-    while (tsm_gen(&c, jets, p)) {
-        fprintf(stdout, "%+.*Le %+.*Le %+.*Le %.6Le\n",
-                dp, jets->x[0], dp, jets->y[0], dp, jets->z[0], (c.step + 1) * c.step_size);
+    j->x[0] = 1.0L;
+    j->y[0] = 1.0L;
+    j->z[0] = 1.0L;
+    fprintf(stdout, "%+.*Le %+.*Le %+.*Le %.6Le\n", dp, j->x[0], dp, j->y[0], dp, j->z[0], 0.0L);
+    while (tsm_gen(&c, j, p)) {
+        fprintf(stdout, "%+.*Le %+.*Le %+.*Le %.6Le\n", dp, j->x[0], dp, j->y[0], dp, j->z[0], (c.step + 1) * c.step_size);
     }
 
     fprintf(stdout, "%ssTaylor Series Method Check: e^1  e^0  e^-1%s\n", WHT, NRM);
-    t_out(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), step_size * steps, "_", "_", "_", 0.0F);
+    t_out(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), c.step_size * c.steps, "_", "_", "_", 0.0F);
 
     fprintf(stderr, "%sRecurrence Relations: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x[0], NRM);
 
     ad_sqr(sqr_x, x);
-    if (x_non_zero) ad_inv(inv_x, x);
-    if (x_positive) ad_sqrt(sqrt_x, x);
+    if (non_zero) ad_inv(inv_x, x);
+    if (positive) ad_sqrt(sqrt_x, x);
 
-    char* name = "x * x == sqr(x)";
-    compare(name, ad_mul(r1, x, x), sqr_x);
+    char* name = "x * x == sqr(x)"; compare(name, ad_mul(r1, x, x), sqr_x);
 
-    name = "sqr(x) / x == x";
-    x_non_zero ? compare(name, ad_div(r1, sqr_x, x), x) : skip(name);
+    name = "sqr(x) / x == x"; non_zero ? compare(name, ad_div(r1, sqr_x, x), x) : skip(name);
 
-    name = "x * 1 / x == 1";
-    x_non_zero ? compare(name, ad_mul(r1, x, inv_x), S1) : skip(name);
+    name = "x * 1 / x == 1"; non_zero ? compare(name, ad_mul(r1, x, inv_x), S1) : skip(name);
 
-    name = "sqrt(x) * sqrt(x) == x";
-    x_positive ? compare(name, ad_mul(r1, sqrt_x, sqrt_x), x) : skip(name);
+    name = "sqrt(x) * sqrt(x) == x"; positive ? compare(name, ad_mul(r1, sqrt_x, sqrt_x), x) : skip(name);
 
-    name = "x / sqrt(x) == sqrt(x)";
-    x_positive ? compare(name, ad_div(r1, x, sqrt_x), sqrt_x) : skip(name);
+    name = "x / sqrt(x) == sqrt(x)"; positive ? compare(name, ad_div(r1, x, sqrt_x), sqrt_x) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
 
-    name = "x^2.0 == sqr(x)";
-    x_positive ? compare(name, ad_pwr(r1, x, 2.0L), sqr_x) : skip(name);
+    name = "x^2.0 == sqr(x)"; positive ? compare(name, ad_pwr(r1, x, 2.0L), sqr_x) : skip(name);
 
-    name = "x^1.0 == x";
-    x_positive ? compare(name, ad_pwr(r1, x, 1.0L), x) : skip(name);
+    name = "x^1.0 == x"; positive ? compare(name, ad_pwr(r1, x, 1.0L), x) : skip(name);
 
-    name = "x^0.5 == sqrt(x)";
-    x_positive ? compare(name, ad_pwr(r1, x, 0.5L), sqrt_x): skip(name);
+    name = "x^0.5 == sqrt(x)"; positive ? compare(name, ad_pwr(r1, x, 0.5L), sqrt_x): skip(name);
 
-    name = "x^0.0 == 1";
-    x_positive ? compare(name, ad_pwr(r1, x, 0.0L), S1) : skip(name);
+    name = "x^0.0 == 1"; positive ? compare(name, ad_pwr(r1, x, 0.0L), S1) : skip(name);
 
-    name = "x^-0.5 == 1 / sqrt(x)";
-    x_positive ? compare(name, ad_pwr(r1, x, -0.5L), ad_inv(r2, sqrt_x)) : skip(name);
+    name = "x^-0.5 == 1 / sqrt(x)"; positive ? compare(name, ad_pwr(r1, x, -0.5L), ad_inv(r2, sqrt_x)) : skip(name);
 
-    name = "x^-1.0 == 1 / x";
-    x_positive ? compare(name, ad_pwr(r1, x, -1.0L), inv_x) : skip(name);
+    name = "x^-1.0 == 1 / x"; positive ? compare(name, ad_pwr(r1, x, -1.0L), inv_x) : skip(name);
 
-    name = "x^-2.0 == 1 / sqr(x)";
-    x_positive ? compare(name, ad_pwr(r1, x, -2.0L), ad_inv(r2, sqr_x)) : skip(name);
+    name = "x^-2.0 == 1 / sqr(x)"; positive ? compare(name, ad_pwr(r1, x, -2.0L), ad_inv(r2, sqr_x)) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
     ad_abs(abs_x, x);
 
-    name = "sqr(x) * x^-3 == 1 / x";
-    x_positive ? compare(name, ad_mul(r1, sqr_x, ad_pwr(r2, x, -3.0L)), inv_x) : skip(name);
+    name = "sqr(x) * x^-3 == 1 / x"; positive ? compare(name, ad_mul(r1, sqr_x, ad_pwr(r2, x, -3.0L)), inv_x) : skip(name);
 
-    name = "sqr(x)^0.5 == |x|";
-    x_non_zero ? compare(name, ad_pwr(r1, sqr_x, 0.5L), abs_x) : skip(name);
+    name = "sqr(x)^0.5 == |x|"; non_zero ? compare(name, ad_pwr(r1, sqr_x, 0.5L), abs_x) : skip(name);
 
-    name = "sqrt(sqr(x) == |x|";
-    x_non_zero ? compare(name, ad_sqrt(r1, sqr_x), abs_x) : skip(name);
+    name = "sqrt(sqr(x) == |x|"; non_zero ? compare(name, ad_sqrt(r1, sqr_x), abs_x) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
     ad_exp(exp_x, x);
-    if (x_positive) ad_ln(ln_x, x);
+    if (positive) ad_ln(ln_x, x);
 
-    name = "log(e^x) == x";
-    compare(name, ad_ln(r1, exp_x), x);
+    name = "ln(e^x) == x"; compare(name, ad_ln(r1, exp_x), x);
 
-    name = "log(sqr(x)) == log(x) * 2";
-    x_positive ? compare(name, ad_ln(r1, sqr_x), ad_scale(r2, ln_x, 2.0L)) : skip(name);
+    name = "ln(sqr(x)) == ln(x) * 2"; positive ? compare(name, ad_ln(r1, sqr_x), ad_scale(r2, ln_x, 2.0L)) : skip(name);
 
-    name = "log(sqrt(x)) == log(x) / 2";
-    x_positive ? compare(name, ad_ln(r1, sqrt_x), ad_scale(r2, ln_x, 0.5L)) : skip(name);
+    name = "ln(sqrt(x)) == ln(x) / 2"; positive ? compare(name, ad_ln(r1, sqrt_x), ad_scale(r2, ln_x, 0.5L)) : skip(name);
 
-    name = "log(1 / x) == - log(x)";
-    x_positive ? compare(name, ad_ln(r1, inv_x), ad_scale(r2, ln_x, -1.0L)) : skip(name);
+    name = "ln(1 / x) == -ln(x)"; positive ? compare(name, ad_ln(r1, inv_x), ad_scale(r2, ln_x, -1.0L)) : skip(name);
 
-    name = "log(x^-3) == - 3 * log(x)";
-    x_positive ? compare(name, ad_ln(r1, ad_pwr(r2, x, -3.0L)), ad_scale(r3, ln_x, -3.0L)) : skip(name);
+    name = "ln(x^-3) == -3ln(x)"; positive ? compare(name, ad_ln(r1, ad_pwr(r2, x, -3.0L)), ad_scale(r3, ln_x, -3.0L)) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
     ad_sin_cos(sinh, cosh, x, HYP);
@@ -217,46 +273,32 @@ int main (int argc, char **argv) {
     ad_mul(sqr_cosh_x, cosh, cosh);
     ad_sin_cos(sinh_2x, cosh_2x, ad_scale(r1, x, 2.0L), HYP);
 
-    name = "cosh^2(x) - sinh^2(x) == 1";
-    compare(name, ad_sub(r1, sqr_cosh_x, sqr_sinh_x), S1);
+    name = "cosh^2(x) - sinh^2(x) == 1"; compare(name, ad_sub(r1, sqr_cosh_x, sqr_sinh_x), S1);
 
-    name = "sech^2(x) + tanh^2(x) == 1";
-    compare(name, ad_add(r1, sech2, ad_sqr(sqr_tanh_x, tanh)), S1);
+    name = "sech^2(x) + tanh^2(x) == 1"; compare(name, ad_add(r1, sech2, ad_sqr(sqr_tanh_x, tanh)), S1);
 
-    name = "tanh(x) == sinh(x) / cosh(x)";
-    compare(name, tanh, ad_div(r1, sinh, cosh));
+    name = "tanh(x) == sinh(x) / cosh(x)"; compare(name, tanh, ad_div(r1, sinh, cosh));
 
-    name = "sech^2(x) == 1 / cosh^2(x)";
-    compare(name, sech2, ad_inv(r1, sqr_cosh_x));
+    name = "sech^2(x) == 1 / cosh^2(x)"; compare(name, sech2, ad_inv(r1, sqr_cosh_x));
 
-    name = "sinh(2x) == 2 * sinh(x) * cosh(x)";
-    compare(name, sinh_2x, ad_scale(r1, ad_mul(r2, sinh, cosh), 2.0L));
+    name = "sinh(2x) == 2 * sinh(x) * cosh(x)"; compare(name, sinh_2x, ad_scale(r1, ad_mul(r2, sinh, cosh), 2.0L));
 
-    name = "cosh(2x) == cosh^2(x) + sinh^2(x)";
-    compare(name, cosh_2x, ad_add(r1, sqr_cosh_x, sqr_sinh_x));
+    name = "cosh(2x) == cosh^2(x) + sinh^2(x)"; compare(name, cosh_2x, ad_add(r1, sqr_cosh_x, sqr_sinh_x));
 
     if (debug != 0) fprintf(stderr, "\n");
     ad_exp(neg_exp_x, ad_scale(r1, x, -1.0L));
 
-    name = "cosh(x) == (e^x + e^-x) / 2";
-    compare(name, cosh, ad_scale(r1, ad_add(r2, exp_x, neg_exp_x), 0.5L));
+    name = "cosh(x) == (e^x + e^-x) / 2"; compare(name, cosh, ad_scale(r1, ad_add(r2, exp_x, neg_exp_x), 0.5L));
 
-    name = "sinh(x) == (e^x - e^-x) / 2";
-    compare(name, sinh, ad_scale(r1, ad_sub(r2, exp_x, neg_exp_x), 0.5L));
+    name = "sinh(x) == (e^x - e^-x) / 2"; compare(name, sinh, ad_scale(r1, ad_sub(r2, exp_x, neg_exp_x), 0.5L));
 
     if (debug != 0) fprintf(stderr, "\n");
 
-    name = "arcsinh(sinh(x)) == x";
-    ad_asin(r1, r2, sinh, HYP);
-    compare(name, r1, x);
+    name = "arcsinh(sinh(x)) == x"; ad_asin(r1, r2, sinh, HYP); compare(name, r1, x);
 
-    name = "arccosh(cosh(x)) == |x|";
-    ad_acos(r1, r2, cosh, HYP);
-    x_non_zero ? compare(name, r1, abs_x) : skip(name);
+    name = "arccosh(cosh(x)) == |x|"; ad_acos(r1, r2, cosh, HYP); non_zero ? compare(name, r1, abs_x) : skip(name);
 
-    name = "arctanh(tanh(x)) == x";
-    ad_atan(r1, r2, tanh, HYP);
-    compare(name, r1, x);
+    name = "arctanh(tanh(x)) == x"; ad_atan(r1, r2, tanh, HYP); compare(name, r1, x);
 
     if (debug != 0) fprintf(stderr, "\n");
     ad_sin_cos(sin, cos, x, TRIG);
@@ -265,58 +307,36 @@ int main (int argc, char **argv) {
     ad_sqr(sqr_cos_x, cos);
     ad_sin_cos(sin_2x, cos_2x, ad_scale(r1, x, 2.0L), TRIG);
 
-    name = "cos^2(x) + sin^2(x) == 1";
-    compare(name, ad_add(r1, sqr_cos_x, sqr_sin_x), S1);
+    name = "cos^2(x) + sin^2(x) == 1"; compare(name, ad_add(r1, sqr_cos_x, sqr_sin_x), S1);
 
-    name = "sec^2(x) - tan^2(x) == 1";
-    x_lt_pi_2 ? compare(name, ad_sub(r1, sec2, ad_sqr(sqr_tan_x, tan)), S1) : skip(name);
+    name = "sec^2(x) - tan^2(x) == 1"; lt_pi_2 ? compare(name, ad_sub(r1, sec2, ad_sqr(sqr_tan_x, tan)), S1) : skip(name);
 
-    name = "tan(x) == sin(x) / cos(x)";
-    x_lt_pi_2 ? compare(name, tan, ad_div(r1, sin, cos)) : skip(name);
+    name = "tan(x) == sin(x) / cos(x)"; lt_pi_2 ? compare(name, tan, ad_div(r1, sin, cos)) : skip(name);
 
-    name = "sec^2(x) == 1 / cos^2(x)";
-    x_lt_pi_2 ? compare(name, sec2, ad_inv(r1, sqr_cos_x)) : skip(name);
+    name = "sec^2(x) == 1 / cos^2(x)"; lt_pi_2 ? compare(name, sec2, ad_inv(r1, sqr_cos_x)) : skip(name);
 
-    name = "sin(2x) == 2 * sin(x) * cos(x)";
-    compare(name, sin_2x, ad_scale(r1, ad_mul(r2, sin, cos), 2.0L));
+    name = "sin(2x) == 2 * sin(x) * cos(x)"; compare(name, sin_2x, ad_scale(r1, ad_mul(r2, sin, cos), 2.0L));
 
-    name = "cos(2x) == cos^2(x) - sin^2(x)";
-    compare(name, cos_2x, ad_sub(r1, sqr_cos_x, sqr_sin_x));
+    name = "cos(2x) == cos^2(x) - sin^2(x)"; compare(name, cos_2x, ad_sub(r1, sqr_cos_x, sqr_sin_x));
 
     if (debug != 0) fprintf(stderr, "\n");
 
-    name = "arcsin(sin(x)) == x";
-    ad_asin(r1, r2, sin, TRIG);
-    compare(name, r1, x);
+    name = "arcsin(sin(x)) == x"; ad_asin(r1, r2, sin, TRIG); compare(name, r1, x);
 
-    name = "arccos(cos(x)) == |x|";
-    ad_acos(r1, r2, cos, TRIG);
-    x_non_zero ? compare(name, r1, abs_x) : skip(name);
+    name = "arccos(cos(x)) == |x|"; ad_acos(r1, r2, cos, TRIG); non_zero ? compare(name, r1, abs_x) : skip(name);
 
-    name = "arctan(tan(x)) == x";
-    ad_atan(r1, r2, tan, TRIG);
-    compare(name, r1, x);
+    name = "arctan(tan(x)) == x"; ad_atan(r1, r2, tan, TRIG); compare(name, r1, x);
 
     if (debug != 0) fprintf(stderr, "\n");
     ad_ln(gd_1, ad_abs(r3, ad_div(r2, ad_add(r1, sin, S1), cos)));
 
-    name = "arsin(tan(x)) == gd^-1 x";
-    ad_asin(r1, r2, tan, HYP);
-    compare(name, gd_1, r1);
+    name = "arsin(tan(x)) == gd^-1 x"; ad_asin(r1, r2, tan, HYP); compare(name, gd_1, r1);
 
-    name = "artan(sin(x)) == gd^-1 x";
-    ad_atan(r1, r2, sin, HYP);
-    compare(name, gd_1, r1);
+    name = "artan(sin(x)) == gd^-1 x"; ad_atan(r1, r2, sin, HYP); compare(name, gd_1, r1);
 
-    name = "arcsin(tanh(gd^-1 x)) == x";
-    ad_tan_sec2(r3, r2, gd_1, HYP);
-    ad_asin(r1, r2, r3, TRIG);
-    compare(name, r1, x);
+    name = "arcsin(tanh(gd^-1 x)) == x"; ad_tan_sec2(r3, r2, gd_1, HYP); ad_asin(r1, r2, r3, TRIG); compare(name, r1, x);
 
-    name = "arctan(sinh(gd^-1 x)) == x";
-    ad_sin_cos(r3, r2, gd_1, HYP);
-    ad_atan(r1, r2, r3, TRIG);
-    compare(name, r1, x);
+    name = "arctan(sinh(gd^-1 x)) == x"; ad_sin_cos(r3, r2, gd_1, HYP); ad_atan(r1, r2, r3, TRIG); compare(name, r1, x);
 
     if (debug != 0) fprintf(stderr, "\n");
     fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);

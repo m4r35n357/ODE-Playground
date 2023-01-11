@@ -57,7 +57,7 @@ dual d_exp (dual a) {
     return (dual){exp_val, a.dot * exp_val};
 }
 
-dual d_log (dual a) {
+dual d_ln (dual a) {
     assert(a.val > 0.0L);
     return (dual){logl(a.val), a.dot / a.val};
 }
