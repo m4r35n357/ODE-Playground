@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
+#include <stdbool.h>
 #include "dual.h"
 
 #define NRM "\x1B[0;37m"
@@ -57,7 +58,7 @@ int main (int argc, char **argv) {
     tolerance = strtold(argv[2], NULL);
     if (argc == 4) debug = (int)strtol(argv[3], NULL, BASE);
 
-    _Bool positive = x.val > 0.0L, non_zero = x.val != 0.0L, lt_pi_2 = fabsl(x.val) < PI_2;
+    bool positive = x.val > 0.0L, non_zero = x.val != 0.0L, lt_pi_2 = fabsl(x.val) < PI_2;
 
     dual abs_x = d_dual(0.0L), inv_x = d_dual(0.0L), sqr_x = d_dual(0.0L), sqrt_x = d_dual(0.0L);
     dual sqr_sin_x = d_dual(0.0L), sqr_cos_x = d_dual(0.0L);

@@ -5,6 +5,7 @@
 #pragma once
 
 #include <time.h>
+#include <stdbool.h>
 #include "real.h"
 
 /*
@@ -39,7 +40,7 @@ extern char hud[];
 
 extern clock_t since;
 
-extern _Bool finished, paused, stepping, running, osd_active, solid;
+extern bool finished, paused, stepping, running, osd_active, solid;
 
 extern int length, oldest, newest, colour_index, mesh;
 

@@ -48,8 +48,8 @@ void Animate () {
             for (int j = 0; j < nb->n; j++) {
                 t[j].points[newest] = get_current_point(&nb->bodies[j]);
             }
-        } else finished = 1;
-        if (stepping) paused = 1;
+        } else finished = true;
+        if (stepping) paused = true;
     }
 
     ReDraw();

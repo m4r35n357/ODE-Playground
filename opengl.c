@@ -19,7 +19,7 @@ char hud[128];
 
 clock_t since;
 
-_Bool finished = 0, paused = 0, stepping = 0, running = 1, osd_active = 1, solid = 1;
+bool finished = false, paused = false, stepping = false, running = true, osd_active = true, solid = true;
 
 int length, oldest = 0, newest = 0, colour_index = DARK_GREEN, mesh = 10;
 
@@ -46,8 +46,8 @@ void KeyPressFunc (unsigned char Key, int x, int y) { (void)x; (void)y;
         case 'C': case 'c': colour_index--; break;
         case 'G': case 'g': ball_size *= 1.1F; break;
         case 'B': case 'b': ball_size /= 1.1F; break;
-        case 'S': case 's': running = !running; paused = 0; break;
-        case 'P': case 'p': stepping = !stepping; paused = 0; break;
+        case 'S': case 's': running = !running; paused = false; break;
+        case 'P': case 'p': stepping = !stepping; paused = false; break;
         case 'F': case 'f': glutFullScreenToggle(); break;
         case 'V': case 'v': mode = (mode + 1) % 3; break;
         case 'H': case 'h': osd_active = !osd_active; break;
@@ -155,9 +155,9 @@ void osd_summary () {
 }
 
 void buffer_point () {
-    static _Bool full = 0;
+    static bool full = false;
     newest++;
-    if (!full && newest == length) full = 1;
+    if (!full && newest == length) full = true;
     if (full) {
         oldest = (newest + 1) % length;
         newest %= length;

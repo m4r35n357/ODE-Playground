@@ -28,8 +28,8 @@ components ode (series x, series y, series z, void *params, int k) {
     p->ay[k] = p->a * y[k];
     p->az[k] = p->a * z[k];
     return (components) {
-        .x = t_sin_cos(p->say, p->cay, p->ay, k, TRIG).a - p->b * t_tan_sec2(p->tx, p->s2x, x, k, TRIG).a,
-        .y = t_sin_cos(p->saz, p->caz, p->az, k, TRIG).a - p->b * t_tan_sec2(p->ty, p->s2y, y, k, TRIG).a,
-        .z = t_sin_cos(p->sax, p->cax, p->ax, k, TRIG).a - p->b * t_tan_sec2(p->tz, p->s2z, z, k, TRIG).a
+        .x = t_sin_cos(p->say, p->cay, p->ay, k, true).a - p->b * t_tan_sec2(p->tx, p->s2x, x, k, true).a,
+        .y = t_sin_cos(p->saz, p->caz, p->az, k, true).a - p->b * t_tan_sec2(p->ty, p->s2y, y, k, true).a,
+        .z = t_sin_cos(p->sax, p->cax, p->ax, k, true).a - p->b * t_tan_sec2(p->tz, p->s2z, z, k, true).a
     };
 }

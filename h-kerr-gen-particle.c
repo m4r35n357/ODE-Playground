@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
+#include <stdbool.h>
 #include "h-kerr.h"
 
 typedef struct Vector3 { real a, b, c; } vector3;
@@ -50,7 +51,7 @@ static vector3 v_sub (vector3 u, vector3 v) {
     };
 }
 
-static _Bool converged (vector3 v, real epsilon) {
+static bool converged (vector3 v, real epsilon) {
     return fabsl(v.a) < epsilon && fabsl(v.b) < epsilon && fabsl(v.c) < epsilon;
 }
 
@@ -94,7 +95,7 @@ int main (int argc, char **argv) { (void)argc;
     vector3 f = {.a = 1.0L, .b = 1.0L, .c = 1.0L};
     fprintf(stderr, "\n");
     long count = 0L;
-    _Bool circular = k->rmin * k->rmax < 0.0L;
+    bool circular = k->rmin * k->rmax < 0.0L;
     while (!converged(f, k->epsilon)) {
         J = (matrix3x3){
             .a = R(k->rmin,  d_var(k->E), d_dual(k->L), d_dual(k->Q), k->a).dot,
@@ -126,7 +127,7 @@ int main (int argc, char **argv) { (void)argc;
         k->Q = x.c;
         count++;
     }
-    _Bool valid = 1;
+    bool valid = true;
     if (!circular) {
         valid = ! (dR_dr(k->rmin, d_dual(k->E), d_dual(k->L), d_dual(k->Q), k->a).val < 0.0L &&
                    dR_dr(k->rmax, d_dual(k->E), d_dual(k->L), d_dual(k->Q), k->a).val > 0.0L);

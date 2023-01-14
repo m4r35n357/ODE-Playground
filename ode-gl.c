@@ -39,8 +39,8 @@ void Animate () {
         if (tsm_gen(c, jets, m)) {
             buffer_point();
             t->points[newest] = get_current_point(jets);
-        } else finished = 1;
-        if (stepping) paused = 1;
+        } else finished = true;
+        if (stepping) paused = true;
     }
 
     ReDraw();

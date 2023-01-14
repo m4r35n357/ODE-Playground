@@ -97,15 +97,15 @@ void solve (char **argv, controls *c, void *p, plotter output) {
     output(display_precision, p, c->steps * c->step_size);
 }
 
-_Bool generate (controls *c, void *p) {
-    static _Bool looping = 0;
+bool generate (controls *c, void *p) {
+    static bool looping = false;
     static integrator composer;
-    if (looping) goto resume; else looping = 1;
+    if (looping) goto resume; else looping = true;
     composer = get_integrator(c);
     for (c->step = 0; c->step < c->steps; c->step++) {
         composer(c, p, c->step_size);
-        return 1;
+        return true;
         resume: ;
     }
-    return looping = 0;
+    return looping = false;
 }

@@ -53,8 +53,8 @@ void Animate () {
         if (generate(c, k)) {
             buffer_point();
             t->points[newest] = get_current_point(k);
-        } else finished = 1;
-        if (stepping) paused = 1;
+        } else finished = true;
+        if (stepping) paused = true;
     }
 
     ReDraw();

@@ -80,12 +80,12 @@ static series ad_exp (series e, series u) {
     return e;
 }
 
-static void ad_sin_cos (series s, series c, series u, geometry g) {
-    for (int k = 0; k < n; k++) t_sin_cos(s, c, u, k, g);
+static void ad_sin_cos (series s, series c, series u, bool trig) {
+    for (int k = 0; k < n; k++) t_sin_cos(s, c, u, k, trig);
 }
 
-static void ad_tan_sec2 (series t, series s2, series u, geometry g) {
-    for (int k = 0; k < n; k++) t_tan_sec2(t, s2, u, k, g);
+static void ad_tan_sec2 (series t, series s2, series u, bool trig) {
+    for (int k = 0; k < n; k++) t_tan_sec2(t, s2, u, k, trig);
 }
 
 static series ad_pwr (series p, series u, real a) {
@@ -98,16 +98,16 @@ static series ad_ln (series l, series u) {
     return l;
 }
 
-static void ad_asin (series as, series du_df, series u, geometry g) {
-    for (int k = 0; k < n; k++) t_asin(as, du_df, u, k, g);
+static void ad_asin (series as, series du_df, series u, bool trig) {
+    for (int k = 0; k < n; k++) t_asin(as, du_df, u, k, trig);
 }
 
-static void ad_acos (series ac, series du_df, series u, geometry g) {
-    for (int k = 0; k < n; k++) t_acos(ac, du_df, u, k, g);
+static void ad_acos (series ac, series du_df, series u, bool trig) {
+    for (int k = 0; k < n; k++) t_acos(ac, du_df, u, k, trig);
 }
 
-static void ad_atan (series at, series du_df, series u, geometry g) {
-    for (int k = 0; k < n; k++) t_atan(at, du_df, u, k, g);
+static void ad_atan (series at, series du_df, series u, bool trig) {
+    for (int k = 0; k < n; k++) t_atan(at, du_df, u, k, trig);
 }
 
 void *get_p (int argc, char **argv, int order) { (void)argc; (void)argv; (void)order;
@@ -165,7 +165,7 @@ int main (int argc, char **argv) {
     tolerance = strtold(argv[3], NULL);
     if (argc == 5) debug = (int)strtol(argv[4], NULL, BASE);
 
-    _Bool positive = x[0] > 0.0L, non_zero = x[0] != 0.0L, lt_pi_2 = fabsl(x[0]) < PI_2;
+    bool positive = x[0] > 0.0L, non_zero = x[0] != 0.0L, lt_pi_2 = fabsl(x[0]) < PI_2;
 
     series r1 = t_jet(n), r2 = t_jet(n), r3 = t_jet(n);
     series abs_x = t_jet(n), inv_x = t_jet(n), sqr_x = t_jet(n), sqrt_x = t_jet(n);
@@ -267,11 +267,11 @@ int main (int argc, char **argv) {
     name = "ln(x^-3) == -3ln(x)"; positive ? compare(name, ad_ln(r1, ad_pwr(r2, x, -3.0L)), ad_scale(r3, ln_x, -3.0L)) : skip(name);
 
     if (debug != 0) fprintf(stderr, "\n");
-    ad_sin_cos(sinh, cosh, x, HYP);
-    ad_tan_sec2(tanh, sech2, x, HYP);
+    ad_sin_cos(sinh, cosh, x, false);
+    ad_tan_sec2(tanh, sech2, x, false);
     ad_sqr(sqr_sinh_x, sinh);
     ad_mul(sqr_cosh_x, cosh, cosh);
-    ad_sin_cos(sinh_2x, cosh_2x, ad_scale(r1, x, 2.0L), HYP);
+    ad_sin_cos(sinh_2x, cosh_2x, ad_scale(r1, x, 2.0L), false);
 
     name = "cosh^2(x) - sinh^2(x) == 1"; compare(name, ad_sub(r1, sqr_cosh_x, sqr_sinh_x), S1);
 
@@ -294,18 +294,18 @@ int main (int argc, char **argv) {
 
     if (debug != 0) fprintf(stderr, "\n");
 
-    name = "arcsinh(sinh(x)) == x"; ad_asin(r1, r2, sinh, HYP); compare(name, r1, x);
+    name = "arcsinh(sinh(x)) == x"; ad_asin(r1, r2, sinh, false); compare(name, r1, x);
 
-    name = "arccosh(cosh(x)) == |x|"; ad_acos(r1, r2, cosh, HYP); non_zero ? compare(name, r1, abs_x) : skip(name);
+    name = "arccosh(cosh(x)) == |x|"; ad_acos(r1, r2, cosh, false); non_zero ? compare(name, r1, abs_x) : skip(name);
 
-    name = "arctanh(tanh(x)) == x"; ad_atan(r1, r2, tanh, HYP); compare(name, r1, x);
+    name = "arctanh(tanh(x)) == x"; ad_atan(r1, r2, tanh, false); compare(name, r1, x);
 
     if (debug != 0) fprintf(stderr, "\n");
-    ad_sin_cos(sin, cos, x, TRIG);
-    ad_tan_sec2(tan, sec2, x, TRIG);
+    ad_sin_cos(sin, cos, x, true);
+    ad_tan_sec2(tan, sec2, x, true);
     ad_mul(sqr_sin_x, sin, sin);
     ad_sqr(sqr_cos_x, cos);
-    ad_sin_cos(sin_2x, cos_2x, ad_scale(r1, x, 2.0L), TRIG);
+    ad_sin_cos(sin_2x, cos_2x, ad_scale(r1, x, 2.0L), true);
 
     name = "cos^2(x) + sin^2(x) == 1"; compare(name, ad_add(r1, sqr_cos_x, sqr_sin_x), S1);
 
@@ -321,22 +321,22 @@ int main (int argc, char **argv) {
 
     if (debug != 0) fprintf(stderr, "\n");
 
-    name = "arcsin(sin(x)) == x"; ad_asin(r1, r2, sin, TRIG); compare(name, r1, x);
+    name = "arcsin(sin(x)) == x"; ad_asin(r1, r2, sin, true); compare(name, r1, x);
 
-    name = "arccos(cos(x)) == |x|"; ad_acos(r1, r2, cos, TRIG); non_zero ? compare(name, r1, abs_x) : skip(name);
+    name = "arccos(cos(x)) == |x|"; ad_acos(r1, r2, cos, true); non_zero ? compare(name, r1, abs_x) : skip(name);
 
-    name = "arctan(tan(x)) == x"; ad_atan(r1, r2, tan, TRIG); compare(name, r1, x);
+    name = "arctan(tan(x)) == x"; ad_atan(r1, r2, tan, true); compare(name, r1, x);
 
     if (debug != 0) fprintf(stderr, "\n");
     ad_ln(gd_1, ad_abs(r3, ad_div(r2, ad_add(r1, sin, S1), cos)));
 
-    name = "arsin(tan(x)) == gd^-1 x"; ad_asin(r1, r2, tan, HYP); compare(name, gd_1, r1);
+    name = "arsin(tan(x)) == gd^-1 x"; ad_asin(r1, r2, tan, false); compare(name, gd_1, r1);
 
-    name = "artan(sin(x)) == gd^-1 x"; ad_atan(r1, r2, sin, HYP); compare(name, gd_1, r1);
+    name = "artan(sin(x)) == gd^-1 x"; ad_atan(r1, r2, sin, false); compare(name, gd_1, r1);
 
-    name = "arcsin(tanh(gd^-1 x)) == x"; ad_tan_sec2(r3, r2, gd_1, HYP); ad_asin(r1, r2, r3, TRIG); compare(name, r1, x);
+    name = "arcsin(tanh(gd^-1 x)) == x"; ad_tan_sec2(r3, r2, gd_1, false); ad_asin(r1, r2, r3, true); compare(name, r1, x);
 
-    name = "arctan(sinh(gd^-1 x)) == x"; ad_sin_cos(r3, r2, gd_1, HYP); ad_atan(r1, r2, r3, TRIG); compare(name, r1, x);
+    name = "arctan(sinh(gd^-1 x)) == x"; ad_sin_cos(r3, r2, gd_1, false); ad_atan(r1, r2, r3, true); compare(name, r1, x);
 
     if (debug != 0) fprintf(stderr, "\n");
     fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);

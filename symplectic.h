@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <stdbool.h>
 #include "real.h"
 
 /*
@@ -49,4 +50,4 @@ void solve (char **argv, controls *cont, void *p, plotter output);
 /*
  * Call the symplectic generator
  */
-_Bool generate (controls *cont, void *p);
+bool generate (controls *cont, void *p);

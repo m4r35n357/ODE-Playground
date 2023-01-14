@@ -8,6 +8,7 @@
 #pragma once
 
 #include <time.h>
+#include <stdbool.h>
 #include "real.h"
 
 /*
@@ -60,7 +61,7 @@ void tsm_stdout (int dp, controls *cont, series3 *jets, void *P, clock_t since);
 /*
  * Generator implementation of TSM
  */
-_Bool tsm_gen (controls *cont, series3 *jets, void *P);
+bool tsm_gen (controls *cont, series3 *jets, void *P);
 
 /*
  * Obligatory client method signatures
@@ -121,19 +122,14 @@ real t_sqrt (series R, series U, int k);
 real t_exp (series E, series U, int k);
 
 /*
- * Selects either a trigonometric or hyperbolic version of the function
- */
-typedef enum Geometry {TRIG, HYP} geometry;
-
-/*
  * Returns kth elements of both sine and cosine of U, results stored in user-supplied jets S and C
  */
-pair t_sin_cos (series S, series C, series U, int k, geometry g);
+pair t_sin_cos (series S, series C, series U, int k, bool trig);
 
 /*
  * Returns kth elements of both tangent and squared secant of U, results stored in user-supplied jets T and S2
  */
-pair t_tan_sec2 (series T, series S2, series U, int k, geometry g);
+pair t_tan_sec2 (series T, series S2, series U, int k, bool trig);
 
 /*
  * Returns kth element of P = U^a (where a is scalar), results stored in user-supplied jet P, DOMAIN RESTRICTION U[0] > 0.0
@@ -148,14 +144,14 @@ real t_ln (series L, series U, int k);
 /*
  * Returns kth elements of arcsin(h) of U and 1 / DF_DU, results stored in user-supplied jets As and DU_DF
  */
-pair t_asin (series AS, series DU_DF, series U, int k, geometry g);
+pair t_asin (series AS, series DU_DF, series U, int k, bool trig);
 
 /*
  * Returns kth elements of arccos(h) of U and 1 / DF_DU, results stored in user-supplied jets As and DU_DF
  */
-pair t_acos (series AC, series G, series U, int k, geometry g);
+pair t_acos (series AC, series G, series U, int k, bool trig);
 
 /*
  * Returns kth elements of arctan(h) of U and 1 / DF_DU, results stored in user-supplied jets As and DU_DF
  */
-pair t_atan (series AT, series G, series U, int k, geometry g);
+pair t_atan (series AT, series G, series U, int k, bool trig);
