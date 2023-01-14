@@ -48,14 +48,9 @@ void t_out (int dp, real x, real y, real z, real t, char *x_tag, char *y_tag, ch
     }
 }
 
-static void error_exit (int code, char *message) {
-    fprintf(stderr, "%s\n", message);
-    exit(code);
-}
-
 series t_jet (int n) {
     series s = malloc((size_t)n * sizeof (real));
-    if (!s) error_exit(1, "Jet allocation failure!\n");
+    assert(s);
     return s;
 }
 
@@ -64,7 +59,7 @@ real t_horner (series s, int n, real h) {
     for (int i = n; i >= 0; i--) {
         sum = sum * h + s[i];
     }
-    if (!isfinite(sum)) error_exit(2, "Value update error!\n");
+    assert(isfinite(sum));
     return sum;
 }
 
