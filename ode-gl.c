@@ -13,8 +13,8 @@
 static void *m;  // the model
 static series3 *jets;
 
-point point_from_model (void *model) {
-    series3 *j = (series3 *)model;
+point get_current_point (void *data) {
+    series3 *j = (series3 *)data;
     return (point){(float)j->x[0], (float)j->y[0], (float)j->z[0]};
 }
 
@@ -38,7 +38,7 @@ void Animate () {
     if (!finished && !paused) {
         if (tsm_gen(c, jets, m)) {
             buffer_point();
-            t->points[newest] = point_from_model(jets);
+            t->points[newest] = get_current_point(jets);
         } else finished = 1;
         if (stepping) paused = 1;
     }
@@ -56,7 +56,7 @@ int main (int argc, char **argv) {
     length = (int)strtol(argv[1], NULL, BASE); assert(length >= 0 && length <= c->steps);
     t = malloc(sizeof (trail));
     t->points = malloc((size_t)length * sizeof (point));
-    t->points[newest] = point_from_model(jets);
+    t->points[newest] = get_current_point(jets);
 
     ApplicationInit(argc, argv, "ODE Plotter");
     glutMainLoop();     // Start the main loop.  glutMainLoop never returns.

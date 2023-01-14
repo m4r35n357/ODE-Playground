@@ -88,9 +88,9 @@ void osd (int x, int y, char *string);
 void osd_summary (void);
 
 /*
- * Extract current coordinates from model
+ * Extract current coordinates from data
  */
-point point_from_model (void *model);
+point get_current_point (void *data);
 
 /*
  * Push latest point to the track buffer

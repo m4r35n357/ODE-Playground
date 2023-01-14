@@ -16,8 +16,8 @@ static kerr *k;  // the model
 
 static real RAD_TO_DEG;
 
-point point_from_model (void *model) {
-    kerr *m = (kerr *)model;
+point get_current_point (void *data) {
+    kerr *m = (kerr *)data;
     real ra_sth = sqrtl(m->ra2.val) * sinl(m->q_theta);
     return (point){(float)(ra_sth * cosl(m->q_phi)), (float)(ra_sth * sinl(m->q_phi)), (float)(m->q_r * cosl(m->q_theta))};
 }
@@ -52,7 +52,7 @@ void Animate () {
     if (!finished && !paused) {
         if (generate(c, k)) {
             buffer_point();
-            t->points[newest] = point_from_model(k);
+            t->points[newest] = get_current_point(k);
         } else finished = 1;
         if (stepping) paused = 1;
     }
@@ -69,7 +69,7 @@ int main (int argc, char **argv) {
     length = (int)strtol(argv[1], NULL, BASE); assert(length >= 0 && length <= c->steps);
     t = malloc(sizeof (trail));
     t->points = malloc((size_t)length * sizeof (point));
-    t->points[newest] = point_from_model(k);
+    t->points[newest] = get_current_point(k);
 
     ApplicationInit(argc, argv, "Black Hole Orbit Plotter");
     glutMainLoop();     // Start the main loop.  glutMainLoop never returns.

@@ -11,43 +11,43 @@
 #include "opengl.h"
 #include "h-nbody.h"
 
-static nbody *m;  // the model
+static nbody *nb;  // the model
 
-point point_from_model (void *model) {
-    body *b = (body *)model;
+point get_current_point (void *data) {
+    body *b = (body *)data;
     return (point){(float)b->x, (float)b->y, (float)b->z};
 }
 
 void Animate () {
     SetupView();
 
-    body *b = m->bodies;
+    body *b = nb->bodies;
     if (mode == BOTH || mode == TRAIL) {
-        for (int j = 0; j < m->n; j++) {
+        for (int j = 0; j < nb->n; j++) {
             line_trail(&t[j]);
         }
     }
 
     if (mode == BOTH || mode == POSITION) {
-        for (int j = 0; j < m->n; j++) {
+        for (int j = 0; j < nb->n; j++) {
             line_position(t[j].points[newest], t[j].colour, b[j].r);
         }
     }
 
     if (osd_active) {
         glColor3f(0.0F, 0.5F, 0.5F);
-        real h = hamiltonian(m);
-        sprintf(hud, "t: %.1Lf  h: %.6Le  ~sf: %.1Lf", c->step * c->step_size, h, error(h - m->h0));
+        real h = hamiltonian(nb);
+        sprintf(hud, "t: %.1Lf  h: %.6Le  ~sf: %.1Lf", c->step * c->step_size, h, error(h - nb->h0));
         osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, hud);
         osd_summary();
     }
 
     if (!finished && !paused) {
-        if (generate(c, m)) {
-            reset_cog(m);
+        if (generate(c, nb)) {
+            reset_cog(nb);
             buffer_point();
-            for (int j = 0; j < m->n; j++) {
-                t[j].points[newest] = point_from_model(&b[j]);
+            for (int j = 0; j < nb->n; j++) {
+                t[j].points[newest] = get_current_point(&b[j]);
             }
         } else finished = 1;
         if (stepping) paused = 1;
@@ -57,21 +57,21 @@ void Animate () {
 }
 
 void CloseWindow () {
-    fprintf(stderr, "H : % .18Le\n", hamiltonian(m));
+    fprintf(stderr, "H : % .18Le\n", hamiltonian(nb));
 }
 
 int main (int argc, char **argv) {
     since = clock();
     c = get_c_symp(argc, argv);
-    m = get_p_nbody(argc, argv, (argc - 6) / 7);
-    fprintf(stderr, "\nH0: % .18Le\n", hamiltonian(m));
+    nb = get_p_nbody(argc, argv, (argc - 6) / 7);
+    fprintf(stderr, "\nH0: % .18Le\n", hamiltonian(nb));
 
     length = (int)strtol(argv[1], NULL, BASE); assert(length >= 0 && length <= c->steps);
-    t = malloc((size_t)m->n * sizeof (trail));
-    for (int j = 0; j < m->n; j++) {
+    t = malloc((size_t)nb->n * sizeof (trail));
+    for (int j = 0; j < nb->n; j++) {
         t[j].colour = get_colour(j);
         t[j].points = malloc((size_t)length * sizeof (point));
-        t[j].points[0] = point_from_model(&m->bodies[j]);
+        t[j].points[0] = get_current_point(&nb->bodies[j]);
     }
 
     ApplicationInit(argc, argv, "N-Body Plotter");
