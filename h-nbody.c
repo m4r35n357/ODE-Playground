@@ -24,8 +24,8 @@ nbody *get_p_nbody (int argc, char **argv, int n_bodies) {
         nb->bodies[i].py = strtold(argv[7 * i + 11], NULL);
         nb->bodies[i].pz = strtold(argv[7 * i + 12], NULL);
     }
-    nb->h0 = hamiltonian(nb);
     reset_cog(nb);
+    nb->h0 = hamiltonian(nb);
     return nb;
 }
 

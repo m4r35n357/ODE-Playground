@@ -77,7 +77,7 @@ case $model in
         ./h-analysis-std $display_places $1 1.0 1 >$user_data
         plot_analysis
     ;;
-    *Body)
+    *Body*)
         case $model in
             EightBody) g=0.05
                 bodies=$(yad --width=350 --height=280 --list --title="Eight Bodies" --separator=" " \
