@@ -21,7 +21,6 @@ point get_current_point (void *data) {
 void Animate () {
     SetupView();
 
-    body *b = nb->bodies;
     if (mode == BOTH || mode == TRAIL) {
         for (int j = 0; j < nb->n; j++) {
             line_trail(&t[j]);
@@ -30,7 +29,7 @@ void Animate () {
 
     if (mode == BOTH || mode == POSITION) {
         for (int j = 0; j < nb->n; j++) {
-            line_position(t[j].points[newest], t[j].colour, b[j].r);
+            line_position(t[j].points[newest], t[j].colour, nb->bodies[j].r);
         }
     }
 
@@ -47,7 +46,7 @@ void Animate () {
             reset_cog(nb);
             buffer_point();
             for (int j = 0; j < nb->n; j++) {
-                t[j].points[newest] = get_current_point(&b[j]);
+                t[j].points[newest] = get_current_point(&nb->bodies[j]);
             }
         } else finished = 1;
         if (stepping) paused = 1;
