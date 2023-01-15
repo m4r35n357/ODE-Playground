@@ -280,7 +280,7 @@ pair t_atan (series a, series g, series u, int k, bool trig) {
     } else {
         real _a = 0.0L, _g = 0.0L;
         for (int j = 0; j < k; j++) {
-            _a += j > 0 ? j * a[j] * g[k - j] : 0.0L;
+            if (j > 0) _a += j * a[j] * g[k - j];
             _g += u[j] * (k - j) * u[k - j];
         }
         return (pair){a[k] = (u[k] - _a / k) / g[0], g[k] = 2.0L * (trig ? _g : -_g) / k};
