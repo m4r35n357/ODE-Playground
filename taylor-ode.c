@@ -14,7 +14,7 @@
 const int BASE = 10;
 
 controls *get_c_tsm (int argc, char **argv) {
-    fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
+    PRINT_ARGS(argc, argv);
     controls *c = malloc(sizeof (controls));
     c->order = (int)strtol(argv[2], NULL, BASE); assert(c->order >= 2 && c->order <= 64);
     c->step_size = strtold(argv[3], NULL); assert(c->step_size > 0.0L);
@@ -106,7 +106,7 @@ real t_const (real a, int k) {
 }
 
 real t_abs (series u, int k) {
-    return u[0] < 0.0L ? - u[k] : u[k];
+    return u[0] < 0.0L ? -u[k] : u[k];
 }
 
 real t_mul (series u, series v, int k) {
@@ -233,7 +233,7 @@ pair t_asin (series a, series g, series u, int k, bool trig) {
     if (k == 0) {
         return (pair){
             a[0] = trig ? asinl(u[0]) : asinhl(u[0]),
-            g[0] = sqrtl(trig ? 1.0L - u[0] * u[0] : 1.0L + u[0] * u[0])
+            g[0] = trig ? sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] + 1.0L)
         };
     } else {
         real _a = 0.0L, _g = 0.0L;
@@ -273,10 +273,7 @@ pair t_atan (series a, series g, series u, int k, bool trig) {
     assert(trig ? 1 : u[0] >= -1.0L && u[0] <= 1.0L);
     assert(a != g && a != u && g != u);
     if (k == 0) {
-        return (pair){
-            a[0] = trig ? atanl(u[0]) : atanhl(u[0]),
-            g[0] = trig ? 1.0L + u[0] * u[0] : 1.0L - u[0] * u[0]
-        };
+        return (pair){a[0] = trig ? atanl(u[0]) : atanhl(u[0]), g[0] = trig ? 1.0L + u[0] * u[0] : 1.0L - u[0] * u[0]};
     } else {
         real _a = 0.0L, _g = 0.0L;
         for (int j = 0; j < k; j++) {

@@ -118,6 +118,16 @@ rgb get_colour (int index) {
     }[index % 15];
 }
 
+void buffer_point () {
+    static bool full = false;
+    newest++;
+    if (!full && newest == length) full = true;
+    if (full) {
+        oldest = (newest + 1) % length;
+        newest %= length;
+    }
+}
+
 void line_trail (trail *track) {
     glColor3f(track->colour.a, track->colour.b, track->colour.c);
     glBegin(GL_LINE_STRIP);
@@ -152,14 +162,4 @@ void osd_summary () {
                   cpu = finished ? cpu : (float)(clock() - since) / CLOCKS_PER_SEC,
                   (float)(100.0L * c->step / c->steps));
     osd(10, 10, hud);
-}
-
-void buffer_point () {
-    static bool full = false;
-    newest++;
-    if (!full && newest == length) full = true;
-    if (full) {
-        oldest = (newest + 1) % length;
-        newest %= length;
-    }
 }

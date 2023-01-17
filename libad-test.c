@@ -151,10 +151,10 @@ static void compare (char* name, series a, series b) {
 }
 
 int main (int argc, char **argv) {
-    real PI_2 = 0.5L * acosl(-1.0L);
-
-    fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
+    PRINT_ARGS(argc, argv);
     assert(argc == 4 || argc == 5);
+
+    real PI_2 = 0.5L * acosl(-1.0L);
     n = (int)strtol(argv[1], NULL, BASE);
     assert(n > 1);
     series x = t_jet(n + 1);

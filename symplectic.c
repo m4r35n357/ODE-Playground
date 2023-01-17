@@ -13,7 +13,7 @@
 const int BASE = 10;
 
 controls *get_c_symp (int argc, char **argv) {
-    fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
+    PRINT_ARGS(argc, argv);
     controls *c = malloc(sizeof (controls));
     c->order = (int)strtol(argv[2], NULL, BASE); assert(c->order >= 2 && c->order <= 10);
     c->step_size = strtold(argv[3], NULL); assert(c->step_size > 0.0L);
@@ -82,7 +82,7 @@ static integrator get_integrator (controls *c) {
         case  6: composer =   sixth_order; c->r2 = w(2); c->r4 = w(4); break;
         case  8: composer = eightth_order; c->r2 = w(2); c->r4 = w(4); c->r6 = w(6); break;
         case 10: composer =   tenth_order; c->r2 = w(2); c->r4 = w(4); c->r6 = w(6); c->r8 = w(8); break;
-        default: printf("Order parameter is {%d} but should be 2, 4, 6, 8, or 10 \n", c->order); exit(1);
+        default: printf("Order parameter is {%d} but should be 2, 4, 6, 8, or 10\n", c->order); exit(1);
     }
     return composer;
 }

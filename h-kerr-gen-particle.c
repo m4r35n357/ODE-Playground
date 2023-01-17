@@ -87,12 +87,11 @@ static kerr *get_p_gen (char **argv) {
 }
 
 int main (int argc, char **argv) { (void)argc;
+    PRINT_ARGS(argc, argv);
     assert(argc == 6);
-    fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
     kerr *k = get_p_gen(argv);
     matrix3x3 J;
-    vector3 x = {.a = k->E, .b = k->L, .c = k->Q};
-    vector3 f = {.a = 1.0L, .b = 1.0L, .c = 1.0L};
+    vector3 x = {k->E, k->L, k->Q}, f = {1.0L, 1.0L, 1.0L};
     fprintf(stderr, "\n");
     long count = 0L;
     bool circular = k->rmin * k->rmax < 0.0L;

@@ -34,3 +34,6 @@ typedef struct Controls {
     real step_size;
     weights r2, r4, r6, r8;
 } controls;
+
+#define PRINT_ARGS(argc, argv) \
+    fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
