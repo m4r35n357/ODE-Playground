@@ -36,4 +36,5 @@ typedef struct Controls {
 } controls;
 
 #define PRINT_ARGS(argc, argv) \
+    fprintf(stderr, "args: %d ", argc); \
     fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");

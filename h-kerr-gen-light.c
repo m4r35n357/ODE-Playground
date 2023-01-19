@@ -29,13 +29,11 @@ int main(int argc, char **argv) { (void)argc;
         fprintf(stdout, "\nSimulate:\n");
         fprintf(stdout, "./h-kerr-std 6 8 .01 10000 0 %.3Lf 0.0 1.0 %La 1.0 %La %.3Lf 0.0 >/tmp/$USER/data\n", a, L, Q, r);
         fprintf(stderr, "\n./h-kerr-gl $(yad --columns=2 --title='Kerr Light Orbit GL' --form --separator=' ' --align=right ");
-        fprintf(stderr, "--field='Display Mode':CB --field='Order':NUM --field='Step Size':NUM --field='Steps':NUM ");
-        fprintf(stderr, "--field='Track Length':NUM --field='BH spin':NUM --field='particle mass':RO ");
+        fprintf(stderr, "--field='Track Length':NUM --field='Order':NUM --field='Step Size':NUM --field='Steps':NUM ");
+        fprintf(stderr, "--field='BH spin':NUM --field='particle mass':RO ");
         fprintf(stderr, "--field='energy':RO --field='momentum' --field='momentum factor':RO --field='Carter constant' ");
         fprintf(stderr, "--field='r0' --field='theta0' ");
-        fprintf(stderr, "-- '0!1!2' '4!2..10!2' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' '1000!1..100000!1' "),
+        fprintf(stderr, "-- '2000!1000..10000!1000' '4!2..10!2' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' "),
         fprintf(stderr, "'%.3Lf!-1.0..1.0!0.1!1' 0.0 1.0 %.9Le 1.0 %.9Le %.3Lf 0.0)\n", a, L, Q, r);
-        fprintf(stdout, "\nGenerate ICs:\n");
-        fprintf(stdout, "./h-kerr-std 15 8 .01 0 2 %.3Lf 0.0 1.0 %La 1.0 %La %.3Lf 0.0\n\n", a, L, Q, r);
     }
 }

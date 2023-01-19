@@ -35,16 +35,16 @@ static void refresh (kerr *k) {
 }
 
 kerr *get_p_kerr (int argc, char **argv, real step_size) {
-    assert(argc == 14);
+    assert(argc == 13);
     kerr *k = malloc(sizeof (kerr));
     k->step_size = step_size;
-    k->a = strtold(argv[6], NULL);  // constants
-    real p_mass = strtold(argv[7], NULL);
+    k->a = strtold(argv[5], NULL);  // constants
+    real p_mass = strtold(argv[6], NULL);
     k->mu2 = p_mass * p_mass;
-    k->E = strtold(argv[8], NULL);
-    real m_factor = strtold(argv[10], NULL);
-    k->L = strtold(argv[9], NULL) * m_factor;
-    k->Q = strtold(argv[11], NULL) * m_factor;
+    k->E = strtold(argv[7], NULL);
+    real m_factor = strtold(argv[9], NULL);
+    k->L = strtold(argv[8], NULL) * m_factor;
+    k->Q = strtold(argv[10], NULL) * m_factor;
     k->horizon = 1.0F + (float)sqrtl(1.0L - k->a * k->a);
     k->a2 = k->a * k->a;
     k->L2 = k->L * k->L;
@@ -53,8 +53,8 @@ kerr *get_p_kerr (int argc, char **argv, real step_size) {
     k->K = k->Q + (k->L - k->aE) * (k->L - k->aE);
     k->a2xmu2_E2 = k->a2 * (k->mu2 - k->E * k->E);
     k->q_t = k->tau = 0.0L;  // coordinates & proper time
-    k->q_r = strtold(argv[12], NULL);;
-    k->q_theta = elevation_to_colatitude(strtold(argv[13], NULL));
+    k->q_r = strtold(argv[11], NULL);;
+    k->q_theta = elevation_to_colatitude(strtold(argv[12], NULL));
     k->q_phi = 0.0L;
     refresh(k);  // update variables, t & phi velocities
     k->p_r = - sqrtl(k->R.val >= 0.0L ? k->R.val : - k->R.val);  // potentials

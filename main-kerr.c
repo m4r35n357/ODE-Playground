@@ -17,7 +17,7 @@ static real v_dot_v (real vt, real vr, real vth, real vph, real a, real ra2, rea
     return sth2 / sigma * v1 * v1 + vr * vr / delta / sigma + vth * vth / sigma - delta / sigma * v4 * v4;
 }
 
-static void plot_path (int dp, void *params, real mino) {
+static void plot (int dp, void *params, real mino) {
     kerr *p = (kerr *)params;
     real S = sigma(p);
     pair Y = gamma_v(p, S);
@@ -31,28 +31,7 @@ static void plot_path (int dp, void *params, real mino) {
            dp, Y.a, dp, Y.b, p->tau, p->q_t);
 }
 
-static void plot_view (int dp, void *params, real mino) {
-    kerr *p = (kerr *)params;
-    printf("%.6Le 2  %+.*Le %+.*Le %+.*Le %+.*Le  %+.*Le %+.*Le %+.*Le %+.*Le  -1 0 0 0  0 0 0 1  0 1 0 0\n",
-           mino, dp, p->q_r, dp, cosl(p->q_theta), dp, p->q_t, dp, p->q_phi,
-           dp, p->p_r, dp, - sinl(p->q_theta) * p->p_theta, dp, p->p_t, dp, p->p_phi);
-}
-
-static void plot_raw (int dp, void *params, real mino) { (void)dp;
-    kerr *p = (kerr *)params;
-    printf("%.6Le  %+La %+La %+La %+La  %+La %+La %+La %+La\n",
-           mino, p->q_t, p->q_r, p->q_theta, p->q_phi, p->p_t, p->p_r, p->p_theta, p->p_phi);
-}
-
 int main (int argc, char **argv) {
-    long plot_type = strtol(argv[5], NULL, BASE);
-    plotter plot;
-    switch (plot_type) {
-        case 0: plot = plot_path; break;  // for plot3d.py
-        case 1: plot = plot_view; break;  // for kerr-image
-        case 2: plot = plot_raw; break;   // for debugging
-        default: printf("Plot type is {%ld} but should be 0 (standard), 1 (view), or 2 (raw)\n", plot_type); exit(2);
-    }
     controls *c = get_c_symp(argc, argv);
     solve(argv, c, get_p_kerr(argc, argv, c->step_size), plot);
     return 0;
