@@ -23,8 +23,9 @@ void *get_p (int argc, char **argv, int n) {
 
 components ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
-    p->wa[k] = t_const(1.0L, k) - y[k];
-    p->wb[k] = t_const(1.0L, k) - t_sqr(x, k);
+    real c1 = !k ? 1.0L : 0.0L;
+    p->wa[k] = c1 - y[k];
+    p->wb[k] = c1 - t_sqr(x, k);
     return (components) {
         .x = p->a * t_mul(x, p->wa, k) - p->b * z[k],
         .y = - p->c * t_mul(y, p->wb, k),

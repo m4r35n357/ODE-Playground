@@ -35,6 +35,5 @@ typedef struct Controls {
     weights r2, r4, r6, r8;
 } controls;
 
-#define PRINT_ARGS(argc, argv) \
-    fprintf(stderr, "args: %d ", argc); \
-    fprintf(stderr, "[ "); for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
+#define PRINT_ARGS(argc, argv) fprintf(stderr, "argc: %d, argv: [ ", argc); \
+    for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");

@@ -83,11 +83,6 @@ components ode (series X, series Y, series Z, void *P, int k);
  */
 
 /*
- * Returns value if k is 0, and zero otherwise.  For handling _additive_ constants.
- */
-real t_const (real value, int k);
-
-/*
  * Returns kth element of the absolute value of U, no user-supplied jet storage needed
  */
 real t_abs (series U, int k);

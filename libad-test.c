@@ -25,11 +25,6 @@ static const real PLUS1 = 1.0L, ZERO = 0.0L, MINUS1 = -1.0L;
 
 typedef struct Parameters { real a, b, c; } parameters;
 
-static series ad_const (series c, real a) {
-    for (int k = 0; k < n; k++) c[k] = t_const(a, k);
-    return c;
-}
-
 static series ad_scale (series s, series u, real a) {
     for (int k = 0; k < n; k++) s[k] = u[k] * a;
     return s;
@@ -177,7 +172,7 @@ int main (int argc, char **argv) {
     series tan = t_jet(n), sec2 = t_jet(n), tanh = t_jet(n), sech2 = t_jet(n);
     series gd_1 = t_jet(n);
 
-    series S1 = ad_const(t_jet(n), 1.0L);
+    series S1 = t_jet(n); S1[0] = 1.0L;
 
     fprintf(stdout, "%sHorner Summation%s\n", WHT, NRM);
     series s = t_jet(n >= 7 ? n : 7);

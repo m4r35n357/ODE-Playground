@@ -101,10 +101,6 @@ bool tsm_gen (controls *c, series3 *jets, void *p) {
     return looping = false;
 }
 
-real t_const (real a, int k) {
-    return k == 0 ? a : 0.0L;
-}
-
 real t_abs (series u, int k) {
     return u[0] < 0.0L ? -u[k] : u[k];
 }
