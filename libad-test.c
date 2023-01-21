@@ -203,8 +203,8 @@ int main (int argc, char **argv) {
         fprintf(stdout, "%+.*Le %+.*Le %+.*Le %.6Le\n", dp, j->x[0], dp, j->y[0], dp, j->z[0], (c.step + 1) * c.step_size);
     }
 
-    fprintf(stdout, "%ssTaylor Series Method Check: e^1  e^0  e^-1%s\n", WHT, NRM);
-    t_out(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), c.step_size * c.steps, "_", "_", "_", 0.0F);
+    fprintf(stdout, "%sTaylor Series Method Check: e^1  e^0  e^-1%s\n", WHT, NRM);
+    t_out(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), c.step_size * c.steps, "_", "_", "_", clock());
 
     fprintf(stderr, "%sRecurrence Relations: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x[0], NRM);
 
