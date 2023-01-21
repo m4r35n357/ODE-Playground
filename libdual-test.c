@@ -27,7 +27,7 @@ static real delta_val, delta_dot, tolerance;
 static void skip (char* name) {
     total++;
     skipped++;
-    if (debug >= 1) fprintf(stderr, "%s SKIP%s %s\n", YLW, NRM, name);
+    if (debug) fprintf(stderr, "%s SKIP%s %s\n", YLW, NRM, name);
 }
 
 static void compare (char* name, dual a, dual b) {
@@ -45,7 +45,7 @@ static void compare (char* name, dual a, dual b) {
     if (debug >= 2) fprintf(stderr, "\n");
     if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.6Le %+.6Le  diff %+.3Le\n", NRM, NRM, a.val, b.val, delta_val);
     if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.6Le %+.6Le  diff %+.3Le\n", NRM, NRM, a.dot, b.dot, delta_dot);
-    if (debug >= 1) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
+    if (debug) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
     passed++;
 }
 
@@ -87,7 +87,7 @@ int main (int argc, char **argv) {
 
     name = "x / sqrt(x) == sqrt(x)"; positive ? compare(name, d_div(x, sqrt_x), sqrt_x) : skip(name);
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
 
     name = "x^2.0 == sqr(x)"; positive ? compare(name, d_pow(x, 2.0L), sqr_x) : skip(name);
 
@@ -103,7 +103,7 @@ int main (int argc, char **argv) {
 
     name = "x^-2.0 == 1 / sqr(x)"; positive ? compare(name, d_pow(x, -2.0L), d_inv(sqr_x)) : skip(name);
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
     abs_x = d_abs(x);
 
     name = "sqr(x) * x^-3 == 1 / x"; positive ? compare(name, d_mul(sqr_x, d_pow(x, -3.0L)), inv_x) : skip(name);
@@ -112,7 +112,7 @@ int main (int argc, char **argv) {
 
     name = "sqrt(sqr(x) == |x|"; non_zero ? compare(name, d_sqrt(sqr_x), abs_x) : skip(name);
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
     exp_x = d_exp(x);
     if (positive) ln_x = d_ln(x);
 
@@ -126,7 +126,7 @@ int main (int argc, char **argv) {
 
     name = "ln(x^-3) == -3*ln(x)"; positive ? compare(name, d_ln(d_pow(x, -3.0L)), d_scale(ln_x, -3.0L)) : skip(name);
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
     sin = d_sinh(x);
     cos = d_cosh(x);
     tan = d_tanh(x);
@@ -143,14 +143,14 @@ int main (int argc, char **argv) {
 
     name = "cosh(2x) == cosh^2(x) + sinh^2(x)"; compare(name, cos_2x, d_add(sqr_cos_x, sqr_sin_x));
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
     neg_exp_x = d_exp(d_scale(x, -1.0L));
 
     name = "cosh(x) == (e^x + e^-x) / 2"; compare(name, cos, d_scale(d_add(exp_x, neg_exp_x), 0.5L));
 
     name = "sinh(x) == (e^x - e^-x) / 2"; compare(name, sin, d_scale(d_sub(exp_x, neg_exp_x), 0.5L));
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
 
     name = "arcsinh(sinh(x)) == x"; compare(name, d_asinh(sin), x);
 
@@ -158,7 +158,7 @@ int main (int argc, char **argv) {
 
     name = "arctanh(tanh(x)) == x"; compare(name, d_atanh(tan), x);
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
     sin = d_sin(x);
     cos = d_cos(x);
     tan = d_tan(x);
@@ -175,7 +175,7 @@ int main (int argc, char **argv) {
 
     name = "cos(2x) == cos^2(x) - sin^2(x)"; compare(name, cos_2x, d_sub(sqr_cos_x, sqr_sin_x));
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
 
     name = "arcsin(sin(x)) == x"; compare(name, d_asin(sin), x);
 
@@ -183,7 +183,7 @@ int main (int argc, char **argv) {
 
     name = "arcsin(tan(x)) == x"; compare(name, d_atan(tan), x);
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
     gd_1 = d_ln(d_abs(d_div(d_add(sin, d1), cos)));
 
     name = "arsin(tan(x)) == gd^-1 x"; compare(name, gd_1, d_asinh(tan));
@@ -194,9 +194,9 @@ int main (int argc, char **argv) {
 
     name = "arctan(sinh(gd^-1 x)) == x"; compare(name, d_atan(d_sinh(gd_1)), x);
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
     fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
-    if (skipped > 0) {
+    if (skipped) {
         fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
     }
     if (passed == total - skipped) {

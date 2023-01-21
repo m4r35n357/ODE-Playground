@@ -108,7 +108,7 @@ int main (int argc, char **argv) { (void)argc;
             .a = R(k->rmin, d_dual(k->E), d_dual(k->L), d_dual(k->Q), k->a).val,
             .c = THETA(k->thmax, d_dual(k->E), d_dual(k->L), d_dual(k->Q), k->a).val
         };
-        if (! circular) {
+        if (!circular) {
             J.d = R(k->rmax,  d_var(k->E), d_dual(k->L), d_dual(k->Q), k->a).dot;
             J.e = R(k->rmax, d_dual(k->E),  d_var(k->L), d_dual(k->Q), k->a).dot;
             J.f = R(k->rmax, d_dual(k->E), d_dual(k->L),  d_var(k->Q), k->a).dot;

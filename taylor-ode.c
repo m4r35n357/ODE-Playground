@@ -41,7 +41,7 @@ void t_params (char **argv, int argc, ...) {
 
 void t_out (int dp, real x, real y, real z, real t, char *x_tag, char *y_tag, char *z_tag, clock_t since) {
     real cpu = (real)(clock() - since) / CLOCKS_PER_SEC;
-    if (dp == 0) {
+    if (!dp) {
         printf("%+La %+La %+La %.6Le %s %s %s %.3Lf\n", x, y, z, t, x_tag, y_tag, z_tag, cpu);
     } else {
         printf("%+.*Le %+.*Le %+.*Le %.6Le %s %s %s %.3Lf\n", dp, x, dp, y, dp, z, t, x_tag, y_tag, z_tag, cpu);
@@ -124,7 +124,7 @@ real t_sqr (series u, int k) {
 real t_div (series q, series u, series v, int k) {
     assert(v[0] != 0.0L);
     assert(q != u && q != v);
-    if (k == 0) {
+    if (!k) {
         return q[0] = (u ? u[0] : 1.0L) / v[0];
     } else {
         real _d = 0.0L;
@@ -138,7 +138,7 @@ real t_div (series q, series u, series v, int k) {
 real t_sqrt (series r, series u, int k) {
     assert(u[0] > 0.0L);
     assert(r != u);
-    if (k == 0) {
+    if (!k) {
         return r[0] = sqrtl(u[0]);
     } else {
         real _r = 0.0L;
@@ -151,7 +151,7 @@ real t_sqrt (series r, series u, int k) {
 
 real t_exp (series e, series u, int k) {
     assert(e != u);
-    if (k == 0) {
+    if (!k) {
         return e[0] = expl(u[0]);
     } else {
         real _e = 0.0L;
@@ -164,7 +164,7 @@ real t_exp (series e, series u, int k) {
 
 pair t_sin_cos (series s, series c, series u, int k, bool trig) {
     assert(s != c && s != u && c != u);
-    if (k == 0) {
+    if (!k) {
         return (pair){s[0] = trig ? sinl(u[0]) : sinhl(u[0]), c[0] = trig ? cosl(u[0]) : coshl(u[0])};
     } else {
         real _s = 0.0L, _c = 0.0L;
@@ -179,7 +179,7 @@ pair t_sin_cos (series s, series c, series u, int k, bool trig) {
 
 pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
     assert(t != s && t != u && s != u);
-    if (k == 0) {
+    if (!k) {
         t[0] = trig ? tanl(u[0]) : tanhl(u[0]);
         return (pair){t[0], s[0] = trig ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]};
     } else {
@@ -198,7 +198,7 @@ pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
 real t_pwr (series p, series u, real a, int k) {
     assert(u[0] > 0.0L);
     assert(p != u);
-    if (k == 0) {
+    if (!k) {
         return p[0] = powl(u[0], a);
     } else {
         real _p = 0.0L;
@@ -212,7 +212,7 @@ real t_pwr (series p, series u, real a, int k) {
 real t_ln (series l, series u, int k) {
     assert(u[0] > 0.0L);
     assert(l != u);
-    if (k == 0) {
+    if (!k) {
         return l[0] = logl(u[0]);
     } else {
         real _l = 0.0L;
@@ -226,7 +226,7 @@ real t_ln (series l, series u, int k) {
 pair t_asin (series a, series g, series u, int k, bool trig) {
     assert(trig ? u[0] >= -1.0L && u[0] <= 1.0L : 1);
     assert(a != g && a != u && g != u);
-    if (k == 0) {
+    if (!k) {
         return (pair){
             a[0] = trig ? asinl(u[0]) : asinhl(u[0]),
             g[0] = trig ? sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] + 1.0L)
@@ -247,7 +247,7 @@ pair t_asin (series a, series g, series u, int k, bool trig) {
 pair t_acos (series a, series g, series u, int k, bool trig) {
     assert(trig ? u[0] >= -1.0L && u[0] <= 1.0L : u[0] >= 1.0L);
     assert(a != g && a != u && g != u);
-    if (k == 0) {
+    if (!k) {
         return (pair){
             a[0] = trig ? acosl(u[0]) : acoshl(u[0]),
             g[0] = trig ? - sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] - 1.0L)
@@ -268,12 +268,12 @@ pair t_acos (series a, series g, series u, int k, bool trig) {
 pair t_atan (series a, series g, series u, int k, bool trig) {
     assert(trig ? 1 : u[0] >= -1.0L && u[0] <= 1.0L);
     assert(a != g && a != u && g != u);
-    if (k == 0) {
+    if (!k) {
         return (pair){a[0] = trig ? atanl(u[0]) : atanhl(u[0]), g[0] = trig ? 1.0L + u[0] * u[0] : 1.0L - u[0] * u[0]};
     } else {
         real _a = 0.0L, _g = 0.0L;
         for (int j = 0; j < k; j++) {
-            if (j > 0) _a += j * a[j] * g[k - j];
+            if (j) _a += j * a[j] * g[k - j];
             _g += u[j] * (k - j) * u[k - j];
         }
         return (pair){a[k] = (u[k] - _a / k) / g[0], g[k] = 2.0L * (trig ? _g : -_g) / k};

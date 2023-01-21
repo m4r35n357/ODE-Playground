@@ -125,23 +125,23 @@ components ode (series x, series y, series z, void *params, int k) {
 static void skip (char* name) {
     total++;
     skipped++;
-    if (debug >= 1) fprintf(stderr, "%s SKIP%s %s\n", YLW, NRM, name);
+    if (debug) fprintf(stderr, "%s SKIP%s %s\n", YLW, NRM, name);
 }
 
 static void compare (char* name, series a, series b) {
     total++;
     for (int k = 0; k < n; k++) {
         delta = a[k] - b[k];
-        if (! isfinite(delta) || fabsl(delta) > tolerance) {
+        if (!isfinite(delta) || fabsl(delta) > tolerance) {
             fprintf(stderr, "%s FAIL%s %s\n  k=%d  LHS: %+.6Le  RHS: %+.6Le  (%+.3Le)\n", RED, NRM, name, k, a[k], b[k], delta);
             return;
         }
         if (debug >= 2) {
-            if (k == 0) fprintf(stderr, "\n");
+            if (!k) fprintf(stderr, "\n");
             fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.6Le %+.6Le  (%+.3Le)\n", NRM, NRM, k, a[k], b[k], delta);
         }
     }
-    if (debug >= 1) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
+    if (debug) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
     passed++;
 }
 
@@ -222,7 +222,7 @@ int main (int argc, char **argv) {
 
     name = "x / sqrt(x) == sqrt(x)"; positive ? compare(name, ad_div(r1, x, sqrt_x), sqrt_x) : skip(name);
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
 
     name = "x^2.0 == sqr(x)"; positive ? compare(name, ad_pwr(r1, x, 2.0L), sqr_x) : skip(name);
 
@@ -238,7 +238,7 @@ int main (int argc, char **argv) {
 
     name = "x^-2.0 == 1 / sqr(x)"; positive ? compare(name, ad_pwr(r1, x, -2.0L), ad_inv(r2, sqr_x)) : skip(name);
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
     ad_abs(abs_x, x);
 
     name = "sqr(x) * x^-3 == 1 / x"; positive ? compare(name, ad_mul(r1, sqr_x, ad_pwr(r2, x, -3.0L)), inv_x) : skip(name);
@@ -247,7 +247,7 @@ int main (int argc, char **argv) {
 
     name = "sqrt(sqr(x) == |x|"; non_zero ? compare(name, ad_sqrt(r1, sqr_x), abs_x) : skip(name);
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
     ad_exp(exp_x, x);
     if (positive) ad_ln(ln_x, x);
 
@@ -261,7 +261,7 @@ int main (int argc, char **argv) {
 
     name = "ln(x^-3) == -3ln(x)"; positive ? compare(name, ad_ln(r1, ad_pwr(r2, x, -3.0L)), ad_scale(r3, ln_x, -3.0L)) : skip(name);
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
     ad_sin_cos(sinh, cosh, x, false);
     ad_tan_sec2(tanh, sech2, x, false);
     ad_sqr(sqr_sinh_x, sinh);
@@ -280,14 +280,14 @@ int main (int argc, char **argv) {
 
     name = "cosh(2x) == cosh^2(x) + sinh^2(x)"; compare(name, cosh_2x, ad_add(r1, sqr_cosh_x, sqr_sinh_x));
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
     ad_exp(neg_exp_x, ad_scale(r1, x, -1.0L));
 
     name = "cosh(x) == (e^x + e^-x) / 2"; compare(name, cosh, ad_scale(r1, ad_add(r2, exp_x, neg_exp_x), 0.5L));
 
     name = "sinh(x) == (e^x - e^-x) / 2"; compare(name, sinh, ad_scale(r1, ad_sub(r2, exp_x, neg_exp_x), 0.5L));
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
 
     name = "arcsinh(sinh(x)) == x"; ad_asin(r1, r2, sinh, false); compare(name, r1, x);
 
@@ -295,7 +295,7 @@ int main (int argc, char **argv) {
 
     name = "arctanh(tanh(x)) == x"; ad_atan(r1, r2, tanh, false); compare(name, r1, x);
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
     ad_sin_cos(sin, cos, x, true);
     ad_tan_sec2(tan, sec2, x, true);
     ad_mul(sqr_sin_x, sin, sin);
@@ -314,7 +314,7 @@ int main (int argc, char **argv) {
 
     name = "cos(2x) == cos^2(x) - sin^2(x)"; compare(name, cos_2x, ad_sub(r1, sqr_cos_x, sqr_sin_x));
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
 
     name = "arcsin(sin(x)) == x"; ad_asin(r1, r2, sin, true); compare(name, r1, x);
 
@@ -322,7 +322,7 @@ int main (int argc, char **argv) {
 
     name = "arctan(tan(x)) == x"; ad_atan(r1, r2, tan, true); compare(name, r1, x);
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
     ad_ln(gd_1, ad_abs(r3, ad_div(r2, ad_add(r1, sin, S1), cos)));
 
     name = "arsin(tan(x)) == gd^-1 x"; ad_asin(r1, r2, tan, false); compare(name, gd_1, r1);
@@ -333,9 +333,9 @@ int main (int argc, char **argv) {
 
     name = "arctan(sinh(gd^-1 x)) == x"; ad_sin_cos(r3, r2, gd_1, false); ad_atan(r1, r2, r3, true); compare(name, r1, x);
 
-    if (debug != 0) fprintf(stderr, "\n");
+    if (debug) fprintf(stderr, "\n");
     fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
-    if (skipped > 0) {
+    if (skipped) {
         fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
     }
     if (passed == total - skipped) {
