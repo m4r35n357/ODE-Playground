@@ -92,8 +92,7 @@ case $type in
                 -- '2000!1000..10000!1000' '4!2..10!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' \
                    "0.8!-1.0..1.0!0.1!1" "1.0" \
                    "0.9455050956749083" "1.434374509531738" "1.0" "7.978759958927879" \
-                   "12.0" "63.0")
-            ;;
+                   "12.0" "63.0") ;;
             Geodesic|Errors|Speed) ./h-kerr-std \
                 $(yad --columns=2 --title="Kerr Particle Orbit Gnuplot" --form --separator=" " --align=right \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
@@ -108,10 +107,8 @@ case $type in
                     Geodesic) plot3d;;
                     Errors) plot_errors;;
                     Speed) plot_speed;;
-                esac
-            ;;
-        esac
-    ;;
+                esac ;;
+        esac ;;
     Lightlike)
         case $analysis in
             GLplot) ./h-kerr-gl \
@@ -123,8 +120,7 @@ case $type in
                 -- '2000!1000..10000!1000' '4!2..10!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' \
                    "0.8!-1.0..1.0!0.1!1" "0.0" \
                    "1.0" "-1.6" "1.0" "27.0" \
-                   "3.0" "0.0")
-            ;;
+                   "3.0" "0.0") ;;
             Geodesic|Errors|Speed) ./h-kerr-std \
                 $(yad --columns=2 --title="Kerr Light Orbit Gnuplot" --form --separator=" " --align=right \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
@@ -139,8 +135,6 @@ case $type in
                     Geodesic) plot3d;;
                     Errors) plot_errors;;
                     Speed) plot_speed;;
-                esac
-            ;;
-        esac
-    ;;
+                esac ;;
+        esac ;;
 esac

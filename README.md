@@ -68,6 +68,7 @@ These models use the arbitrary-order Taylor Series Method (TSM)
 * Investigate the validity of chaotic solutions against integrator order and step size
 * Plot bifurcation diagrams, to find "interesting" parameter values to study
 
+There is a script that provides a dialogue-based user interface for six of the supplied models:
 ```
 ./ode-playground
 ```

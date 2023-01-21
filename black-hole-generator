@@ -43,11 +43,9 @@ case $type in
         --field="Elevation (degrees)" --field="BH spin (-ve for retrograde)":NUM \
         -- "1.0e-9" "4.0" "12.0" \
            "63.0" '0.8!-1.0..1.0!0.1!1') >$user_data
-        plot_potentials
-    ;;
+        plot_potentials ;;
     Lightlike) ./h-kerr-gen-light \
         $(yad --columns=2 --title="Generate Parameters (light)" --form --separator=" " --align=right \
         --field="r":NUM --field="BH spin":NUM \
-        -- '3.0!1.0..4.0!0.1!1' '0.8!-1.0..1.0!0.1!1')
-    ;;
+        -- '3.0!1.0..4.0!0.1!1' '0.8!-1.0..1.0!0.1!1') ;;
 esac

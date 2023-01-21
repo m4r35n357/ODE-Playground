@@ -63,20 +63,17 @@ case $model in
         -- "1" "12" '0.6!0.0..1.0!0.1!1')
         ./h-newton-std $display_places $1 $2 $3 $parameters >$user_data
         plot3d
-        plot_hamiltonian_error 4 5
-    ;;
+        plot_hamiltonian_error 4 5 ;;
     Spring)
         parameters=$(yad --title="Mass-Spring System" --form --separator=" " --align=right \
         --field="mass" --field="spring constant" --field="length" \
         -- "1" "1" "1")
         ./h-spring-std $display_places $1 $2 $3 $parameters >$user_data
         plot3d
-        plot_hamiltonian_error 4 5
-    ;;
+        plot_hamiltonian_error 4 5 ;;
     Analysis)
         ./h-analysis-std $display_places $1 1.0 1 >$user_data
-        plot_analysis
-    ;;
+        plot_analysis ;;
     *Body*)
         case $model in
             EightBody) g=0.05
@@ -90,8 +87,7 @@ case $model in
                      4.0  0.0 -4.0  0.1 -3.6  0.0  0.2 \
                      3.0 -4.0  0.0 -0.1  0.0 -0.2 -2.6 \
                      3.0  8.0  0.0 -0.3  0.0  2.0 -0.2 \
-                     4.0  0.0  4.0 -0.2 -4.8  0.0 -0.2)
-            ;;
+                     4.0  0.0  4.0 -0.2 -4.8  0.0 -0.2) ;;
             FourBodyA) g=1
                 bodies=$(yad --width=450 --height=180 --list --title="Four Body A" --separator=" " \
                 --print-all --grid-lines=BOTH --no-click --editable \
@@ -99,8 +95,7 @@ case $model in
                 -- 1.0 0.0 -0.69548  0.69548  0.87546 -0.31950 -0.31950 \
                    1.0 0.0  0.69548 -0.69548  0.87546  0.31950  0.31950 \
                    1.0 0.0 -0.69548 -0.69548 -0.87546 -0.31950  0.31950 \
-                   1.0 0.0  0.69548  0.69548 -0.87546  0.31950 -0.31950)
-            ;;
+                   1.0 0.0  0.69548  0.69548 -0.87546  0.31950 -0.31950) ;;
             FourBodyB) g=3.5
                 bodies=$(yad --width=350 --height=180 --list --title="Four Body B" --separator=" " \
                 --print-all --grid-lines=BOTH --no-click --editable \
@@ -108,25 +103,21 @@ case $model in
                 -- 1.0  1.0  1.0  1.0 -1.0  1.0 -1.0 \
                    1.0 -1.0 -1.0  1.0  1.0 -1.0 -1.0 \
                    1.0  1.0 -1.0 -1.0  1.0  1.0  1.0 \
-                   1.0 -1.0  1.0 -1.0 -1.0 -1.0  1.0)
-            ;;
+                   1.0 -1.0  1.0 -1.0 -1.0 -1.0  1.0) ;;
             ThreeBody) g=1
                 bodies=$(yad --width=400 --height=150 --list --title="Three Body" --separator=" " \
                 --print-all --grid-lines=BOTH --no-click --editable \
                 --column=mass --column=x --column=y --column=z --column=px --column=py --column=pz \
                 -- 1.0 -1.6 0.0 0.0  0.08058  0.58884  0.2 \
                    1.0  1.6 0.0 0.0  0.08058  0.58884 -0.2 \
-                   1.0  0.0 0.0 0.0 -0.16116 -1.17768  0.0)
-            ;;
+                   1.0  0.0 0.0 0.0 -0.16116 -1.17768  0.0) ;;
             TwoBody) g=4
                 bodies=$(yad --width=350 --height=120 --list --title="Two Body" --separator=" " \
                 --print-all --grid-lines=BOTH --no-click --editable \
                 --column=mass --column=x --column=y --column=z --column=px --column=py --column=pz \
                 -- 1.0 0.0  1.0 0.0  1.0 0.0 0.0 \
-                   1.0 0.0 -1.0 0.0 -1.0 0.0 0.0)
-            ;;
+                   1.0 0.0 -1.0 0.0 -1.0 0.0 0.0) ;;
         esac
         (./h-nbody-std $display_places $control $g $bodies >$user_data; plot_hamiltonian_error 1 2) 2>/dev/null &
-        ./h-nbody-gl $track_length $control $g $bodies
-    ;;
+        ./h-nbody-gl $track_length $control $g $bodies ;;
 esac
