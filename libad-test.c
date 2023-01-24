@@ -152,11 +152,7 @@ int main (int argc, char **argv) {
     real PI_2 = 0.5L * acosl(-1.0L);
     n = (int)strtol(argv[1], NULL, BASE);
     assert(n > 1);
-    series x = t_jet(n + 1);
-    x[0] = strtold(argv[2], NULL);
-    for (int k = 1; k <= n; k++) {
-        x[k] = x[0] / (k * k);
-    }
+    series x = t_jet(n + 1); x[0] = strtold(argv[2], NULL); for (int k = 1; k <= n; k++) x[k] = x[0] / (k * k);
     tolerance = strtold(argv[3], NULL);
     if (argc == 5) debug = (int)strtol(argv[4], NULL, BASE);
 
@@ -335,9 +331,7 @@ int main (int argc, char **argv) {
 
     if (debug) fprintf(stderr, "\n");
     fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
-    if (skipped) {
-        fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
-    }
+    if (skipped) fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
     if (passed == total - skipped) {
         fprintf(stderr, "\n");
         return 0;

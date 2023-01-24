@@ -245,39 +245,39 @@ case $model in
             GLplot) ./tsm-halvorsen-gl \
                 $(yad --columns=2 --title="Halvorsen Attractor OpenGL (TSM)" --form --separator=" " --align=right \
                 --field="Track Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
+                --field="x0" --field="y0" --field="z0" --field="a" \
                 --  '2000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' '1.4' '4') ;;
+                    '1.0' '0.0' '0.0' '1.4') ;;
             Gnuplot3D|Gnuplot2D)
                 $(yad --columns=2 --title="Halvorsen Gnuplot (TSM)" --form --separator=" " --align=right \
                 --field="Model:RO" --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
+                --field="x0" --field="y0" --field="z0" --field="a" \
                 --  './tsm-halvorsen-std' '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' '1.4' '4') >$user_data
+                    '1.0' '0.0' '0.0' '1.4') >$user_data
                 plot $analysis ;;
             CNS) ./cns \
                 $(yad --columns=2 --title="Halvorsen CNS (TSM)" --form --separator=" " --align=right \
                 --field="Mode":CB --field="Separation" --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
+                --field="x0" --field="y0" --field="z0" --field="a" \
                 --  'step2!nosim' '1.0' './tsm-halvorsen-std' \
                     '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' '1.4' '4') ;;
+                    '1.0' '0.0' '0.0' '1.4') ;;
             CNSscan) ./cns-scan \
                 $(yad --columns=2 --title="Halvorsen CNS Scan (TSM)" --form --separator=" " --align=right \
                 --field="Maxium Order":NUM --field="Separation" --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
+                --field="x0" --field="y0" --field="z0" --field="a" \
                 --  '32!2..64!1' '1.0' './tsm-halvorsen-std' \
                     '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' '1.4' '4') ;;
+                    '1.0' '0.0' '0.0' '1.4') ;;
             Bifurcation) ./bifurcation-scan \
                 $(yad --columns=2 --title="Halvorsen Bifurcation (TSM)" --form --separator=" " --align=right \
                 --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" --field="a:RO" --field="b" \
+                --field="x0" --field="y0" --field="z0" --field="a:RO" \
                 --  '1' '4' '10' './tsm-halvorsen-std' \
                     '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' '$p' '4') ;;
+                    '1.0' '0.0' '0.0' '$p') ;;
         esac ;;
 esac

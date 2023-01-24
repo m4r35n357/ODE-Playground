@@ -196,9 +196,7 @@ int main (int argc, char **argv) {
 
     if (debug) fprintf(stderr, "\n");
     fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
-    if (skipped) {
-        fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
-    }
+    if (skipped) fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
     if (passed == total - skipped) {
         fprintf(stderr, "\n");
         return 0;
