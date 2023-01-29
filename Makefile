@@ -2,98 +2,100 @@
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
-CFLAGS=-Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wconversion -Wredundant-decls -Wmissing-declarations
+CFLAGS=-std=c99 -O3 -fno-math-errno -flto
+WARNINGS=-Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wconversion -Wredundant-decls -Wmissing-declarations
 LIB_M=-lm
 LIB_GL=-lGLEW -lglut -lGLU -lGL
 STRIP=-s
 
 ifeq ($(CCC),gcc)
-  CC=gcc -std=c99 -O3 -flto
-  CFLAGS += -Wunsuffixed-float-constants -frounding-math -fsignaling-nans
+  CC=/usr/bin/gcc
+  WARNINGS += -Wunsuffixed-float-constants
 else ifeq ($(CCC),cov)
-  CC=gcc -std=c99 -Og -g --coverage
-  CFLAGS += -Wunsuffixed-float-constants -frounding-math -fsignaling-nans
+  CC=/usr/bin/gcc
+  CFLAGS=-std=c99 -Og -g --coverage
+  WARNINGS += -Wunsuffixed-float-constants
   STRIP=
 else ifeq ($(CCC),prof)
-  CC=gcc -std=c99 -Og -g -pg
-  CFLAGS += -Wunsuffixed-float-constants -frounding-math -fsignaling-nans
+  CC=/usr/bin/gcc
+  CFLAGS=-std=c99 -Og -g -pg
+  WARNINGS += -Wunsuffixed-float-constants
   STRIP=
 else ifeq ($(CCC),gpt)
-  CC=clang -std=c99 -Og -g
-  CFLAGS += -ffp-model=precise
+  CC=/usr/bin/clang
+  CFLAGS=-std=c99 -Og -g
   LIB_M += -lprofiler
   STRIP=
 else ifeq ($(CCC),clang)
-  CC=clang -std=c99 -O3 -flto
-  CFLAGS += -ffp-model=precise
+  CC=/usr/bin/clang
 else
-  CC=clang -std=c99 -Og -g
-  CFLAGS += -ffp-model=precise
+  CC=/usr/bin/clang
+  CFLAGS=-std=c99 -Og -g
   STRIP=
 endif
 
 %.o: %.c
-	$(CC) -MT $@ -MMD -MP -c -o $@ $< $(CFLAGS)
+	$(CC) $(CFLAGS) -MT $@ -MMD -MP -c -o $@ $< $(WARNINGS)
 
 all: tsm-std tsm-gl hamiltonian generators h-kerr-std h-kerr-gl h-nbody-std h-nbody-gl divergence tests
 
 
 tsm-%-std: tsm-%.o taylor-ode.o main-tsm.o
-	$(CC) -o $@ $^ $(LIB_M) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(STRIP)
 
 tsm-std: tsm-bouali-std tsm-burke-shaw-std tsm-genesio-tesi-std tsm-halvorsen-std tsm-isuc-std tsm-lorenz-std tsm-nose-hoover-std tsm-rf-std tsm-rossler-std tsm-rucklidge-std tsm-sprott-minimal-std tsm-sprott-thomas-std tsm-thomas-std tsm-wimol-banlue-std tsm-yu-wang-std
 
 
 tsm-%-gl: tsm-%.o taylor-ode.o opengl.o ode-gl.o
-	$(CC) -o $@ $^ $(LIB_M) $(LIB_GL) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(LIB_GL) $(STRIP)
 
 tsm-gl: tsm-bouali-gl tsm-burke-shaw-gl tsm-genesio-tesi-gl tsm-halvorsen-gl tsm-isuc-gl tsm-lorenz-gl tsm-nose-hoover-gl tsm-rf-gl tsm-rossler-gl tsm-rucklidge-gl tsm-sprott-minimal-gl tsm-sprott-thomas-gl tsm-thomas-gl tsm-wimol-banlue-gl tsm-yu-wang-gl
 
 
 h-%-std: h-%.o symplectic.o dual.o
-	$(CC) -o $@ $^ $(LIB_M) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(STRIP)
 
 hamiltonian: h-analysis-std h-newton-std h-spring-std
 
 
 h-kerr-gen-light: h-kerr-gen-light.o
-	$(CC) -o $@ $< $(LIB_M) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $< $(LIB_M) $(STRIP)
 
 h-kerr-gen-particle: h-kerr-gen-particle.o h-kerr.o dual.o
-	$(CC) -o $@ $^ $(LIB_M) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(STRIP)
 
 generators: h-kerr-gen-light h-kerr-gen-particle
 
 
 h-kerr-std: symplectic.o dual.o h-kerr.o main-kerr.o
-	$(CC) -o $@ $^ $(LIB_M) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(STRIP)
 
 h-kerr-gl: symplectic.o dual.o h-kerr.o opengl.o h-kerr-gl.o
-	$(CC) -o $@ $^ $(LIB_M) $(LIB_GL) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(LIB_GL) $(STRIP)
 
 
 h-nbody-std: symplectic.o h-nbody.o main-nbody.o
-	$(CC) -o $@ $^ $(LIB_M) $(LIB_GL) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(LIB_GL) $(STRIP)
 
 h-nbody-gl: symplectic.o h-nbody.o opengl.o h-nbody-gl.o
-	$(CC) -o $@ $^ $(LIB_M) $(LIB_GL) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(LIB_GL) $(STRIP)
 
 
 divergence: divergence.o
-	$(CC) -o $@ $< $(LIB_M) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $< $(LIB_M) $(STRIP)
 
 
 libad-test: libad-test.o taylor-ode.o
-	$(CC) -o $@ $^ $(LIB_M) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(STRIP)
 
 libdual-test: libdual-test.o dual.o
-	$(CC) -o $@ $^ $(LIB_M) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(STRIP)
 
 tests: libad-test libdual-test
 
 
 kerr-image: kerr-image.o
-	$(CC) -o $@ $< $(LIB_M) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $< $(LIB_M) $(STRIP)
 
 
 .PHONY: test clean depclean ctags ctags-system ctags-system-all coverage
