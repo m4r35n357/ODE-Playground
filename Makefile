@@ -13,24 +13,24 @@ ifeq ($(CCC),gcc)
   WARNINGS += -Wunsuffixed-float-constants
 else ifeq ($(CCC),cov)
   CC=/usr/bin/gcc
-  CFLAGS=-std=c99 -Og -g --coverage
+  CFLAGS=-std=c99 -O0 -g --coverage
   WARNINGS += -Wunsuffixed-float-constants
   STRIP=
 else ifeq ($(CCC),prof)
   CC=/usr/bin/gcc
-  CFLAGS=-std=c99 -Og -g -pg
+  CFLAGS=-std=c99 -O0 -g -pg
   WARNINGS += -Wunsuffixed-float-constants
   STRIP=
 else ifeq ($(CCC),gpt)
   CC=/usr/bin/clang
-  CFLAGS=-std=c99 -Og -g
+  CFLAGS=-std=c99 -O0 -g
   LIB_M += -lprofiler
   STRIP=
 else ifeq ($(CCC),clang)
   CC=/usr/bin/clang
 else
   CC=/usr/bin/clang
-  CFLAGS=-std=c99 -Og -g
+  CFLAGS=-std=c99 -O0 -g
   STRIP=
 endif
 
