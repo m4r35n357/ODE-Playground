@@ -78,16 +78,13 @@ void update_p (void *n_body, real c) {
     for (int i = 0; i < nb->n; i++) {
         for (int j = 0; j < i; j++) {
             real d = distance(b[i].x, b[i].y, b[i].z, b[j].x, b[j].y, b[j].z);
-            real _ = - c * nb->g * b[i].m * b[j].m / (d * d * d);
+            real _ = c * nb->g * b[i].m * b[j].m / (d * d * d);
             real dPx = (b[j].x - b[i].x) * _;
             real dPy = (b[j].y - b[i].y) * _;
             real dPz = (b[j].z - b[i].z) * _;
-            b[i].px -= dPx;
-            b[i].py -= dPy;
-            b[i].pz -= dPz;
-            b[j].px += dPx;
-            b[j].py += dPy;
-            b[j].pz += dPz;
+            b[j].px -= dPx; b[i].px += dPx;
+            b[j].py -= dPy; b[i].py += dPy;
+            b[j].pz -= dPz; b[i].pz += dPz;
         }
     }
 }
