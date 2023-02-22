@@ -10,8 +10,8 @@ typedef struct Kerr {
     real mu2;  // central mass & particle mass (squared)
     real E, L, Q, K;  // constants of motion
     real a, a2, L2, aL, aE, a2xmu2_E2;  // global constants
-    real step_size, tau, q_t, q_r, q_theta, q_phi, p_t, p_r, p_theta, p_phi;  // proper time, coordinates & velocities
-    dual ra2, delta, sth2, R, THETA;  // global variables & potentials
+    real step_size, tau, q_t, q_r, q_theta, q_phi, v_t, v_r, v_theta, v_phi;  // proper time, coordinates & velocities
+    dual ra2, D, sth2, R, TH;  // global variables & potentials
     components *coordinates;
     real rmin, rmax, thmax, epsilon;  // generator constraints and precision
     float horizon;

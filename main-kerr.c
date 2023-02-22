@@ -25,9 +25,9 @@ static void plot (int dp, void *params, real mino) {
     real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_theta);
     printf("%+.*Le %+.*Le %+.*Le  %.6Le %+.*Le %+.*Le %+.*Le  %+.*Le %+.*Le  %.6Le %.6Le\n",
            dp, ra_sth * cosl(p->q_phi), dp, ra_sth * sinl(p->q_phi), dp, p->q_r * cosl(p->q_theta), mino,
-           dp, error(1.0L + v_dot_v(p->p_t, p->p_r, p->p_theta, p->p_phi, p->a, p->ra2.val, p->sth2.val, S, p->delta.val)),
-           dp, error(0.5L * (p->p_r * p->p_r - p->R.val)),              // "H" = p_r^2 / 2 + (- R(r) / 2) = 0
-           dp, error(0.5L * (p->p_theta * p->p_theta - p->THETA.val)),  // "H" = p_theta^2 / 2 + (- THETA(theta) / 2) = 0
+           dp, error(1.0L + v_dot_v(p->v_t, p->v_r, p->v_theta, p->v_phi, p->a, p->ra2.val, p->sth2.val, S, p->D.val)),
+           dp, error(0.5L * (p->v_r * p->v_r - p->R.val)),              // "H" = p_r^2 / 2 + (- R(r) / 2) = 0
+           dp, error(0.5L * (p->v_theta * p->v_theta - p->TH.val)),  // "H" = p_theta^2 / 2 + (- THETA(theta) / 2) = 0
            dp, Y.a, dp, Y.b, p->tau, p->q_t);
 }
 

@@ -17,7 +17,7 @@ real sigma (kerr *k) {
 }
 
 pair gamma_v (kerr *k, real sigma) {
-    real g = k->p_t / sigma;
+    real g = k->v_t / sigma;
     return (pair){g, sqrtl(1.0L - 1.0L / (g * g))};
 }
 
@@ -25,13 +25,13 @@ static void refresh (kerr *k) {
     dual r = d_var(k->q_r);
     dual r2 = d_sqr(r);
     k->ra2 = d_shift(r2, k->a2);
-    k->delta = d_sub(k->ra2, d_scale(r, 2.0L));
+    k->D = d_sub(k->ra2, d_scale(r, 2.0L));
     dual P = d_shift(d_scale(k->ra2, k->E), - k->aL);
-    k->R = d_sub(d_sqr(P), d_mul(k->delta, d_shift(d_scale(r2, k->mu2), k->K)));
+    k->R = d_sub(d_sqr(P), d_mul(k->D, d_shift(d_scale(r2, k->mu2), k->K)));
     k->sth2 = d_sqr(d_sin(d_var(k->q_theta)));
-    k->THETA = d_shift(d_mul(d_shift(d_scale(d_inv(k->sth2), k->L2), k->a2xmu2_E2), d_shift(k->sth2, - 1.0L)), k->Q);
-    k->p_t = k->a * (k->L - k->aE * k->sth2.val) + k->ra2.val * P.val / k->delta.val;
-    k->p_phi = (k->L / k->sth2.val - k->aE) + k->a * P.val / k->delta.val;
+    k->TH = d_shift(d_mul(d_shift(d_scale(d_inv(k->sth2), k->L2), k->a2xmu2_E2), d_shift(k->sth2, - 1.0L)), k->Q);
+    k->v_t = k->a * (k->L - k->aE * k->sth2.val) + k->ra2.val * P.val / k->D.val;
+    k->v_phi = (k->L / k->sth2.val - k->aE) + k->a * P.val / k->D.val;
 }
 
 kerr *get_p_kerr (int argc, char **argv, real step_size) {
@@ -57,22 +57,22 @@ kerr *get_p_kerr (int argc, char **argv, real step_size) {
     k->q_theta = elevation_to_colatitude(strtold(argv[12], NULL));
     k->q_phi = 0.0L;
     refresh(k);  // update variables, t & phi velocities
-    k->p_r = - sqrtl(k->R.val >= 0.0L ? k->R.val : - k->R.val);  // potentials
-    k->p_theta = - sqrtl(k->THETA.val >= 0.0L ? k->THETA.val : - k->THETA.val);
+    k->v_r = - sqrtl(k->R.val >= 0.0L ? k->R.val : - k->R.val);  // potentials
+    k->v_theta = - sqrtl(k->TH.val >= 0.0L ? k->TH.val : - k->TH.val);
     return k;
 }
 
 void update_q (void *params, real c) {  // dq / dt = d"H" / dp
     kerr *k = (kerr *)params;
-    k->q_t += c * k->p_t;
-    k->q_r += c * k->p_r;
-    k->q_theta += c * k->p_theta;
-    k->q_phi += c * k->p_phi;
+    k->q_t += c * k->v_t;
+    k->q_r += c * k->v_r;
+    k->q_theta += c * k->v_theta;
+    k->q_phi += c * k->v_phi;
     refresh(k);
 }
 
 void update_p (void *params, real d) {  // dp / dt = - d"H" / dq = - (- 0.5 dX / dq) where X is R or THETA
     kerr *k = (kerr *)params;
-    k->p_r += d * 0.5L * k->R.dot;
-    k->p_theta += d * 0.5L * k->THETA.dot;
+    k->v_r += d * 0.5L * k->R.dot;
+    k->v_theta += d * 0.5L * k->TH.dot;
 }
