@@ -18,8 +18,8 @@ static real RAD_TO_DEG;
 
 point get_current_point (void *data) {
     kerr *m = (kerr *)data;
-    real ra_sth = sqrtl(m->ra2.val) * sinl(m->q_theta);
-    return (point){(float)(ra_sth * cosl(m->q_phi)), (float)(ra_sth * sinl(m->q_phi)), (float)(m->q_r * cosl(m->q_theta))};
+    real ra_sth = sqrtl(m->ra2.val) * sinl(m->q_th);
+    return (point){(float)(ra_sth * cosl(m->q_ph)), (float)(ra_sth * sinl(m->q_ph)), (float)(m->q_r * cosl(m->q_th))};
 }
 
 void Animate () {
@@ -41,7 +41,7 @@ void Animate () {
         k->tau += k->step_size * S;
         glColor3f(0.0F, 0.5F, 0.5F);
         sprintf(hud, "tau: %.0Lf  t: %.0Lf  r:% 5.1Lf  theta:% 4.0Lf  phi:% 4.0Lf  ",
-                      k->tau, k->q_t, k->q_r, k->q_theta * RAD_TO_DEG - 90.0L, fmodl(k->q_phi * RAD_TO_DEG + 180.0L, 360.0L));
+                      k->tau, k->q_t, k->q_r, k->q_th * RAD_TO_DEG - 90.0L, fmodl(k->q_ph * RAD_TO_DEG + 180.0L, 360.0L));
         osd(10, window_height - 20, hud);
         pair speed = gamma_v(k, S);
         sprintf(hud, "gamma: %.1Lf  v:% .6Lf", speed.a, speed.b);

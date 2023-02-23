@@ -11,10 +11,10 @@
 #include "symplectic.h"
 #include "h-kerr.h"
 
-static real v_dot_v (real vt, real vr, real vth, real vph, real a, real ra2, real sth2, real sigma, real delta) {  // conserved
-    real v1 = a * vt / sigma - ra2 * vph / sigma;
-    real v4 = vt / sigma - a * sth2 * vph / sigma;
-    return sth2 / sigma * v1 * v1 + vr * vr / delta / sigma + vth * vth / sigma - delta / sigma * v4 * v4;
+static real v2 (real vt, real vr, real vth, real vph, real a, real ra2, real sth2, real S, real D) {
+    real va = (a * vt - ra2 * vph) / S;
+    real vb = (vt - a * sth2 * vph) / S;
+    return sth2 / S * va * va + vr * vr / D / S + vth * vth / S - D / S * vb * vb;
 }
 
 static void plot (int dp, void *params, real mino) {
@@ -22,12 +22,12 @@ static void plot (int dp, void *params, real mino) {
     real S = sigma(p);
     pair Y = gamma_v(p, S);
     p->tau += p->step_size * S;
-    real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_theta);
+    real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_th);
     printf("%+.*Le %+.*Le %+.*Le  %.6Le %+.*Le %+.*Le %+.*Le  %+.*Le %+.*Le  %.6Le %.6Le\n",
-           dp, ra_sth * cosl(p->q_phi), dp, ra_sth * sinl(p->q_phi), dp, p->q_r * cosl(p->q_theta), mino,
-           dp, error(1.0L + v_dot_v(p->v_t, p->v_r, p->v_theta, p->v_phi, p->a, p->ra2.val, p->sth2.val, S, p->D.val)),
-           dp, error(0.5L * (p->v_r * p->v_r - p->R.val)),              // "H" = p_r^2 / 2 + (- R(r) / 2) = 0
-           dp, error(0.5L * (p->v_theta * p->v_theta - p->TH.val)),  // "H" = p_theta^2 / 2 + (- THETA(theta) / 2) = 0
+           dp, ra_sth * cosl(p->q_ph), dp, ra_sth * sinl(p->q_ph), dp, p->q_r * cosl(p->q_th), mino,
+           dp, error(1.0L + v2(p->v_t, p->v_r, p->v_th, p->v_ph, p->a, p->ra2.val, p->sth2.val, S, p->D.val)),
+           dp, error(0.5L * (p->v_r * p->v_r - p->R.val)),      // "H" = p_r^2 / 2 + (- R(r) / 2) = 0
+           dp, error(0.5L * (p->v_th * p->v_th - p->TH.val)),   // "H" = p_th^2 / 2 + (- TH(th) / 2) = 0
            dp, Y.a, dp, Y.b, p->tau, p->q_t);
 }
 
