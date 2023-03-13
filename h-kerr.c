@@ -39,14 +39,13 @@ kerr *get_p_kerr (int argc, char **argv, real step_size) {
     kerr *k = malloc(sizeof (kerr));
     k->step_size = step_size;
     k->a = strtold(argv[5], NULL);  // constants
-    real p_mass = strtold(argv[6], NULL);
-    k->mu2 = p_mass * p_mass;
+    k->mu2 = strtold(argv[6], NULL) == 0.0L ? 0.0L : 1.0L;
     k->E = strtold(argv[7], NULL);
     real m_factor = strtold(argv[9], NULL);
     k->L = strtold(argv[8], NULL) * m_factor;
     k->Q = strtold(argv[10], NULL) * m_factor;
-    k->horizon = 1.0F + (float)sqrtl(1.0L - k->a * k->a);
     k->a2 = k->a * k->a;
+    k->horizon = 1.0F + (float)sqrtl(1.0L - k->a2);
     k->L2 = k->L * k->L;
     k->aL = k->a * k->L;
     k->aE = k->a * k->E;
