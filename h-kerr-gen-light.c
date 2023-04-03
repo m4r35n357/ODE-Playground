@@ -29,7 +29,7 @@ int main(int argc, char **argv) { (void)argc;
         fprintf(stdout, "\nSimulate:\n");
         fprintf(stdout, "./h-kerr-std 6 8 .01 10000 0 %.3Lf 0.0 1.0 %La 1.0 %La %.3Lf 0.0 >/tmp/$USER/data\n", a, L, Q, r);
         fprintf(stderr, "\n./h-kerr-gl $(yad --columns=2 --title='Kerr Light Orbit GL' --form --separator=' ' --align=right ");
-        fprintf(stderr, "--field='Track Length':NUM --field='Order':NUM --field='Step Size':NUM --field='Steps':NUM ");
+        fprintf(stderr, "--field='Trail Length':NUM --field='Order':NUM --field='Step Size':NUM --field='Steps':NUM ");
         fprintf(stderr, "--field='BH spin':NUM --field='particle mass':RO ");
         fprintf(stderr, "--field='energy':RO --field='momentum' --field='momentum factor':RO --field='Carter constant' ");
         fprintf(stderr, "--field='r0' --field='theta0' ");

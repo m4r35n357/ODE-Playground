@@ -20,8 +20,8 @@ Form or list-based dialogue boxes for launching most common operations using yad
 ## Pure c99 (plus OpenGL)
 
 The programs can be built either with Clang or GCC.
-All console programs are written to and depend _only_ on the c99 standard and library.
-External dependencies (OpenGL, FreeGLUT & GLEW) are only needed for plotters (*-gl).
+All console programs are written to and depend _only_ on the c99 standard and library (strictly speaking, the WG14/N1256 _draft_ standard!).
+External dependencies (OpenGL, FreeGLUT & GLEW) are only needed for the OpenGL plotters (*-gl).
 
 All simulation floating point operations are executed in _long double_ precision.
 This gives a choice of precision and performance on different platforms.
@@ -287,7 +287,7 @@ Parameter | Meaning
 ----------|-----------
 1 | start of parameter range
 2 | end of parameter range
-3 | "transient skip" value; skip first (lines / value), or 0
+3 | "transient skip" value; skip first (1 / value) of lines, or 0
 4+ | ODE call with variable parameter replaced by ['$p']
 
 The general idea is to replace one of the model parameters with the string '$p' (including quotes!).
