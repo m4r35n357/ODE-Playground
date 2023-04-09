@@ -6,7 +6,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <math.h>
 #include <stdbool.h>
 #include "h-kerr.h"
@@ -27,7 +26,7 @@ static matrix3x3 m_invert (matrix3x3 m) {
         .g =  det2x2(m.b, m.f, m.c, m.e), .h = -det2x2(m.a, m.f, m.c, m.d), .i =  det2x2(m.a, m.e, m.b, m.d)
     };
     real d = m.a * c.a + m.b * c.b + m.c * c.c;
-    assert(d != 0.0L);
+    CHECK(d != 0.0L);
     return (matrix3x3){
         .a = c.a / d, .b = c.d / d, .c = c.g / d,
         .d = c.b / d, .e = c.e / d, .f = c.h / d,
@@ -88,7 +87,7 @@ static kerr *get_p_gen (char **argv) {
 
 int main (int argc, char **argv) { (void)argc;
     PRINT_ARGS(argc, argv);
-    assert(argc == 6);
+    CHECK(argc == 6);
     kerr *k = get_p_gen(argv);
     matrix3x3 J;
     vector3 x = {k->E, k->L, k->Q}, f = {1.0L, 1.0L, 1.0L};

@@ -2,6 +2,7 @@
  * (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
@@ -9,7 +10,7 @@
 #include "h-nbody.h"
 
 nbody *get_p_nbody (int argc, char **argv, int n_bodies) {
-    assert(argc == 6 + 7 * n_bodies);
+    CHECK(argc == 6 + 7 * n_bodies);
     nbody *nb = malloc(sizeof (nbody));
     nb->g = strtold(argv[5], NULL);
     nb->n = n_bodies;

@@ -65,7 +65,7 @@ int main (int argc, char **argv) {
     nb = get_p_nbody(argc, argv, (argc - 6) / 7);
     fprintf(stderr, "\nH0: % .18Le\n", hamiltonian(nb));
 
-    length = (int)strtol(argv[1], NULL, BASE); assert(length >= 0 && length <= c->steps);
+    length = (int)strtol(argv[1], NULL, BASE); CHECK(length >= 0 && length <= c->steps);
     t = malloc((size_t)nb->n * sizeof (trail));
     for (int j = 0; j < nb->n; j++) {
         t[j].colour = get_colour(j);

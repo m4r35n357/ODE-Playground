@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include <assert.h>
 #include <math.h>
 #include "taylor-ode.h"
 
@@ -16,9 +15,9 @@ const int BASE = 10;
 controls *get_c_tsm (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     controls *c = malloc(sizeof (controls));
-    c->order = (int)strtol(argv[2], NULL, BASE); assert(c->order >= 2 && c->order <= 64);
-    c->step_size = strtold(argv[3], NULL); assert(c->step_size > 0.0L);
-    c->steps = (int)strtol(argv[4], NULL, BASE); assert(c->steps >= 0 && c->steps <= 1000000);
+    c->order = (int)strtol(argv[2], NULL, BASE); CHECK(c->order >= 2 && c->order <= 64);
+    c->step_size = strtold(argv[3], NULL);       CHECK(c->step_size > 0.0L);
+    c->steps = (int)strtol(argv[4], NULL, BASE); CHECK(c->steps >= 0 && c->steps <= 1000000);
     return c;
 }
 
@@ -50,7 +49,7 @@ void t_out (int dp, real x, real y, real z, real t, char *x_tag, char *y_tag, ch
 
 series t_jet (int n) {
     series s = malloc((size_t)n * sizeof (real));
-    assert(s);
+    CHECK(s);
     return s;
 }
 
@@ -59,7 +58,7 @@ real t_horner (series s, int n, real h) {
     for (int i = n; i >= 0; i--) {
         sum = sum * h + s[i];
     }
-    assert(isfinite(sum));
+    CHECK(isfinite(sum));
     return sum;
 }
 
@@ -118,8 +117,8 @@ real t_sqr (series u, int k) {
 }
 
 real t_div (series q, series u, series v, int k) {
-    assert(v[0] != 0.0L);
-    assert(q != u && q != v);
+    CHECK(v[0] != 0.0L);
+    CHECK(q != u && q != v);
     if (!k) return q[0] = (u ? u[0] : 1.0L) / v[0];
     real _d = 0.0L;
     for (int j = 0; j < k; j++) _d += q[j] * v[k - j];
@@ -127,8 +126,8 @@ real t_div (series q, series u, series v, int k) {
 }
 
 real t_sqrt (series r, series u, int k) {
-    assert(u[0] > 0.0L);
-    assert(r != u);
+    CHECK(u[0] > 0.0L);
+    CHECK(r != u);
     if (!k) return r[0] = sqrtl(u[0]);
     real _r = 0.0L;
     for (int j = 1; j <= (k - (k % 2 ? 1 : 2)) / 2; j++) _r += r[j] * r[k - j];
@@ -136,7 +135,7 @@ real t_sqrt (series r, series u, int k) {
 }
 
 real t_exp (series e, series u, int k) {
-    assert(e != u);
+    CHECK(e != u);
     if (!k) return e[0] = expl(u[0]);
     real _e = 0.0L;
     for (int j = 0; j < k; j++) _e += e[j] * (k - j) * u[k - j];
@@ -144,7 +143,7 @@ real t_exp (series e, series u, int k) {
 }
 
 pair t_sin_cos (series s, series c, series u, int k, bool trig) {
-    assert(s != c && s != u && c != u);
+    CHECK(s != c && s != u && c != u);
     if (!k) return (pair){s[0] = trig ? sinl(u[0]) : sinhl(u[0]), c[0] = trig ? cosl(u[0]) : coshl(u[0])};
     real _s = 0.0L, _c = 0.0L;
     for (int j = 0; j < k; j++) { real _ = (k - j) * u[k - j]; _c += c[j] * _; _s += s[j] * _; }
@@ -152,7 +151,7 @@ pair t_sin_cos (series s, series c, series u, int k, bool trig) {
 }
 
 pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
-    assert(t != s && t != u && s != u);
+    CHECK(t != s && t != u && s != u);
     if (!k) {
         t[0] = trig ? tanl(u[0]) : tanhl(u[0]);
         return (pair){t[0], s[0] = trig ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]};
@@ -165,8 +164,8 @@ pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
 }
 
 real t_pwr (series p, series u, real a, int k) {
-    assert(u[0] > 0.0L);
-    assert(p != u);
+    CHECK(u[0] > 0.0L);
+    CHECK(p != u);
     if (!k) return p[0] = powl(u[0], a);
     real _p = 0.0L;
     for (int j = 0; j < k; j++) _p += (a * (k - j) - j) * p[j] * u[k - j];
@@ -174,8 +173,8 @@ real t_pwr (series p, series u, real a, int k) {
 }
 
 real t_ln (series l, series u, int k) {
-    assert(u[0] > 0.0L);
-    assert(l != u);
+    CHECK(u[0] > 0.0L);
+    CHECK(l != u);
     if (!k) return l[0] = logl(u[0]);
     real _l = 0.0L;
     for (int j = 1; j < k; j++) _l += j * l[j] * u[k - j];
@@ -183,8 +182,8 @@ real t_ln (series l, series u, int k) {
 }
 
 pair t_asin (series a, series g, series u, int k, bool trig) {
-    assert(trig ? u[0] >= -1.0L && u[0] <= 1.0L : 1);
-    assert(a != g && a != u && g != u);
+    CHECK(trig ? u[0] >= -1.0L && u[0] <= 1.0L : 1);
+    CHECK(a != g && a != u && g != u);
     if (!k) return (pair){
         a[0] = trig ? asinl(u[0]) : asinhl(u[0]),
         g[0] = trig ? sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] + 1.0L)
@@ -197,8 +196,8 @@ pair t_asin (series a, series g, series u, int k, bool trig) {
 }
 
 pair t_acos (series a, series g, series u, int k, bool trig) {
-    assert(trig ? u[0] >= -1.0L && u[0] <= 1.0L : u[0] >= 1.0L);
-    assert(a != g && a != u && g != u);
+    CHECK(trig ? u[0] >= -1.0L && u[0] <= 1.0L : u[0] >= 1.0L);
+    CHECK(a != g && a != u && g != u);
     if (!k) return (pair){
         a[0] = trig ? acosl(u[0]) : acoshl(u[0]),
         g[0] = trig ? - sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] - 1.0L)
@@ -211,8 +210,8 @@ pair t_acos (series a, series g, series u, int k, bool trig) {
 }
 
 pair t_atan (series a, series g, series u, int k, bool trig) {
-    assert(trig ? 1 : u[0] >= -1.0L && u[0] <= 1.0L);
-    assert(a != g && a != u && g != u);
+    CHECK(trig ? 1 : u[0] >= -1.0L && u[0] <= 1.0L);
+    CHECK(a != g && a != u && g != u);
     if (!k) return (pair){a[0] = trig ? atanl(u[0]) : atanhl(u[0]), g[0] = trig ? 1.0L + u[0] * u[0] : 1.0L - u[0] * u[0]};
     real _a = 0.0L, _g = 0.0L;
     for (int j = 1; j < k; j++) _a += j * a[j] * g[k - j];

@@ -2,7 +2,8 @@
  * (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
-#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include "dual.h"
 
@@ -19,7 +20,7 @@ dual d_abs (dual a) {
 }
 
 dual d_inv (dual b) {
-    assert(b.val != 0.0L);
+    CHECK(b.val != 0.0L);
     return (dual){1.0L / b.val, - b.dot / (b.val * b.val)};
 }
 
@@ -48,7 +49,7 @@ dual d_mul (dual a, dual b) {
 }
 
 dual d_div (dual a, dual b) {
-    assert(b.val != 0.0L);
+    CHECK(b.val != 0.0L);
     return (dual){a.val / b.val, (a.dot * b.val - a.val * b.dot) / (b.val * b.val)};
 }
 
@@ -58,18 +59,18 @@ dual d_exp (dual a) {
 }
 
 dual d_ln (dual a) {
-    assert(a.val > 0.0L);
+    CHECK(a.val > 0.0L);
     return (dual){logl(a.val), a.dot / a.val};
 }
 
 dual d_sqrt (dual a) {
-    assert(a.val > 0.0L);
+    CHECK(a.val > 0.0L);
     real root_val = sqrtl(a.val);
     return (dual){root_val, a.dot * 0.5L / root_val};
 }
 
 dual d_pow (dual a, real b) {
-    assert(a.val > 0.0L);
+    CHECK(a.val > 0.0L);
     real pow_val = powl(a.val, b);
     return (dual){pow_val, a.dot * b * pow_val / a.val};
 }
@@ -101,12 +102,12 @@ dual d_tanh (dual a) {
 }
 
 dual d_asin (dual a) {
-    assert(a.val >= -1.0L && a.val <= 1.0L);
+    CHECK(a.val >= -1.0L && a.val <= 1.0L);
     return (dual){asinl(a.val), a.dot / sqrtl(1.0L - a.val * a.val)};
 }
 
 dual d_acos (dual a) {
-    assert(a.val >= -1.0L && a.val <= 1.0L);
+    CHECK(a.val >= -1.0L && a.val <= 1.0L);
     return (dual){acosl(a.val), - a.dot / sqrtl(1.0L - a.val * a.val)};
 }
 
@@ -119,11 +120,11 @@ dual d_asinh (dual a) {
 }
 
 dual d_acosh (dual a) {
-    assert(a.val >= 1.0L);
+    CHECK(a.val >= 1.0L);
     return (dual){acoshl(a.val), a.dot / sqrtl(1.0L - a.val * a.val)};
 }
 
 dual d_atanh (dual a) {
-    assert(a.val >= -1.0L && a.val <= 1.0L);
+    CHECK(a.val >= -1.0L && a.val <= 1.0L);
     return (dual){atanhl(a.val), a.dot / (1.0L - a.val * a.val)};
 }

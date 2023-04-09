@@ -53,7 +53,7 @@ int main (int argc, char **argv) {
 
     jets = initial_values(argv, c->order);
 
-    length = (int)strtol(argv[1], NULL, BASE); assert(length >= 0 && length <= c->steps);
+    length = (int)strtol(argv[1], NULL, BASE); CHECK(length >= 0 && length <= c->steps);
     t = malloc(sizeof (trail));
     t->points = malloc((size_t)length * sizeof (point));
     t->points[newest] = get_current_point(jets);

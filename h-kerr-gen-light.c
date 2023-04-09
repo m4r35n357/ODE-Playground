@@ -12,7 +12,7 @@
 
 int main(int argc, char **argv) { (void)argc;
     PRINT_ARGS(argc, argv);
-    assert(argc == 3);
+    CHECK(argc == 3);
     real r = strtold(argv[1], NULL);
     real a = strtold(argv[2], NULL);
     real r3 = r * r * r;

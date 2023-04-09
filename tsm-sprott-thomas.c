@@ -6,6 +6,7 @@
  * (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include "taylor-ode.h"
@@ -13,7 +14,7 @@
 typedef struct Parameters { real a, b; series ax, ay, az, sax, say, saz, cax, cay, caz, tx, ty, tz, s2x, s2y, s2z; } parameters;
 
 void *get_p (int argc, char **argv, int n) {
-    assert(argc == 10);
+    CHECK(argc == 10);
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->a, &p->b);
     p->ax = t_jet(n); p->sax = t_jet(n); p->cax = t_jet(n); p->tx = t_jet(n); p->s2x = t_jet(n);

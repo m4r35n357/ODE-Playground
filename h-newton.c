@@ -22,7 +22,7 @@ typedef struct Parameters {
 } parameters;
 
 void *get_p (int argc, char **argv) { (void)argc;
-    assert(argc == 8);
+    CHECK(argc == 8);
     parameters *p = malloc(sizeof (parameters));
     p->m = strtold(argv[5], NULL);
     p->q_r = strtold(argv[6], NULL);

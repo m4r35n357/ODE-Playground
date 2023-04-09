@@ -6,7 +6,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <math.h>
 #include "symplectic.h"
 
@@ -15,9 +14,9 @@ const int BASE = 10;
 controls *get_c_symp (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     controls *c = malloc(sizeof (controls));
-    c->order = (int)strtol(argv[2], NULL, BASE); assert(c->order >= 2 && c->order <= 10);
-    c->step_size = strtold(argv[3], NULL); assert(c->step_size > 0.0L);
-    c->steps = (int)strtol(argv[4], NULL, BASE); assert(c->steps >= 0 && c->steps <= 1000000);
+    c->order = (int)strtol(argv[2], NULL, BASE); CHECK(c->order >= 2 && c->order <= 10 && c->order % 2 == 0);
+    c->step_size = strtold(argv[3], NULL);       CHECK(c->step_size > 0.0L);
+    c->steps = (int)strtol(argv[4], NULL, BASE); CHECK(c->steps >= 0 && c->steps <= 1000000);
     return c;
 }
 
@@ -80,13 +79,13 @@ static integrator get_integrator (controls *c) {
         case  6: composer =   sixth_order; c->r2 = w(2); c->r4 = w(4); break;
         case  8: composer = eightth_order; c->r2 = w(2); c->r4 = w(4); c->r6 = w(6); break;
         case 10: composer =   tenth_order; c->r2 = w(2); c->r4 = w(4); c->r6 = w(6); c->r8 = w(8); break;
-        default: printf("Order parameter is {%d} but should be 2, 4, 6, 8, or 10\n", c->order); exit(1);
     }
+    CHECK(composer);
     return composer;
 }
 
 void solve (char **argv, controls *c, void *p, plotter output) {
-    int display_precision = (int)strtol(argv[1], NULL, BASE); assert(display_precision >= 1 && display_precision <= 32);
+    int display_precision = (int)strtol(argv[1], NULL, BASE); CHECK(display_precision >= 1 && display_precision <= 32);
     integrator composer = get_integrator(c);
     for (int step = 0; step < c->steps; step++) {
         output(display_precision, p, step * c->step_size);

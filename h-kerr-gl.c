@@ -66,7 +66,7 @@ int main (int argc, char **argv) {
     k = get_p_kerr(argc, argv, c->step_size);
     RAD_TO_DEG = 180.0L / acosl(-1.0L);
 
-    length = (int)strtol(argv[1], NULL, BASE); assert(length >= 0 && length <= c->steps);
+    length = (int)strtol(argv[1], NULL, BASE); CHECK(length >= 0 && length <= c->steps);
     t = malloc(sizeof (trail));
     t->points = malloc((size_t)length * sizeof (point));
     t->points[newest] = get_current_point(k);

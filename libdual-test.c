@@ -51,7 +51,7 @@ static void compare (char* name, dual a, dual b) {
 
 int main (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
-    assert(argc == 3 || argc == 4);
+    CHECK(argc == 3 || argc == 4);
 
     real PI_2 = 0.5L * acosl(-1.0L);
     dual x = d_var(strtold(argv[1], NULL));

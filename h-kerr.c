@@ -2,6 +2,7 @@
  * (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
@@ -35,7 +36,7 @@ static void refresh (kerr *k) {
 }
 
 kerr *get_p_kerr (int argc, char **argv, real step_size) {
-    assert(argc == 13);
+    CHECK(argc == 13);
     kerr *k = malloc(sizeof (kerr));
     k->step_size = step_size;
     k->a = strtold(argv[5], NULL);  // constants

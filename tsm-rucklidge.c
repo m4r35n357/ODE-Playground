@@ -6,6 +6,7 @@
  * (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include "taylor-ode.h"
@@ -13,7 +14,7 @@
 typedef struct Parameters { real alpha, kappa; } parameters;
 
 void *get_p (int argc, char **argv, int n) { (void)n;
-    assert(argc == 10);
+    CHECK(argc == 10);
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->alpha, &p->kappa);
     return p;

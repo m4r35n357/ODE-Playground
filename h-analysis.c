@@ -8,13 +8,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include "symplectic.h"
 
 typedef struct Parameters { real c, d; } parameters;
 
 void *get_p (int argc, char **argv) { (void)argc; (void)argv;
-    assert(argc == 5);
+    CHECK(argc == 5);
     parameters *p = malloc(sizeof (parameters));
     p->c = 0.0L;
     p->d = 0.0L;
@@ -39,7 +38,6 @@ void update_p (void *params, real d) {
 }
 
 int main (int argc, char **argv) {
-    assert(argc == 5);
     solve(argv, get_c_symp(argc, argv), get_p(argc, argv), plot);
     return 0;
 }

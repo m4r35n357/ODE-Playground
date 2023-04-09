@@ -6,7 +6,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <math.h>
 #include "taylor-ode.h"
 
@@ -147,11 +146,11 @@ static void compare (char* name, series a, series b) {
 
 int main (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
-    assert(argc == 4 || argc == 5);
+    CHECK(argc == 4 || argc == 5);
 
     real PI_2 = 0.5L * acosl(-1.0L);
     n = (int)strtol(argv[1], NULL, BASE);
-    assert(n > 1);
+    CHECK(n > 1);
     series x = t_jet(n + 1); x[0] = strtold(argv[2], NULL); for (int k = 1; k <= n; k++) x[k] = x[0] / (k * k);
     tolerance = strtold(argv[3], NULL);
     if (argc == 5) debug = (int)strtol(argv[4], NULL, BASE);
