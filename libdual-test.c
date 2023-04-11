@@ -59,13 +59,7 @@ int main (int argc, char **argv) {
 
     bool positive = x.val > 0.0L, non_zero = x.val != 0.0L, lt_pi_2 = fabsl(x.val) < PI_2;
 
-    dual abs_x = d_dual(0.0L), inv_x = d_dual(0.0L), sqr_x = d_dual(0.0L), sqrt_x = d_dual(0.0L);
-    dual sqr_sin_x = d_dual(0.0L), sqr_cos_x = d_dual(0.0L);
-    dual exp_x = d_dual(0.0L), neg_exp_x = d_dual(0.0L), ln_x = d_dual(0.0L);
-    dual sin = d_dual(0.0L), sin_2x = d_dual(0.0L);
-    dual cos = d_dual(0.0L), cos_2x = d_dual(0.0L);
-    dual tan = d_dual(0.0L);
-    dual gd_1 = d_dual(0.0L);
+    dual abs_x, inv_x, sqr_x, sqrt_x, sqr_sin_x, sqr_cos_x, exp_x, neg_exp_x, ln_x, sin, sin_2x, cos, cos_2x, tan, gd_1;
 
     dual d1 = d_dual(1.0L);
     dual xpx = d_scale(x, 2.0L);
@@ -73,7 +67,7 @@ int main (int argc, char **argv) {
     fprintf(stderr, "%sDual Numbers: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x.val, NRM);
 
     sqr_x = d_sqr(x);
-    if (non_zero) inv_x = d_inv(x);
+    if (positive || non_zero) inv_x = d_inv(x);
     if (positive) sqrt_x = d_sqrt(x);
 
     char* name = "x * x == sqr(x)"; compare(name, d_mul(x, x), sqr_x);
