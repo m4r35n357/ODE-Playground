@@ -8,7 +8,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include "symplectic.h"
 #include "dual.h"
 
@@ -22,7 +21,7 @@ typedef struct Parameters {
 
 void *get_p (int argc, char **argv) { (void)argc;
     CHECK(argc == 8);
-    parameters *p = malloc(sizeof (parameters));
+    parameters *p = malloc(sizeof (parameters)); CHECK(p);
     p->m = strtold(argv[5], NULL);
     p->k = strtold(argv[6], NULL);
     p->l = strtold(argv[7], NULL);

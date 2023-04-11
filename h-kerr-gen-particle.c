@@ -73,7 +73,7 @@ static dual THETA (real theta, dual E, dual L, dual Q, real a) {
 }
 
 static kerr *get_p_gen (char **argv) {
-    kerr *k = malloc(sizeof (kerr));
+    kerr *k = malloc(sizeof (kerr)); CHECK(k);
     k->epsilon = strtold(argv[1], NULL);
     k->rmin = strtold(argv[2], NULL);
     k->rmax = strtold(argv[3], NULL);

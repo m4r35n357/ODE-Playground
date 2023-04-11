@@ -14,7 +14,7 @@ const int BASE = 10;
 
 controls *get_c_tsm (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
-    controls *c = malloc(sizeof (controls));
+    controls *c = malloc(sizeof (controls)); CHECK(c);
     c->order = (int)strtol(argv[2], NULL, BASE); CHECK(c->order >= 2 && c->order <= 64);
     c->step_size = strtold(argv[3], NULL);       CHECK(c->step_size > 0.0L);
     c->steps = (int)strtol(argv[4], NULL, BASE); CHECK(c->steps >= 0 && c->steps <= 1000000);
@@ -22,7 +22,7 @@ controls *get_c_tsm (int argc, char **argv) {
 }
 
 series3 *initial_values (char **argv, int order) {
-    series3 *jets = malloc(sizeof (series3));
+    series3 *jets = malloc(sizeof (series3)); CHECK(jets);
     jets->x = t_jet(order + 1); jets->x[0] = strtold(argv[5], NULL);
     jets->y = t_jet(order + 1); jets->y[0] = strtold(argv[6], NULL);
     jets->z = t_jet(order + 1); jets->z[0] = strtold(argv[7], NULL);
@@ -48,8 +48,7 @@ void t_out (int dp, real x, real y, real z, real t, char *x_tag, char *y_tag, ch
 }
 
 series t_jet (int n) {
-    series s = malloc((size_t)n * sizeof (real));
-    CHECK(s);
+    series s = malloc((size_t)n * sizeof (real)); CHECK(s);
     return s;
 }
 

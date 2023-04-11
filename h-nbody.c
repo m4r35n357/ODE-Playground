@@ -4,19 +4,18 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <math.h>
 #include "symplectic.h"
 #include "h-nbody.h"
 
-nbody *get_p_nbody (int argc, char **argv, int n_bodies) {
-    CHECK(argc == 6 + 7 * n_bodies);
-    nbody *nb = malloc(sizeof (nbody));
-    nb->g = strtold(argv[5], NULL);
-    nb->n = n_bodies;
-    nb->bodies = malloc((size_t)nb->n * sizeof (body));
+nbody *get_p_nbody (int argc, char **argv) {
+    CHECK((argc - 6) % 7 == 0);
+    nbody *nb = malloc(sizeof (nbody)); CHECK(nb);
+    nb->g = strtold(argv[5], NULL); CHECK(nb->g > 0.0L);
+    nb->n = (argc - 6) / 7;
+    nb->bodies = malloc((size_t)nb->n * sizeof (body)); CHECK(nb->bodies);
     for (int i = 0; i < nb->n; i++) {
-        nb->bodies[i].m = strtold(argv[7 * i + 6], NULL);
+        nb->bodies[i].m = strtold(argv[7 * i + 6], NULL); CHECK(nb->bodies[i].m > 0.0L);
         nb->bodies[i].r = (float)powl(nb->bodies[i].m, 1.0L / 3.0L);
         nb->bodies[i].x = strtold(argv[7 * i + 7], NULL);
         nb->bodies[i].y = strtold(argv[7 * i + 8], NULL);

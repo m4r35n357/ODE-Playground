@@ -8,14 +8,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include "taylor-ode.h"
 
 typedef struct Parameters { real a, b, c, d; series wa, wb; } parameters;
 
 void *get_p (int argc, char **argv, int n) {
     CHECK(argc == 12);
-    parameters *p = malloc(sizeof (parameters));
+    parameters *p = malloc(sizeof (parameters)); CHECK(p);
     t_params(argv, argc, &p->a, &p->b, &p->c, &p->d);
     p->wa = t_jet(n);
     p->wb = t_jet(n);

@@ -14,7 +14,7 @@ typedef struct Parameters { real c, d; } parameters;
 
 void *get_p (int argc, char **argv) { (void)argc; (void)argv;
     CHECK(argc == 5);
-    parameters *p = malloc(sizeof (parameters));
+    parameters *p = malloc(sizeof (parameters)); CHECK(p);
     p->c = 0.0L;
     p->d = 0.0L;
     return p;

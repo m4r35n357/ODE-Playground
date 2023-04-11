@@ -4,7 +4,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <math.h>
 #include "symplectic.h"
 #include "h-kerr.h"
@@ -37,12 +36,12 @@ static void refresh (kerr *k) {
 
 kerr *get_p_kerr (int argc, char **argv, real step_size) {
     CHECK(argc == 13);
-    kerr *k = malloc(sizeof (kerr));
+    kerr *k = malloc(sizeof (kerr)); CHECK(k);
     k->step_size = step_size;
-    k->a = strtold(argv[5], NULL);  // constants
+    k->a = strtold(argv[5], NULL);          CHECK(k->a >= -1.0L && k->a <= 1.0L);  // constants
     k->mu2 = strtold(argv[6], NULL) == 0.0L ? 0.0L : 1.0L;
-    k->E = strtold(argv[7], NULL);
-    real m_factor = strtold(argv[9], NULL);
+    k->E = strtold(argv[7], NULL);          CHECK(k->E >= 0.0L);
+    real m_factor = strtold(argv[9], NULL); CHECK(m_factor >= 0.0L && m_factor <= 1.0L);
     k->L = strtold(argv[8], NULL) * m_factor;
     k->Q = strtold(argv[10], NULL) * m_factor;
     k->a2 = k->a * k->a;

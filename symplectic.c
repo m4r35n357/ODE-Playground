@@ -13,7 +13,7 @@ const int BASE = 10;
 
 controls *get_c_symp (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
-    controls *c = malloc(sizeof (controls));
+    controls *c = malloc(sizeof (controls)); CHECK(c);
     c->order = (int)strtol(argv[2], NULL, BASE); CHECK(c->order >= 2 && c->order <= 10 && c->order % 2 == 0);
     c->step_size = strtold(argv[3], NULL);       CHECK(c->step_size > 0.0L);
     c->steps = (int)strtol(argv[4], NULL, BASE); CHECK(c->steps >= 0 && c->steps <= 1000000);

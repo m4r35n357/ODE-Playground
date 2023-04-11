@@ -105,7 +105,7 @@ static void ad_atan (series at, series du_df, series u, bool trig) {
 }
 
 void *get_p (int argc, char **argv, int order) { (void)argc; (void)argv; (void)order;
-    parameters *p = malloc(sizeof (parameters));
+    parameters *p = malloc(sizeof (parameters)); CHECK(p);
     p->a = PLUS1;
     p->b = ZERO;
     p->c = MINUS1;
@@ -181,7 +181,7 @@ int main (int argc, char **argv) {
     int dp = 12;
     controls c = {.order=n, .step=0, .steps=10, .step_size=0.1L};
     void *p = get_p(argc, argv, n);
-    series3 *j = malloc(sizeof (series3));
+    series3 *j = malloc(sizeof (series3)); CHECK(j);
 
     fprintf(stdout, "%sTaylor Series Method (stdout): x'=1  y'=0  z'=-1%s\n", WHT, NRM);
     j->x = t_jet(n + 1); j->x[0] = 1.0L;

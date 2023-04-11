@@ -5,7 +5,6 @@
  */
 
 #include <stdio.h>
-#include <assert.h>
 #include <GL/freeglut.h>
 #include "taylor-ode.h"
 #include "opengl.h"
@@ -54,8 +53,8 @@ int main (int argc, char **argv) {
     jets = initial_values(argv, c->order);
 
     length = (int)strtol(argv[1], NULL, BASE); CHECK(length >= 0 && length <= c->steps);
-    t = malloc(sizeof (trail));
-    t->points = malloc((size_t)length * sizeof (point));
+    t = malloc(sizeof (trail)); CHECK(t);
+    t->points = malloc((size_t)length * sizeof (point)); CHECK(t->points);
     t->points[newest] = get_current_point(jets);
 
     ApplicationInit(argc, argv, "ODE Plotter");

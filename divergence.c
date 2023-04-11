@@ -10,9 +10,8 @@
 int main(int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     CHECK(argc >= 4);
-    FILE *fileA = fopen(argv[1], "r");
-    FILE *fileB = fopen(argv[2], "r");
-    CHECK(fileA && fileB);
+    FILE *fileA = fopen(argv[1], "r"); CHECK(fileA);
+    FILE *fileB = fopen(argv[2], "r"); CHECK(fileB);
     real xA, yA, zA, xB, yB, zB, tA, tB, cpuA, cpuB;
     char tag[1];
     for (int i = 3; i < argc; i++) {

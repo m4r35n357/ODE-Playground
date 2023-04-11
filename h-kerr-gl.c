@@ -5,7 +5,6 @@
  */
 
 #include <stdio.h>
-#include <assert.h>
 #include <math.h>
 #include <GL/freeglut.h>
 #include "symplectic.h"
@@ -67,8 +66,8 @@ int main (int argc, char **argv) {
     RAD_TO_DEG = 180.0L / acosl(-1.0L);
 
     length = (int)strtol(argv[1], NULL, BASE); CHECK(length >= 0 && length <= c->steps);
-    t = malloc(sizeof (trail));
-    t->points = malloc((size_t)length * sizeof (point));
+    t = malloc(sizeof (trail)); CHECK(t);
+    t->points = malloc((size_t)length * sizeof (point)); CHECK(t->points);
     t->points[newest] = get_current_point(k);
 
     ApplicationInit(argc, argv, "Black Hole Orbit Plotter");
