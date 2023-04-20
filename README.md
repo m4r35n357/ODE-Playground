@@ -1,6 +1,7 @@
 
 ## STATUS: feature-complete
-No planned new features, and no known bugs ;)
+
+No planned new features, no known bugs, good test coverage, clean static analysis.
 
 ## OpenGL display
 
@@ -44,7 +45,7 @@ sudo apt install bc git build-essential gnuplot-x11 lcov freeglut3-dev glew-util
 ```
 Optional:
 ```
-sudo apt install yad ffmpeg google-perftools libgoogle-perftools-dev
+sudo apt install yad ffmpeg google-perftools libgoogle-perftools-dev clang-tools
 ```
 ### Download
 ```
@@ -174,23 +175,28 @@ make clean && make CCC=cov
 make coverage
 ```
 see local HTML link at the end of the output.
-Note that any of the programs that you run from this point will add to the coverage output.
+Note that any of the programs that you run from this point onwards will add to the coverage output.
 
 ### Profiling examples
 
-#### Google performance tools:
+#### Google performance tools (requires google-perftools & libgoogle-perftools-dev packages on Debian)
 ```
 make clean && make CCC=gpt
 export CPUPROFILE=/tmp/$USER/prof.out
-./tsm-lorenz-std  6 16 .01 1000000  -15.8 -17.48 35.64  10 28 8 3 >/tmp/$USER/data
+./tsm-lorenz-std  6 16 .01 100000  -15.8 -17.48 35.64  10 28 8 3 >/tmp/$USER/data
 google-pprof --text ./tsm-lorenz-std $CPUPROFILE
 ```
 
 #### GCC gprof
 ```
 make clean && make CCC=prof
-./tsm-lorenz-std  6 16 .01 1000000  -15.8 -17.48 35.64  10 28 8 3 >/tmp/$USER/data
+./tsm-lorenz-std  6 16 .01 100000  -15.8 -17.48 35.64  10 28 8 3 >/tmp/$USER/data
 gprof -p -b ./tsm-lorenz-std gmon.out 
+```
+
+### Static Analysis (requires clang-tools package on Debian)
+```
+make clean && scan-build make
 ```
 
 ### Find examples for ODE parameters and many other things:
