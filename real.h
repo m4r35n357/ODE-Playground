@@ -38,4 +38,4 @@ typedef struct Controls {
 #define PRINT_ARGS(argc, argv) fprintf(stderr, "argc: %d, argv: [ ", argc); \
     for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
 
-#define CHECK(x) do { if(!(x)) { fprintf(stderr, "TERMINATED - %s:%i [%s]\n", __FILE__, __LINE__, #x); exit(1); } } while (0)
+#define CHECK(x) do { if(!(x)) { fprintf(stderr, "FAIL [%s] %s:%i\n", #x, __FILE__, __LINE__); exit(1); } } while (0)
