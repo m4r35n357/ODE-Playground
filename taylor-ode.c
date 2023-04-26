@@ -48,6 +48,7 @@ void t_out (int dp, real x, real y, real z, real t, char *x_tag, char *y_tag, ch
 }
 
 series t_jet (int n) {
+    CHECK(n > 0);
     series s = malloc((size_t)n * sizeof (real)); CHECK(s);
     return s;
 }
@@ -78,6 +79,7 @@ static void tsm_step (series3 *j, void *p, int n, real h) {
 }
 
 void tsm_stdout (int dp, controls *c, series3 *jets, void *p, clock_t t0) {
+    CHECK(dp > 0); CHECK(c); CHECK(jets); CHECK(p); CHECK(t0);
     components s = {0.0L, 0.0L, 0.0L};
     for (int step = 0; step < c->steps; step++) {
         t_out(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * step,
@@ -89,6 +91,7 @@ void tsm_stdout (int dp, controls *c, series3 *jets, void *p, clock_t t0) {
 }
 
 bool tsm_gen (controls *c, series3 *jets, void *p) {
+    CHECK(c); CHECK(jets); CHECK(p);
     static bool looping = false;
     if (looping) goto resume; else looping = true;
     for (c->step = 0; c->step < c->steps; c->step++) {
@@ -116,8 +119,7 @@ real t_sqr (series u, int k) {
 }
 
 real t_div (series q, series u, series v, int k) {
-    CHECK(v[0] != 0.0L);
-    CHECK(q != u && q != v);
+    CHECK(v[0] != 0.0L); CHECK(q != u && q != v);
     if (!k) return q[0] = (u ? u[0] : 1.0L) / v[0];
     real _d = 0.0L;
     for (int j = 0; j < k; j++) _d += q[j] * v[k - j];
@@ -125,8 +127,7 @@ real t_div (series q, series u, series v, int k) {
 }
 
 real t_sqrt (series r, series u, int k) {
-    CHECK(u[0] > 0.0L);
-    CHECK(r != u);
+    CHECK(u[0] > 0.0L); CHECK(r != u);
     if (!k) return r[0] = sqrtl(u[0]);
     real _r = 0.0L;
     for (int j = 1; j <= (k - (k % 2 ? 1 : 2)) / 2; j++) _r += r[j] * r[k - j];
@@ -163,8 +164,7 @@ pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
 }
 
 real t_pwr (series p, series u, real a, int k) {
-    CHECK(u[0] > 0.0L);
-    CHECK(p != u);
+    CHECK(u[0] > 0.0L); CHECK(p != u);
     if (!k) return p[0] = powl(u[0], a);
     real _p = 0.0L;
     for (int j = 0; j < k; j++) _p += (a * (k - j) - j) * p[j] * u[k - j];
@@ -172,8 +172,7 @@ real t_pwr (series p, series u, real a, int k) {
 }
 
 real t_ln (series l, series u, int k) {
-    CHECK(u[0] > 0.0L);
-    CHECK(l != u);
+    CHECK(u[0] > 0.0L); CHECK(l != u);
     if (!k) return l[0] = logl(u[0]);
     real _l = 0.0L;
     for (int j = 1; j < k; j++) _l += j * l[j] * u[k - j];
@@ -181,8 +180,7 @@ real t_ln (series l, series u, int k) {
 }
 
 pair t_asin (series a, series g, series u, int k, bool trig) {
-    CHECK(trig ? u[0] >= -1.0L && u[0] <= 1.0L : 1);
-    CHECK(a != g && a != u && g != u);
+    CHECK(trig ? u[0] >= -1.0L && u[0] <= 1.0L : 1); CHECK(a != g && a != u && g != u);
     if (!k) return (pair){
         a[0] = trig ? asinl(u[0]) : asinhl(u[0]),
         g[0] = trig ? sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] + 1.0L)
@@ -195,8 +193,7 @@ pair t_asin (series a, series g, series u, int k, bool trig) {
 }
 
 pair t_acos (series a, series g, series u, int k, bool trig) {
-    CHECK(trig ? u[0] >= -1.0L && u[0] <= 1.0L : u[0] >= 1.0L);
-    CHECK(a != g && a != u && g != u);
+    CHECK(trig ? u[0] >= -1.0L && u[0] <= 1.0L : u[0] >= 1.0L); CHECK(a != g && a != u && g != u);
     if (!k) return (pair){
         a[0] = trig ? acosl(u[0]) : acoshl(u[0]),
         g[0] = trig ? - sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] - 1.0L)
@@ -209,8 +206,7 @@ pair t_acos (series a, series g, series u, int k, bool trig) {
 }
 
 pair t_atan (series a, series g, series u, int k, bool trig) {
-    CHECK(trig ? 1 : u[0] >= -1.0L && u[0] <= 1.0L);
-    CHECK(a != g && a != u && g != u);
+    CHECK(trig ? 1 : u[0] >= -1.0L && u[0] <= 1.0L); CHECK(a != g && a != u && g != u);
     if (!k) return (pair){a[0] = trig ? atanl(u[0]) : atanhl(u[0]), g[0] = trig ? 1.0L + u[0] * u[0] : 1.0L - u[0] * u[0]};
     real _a = 0.0L, _g = 0.0L;
     for (int j = 1; j < k; j++) _a += j * a[j] * g[k - j];

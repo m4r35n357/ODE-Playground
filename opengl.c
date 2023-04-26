@@ -129,6 +129,7 @@ void buffer_point () {
 }
 
 void line_trail (trail *track) {
+    CHECK(track);
     glColor3f(track->colour.a, track->colour.b, track->colour.c);
     glBegin(GL_LINE_STRIP);
     for (int i = oldest; i != newest; i = (i + 1) % length) {  // read buffers
@@ -139,6 +140,7 @@ void line_trail (trail *track) {
 }
 
 void line_position (point p, rgb colour, float scale) {
+    CHECK(scale > 0.0L);
     glColor3f(0.3F, 0.3F, 0.3F);
     glBegin(GL_LINES);
     glVertex3f(0.0F, 0.0F, 0.0F);
@@ -152,6 +154,7 @@ void line_position (point p, rgb colour, float scale) {
 }
 
 void osd (int x, int y, char *string) {
+    CHECK(x > 0); CHECK(y > 0); CHECK(string);
     glWindowPos2i(x, y);
     glutBitmapString(GLUT_BITMAP_9_BY_15, (const unsigned char *)string);
 }
