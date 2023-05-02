@@ -2,6 +2,8 @@
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
+echo "[$0 $*]" >&2
+
 fileA="/tmp/$USER/dataA"  # results of the "better" simulation
 fileB="/tmp/$USER/dataB"  # results of the requested simulation
 
@@ -15,6 +17,5 @@ halfstep () {  # step / 2
     steps=$(($5 * 2))
     shift 5
     end="$*"
-    echo 'Better:' $start $step $steps $end >&2
-    $start $step $steps $end | /usr/bin/sed -n '1~2p' >$fileA &
+    $start $step $steps $end | /bin/sed -n '1~2p' >$fileA &
 }

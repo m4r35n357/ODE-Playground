@@ -3,8 +3,6 @@
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
-echo "Clean Numerical Simulation: [$0 $*]" >&2
-
 method=$1
 threshold=$2
 shift 2
