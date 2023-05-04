@@ -44,9 +44,14 @@ void t_params (char **argv, int count, ...);
 void t_out (int dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label, clock_t since);
 
 /*
- * Creates a zeroed Taylor Series jet with the specified number of elements
+ * Creates a Taylor Series "jet" with the specified number of elements
  */
 series t_jet (int size);
+
+/*
+ * Set up a constant jet of value a
+ */
+series t_const (int size, real a);
 
 /*
  * Safely and efficiently evaluates a polynomial of degree n, with the coefficients in S, and the variable in h

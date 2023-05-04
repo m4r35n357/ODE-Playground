@@ -10,13 +10,14 @@
 #include <stdlib.h>
 #include "taylor-ode.h"
 
-typedef struct Parameters { real a, b, c; series x2py2; } parameters;
+typedef struct Parameters { real a, b, c; series x2py2, wb; } parameters;
 
 void *get_p (int argc, char **argv, int n) {
     CHECK(argc == 11);
     parameters *p = malloc(sizeof (parameters)); CHECK(p);
     t_params(argv, argc, &p->a, &p->b, &p->c);
     p->x2py2 = t_jet(n);
+    p->wb = t_const(n, p->b);
     return p;
 }
 
@@ -26,6 +27,6 @@ components ode (series x, series y, series z, void *params, int k) {
     return (components) {
         .x = z[k] - y[k],
         .y = x[k] - p->a * y[k],
-        .z = (!k ? p->b : 0.0L) + p->c * z[k] - t_mul(p->x2py2, z, k)
+        .z = p->wb[k] + p->c * z[k] - t_mul(p->x2py2, z, k)
     };
 }

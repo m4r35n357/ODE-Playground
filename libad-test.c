@@ -25,83 +25,117 @@ static const real PLUS1 = 1.0L, ZERO = 0.0L, MINUS1 = -1.0L;
 typedef struct Parameters { real a, b, c; } parameters;
 
 static series ad_scale (series s, series u, real a) {
-    for (int k = 0; k < n; k++) s[k] = u[k] * a;
+    for (int k = 0; k < n; k++) {
+        s[k] = u[k] * a;
+    }
     return s;
 }
 
 static series ad_add (series p, series u, series v) {
-    for (int k = 0; k < n; k++) p[k] = u[k] + v[k];
+    for (int k = 0; k < n; k++) {
+        p[k] = u[k] + v[k];
+    }
     return p;
 }
 
 static series ad_sub (series m, series u, series v) {
-    for (int k = 0; k < n; k++) m[k] = u[k] - v[k];
+    for (int k = 0; k < n; k++) {
+        m[k] = u[k] - v[k];
+    }
     return m;
 }
 
 static series ad_abs (series a, series u) {
-    for (int k = 0; k < n; k++) a[k] = t_abs(u, k);
+    for (int k = 0; k < n; k++) {
+        a[k] = t_abs(u, k);
+    }
     return a;
 }
 
 static series ad_mul (series p, series u, series v) {
-    for (int k = 0; k < n; k++) p[k] = t_mul(u, v, k);
+    for (int k = 0; k < n; k++) {
+        p[k] = t_mul(u, v, k);
+    }
     return p;
 }
 
 static series ad_div (series q, series u, series v) {
-    for (int k = 0; k < n; k++) t_div(q, u, v, k);
+    for (int k = 0; k < n; k++) {
+        t_div(q, u, v, k);
+    }
     return q;
 }
 
 static series ad_inv (series i, series v) {
-    for (int k = 0; k < n; k++) t_div(i, NULL, v, k);
+    for (int k = 0; k < n; k++) {
+        t_div(i, NULL, v, k);
+    }
     return i;
 }
 
 static series ad_sqr (series s, series u) {
-    for (int k = 0; k < n; k++) s[k] = t_sqr(u, k);
+    for (int k = 0; k < n; k++) {
+        s[k] = t_sqr(u, k);
+    }
     return s;
 }
 
 static series ad_sqrt (series r, series u) {
-    for (int k = 0; k < n; k++) t_sqrt(r, u, k);
+    for (int k = 0; k < n; k++) {
+        t_sqrt(r, u, k);
+    }
     return r;
 }
 
 static series ad_exp (series e, series u) {
-    for (int k = 0; k < n; k++) t_exp(e, u, k);
+    for (int k = 0; k < n; k++) {
+        t_exp(e, u, k);
+    }
     return e;
 }
 
 static void ad_sin_cos (series s, series c, series u, bool trig) {
-    for (int k = 0; k < n; k++) t_sin_cos(s, c, u, k, trig);
+    for (int k = 0; k < n; k++) {
+        t_sin_cos(s, c, u, k, trig);
+    }
 }
 
 static void ad_tan_sec2 (series t, series s2, series u, bool trig) {
-    for (int k = 0; k < n; k++) t_tan_sec2(t, s2, u, k, trig);
+    for (int k = 0; k < n; k++) {
+        t_tan_sec2(t, s2, u, k, trig);
+    }
 }
 
 static series ad_pwr (series p, series u, real a) {
-    for (int k = 0; k < n; k++) t_pwr(p, u, a, k);
+    for (int k = 0; k < n; k++) {
+        t_pwr(p, u, a, k);
+    }
     return p;
 }
 
 static series ad_ln (series l, series u) {
-    for (int k = 0; k < n; k++) t_ln(l, u, k);
+    for (int k = 0; k < n; k++) {
+        t_ln(l, u, k);
+    }
     return l;
 }
 
 static void ad_asin (series as, series du_df, series u, bool trig) {
-    for (int k = 0; k < n; k++) t_asin(as, du_df, u, k, trig);
+    for (int k = 0; k < n; k++) {
+        t_asin(as, du_df, u, k, trig);
+    }
 }
 
 static void ad_acos (series ac, series du_df, series u, bool trig) {
-    for (int k = 0; k < n; k++) t_acos(ac, du_df, u, k, trig);
+    for (int k = 0; k < n; k++) {
+        t_acos(ac, du_df, u, k, trig);
+    }
 }
 
 static void ad_atan (series at, series du_df, series u, bool trig) {
-    for (int k = 0; k < n; k++) t_atan(at, du_df, u, k, trig);
+    for (int k = 0; k < n; k++) {
+        t_atan(at, du_df, u, k, trig);
+    }
 }
 
 void *get_p (int argc, char **argv, int order) { (void)argc; (void)argv; (void)order;
@@ -148,14 +182,18 @@ int main (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     CHECK(argc == 4 || argc == 5);
 
-    real PI_2 = 0.5L * acosl(-1.0L);
-    n = (int)strtol(argv[1], NULL, BASE);
-    CHECK(n > 1);
-    series x = t_jet(n + 1); x[0] = strtold(argv[2], NULL); for (int k = 1; k <= n; k++) x[k] = x[0] / (k * k);
-    tolerance = strtold(argv[3], NULL);
-    if (argc == 5) debug = (int)strtol(argv[4], NULL, BASE);
+    n = (int)strtol(argv[1], NULL, BASE); CHECK(n > 0);
+    series x = t_jet(n + 1);
+    x[0] = strtold(argv[2], NULL);
+    for (int k = 1; k <= n; k++) {
+        x[k] = x[0] / (k * k);
+    }
+    tolerance = strtold(argv[3], NULL); CHECK(tolerance > 0.0L);
+    if (argc == 5) {
+        debug = (int)strtol(argv[4], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
+     }
 
-    bool positive = x[0] > 0.0L, non_zero = x[0] != 0.0L, lt_pi_2 = fabsl(x[0]) < PI_2;
+    bool positive = x[0] > 0.0L, non_zero = x[0] != 0.0L, lt_pi_2 = fabsl(x[0]) < 0.5L * acosl(-1.0L);
 
     series abs_x = t_jet(n), inv_x = t_jet(n), sqr_x = t_jet(n), sqrt_x = t_jet(n);
     series sin2_x = t_jet(n), cos2_x = t_jet(n), tan2_x = t_jet(n);
@@ -166,10 +204,10 @@ int main (int argc, char **argv) {
     series tan_x = t_jet(n), sec2_x = t_jet(n), tanh_x = t_jet(n), sech2_x = t_jet(n);
     series gd_1 = t_jet(n), r1 = t_jet(n), r2 = t_jet(n), r3 = t_jet(n);
 
-    series S1 = t_jet(n); S1[0] = 1.0L;
+    series S1 = t_const(n, 1.0L);
 
     fprintf(stdout, "%sHorner Summation%s\n", WHT, NRM);
-    series s = t_jet(n >= 7 ? n : 7);
+    series s = t_jet(n >= 8 ? n : 8);
     s[0] = 1.0L; s[1] = 3.0L; s[2] = 0.0L; s[3] = 2.0L;
     fprintf(stdout, " 23 %8.3Lf\n", t_horner(s, 3, 2.0L));
     s[0] = 3; s[1] = -1.0L; s[2] = 2.0L; s[3] = -4.0L; s[4] = 0.0L; s[5] = 1.0L;
@@ -183,15 +221,15 @@ int main (int argc, char **argv) {
     series3 *j = malloc(sizeof (series3)); CHECK(j);
 
     fprintf(stdout, "%sTaylor Series Method (stdout): x'=1  y'=0  z'=-1%s\n", WHT, NRM);
-    j->x = t_jet(n + 1); j->x[0] = 1.0L;
-    j->y = t_jet(n + 1); j->y[0] = 1.0L;
-    j->z = t_jet(n + 1); j->z[0] = 1.0L;
+    j->x = t_const(n + 1, 1.0L);
+    j->y = t_const(n + 1, 1.0L);
+    j->z = t_const(n + 1, 1.0L);
     tsm_stdout(dp, &c, j, p, clock());
 
     fprintf(stdout, "%sTaylor Series Method (generator): x'=1  y'=0  z'=-1%s\n", WHT, NRM);
-    j->x[0] = 1.0L;
-    j->y[0] = 1.0L;
-    j->z[0] = 1.0L;
+    j->x = t_const(n + 1, 1.0L);
+    j->y = t_const(n + 1, 1.0L);
+    j->z = t_const(n + 1, 1.0L);
     fprintf(stdout, "%+.*Le %+.*Le %+.*Le %.6Le\n", dp, j->x[0], dp, j->y[0], dp, j->z[0], 0.0L);
     while (tsm_gen(&c, j, p)) {
         fprintf(stdout, "%+.*Le %+.*Le %+.*Le %.6Le\n", dp, j->x[0], dp, j->y[0], dp, j->z[0], (c.step + 1) * c.step_size);
