@@ -6,7 +6,7 @@ set -e
 
 make clean
 time -p make -s -j 4 all
-make test
+make test-all
 
 echo ""
 echo "\033[37;1mCommitting . . .\033[0m"

@@ -104,6 +104,8 @@ test:
 	@for x in -.5 0 .5; do \
 		./libad-test 20 $$x 1e-15 >/dev/null || exit 1; ./libdual-test $$x 1e-15 >/dev/null || exit 1; \
 	done
+
+test-all: test
 	@if ! ./tsm-lorenz-std  6 8 .01 1000  -15.8 -17.48 35.64  10 28 8 3 >/dev/null; then exit 1; fi
 	@if ! ./h-newton-std  6 10 1 1000  1 12 .6 >/dev/null; then exit 1; fi
 	@if ! ./h-kerr-std 6 8 0.010 1000 0.8 1.0 0.9455050956749083 1.434374509531738 1.0 7.978759958927879 12.0 63.0 >/dev/null; then exit 1; fi
