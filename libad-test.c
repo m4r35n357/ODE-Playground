@@ -20,8 +20,6 @@ static int n, debug = 0, total = 0, passed = 0, skipped = 0;
 
 static real delta, tolerance;
 
-static const real PLUS1 = 1.0L, ZERO = 0.0L, MINUS1 = -1.0L;
-
 typedef struct Parameters { real a, b, c; } parameters;
 
 static series ad_scale (series s, series u, real a) {
@@ -138,14 +136,6 @@ static void ad_atan (series at, series du_df, series u, bool trig) {
     }
 }
 
-void *get_p (int argc, char **argv, int order) { (void)argc; (void)argv; (void)order;
-    parameters *p = malloc(sizeof (parameters)); CHECK(p);
-    p->a = PLUS1;
-    p->b = ZERO;
-    p->c = MINUS1;
-    return p;
-}
-
 components ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
     return (components) {
@@ -193,8 +183,30 @@ int main (int argc, char **argv) {
         debug = (int)strtol(argv[4], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
      }
 
-    bool positive = x[0] > 0.0L, non_zero = x[0] != 0.0L, lt_pi_2 = fabsl(x[0]) < 0.5L * acosl(-1.0L);
+    fprintf(stderr, "%sHorner Summation%s\n", WHT, NRM);
+    series s = t_jet(n >= 8 ? n : 8);
+    s[0] = 1.0L; s[1] = 3.0L; s[2] = 0.0L; s[3] = 2.0L;
+    CHECK(t_horner(s, 3, 2.0L) == 23); fprintf(stderr, ".");
+    s[0] = 3; s[1] = -1.0L; s[2] = 2.0L; s[3] = -4.0L; s[4] = 0.0L; s[5] = 1.0L;
+    CHECK(t_horner(s, 5, 3.0L) == 153); fprintf(stderr, ".");
+    s[0] = 1.0L; s[1] = -4.0L; s[2] = 0.0L; s[3] = 0.0L; s[4] = 2.0L; s[5] = 3.0L; s[6] = 0.0L; s[7] = -2.0L;
+    CHECK(t_horner(s, 7, -2.0L) == 201); fprintf(stderr, ".%sOK%s\n", GRN, NRM);
 
+    fprintf(stderr, "%sTaylor Series Method (generator): x'=x  y'=0  z'=-z%s\n", WHT, NRM);
+    controls c = {.order=n, .step=0, .steps=10, .step_size=0.1L};
+    parameters p = {.a=1, .b=0, .c=-1}, result = {.a=expl(p.a), .b=expl(p.b), .c=expl(p.c)};
+    series3 *j = malloc(sizeof (series3)); CHECK(j);
+    j->x = t_const(n + 1, 1.0L);
+    j->y = t_const(n + 1, 1.0L);
+    j->z = t_const(n + 1, 1.0L);
+    while (tsm_gen(&c, j, &p)) fprintf(stderr, ".");
+    CHECK(fabsl(j->x[0] - result.a) < tolerance);
+    CHECK(fabsl(j->y[0] - result.b) < tolerance);
+    CHECK(fabsl(j->z[0] - result.c) < tolerance);
+    fprintf(stderr, "%sOK%s\n", GRN, NRM);
+
+    fprintf(stderr, "%sRecurrence Relations: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x[0], NRM);
+    bool positive = x[0] > 0.0L, non_zero = x[0] != 0.0L, lt_pi_2 = fabsl(x[0]) < 0.5L * acosl(-1.0L);
     series abs_x = t_jet(n), inv_x = t_jet(n), sqr_x = t_jet(n), sqrt_x = t_jet(n);
     series sin2_x = t_jet(n), cos2_x = t_jet(n), tan2_x = t_jet(n);
     series sinh2_x = t_jet(n), cosh2_x = t_jet(n), tanh2_x = t_jet(n);
@@ -202,43 +214,7 @@ int main (int argc, char **argv) {
     series sin_x = t_jet(n), sin_2x = t_jet(n), sinh_x = t_jet(n), sinh_2x = t_jet(n);
     series cos_x = t_jet(n), cos_2x = t_jet(n), cosh_x = t_jet(n), cosh_2x = t_jet(n);
     series tan_x = t_jet(n), sec2_x = t_jet(n), tanh_x = t_jet(n), sech2_x = t_jet(n);
-    series gd_1 = t_jet(n), r1 = t_jet(n), r2 = t_jet(n), r3 = t_jet(n);
-
-    series S1 = t_const(n, 1.0L);
-
-    fprintf(stdout, "%sHorner Summation%s\n", WHT, NRM);
-    series s = t_jet(n >= 8 ? n : 8);
-    s[0] = 1.0L; s[1] = 3.0L; s[2] = 0.0L; s[3] = 2.0L;
-    fprintf(stdout, " 23 %8.3Lf\n", t_horner(s, 3, 2.0L));
-    s[0] = 3; s[1] = -1.0L; s[2] = 2.0L; s[3] = -4.0L; s[4] = 0.0L; s[5] = 1.0L;
-    fprintf(stdout, "153 %8.3Lf\n", t_horner(s, 5, 3.0L));
-    s[0] = 1.0L; s[1] = -4.0L; s[2] = 0.0L; s[3] = 0.0L; s[4] = 2.0L; s[5] = 3.0L; s[6] = 0.0L; s[7] = -2.0L;
-    fprintf(stdout, "201 %8.3Lf\n", t_horner(s, 7, -2.0L));
-
-    int dp = 12;
-    controls c = {.order=n, .step=0, .steps=10, .step_size=0.1L};
-    void *p = get_p(argc, argv, n);
-    series3 *j = malloc(sizeof (series3)); CHECK(j);
-
-    fprintf(stdout, "%sTaylor Series Method (stdout): x'=1  y'=0  z'=-1%s\n", WHT, NRM);
-    j->x = t_const(n + 1, 1.0L);
-    j->y = t_const(n + 1, 1.0L);
-    j->z = t_const(n + 1, 1.0L);
-    tsm_stdout(dp, &c, j, p, clock());
-
-    fprintf(stdout, "%sTaylor Series Method (generator): x'=1  y'=0  z'=-1%s\n", WHT, NRM);
-    j->x = t_const(n + 1, 1.0L);
-    j->y = t_const(n + 1, 1.0L);
-    j->z = t_const(n + 1, 1.0L);
-    fprintf(stdout, "%+.*Le %+.*Le %+.*Le %.6Le\n", dp, j->x[0], dp, j->y[0], dp, j->z[0], 0.0L);
-    while (tsm_gen(&c, j, p)) {
-        fprintf(stdout, "%+.*Le %+.*Le %+.*Le %.6Le\n", dp, j->x[0], dp, j->y[0], dp, j->z[0], (c.step + 1) * c.step_size);
-    }
-
-    fprintf(stdout, "%sTaylor Series Method Check: e^1  e^0  e^-1%s\n", WHT, NRM);
-    t_out(dp, expl(PLUS1), expl(ZERO), expl(MINUS1), c.step_size * c.steps, "_", "_", "_", clock());
-
-    fprintf(stderr, "%sRecurrence Relations: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x[0], NRM);
+    series gd_1 = t_jet(n), r1 = t_jet(n), r2 = t_jet(n), r3 = t_jet(n), S1 = t_const(n, 1.0L);
 
     ad_sqr(sqr_x, x);
     if (non_zero) ad_inv(inv_x, x);

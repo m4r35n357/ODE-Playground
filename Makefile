@@ -102,7 +102,9 @@ kerr-image: kerr-image.o
 
 test:
 	@for x in -.5 0 .5; do \
-		./libad-test 20 $$x 1e-15 >/dev/null || exit 1; ./libdual-test $$x 1e-15 >/dev/null || exit 1; \
+		./libad-test 20 $$x 1e-15 >/dev/null || exit 1; \
+		./libdual-test $$x 1e-15 >/dev/null || exit 1; \
+		echo ""; \
 	done
 
 test-all: test
