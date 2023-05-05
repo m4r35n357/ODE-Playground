@@ -4,7 +4,7 @@
 #
 
 args="$0 $*"
-echo ["$args"] >&2
+echo "[ \033[0;36m$args\033[0;37m ]" >&2
 
 start=$1
 end=$2

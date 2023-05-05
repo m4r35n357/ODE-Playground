@@ -35,7 +35,18 @@ typedef struct Controls {
     weights r2, r4, r6, r8;
 } controls;
 
-#define PRINT_ARGS(argc, argv) fprintf(stderr, "argc: %d, argv: [ ", argc); \
-    for (int i = 0; i < argc; i++) fprintf(stderr, "%s ", argv[i]); fprintf(stderr, "]\n");
+#define PRINT_ARGS(argc, argv) \
+    fprintf(stderr, "argc: %d, argv: [ \x1B[0;32m", argc); \
+    for (int i = 0; i < argc; i++) { \
+        fprintf(stderr, "%s ", argv[i]); \
+    } \
+    fprintf(stderr, "\x1B[0;37m]\n");
 
-#define CHECK(x) do { if(!(x)) { fprintf(stderr, "FAIL [%s] %s:%i\n", #x, __FILE__, __LINE__); exit(1); } } while (0)
+#define CHECK(x) do { \
+        if(!(x)) { \
+            fprintf(stderr, \
+                "\x1B[1;31mFAIL\x1B[0;37m \x1B[1;37m%s\x1B[0;37m \x1B[0;35m%s\x1B[0;37m:\x1B[0;35m%i\x1B[0;37m\n", \
+                #x, __FILE__, __LINE__); \
+            exit(1); \
+        } \
+    } while (0)

@@ -183,7 +183,7 @@ int main (int argc, char **argv) {
         debug = (int)strtol(argv[4], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
      }
 
-    fprintf(stderr, "%sHorner Summation%s\n", WHT, NRM);
+    fprintf(stderr, "%sHorner Summation%s", WHT, NRM);
     series s = t_jet(n >= 8 ? n : 8);
     s[0] = 1.0L; s[1] = 3.0L; s[2] = 0.0L; s[3] = 2.0L;
     CHECK(t_horner(s, 3, 2.0L) == 23); fprintf(stderr, ".");
@@ -192,7 +192,7 @@ int main (int argc, char **argv) {
     s[0] = 1.0L; s[1] = -4.0L; s[2] = 0.0L; s[3] = 0.0L; s[4] = 2.0L; s[5] = 3.0L; s[6] = 0.0L; s[7] = -2.0L;
     CHECK(t_horner(s, 7, -2.0L) == 201); fprintf(stderr, ".%sOK%s\n", GRN, NRM);
 
-    fprintf(stderr, "%sTaylor Series Method (generator): x'=x  y'=0  z'=-z%s\n", WHT, NRM);
+    fprintf(stderr, "%sTaylor Series Method (generator): x'=x  y'=0  z'=-z%s", WHT, NRM);
     controls c = {.order=n, .step=0, .steps=10, .step_size=0.1L};
     parameters p = {.a=1, .b=0, .c=-1}, result = {.a=expl(p.a), .b=expl(p.b), .c=expl(p.c)};
     series3 *j = malloc(sizeof (series3)); CHECK(j);
