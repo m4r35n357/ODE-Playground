@@ -30,8 +30,10 @@ static void second_order (controls *cont, void *p, real cd) { (void)cont;
     update_q(p, cd * 0.5L);
 }
 
-static void suzuki (controls *c, void *p, integrator base, real cd, weights w) {
-    for (int step = 0; step < 5; step++) base(c, p, cd * (step == 2 ? w.rev : w.fwd));
+static void suzuki (controls *c, void *p, integrator base, real cd, pair weights) {
+    for (int step = 0; step < 5; step++) {
+        base(c, p, cd * (step == 2 ? weights.b : weights.a));
+    }
 }
 
 static void base4 (controls *c, void *p, real cd) {
@@ -66,9 +68,9 @@ static void tenth_order (controls *c, void *p, real h) {
     base10(c, p, h);
 }
 
-static weights w (int order) {  // composition increases order by one, then symmetry bumps that to the next even order!
-    real f = 1.0L / (4.0L - powl(4.0L, 1.0L / (order + 1)));
-    return (weights){.fwd = f, .rev = 1.0L - 4.0L * f};
+static pair w (int order) {  // composition increases order by one, then symmetry bumps that to the next even order!
+    real forward = 1.0L / (4.0L - powl(4.0L, 1.0L / (order + 1)));
+    return (pair) { .a = forward, .b = 1.0L - 4.0L * forward };
 }
 
 static integrator get_integrator (controls *c) {

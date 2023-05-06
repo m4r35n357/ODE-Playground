@@ -22,10 +22,10 @@ void *get_p (int argc, char **argv, int n) {
     return p;
 }
 
-components ode (series x, series y, series z, void *params, int k) {
+triplet ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
     t_tan_sec2(p->tx, p->s2x, x, k, false);
-    return (components) {
+    return (triplet) {
         .x = y[k] - x[k],
         .y = - t_mul(z, p->tx, k),
         .z = - p->wa[k] + t_mul(x, y, k) + t_abs(y, k)

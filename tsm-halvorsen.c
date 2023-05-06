@@ -19,9 +19,9 @@ void *get_p (int argc, char **argv, int n) { (void)n;
     return p;
 }
 
-components ode (series x, series y, series z, void *params, int k) {
+triplet ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
-    return (components) {
+    return (triplet) {
         .x = - p->a * x[k] - 4.0L * (y[k] + z[k]) - t_sqr(y, k),
         .y = - p->a * y[k] - 4.0L * (z[k] + x[k]) - t_sqr(z, k),
         .z = - p->a * z[k] - 4.0L * (x[k] + y[k]) - t_sqr(x, k)

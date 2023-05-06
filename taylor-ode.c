@@ -76,7 +76,7 @@ static char *tag (series jet, real slope, char *min, char *max) {
 
 static void tsm_step (series3 *j, void *p, int n, real h) {
     for (int k = 0; k < n; k++) {
-        components v = ode(j->x, j->y, j->z, p, k);
+        triplet v = ode(j->x, j->y, j->z, p, k);
         j->x[k + 1] = v.x / (k + 1);
         j->y[k + 1] = v.y / (k + 1);
         j->z[k + 1] = v.z / (k + 1);
@@ -88,11 +88,11 @@ static void tsm_step (series3 *j, void *p, int n, real h) {
 
 void tsm_stdout (int dp, controls *c, series3 *jets, void *p, clock_t t0) {
     CHECK(dp > 0); CHECK(c); CHECK(jets); CHECK(p); CHECK(t0);
-    components s = {0.0L, 0.0L, 0.0L};
+    triplet s = {0.0L, 0.0L, 0.0L};
     for (int step = 0; step < c->steps; step++) {
         t_out(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * step,
               tag(jets->x, s.x, "x", "X"), tag(jets->y, s.y, "y", "Y"), tag(jets->z, s.z, "z", "Z"), t0);
-        s = (components){jets->x[1], jets->y[1], jets->z[1]};
+        s = (triplet){jets->x[1], jets->y[1], jets->z[1]};
         tsm_step(jets, p, c->order, c->step_size);
     }
     t_out(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * c->steps, "_", "_", "_", t0);

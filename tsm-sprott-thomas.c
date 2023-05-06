@@ -22,12 +22,12 @@ void *get_p (int argc, char **argv, int n) {
     return p;
 }
 
-components ode (series x, series y, series z, void *params, int k) {
+triplet ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
     p->ax[k] = p->a * x[k];
     p->ay[k] = p->a * y[k];
     p->az[k] = p->a * z[k];
-    return (components) {
+    return (triplet) {
         .x = t_sin_cos(p->say, p->cay, p->ay, k, true).a - p->b * t_tan_sec2(p->tx, p->s2x, x, k, true).a,
         .y = t_sin_cos(p->saz, p->caz, p->az, k, true).a - p->b * t_tan_sec2(p->ty, p->s2y, y, k, true).a,
         .z = t_sin_cos(p->sax, p->cax, p->ax, k, true).a - p->b * t_tan_sec2(p->tz, p->s2z, z, k, true).a

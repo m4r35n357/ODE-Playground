@@ -136,9 +136,9 @@ static void ad_atan (series at, series du_df, series u, bool trig) {
     }
 }
 
-components ode (series x, series y, series z, void *params, int k) {
+triplet ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
-    return (components) {
+    return (triplet) {
         .x = p->a * x[k],
         .y = p->b * y[k],
         .z = p->c * z[k]

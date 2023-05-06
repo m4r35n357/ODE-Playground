@@ -12,7 +12,7 @@ typedef struct Kerr {
     real a, a2, L2, aL, aE, a2xmu2_E2;  // global constants
     real step_size, tau, q_t, q_r, q_th, q_ph, v_t, v_r, v_th, v_ph;  // proper time, coordinates & velocities
     dual ra2, D, sth2, R, TH;  // global variables & potentials
-    components *coordinates;
+    triplet *coordinates;
     real rmin, rmax, thmax, epsilon;  // generator constraints and precision
     float horizon;
 } kerr;

@@ -24,12 +24,12 @@ void *get_p (int argc, char **argv, int n) {
     return p;
 }
 
-components ode (series x, series y, series z, void *params, int k) {
+triplet ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
     p->a[k] = z[k] + t_sqr(x, k) - p->w1[k];
     p->b[k] = 4.0L * z[k] - p->a[k];
     p->c[k] = p->walpha[k] + t_mul(x, y, k);
-    return (components) {
+    return (triplet) {
         .x = t_mul(y, p->a, k) + p->gamma * x[k],
         .y = t_mul(x, p->b, k) + p->gamma * y[k],
         .z = - 2.0L * t_mul(z, p->c, k)

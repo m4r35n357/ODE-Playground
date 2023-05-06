@@ -81,7 +81,7 @@ void *get_p (int argc, char **argv, int order);
  * Calculate the kth components of the velocity jet V, using the coordinate jets and the parameter data,
  * together with the functions below as necessary.
  */
-components ode (series X, series Y, series Z, void *P, int k);
+triplet ode (series X, series Y, series Z, void *P, int k);
 
 /*
  * Basic Taylor Series functions

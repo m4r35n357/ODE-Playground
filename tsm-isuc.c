@@ -21,10 +21,10 @@ void *get_p (int argc, char **argv, int n) {
     return p;
 }
 
-components ode (series x, series y, series z, void *params, int k) {
+triplet ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
     p->x2py2[k] = t_sqr(x, k) + t_sqr(y, k);
-    return (components) {
+    return (triplet) {
         .x = z[k] - y[k],
         .y = x[k] - p->a * y[k],
         .z = p->wb[k] + p->c * z[k] - t_mul(p->x2py2, z, k)

@@ -20,19 +20,12 @@ typedef struct pair_l {
  */
 typedef struct triple_l {
     real x, y, z;
-} components;
-
-/*
- * Integrator control parameters
- */
-typedef struct Weights {
-    real fwd, rev;
-} weights;
+} triplet;
 
 typedef struct Controls {
     int order, step, steps;
     real step_size;
-    weights r2, r4, r6, r8;
+    pair r2, r4, r6, r8;
 } controls;
 
 #define PRINT_ARGS(argc, argv) \
