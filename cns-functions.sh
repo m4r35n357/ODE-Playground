@@ -2,7 +2,7 @@
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
-echo "[ \033[0;36m$0 $*\033[0;37m ]" >&2
+echo "argc: \033[1;37m$#\033[0;37m, argv: [ \033[0;35m$0 $*\033[0;37m ]" >&2
 
 fileA="/tmp/$USER/dataA"  # results of the "better" simulation
 fileB="/tmp/$USER/dataB"  # results of the requested simulation

@@ -29,7 +29,7 @@ typedef struct Controls {
 } controls;
 
 #define PRINT_ARGS(argc, argv) \
-    fprintf(stderr, "argc: %d, argv: [ \x1B[0;32m", argc); \
+    fprintf(stderr, "argc: \x1B[1;37m%d\x1B[0;37m, argv: [ \x1B[0;36m", argc); \
     for (int i = 0; i < argc; i++) { \
         fprintf(stderr, "%s ", argv[i]); \
     } \
