@@ -88,11 +88,11 @@ static void tsm_step (series3 *j, void *p, int n, real h) {
 
 void tsm_stdout (int dp, controls *c, series3 *jets, void *p, clock_t t0) {
     CHECK(dp > 0); CHECK(c); CHECK(jets); CHECK(p); CHECK(t0);
-    triplet s = {0.0L, 0.0L, 0.0L};
+    triplet slope = {0.0L, 0.0L, 0.0L};
     for (int step = 0; step < c->steps; step++) {
         t_out(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * step,
-              tag(jets->x, s.x, "x", "X"), tag(jets->y, s.y, "y", "Y"), tag(jets->z, s.z, "z", "Z"), t0);
-        s = (triplet){jets->x[1], jets->y[1], jets->z[1]};
+              tag(jets->x, slope.x, "x", "X"), tag(jets->y, slope.y, "y", "Y"), tag(jets->z, slope.z, "z", "Z"), t0);
+        slope.x = jets->x[1]; slope.y = jets->y[1]; slope.z = jets->z[1];
         tsm_step(jets, p, c->order, c->step_size);
     }
     t_out(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * c->steps, "_", "_", "_", t0);
