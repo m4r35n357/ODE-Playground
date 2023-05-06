@@ -156,12 +156,12 @@ static void compare (char* name, series a, series b) {
     for (int k = 0; k < n; k++) {
         delta = a[k] - b[k];
         if (!isfinite(delta) || fabsl(delta) > tolerance) {
-            fprintf(stderr, "%s FAIL%s %s\n  k=%d  LHS: %+.6Le  RHS: %+.6Le  (%+.3Le)\n", RED, NRM, name, k, a[k], b[k], delta);
+            fprintf(stderr, "%s FAIL%s %s\n  k=%d  LHS: %+.18Le  RHS: %+.18Le  (%+.3Le)\n", RED, NRM, name, k, a[k], b[k], delta);
             return;
         }
         if (debug >= 2) {
             if (!k) fprintf(stderr, "\n");
-            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.6Le %+.6Le  (%+.3Le)\n", NRM, NRM, k, a[k], b[k], delta);
+            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.18Le %+.18Le  (%+.3Le)\n", NRM, NRM, k, a[k], b[k], delta);
         }
     }
     if (debug) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
@@ -194,15 +194,15 @@ int main (int argc, char **argv) {
 
     fprintf(stderr, "%sTaylor Series Method (generator): x'=x  y'=0  z'=-z%s", WHT, NRM);
     controls c = {.order=n, .step=0, .steps=10, .step_size=0.1L};
-    parameters p = {.a=1, .b=0, .c=-1}, result = {.a=expl(p.a), .b=expl(p.b), .c=expl(p.c)};
+    parameters p = {.a=1, .b=0, .c=-1};
     series3 *j = malloc(sizeof (series3)); CHECK(j);
     j->x = t_const(n + 1, 1.0L);
     j->y = t_const(n + 1, 1.0L);
     j->z = t_const(n + 1, 1.0L);
     while (tsm_gen(&c, j, &p)) fprintf(stderr, ".");
-    CHECK(fabsl(j->x[0] - result.a) < tolerance);
-    CHECK(fabsl(j->y[0] - result.b) < tolerance);
-    CHECK(fabsl(j->z[0] - result.c) < tolerance);
+    CHECK(fabsl(j->x[0] - expl(p.a)) < tolerance);
+    CHECK(fabsl(j->y[0] - expl(p.b)) < tolerance);
+    CHECK(fabsl(j->z[0] - expl(p.c)) < tolerance);
     fprintf(stderr, "%sOK%s\n", GRN, NRM);
 
     fprintf(stderr, "%sRecurrence Relations: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x[0], NRM);

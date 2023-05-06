@@ -33,17 +33,17 @@ static void compare (char* name, dual a, dual b) {
     total++;
     delta_val = a.val - b.val;
     if (fabsl(delta_val) > tolerance) {
-        fprintf(stderr, "%s FAIL%s %s\n  VAL  LHS: %+.6Le  RHS: %+.6Le  (%+.3Le)\n", RED, NRM, name, a.val, b.val, delta_val);
+        fprintf(stderr, "%s FAIL%s %s\n  VAL  LHS: %+.18Le  RHS: %+.18Le  (%+.3Le)\n", RED, NRM, name, a.val, b.val, delta_val);
         return;
     }
     delta_dot = a.dot - b.dot;
     if (fabsl(delta_dot) > tolerance) {
-        fprintf(stderr, "%s FAIL%s %s\n  DOT  LHS: %+.6Le  RHS: %+.6Le  (%+.3Le)\n", RED, NRM, name, a.dot, b.dot, delta_dot);
+        fprintf(stderr, "%s FAIL%s %s\n  DOT  LHS: %+.18Le  RHS: %+.18Le  (%+.3Le)\n", RED, NRM, name, a.dot, b.dot, delta_dot);
         return;
     }
     if (debug >= 2) fprintf(stderr, "\n");
-    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.6Le %+.6Le  diff %+.3Le\n", NRM, NRM, a.val, b.val, delta_val);
-    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.6Le %+.6Le  diff %+.3Le\n", NRM, NRM, a.dot, b.dot, delta_dot);
+    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.18Le %+.18Le  diff %+.3Le\n", NRM, NRM, a.val, b.val, delta_val);
+    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.18Le %+.18Le  diff %+.3Le\n", NRM, NRM, a.dot, b.dot, delta_dot);
     if (debug) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
     passed++;
 }
