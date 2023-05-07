@@ -169,7 +169,7 @@ pair t_sin_cos (series s, series c, series u, int k, bool trig) {
         _c += c[j] * _;
         _s += s[j] * _;
     }
-    return (pair){s[k] = _c / k, c[k] = (trig ? -_s : _s) / k};
+    return (pair){.a = s[k] = _c / k, .b = c[k] = (trig ? -_s : _s) / k};
 }
 
 pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
@@ -186,7 +186,7 @@ pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
     for (int j = 0; j < k; j++) {
         _t += t[j] * (k - j) * t[k - j];
     }
-    return (pair){t[k], s[k] = 2.0L * (trig ? _t : -_t) / k};
+    return (pair){.a = t[k], .b = s[k] = 2.0L * (trig ? _t : -_t) / k};
 }
 
 real t_pwr (series p, series u, real a, int k) {
@@ -223,7 +223,7 @@ pair t_asin (series a, series g, series u, int k, bool trig) {
     for (int j = 0; j < k; j++) {
         _g += u[j] * (k - j) * a[k - j];
     }
-    return (pair){a[k], g[k] = (trig ? -_g : _g) / k};
+    return (pair){.a = a[k], .b = g[k] = (trig ? -_g : _g) / k};
 }
 
 pair t_acos (series a, series g, series u, int k, bool trig) {
@@ -240,7 +240,7 @@ pair t_acos (series a, series g, series u, int k, bool trig) {
     for (int j = 0; j < k; j++) {
         _g += u[j] * (k - j) * a[k - j];
     }
-    return (pair){a[k], g[k] = _g / k};
+    return (pair){.a = a[k], .b = g[k] = _g / k};
 }
 
 pair t_atan (series a, series g, series u, int k, bool trig) {
@@ -256,5 +256,5 @@ pair t_atan (series a, series g, series u, int k, bool trig) {
     for (int j = 0; j < k; j++) {
         _g += u[j] * (k - j) * u[k - j];
     }
-    return (pair){a[k] = (u[k] - _a / k) / g[0], g[k] = 2.0L * (trig ? _g : -_g) / k};
+    return (pair){.a = a[k] = (u[k] - _a / k) / g[0], .b = g[k] = 2.0L * (trig ? _g : -_g) / k};
 }
