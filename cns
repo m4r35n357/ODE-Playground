@@ -3,6 +3,9 @@
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
+args="$0 $*"
+echo "argc: \033[1;37m$#\033[0;37m, argv: [ \033[0;35m$args\033[0;37m ]" >&2
+
 method=$1
 threshold=$2
 shift 2
@@ -23,6 +26,7 @@ esac
 
  /usr/bin/gnuplot -p << EOF
 set key horizontal left
+set title '$args'
 plot '$fileA' using 4:1 t 'x' w l lc 'dark-red', '' u 4:2 t 'y' w l lc 'dark-red', '' u 4:3 t 'z' w l lc 'dark-red', \
      '$fileB' using 4:1 t 'x' w l lc 'forest-green', '' u 4:2 t 'y' w l lc 'dark-yellow', '' u 4:3 t 'z' w l lc 'dark-turquoise'
 EOF
