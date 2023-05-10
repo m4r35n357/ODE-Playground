@@ -162,7 +162,7 @@ real t_exp (series e, series u, int k) {
 
 pair t_sin_cos (series s, series c, series u, int k, bool trig) {
     CHECK(s != c && s != u && c != u);
-    if (!k) return (pair){s[0] = trig ? sinl(u[0]) : sinhl(u[0]), c[0] = trig ? cosl(u[0]) : coshl(u[0])};
+    if (!k) return (pair){.a = s[0] = trig ? sinl(u[0]) : sinhl(u[0]), .b = c[0] = trig ? cosl(u[0]) : coshl(u[0])};
     real _s = 0.0L, _c = 0.0L;
     for (int j = 0; j < k; j++) {
         real _ = (k - j) * u[k - j];
@@ -176,7 +176,7 @@ pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
     CHECK(t != s && t != u && s != u);
     if (!k) {
         t[0] = trig ? tanl(u[0]) : tanhl(u[0]);
-        return (pair){t[0], s[0] = trig ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]};
+        return (pair){.a = t[0], .b = s[0] = trig ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]};
     }
     real _t = 0.0L, _s = 0.0L;
     for (int j = 0; j < k; j++) {
@@ -212,8 +212,8 @@ real t_ln (series l, series u, int k) {
 pair t_asin (series a, series g, series u, int k, bool trig) {
     CHECK(trig ? u[0] >= -1.0L && u[0] <= 1.0L : 1); CHECK(a != g && a != u && g != u);
     if (!k) return (pair){
-        a[0] = trig ? asinl(u[0]) : asinhl(u[0]),
-        g[0] = trig ? sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] + 1.0L)
+        .a = a[0] = trig ? asinl(u[0]) : asinhl(u[0]),
+        .b = g[0] = trig ? sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] + 1.0L)
     };
     real _a = 0.0L, _g = 0.0L;
     for (int j = 1; j < k; j++) {
@@ -229,8 +229,8 @@ pair t_asin (series a, series g, series u, int k, bool trig) {
 pair t_acos (series a, series g, series u, int k, bool trig) {
     CHECK(trig ? u[0] >= -1.0L && u[0] <= 1.0L : u[0] >= 1.0L); CHECK(a != g && a != u && g != u);
     if (!k) return (pair){
-        a[0] = trig ? acosl(u[0]) : acoshl(u[0]),
-        g[0] = trig ? - sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] - 1.0L)
+        .a = a[0] = trig ? acosl(u[0]) : acoshl(u[0]),
+        .b = g[0] = trig ? - sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] - 1.0L)
     };
     real _a = 0.0L, _g = 0.0L;
     for (int j = 1; j < k; j++) {
@@ -246,8 +246,8 @@ pair t_acos (series a, series g, series u, int k, bool trig) {
 pair t_atan (series a, series g, series u, int k, bool trig) {
     CHECK(trig ? 1 : u[0] >= -1.0L && u[0] <= 1.0L); CHECK(a != g && a != u && g != u);
     if (!k) return (pair){
-        a[0] = trig ? atanl(u[0]) : atanhl(u[0]),
-        g[0] = trig ? 1.0L + u[0] * u[0] : 1.0L - u[0] * u[0]
+        .a = a[0] = trig ? atanl(u[0]) : atanhl(u[0]),
+        .b = g[0] = trig ? 1.0L + u[0] * u[0] : 1.0L - u[0] * u[0]
     };
     real _a = 0.0L, _g = 0.0L;
     for (int j = 1; j < k; j++) {
