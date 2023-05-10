@@ -21,7 +21,7 @@ clock_t since;
 
 bool finished = false, paused = false, stepping = false, running = true, osd_active = true, solid = true;
 
-int length, oldest = 0, newest = 0, colour_index = DARK_GREEN, mesh = 10;
+int length, oldest = 0, newest = 0, colour_index = 13, mesh = 10;
 
 static float elapsed, cpu, radius = 20.0F, latitude = 90.0F, longitude = 0.0F, ball_size = 0.1F;
 
