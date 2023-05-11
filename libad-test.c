@@ -1,5 +1,5 @@
 /*
- * Automatic Differentiation of Taylor Series, recurrence ralations validation checks
+ * Tests for core Taylor Series Method, Horner's Method, and recurrence relations
  *
  * (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -22,119 +22,39 @@ static real delta, tolerance;
 
 typedef struct Parameters { real a, b, c; } parameters;
 
-static series ad_scale (series s, series u, real a) {
-    for (int k = 0; k < n; k++) {
-        s[k] = u[k] * a;
-    }
-    return s;
-}
+static series ad_scale (series s, series u, real a) { for (int k = 0; k < n; k++) s[k] = u[k] * a; return s; }
 
-static series ad_add (series p, series u, series v) {
-    for (int k = 0; k < n; k++) {
-        p[k] = u[k] + v[k];
-    }
-    return p;
-}
+static series ad_add (series p, series u, series v) { for (int k = 0; k < n; k++) p[k] = u[k] + v[k]; return p; }
 
-static series ad_sub (series m, series u, series v) {
-    for (int k = 0; k < n; k++) {
-        m[k] = u[k] - v[k];
-    }
-    return m;
-}
+static series ad_sub (series m, series u, series v) { for (int k = 0; k < n; k++) m[k] = u[k] - v[k]; return m; }
 
-static series ad_abs (series a, series u) {
-    for (int k = 0; k < n; k++) {
-        a[k] = t_abs(u, k);
-    }
-    return a;
-}
+static series ad_abs (series a, series u) { for (int k = 0; k < n; k++) a[k] = t_abs(u, k); return a; }
 
-static series ad_mul (series p, series u, series v) {
-    for (int k = 0; k < n; k++) {
-        p[k] = t_mul(u, v, k);
-    }
-    return p;
-}
+static series ad_mul (series p, series u, series v) { for (int k = 0; k < n; k++) p[k] = t_mul(u, v, k); return p; }
 
-static series ad_div (series q, series u, series v) {
-    for (int k = 0; k < n; k++) {
-        t_div(q, u, v, k);
-    }
-    return q;
-}
+static series ad_div (series q, series u, series v) { for (int k = 0; k < n; k++) t_div(q, u, v, k); return q; }
 
-static series ad_inv (series i, series v) {
-    for (int k = 0; k < n; k++) {
-        t_div(i, NULL, v, k);
-    }
-    return i;
-}
+static series ad_inv (series i, series v) { for (int k = 0; k < n; k++) t_div(i, NULL, v, k); return i; }
 
-static series ad_sqr (series s, series u) {
-    for (int k = 0; k < n; k++) {
-        s[k] = t_sqr(u, k);
-    }
-    return s;
-}
+static series ad_sqr (series s, series u) { for (int k = 0; k < n; k++) s[k] = t_sqr(u, k); return s; }
 
-static series ad_sqrt (series r, series u) {
-    for (int k = 0; k < n; k++) {
-        t_sqrt(r, u, k);
-    }
-    return r;
-}
+static series ad_sqrt (series r, series u) { for (int k = 0; k < n; k++) t_sqrt(r, u, k); return r; }
 
-static series ad_exp (series e, series u) {
-    for (int k = 0; k < n; k++) {
-        t_exp(e, u, k);
-    }
-    return e;
-}
+static series ad_exp (series e, series u) { for (int k = 0; k < n; k++) t_exp(e, u, k); return e; }
 
-static void ad_sin_cos (series s, series c, series u, bool trig) {
-    for (int k = 0; k < n; k++) {
-        t_sin_cos(s, c, u, k, trig);
-    }
-}
+static void ad_sin_cos (series s, series c, series u, bool trig) { for (int k = 0; k < n; k++) t_sin_cos(s, c, u, k, trig); }
 
-static void ad_tan_sec2 (series t, series s2, series u, bool trig) {
-    for (int k = 0; k < n; k++) {
-        t_tan_sec2(t, s2, u, k, trig);
-    }
-}
+static void ad_tan_sec2 (series t, series s2, series u, bool trig) { for (int k = 0; k < n; k++) t_tan_sec2(t, s2, u, k, trig); }
 
-static series ad_pwr (series p, series u, real a) {
-    for (int k = 0; k < n; k++) {
-        t_pwr(p, u, a, k);
-    }
-    return p;
-}
+static series ad_pwr (series p, series u, real a) { for (int k = 0; k < n; k++) t_pwr(p, u, a, k); return p; }
 
-static series ad_ln (series l, series u) {
-    for (int k = 0; k < n; k++) {
-        t_ln(l, u, k);
-    }
-    return l;
-}
+static series ad_ln (series l, series u) { for (int k = 0; k < n; k++) t_ln(l, u, k); return l; }
 
-static void ad_asin (series as, series du_df, series u, bool trig) {
-    for (int k = 0; k < n; k++) {
-        t_asin(as, du_df, u, k, trig);
-    }
-}
+static void ad_asin (series as, series du_df, series u, bool trig) { for (int k = 0; k < n; k++) t_asin(as, du_df, u, k, trig); }
 
-static void ad_acos (series ac, series du_df, series u, bool trig) {
-    for (int k = 0; k < n; k++) {
-        t_acos(ac, du_df, u, k, trig);
-    }
-}
+static void ad_acos (series ac, series du_df, series u, bool trig) { for (int k = 0; k < n; k++) t_acos(ac, du_df, u, k, trig); }
 
-static void ad_atan (series at, series du_df, series u, bool trig) {
-    for (int k = 0; k < n; k++) {
-        t_atan(at, du_df, u, k, trig);
-    }
-}
+static void ad_atan (series at, series du_df, series u, bool trig) { for (int k = 0; k < n; k++) t_atan(at, du_df, u, k, trig); }
 
 triplet ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
@@ -183,16 +103,16 @@ int main (int argc, char **argv) {
         debug = (int)strtol(argv[4], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
      }
 
-    fprintf(stderr, "%sHorner Summation%s", WHT, NRM);
+    fprintf(stderr, "%sHorner Summation %s", WHT, NRM);
     series s = t_jet(n >= 8 ? n : 8);
     s[0] = 1.0L; s[1] = 3.0L; s[2] = 0.0L; s[3] = 2.0L;
     CHECK(t_horner(s, 3, 2.0L) == 23); fprintf(stderr, ".");
     s[0] = 3; s[1] = -1.0L; s[2] = 2.0L; s[3] = -4.0L; s[4] = 0.0L; s[5] = 1.0L;
     CHECK(t_horner(s, 5, 3.0L) == 153); fprintf(stderr, ".");
     s[0] = 1.0L; s[1] = -4.0L; s[2] = 0.0L; s[3] = 0.0L; s[4] = 2.0L; s[5] = 3.0L; s[6] = 0.0L; s[7] = -2.0L;
-    CHECK(t_horner(s, 7, -2.0L) == 201); fprintf(stderr, ".%sOK%s\n", GRN, NRM);
+    CHECK(t_horner(s, 7, -2.0L) == 201); fprintf(stderr, ". %sOK%s\n", GRN, NRM);
 
-    fprintf(stderr, "%sTaylor Series Method (generator): x'=x  y'=0  z'=-z%s", WHT, NRM);
+    fprintf(stderr, "%sTaylor Series Method (generator): x'=x  y'=0  z'=-z%s ", WHT, NRM);
     controls c = {.order=n, .step=0, .steps=10, .step_size=0.1L};
     parameters p = {.a=1, .b=0, .c=-1};
     series3 *j = malloc(sizeof (series3)); CHECK(j);
@@ -203,7 +123,7 @@ int main (int argc, char **argv) {
     CHECK(fabsl(j->x[0] - expl(p.a)) < tolerance);
     CHECK(fabsl(j->y[0] - expl(p.b)) < tolerance);
     CHECK(fabsl(j->z[0] - expl(p.c)) < tolerance);
-    fprintf(stderr, "%sOK%s\n", GRN, NRM);
+    fprintf(stderr, " %sOK%s\n", GRN, NRM);
 
     fprintf(stderr, "%sRecurrence Relations: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x[0], NRM);
     bool positive = x[0] > 0.0L, non_zero = x[0] != 0.0L, lt_pi_2 = fabsl(x[0]) < 0.5L * acosl(-1.0L);
