@@ -127,26 +127,9 @@ Depending on the x value, some tests might be skipped owing to domain restrictio
 ```
 ./libad-test 20 .5 1e-15
 
-Horner
- 23   23.000
-153  153.000
-201  201.000
-
-Taylor Series Method: x'=1  y'=0  z'=-1
-+1.000000000000e+00 +1.000000000000e+00 +1.000000000000e+00 0.000000e+00 _ _ _ 0.000
-+1.105170918076e+00 +1.000000000000e+00 +9.048374180360e-01 1.000000e-01 _ _ _ 0.000
-+1.221402758160e+00 +1.000000000000e+00 +8.187307530780e-01 2.000000e-01 _ _ _ 0.000
-+1.349858807576e+00 +1.000000000000e+00 +7.408182206817e-01 3.000000e-01 _ _ _ 0.000
-+1.491824697641e+00 +1.000000000000e+00 +6.703200460356e-01 4.000000e-01 _ _ _ 0.001
-+1.648721270700e+00 +1.000000000000e+00 +6.065306597126e-01 5.000000e-01 _ _ _ 0.001
-+1.822118800391e+00 +1.000000000000e+00 +5.488116360940e-01 6.000000e-01 _ _ _ 0.001
-+2.013752707470e+00 +1.000000000000e+00 +4.965853037914e-01 7.000000e-01 _ _ _ 0.001
-+2.225540928492e+00 +1.000000000000e+00 +4.493289641172e-01 8.000000e-01 _ _ _ 0.001
-+2.459603111157e+00 +1.000000000000e+00 +4.065696597406e-01 9.000000e-01 _ _ _ 0.001
-+2.718281828459e+00 +1.000000000000e+00 +3.678794411714e-01 1.000000e+00 _ _ _ 0.001
-Check: e^1  e^0  e^-1
-+2.718281828459e+00 +1.000000000000e+00 +3.678794411714e-01 1.000000e+00 _ _ _ 0.000
-
+argc: 4, argv: [ ./libad-test 20 .5 1e-15 ]
+Horner Summation ... OK
+Taylor Series Method (generator): x'=x  y'=0  z'=-z .......... OK
 Recurrence Relations: x = 0.5
 Total: 44, PASSED 44
 ```
@@ -160,12 +143,11 @@ Parameter | Meaning
 3 | (Optional) verbosity: 0: summary (default), 1: list, 2: detail
 
 ```
-./libdual-test .5 1e-15
+./libdual-test .5 1e-15 
 
+argc: 3, argv: [ ./libdual-test .5 1e-15 ]
 Dual Numbers: x = 0.5
 Total: 40, PASSED 40
-
-for i in .5 0 -.5; do ./libad-test 10 $i 1e-15; ./libdual-test $i 1e-15; done
 ```
 
 ### Code coverage
@@ -179,19 +161,21 @@ Note that any of the programs that you run from this point onwards will add to t
 
 ### Profiling examples
 
+**profile** (shell script)
+
+Parameter | Meaning
+----------|-----------
+1  | gcc|gpt
+2+ | ODE call (-std or -gl)
+
 #### Google performance tools (requires google-perftools & libgoogle-perftools-dev packages on Debian)
 ```
-make clean && make CCC=gpt
-export CPUPROFILE=/tmp/$USER/prof.out
-./tsm-lorenz-std  6 16 .01 100000  -15.8 -17.48 35.64  10 28 8 3 >/tmp/$USER/data
-google-pprof --text ./tsm-lorenz-std $CPUPROFILE
+./profile gpt ./tsm-lorenz-std  6 16 .01 1000000  -15.8 -17.48 35.64  10 28 8 3
 ```
 
 #### GCC gprof
 ```
-make clean && make CCC=prof
-./tsm-lorenz-std  6 16 .01 100000  -15.8 -17.48 35.64  10 28 8 3 >/tmp/$USER/data
-gprof -p -b ./tsm-lorenz-std gmon.out 
+./profile gcc ./tsm-lorenz-std  6 16 .01 1000000  -15.8 -17.48 35.64  10 28 8 3
 ```
 
 ### Static Analysis (requires clang-tools package on Debian)
