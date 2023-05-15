@@ -17,8 +17,6 @@
 #define RED "\x1B[1;31m"
 #define CYN "\x1B[0;36m"
 
-const int BASE = 10;
-
 static int debug = 0, total = 0, passed = 0, skipped = 0;
 
 static real delta_val, delta_dot, tolerance;

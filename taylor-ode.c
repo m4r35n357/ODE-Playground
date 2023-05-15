@@ -10,8 +10,6 @@
 #include <math.h>
 #include "taylor-ode.h"
 
-const int BASE = 10;
-
 controls *get_c_tsm (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     controls *c = malloc(sizeof (controls)); CHECK(c);

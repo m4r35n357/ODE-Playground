@@ -196,7 +196,7 @@ case $model in
                 --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:RO" \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" --field="a:RO" \
-                --  '0.0' '10.0' '10' './tsm-wimol-banlue-std' \
+                --  '0.0' '1.0' '10' './tsm-wimol-banlue-std' \
                     '6!0..36!3' '4!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                     '1.0' '0.0' '0.0' '$p') >/dev/null ;;
         esac ;;

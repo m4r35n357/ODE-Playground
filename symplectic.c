@@ -9,8 +9,6 @@
 #include <math.h>
 #include "symplectic.h"
 
-const int BASE = 10;
-
 controls *get_c_symp (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     controls *c = malloc(sizeof (controls)); CHECK(c);

@@ -4,8 +4,6 @@
 
 #pragma once
 
-extern const int BASE;
-
 typedef long double real;
 
 /*
@@ -30,6 +28,11 @@ typedef struct Controls {
     real step_size;
     pair r2, r4, r6, r8;  // symplectic only
 } controls;
+
+/*
+ * Number base for integer conversions
+ */
+#define BASE 10
 
 /*
  * Report program arguments in colour
