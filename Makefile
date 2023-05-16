@@ -6,32 +6,30 @@ CFLAGS=-std=c99 -O3 -fno-math-errno -flto
 WARNINGS=-Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wconversion -Wredundant-decls -Wmissing-declarations
 LIB_M=-lm
 LIB_GL=-lGLEW -lglut -lGLU -lGL
-STRIP=-s
+STRIP=
 
-ifeq ($(CCC),gcc)
+ifeq ($(CCC),gcc)  # fast option
   CC=/usr/bin/gcc
   WARNINGS += -Wunsuffixed-float-constants
-else ifeq ($(CCC),cov)
+  STRIP=-s
+else ifeq ($(CCC),cov)  # coverage
   CC=/usr/bin/gcc
   CFLAGS=-std=c99 -O0 -g --coverage
   WARNINGS += -Wunsuffixed-float-constants
-  STRIP=
-else ifeq ($(CCC),prof)
+else ifeq ($(CCC),prof)  # profiling with GCC
   CC=/usr/bin/gcc
   CFLAGS=-std=c99 -O0 -g -pg
   WARNINGS += -Wunsuffixed-float-constants
-  STRIP=
-else ifeq ($(CCC),gpt)
+else ifeq ($(CCC),gpt)  # profiling with Clang and Google tools
   CC=/usr/bin/clang
   CFLAGS=-std=c99 -O0 -g
   LIB_M += -lprofiler
-  STRIP=
-else ifeq ($(CCC),clang)
+else ifeq ($(CCC),clang)  # fast option
   CC=/usr/bin/clang
-else
+  STRIP=-s
+else  # default for IDEs and git commits
   CC=/usr/bin/clang
   CFLAGS=-std=c99 -O0 -g
-  STRIP=
 endif
 
 %.o: %.c
