@@ -85,7 +85,6 @@ static integrator get_integrator (controls *c) {
 }
 
 void solve (char **argv, controls *c, void *p, plotter output) {
-    CHECK(c); CHECK(p); CHECK(output);
     int display_precision = (int)strtol(argv[1], NULL, BASE); CHECK(display_precision >= 1 && display_precision <= 32);
     integrator composer = get_integrator(c);
     for (int step = 0; step < c->steps; step++) {
@@ -96,7 +95,6 @@ void solve (char **argv, controls *c, void *p, plotter output) {
 }
 
 bool generate (controls *c, void *p) {
-    CHECK(c); CHECK(p);
     static bool looping = false;
     static integrator composer;
     if (looping) goto resume; else looping = true;

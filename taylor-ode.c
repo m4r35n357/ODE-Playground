@@ -85,7 +85,6 @@ static void tsm_step (series3 *j, void *p, int n, real h) {
 }
 
 void tsm_stdout (int dp, controls *c, series3 *jets, void *p, clock_t t0) {
-    CHECK(dp >= 0); CHECK(c); CHECK(jets); CHECK(p); CHECK(t0);
     triplet slope = {0.0L, 0.0L, 0.0L};
     for (int step = 0; step < c->steps; step++) {
         t_out(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * step,
@@ -97,7 +96,6 @@ void tsm_stdout (int dp, controls *c, series3 *jets, void *p, clock_t t0) {
 }
 
 bool tsm_gen (controls *c, series3 *jets, void *p) {
-    CHECK(c); CHECK(jets); CHECK(p);
     static bool looping = false;
     if (looping) goto resume; else looping = true;
     for (c->step = 0; c->step < c->steps; c->step++) {
