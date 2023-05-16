@@ -8,7 +8,7 @@ user_data="$user_dir/data"
 
 choice=$(yad --columns=2 --title="ODE Playground (TSM)" --form --separator=" " --align=right \
     --field="Model:CB" --field="Analysis type:CB" \
-    -- 'Lorenz!Rossler!^Thomas!RF!Halvorsen!WimolBanlue' '^GLplot!Gnuplot3D!Gnuplot2D!CNS!CNSscan!Bifurcation')
+    -- 'Lorenz!Rossler!^Thomas!RF!Halvorsen' '^GLplot!Gnuplot3D!Gnuplot2D!CNS!CNSscan!Bifurcation')
 
 case $? in
     1) exit;;
@@ -158,46 +158,6 @@ case $model in
                 --field="x0" --field="y0" --field="z0" --field="b:RO" \
                 --  '0.1' '0.23' '10' './tsm-thomas-std' \
                     '6!0..36!3' '4!4..32!1' '.1!0.001..0.1!0.001!3' '30000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' '$p') >/dev/null ;;
-        esac ;;
-    WimolBanlue)
-        case $analysis in
-            GLplot) ./tsm-wimol-banlue-gl \
-                $(yad --columns=2 --title="Wimol-Banlue Attractor OpenGL (TSM)" --form --separator=" " --align=right \
-                --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" --field="a" \
-                --  '5000!1000..10000!1000' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' '1.0') ;;
-            Gnuplot3D|Gnuplot2D)
-                $(yad --columns=2 --title="Wimol-Banlue Attractor Gnuplot (TSM)" --form --separator=" " --align=right \
-                --field="Model:RO" --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" --field="a" \
-                --  './tsm-wimol-banlue-std' '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' '1.0') >$user_data
-                plot $analysis ;;
-            CNS) ./cns \
-                $(yad --columns=2 --title="Wimol-Banlue CNS (TSM)" --form --separator=" " --align=right \
-                --field="Mode":CB --field="Separation" --field="Model:RO" \
-                --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" --field="a" \
-                --  'step2!nosim' '1.0' './tsm-wimol-banlue-std' \
-                    '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' '1.0') ;;
-            CNSscan) ./cns-scan \
-                $(yad --columns=2 --title="Wimol-Banlue CNS Scan (TSM)" --form --separator=" " --align=right \
-                --field="Maxium Order":NUM --field="Separation" --field="Model:RO" \
-                --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" --field="a" \
-                --  '32!2..64!1' '1.0' './tsm-wimol-banlue-std' \
-                    '6!0..36!3' '_' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' '1.0') ;;
-            Bifurcation) ./bifurcation-scan \
-                $(yad --columns=2 --title="Wimol-Banlue Bifurcation (TSM)" --form --separator=" " --align=right \
-                --field="Lower Value" --field="Upper Value" --field="Skip Transient" --field="Model:RO" \
-                --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" --field="a:RO" \
-                --  '0.0' '1.0' '10' './tsm-wimol-banlue-std' \
-                    '6!0..36!3' '4!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                     '1.0' '0.0' '0.0' '$p') >/dev/null ;;
         esac ;;
     RF)
