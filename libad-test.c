@@ -94,14 +94,13 @@ int main (int argc, char **argv) {
 
     n = (int)strtol(argv[1], NULL, BASE); CHECK(n > 0);
     series x = t_jet(n + 1);
-    x[0] = strtold(argv[2], NULL);
-    for (int k = 1; k <= n; k++) {
-        x[k] = x[0] / (k * k);
+    for (int k = 0; k <= n; k++) {
+        x[k] = !k ? strtold(argv[2], NULL) : x[0] / (k * k);
     }
     tolerance = strtold(argv[3], NULL); CHECK(tolerance > 0.0L);
     if (argc == 5) {
         debug = (int)strtol(argv[4], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
-     }
+    }
 
     fprintf(stderr, "%sHorner Summation %s", WHT, NRM);
     series s = t_jet(n >= 8 ? n : 8);
@@ -141,38 +140,26 @@ int main (int argc, char **argv) {
     if (positive) ad_sqrt(sqrt_x, x);
 
     char* name = "x * x == sqr(x)"; compare(name, ad_mul(r1, x, x), sqr_x);
-
     name = "sqr(x) / x == x"; non_zero ? compare(name, ad_div(r1, sqr_x, x), x) : skip(name);
-
     name = "x * 1 / x == 1"; non_zero ? compare(name, ad_mul(r1, x, inv_x), S1) : skip(name);
-
     name = "sqrt(x) * sqrt(x) == x"; positive ? compare(name, ad_mul(r1, sqrt_x, sqrt_x), x) : skip(name);
-
     name = "x / sqrt(x) == sqrt(x)"; positive ? compare(name, ad_div(r1, x, sqrt_x), sqrt_x) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
 
     name = "x^2.0 == sqr(x)"; positive ? compare(name, ad_pwr(r1, x, 2.0L), sqr_x) : skip(name);
-
     name = "x^1.0 == x"; positive ? compare(name, ad_pwr(r1, x, 1.0L), x) : skip(name);
-
     name = "x^0.5 == sqrt(x)"; positive ? compare(name, ad_pwr(r1, x, 0.5L), sqrt_x): skip(name);
-
     name = "x^0.0 == 1"; positive ? compare(name, ad_pwr(r1, x, 0.0L), S1) : skip(name);
-
     name = "x^-0.5 == 1 / sqrt(x)"; positive ? compare(name, ad_pwr(r1, x, -0.5L), ad_inv(r2, sqrt_x)) : skip(name);
-
     name = "x^-1.0 == 1 / x"; positive ? compare(name, ad_pwr(r1, x, -1.0L), inv_x) : skip(name);
-
     name = "x^-2.0 == 1 / sqr(x)"; positive ? compare(name, ad_pwr(r1, x, -2.0L), ad_inv(r2, sqr_x)) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
     ad_abs(abs_x, x);
 
     name = "sqr(x) * x^-3 == 1 / x"; positive ? compare(name, ad_mul(r1, sqr_x, ad_pwr(r2, x, -3.0L)), inv_x) : skip(name);
-
     name = "sqr(x)^0.5 == |x|"; non_zero ? compare(name, ad_pwr(r1, sqr_x, 0.5L), abs_x) : skip(name);
-
     name = "sqrt(sqr(x) == |x|"; non_zero ? compare(name, ad_sqrt(r1, sqr_x), abs_x) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
@@ -180,13 +167,9 @@ int main (int argc, char **argv) {
     if (positive) ad_ln(ln_x, x);
 
     name = "ln(e^x) == x"; compare(name, ad_ln(r1, exp_x), x);
-
     name = "ln(sqr(x)) == ln(x) * 2"; positive ? compare(name, ad_ln(r1, sqr_x), ad_scale(r2, ln_x, 2.0L)) : skip(name);
-
     name = "ln(sqrt(x)) == ln(x) / 2"; positive ? compare(name, ad_ln(r1, sqrt_x), ad_scale(r2, ln_x, 0.5L)) : skip(name);
-
     name = "ln(1 / x) == -ln(x)"; positive ? compare(name, ad_ln(r1, inv_x), ad_scale(r2, ln_x, -1.0L)) : skip(name);
-
     name = "ln(x^-3) == -3ln(x)"; positive ? compare(name, ad_ln(r1, ad_pwr(r2, x, -3.0L)), ad_scale(r3, ln_x, -3.0L)) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
@@ -197,30 +180,22 @@ int main (int argc, char **argv) {
     ad_sin_cos(sinh_2x, cosh_2x, ad_scale(r1, x, 2.0L), false);
 
     name = "cosh^2(x) - sinh^2(x) == 1"; compare(name, ad_sub(r1, cosh2_x, sinh2_x), S1);
-
     name = "sech^2(x) + tanh^2(x) == 1"; compare(name, ad_add(r1, sech2_x, ad_sqr(tanh2_x, tanh_x)), S1);
-
     name = "tanh(x) == sinh(x) / cosh(x)"; compare(name, tanh_x, ad_div(r1, sinh_x, cosh_x));
-
     name = "sech^2(x) == 1 / cosh^2(x)"; compare(name, sech2_x, ad_inv(r1, cosh2_x));
-
     name = "sinh(2x) == 2 * sinh(x) * cosh(x)"; compare(name, sinh_2x, ad_scale(r1, ad_mul(r2, sinh_x, cosh_x), 2.0L));
-
     name = "cosh(2x) == cosh^2(x) + sinh^2(x)"; compare(name, cosh_2x, ad_add(r1, cosh2_x, sinh2_x));
 
     if (debug) fprintf(stderr, "\n");
     ad_exp(neg_exp_x, ad_scale(r1, x, -1.0L));
 
     name = "cosh(x) == (e^x + e^-x) / 2"; compare(name, cosh_x, ad_scale(r1, ad_add(r2, exp_x, neg_exp_x), 0.5L));
-
     name = "sinh(x) == (e^x - e^-x) / 2"; compare(name, sinh_x, ad_scale(r1, ad_sub(r2, exp_x, neg_exp_x), 0.5L));
 
     if (debug) fprintf(stderr, "\n");
 
     name = "arcsinh(sinh(x)) == x"; ad_asin(r1, r2, sinh_x, false); compare(name, r1, x);
-
     name = "arccosh(cosh(x)) == |x|"; ad_acos(r1, r2, cosh_x, false); non_zero ? compare(name, r1, abs_x) : skip(name);
-
     name = "arctanh(tanh(x)) == x"; ad_atan(r1, r2, tanh_x, false); compare(name, r1, x);
 
     if (debug) fprintf(stderr, "\n");
@@ -231,34 +206,24 @@ int main (int argc, char **argv) {
     ad_sin_cos(sin_2x, cos_2x, ad_scale(r1, x, 2.0L), true);
 
     name = "cos^2(x) + sin^2(x) == 1"; compare(name, ad_add(r1, cos2_x, sin2_x), S1);
-
     name = "sec^2(x) - tan^2(x) == 1"; lt_pi_2 ? compare(name, ad_sub(r1, sec2_x, ad_sqr(tan2_x, tan_x)), S1) : skip(name);
-
     name = "tan(x) == sin(x) / cos(x)"; lt_pi_2 ? compare(name, tan_x, ad_div(r1, sin_x, cos_x)) : skip(name);
-
     name = "sec^2(x) == 1 / cos^2(x)"; lt_pi_2 ? compare(name, sec2_x, ad_inv(r1, cos2_x)) : skip(name);
-
     name = "sin(2x) == 2 * sin(x) * cos(x)"; compare(name, sin_2x, ad_scale(r1, ad_mul(r2, sin_x, cos_x), 2.0L));
-
     name = "cos(2x) == cos^2(x) - sin^2(x)"; compare(name, cos_2x, ad_sub(r1, cos2_x, sin2_x));
 
     if (debug) fprintf(stderr, "\n");
 
     name = "arcsin(sin(x)) == x"; ad_asin(r1, r2, sin_x, true); compare(name, r1, x);
-
     name = "arccos(cos(x)) == |x|"; ad_acos(r1, r2, cos_x, true); non_zero ? compare(name, r1, abs_x) : skip(name);
-
     name = "arctan(tan(x)) == x"; ad_atan(r1, r2, tan_x, true); compare(name, r1, x);
 
     if (debug) fprintf(stderr, "\n");
     ad_ln(gd_1, ad_abs(r3, ad_div(r2, ad_add(r1, sin_x, S1), cos_x)));
 
     name = "arsin(tan(x)) == gd^-1 x"; ad_asin(r1, r2, tan_x, false); compare(name, gd_1, r1);
-
     name = "artan(sin(x)) == gd^-1 x"; ad_atan(r1, r2, sin_x, false); compare(name, gd_1, r1);
-
     name = "arcsin(tanh(gd^-1 x)) == x"; ad_tan_sec2(r3, r2, gd_1, false); ad_asin(r1, r2, r3, true); compare(name, r1, x);
-
     name = "arctan(sinh(gd^-1 x)) == x"; ad_sin_cos(r3, r2, gd_1, false); ad_atan(r1, r2, r3, true); compare(name, r1, x);
 
     if (debug) fprintf(stderr, "\n");
