@@ -129,8 +129,8 @@ Depending on the x value, some tests might be skipped owing to domain restrictio
 
 argc: 4, argv: [ ./libad-test 20 .5 1e-15 ]
 Horner Summation ... OK
-Taylor Series Method (generator): x'=x  y'=0  z'=-z .......... OK
-Recurrence Relations: x = 0.5
+Taylor Series Method .......... OK
+Recurrence Relations x = 0.5
 Total: 44, PASSED 44
 ```
 
@@ -146,7 +146,7 @@ Parameter | Meaning
 ./libdual-test .5 1e-15 
 
 argc: 3, argv: [ ./libdual-test .5 1e-15 ]
-Dual Numbers: x = 0.5
+Dual Numbers x = 0.5
 Total: 40, PASSED 40
 ```
 
@@ -181,6 +181,8 @@ Parameter | Meaning
 ### Static Analysis (requires clang-tools package on Debian)
 ```
 make clean && scan-build make
+...
+scan-build: No bugs found.
 ```
 
 ### Find examples for ODE parameters and many other things:

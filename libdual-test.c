@@ -56,7 +56,7 @@ int main (int argc, char **argv) {
         debug = (int)strtol(argv[3], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
     }
 
-    fprintf(stderr, "%sDual Numbers: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x.val, NRM);
+    fprintf(stderr, "%sDual Numbers %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x.val, NRM);
     bool positive = x.val > 0.0L, non_zero = x.val != 0.0L, lt_pi_2 = fabsl(x.val) < 0.5L * acosl(-1.0L);
     dual abs_x, inv_x, sqr_x, sqrt_x, exp_x, neg_exp_x, ln_x, gd_1;
     dual sin_x, sin2_x, cos_x, cos2_x, tan_x, sin_2x, cos_2x, sinh_x, sinh2_x, cosh_x, cosh2_x, tanh_x, sinh_2x, cosh_2x;

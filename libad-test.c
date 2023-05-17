@@ -111,7 +111,7 @@ int main (int argc, char **argv) {
     s[0] = 1.0L; s[1] = -4.0L; s[2] = 0.0L; s[3] = 0.0L; s[4] = 2.0L; s[5] = 3.0L; s[6] = 0.0L; s[7] = -2.0L;
     CHECK(t_horner(s, 7, -2.0L) == 201); fprintf(stderr, ". %sOK%s\n", GRN, NRM);
 
-    fprintf(stderr, "%sTaylor Series Method (generator): x'=x  y'=0  z'=-z%s ", WHT, NRM);
+    fprintf(stderr, "%sTaylor Series Method %s", WHT, NRM);
     controls c = {.order=n, .step=0, .steps=10, .step_size=0.1L};
     parameters p = {.a=1, .b=0, .c=-1};
     series3 *j = malloc(sizeof (series3)); CHECK(j);
@@ -124,7 +124,7 @@ int main (int argc, char **argv) {
     CHECK(fabsl(j->z[0] - expl(p.c)) < tolerance);
     fprintf(stderr, " %sOK%s\n", GRN, NRM);
 
-    fprintf(stderr, "%sRecurrence Relations: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x[0], NRM);
+    fprintf(stderr, "%sRecurrence Relations %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x[0], NRM);
     bool positive = x[0] > 0.0L, non_zero = x[0] != 0.0L, lt_pi_2 = fabsl(x[0]) < 0.5L * acosl(-1.0L);
     series abs_x = t_jet(n), inv_x = t_jet(n), sqr_x = t_jet(n), sqrt_x = t_jet(n);
     series sin2_x = t_jet(n), cos2_x = t_jet(n), tan2_x = t_jet(n);
