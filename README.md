@@ -256,16 +256,6 @@ set zlabel 'Z'
 splot '/tmp/$USER/data' with lines
 EOF
 ```
-#### Run & plot (2D gnuplot graph):
-```
-./tsm-lorenz-std 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
-
- gnuplot -p << EOF
-set terminal wxt size 1200,900
-plot '/tmp/$USER/data' using 4:1 with lines, '' u 4:2 w l, '' u 4:3 w l
-EOF
-```
-It should be possible to send output directly to gnuplot via a pipe, but many versions segfault when reading stdin so I now specify a temporary file instead.
 
 ### Bifurcation Diagrams:
 

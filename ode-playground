@@ -8,7 +8,7 @@ user_data="$user_dir/data"
 
 choice=$(yad --columns=2 --title="ODE Playground (TSM)" --form --separator=" " --align=right \
     --field="Model:CB" --field="Analysis type:CB" \
-    -- 'Lorenz!Rossler!^Thomas!RF!Halvorsen' '^GLplot!Gnuplot3D!Gnuplot2D!CNS!CNSscan!Bifurcation')
+    -- 'Lorenz!Rossler!^Thomas!RF!Halvorsen' '^GLplot!Gnuplot!CNS!CNSscan!Bifurcation')
 
 case $? in
     1) exit;;
@@ -19,8 +19,6 @@ model=$1
 analysis=$2
 
 plot () {
-case $1 in
-    Gnuplot3D)
 gnuplot -p << EOF
 set xyplane 0
 set view 54.73561,135
@@ -29,14 +27,6 @@ set ylabel 'Y'
 set zlabel 'Z'
 splot '$user_data' with lines
 EOF
-    ;;
-    Gnuplot2D)
-gnuplot -p << EOF
-set terminal wxt size 1200,900
-plot '$user_data' using 4:1 with lines, '' u 4:2 w l, '' u 4:3 w l
-EOF
-    ;;
-esac
 }
 
 case $model in
@@ -48,13 +38,12 @@ case $model in
                 --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
                 --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                     '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
-            Gnuplot3D|Gnuplot2D)
+            Gnuplot) ./tsm-lorenz-std \
                 $(yad --columns=2 --title="Lorenz Attractor Gnuplot (TSM)" --form --separator=" " --align=right \
-                --field="Model:RO" --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+                --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
-                --  './tsm-lorenz-std' '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '-15.8' '-18.48' '35.64' '10' '28' '8' '3') >$user_data
-                plot $analysis ;;
+                --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                    '-15.8' '-18.48' '35.64' '10' '28' '8' '3') >$user_data; plot ;;
             CNS) ./cns \
                 $(yad --columns=2 --title="Lorenz CNS (TSM)" --form --separator=" " --align=right \
                 --field="Mode":CB --field="Separation" --field="Model:RO" \
@@ -88,13 +77,12 @@ case $model in
                 --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
                 --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '50000!1..1000000!1000' \
                     '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
-            Gnuplot3D|Gnuplot2D)
+            Gnuplot) ./tsm-rossler-std \
                 $(yad --columns=2 --title="Rossler Attractor Gnuplot (TSM)" --form --separator=" " --align=right \
-                --field="Model:RO" --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+                --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
-                --  './tsm-rossler-std' '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '50000!1..1000000!1000' \
-                    '0.0' '-6.78' '0.02' '.2' '.2' '5.7') >$user_data
-                plot $analysis ;;
+                --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '50000!1..1000000!1000' \
+                    '0.0' '-6.78' '0.02' '.2' '.2' '5.7') >$user_data; plot ;;
             CNS) ./cns \
                 $(yad --columns=2 --title="Rossler CNS (TSM)" --form --separator=" " --align=right \
                 --field="Mode":CB --field="Separation" --field="Model:RO" \
@@ -128,13 +116,12 @@ case $model in
                 --field="x0" --field="y0" --field="z0" --field="b" \
                 --  '5000!1000..10000!1000' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                     '1.0' '0.0' '0.0' '0.185') ;;
-            Gnuplot3D|Gnuplot2D)
+            Gnuplot) ./tsm-thomas-std \
                 $(yad --columns=2 --title="Thomas Attractor Gnuplot (TSM)" --form --separator=" " --align=right \
-                --field="Model:RO" --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+                --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" --field="b" \
-                --  './tsm-thomas-std' '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' '0.185') >$user_data
-                plot $analysis ;;
+                --  '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                    '1.0' '0.0' '0.0' '0.185') >$user_data; plot ;;
             CNS) ./cns \
                 $(yad --columns=2 --title="Thomas CNS (TSM)" --form --separator=" " --align=right \
                 --field="Mode":CB --field="Separation" --field="Model:RO" \
@@ -168,13 +155,12 @@ case $model in
                 --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
                 --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
                     '0.05' '-0.05' '0.3' '.2875' '.1') ;;
-            Gnuplot3D|Gnuplot2D)
+            Gnuplot)./tsm-rf-std \
                 $(yad --columns=2 --title="Rabinovich–Fabrikant Gnuplot (TSM)" --form --separator=" " --align=right \
-                --field="Model:RO" --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+                --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
-                --  './tsm-rf-std' '6!0..36!3' '8!4..32!1' '0.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
-                    '0.05' '-0.05' '0.3' '.2875' '.1') >$user_data
-                plot $analysis ;;
+                --  '6!0..36!3' '8!4..32!1' '0.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
+                    '0.05' '-0.05' '0.3' '.2875' '.1') >$user_data; plot ;;
             CNS) ./cns \
                 $(yad --columns=2 --title="Rabinovich–Fabrikant CNS (TSM)" --form --separator=" " --align=right \
                 --field="Mode":CB --field="Separation" --field="Model:RO" \
@@ -208,13 +194,12 @@ case $model in
                 --field="x0" --field="y0" --field="z0" --field="a" \
                 --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                     '1.0' '0.0' '0.0' '1.4') ;;
-            Gnuplot3D|Gnuplot2D)
+            Gnuplot) ./tsm-halvorsen-std \
                 $(yad --columns=2 --title="Halvorsen Gnuplot (TSM)" --form --separator=" " --align=right \
-                --field="Model:RO" --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+                --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" --field="a" \
-                --  './tsm-halvorsen-std' '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' '1.4') >$user_data
-                plot $analysis ;;
+                --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                    '1.0' '0.0' '0.0' '1.4') >$user_data; plot ;;
             CNS) ./cns \
                 $(yad --columns=2 --title="Halvorsen CNS (TSM)" --form --separator=" " --align=right \
                 --field="Mode":CB --field="Separation" --field="Model:RO" \
