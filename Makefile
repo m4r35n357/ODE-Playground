@@ -2,16 +2,14 @@
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
-CFLAGS=-std=c99 -O3 -fno-math-errno -flto
+CFLAGS=-std=c99 -O3 -fno-math-errno -flto -s
 WARNINGS=-Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wconversion -Wredundant-decls -Wmissing-declarations
-LIB_M=-lm
+LIB_STD=-lm
 LIB_GL=-lGLEW -lglut -lGLU -lGL
-STRIP=
 
 ifeq ($(CCC),gcc)  # fast option
   CC=/usr/bin/gcc
   WARNINGS += -Wunsuffixed-float-constants
-  STRIP=-s
 else ifeq ($(CCC),cov)  # coverage
   CC=/usr/bin/gcc
   CFLAGS=-std=c99 -O0 -g --coverage
@@ -23,10 +21,9 @@ else ifeq ($(CCC),prof)  # profiling with GCC
 else ifeq ($(CCC),gpt)  # profiling with Clang and Google tools
   CC=/usr/bin/clang
   CFLAGS=-std=c99 -O0 -g
-  LIB_M += -lprofiler
+  LIB_STD += -lprofiler
 else ifeq ($(CCC),clang)  # fast option
   CC=/usr/bin/clang
-  STRIP=-s
 else  # default for IDEs and git commits
   CC=/usr/bin/clang
   CFLAGS=-std=c99 -O0 -g
@@ -39,61 +36,61 @@ all: tsm-std tsm-gl hamiltonian generators h-kerr-std h-kerr-gl h-nbody-std h-nb
 
 
 tsm-%-std: tsm-%.o taylor-ode.o main-tsm.o
-	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_STD)
 
 tsm-std: tsm-bouali-std tsm-burke-shaw-std tsm-genesio-tesi-std tsm-halvorsen-std tsm-isuc-std tsm-lorenz-std tsm-nose-hoover-std tsm-rf-std tsm-rossler-std tsm-rucklidge-std tsm-sprott-minimal-std tsm-sprott-thomas-std tsm-thomas-std tsm-wimol-banlue-std tsm-yu-wang-std
 
 
 tsm-%-gl: tsm-%.o taylor-ode.o opengl.o ode-gl.o
-	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(LIB_GL) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_STD) $(LIB_GL)
 
 tsm-gl: tsm-bouali-gl tsm-burke-shaw-gl tsm-genesio-tesi-gl tsm-halvorsen-gl tsm-isuc-gl tsm-lorenz-gl tsm-nose-hoover-gl tsm-rf-gl tsm-rossler-gl tsm-rucklidge-gl tsm-sprott-minimal-gl tsm-sprott-thomas-gl tsm-thomas-gl tsm-wimol-banlue-gl tsm-yu-wang-gl
 
 
 h-%-std: h-%.o symplectic.o dual.o
-	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_STD)
 
 hamiltonian: h-analysis-std h-newton-std h-spring-std
 
 
 h-kerr-gen-light: h-kerr-gen-light.o
-	$(CC) $(CFLAGS) -o $@ $< $(LIB_M) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $< $(LIB_STD)
 
 h-kerr-gen-particle: h-kerr-gen-particle.o h-kerr.o dual.o
-	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_STD)
 
 generators: h-kerr-gen-light h-kerr-gen-particle
 
 
 h-kerr-std: symplectic.o dual.o h-kerr.o main-kerr.o
-	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_STD)
 
 h-kerr-gl: symplectic.o dual.o h-kerr.o opengl.o h-kerr-gl.o
-	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(LIB_GL) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_STD) $(LIB_GL)
 
 
 h-nbody-std: symplectic.o h-nbody.o main-nbody.o
-	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(LIB_GL) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_STD) $(LIB_GL)
 
 h-nbody-gl: symplectic.o h-nbody.o opengl.o h-nbody-gl.o
-	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(LIB_GL) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_STD) $(LIB_GL)
 
 
 divergence: divergence.o
-	$(CC) $(CFLAGS) -o $@ $< $(LIB_M) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $< $(LIB_STD)
 
 
 libad-test: libad-test.o taylor-ode.o
-	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_STD)
 
 libdual-test: libdual-test.o dual.o
-	$(CC) $(CFLAGS) -o $@ $^ $(LIB_M) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_STD)
 
 tests: libad-test libdual-test
 
 
 kerr-image: kerr-image.o
-	$(CC) $(CFLAGS) -o $@ $< $(LIB_M) $(STRIP)
+	$(CC) $(CFLAGS) -o $@ $< $(LIB_STD)
 
 
 .PHONY: test clean depclean ctags ctags-system ctags-system-all coverage
