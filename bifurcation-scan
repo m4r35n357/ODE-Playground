@@ -36,6 +36,7 @@ p=${start}
 while [ $(echo "$p < $end" | /usr/bin/bc) -eq 1 ]
 do
     eval ${command} 2>/dev/null | /bin/sed --quiet "$lower,$ p" >${tmpfile}  # run & save data, skipping "transient"
+    echo -n "." >&2
     if [ $(/usr/bin/wc --lines <$tmpfile) -eq $((upper - lower + 1)) ]
     then
         echo "   Processing parameter value: $p"
@@ -51,6 +52,7 @@ do
     fi
     p=$(echo "$p + $step;" | /usr/bin/bc)
 done
+echo "" >&2
 
 base='set terminal png size 1350,800 background rgb "grey85"; set grid back;'
 /usr/bin/gnuplot -e "set title '$args'; $base plot '${filtered}X' lt rgb '#000080' w dots, '${filtered}x' lt rgb '#004040' w dots" \
