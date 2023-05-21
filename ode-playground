@@ -67,7 +67,7 @@ case $model in
                 --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
                 --  '0.0' '50.0' '10' './tsm-lorenz-std' \
                     '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '-15.8' '-18.48' '35.64' '10' '$p' '8' '3') >/dev/null ;;
+                    '-15.8' '-18.48' '35.64' '10' '$p' '8' '3') ;;
         esac ;;
     Rossler)
         case $analysis in
@@ -106,7 +106,7 @@ case $model in
                 --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c":RO \
                 --  '0.0' '50.0' '10' './tsm-rossler-std' \
                     '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '0.0' '-6.78' '0.02' '.2' '.2' '$p') >/dev/null ;;
+                    '0.0' '-6.78' '0.02' '.2' '.2' '$p') ;;
         esac ;;
     Thomas)
         case $analysis in
@@ -145,7 +145,7 @@ case $model in
                 --field="x0" --field="y0" --field="z0" --field="b:RO" \
                 --  '0.1' '0.23' '10' './tsm-thomas-std' \
                     '6!0..36!3' '4!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' '$p') >/dev/null ;;
+                    '1.0' '0.0' '0.0' '$p') ;;
         esac ;;
     RF)
         case $analysis in
@@ -184,7 +184,7 @@ case $model in
                 --field="x0" --field="y0" --field="z0" --field="alpha":RO --field="gamma" \
                 --  '0.1' '0.23' '10' './tsm-rf-std' \
                     '6!0..36!3' '4!4..32!1' '0.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '0.05' '-0.05' '0.3' '$p' '.1') >/dev/null ;;
+                    '0.05' '-0.05' '0.3' '$p' '.1') ;;
         esac ;;
     Halvorsen)
         case $analysis in
@@ -223,6 +223,6 @@ case $model in
                 --field="x0" --field="y0" --field="z0" --field="a:RO" \
                 --  '1' '4' '10' './tsm-halvorsen-std' \
                     '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '0.0' '0.0' '$p') >/dev/null ;;
+                    '1.0' '0.0' '0.0' '$p') ;;
         esac ;;
 esac
