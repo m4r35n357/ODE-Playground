@@ -6,12 +6,11 @@
 args="$0 $*"
 echo "args: \033[1;37m$(($# + 1))\033[0;37m, [ \033[0;35m$args\033[0;37m ]" >&2
 
-steps=1500
-
 start=$1
 end=$2
-skip=$3
+steps=1500
 increment=$(echo "scale=12; ($end - $start) / $steps;" | /usr/bin/bc)
+skip=$3
 shift 3
 datalines=$5
 command=$*
@@ -24,14 +23,13 @@ do
     >${filtered}${tag}
 done
 
-[ $skip -eq 0 ] && lower=1 || lower=$((datalines / skip + 1))
+lower=1
+[ $skip -ne 0 ] && lower=$((datalines / skip + 1))
 upper=$((datalines + 1))
 
-col='[^ ]*'
-space=' *'
-
 filter () {  # $1 is the turning point tag, $2 is the column containing its data
-    /bin/grep $1 ${tmpfile} | /bin/sed --expression="s/\($col\)$space\($col\)$space\($col\) *.*/$p \\$2/" >>${filtered}$1 &
+    data='[^ ][^ ]*'
+    /bin/grep $1 ${tmpfile} | /bin/sed "s/\($data\) \($data\) \($data\) .*/$p \\$2/" >>${filtered}$1 &
 }
 
 p=${start}
