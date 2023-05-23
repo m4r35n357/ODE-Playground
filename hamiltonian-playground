@@ -27,7 +27,7 @@ control=$*
 plot_analysis () {
 gnuplot -p << EOF
 set key left
-set terminal wxt size 600,450
+set terminal wxt size 600,450 background rgb "grey85"
 set xrange [-0.1:1.1]
 set yrange [-0.1:1.1]
 set xlabel 'coordinate steps'
@@ -38,7 +38,7 @@ EOF
 
 plot3d () {
 gnuplot -p << EOF
-set terminal wxt size 600,450
+set terminal wxt size 600,450 background rgb "grey85"
 set xlabel 'X'
 set ylabel 'Y'
 set zlabel 'Z'
@@ -49,7 +49,7 @@ EOF
 plot_hamiltonian_error () {
 gnuplot -p << EOF
 set key left
-set terminal wxt size 600,450
+set terminal wxt size 600,450 background rgb "grey85"
 set xlabel 'time'
 set ylabel 'approximate places'
 plot '$user_data' using $1:$2 with linespoints pt 7 ps 0
@@ -61,19 +61,14 @@ case $model in
         parameters=$(yad --title="Newtonian Orbit" --form --separator=" " --align=right \
         --field="mass" --field="r0" --field="L factor":NUM \
         -- "1" "12" '0.6!0.0..1.0!0.1!1')
-        ./h-newton-std $display_places $1 $2 $3 $parameters >$user_data
-        plot3d
-        plot_hamiltonian_error 4 5 ;;
+        ./h-newton-std $display_places $1 $2 $3 $parameters >$user_data; plot3d; plot_hamiltonian_error 4 5 ;;
     Spring)
         parameters=$(yad --title="Mass-Spring System" --form --separator=" " --align=right \
         --field="mass" --field="spring constant" --field="length" \
         -- "1" "1" "1")
-        ./h-spring-std $display_places $1 $2 $3 $parameters >$user_data
-        plot3d
-        plot_hamiltonian_error 4 5 ;;
+        ./h-spring-std $display_places $1 $2 $3 $parameters >$user_data; plot3d; plot_hamiltonian_error 4 5 ;;
     Analysis)
-        ./h-analysis-std $display_places $1 1.0 1 >$user_data
-        plot_analysis ;;
+        ./h-analysis-std $display_places $1 1.0 1 >$user_data; plot_analysis ;;
     *Body*)
         case $model in
             EightBody) g=0.05
@@ -118,6 +113,6 @@ case $model in
                 -- 1.0 0.0  1.0 0.0  1.0 0.0 0.0 \
                    1.0 0.0 -1.0 0.0 -1.0 0.0 0.0) ;;
         esac
-        (./h-nbody-std $display_places $control $g $bodies >$user_data; plot_hamiltonian_error 1 2) 2>/dev/null &
+        (./h-nbody-std $display_places $control $g $bodies >$user_data; plot_hamiltonian_error 1 2) &
         ./h-nbody-gl $track_length $control $g $bodies ;;
 esac

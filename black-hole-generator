@@ -20,7 +20,7 @@ type=$1
 plot_potentials () {
 gnuplot -p << EOF
 set key left
-set terminal wxt size 600,450
+set terminal wxt size 600,450 background rgb "grey85"
 set yrange [*:10]
 set xlabel 'r'
 set ylabel 'R potential'
@@ -28,7 +28,7 @@ plot 0.0 title 'zero ref.', '$user_data' using 1:2 title 'R' with lines
 EOF
 gnuplot -p << EOF
 set key left
-set terminal wxt size 600,450
+set terminal wxt size 600,450 background rgb "grey85"
 set yrange [*:1]
 set xlabel 'theta'
 set ylabel 'THETA potential'

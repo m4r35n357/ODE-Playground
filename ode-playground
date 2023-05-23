@@ -19,7 +19,8 @@ model=$1
 analysis=$2
 
 plot () {
-gnuplot -p << EOF
+ gnuplot -p << EOF
+set terminal wxt background rgb "grey85"
 set xyplane 0
 set view 54.73561,135
 set xlabel 'X'
