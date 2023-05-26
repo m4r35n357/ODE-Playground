@@ -8,7 +8,7 @@ echo "args: \033[1;37m$(($# + 1))\033[0;37m, [ \033[0;35m$args\033[0;37m ]" >&2
 
 start=$1
 end=$2
-steps=1500
+steps=1000
 increment=$(echo "scale=12; ($end - $start) / $steps;" | /usr/bin/bc)
 skip=$3
 shift 3
@@ -20,7 +20,7 @@ tmpfile=${tmpdir}/data
 filtered=${tmpdir}/bifurcation
 for tag in X x Y y Z z
 do
-    >${filtered}${tag}
+    >${filtered}$tag
 done
 
 lower=1
@@ -29,13 +29,14 @@ upper=$((datalines + 1))
 
 filter () {  # $1 is the turning point tag, $2 is the column containing its data
     data='[^ ][^ ]*'
-    /bin/grep $1 ${tmpfile} | /bin/sed "s/\($data\) \($data\) \($data\) .*/$p \\$2/" >>${filtered}$1 &
+    /bin/grep $1 $tmpfile | /bin/sed "s/\($data\) \($data\) \($data\) .*/$p \\$2/" >>${filtered}$1 &
 }
 
-p=${start}
-while [ $steps -ge 0 ]
+p=$start
+count=$steps
+while [ $count -ge 0 ]
 do
-    eval ${command} 2>/dev/null | /bin/sed --quiet "$lower,$ p" >${tmpfile}  # run & save data, skipping "transient"
+    eval $command 2>/dev/null | /bin/sed --quiet "$lower,$ p" >$tmpfile  # run & save data, skipping "transient"
     if [ $(/usr/bin/wc --lines <$tmpfile) -eq $((upper - lower + 1)) ]
     then
         echo -n "\r   \033[0;32mProcessing value\033[0;37m $p"
@@ -50,17 +51,29 @@ do
         echo -n "\r   \033[1;31mProcessing value\033[0;37m $p"
     fi
     p=$(echo "$p + $increment;" | /usr/bin/bc)
-    steps=$((steps - 1))
+    count=$((count - 1))
 done
 echo -n "\r                                                            \r"
 
-base='set terminal png size 1350,800 background rgb "grey85"; set grid back; set format x "%.9f";'
-/usr/bin/gnuplot -e "set title '$args'; $base plot '${filtered}X' lt rgb '#000080' w dots, '${filtered}x' lt rgb '#004040' w dots" \
-    >${tmpdir}/X.png &
-/usr/bin/gnuplot -e "set title '$args'; $base plot '${filtered}Y' lt rgb '#008000' w dots, '${filtered}y' lt rgb '#404000' w dots" \
-    >${tmpdir}/Y.png &
-/usr/bin/gnuplot -e "set title '$args'; $base plot '${filtered}Z' lt rgb '#800000' w dots, '${filtered}z' lt rgb '#400040' w dots" \
-    >${tmpdir}/Z.png &
+xmargin=50
+pwidth=$((steps + 1 + 2 * xmargin))
+
+plot () {
+/usr/bin/gnuplot -p << EOF
+set terminal png size '$pwidth',640 background rgb "grey85"
+set lmargin at screen '$xmargin.0'/'$pwidth'
+set rmargin at screen '$((xmargin + steps)).0'/'$pwidth'
+set grid back
+set border back
+set title '$args'
+set format x "%.6g"
+plot '${filtered}$1' lt rgb '$2' w dots, '${filtered}$3' lt rgb '$4' w dots
+EOF
+}
+
+plot X '#000080' x '#004040' >${tmpdir}/X.png &
+plot Y '#008000' y '#404000' >${tmpdir}/Y.png &
+plot Z '#800000' z '#400040' >${tmpdir}/Z.png &
 wait
 
 /usr/bin/display ${tmpdir}/X.png &
