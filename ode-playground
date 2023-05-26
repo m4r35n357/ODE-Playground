@@ -8,7 +8,7 @@ user_data="$user_dir/data"
 
 choice=$(yad --columns=2 --title="ODE Playground (TSM)" --form --separator=" " --align=right \
     --field="Model:CB" --field="Analysis type:CB" \
-    -- 'Bouali!Halvorsen!Lorenz!RF!Rossler!^Thomas!WimolBanlue!YuWang' '^GLplot!Gnuplot!CNS!CNSscan!Bifurcation')
+    -- 'BurkeShaw!Halvorsen!Lorenz!RF!Rossler!^Thomas!WimolBanlue!YuWang' '^GLplot!Gnuplot!CNS!CNSscan!Bifurcation')
 
 case $? in
     1) exit;;
@@ -183,8 +183,8 @@ case $model in
                 --field="Lower Value" --field="Upper Value" --field="Skip First 1/":CB --field="Model":RO \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="x0" --field="y0" --field="z0" --field="alpha":RO --field="gamma" \
-                --  '0.1' '0.23' '10!2' './tsm-rf-std' \
-                    '6!0..36!3' '4!4..32!1' '0.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                --  '0.1' '0.35' '10!2' './tsm-rf-std' \
+                    '6!0..36!3' '4!4..32!1' '0.01!0.001..0.1!0.001!3' '50000!1..1000000!1000' \
                     '0.05' '-0.05' '0.3' '$p' '.1') ;;
         esac ;;
     Halvorsen)
@@ -304,43 +304,43 @@ case $model in
                     '6!0..36!3' '4!4..32!1' '.001!0.001..0.1!0.001!3' '25000!1..1000000!1000' \
                     '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '$p') ;;
         esac ;;
-    Bouali)
+    BurkeShaw)
         case $analysis in
-            GLplot) ./tsm-bouali-gl \
-                $(yad --columns=2 --title="Bouali Attractor OpenGL (TSM)" --form --separator=" " --align=right \
+            GLplot) ./tsm-burke-shaw-gl \
+                $(yad --columns=2 --title="Burke-Shaw Attractor OpenGL (TSM)" --form --separator=" " --align=right \
                 --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
+                --field="x0" --field="y0" --field="z0" --field="S" --field="V" \
                 --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
-            Gnuplot) ./tsm-bouali-std \
-                $(yad --columns=2 --title="Bouali Attractor Gnuplot (TSM)" --form --separator=" " --align=right \
+                    '1.0' '1.0' '1.0' '10.0' '4.272') ;;
+            Gnuplot) ./tsm-burke-shaw-std \
+                $(yad --columns=2 --title="Burke-Shaw Attractor Gnuplot (TSM)" --form --separator=" " --align=right \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
+                --field="x0" --field="y0" --field="z0" --field="S" --field="V" \
                 --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                    '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') >$user_data; plot ;;
+                    '1.0' '1.0' '1.0' '10.0' '4.272') >$user_data; plot ;;
             CNS) ./cns \
-                $(yad --columns=2 --title="Bouali CNS (TSM)" --form --separator=" " --align=right \
+                $(yad --columns=2 --title="Burke-Shaw CNS (TSM)" --form --separator=" " --align=right \
                 --field="Mode":CB --field="Separation" --field="Model":RO \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
-                --  'step2!nosim' '1.0' './tsm-bouali-std' \
-                    '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
-                    '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
+                --field="x0" --field="y0" --field="z0" --field="S" --field="V" \
+                --  'step2!nosim' '1.0' './tsm-burke-shaw-std' \
+                    '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '12000!1..1000000!1000' \
+                    '1.0' '1.0' '1.0' '10.0' '4.272') ;;
             CNSscan) ./cns-scan \
-                $(yad --columns=2 --title="Bouali CNS Scan (TSM)" --form --separator=" " --align=right \
+                $(yad --columns=2 --title="Burke-Shaw CNS Scan (TSM)" --form --separator=" " --align=right \
                 --field="Maxium Order":NUM --field="Separation" --field="Model":RO \
                 --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
-                --  '32!2..64!1' '1.0' './tsm-bouali-std' \
-                    '6!0..36!3' '_' '.01!0.001..0.1!0.01!3' '100000!1..1000000!1000' \
-                    '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
+                --field="x0" --field="y0" --field="z0" --field="S" --field="V" \
+                --  '32!2..64!1' '1.0' './tsm-burke-shaw-std' \
+                    '6!0..36!3' '_' '.01!0.001..0.1!0.01!3' '12000!1..1000000!1000' \
+                    '1.0' '1.0' '1.0' '10.0' '4.272') ;;
             Bifurcation) time -p ./bifurcation-scan \
-                $(yad --columns=2 --title="Bouali Bifurcation (TSM)" --form --separator=" " --align=right \
+                $(yad --columns=2 --title="Burke-Shaw Bifurcation (TSM)" --form --separator=" " --align=right \
                 --field="Lower Value" --field="Upper Value" --field="Skip First 1/":CB --field="Model":RO \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-                --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d":RO \
-                --  '0.0' '1.0' '10!2' './tsm-bouali-std' \
-                    '6!0..36!3' '4!4..32!1' '.01!0.01..0.1!0.001!3' '100000!1..1000000!1000' \
-                    '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '$p') ;;
+                --field="x0" --field="y0" --field="z0" --field="S" --field="V":RO \
+                --  '0.0' '10.0' '10!2' './tsm-burke-shaw-std' \
+                    '6!0..36!3' '4!4..32!1' '.01!0.01..0.1!0.001!3' '10000!1..1000000!1000' \
+                    '1.0' '1.0' '1.0' '10.0' '$p') ;;
         esac ;;
 esac
