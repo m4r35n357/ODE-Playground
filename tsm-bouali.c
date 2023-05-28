@@ -10,25 +10,25 @@
 #include <stdlib.h>
 #include "taylor-ode.h"
 
-typedef struct Parameters { real a, b, c, d; series wa, wb, w1; } parameters;
+typedef struct Parameters { real a, b, c, d; series sa, sb, _1; } parameters;
 
 void *get_p (int argc, char **argv, int n) {
     CHECK(argc == 12);
     parameters *p = malloc(sizeof (parameters)); CHECK(p);
     t_params(argv, argc, &p->a, &p->b, &p->c, &p->d);
-    p->wa = t_jet(n);
-    p->wb = t_jet(n);
-    p->w1 = t_const(n, 1.0L);
+    p->sa = t_jet(n);
+    p->sb = t_jet(n);
+    p->_1 = t_const(n, 1.0L);
     return p;
 }
 
 triplet ode (series x, series y, series z, void *params, int k) {
     parameters *p = (parameters *)params;
-    p->wa[k] = p->w1[k] - y[k];
-    p->wb[k] = p->w1[k] - t_sqr(x, k);
+    p->sa[k] = p->_1[k] - y[k];
+    p->sb[k] = p->_1[k] - t_sqr(x, k);
     return (triplet) {
-        .x = p->a * t_mul(x, p->wa, k) - p->b * z[k],
-        .y = - p->c * t_mul(y, p->wb, k),
+        .x = p->a * t_mul(x, p->sa, k) - p->b * z[k],
+        .y = - p->c * t_mul(y, p->sb, k),
         .z = p->d * x[k]
     };
 }
