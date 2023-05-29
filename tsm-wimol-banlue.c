@@ -1,8 +1,6 @@
 /*
  * Wimol-Banlue System
  *
- * Example: ./tsm-wimol-banlue-std 15 8 0.1 10000 1 0 0 2.0
- *
  * (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
