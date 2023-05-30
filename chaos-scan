@@ -17,7 +17,7 @@ command=$*
 
 tmpdir=${TMP_TAYLOR:-/tmp/$USER}
 tmpfile=${tmpdir}/data
-filtered=${tmpdir}/bifurcation
+filtered=${tmpdir}/chaos
 for tag in X x Y y Z z
 do
     >${filtered}$tag

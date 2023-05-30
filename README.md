@@ -67,7 +67,7 @@ These models use the arbitrary-order Taylor Series Method (TSM)
 
 * Good selection of clients (models) included
 * Investigate the validity of chaotic solutions against integrator order and step size
-* Plot bifurcation diagrams, to find "interesting" parameter values to study
+* Plot bifurcation (chaos scanning) diagrams, to find "interesting" parameter values to study
 
 There is a script that provides a dialogue-based user interface for six of the supplied models:
 ```
@@ -257,13 +257,13 @@ splot '/tmp/$USER/data' with lines
 EOF
 ```
 
-### Bifurcation Diagrams:
+### Bifurcation (chaos scanning) Diagrams:
 
 This script runs a simulation many times for different values of a single parameter, and uses turning point tags in the ODE simulation output for plotting bifurcation diagrams in X, Y and Z, and saves plots to PNG files.
 Because the simulations carry second derivatives in the coordinate jets, we can plot maxima and minima in different colours!
 Optionally, we can skip the initial transient by dropping the first (datalines / value) results (10 is usually a good value).
 
-**bifurcation-scan** (shell script)
+**chaos-scan** (shell script)
 
 Parameter | Meaning
 ----------|-----------
@@ -274,12 +274,12 @@ Parameter | Meaning
 
 The general idea is to replace one of the model parameters with the string '$p' (including quotes!).
 
-#### Bifurcation Diagram (manual gnuplot graph):
+#### Chaos Scan (manual gnuplot graph):
 
 A fourth-order integrator is sufficient for bifurcation diagrams and will run faster; for this scenario we only care about transitions into and out of chaos, not accuracy within the chaotic regions.
 Progress output is sent to /dev/null in the examples below for brevity, but is useful in most situations.
 ```
-time -p ./bifurcation-scan .1 .225 10 ./tsm-thomas-std 6 4 0.1 10000 1 0 0 '$p' >/dev/null
+time -p ./chaos-scan .1 .225 10 ./tsm-thomas-std 6 4 0.1 10000 1 0 0 '$p' >/dev/null
 Bifurcation Diagrams: [.1 .225 10 ./tsm-thomas-std 6 4 0.1 10000 1 0 0 $p]
 real 194.46
 user 195.12
@@ -295,7 +295,7 @@ If you want to interact with actual plots (e.g. to read off parameter values for
  gnuplot -p << EOF
 set t wxt size 1350,800 background rgb 'grey85'
 set grid back
-plot '/tmp/$USER/bifurcationX' lt rgb 'dark-blue' with dots, '/tmp/$USER/bifurcationx' lt rgb 'dark-green' w d
+plot '/tmp/$USER/chaosX' lt rgb 'dark-blue' with dots, '/tmp/$USER/chaosx' lt rgb 'dark-green' w d
 EOF
 ```
 
