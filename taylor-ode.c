@@ -72,13 +72,16 @@ static char *tag (series jet, real slope, char *min, char *max) {
     return jet[1] * slope < 0.0L ? (jet[2] > 0.0L ? min : max) : "_";
 }
 
-static void tsm_step (series3 *j, void *p, int n, real h) {
+static void derivatives (series3 *j, void *p, int n) {
     for (int k = 0; k < n; k++) {
         triplet v = ode(j->x, j->y, j->z, p, k);
         j->x[k + 1] = v.x / (k + 1);
         j->y[k + 1] = v.y / (k + 1);
         j->z[k + 1] = v.z / (k + 1);
     }
+}
+
+static void update (series3 *j, int n, real h) {
     j->x[0] = t_horner(j->x, n, h);
     j->y[0] = t_horner(j->y, n, h);
     j->z[0] = t_horner(j->z, n, h);
@@ -87,10 +90,11 @@ static void tsm_step (series3 *j, void *p, int n, real h) {
 void tsm_stdout (int dp, controls *c, series3 *jets, void *p, clock_t t0) {
     triplet slope = {0.0L, 0.0L, 0.0L};
     for (int step = 0; step < c->steps; step++) {
+        derivatives(jets, p, c->order);
         t_out(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * step,
               tag(jets->x, slope.x, "x", "X"), tag(jets->y, slope.y, "y", "Y"), tag(jets->z, slope.z, "z", "Z"), t0);
         slope.x = jets->x[1]; slope.y = jets->y[1]; slope.z = jets->z[1];
-        tsm_step(jets, p, c->order, c->step_size);
+        update(jets, c->order, c->step_size);
     }
     t_out(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * c->steps, "_", "_", "_", t0);
 }
@@ -99,7 +103,8 @@ bool tsm_gen (controls *c, series3 *jets, void *p) {
     static bool looping = false;
     if (looping) goto resume; else looping = true;
     for (c->step = 0; c->step < c->steps; c->step++) {
-        tsm_step(jets, p, c->order, c->step_size);
+        derivatives(jets, p, c->order);
+        update(jets, c->order, c->step_size);
         return true;
         resume: ;
     }
