@@ -17,22 +17,14 @@ esac
 set $choice
 type=$1
 
-plot_potentials () {
+plot () {
 gnuplot -p << EOF
 set key left
 set terminal wxt size 600,450 background rgb "grey85"
-set yrange [*:10]
-set xlabel 'r'
-set ylabel 'R potential'
-plot 0.0 title 'zero ref.', '$user_data' using 1:2 title 'R' with lines
-EOF
-gnuplot -p << EOF
-set key left
-set terminal wxt size 600,450 background rgb "grey85"
-set yrange [*:1]
-set xlabel 'theta'
-set ylabel 'THETA potential'
-plot 0.0 title 'zero ref.', '$user_data' using 3:4 title 'THETA' with lines
+set yrange [*:$5]
+set xlabel "$3"
+set ylabel "$4 potential"
+plot 0.0 title 'zero ref.', '$user_data' using $1:$2 title "$4" with lines
 EOF
 }
 
@@ -43,7 +35,8 @@ case $type in
         --field="Elevation (degrees)" --field="BH spin (-ve for retrograde)":NUM \
         -- "1.0e-9" "4.0" "12.0" \
            "63.0" '0.8!-1.0..1.0!0.1!1') >$user_data
-        plot_potentials ;;
+        plot 1 2 'r' 'R' 10
+        plot 3 4 'theta' 'THETA' 1 ;;
     Lightlike) ./h-kerr-gen-light \
         $(yad --columns=2 --title="Generate Parameters (light)" --form --separator=" " --align=right \
         --field="r":NUM --field="BH spin":NUM \
