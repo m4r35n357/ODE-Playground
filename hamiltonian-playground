@@ -36,16 +36,6 @@ plot '$user_data' using 1:2 title 'time step sequence' with linespoints pt 7 ps 
 EOF
 }
 
-plot3d () {
-gnuplot -p << EOF
-set terminal wxt size 600,450 background rgb "grey85"
-set xlabel 'X'
-set ylabel 'Y'
-set zlabel 'Z'
-splot '$user_data' with lines
-EOF
-}
-
 plot_hamiltonian_error () {
 gnuplot -p << EOF
 set key left
@@ -61,12 +51,12 @@ case $model in
         parameters=$(yad --title="Newtonian Orbit" --form --separator=" " --align=right \
         --field="mass" --field="r0" --field="L factor":NUM \
         -- "1" "12" '0.6!0.0..1.0!0.1!1')
-        ./h-newton-std $display_places $1 $2 $3 $parameters >$user_data; plot3d; plot_hamiltonian_error 4 5 ;;
+        ./plot ./h-newton-std $display_places $1 $2 $3 $parameters; plot_hamiltonian_error 4 5 ;;
     Spring)
         parameters=$(yad --title="Mass-Spring System" --form --separator=" " --align=right \
         --field="mass" --field="spring constant" --field="length" \
         -- "1" "1" "1")
-        ./h-spring-std $display_places $1 $2 $3 $parameters >$user_data; plot3d; plot_hamiltonian_error 4 5 ;;
+        ./plot ./h-spring-std $display_places $1 $2 $3 $parameters; plot_hamiltonian_error 4 5 ;;
     Analysis)
         ./h-analysis-std $display_places $1 1.0 1 >$user_data; plot_analysis ;;
     *Body*)
