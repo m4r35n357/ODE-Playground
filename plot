@@ -10,6 +10,7 @@ user_data="/tmp/$USER/data"
 plot () {
  gnuplot -p << EOF
 set terminal wxt background rgb "grey85"
+set title '$args'
 set xyplane 0
 set view 54.73561,135
 set xlabel 'X'
