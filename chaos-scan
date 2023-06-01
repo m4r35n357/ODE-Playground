@@ -9,7 +9,7 @@ echo "args: \033[1;37m$(($# + 1))\033[0;37m, [ \033[0;35m$args\033[0;37m ]" >&2
 start=$1
 end=$2
 steps=1000
-increment=$(echo "scale=12; ($end - $start) / $steps;" | /usr/bin/bc)
+increment=$(echo "scale=9; ($end - $start) / $steps;" | /usr/bin/bc)
 skip=$3
 shift 3
 datalines=$5
@@ -39,7 +39,7 @@ do
     eval $command 2>/dev/null | /bin/sed --quiet "$lower,$ p" >$tmpfile  # run & save data, skipping "transient"
     if [ $(/usr/bin/wc --lines <$tmpfile) -eq $((upper - lower + 1)) ]
     then
-        echo -n "\r   \033[0;32mProcessing value\033[0;37m $p"
+        echo -n "\r   \033[0;32mLatest value\033[0;37m $p"
         filter 'X' 1
         filter 'x' 1
         filter 'Y' 2
@@ -48,7 +48,7 @@ do
         filter 'z' 3
         wait
     else
-        echo -n "\r   \033[1;31mProcessing value\033[0;37m $p"
+        echo -n "\r   \033[1;31mLatest value\033[0;37m $p"
     fi
     p=$(echo "$p + $increment;" | /usr/bin/bc)
     count=$((count - 1))
@@ -60,22 +60,24 @@ pwidth=$((steps + 1 + 2 * xmargin))
 
 plot () {
 /usr/bin/gnuplot -p << EOF
-set terminal png size '$pwidth',640 background rgb "grey85"
+set terminal $5 size '$pwidth',640 background rgb "grey85"
 set lmargin at screen '$xmargin.0'/'$pwidth'
 set rmargin at screen '$((xmargin + steps)).0'/'$pwidth'
 set grid back
 set border back
 set title '$args'
+set xrange [$start:$end]
 set format x "%.6g"
-plot '${filtered}$1' lt rgb '$2' w dots, '${filtered}$3' lt rgb '$4' w dots
+plot 1/0 lt rgb '$2' lw 3 t 'Maxima', '${filtered}$1' lt rgb '$2' notitle w dots,\
+     1/0 lt rgb '$4' lw 3 t 'Minima', '${filtered}$3' lt rgb '$4' notitle w dots
 EOF
 }
 
-plot X '#000080' x '#004040' >${tmpdir}/X.png &
-plot Y '#008000' y '#404000' >${tmpdir}/Y.png &
-plot Z '#800000' z '#400040' >${tmpdir}/Z.png &
+plot X '#000080' x '#004040' png >${tmpdir}/X.png &
+plot Y '#008000' y '#404000' png >${tmpdir}/Y.png &
+plot Z '#800000' z '#400040' png >${tmpdir}/Z.png &
 wait
 
-/usr/bin/display ${tmpdir}/X.png &
-/usr/bin/display ${tmpdir}/Y.png &
-/usr/bin/display ${tmpdir}/Z.png &
+plot X '#000080' x '#004040' wxt &
+plot Y '#008000' y '#404000' wxt &
+plot Z '#800000' z '#400040' wxt &
