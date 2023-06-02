@@ -230,7 +230,12 @@ Parameter | Meaning
 
 #### Run & plot (OpenGL plot):
 ```
-./tsm-thomas-gl 2000 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
+./tsm-thomas-gl 5000 8 0.100 10000 1.0 0.0 0.0 0.185
+argc: 9, argv: [ ./tsm-thomas-gl 5000 8 0.100 10000 1.0 0.0 0.0 0.185 ]
+
+  OpenGL: 3.1 Mesa 19.3.2
+FreeGLUT: 20801
+    GLEW: 2.1.0
 ```
 
 **tsm-model-type** (c executables)
@@ -246,15 +251,9 @@ Parameter | Meaning
 
 #### Run & plot (3D gnuplot graph):
 ```
-./tsm-thomas-std 6 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
- gnuplot -p << EOF
-set xyplane 0
-set view 54.73561,135
-set xlabel 'X'
-set ylabel 'Y'
-set zlabel 'Z'
-splot '/tmp/$USER/data' with lines
-EOF
+./plot ./tsm-thomas-std 6 8 0.100 10000 1.0 0.0 0.0 0.185
+args: 10, [ ./plot ./tsm-thomas-std 6 8 0.100 10000 1.0 0.0 0.0 0.185 ]
+argc: 9, argv: [ ./tsm-thomas-std 6 8 0.100 10000 1.0 0.0 0.0 0.185 ]
 ```
 
 ### Bifurcation (chaos scanning) Diagrams:
@@ -279,24 +278,13 @@ The general idea is to replace one of the model parameters with the string '$p' 
 A fourth-order integrator is sufficient for bifurcation diagrams and will run faster; for this scenario we only care about transitions into and out of chaos, not accuracy within the chaotic regions.
 Progress output is sent to /dev/null in the examples below for brevity, but is useful in most situations.
 ```
-time -p ./chaos-scan .1 .225 10 ./tsm-thomas-std 6 4 0.1 10000 1 0 0 '$p' >/dev/null
-Bifurcation Diagrams: [.1 .225 10 ./tsm-thomas-std 6 4 0.1 10000 1 0 0 $p]
-real 194.46
-user 195.12
-sys 116.62
+./chaos-scan 0.177 0.198 10 ./tsm-thomas-std 6 4 0.100 20000 1.0 0.0 0.0 '$p'
+args: 13, [ ./chaos-scan 0.177 0.198 10 ./tsm-thomas-std 6 4 0.100 20000 1.0 0.0 0.0 $p ]
 ```
-This produces three PNG files, one for each coordinate.
-You can see them using any image viewer e.g. ImageMagick:
+As well as three "interactive plots", this produces three PNG files, one for each coordinate.
+You can see them later using any image viewer e.g. ImageMagick (without coordinate readouts of course):
 ```
 display /tmp/$USER/X.png
-```
-If you want to interact with actual plots (e.g. to read off parameter values for simulation), use a command like (for the x coordinate):
-```
- gnuplot -p << EOF
-set t wxt size 1350,800 background rgb 'grey85'
-set grid back
-plot '/tmp/$USER/chaosX' lt rgb 'dark-blue' with dots, '/tmp/$USER/chaosx' lt rgb 'dark-green' w d
-EOF
 ```
 
 ### Clean Numerical Simulation:
@@ -336,25 +324,13 @@ O(required precision^4) or O(order^4) or O(clean simulation time^4)
 These results for higher orders (16+) require 128-bit precision, i.e. aarch64 long double (software).
 In hardware 80-bit (x86-64) or 64-bit (armhf) floating point, the maximum clean simulation time will be correspondingly lower.
 ```
-./cns step2 1.0 ./tsm-lorenz-std 6 4 .01 10000 -15.8 -17.48 35.64 10 28 8 3
-
-./cns step2 1.0 ./tsm-lorenz-std 6 8 .01 10000 -15.8 -17.48 35.64 10 28 8 3
-
-./cns step2 1.0 ./tsm-lorenz-std 6 12 .01 10000 -15.8 -17.48 35.64 10 28 8 3
-
-./cns step2 1.0 ./tsm-lorenz-std 6 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3
-
-./cns step2 1.0 ./tsm-lorenz-std 6 20 .01 10000 -15.8 -17.48 35.64 10 28 8 3
-
-./cns step2 1.0 ./tsm-lorenz-std 6 28 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./tsm-thomas-std 6 8 0.100 10000 1.0 0.0 0.0 0.185
+args: 12, [ ./cns step2 1.0 ./tsm-thomas-std 6 8 0.100 10000 1.0 0.0 0.0 0.185 ]
+argc: 9, argv: [ ./tsm-thomas-std 6 8 .050000000 20000 1.0 0.0 0.0 0.185 ]
+argc: 9, argv: [ ./tsm-thomas-std 6 8 0.100 10000 1.0 0.0 0.0 0.185 ]
+argc: 4, argv: [ ./divergence /tmp/pi/dataA /tmp/pi/dataB 1.0 ]
 ```
-If you need to re-plot after closing gnuplot, either use the "nosim" argument, or:
-```
- gnuplot -p << EOF
-set key horizontal left
-plot '/tmp/$USER/dataA' using 4:1 t 'x' with lines lc black, '' u 4:2 t 'y' w l lc black, '' u 4:3 t 'z' w l lc black, '/tmp/$USER/dataB' using 4:1 t 'x' with lines lc 'forest-green', '' u 4:2 t 'y' w l lc 'dark-yellow', '' u 4:3 t 'z' w l lc 'dark-turquoise'
-EOF
-```
+If you need to re-plot after closing gnuplot, use the "nosim" argument.
 
 #### CNS Duration Scanning (TSM only)
 
@@ -371,19 +347,11 @@ Parameter | Meaning
 
 #### CNS duration vs. Simulation Order (gnuplot graph) for the given step size:
 
-The following commands perform a scan, and plot the simulation time and cpu time as histograms against integrator order:
+The following command performs a scan, and plots the clean simulation time and cpu time as histograms against integrator order from 2 to 32:
 ```
-./cns-scan 32 1 ./tsm-lorenz-std 6 _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | tee /tmp/$USER/data
-
- gnuplot -p << EOF
-set key left
-set ytics nomirror
-set y2tics
-set xlabel 'Taylor Series Order'
-set ylabel 'CNS Time, model units'
-set y2label 'CPU Time, seconds'
-plot '/tmp/$USER/data' using 1:2 axes x1y1 title 'CNS' with boxes, '' u 1:3 axes x1y2 t 'CPU' w boxes
-EOF
+./cns-scan 32 1.0 ./tsm-thomas-std 6 _ 0.100 10000 1.0 0.0 0.0 0.185
+args: 12, [ ./cns-scan 32 1.0 ./tsm-thomas-std 6 _ 0.100 10000 1.0 0.0 0.0 0.185 ]
+<output not shown>
 ```
 
 ##Finally
