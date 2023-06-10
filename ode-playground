@@ -399,14 +399,14 @@ case $model in
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
             --  'step2!nosim' '1.0' './tsm-isuc-std' \
-                '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '12000!1..1000000!1000' \
+                '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '0.1' '0.1' '4.2') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="ISUC" --form --separator=" " --align=right \
             --field="Maxium Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
             --  '32!2..64!1' '1.0' './tsm-isuc-std' \
-                '6!0..36!3' '_' '.01!0.001..0.1!0.01!3' '12000!1..1000000!1000' \
+                '6!0..36!3' '_' '.01!0.001..0.1!0.01!3' '60000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '0.1' '0.1' '4.2') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="ISUC" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Skip First 1/":CB --field="Model":RO \
