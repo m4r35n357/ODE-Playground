@@ -276,12 +276,16 @@ The general idea is to replace one of the model parameters with the string '$p' 
 #### Chaos Scan (manual gnuplot graph):
 
 A fourth-order integrator is sufficient for bifurcation diagrams and will run faster; for this scenario we only care about transitions into and out of chaos, not accuracy within the chaotic regions.
-Progress output is sent to /dev/null in the examples below for brevity, but is useful in most situations.
+Progress output (current parameter value) is produced while the script is running.
 ```
-./chaos-scan 0.177 0.198 10 ./tsm-thomas-std 6 4 0.100 20000 1.0 0.0 0.0 '$p'
+time -p ./chaos-scan 0.177 0.198 10 ./tsm-thomas-std 6 4 0.100 20000 1.0 0.0 0.0 '$p'
 args: 13, [ ./chaos-scan 0.177 0.198 10 ./tsm-thomas-std 6 4 0.100 20000 1.0 0.0 0.0 $p ]
+real 92.67                                                  
+user 95.45
+sys 55.47
 ```
-As well as three "interactive plots", this produces three PNG files, one for each coordinate.
+Timings are from a Raspberry Pi 4 clocked to 1800 MHz.
+As well as three "interactive plots" (mouse hover reads out plot coordinates), this produces three PNG files, one each for X, Y, Z.
 You can see them later using any image viewer e.g. ImageMagick (without coordinate readouts of course):
 ```
 display /tmp/$USER/X.png

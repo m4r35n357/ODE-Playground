@@ -8,9 +8,7 @@ user_data="$user_dir/data"
 
 choice=$(yad --columns=2 --title="Black Hole Playground" --form --separator=" " --align=right \
     --field="Geodesic Type":CB --field="Output Type":CB --field="Time Variable":CB \
-    -- '^Timelike!Lightlike' \
-       '^GLplot!Gnuplot' \
-       '^Mino!Proper!Coordinate')
+    -- '^Timelike!Lightlike' '^GLplot!Gnuplot' '^Mino!Proper!Coordinate')
 
 case $? in
     1) exit;;

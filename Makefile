@@ -97,11 +97,10 @@ kerr-image: kerr-image.o
 
 test:
 	@for x in -.5 0 .5; do \
-		./libad-test 20 $$x 1e-15 >/dev/null || exit 1; \
-		echo ""; \
-		./libdual-test $$x 1e-15 >/dev/null || exit 1; \
-		echo ""; \
+		./libad-test 20 $$x 1e-15 >/dev/null || exit 1; echo ""; \
+		./libdual-test $$x 1e-15 >/dev/null || exit 1; echo ""; \
 	done
+	@echo "\033[1;37mCore Tests Passed\033[0;37m\n"
 
 test-all: test
 	@if ! ./tsm-lorenz-std  6 8 .01 1000  -15.8 -17.48 35.64  10 28 8 3 >/dev/null; then exit 1; fi
@@ -110,6 +109,7 @@ test-all: test
 	@if ! ./h-nbody-std 6 6 0.010 1000 0.05 100.0 0.0 0.0 0.0 0.0 0.0 0.0 2.0 0.0 4.5 0.4 -0.2 0.0 1.8 3.0 -6.0 0.0 -0.4 0.0 -2.0 1.0 5.0 3.0 0.0 -0.2 0.0 5.8 -0.2 4.0 0.0 -4.0 0.1 -3.6 0.0 0.2 3.0 -4.0 0.0 -0.1 0.0 -0.2 -2.6 3.0 8.0 0.0 -0.3 0.0 2.0 -0.2 4.0 0.0 4.0 -0.2 -4.8 0.0 -0.2 >/dev/null; then exit 1; fi
 	@if ! ./h-kerr-gen-particle 1.0e-9 4.0 12.0 63.0 0.8 >/dev/null; then exit 1; fi
 	@if ! ./h-kerr-gen-light 3.0 0.8 >/dev/null; then exit 1; fi
+	@echo "\n\033[1;37mSanity Tests Passed\033[0;37m"
 
 ctags:
 	@/usr/bin/ctags *.h *.c
