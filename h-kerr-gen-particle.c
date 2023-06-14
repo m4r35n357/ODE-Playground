@@ -149,11 +149,11 @@ int main (int argc, char **argv) { (void)argc;
     real r_range = (circular ? k->rmin + 1.0L : k->rmax + 1.0L);
     real PI = acosl(-1.0L);
     for (int i = 1; i < 1000; i++) {
-        real r_plot = r_range * i / 1000.0L;
-        real R_plot = R(r_plot, d_dual(k->E), d_dual(k->L), d_dual(k->Q), k->a).val;
-        real theta_plot = PI * i / 1000.0L;
-        real THETA_plot = THETA(theta_plot, d_dual(k->E), d_dual(k->L), d_dual(k->Q), k->a).val;
-        fprintf(stdout, "%.6Lf %.12Lf %.6Lf %.12Lf\n", r_plot, -0.5L * R_plot, theta_plot, -0.5L * THETA_plot);
+        real r = r_range * i / 1000.0L;
+        real theta = PI * i / 1000.0L;
+        fprintf(stdout, "%.6Lf %.12Lf %.6Lf %.12Lf\n",
+                r, -0.5L * R(r, d_dual(k->E), d_dual(k->L), d_dual(k->Q), k->a).val,
+                theta, -0.5L * THETA(theta, d_dual(k->E), d_dual(k->L), d_dual(k->Q), k->a).val);
     }
     return 0;
 }
