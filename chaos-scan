@@ -1,43 +1,45 @@
 #!/bin/sh
 #
-#  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
-echo "Bifurcation Diagrams: [$0 $*]" >&2
+args="$0 $*"
+echo "args: \033[1;37m$(($# + 1))\033[0;37m, [ \033[0;35m$args\033[0;37m ]" >&2
 
 start=$1
 end=$2
+steps=1000
+increment=$(echo "scale=9; ($end - $start) / $steps;" | /usr/bin/bc)
 skip=$3
-step=$(echo "scale=15; ($end - $start) / 1501;" | /usr/bin/bc)
 shift 3
 datalines=$5
 command=$*
 
 tmpdir=${TMP_TAYLOR:-/tmp/$USER}
 tmpfile=${tmpdir}/data
-filtered=${tmpdir}/bifurcation
+filtered=${tmpdir}/chaos
 for tag in X x Y y Z z
 do
-    >${filtered}${tag}
+    >${filtered}$tag
 done
 
-[ $skip -eq 0 ] && lower=1 || lower=$((datalines / skip + 1))
+lower=1
+[ $skip -ne 0 ] && lower=$((datalines / skip + 1))
 upper=$((datalines + 1))
 
-col='[^ ]*'
-space=' *'
-
 filter () {  # $1 is the turning point tag, $2 is the column containing its data
-    /bin/grep $1 ${tmpfile} | /bin/sed --expression="s/\($col\)$space\($col\)$space\($col\) *.*/$p \\$2/" >>${filtered}$1 &
+    data='[^ ][^ ]*'
+    /bin/grep $1 $tmpfile | /bin/sed "s/\($data\) \($data\) \($data\) .*/$p \\$2/" >>${filtered}$1 &
 }
 
-p=${start}
-while [ $(echo "$p < $end" | /usr/bin/bc) -eq 1 ]
+p=$start
+count=$steps
+while [ $count -ge 0 ]
 do
-    eval ${command} 2>/dev/null | /bin/sed --quiet "$lower,$ p" >${tmpfile}  # run & save data, skipping "transient"
+    eval $command 2>/dev/null | /bin/sed --quiet "$lower,$ p" >$tmpfile  # run & save data, skipping "transient"
     if [ $(/usr/bin/wc --lines <$tmpfile) -eq $((upper - lower + 1)) ]
     then
-        echo "   Processing parameter value: $p"
+        echo -n "\r   \033[0;32mLatest value\033[0;37m $p"
         filter 'X' 1
         filter 'x' 1
         filter 'Y' 2
@@ -46,21 +48,36 @@ do
         filter 'z' 3
         wait
     else
-        echo "UNBOUNDED for parameter value: $p"
+        echo -n "\r   \033[1;31mLatest value\033[0;37m $p"
     fi
-    p=$(echo "$p + $step;" | /usr/bin/bc)
+    p=$(echo "$p + $increment;" | /usr/bin/bc)
+    count=$((count - 1))
 done
+echo -n "\r                                                            \r"
 
-base='set terminal png size 1350,800 background rgb "grey85"; set grid back;'
-/usr/bin/gnuplot -e "set title '$*'; $base plot '${filtered}X' lt rgb '#000080' w dots, '${filtered}x' lt rgb '#004040' w dots" \
-    >${tmpdir}/X.png &
-/usr/bin/gnuplot -e "set title '$*'; $base plot '${filtered}Y' lt rgb '#008000' w dots, '${filtered}y' lt rgb '#404000' w dots" \
-    >${tmpdir}/Y.png &
-/usr/bin/gnuplot -e "set title '$*'; $base plot '${filtered}Z' lt rgb '#800000' w dots, '${filtered}z' lt rgb '#400040' w dots" \
-    >${tmpdir}/Z.png &
+xmargin=50
+pwidth=$((steps + 1 + 2 * xmargin))
+
+plot () {
+/usr/bin/gnuplot -p << EOF
+set terminal $5 size '$pwidth',640 background rgb "grey85"
+set lmargin at screen '$xmargin.0'/'$pwidth'
+set rmargin at screen '$((xmargin + steps)).0'/'$pwidth'
+set grid back
+set border back
+set title '$args'
+set xrange [$start:$end]
+set format x "%.6g"
+plot 1/0 lt rgb '$2' lw 3 t 'Maxima', '${filtered}$1' lt rgb '$2' notitle w dots,\
+     1/0 lt rgb '$4' lw 3 t 'Minima', '${filtered}$3' lt rgb '$4' notitle w dots
+EOF
+}
+
+plot X '#000080' x '#004040' png >${tmpdir}/X.png &
+plot Y '#008000' y '#404000' png >${tmpdir}/Y.png &
+plot Z '#800000' z '#400040' png >${tmpdir}/Z.png &
 wait
 
-/usr/bin/display ${tmpdir}/X.png &
-/usr/bin/display ${tmpdir}/Y.png &
-/usr/bin/display ${tmpdir}/Z.png &
-wait
+plot X '#000080' x '#004040' wxt &
+plot Y '#008000' y '#404000' wxt &
+plot Z '#800000' z '#400040' wxt &
