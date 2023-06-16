@@ -167,27 +167,27 @@ pair t_sin_cos (series s, series c, series u, int k, bool trig) {
     real _s = 0.0L, _c = 0.0L;
     for (int j = 0; j < k; j++) {
         real _ = (k - j) * u[k - j];
-        _c += c[j] * _;
-        _s += s[j] * _;
+        _s += c[j] * _;
+        _c += s[j] * _;
     }
-    return (pair){.a = s[k] = _c / k, .b = c[k] = (trig ? -_s : _s) / k};
+    return (pair){.a = s[k] = _s / k, .b = c[k] = (trig ? -_c : _c) / k};
 }
 
-pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
-    CHECK(t != s && t != u && s != u);
+pair t_tan_sec2 (series t, series s2, series u, int k, bool trig) {
+    CHECK(t != s2 && t != u && s2 != u);
     if (!k) {
         t[0] = trig ? tanl(u[0]) : tanhl(u[0]);
-        return (pair){.a = t[0], .b = s[0] = trig ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]};
+        return (pair){.a = t[0], .b = s2[0] = trig ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]};
     }
-    real _t = 0.0L, _s = 0.0L;
+    real _t = 0.0L, _s2 = 0.0L;
     for (int j = 0; j < k; j++) {
-        _s += s[j] * (k - j) * u[k - j];
+        _t += s2[j] * (k - j) * u[k - j];
     }
-    t[k] = _s / k;
+    t[k] = _t / k;
     for (int j = 0; j < k; j++) {
-        _t += t[j] * (k - j) * t[k - j];
+        _s2 += t[j] * (k - j) * t[k - j];
     }
-    return (pair){.a = t[k], .b = s[k] = 2.0L * (trig ? _t : -_t) / k};
+    return (pair){.a = t[k], .b = s2[k] = 2.0L * (trig ? _s2 : -_s2) / k};
 }
 
 real t_pwr (series p, series u, real a, int k) {
