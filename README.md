@@ -108,15 +108,7 @@ Parameter | Meaning
 ```
 ##### Run & plot (3D gnuplot graph):
 ```
-./plot ./tsm-thomas.py 6 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
-```
-##### Run & plot (2D gnuplot graph):
-```
-./tsm-lorenz.py 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
- gnuplot -p << EOF
-set terminal wxt size 1200,900
-plot '/tmp/$USER/data' using 4:1 with lines, '' u 4:2 w l, '' u 4:3 w l
-EOF
+./plot ./tsm-thomas.py 6 10 0.1 30000 1 0 0 .185
 ```
 It should be possible to send output directly to gnuplot via a pipe, but many versions segfault when reading stdin so I now specify a temporary file instead.
 
