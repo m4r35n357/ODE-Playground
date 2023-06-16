@@ -26,7 +26,7 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
             --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
-        Gnuplot) ./plot ./tsm-lorenz-std $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
+        Gnuplot) ./plot ./tsm-lorenz.py $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
             --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
@@ -35,21 +35,21 @@ case $model in
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
-            --  'step2!nosim' '1.0' './tsm-lorenz-std' \
+            --  'step2!nosim' '1.0' './tsm-lorenz.py' \
                 '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Maxium Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
-            --  '32!2..32!1' '1.0' './tsm-lorenz-std' \
+            --  '32!2..32!1' '1.0' './tsm-lorenz.py' \
                 '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Skip First 1/":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho":RO --field="beta(n)" --field="beta(d)" \
-            --  '0.0' '50.0' '10!2' './tsm-lorenz-std' \
+            --  '0.0' '50.0' '10!2' './tsm-lorenz.py' \
                 '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '-15.8' '-18.48' '35.64' '10' '$p' '8' '3') ;;
     esac ;;
@@ -59,7 +59,7 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
             --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
-        Gnuplot) ./plot ./tsm-rossler-std $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
+        Gnuplot) ./plot ./tsm-rossler.py $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
             --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
@@ -68,21 +68,21 @@ case $model in
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
-            --  'step2!nosim' '1.0' './tsm-rossler-std' \
+            --  'step2!nosim' '1.0' './tsm-rossler.py' \
                 '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
             --field="Maxium Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
-            --  '32!2..32!1' '1.0' './tsm-rossler-std' \
+            --  '32!2..32!1' '1.0' './tsm-rossler.py' \
                 '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Skip First 1/":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c":RO \
-            --  '0.0' '50.0' '10!2' './tsm-rossler-std' \
+            --  '0.0' '50.0' '10!2' './tsm-rossler.py' \
                 '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '0.0' '-6.78' '0.02' '.2' '.2' '$p') ;;
     esac ;;
@@ -92,7 +92,7 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="b" \
             --  '5000!1000..10000!1000' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '0.185') ;;
-        Gnuplot) ./plot ./tsm-thomas-std $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
+        Gnuplot) ./plot ./tsm-thomas.py $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="b" \
             --  '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
@@ -101,21 +101,21 @@ case $model in
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="b" \
-            --  'step2!nosim' '1.0' './tsm-thomas-std' \
+            --  'step2!nosim' '1.0' './tsm-thomas.py' \
                 '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '0.185') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Maxium Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="b" \
-            --  '32!2..64!1' '1.0' './tsm-thomas-std' \
+            --  '32!2..64!1' '1.0' './tsm-thomas.py' \
                 '6!0..36!3' '_' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '0.185') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Skip First 1/":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="b":RO \
-            --  '0.1' '0.23' '10!2' './tsm-thomas-std' \
+            --  '0.1' '0.23' '10!2' './tsm-thomas.py' \
                 '6!0..36!3' '4!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '$p') ;;
     esac ;;
@@ -125,7 +125,7 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
             --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
-        Gnuplot) ./plot ./tsm-rf-std $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
+        Gnuplot) ./plot ./tsm-rf.py $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
             --  '6!0..36!3' '8!4..32!1' '0.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
@@ -134,21 +134,21 @@ case $model in
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
-            --  'step2!nosim' '1.0' './tsm-rf-std' \
+            --  'step2!nosim' '1.0' './tsm-rf.py' \
                 '6!0..36!3' '8!4..32!1' '0.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Maxium Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
-            --  '32!2..64!1' '1.0' './tsm-rf-std' \
+            --  '32!2..64!1' '1.0' './tsm-rf.py' \
                 '6!0..36!3' '_' '0.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Skip First 1/":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha":RO --field="gamma" \
-            --  '0.1' '0.35' '10!2' './tsm-rf-std' \
+            --  '0.1' '0.35' '10!2' './tsm-rf.py' \
                 '6!0..36!3' '4!4..32!1' '0.01!0.001..0.1!0.001!3' '50000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '$p' '.1') ;;
     esac ;;
@@ -158,7 +158,7 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '1.4') ;;
-        Gnuplot) ./plot ./tsm-halvorsen-std $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
+        Gnuplot) ./plot ./tsm-halvorsen.py $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
@@ -167,21 +167,21 @@ case $model in
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  'step2!nosim' '1.0' './tsm-halvorsen-std' \
+            --  'step2!nosim' '1.0' './tsm-halvorsen.py' \
                 '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '1.4') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Maxium Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  '32!2..64!1' '1.0' './tsm-halvorsen-std' \
+            --  '32!2..64!1' '1.0' './tsm-halvorsen.py' \
                 '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '1.4') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Skip First 1/":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a":RO \
-            --  '1' '4' '10!2' './tsm-halvorsen-std' \
+            --  '1' '4' '10!2' './tsm-halvorsen.py' \
                 '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '$p') ;;
     esac ;;
@@ -191,7 +191,7 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '1.0') ;;
-        Gnuplot) ./plot ./tsm-wimol-banlue-std $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
+        Gnuplot) ./plot ./tsm-wimol-banlue.py $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
@@ -200,21 +200,21 @@ case $model in
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  'step2!nosim' '1.0' './tsm-wimol-banlue-std' \
+            --  'step2!nosim' '1.0' './tsm-wimol-banlue.py' \
                 '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '1.0') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
             --field="Maxium Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  '32!2..64!1' '1.0' './tsm-wimol-banlue-std' \
+            --  '32!2..64!1' '1.0' './tsm-wimol-banlue.py' \
                 '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '1.0') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Skip First 1/":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a":RO \
-            --  '0.0' '1.0' '10!2' './tsm-wimol-banlue-std' \
+            --  '0.0' '1.0' '10!2' './tsm-wimol-banlue.py' \
                 '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '$p') ;;
     esac ;;
@@ -224,7 +224,7 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
             --  '5000!1000..10000!1000' '8!4..32!1' '.001!0.001..0.1!0.001!3' '25000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '2.5') ;;
-        Gnuplot) ./plot ./tsm-yu-wang-std $(yad --columns=2 --title="Yu-Wang" --form --separator=" " --align=right \
+        Gnuplot) ./plot ./tsm-yu-wang.py $(yad --columns=2 --title="Yu-Wang" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
             --  '6!0..36!3' '8!4..32!1' '.001!0.001..0.1!0.001!3' '25000!1..1000000!1000' \
@@ -233,21 +233,21 @@ case $model in
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
-            --  'step2!nosim' '1.0' './tsm-yu-wang-std' \
+            --  'step2!nosim' '1.0' './tsm-yu-wang.py' \
                 '6!0..36!3' '8!4..32!1' '.001!0.001..0.1!0.001!3' '25000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '2.5') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Yu-Wang" --form --separator=" " --align=right \
             --field="Maxium Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
-            --  '32!2..64!1' '1.0' './tsm-yu-wang-std' \
+            --  '32!2..64!1' '1.0' './tsm-yu-wang.py' \
                 '6!0..36!3' '_' '.001!0.001..0.1!0.001!3' '25000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '2.5') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Yu-Wang" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Skip First 1/":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d":RO \
-            --  '0.0' '5.0' '10!2' './tsm-yu-wang-std' \
+            --  '0.0' '5.0' '10!2' './tsm-yu-wang.py' \
                 '6!0..36!3' '4!4..32!1' '.001!0.001..0.1!0.001!3' '25000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '$p') ;;
     esac ;;
@@ -257,7 +257,7 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
             --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
-        Gnuplot) ./plot ./tsm-bouali-std $(yad --columns=2 --title="Bouali" --form --separator=" " --align=right \
+        Gnuplot) ./plot ./tsm-bouali.py $(yad --columns=2 --title="Bouali" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
             --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
@@ -266,21 +266,21 @@ case $model in
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
-            --  'step2!nosim' '1.0' './tsm-bouali-std' \
+            --  'step2!nosim' '1.0' './tsm-bouali.py' \
                 '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
                 '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Bouali" --form --separator=" " --align=right \
             --field="Maxium Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
-            --  '32!2..64!1' '1.0' './tsm-bouali-std' \
+            --  '32!2..64!1' '1.0' './tsm-bouali.py' \
                 '6!0..36!3' '_' '.01!0.001..0.1!0.01!3' '100000!1..1000000!1000' \
                 '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Bouali" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Skip First 1/":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d":RO \
-            --  '0.0' '1.0' '10!2' './tsm-bouali-std' \
+            --  '0.0' '1.0' '10!2' './tsm-bouali.py' \
                 '6!0..36!3' '4!4..32!1' '.01!0.01..0.1!0.001!3' '100000!1..1000000!1000' \
                 '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '$p') ;;
     esac ;;
@@ -290,7 +290,7 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="S" --field="V" \
             --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '1.0' '1.0' '10.0' '4.272') ;;
-        Gnuplot) ./plot ./tsm-burke-shaw-std $(yad --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
+        Gnuplot) ./plot ./tsm-burke-shaw.py $(yad --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="S" --field="V" \
             --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
@@ -299,21 +299,21 @@ case $model in
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="S" --field="V" \
-            --  'step2!nosim' '1.0' './tsm-burke-shaw-std' \
+            --  'step2!nosim' '1.0' './tsm-burke-shaw.py' \
                 '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '12000!1..1000000!1000' \
                 '1.0' '1.0' '1.0' '10.0' '4.272') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
             --field="Maxium Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="S" --field="V" \
-            --  '32!2..64!1' '1.0' './tsm-burke-shaw-std' \
+            --  '32!2..64!1' '1.0' './tsm-burke-shaw.py' \
                 '6!0..36!3' '_' '.01!0.001..0.1!0.01!3' '12000!1..1000000!1000' \
                 '1.0' '1.0' '1.0' '10.0' '4.272') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Skip First 1/":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="S" --field="V":RO \
-            --  '0.0' '10.0' '10!2' './tsm-burke-shaw-std' \
+            --  '0.0' '10.0' '10!2' './tsm-burke-shaw.py' \
                 '6!0..36!3' '4!4..32!1' '.01!0.01..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '1.0' '1.0' '10.0' '$p') ;;
     esac ;;
@@ -323,7 +323,7 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="kappa" \
             --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '1.0' '1.0' '6.7' '2.0') ;;
-        Gnuplot) ./plot ./tsm-rucklidge-std $(yad --columns=2 --title="Rucklidge" --form --separator=" " --align=right \
+        Gnuplot) ./plot ./tsm-rucklidge.py $(yad --columns=2 --title="Rucklidge" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="kappa" \
             --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
@@ -332,21 +332,21 @@ case $model in
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="kappa" \
-            --  'step2!nosim' '1.0' './tsm-rucklidge-std' \
+            --  'step2!nosim' '1.0' './tsm-rucklidge.py' \
                 '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '40000!1..1000000!1000' \
                 '1.0' '1.0' '1.0' '6.7' '2.0') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Rucklidge" --form --separator=" " --align=right \
             --field="Maxium Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="kappa" \
-            --  '32!2..64!1' '1.0' './tsm-rucklidge-std' \
+            --  '32!2..64!1' '1.0' './tsm-rucklidge.py' \
                 '6!0..36!3' '_' '.01!0.001..0.1!0.01!3' '40000!1..1000000!1000' \
                 '1.0' '1.0' '1.0' '6.7' '2.0') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Rucklidge" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Skip First 1/":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha":RO --field="kappa" \
-            --  '0.0' '10.0' '10!2' './tsm-rucklidge-std' \
+            --  '0.0' '10.0' '10!2' './tsm-rucklidge.py' \
                 '6!0..36!3' '4!4..32!1' '.01!0.01..0.1!0.001!3' '20000!1..1000000!1000' \
                 '1.0' '1.0' '1.0' '$p' '2.0') ;;
     esac ;;
@@ -356,7 +356,7 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
             --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '0.1' '0.1' '0.1' '0.446' '1.1') ;;
-        Gnuplot) ./plot ./tsm-genesio-tesi-std $(yad --columns=2 --title="Genesio-Tesi" --form --separator=" " --align=right \
+        Gnuplot) ./plot ./tsm-genesio-tesi.py $(yad --columns=2 --title="Genesio-Tesi" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
             --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
@@ -365,21 +365,21 @@ case $model in
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
-            --  'step2!nosim' '1.0' './tsm-genesio-tesi-std' \
+            --  'step2!nosim' '1.0' './tsm-genesio-tesi.py' \
                 '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '50000!1..1000000!1000' \
                 '0.1' '0.1' '0.1' '0.446' '1.1') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Genesio-Tesi" --form --separator=" " --align=right \
             --field="Maxium Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
-            --  '32!2..64!1' '1.0' './tsm-genesio-tesi-std' \
+            --  '32!2..64!1' '1.0' './tsm-genesio-tesi.py' \
                 '6!0..36!3' '_' '.01!0.001..0.1!0.01!3' '50000!1..1000000!1000' \
                 '0.1' '0.1' '0.1' '0.446' '1.1') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Genesio-Tesi" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Skip First 1/":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a":RO --field="b" \
-            --  '0.41' '0.51' '10!2' './tsm-genesio-tesi-std' \
+            --  '0.41' '0.51' '10!2' './tsm-genesio-tesi.py' \
                 '6!0..36!3' '4!4..32!1' '.01!0.01..0.1!0.001!3' '20000!1..1000000!1000' \
                 '0.1' '0.1' '0.1' '$p' '1.1') ;;
     esac ;;
@@ -389,7 +389,7 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
             --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '0.1' '0.1' '4.2' ) ;;
-        Gnuplot) ./plot ./tsm-isuc-std $(yad --columns=2 --title="ISUC" --form --separator=" " --align=right \
+        Gnuplot) ./plot ./tsm-isuc.py $(yad --columns=2 --title="ISUC" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
             --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
@@ -398,21 +398,21 @@ case $model in
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
-            --  'step2!nosim' '1.0' './tsm-isuc-std' \
+            --  'step2!nosim' '1.0' './tsm-isuc.py' \
                 '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '0.1' '0.1' '4.2') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="ISUC" --form --separator=" " --align=right \
             --field="Maxium Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
-            --  '32!2..64!1' '1.0' './tsm-isuc-std' \
+            --  '32!2..64!1' '1.0' './tsm-isuc.py' \
                 '6!0..36!3' '_' '.01!0.001..0.1!0.01!3' '60000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '0.1' '0.1' '4.2') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="ISUC" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Skip First 1/":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c":RO \
-            --  '0.0' '10.0' '10!2' './tsm-isuc-std' \
+            --  '0.0' '10.0' '10!2' './tsm-isuc.py' \
                 '6!0..36!3' '4!4..32!1' '.01!0.01..0.1!0.001!3' '50000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '0.1' '0.1' '$p') ;;
     esac ;;
