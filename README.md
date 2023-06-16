@@ -195,15 +195,7 @@ Parameter | Meaning
 ```
 ##### Run & plot (3D gnuplot graph):
 ```
-./tsm-thomas.py 6 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
- gnuplot -p << EOF
-set xyplane 0
-set view 54.73561,135
-set xlabel 'X'
-set ylabel 'Y'
-set zlabel 'Z'
-splot '/tmp/$USER/data' with lines
-EOF
+./plot ./tsm-thomas.py 6 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
 ```
 ##### Run & plot (2D gnuplot graph):
 ```
