@@ -22,7 +22,7 @@ case $method in
              exit 1;;
 esac
 
-./divergence $fileA $fileB $threshold
+./divergence.py $fileA $fileB $threshold
 
  /usr/bin/gnuplot -p << EOF
 set terminal wxt background rgb "grey85"
