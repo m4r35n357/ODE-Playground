@@ -20,11 +20,11 @@ analysis=$2
 
 case $model in
     Lorenz) case $analysis in
-        GLplot) ./tsm-lorenz-gl $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
+        GLplot) ./tsm-lorenz.py $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
             --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
+                '-15.8' '-18.48' '35.64' '10' '28' '8' '3') | ./plot3d.py ;;
         Gnuplot) ./plot ./tsm-lorenz.py $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
@@ -53,11 +53,11 @@ case $model in
                 '-15.8' '-18.48' '35.64' '10' '$p' '8' '3') ;;
     esac ;;
     Thomas) case $analysis in
-        GLplot) ./tsm-thomas-gl $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
+        GLplot) ./tsm-thomas.py $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="b" \
-            --  '5000!1000..10000!1000' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '0.0' '0.0' '0.185') ;;
+            --  '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                '1.0' '0.0' '0.0' '0.185') | ./plot3d.py ;;
         Gnuplot) ./plot ./tsm-thomas.py $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="b" \
@@ -86,11 +86,11 @@ case $model in
                 '1.0' '0.0' '0.0' '$p') ;;
     esac ;;
     RF) case $analysis in
-        GLplot) ./tsm-rf-gl $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
+        GLplot) ./tsm-rf.py $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
             --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
-                '0.05' '-0.05' '0.3' '.2875' '.1') ;;
+                '0.05' '-0.05' '0.3' '.2875' '.1') | ./plot3d.py ;;
         Gnuplot) ./plot ./tsm-rf.py $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
@@ -119,11 +119,11 @@ case $model in
                 '0.05' '-0.05' '0.3' '$p' '.1') ;;
     esac ;;
     Halvorsen) case $analysis in
-        GLplot) ./tsm-halvorsen-gl $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
+        GLplot) ./tsm-halvorsen.py $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '0.0' '0.0' '1.4') ;;
+                '1.0' '0.0' '0.0' '1.4') | ./plot3d.py ;;
         Gnuplot) ./plot ./tsm-halvorsen.py $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
