@@ -27,7 +27,7 @@ do
     halfstep $current
     $current >$fileB &
     wait
-    temp=$(./divergence $fileA $fileB $threshold)
+    temp=$(./divergence.py $fileA $fileB $threshold)
     case $temp in
         '') echo $n "No more data - increase simulation time?"
             exit 1;;

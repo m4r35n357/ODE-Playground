@@ -23,7 +23,7 @@ def main():
         raise Exception(">>> ERROR! Please supply two file names, a time column, and a list of thresholds <<<")
     with open(argv[1]) as a, open(argv[2]) as b:
         line_a, line_b = a.readline(), b.readline()
-        for threshold in (float(thresh) for thresh in argv[4:]):
+        for threshold in (float(thresh) for thresh in argv[3:]):
             if threshold <= 1.0e-18:
                 colour = BLUE
             elif threshold <= 1.0e-12:
@@ -39,7 +39,7 @@ def main():
             while line_a and line_b:
                 data_a, data_b = line_a.split(), line_b.split()
                 if diverged(data_a, data_b, threshold):
-                    print(f"{GREY}Threshold: {colour}{threshold:.1e}{GREY}, t: {WHITE}{float(data_a[4]):.3f}{NORMAL}", file=stderr)
+                    print(f"threshold: {threshold:.1e}, t: {float(data_a[3]):.3f}, cpu: {0.0:.3f}")
                     break
                 line_a, line_b = a.readline(), b.readline()
 
