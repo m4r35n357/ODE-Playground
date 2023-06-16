@@ -254,12 +254,20 @@ class Series:
         return self._exp_log_sqrt(t_ln)
 
     @property
+    def sin_cos(self):
+        return self._trig_hyp(t_sin_cos)
+
+    @property
     def sin(self):
         return self._trig_hyp(t_sin_cos)[0]
 
     @property
     def cos(self):
         return self._trig_hyp(t_sin_cos)[1]
+
+    @property
+    def tan_sec2(self):
+        return self._trig_hyp(t_tan_sec2)
 
     @property
     def tan(self):
@@ -270,12 +278,20 @@ class Series:
         return self._trig_hyp(t_tan_sec2)[1]
 
     @property
+    def sinh_cosh(self):
+        return self._trig_hyp(t_sin_cos, hyp=True)
+
+    @property
     def sinh(self):
         return self._trig_hyp(t_sin_cos, hyp=True)[0]
 
     @property
     def cosh(self):
         return self._trig_hyp(t_sin_cos, hyp=True)[1]
+
+    @property
+    def tanh_sech2(self):
+        return self._trig_hyp(t_tan_sec2, hyp=True)
 
     @property
     def tanh(self):

@@ -8,7 +8,8 @@
 from collections import namedtuple
 from math import pi, exp, log, sin, cos, tan, sinh, cosh, tanh, factorial
 from pytest import mark, raises, approx
-from ad import Components, t_jet, t_horner, t_const, t_abs, t_prod, t_quot, t_pwr, t_exp, t_ln, t_sin_cos, t_tan_sec2, Series, Dual
+from ad import Components, t_jet, t_horner, t_const, t_abs, t_prod, t_quot, t_pwr, t_exp, t_ln, t_sin_cos, t_tan_sec2, \
+    Series, Dual, t_sqr
 
 order = 6
 # noinspection NonAsciiCharacters
@@ -584,14 +585,13 @@ def test_ln():
         derivative *= - (k - 1) / f3
         assert series.jet[k] == approx(derivative)
 
+def test_sin_cos():
+    sine, cosine = data1_s.sin_cos
+    assert t_sqr(sine.jet, 0) + t_sqr(cosine.jet, 0) == approx(1.0)
+    for k in range(1, order):
+        assert t_sqr(sine.jet, k) + t_sqr(cosine.jet, k) == approx(0.0)
+
 def test_sin():
-    sine, cosine = t_jet(order), t_jet(order)
-    t_series_sin = s_3.sin
-    t_series_cos = s_3.cos
-    for k in range(order):
-        sine[k], cosine[k] = t_sin_cos(sine, cosine, s_3.jet, k)
-        assert sine[k] == approx(t_series_sin.jet[k])
-        assert cosine[k] == approx(t_series_cos.jet[k])
     dual = Dual(pi / f3).var.sin
     assert dual.val == approx(sin(pi / f3))
     assert dual.dot == approx(cos(pi / f3))
@@ -623,14 +623,13 @@ def test_cos():
         elif k % 4 == 3:
             assert series.jet[k] == approx(sin(pi / f3))
 
+def test_tan_sec2():
+    tangent, secant2 = data1_s.tan_sec2
+    assert secant2.jet[0] - t_sqr(tangent.jet, 0) == approx(1.0)
+    for k in range(1, order):
+        assert secant2.jet[k] - t_sqr(tangent.jet, k) == approx(0.0)
+
 def test_tan():
-    tangent, secant2 = t_jet(order), t_jet(order)
-    t_series_tan = s_3.tan
-    t_series_sec2 = s_3.sec2
-    for k in range(order):
-        tangent[k], secant2[k] = t_tan_sec2(tangent, secant2, s_3.jet, k)
-        assert tangent[k] == approx(t_series_tan.jet[k])
-        assert secant2[k] == approx(t_series_sec2.jet[k])
     dual = Dual(pi / f4).var.tan
     assert dual.val == approx(tan(pi / f4))
     assert dual.dot == approx((1.0 + tan(pi / f4) ** 2))
@@ -638,6 +637,12 @@ def test_tan():
     assert len(series.jet) == order
     assert series.val == approx(tan(pi / f4))
     assert series.jet[1] == approx((1.0 + tan(pi / f4)**2))
+
+def test_sinh_cosh():
+    sine, cosine = data1_s.sin_cos
+    assert t_sqr(sine.jet, 0) + t_sqr(cosine.jet, 0) == approx(1.0)
+    for k in range(1, order):
+        assert t_sqr(sine.jet, k) + t_sqr(cosine.jet, k) == approx(0.0)
 
 def test_sinh():
     h_sine, h_cosine = t_jet(order), t_jet(order)
@@ -669,6 +674,12 @@ def test_cosh():
             assert series.jet[k] == approx(cosh(pi / f3))
         elif k % 2 == 1:
             assert series.jet[k] == approx(sinh(pi / f3))
+
+def test_tanh_sech2():
+    htangent, hsecant2 = data1_s.tanh_sech2
+    assert hsecant2.jet[0] + t_sqr(htangent.jet, 0) == approx(1.0)
+    for k in range(1, order):
+        assert hsecant2.jet[k] + t_sqr(htangent.jet, k) == approx(0.0)
 
 def test_tanh():
     h_tangent, h_secant2 = t_jet(order), t_jet(order)
