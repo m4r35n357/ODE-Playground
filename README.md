@@ -22,62 +22,6 @@ There are also yad dialogues for running tests and making executables using zig-
 * libdual-test.c
 * zig-builds
 
-## ODE/Hamiltonian Playground, Now feature-complete
-
-No planned new features, and no known bugs ;)
-
-All programs are written in pure C99 or Python, apart from the plotting utilities.
-Sources and Executables are tiny (if MUSL is used); the default build is against glibc.
-
-All c floating point operations are executed in _long double_ precision.
-This gives a choice of precision and performance on different platforms.
-
-Platform | FP Implementation
-----------|-----------
-ix86 | 80 bit hardware float
-x86-64 | 80 bit hardware float
-armhf | 64 bit hardware float
-aarch64 | 128 bit _software_ float
-
-The Python code uses hardware acceleration on all platforms; 80 bit on Intel, 64 bit on ARM.
-In general Python is much too slow for performing actual simulations; it value is mostly in the interactive plotting features, and nonlinear equation solving (using Newton's method or bisection).
-It is also most convenient for demonstrating detailed operation of the TSM method in a debugger.
-
-### ODE analysis using fourth order Runge-Kutta (RK4) - C only
-
-Plot 3D trajectories using Pi3D, including multi-body
-
-Minimal selection of clients (models) included
-
-Investigate the validity of chaotic solutions against step size, and compare to TSM
-
-Plot bifurcation diagrams, to find "interesting" parameter values to study
-
-### ODE analysis using arbitrary-order Taylor Series Method (TSM)
-
-Plot 3D trajectories using Pi3D, including multi-body
-
-Good selection of clients (models) included
-
-Investigate the validity of chaotic solutions against integrator order and step size
-
-Plot bifurcation diagrams, to find "interesting" parameter values to study
-
-### Taylor Calculator - Interactive Function Analysis in Python console
-
-For learning about automatic differentiation using Dual Numbers in IPython.
-Also for plotting functions together with their derivatives.
-See the examples at the bottom of this document.
-
-### Hamiltonian analysis with Symplectic Integrators, using Dual Numbers for Automatic Differentiation
-
-2nd to 10th order integrators, with visualization of the time stepping structure
-
-Three examples; Mass-spring system, Newton orbits and Kerr (black hole) orbits.
-
-No formal documentation yet, see the c files for example usage.
-
-
 ## Quick Start
 
 ### Requirements - Debian/Ubuntu packages
@@ -133,7 +77,7 @@ The (default) MUSL static binaries are particularly tiny!
 
 The tests enforce a redundant web of densely interrelated functionality that cannot exist in the presence of coding errors! ;)
 
-**libad-test-dbg** (c executable)
+**libad-test.py** (c executable)
 
 Parameter | Meaning
 ----------|-----------
@@ -146,7 +90,7 @@ The final parameter can be set to 0 (or left absent) for a summary, 1 for indivi
 Depending on the x value, some tests might be skipped owing to domain restrictions on some of the functions involved.
 
 ```
-./libad-test-dbg 20 .5 1e-15
+./libad-test.py 20 .5 1e-15
 
 Horner
  23   23.000
@@ -172,7 +116,7 @@ Recurrence Relations: x = 0.5
 Total: 44, PASSED 44
 ```
 
-**libdual-test-dbg** (c executable)
+**libdual-test.py** (c executable)
 
 Parameter | Meaning
 ----------|-----------
@@ -181,12 +125,12 @@ Parameter | Meaning
 3 | (Optional) verbosity: 0: summary (default), 1: list, 2: detail
 
 ```
-./libdual-test-dbg .5 1e-15 1
+./libdual-test.py .5 1e-15 1
 
 Dual Numbers: x = 0.5
 Total: 40, PASSED 40
 
-for i in .5 0 -.5; do ./libad-test-dbg 10 $i 1e-15; ./libdual-test-dbg $i 1e-15; done
+for i in .5 0 -.5; do ./libad-test.py 10 $i 1e-15; ./libdual-test.py $i 1e-15; done
 ```
 #### Code coverage
 Creates web page summaries for both c and Python
@@ -210,7 +154,7 @@ grep Example *
 ## Solving and Plotting ODEs
 This use case only involves calling the "t-functions" in ad.py or taylor-ode.c.
 No differentiation happens in these functions (they only implement the recurrence relations); it is the responsibility of the calling program to organize this properly.
-Refer to tsm-lorenz-dbg and tsm-*.c for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors.
+Refer to tsm-lorenz.py and tsm-*.c for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors.
 
 Where CPU timings are given, they are made on a Raspberry Pi 400, mildly overclocked to 2100MHz, and writing output to a tmpfs file.
 
@@ -219,7 +163,7 @@ Where CPU timings are given, they are made on a Raspberry Pi 400, mildly overclo
 Runs a named simulation, and prints results to stdout.
 Each output line consists of a column each for x, y, z, t, followed by three turning point tags for generating bifurcation diagrams, and cumulative CPU usage.
 
-**tsm-model-type** (c executables)
+**tsm-model.py** (Python script)
 
 Parameter | Meaning
 ----------|-----------
@@ -230,7 +174,7 @@ Parameter | Meaning
 5,6,7 | initial conditions, x0,y0,z0
 8+ | Model parameters
 
-**rk4-model-type** (c executables)
+**rk4-model.py** (Python script)
 
 Parameter | Meaning
 ----------|-----------
@@ -243,15 +187,15 @@ Parameter | Meaning
 
 ##### Run & plot (3D plot using pi3d):
 ```
-./tsm-thomas-dbg 6 10 0.1 30000 1 0 0 .185 | ./plot3d.py
+./tsm-thomas.py 6 10 0.1 30000 1 0 0 .185 | ./plot3d.py
 ```
 ##### Run & plot (animated matplotlib graph):
 ```
-./tsm-lorenz-dbg 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
+./tsm-lorenz.py 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 | ./plotAnimated.py -30 50
 ```
 ##### Run & plot (3D gnuplot graph):
 ```
-./tsm-thomas-dbg 6 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
+./tsm-thomas.py 6 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
  gnuplot -p << EOF
 set xyplane 0
 set view 54.73561,135
@@ -263,7 +207,7 @@ EOF
 ```
 ##### Run & plot (2D gnuplot graph):
 ```
-./tsm-lorenz-dbg 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
+./tsm-lorenz.py 6 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
  gnuplot -p << EOF
 set terminal wxt size 1200,900
 plot '/tmp/$USER/data' using 4:1 with lines, '' u 4:2 w l, '' u 4:3 w l
@@ -293,8 +237,8 @@ The general idea is to replace one of the model parameters with the string '$p' 
 A fourth-order integrator is sufficient for bifurcation diagrams and will run faster; for this scenario we only care about transitions into and out of chaos, not accuracy within the chaotic regions.
 Progress output is sent to /dev/null in the examples below for brevity, but is useful in most situations.
 ```
-time -p ./bifurcation-scan .1 .225 10 ./tsm-thomas-static 6 4 0.1 10000 1 0 0 '$p' >/dev/null
-Bifurcation Diagrams: [.1 .225 10 ./tsm-thomas-static 6 4 0.1 10000 1 0 0 $p]
+time -p ./bifurcation-scan .1 .225 10 ./tsm-thomas.py 6 4 0.1 10000 1 0 0 '$p' >/dev/null
+Bifurcation Diagrams: [.1 .225 10 ./tsm-thomas.py 6 4 0.1 10000 1 0 0 $p]
 real 194.46
 user 195.12
 sys 116.62
@@ -351,22 +295,22 @@ Note that RK4 quickly becomes impractical because of excessive CPU usage, wherea
 These specific results require 128-bit precision, i.e. aarch64 long double (software).
 In hardware 80-bit (x86-64) or 64-bit (armhf) floating point, the maximum clean simulation time will be correspondingly lower.
 ```
-./cns step2 1.0 ./rk4-lorenz-static 6 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
-./cns step2 1.0 ./tsm-lorenz-static 6 4 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./rk4-lorenz.py 6 1 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./tsm-lorenz.py 6 4 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 
-./cns step2 1.0 ./rk4-lorenz-static 6 10 .001 100000 -15.8 -17.48 35.64 10 28 8 3
-./cns step2 1.0 ./tsm-lorenz-static 6 8 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./rk4-lorenz.py 6 10 .001 100000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./tsm-lorenz.py 6 8 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 
-./cns step2 1.0 ./rk4-lorenz-static 6 100 .0001 1000000 -15.8 -17.48 35.64 10 28 8 3
-./cns step2 1.0 ./tsm-lorenz-static 6 12 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./rk4-lorenz.py 6 100 .0001 1000000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./tsm-lorenz.py 6 12 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 
-./cns step2 1.0 ./rk4-lorenz-static 6 1000 .00001 10000000 -15.8 -17.48 35.64 10 28 8 3 
-./cns step2 1.0 ./tsm-lorenz-static 6 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./rk4-lorenz.py 6 1000 .00001 10000000 -15.8 -17.48 35.64 10 28 8 3 
+./cns step2 1.0 ./tsm-lorenz.py 6 16 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 
-./cns step2 1.0 ./rk4-lorenz-static 6 10000 .000001 100000000 -15.8 -17.48 35.64 10 28 8 3 
-./cns step2 1.0 ./tsm-lorenz-static 6 20 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./rk4-lorenz.py 6 10000 .000001 100000000 -15.8 -17.48 35.64 10 28 8 3 
+./cns step2 1.0 ./tsm-lorenz.py 6 20 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 
-./cns step2 1.0 ./tsm-lorenz-static 6 28 .01 10000 -15.8 -17.48 35.64 10 28 8 3
+./cns step2 1.0 ./tsm-lorenz.py 6 28 .01 10000 -15.8 -17.48 35.64 10 28 8 3
 ```
 If you need to re-plot after closing gnuplot, either use the "nosim" argument, or:
 ```
@@ -393,7 +337,7 @@ Parameter | Meaning
 
 The following commands perform a scan, and plot the simulation time and cpu time as histograms against integrator order:
 ```
-./cns-scan 32 1 ./tsm-lorenz-static 6 _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | tee /tmp/$USER/data
+./cns-scan 32 1 ./tsm-lorenz.py 6 _ .01 10000 -15.8 -17.48 35.64 10 28 8 3  | tee /tmp/$USER/data
 
  gnuplot -p << EOF
 set key left
@@ -420,10 +364,10 @@ Parameter | Meaning
 
 The simulation is run seven times in parallel processes, the original along with each perturbed x, y, z.
 ```
-./ic .001 32 ./tsm-thomas-static 6 10 0.1 30000 1 0 0 .185
+./ic .001 32 ./tsm-thomas.py 6 10 0.1 30000 1 0 0 .185
 ```
 ```
-./ic .001 32 ./tsm-lorenz-dbg 6 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 2>/dev/null
+./ic .001 32 ./tsm-lorenz.py 6 10 .01 10001 -15.8 -17.48 35.64 10 28 8 3 2>/dev/null
 ```
 (3D plots not shown!)
 
