@@ -6,10 +6,9 @@
 #  Mutation Testing
 #  rm -f .mutmut-cache; mutmut --test-time-base 10.0 --paths-to-mutate ad.py run --runner 'pytest ad_test.py'
 from collections import namedtuple
-from math import pi, exp, log, sin, cos, tan, sinh, cosh, tanh, factorial
+from math import exp, factorial
 from pytest import mark, raises, approx
-from ad import Components, t_jet, t_horner, t_const, t_abs, t_prod, t_quot, t_pwr, t_exp, t_ln, t_sin_cos, t_tan_sec2, \
-    Series, Dual, t_sqr
+from ad import Components, t_jet, t_horner, t_const, t_abs, t_prod, t_quot, t_pwr, Series, Dual, t_sqr
 
 order = 6
 # noinspection NonAsciiCharacters
@@ -594,7 +593,7 @@ def test_sin_cos_dual():
     assert sqr_sum.val == approx(1.0)
     assert sqr_sum.dot == approx(0.0)
 
-def test_tan_sec2_sereies():
+def test_tan_sec2_series():
     tangent, secant2 = data1_s.tan_sec2
     assert secant2.jet[0] - t_sqr(tangent.jet, 0) == approx(1.0)
     for k in range(1, order):

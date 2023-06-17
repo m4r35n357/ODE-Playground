@@ -24,23 +24,12 @@ def main():
     with open(argv[1]) as a, open(argv[2]) as b:
         line_a, line_b = a.readline(), b.readline()
         for threshold in (float(thresh) for thresh in argv[3:]):
-            if threshold <= 1.0e-18:
-                colour = BLUE
-            elif threshold <= 1.0e-12:
-                colour = GREEN
-            elif threshold <= 1.0e-9:
-                colour = CYAN
-            elif threshold <= 1.0e-6:
-                colour = YELLOW
-            elif threshold <= 1.0e-3:
-                colour = ORANGE
-            else:
-                colour = RED
             while line_a and line_b:
                 data_a, data_b = line_a.split(), line_b.split()
                 if diverged(data_a, data_b, threshold):
                     print(f"threshold: {threshold:.1e}, t: {float(data_a[3]):.3f}, cpu: {float(data_a[7]):.3f}")
                     break
                 line_a, line_b = a.readline(), b.readline()
+
 
 main()
