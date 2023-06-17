@@ -43,20 +43,20 @@ def t_sqrt(r, u, k):
 def t_exp(e, u, k):
     return exp(u[0]) if k == 0 else fsum(e[j] * (k - j) * u[k - j] for j in range(0, k)) / k
 
-def t_sin_cos(s, c, u, k, hyp=False):
+def t_sin_cos(s, c, u, k, trig=True):
     if k == 0:
-        return (sinh(u[0]), cosh(u[0])) if hyp else (sin(u[0]), cos(u[0]))
+        return (sin(u[0]), cos(u[0])) if trig else (sinh(u[0]), cosh(u[0]))
     s[k] = fsum(c[j] * (k - j) * u[k - j] for j in range(0, k)) / k
     c[k] = fsum(s[j] * (k - j) * u[k - j] for j in range(0, k)) / k
-    return s[k], c[k] if hyp else -c[k]
+    return s[k], -c[k] if trig else c[k]
 
-def t_tan_sec2(t, s, u, k, hyp=False):
+def t_tan_sec2(t, s, u, k, trig=True):
     if k == 0:
-        t[0] = tanh(u[0]) if hyp else tan(u[0])
-        return (t[0], 1.0 - t[0]**2) if hyp else (t[0], 1.0 + t[0]**2)
+        t[0] = tan(u[0]) if trig else tanh(u[0])
+        return (t[0], 1.0 + t[0] * t[0]) if trig else (t[0], 1.0 - t[0] * t[0])
     t[k] = fsum(s[j] * (k - j) * u[k - j] for j in range(0, k)) / k
     s[k] = fsum(t[j] * (k - j) * t[k - j] for j in range(0, k)) / k
-    return t[k], s[k] * (-2.0 if hyp else 2.0)
+    return t[k], s[k] * (2.0 if trig else -2.0)
 
 def t_pwr(p, u, a, k):
     return u[0]**a if k == 0 else fsum((a * (k - j) - j) * p[j] * u[k - j] for j in range(0, k)) / (k * u[0])
@@ -64,26 +64,26 @@ def t_pwr(p, u, a, k):
 def t_ln(ln, u, k):
     return log(u[0]) if k == 0 else (u[k] - fsum(j * ln[j] * u[k - j] for j in range(1, k)) / k) / u[0]
 
-def t_asin(a, g, u, k, hyp=False):
+def t_asin(a, g, u, k, trig=True):
     if k == 0:
-        return (asinh(u[0]), sqrt(u[0]*u[0] + 1.0)) if hyp else (asin(u[0]), sqrt(1.0 - u[0]*u[0]))
+        return (asin(u[0]), sqrt(1.0 - u[0] * u[0])) if trig else (asinh(u[0]), sqrt(u[0] * u[0] + 1.0))
     a[k] = (u[k] - fsum(j * a[j] * g[k - j] for j in range(1, k)) / k) / g[0]
     g[k] = fsum(u[j] * (k - j) * a[k - j] for j in range(0, k)) / k
-    return (a[k], g[k]) if hyp else (a[k], - g[k])
+    return (a[k], -g[k]) if trig else (a[k], g[k])
 
-def t_acos(a, g, u, k, hyp=False):
+def t_acos(a, g, u, k, trig=True):
     if k == 0:
-        return (acosh(u[0]), sqrt(u[0]*u[0] - 1.0)) if hyp else (acos(u[0]), - sqrt(1.0 - u[0]*u[0]))
-    a[k] = (u[k] - (1.0 if hyp else -1.0) * fsum(j * a[j] * g[k - j] for j in range(1, k)) / k) / g[0]
+        return (acos(u[0]), - sqrt(1.0 - u[0] * u[0])) if trig else (acosh(u[0]), sqrt(u[0] * u[0] - 1.0))
+    a[k] = (u[k] - (-1.0 if trig else 1.0) * fsum(j * a[j] * g[k - j] for j in range(1, k)) / k) / g[0]
     g[k] = fsum(u[j] * (k - j) * a[k - j] for j in range(0, k)) / k
     return a[k], g[k]
 
-def t_atan(a, g, u, k, hyp=False):
+def t_atan(a, g, u, k, trig=True):
     if k == 0:
-        return (atanh(u[0]), 1.0 - u[0]*u[0]) if hyp else (atan(u[0]), 1.0 + u[0]*u[0])
+        return (atan(u[0]), 1.0 + u[0] * u[0]) if trig else (atanh(u[0]), 1.0 - u[0] * u[0])
     a[k] = (u[k] - fsum(j * a[j] * g[k - j] for j in range(1, k)) / k) / g[0]
     g[k] = 2.0 * fsum(u[j] * (k - j) * u[k - j] for j in range(0, k)) / k
-    return (a[k], - g[k]) if hyp else (a[k], g[k])
+    return (a[k], g[k]) if trig else (a[k], -g[k])
 
 
 def t_out(dp, x, y, z, t, cpu):
@@ -238,10 +238,10 @@ class Series:
             a[k] = f(a, self.jet, k)
         return Series(a)
 
-    def _trig_hyp(self, f, hyp=False):
+    def _trig_hyp(self, f, trig=True):
         a, b = t_jet(self.n), t_jet(self.n)
         for k in self.index:
-            a[k], b[k] = f(a, b, self.jet, k, hyp)
+            a[k], b[k] = f(a, b, self.jet, k, trig)
         return Series(a), Series(b)
 
     @property
@@ -279,27 +279,27 @@ class Series:
 
     @property
     def sinh_cosh(self):
-        return self._trig_hyp(t_sin_cos, hyp=True)
+        return self._trig_hyp(t_sin_cos, trig=False)
 
     @property
     def sinh(self):
-        return self._trig_hyp(t_sin_cos, hyp=True)[0]
+        return self._trig_hyp(t_sin_cos, trig=False)[0]
 
     @property
     def cosh(self):
-        return self._trig_hyp(t_sin_cos, hyp=True)[1]
+        return self._trig_hyp(t_sin_cos, trig=False)[1]
 
     @property
     def tanh_sech2(self):
-        return self._trig_hyp(t_tan_sec2, hyp=True)
+        return self._trig_hyp(t_tan_sec2, trig=False)
 
     @property
     def tanh(self):
-        return self._trig_hyp(t_tan_sec2, hyp=True)[0]
+        return self._trig_hyp(t_tan_sec2, trig=False)[0]
 
     @property
     def sech2(self):
-        return self._trig_hyp(t_tan_sec2, hyp=True)[1]
+        return self._trig_hyp(t_tan_sec2, trig=False)[1]
 
     @property
     def asin(self):
@@ -317,17 +317,17 @@ class Series:
 
     @property
     def asinh(self):
-        return self._trig_hyp(t_asin, hyp=True)[0]
+        return self._trig_hyp(t_asin, trig=False)[0]
 
     @property
     def acosh(self):
         assert self.val > 1.0, f"self.val = {self.val}"
-        return self._trig_hyp(t_acos, hyp=True)[0]
+        return self._trig_hyp(t_acos, trig=False)[0]
 
     @property
     def atanh(self):
         assert abs(self.val) < 1.0, f"self.val = {self.val}"
-        return self._trig_hyp(t_atan, hyp=True)[0]
+        return self._trig_hyp(t_atan, trig=False)[0]
 
     @property
     def sqr(self):
