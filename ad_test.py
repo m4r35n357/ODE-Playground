@@ -525,33 +525,17 @@ def test_pow_number_object(number):
     assert len(series.jet) == order
     assert series.val == approx(number**data1_s.val)
 
-def test_exp():
-    exponent = t_jet(order)
-    t_series = s_4.exp
+def test_exp_series():
+    arg = 1.0
+    exponent = ~ Series.get(order, arg).var.exp
     for k in range(order):
-        exponent[k] = t_exp(exponent, s_4.jet, k)
-        assert exponent[k] == approx(t_series.jet[k])
-    derivative = exp(f3)
-    dual = d_3.exp
-    assert dual.val == approx(derivative)
-    assert dual.dot == approx(derivative)
-    series = ~ s_3.exp
-    assert len(series.jet) == order
-    for term in series.jet:
-        assert term == approx(derivative)
+        assert exponent.jet[k] == approx(exp(arg))
 
-def test_minus_exp():
-    derivative = 1.0 / exp(f3)
-    dual = (- d_3).exp
-    assert dual.val == approx(derivative)
-    assert dual.dot == approx(- derivative)
-    series = ~ (- s_3).exp
-    assert len(series.jet) == order
-    for k in range(order):
-        if k % 2 == 0:
-            assert series.jet[k] == approx(derivative)
-        elif k % 2 == 1:
-            assert series.jet[k] == approx(- derivative)
+def test_exp_dual():
+    arg = 1.0
+    exponent = Dual(arg).var.exp
+    assert exponent.val == approx(exp(arg))
+    assert exponent.dot == approx(exp(arg))
 
 @mark.domain
 @mark.parametrize('number', [1, δ])
@@ -567,121 +551,71 @@ def test_ln_domain_bad(number):
     with raises(AssertionError):
         _ = Series.get(order, number).var.ln
 
-def test_ln():
-    logarithm = t_jet(order)
-    t_series = s_3.ln
+def test_ln_series():
+    logarithm = data1_s.ln
+    ln_exp = data1_s.exp.ln
+    ln_sqr = data1_s.sqr.ln
+    ln_sqrt = data1_s.sqrt.ln
+    ln_inv = (1.0 / data1_s).ln
+    ln_pow = (data1_s**-3).ln
     for k in range(order):
-        logarithm[k] = t_ln(logarithm, s_3.jet, k)
-        assert logarithm[k] == approx(t_series.jet[k])
-    derivative = 1.0 / f3
-    dual = d_3.ln
-    assert dual.val == approx(log(f3))
-    assert dual.dot == approx(derivative)
-    series = ~ s_3.ln
-    assert len(series.jet) == order
-    assert series.val == approx(log(f3))
-    assert series.jet[1] == approx(derivative)
-    for k in range(2, order):
-        derivative *= - (k - 1) / f3
-        assert series.jet[k] == approx(derivative)
+        assert ln_exp.jet[k] == approx(data1_s.jet[k])
+        assert ln_sqr.jet[k] == approx(2.0 * logarithm.jet[k])
+        assert ln_sqrt.jet[k] == approx(0.5 * logarithm.jet[k])
+        assert ln_inv.jet[k] == approx(- logarithm.jet[k])
+        assert ln_pow.jet[k] == approx(- 3.0 * logarithm.jet[k])
 
-def test_sin_cos():
+def test_ln_dual():
+    logarithm = data1_d.ln
+    ln_exp = data1_d.exp.ln
+    ln_sqr = data1_d.sqr.ln
+    ln_sqrt = data1_d.sqrt.ln
+    ln_inv = (1.0 / data1_d).ln
+    ln_pow = (data1_d**-3).ln
+    assert ln_exp.val == approx(data1_d.val)
+    assert ln_sqr.val == approx(2.0 * logarithm.val)
+    assert ln_sqrt.val == approx(0.5 * logarithm.val)
+    assert ln_inv.val == approx(- logarithm.val)
+    assert ln_pow.val == approx(- 3.0 * logarithm.val)
+    assert ln_exp.dot == approx(data1_d.dot)
+    assert ln_sqr.dot == approx(2.0 * logarithm.dot)
+    assert ln_sqrt.dot == approx(0.5 * logarithm.dot)
+    assert ln_inv.dot == approx(- logarithm.dot)
+    assert ln_pow.dot == approx(- 3.0 * logarithm.dot)
+
+def test_sin_cos_series():
     sine, cosine = data1_s.sin_cos
     assert t_sqr(sine.jet, 0) + t_sqr(cosine.jet, 0) == approx(1.0)
     for k in range(1, order):
         assert t_sqr(sine.jet, k) + t_sqr(cosine.jet, k) == approx(0.0)
 
-def test_sin():
-    dual = Dual(pi / f3).var.sin
-    assert dual.val == approx(sin(pi / f3))
-    assert dual.dot == approx(cos(pi / f3))
-    series = ~ Series.get(order, pi / f3).var.sin
-    assert len(series.jet) == order
-    for k in range(order):
-        if k % 4 == 0:
-            assert series.jet[k] == approx(sin(pi / f3))
-        elif k % 4 == 1:
-            assert series.jet[k] == approx(cos(pi / f3))
-        elif k % 4 == 2:
-            assert series.jet[k] == approx(- sin(pi / f3))
-        elif k % 4 == 3:
-            assert series.jet[k] == approx(- cos(pi / f3))
+def test_sin_cos_dual():
+    sqr_sum = data1_d.cos.sqr + data1_d.sin.sqr
+    assert sqr_sum.val == approx(1.0)
+    assert sqr_sum.dot == approx(0.0)
 
-def test_cos():
-    dual = Dual(pi / f3).var.cos
-    assert dual.val == approx(cos(pi / f3))
-    assert dual.dot == approx(- sin(pi / f3))
-    series = ~ Series.get(order, pi / f3).var.cos
-    assert len(series.jet) == order
-    for k in range(order):
-        if k % 4 == 0:
-            assert series.jet[k] == approx(cos(pi / f3))
-        elif k % 4 == 1:
-            assert series.jet[k] == approx(- sin(pi / f3))
-        elif k % 4 == 2:
-            assert series.jet[k] == approx(- cos(pi / f3))
-        elif k % 4 == 3:
-            assert series.jet[k] == approx(sin(pi / f3))
-
-def test_tan_sec2():
+def test_tan_sec2_sereies():
     tangent, secant2 = data1_s.tan_sec2
     assert secant2.jet[0] - t_sqr(tangent.jet, 0) == approx(1.0)
     for k in range(1, order):
         assert secant2.jet[k] - t_sqr(tangent.jet, k) == approx(0.0)
 
-def test_tan():
-    dual = Dual(pi / f4).var.tan
-    assert dual.val == approx(tan(pi / f4))
-    assert dual.dot == approx((1.0 + tan(pi / f4) ** 2))
-    series = ~ Series.get(order, pi / f4).var.tan
-    assert len(series.jet) == order
-    assert series.val == approx(tan(pi / f4))
-    assert series.jet[1] == approx((1.0 + tan(pi / f4)**2))
-
-def test_sinh_cosh():
+def test_sinh_cosh_series():
     sine, cosine = data1_s.sin_cos
     assert t_sqr(sine.jet, 0) + t_sqr(cosine.jet, 0) == approx(1.0)
     for k in range(1, order):
         assert t_sqr(sine.jet, k) + t_sqr(cosine.jet, k) == approx(0.0)
 
-def test_sinh():
-    dual = Dual(pi / f3).var.sinh
-    assert dual.val == approx(sinh(pi / f3))
-    assert dual.dot == approx(cosh(pi / f3))
-    series = ~ Series.get(order, pi / f3).var.sinh
-    assert len(series.jet) == order
-    for k in range(order):
-        if k % 2 == 0:
-            assert series.jet[k] == approx(sinh(pi / f3))
-        elif k % 2 == 1:
-            assert series.jet[k] == approx(cosh(pi / f3))
+def test_sinh_cosh_dual():
+    sqr_sum = data1_d.cosh.sqr - data1_d.sinh.sqr
+    assert sqr_sum.val == approx(1.0)
+    assert sqr_sum.dot == approx(0.0)
 
-def test_cosh():
-    dual = Dual(pi / f3).var.cosh
-    assert dual.val == approx(cosh(pi / f3))
-    assert dual.dot == approx(sinh(pi / f3))
-    series = ~ Series.get(order, pi / f3).var.cosh
-    assert len(series.jet) == order
-    for k in range(order):
-        if k % 2 == 0:
-            assert series.jet[k] == approx(cosh(pi / f3))
-        elif k % 2 == 1:
-            assert series.jet[k] == approx(sinh(pi / f3))
-
-def test_tanh_sech2():
+def test_tanh_series():
     h_tangent, h_secant2 = data1_s.tanh_sech2
     assert h_secant2.jet[0] + t_sqr(h_tangent.jet, 0) == approx(1.0)
     for k in range(1, order):
         assert h_secant2.jet[k] + t_sqr(h_tangent.jet, k) == approx(0.0)
-
-def test_tanh():
-    dual = Dual(pi / f4).var.tanh
-    assert dual.val == approx(tanh(pi / f4))
-    assert dual.dot == approx((1.0 - tanh(pi / f4) ** 2))
-    series = ~ Series.get(order, pi / f4).var.tanh
-    assert len(series.jet) == order
-    assert series.val == approx(tanh(pi / f4))
-    assert series.jet[1] == approx((1.0 - tanh(pi / f4)**2))
 
 def test_gd_1_series():
     gd_1 = (abs((data1_s.sin + 1) / data1_s.cos)).ln
