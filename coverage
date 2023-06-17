@@ -1,0 +1,8 @@
+#!/bin/sh
+
+PYTHON_OUT='cov_html'
+
+pytest --cov=ad --cov=plotters --cov-report html:$PYTHON_OUT ad_test.py solver_test.py -q
+echo ""
+
+echo "Python: file://$(pwd)/$PYTHON_OUT/index.html"
