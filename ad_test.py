@@ -645,13 +645,6 @@ def test_sinh_cosh():
         assert t_sqr(sine.jet, k) + t_sqr(cosine.jet, k) == approx(0.0)
 
 def test_sinh():
-    h_sine, h_cosine = t_jet(order), t_jet(order)
-    t_series_sinh = s_3.sinh
-    t_series_cosh = s_3.cosh
-    for k in range(order):
-        h_sine[k], h_cosine[k] = t_sin_cos(h_sine, h_cosine, s_3.jet, k, hyp=True)
-        assert h_sine[k] == approx(t_series_sinh.jet[k])
-        assert h_cosine[k] == approx(t_series_cosh.jet[k])
     dual = Dual(pi / f3).var.sinh
     assert dual.val == approx(sinh(pi / f3))
     assert dual.dot == approx(cosh(pi / f3))
@@ -676,19 +669,12 @@ def test_cosh():
             assert series.jet[k] == approx(sinh(pi / f3))
 
 def test_tanh_sech2():
-    htangent, hsecant2 = data1_s.tanh_sech2
-    assert hsecant2.jet[0] + t_sqr(htangent.jet, 0) == approx(1.0)
+    h_tangent, h_secant2 = data1_s.tanh_sech2
+    assert h_secant2.jet[0] + t_sqr(h_tangent.jet, 0) == approx(1.0)
     for k in range(1, order):
-        assert hsecant2.jet[k] + t_sqr(htangent.jet, k) == approx(0.0)
+        assert h_secant2.jet[k] + t_sqr(h_tangent.jet, k) == approx(0.0)
 
 def test_tanh():
-    h_tangent, h_secant2 = t_jet(order), t_jet(order)
-    t_series_tanh = s_3.tanh
-    t_series_sech2 = s_3.sech2
-    for k in range(order):
-        h_tangent[k], h_secant2[k] = t_tan_sec2(h_tangent, h_secant2, s_3.jet, k, hyp=True)
-        assert h_tangent[k] == approx(t_series_tanh.jet[k])
-        assert h_secant2[k] == approx(t_series_sech2.jet[k])
     dual = Dual(pi / f4).var.tanh
     assert dual.val == approx(tanh(pi / f4))
     assert dual.dot == approx((1.0 - tanh(pi / f4) ** 2))
@@ -696,6 +682,33 @@ def test_tanh():
     assert len(series.jet) == order
     assert series.val == approx(tanh(pi / f4))
     assert series.jet[1] == approx((1.0 - tanh(pi / f4)**2))
+
+def test_gd_1_series():
+    gd_1 = (abs((data1_s.sin + 1) / data1_s.cos)).ln
+    test1 = data1_s.tan.asinh
+    test2 = data1_s.sin.atanh
+    test3 = gd_1.tanh.asin
+    test4 = gd_1.sinh.atan
+    for k in range(order):
+        assert test1.jet[k] == approx(gd_1.jet[k])
+        assert test2.jet[k] == approx(gd_1.jet[k])
+        assert test3.jet[k] == approx(data1_s.jet[k])
+        assert test4.jet[k] == approx(data1_s.jet[k])
+
+def test_gd_1_dual():
+    gd_1 = (abs((data1_d.sin + 1) / data1_d.cos)).ln
+    test1 = data1_d.tan.asinh
+    test2 = data1_d.sin.atanh
+    test3 = gd_1.tanh.asin
+    test4 = gd_1.sinh.atan
+    assert test1.val == approx(gd_1.val)
+    assert test2.val == approx(gd_1.val)
+    assert test3.val == approx(data1_d.val)
+    assert test4.val == approx(data1_d.val)
+    assert test1.dot == approx(gd_1.dot)
+    assert test2.dot == approx(gd_1.dot)
+    assert test3.dot == approx(data1_d.dot)
+    assert test4.dot == approx(data1_d.dot)
 
 @mark.domain
 @mark.parametrize('number', [1.0 - δ, -1.0 + δ])

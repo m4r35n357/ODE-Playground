@@ -64,26 +64,26 @@ def t_pwr(p, u, a, k):
 def t_ln(ln, u, k):
     return log(u[0]) if k == 0 else (u[k] - fsum(j * ln[j] * u[k - j] for j in range(1, k)) / k) / u[0]
 
-def t_asin(f, g, u, k, hyp=False):
+def t_asin(a, g, u, k, hyp=False):
     if k == 0:
-        return (asinh(u[0]), sqrt(u[0]**2 + 1.0)) if hyp else (asin(u[0]), sqrt(1.0 - u[0]**2))
-    f[k] = (u[k] - fsum(j * f[j] * g[k - j] for j in range(1, k)) / k) / g[0]
-    g[k] = fsum(u[j] * (k - j) * f[k - j] for j in range(0, k)) / k            #  dg/dt = u.df/dt
-    return (f[k], g[k]) if hyp else (f[k], - g[k])
+        return (asinh(u[0]), sqrt(u[0]*u[0] + 1.0)) if hyp else (asin(u[0]), sqrt(1.0 - u[0]*u[0]))
+    a[k] = (u[k] - fsum(j * a[j] * g[k - j] for j in range(1, k)) / k) / g[0]
+    g[k] = fsum(u[j] * (k - j) * a[k - j] for j in range(0, k)) / k
+    return (a[k], g[k]) if hyp else (a[k], - g[k])
 
-def t_acos(f, g, u, k, hyp=False):
+def t_acos(a, g, u, k, hyp=False):
     if k == 0:
-        return (acosh(u[0]), sqrt(u[0]**2 - 1.0)) if hyp else (acos(u[0]), - sqrt(1.0 - u[0]**2))
-    f[k] = (u[k] - (1.0 if hyp else -1.0) * fsum(j * f[j] * g[k - j] for j in range(1, k)) / k) / g[0]
-    g[k] = fsum(u[j] * (k - j) * f[k - j] for j in range(0, k)) / k            #  dg/dt = u.df/dt
-    return f[k], g[k]
+        return (acosh(u[0]), sqrt(u[0]*u[0] - 1.0)) if hyp else (acos(u[0]), - sqrt(1.0 - u[0]*u[0]))
+    a[k] = (u[k] - (1.0 if hyp else -1.0) * fsum(j * a[j] * g[k - j] for j in range(1, k)) / k) / g[0]
+    g[k] = fsum(u[j] * (k - j) * a[k - j] for j in range(0, k)) / k
+    return a[k], g[k]
 
-def t_atan(f, g, u, k, hyp=False):
+def t_atan(a, g, u, k, hyp=False):
     if k == 0:
-        return (atanh(u[0]), 1.0 - u[0]**2) if hyp else (atan(u[0]), 1.0 + u[0]**2)
-    f[k] = (u[k] - fsum(j * f[j] * g[k - j] for j in range(1, k)) / k) / g[0]
-    g[k] = 2.0 * fsum(u[j] * (k - j) * u[k - j] for j in range(0, k)) / k      #  dg/dt = 2u.du/dt
-    return (f[k], - g[k]) if hyp else (f[k], g[k])
+        return (atanh(u[0]), 1.0 - u[0]*u[0]) if hyp else (atan(u[0]), 1.0 + u[0]*u[0])
+    a[k] = (u[k] - fsum(j * a[j] * g[k - j] for j in range(1, k)) / k) / g[0]
+    g[k] = 2.0 * fsum(u[j] * (k - j) * u[k - j] for j in range(0, k)) / k
+    return (a[k], - g[k]) if hyp else (a[k], g[k])
 
 
 def t_out(dp, x, y, z, t, cpu):
