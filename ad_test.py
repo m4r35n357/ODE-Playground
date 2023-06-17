@@ -8,7 +8,7 @@
 from collections import namedtuple
 from math import exp, factorial
 from pytest import mark, raises, approx
-from ad import Components, t_jet, t_horner, t_const, t_abs, t_prod, t_quot, t_pwr, Series, Dual, t_sqr
+from ad import Components, t_jet, t_horner, t_const, t_abs, t_pwr, Series, Dual
 
 order = 12
 # noinspection NonAsciiCharacters
@@ -26,12 +26,13 @@ i5 = 5
 d_4, s_4 = Dual(f4).var, Series.get(order, f4).var
 d_3, s_3 = Dual(f3).var, Series.get(order, f3).var
 
+D0 = Dual(0.0, 0.0)
+D1 = Dual(1.0, 0.0)
 data1_d = Dual(1.4, -6.6)
 data2_d = Dual(0.5, 7.0)
 
-D1 = Dual(1.0, 0.0)
-S1 = Series([1.0] + [0.0] * order)
-
+S0 = Series([0.0] * order)
+S1 = Series([1.0] + [0.0] * (order - 1))
 data1_s = Series([0.5] * order)
 data2_s = Series([0.9] * order)
 for i in range(1, order):
@@ -185,6 +186,14 @@ def test_unary_minus():
     for result, original in zip(series.jet, (~ data1_s).jet):
         assert result == approx(- original)
 
+def compare_series(result, target):
+    for k in range(order):
+        assert result.jet[k] == approx(target.jet[k])
+
+def compare_dual(result, target):
+    assert result.val == approx(target.val)
+    assert result.dot == approx(target.dot)
+
 @mark.parametrize('series', [data1_s, data2_s])
 def test_abs_series(series):
     compare_series(abs(series), series.sqr.sqrt)
@@ -254,14 +263,6 @@ def test_subtract_number_object(number):
     assert series.val == approx(number - data1_s.val)
     for result, original in zip(series.jet[1:], data1_s.jet[1:]):
         assert result == approx(- original)
-
-def compare_series(result, target):
-    for k in range(order):
-        assert result.jet[k] == approx(target.jet[k])
-
-def compare_dual(result, target):
-    assert result.val == approx(target.val)
-    assert result.dot == approx(target.dot)
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_multiply_object_object_series(series):
@@ -503,15 +504,11 @@ def test_pow_number_object(number):
 
 def test_exp_series():
     arg = 1.0
-    exponent = ~ Series.get(order, arg).var.exp
-    for k in range(order):
-        assert exponent.jet[k] == approx(exp(arg))
+    compare_series(~ Series.get(order, arg).var.exp, Series([exp(arg)] * order))
 
 def test_exp_dual():
     arg = 1.0
-    exponent = Dual(arg).var.exp
-    assert exponent.val == approx(exp(arg))
-    assert exponent.dot == approx(exp(arg))
+    compare_dual(Dual(arg).var.exp, Dual(exp(arg), exp(arg)))
 
 @mark.domain
 @mark.parametrize('number', [1, δ])
@@ -679,125 +676,81 @@ def test_var():
 #  Zero identities
 @mark.toplevel
 def test_diff_squares_dual():
-    dual = data1_d**2 - data2_d**2 - (data1_d - data2_d) * (data1_d + data2_d)
-    assert dual.val == approx(0.0)
-    assert dual.dot == approx(0.0)
-    dual = data1_d**2.0 - data2_d**2.0 - (data1_d - data2_d) * (data1_d + data2_d)
-    assert dual.val == approx(0.0)
-    assert dual.dot == approx(0.0)
+    compare_dual(data1_d**2 - data2_d**2 - (data1_d - data2_d) * (data1_d + data2_d), D0)
+    compare_dual(data1_d**2.0 - data2_d**2.0 - (data1_d - data2_d) * (data1_d + data2_d), D0)
 
 @mark.toplevel
 def test_diff_squares_series():
-    for term in (data1_s**2 - data2_s**2 - (data1_s - data2_s) * (data1_s + data2_s)).jet:
-        assert term == approx(0.0)
-    for term in (data1_s**2.0 - data2_s**2.0 - (data1_s - data2_s) * (data1_s + data2_s)).jet:
-        assert term == approx(0.0)
+    compare_series(data1_s**2 - data2_s**2 - (data1_s - data2_s) * (data1_s + data2_s), S0)
+    compare_series(data1_s**2.0 - data2_s**2.0 - (data1_s - data2_s) * (data1_s + data2_s), S0)
 
 @mark.toplevel
 def test_abs_identities_dual():
-    a, b = abs(data1_d * data2_d), abs(data1_d) * abs(data2_d)
-    assert a.val == approx(b.val)
-    assert a.dot == approx(b.dot)
-    a, b = abs(data1_d / data2_d), abs(data1_d) / abs(data2_d)
-    assert a.val == approx(b.val)
-    assert a.dot == approx(b.dot)
+    compare_dual(abs(data1_d * data2_d), abs(data1_d) * abs(data2_d))
+    compare_dual(abs(data1_d / data2_d), abs(data1_d) / abs(data2_d))
 
 @mark.toplevel
 def test_abs_identities_series():
-    data = data1_s * data2_s
-    for a, b in zip(abs(data).jet, (abs(data1_s) * abs(data2_s)).jet):
-        assert a == approx(b)
-    data = data1_s / data2_s
-    for a, b in zip(abs(data).jet, (abs(data1_s) / abs(data2_s)).jet):
-        assert a == approx(b)
+    compare_series(abs(data1_s * data2_s), abs(data1_s) * abs(data2_s))
+    compare_series(abs(data1_s / data2_s), abs(data1_s) / abs(data2_s))
 
 @mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_pow_neg_zero_dual(dual):
-    e = dual**-2.0 - 1.0 / dual**2
-    assert e.val == approx(0.0)
-    assert e.dot == approx(0.0)
+    compare_dual(dual**-2.0 - 1.0 / dual**2, D0)
 
 @mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_pow_neg_zero_series(series):
-    for term in (series**-2.0 - 1.0 / series**2).jet:
-        assert term == approx(0.0)
+    compare_series(series**-2.0 - 1.0 / series**2, S0)
 
 @mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_pow_frac_zero_dual(dual):
-    e = (dual**2)**0.5 - abs(dual)
-    assert e.val == approx(0.0)
-    assert e.dot == approx(0.0)
-    e = (dual**2)**-0.5 - 1.0 / abs(dual)
-    assert e.val == approx(0.0)
-    assert e.dot == approx(0.0)
+    compare_dual((dual**2)**0.5 - abs(dual), D0)
+    compare_dual((dual**2)**-0.5 - 1.0 / abs(dual), D0)
 
 @mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_pow_frac_zero_series(series):
-    for term in ((series**2)**0.5 - abs(series)).jet:
-        assert term == approx(0.0)
-    for term in ((series**2)**-0.5 - 1.0 / abs(series)).jet:
-        assert term == approx(0.0)
+    compare_series((series**2)**0.5 - abs(series), S0)
+    compare_series((series**2)**-0.5 - 1.0 / abs(series), S0)
 
 @mark.toplevel
 def test_exp_zero_dual():
-    dual = (data1_d + data2_d).exp - data1_d.exp * data2_d.exp
-    assert dual.val == approx(0.0)
-    assert dual.dot == approx(0.0)
+    compare_dual((data1_d + data2_d).exp - data1_d.exp * data2_d.exp, D0)
 
 @mark.toplevel
 def test_exp_zero_series():
-    for term in ((data1_s + data2_s).exp - data1_s.exp * data2_s.exp).jet:
-        assert term == approx(0.0)
+    compare_series((data1_s + data2_s).exp - data1_s.exp * data2_s.exp, S0)
 
 @mark.toplevel
 def test_ln_zero_dual():
-    dual = (data1_d * data2_d).ln - (data1_d.ln + data2_d.ln)
-    assert dual.val == approx(0.0)
-    assert dual.dot == approx(0.0)
+    compare_dual((data1_d * data2_d).ln - (data1_d.ln + data2_d.ln), D0)
 
 @mark.toplevel
 def test_ln_zero_series():
-    for term in ((data1_s * data2_s).ln - (data1_s.ln + data2_s.ln)).jet:
-        assert term == approx(0.0)
+    compare_series((data1_s * data2_s).ln - (data1_s.ln + data2_s.ln), S0)
 
 @mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_sinh_zero_dual(dual):
-    e = 0.5 * (dual.exp - (- dual).exp) - dual.sinh
-    assert e.val == approx(0.0)
-    assert e.dot == approx(0.0)
+    compare_dual(0.5 * (dual.exp - (- dual).exp) - dual.sinh, D0)
 
 @mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_sinh_zero_series(series):
-    for term in (0.5 * (series.exp - (- series).exp) - series.sinh).jet:
-        assert term == approx(0.0)
+    compare_series(0.5 * (series.exp - (- series).exp) - series.sinh, S0)
 
 @mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_cosh_zero_dual(dual):
-    e = 0.5 * (dual.exp + (- dual).exp) - dual.cosh
-    assert e.val == approx(0.0)
-    assert e.dot == approx(0.0)
+    compare_dual(0.5 * (dual.exp + (- dual).exp) - dual.cosh, D0)
 
 @mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_cosh_zero_series(series):
-    for term in (0.5 * (series.exp + (- series).exp) - series.cosh).jet:
-        assert term == approx(0.0)
-
-@mark.toplevel
-@mark.parametrize('series', [data1_s, data2_s])
-def test_cosh_zero(series):
-    dual = 0.5 * (data1_d.exp + (-data1_d).exp) - data1_d.cosh
-    assert dual.val == approx(0.0)
-    assert dual.dot == approx(0.0)
-    for term in (0.5 * (series.exp + (- series).exp) - series.cosh).jet:
-        assert term == approx(0.0)
+    compare_series(0.5 * (series.exp + (- series).exp) - series.cosh, S0)
 
 @mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
