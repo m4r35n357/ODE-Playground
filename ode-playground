@@ -8,7 +8,7 @@ user_data="$user_dir/data"
 
 choice=$(yad --columns=2 --title="ODE Playground" --form --separator=" " --align=right \
     --field="Model:CB" --field="Analysis type:CB" \
-    -- 'Halvorsen!Lorenz!RF!^Thomas' '^GLplot!Gnuplot!CNS!CNSScan!ChaosScan')
+    -- 'Halvorsen!Lorenz!RF!^Thomas' '^GLplot!Gnuplot!CNS!CNSScan')
 
 case $? in
     1) exit;;
@@ -44,13 +44,6 @@ case $model in
             --  '16!2..32!1' '1.0' './tsm-lorenz.py' \
                 '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
-        ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
-            --field="Lower Value" --field="Upper Value" --field="Skip First 1/":CB --field="Model":RO \
-            --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-            --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho":RO --field="beta(n)" --field="beta(d)" \
-            --  '0.0' '50.0' '10!2' './tsm-lorenz.py' \
-                '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '-15.8' '-18.48' '35.64' '10' '$p' '8' '3') ;;
     esac ;;
     Thomas) case $analysis in
         GLplot) ./tsm-thomas.py $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
@@ -77,13 +70,6 @@ case $model in
             --  '16!2..64!1' '1.0' './tsm-thomas.py' \
                 '6!0..36!3' '_' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '0.185') ;;
-        ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
-            --field="Lower Value" --field="Upper Value" --field="Skip First 1/":CB --field="Model":RO \
-            --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-            --field="x0" --field="y0" --field="z0" --field="b":RO \
-            --  '0.1' '0.23' '10!2' './tsm-thomas.py' \
-                '6!0..36!3' '4!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '0.0' '0.0' '$p') ;;
     esac ;;
     RF) case $analysis in
         GLplot) ./tsm-rf.py $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
@@ -110,13 +96,6 @@ case $model in
             --  '16!2..64!1' '1.0' './tsm-rf.py' \
                 '6!0..36!3' '_' '0.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
-        ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
-            --field="Lower Value" --field="Upper Value" --field="Skip First 1/":CB --field="Model":RO \
-            --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-            --field="x0" --field="y0" --field="z0" --field="alpha":RO --field="gamma" \
-            --  '0.1' '0.35' '10!2' './tsm-rf.py' \
-                '6!0..36!3' '4!4..32!1' '0.01!0.001..0.1!0.001!3' '50000!1..1000000!1000' \
-                '0.05' '-0.05' '0.3' '$p' '.1') ;;
     esac ;;
     Halvorsen) case $analysis in
         GLplot) ./tsm-halvorsen.py $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
@@ -143,12 +122,5 @@ case $model in
             --  '16!2..64!1' '1.0' './tsm-halvorsen.py' \
                 '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '1.4') ;;
-        ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
-            --field="Lower Value" --field="Upper Value" --field="Skip First 1/":CB --field="Model":RO \
-            --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-            --field="x0" --field="y0" --field="z0" --field="a":RO \
-            --  '1' '4' '10!2' './tsm-halvorsen.py' \
-                '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '0.0' '0.0' '$p') ;;
     esac ;;
 esac
