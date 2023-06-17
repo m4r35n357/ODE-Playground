@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 #
-#  Example: ./tsm-rf.py  6 8  .01 50000  .05 -.05 .3  .105 .1
-#
 #  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 
 from sys import argv

@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 #
-#  Example: ./rk4-thomas.py  6 1  0.1 30000  1 0 0  .19
-#
 #  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+
 from sys import argv
 from collections import namedtuple
 from ad import Components, Context, rk4

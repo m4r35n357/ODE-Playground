@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 #
-#  Example: ./tsm-lorenz.py 6 8 .01 10000 -15.8 -17.48 35.64 10 28 8 3
-#
 #  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 
 from sys import argv
