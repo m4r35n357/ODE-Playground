@@ -29,6 +29,9 @@ d_3, s_3 = Dual(f3).var, Series.get(order, f3).var
 data1_d = Dual(1.4, -6.6)
 data2_d = Dual(0.5, 7.0)
 
+D1 = Dual(1.0, 0.0)
+S1 = Series([1.0] + [0.0] * order)
+
 data1_s = Series([0.5] * order)
 data2_s = Series([0.9] * order)
 for i in range(1, order):
@@ -184,17 +187,11 @@ def test_unary_minus():
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_abs_series(series):
-    absolute = abs(series)
-    root_square = series.sqr.sqrt
-    for k in range(order):
-        assert absolute.jet[k] == approx(root_square.jet[k])
+    compare_series(abs(series), series.sqr.sqrt)
 
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_abs_dual(dual):
-    absolute = abs(dual)
-    root_square = dual.sqr.sqrt
-    assert absolute.val == approx(root_square.val)
-    assert absolute.dot == approx(root_square.dot)
+    compare_dual(abs(dual), dual.sqr.sqrt)
 
 def test_add_object_object():
     dual = data1_d + data2_d
@@ -258,19 +255,21 @@ def test_subtract_number_object(number):
     for result, original in zip(series.jet[1:], data1_s.jet[1:]):
         assert result == approx(- original)
 
-def test_multiply_object_object():
-    dual = d_3 * d_4
-    assert dual.val == approx(f3 * f4)
-    assert dual.dot == approx(f3 + f4)
-    t_series = s_3 * s_4
+def compare_series(result, target):
     for k in range(order):
-        assert t_prod(s_3.jet, s_4.jet, k) == approx(t_series.jet[k])
-    series = ~ (s_3 * s_4)
-    assert series.val == approx(f3 * f4)
-    assert series.jet[1] == approx(f3 + f4)
-    assert series.jet[2] == approx(2.0)
-    for term in series.jet[3:]:
-        assert term == approx(0.0)
+        assert result.jet[k] == approx(target.jet[k])
+
+def compare_dual(result, target):
+    assert result.val == approx(target.val)
+    assert result.dot == approx(target.dot)
+
+@mark.parametrize('series', [data1_s, data2_s])
+def test_multiply_object_object_series(series):
+    compare_series(series * series, series**2)
+
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_multiply_object_object_dual(dual):
+    compare_dual(dual * dual, dual**2)
 
 @mark.parametrize('number', [i5, f3])
 def test_multiply_object_number(number):
@@ -310,17 +309,11 @@ def test_divide_domain_object_bad(number):
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_divide_object_object_series(series):
-    quotient = series.sin / series.cos
-    tangent = series.tan
-    for k in range(order):
-        assert quotient.jet[k] == approx(tangent.jet[k])
+    compare_series(series.sin / series.cos, series.tan)
 
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_divide_object_object_dual(dual):
-    quotient = dual.sin / dual.cos
-    tangent = dual.tan
-    assert quotient.val == approx(tangent.val)
-    assert quotient.dot == approx(tangent.dot)
+    compare_dual(dual.sin / dual.cos, dual.tan)
 
 @mark.domain
 @mark.parametrize('number', [1, δ, -δ, -1])
@@ -376,25 +369,13 @@ def test_divide_number_object(number):
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_divide_number_object_series(series):
-    inverse = 1.0 / series.cos.sqr
-    secant2 = 1.0 + series.tan.sqr
-    for k in range(order):
-        assert inverse.jet[k] == approx(secant2.jet[k])
-    inverse = 1.0 / series.cosh.sqr
-    secant2 = 1.0 - series.tanh.sqr
-    for k in range(order):
-        assert inverse.jet[k] == approx(secant2.jet[k])
+    compare_series(1.0 / series.cos.sqr, 1.0 + series.tan.sqr)
+    compare_series(1.0 / series.cosh.sqr, 1.0 - series.tanh.sqr)
 
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_divide_number_object_dual(dual):
-    inverse = 1.0 / dual.cos.sqr
-    secant2 = 1.0 + dual.tan.sqr
-    assert inverse.val == approx(secant2.val)
-    assert inverse.dot == approx(secant2.dot)
-    inverse = 1.0 / dual.cosh.sqr
-    secant2 = 1.0 - dual.tanh.sqr
-    assert inverse.val == approx(secant2.val)
-    assert inverse.dot == approx(secant2.dot)
+    compare_dual(1.0 / dual.cos.sqr, 1.0 + dual.tan.sqr)
+    compare_dual(1.0 / dual.cosh.sqr, 1.0 - dual.tanh.sqr)
 
 @mark.parametrize('number', [1, 1.0])
 def test_pow_object_neg1_number(number):
@@ -549,105 +530,64 @@ def test_ln_domain_bad(number):
 @mark.parametrize('series', [data1_s, data2_s])
 def test_ln_series(series):
     logarithm = series.ln
-    ln_exp = series.exp.ln
-    ln_sqr = series.sqr.ln
-    ln_sqrt = series.sqrt.ln
-    ln_inv = (1.0 / series).ln
-    ln_pow = (series**-3).ln
-    for k in range(order):
-        assert ln_exp.jet[k] == approx(series.jet[k])
-        assert ln_sqr.jet[k] == approx(2.0 * logarithm.jet[k])
-        assert ln_sqrt.jet[k] == approx(0.5 * logarithm.jet[k])
-        assert ln_inv.jet[k] == approx(- logarithm.jet[k])
-        assert ln_pow.jet[k] == approx(- 3.0 * logarithm.jet[k])
+    compare_series(series.exp.ln, series)
+    compare_series(series.sqr.ln, 2.0 * logarithm)
+    compare_series(series.sqrt.ln, 0.5 * logarithm)
+    compare_series((1.0 / series).ln, - logarithm)
+    compare_series((series**-3).ln, - 3.0 * logarithm)
 
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_ln_dual(dual):
     logarithm = dual.ln
-    ln_exp = dual.exp.ln
-    ln_sqr = dual.sqr.ln
-    ln_sqrt = dual.sqrt.ln
-    ln_inv = (1.0 / dual).ln
-    ln_pow = (dual**-3).ln
-    assert ln_exp.val == approx(dual.val)
-    assert ln_sqr.val == approx(2.0 * logarithm.val)
-    assert ln_sqrt.val == approx(0.5 * logarithm.val)
-    assert ln_inv.val == approx(- logarithm.val)
-    assert ln_pow.val == approx(- 3.0 * logarithm.val)
-    assert ln_exp.dot == approx(dual.dot)
-    assert ln_sqr.dot == approx(2.0 * logarithm.dot)
-    assert ln_sqrt.dot == approx(0.5 * logarithm.dot)
-    assert ln_inv.dot == approx(- logarithm.dot)
-    assert ln_pow.dot == approx(- 3.0 * logarithm.dot)
+    compare_dual(dual.exp.ln, dual)
+    compare_dual(dual.sqr.ln, 2.0 * logarithm)
+    compare_dual(dual.sqrt.ln, 0.5 * logarithm)
+    compare_dual((1.0 / dual).ln, - logarithm)
+    compare_dual((dual**-3).ln, - 3.0 * logarithm)
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_sin_cos_series(series):
     sine, cosine = series.sin_cos
-    assert t_sqr(sine.jet, 0) + t_sqr(cosine.jet, 0) == approx(1.0)
-    for k in range(1, order):
-        assert t_sqr(sine.jet, k) + t_sqr(cosine.jet, k) == approx(0.0)
+    compare_series(cosine.sqr + sine.sqr, S1)
 
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_sin_cos_dual(dual):
-    sqr_sum = dual.cos.sqr + dual.sin.sqr
-    assert sqr_sum.val == approx(1.0)
-    assert sqr_sum.dot == approx(0.0)
+    compare_dual(dual.cos.sqr + dual.sin.sqr, D1)
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_tan_sec2_series(series):
     tangent, secant2 = series.tan_sec2
-    assert secant2.jet[0] - t_sqr(tangent.jet, 0) == approx(1.0)
-    for k in range(1, order):
-        assert secant2.jet[k] - t_sqr(tangent.jet, k) == approx(0.0)
+    compare_series(secant2 - tangent.sqr, S1)
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_sinh_cosh_series(series):
-    sine, cosine = series.sin_cos
-    assert t_sqr(sine.jet, 0) + t_sqr(cosine.jet, 0) == approx(1.0)
-    for k in range(1, order):
-        assert t_sqr(sine.jet, k) + t_sqr(cosine.jet, k) == approx(0.0)
+    sine, cosine = series.sinh_cosh
+    compare_series(cosine.sqr - sine.sqr, S1)
 
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_sinh_cosh_dual(dual):
-    sqr_sum = dual.cosh.sqr - dual.sinh.sqr
-    assert sqr_sum.val == approx(1.0)
-    assert sqr_sum.dot == approx(0.0)
+    compare_dual(dual.cosh.sqr - dual.sinh.sqr, D1)
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_tanh_series(series):
     h_tangent, h_secant2 = series.tanh_sech2
-    assert h_secant2.jet[0] + t_sqr(h_tangent.jet, 0) == approx(1.0)
-    for k in range(1, order):
-        assert h_secant2.jet[k] + t_sqr(h_tangent.jet, k) == approx(0.0)
+    compare_series(h_secant2 + h_tangent.sqr, S1)
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_gd_1_series(series):
     gd_1 = (abs((series.sin + 1) / series.cos)).ln
-    test1 = series.tan.asinh
-    test2 = series.sin.atanh
-    test3 = gd_1.tanh.asin
-    test4 = gd_1.sinh.atan
-    for k in range(order):
-        assert test1.jet[k] == approx(gd_1.jet[k])
-        assert test2.jet[k] == approx(gd_1.jet[k])
-        assert test3.jet[k] == approx(series.jet[k])
-        assert test4.jet[k] == approx(series.jet[k])
+    compare_series(series.tan.asinh, gd_1)
+    compare_series(series.sin.atanh, gd_1)
+    compare_series(gd_1.tanh.asin, series)
+    compare_series(gd_1.sinh.atan, series)
 
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_gd_1_dual(dual):
     gd_1 = (abs((dual.sin + 1) / dual.cos)).ln
-    test1 = dual.tan.asinh
-    test2 = dual.sin.atanh
-    test3 = gd_1.tanh.asin
-    test4 = gd_1.sinh.atan
-    assert test1.val == approx(gd_1.val)
-    assert test2.val == approx(gd_1.val)
-    assert test3.val == approx(dual.val)
-    assert test4.val == approx(dual.val)
-    assert test1.dot == approx(gd_1.dot)
-    assert test2.dot == approx(gd_1.dot)
-    assert test3.dot == approx(dual.dot)
-    assert test4.dot == approx(dual.dot)
+    compare_dual(dual.tan.asinh, gd_1)
+    compare_dual(dual.sin.atanh, gd_1)
+    compare_dual(gd_1.tanh.asin, dual)
+    compare_dual(gd_1.sinh.atan, dual)
 
 @mark.domain
 @mark.parametrize('number', [1.0 - δ, -1.0 + δ])
