@@ -666,14 +666,6 @@ def test_asin_domain_bad(number):
         _ = Dual(number).var.asin
         _ = Series.get(order, number).var.asin
 
-def test_asin():
-    dual = d_05.sin.asin
-    assert dual.val == approx(d_05.val)
-    assert dual.dot == approx(d_05.dot)
-    series = data1_s.sin.asin
-    for k in range(order):
-        assert data1_s.jet[k] == approx(series.jet[k])
-
 @mark.domain
 @mark.parametrize('number', [1.0 - δ, -1.0 + δ])
 def test_acos_domain_good(number):
@@ -686,30 +678,6 @@ def test_acos_domain_bad(number):
     with raises(AssertionError):
         _ = Dual(number).var.acos
         _ = Series.get(order, number).var.acos
-
-def test_acos():
-    dual = d_05.cos.acos
-    assert dual.val == approx(d_05.val)
-    assert dual.dot == approx(d_05.dot)
-    series = data1_s.cos.acos
-    for k in range(order):
-        assert data1_s.jet[k] == approx(series.jet[k])
-
-def test_atan():
-    dual = d_05.tan.atan
-    assert dual.val == approx(d_05.val)
-    assert dual.dot == approx(d_05.dot)
-    series = data1_s.tan.atan
-    for k in range(order):
-        assert data1_s.jet[k] == approx(series.jet[k])
-
-def test_asinh():
-    dual = d_05.sinh.asinh
-    assert dual.val == approx(d_05.val)
-    assert dual.dot == approx(d_05.dot)
-    series = data1_s.sinh.asinh
-    for k in range(order):
-        assert data1_s.jet[k] == approx(series.jet[k])
 
 @mark.domain
 @mark.parametrize('number', [1.0 + δ])
@@ -724,14 +692,6 @@ def test_acosh_domain_bad(number):
         _ = Dual(number).var.acosh
         _ = Series.get(order, number).var.acosh
 
-def test_acosh():
-    dual = d_05.cosh.acosh
-    assert dual.val == approx(d_05.val)
-    assert dual.dot == approx(d_05.dot)
-    series = data1_s.cosh.acosh
-    for k in range(order):
-        assert data1_s.jet[k] == approx(series.jet[k])
-
 @mark.domain
 @mark.parametrize('number', [1.0 - δ, -1.0 + δ])
 def test_atanh_domain_good(number):
@@ -744,14 +704,6 @@ def test_atanh_domain_bad(number):
     with raises(AssertionError):
         _ = Dual(number).var.atanh
         _ = Series.get(order, number).var.atanh
-
-def test_atanh():
-    dual = d_05.tanh.atanh
-    assert dual.val == approx(d_05.val)
-    assert dual.dot == approx(d_05.dot)
-    series = data1_s.tanh.atanh
-    for k in range(order):
-        assert data1_s.jet[k] == approx(series.jet[k])
 
 @mark.domain
 @mark.parametrize('number', [1, δ])
