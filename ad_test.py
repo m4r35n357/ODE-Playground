@@ -10,7 +10,7 @@ from math import exp, factorial
 from pytest import mark, raises, approx
 from ad import Components, t_jet, t_horner, t_const, t_abs, t_prod, t_quot, t_pwr, Series, Dual, t_sqr
 
-order = 6
+order = 12
 # noinspection NonAsciiCharacters
 ε = 1.0e-12  # small error
 # noinspection NonAsciiCharacters
@@ -23,23 +23,17 @@ f4 = 4.0
 f05 = 0.5
 i5 = 5
 
-d_0, s_0 = Dual().var, Series.get(order).var
-d_05, s_05 = Dual(f05).var, Series.get(order, f05).var
 d_4, s_4 = Dual(f4).var, Series.get(order, f4).var
 d_3, s_3 = Dual(f3).var, Series.get(order, f3).var
-
-s_1 = Series.get(order, f1).var
-s_2 = Series.get(order, f2).var
 
 data1_d = Dual(1.4, -6.6)
 data2_d = Dual(0.5, 7.0)
 
 data1_s = Series([0.5] * order)
-for i in range(1, order):
-    data1_s.jet[i] = 0.7 * i * data1_s.jet[i - 1]
 data2_s = Series([0.9] * order)
 for i in range(1, order):
-    data2_s.jet[i] = - 0.5 * i * data2_s.jet[i - 1]
+    data1_s.jet[i] = data1_s.jet[i - 1] / (i * i)
+    data2_s.jet[i] = - data2_s.jet[i - 1] / (i * i)
 
 class Parameters(namedtuple('ParametersType', ['a', 'b', 'c'])):
     pass
@@ -188,29 +182,19 @@ def test_unary_minus():
     for result, original in zip(series.jet, (~ data1_s).jet):
         assert result == approx(- original)
 
-def test_abs():
-    dual = abs(d_05)
-    assert dual.val == approx(f05)
-    assert dual.dot == approx(1.0)
-    dual = abs(Dual(- f05).var)
-    assert dual.val == approx(f05)
-    assert dual.dot == approx(- 1.0)
-    dual = abs(- d_05)
-    assert dual.val == approx(f05)
-    assert dual.dot == approx(1.0)
-    dual = abs(d_0)
-    assert dual.val == approx(0.0)
-    assert dual.dot == approx(1.0)
-    positive = Series.get(order, 1.0).var.asinh
-    negative = Series.get(order, -1.0).var.asinh
-    abs_negative = abs(negative)
+@mark.parametrize('series', [data1_s, data2_s])
+def test_abs_series(series):
+    absolute = abs(series)
+    root_square = series.sqr.sqrt
     for k in range(order):
-        if k % 2 == 0:
-            assert t_abs(negative.jet, k) == approx(positive.jet[k])
-            assert abs_negative.jet[k] == approx(positive.jet[k])
-        elif k % 2 == 1:
-            assert t_abs(negative.jet, k) == approx(- positive.jet[k])
-            assert abs_negative.jet[k] == approx(- positive.jet[k])
+        assert absolute.jet[k] == approx(root_square.jet[k])
+
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_abs_dual(dual):
+    absolute = abs(dual)
+    root_square = dual.sqr.sqrt
+    assert absolute.val == approx(root_square.val)
+    assert absolute.dot == approx(root_square.dot)
 
 def test_add_object_object():
     dual = data1_d + data2_d
@@ -324,18 +308,19 @@ def test_divide_domain_object_bad(number):
     with raises(AssertionError):
         _ = data1_s / Series.get(order, number).var
 
-def test_divide_object_object():
-    dual = d_3 / d_4
-    assert dual.val - f3 / f4 == approx(0.0)
-    assert dual.dot == approx((f4 - f3) / f4**2)
-    quotient = t_jet(order)
-    t_series = s_3 / s_4
+@mark.parametrize('series', [data1_s, data2_s])
+def test_divide_object_object_series(series):
+    quotient = series.sin / series.cos
+    tangent = series.tan
     for k in range(order):
-        quotient[k] = t_quot(quotient, s_3.jet, s_4.jet, k)
-        assert quotient[k] == approx(t_series.jet[k])
-    series = ~ (s_3 / s_4)
-    assert series.val == approx(f3 / f4)
-    assert series.jet[1] == approx((f4 - f3) / f4**2)
+        assert quotient.jet[k] == approx(tangent.jet[k])
+
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_divide_object_object_dual(dual):
+    quotient = dual.sin / dual.cos
+    tangent = dual.tan
+    assert quotient.val == approx(tangent.val)
+    assert quotient.dot == approx(tangent.dot)
 
 @mark.domain
 @mark.parametrize('number', [1, δ, -δ, -1])
@@ -389,16 +374,27 @@ def test_divide_number_object(number):
         derivative *= - k * number / f3
         assert series.jet[k] == approx(derivative)
 
-def test_reciprocal():
-    derivative = 1.0 / f3
-    dual = 1.0 / d_3
-    assert dual.val == approx(derivative)
-    assert dual.dot == approx(- derivative / f3)
-    series = ~ (1.0 / s_3)
-    assert series.val == approx(derivative)
-    for k in range(1, order):
-        derivative *= - k / f3
-        assert series.jet[k] == approx(derivative)
+@mark.parametrize('series', [data1_s, data2_s])
+def test_divide_number_object_series(series):
+    inverse = 1.0 / series.cos.sqr
+    secant2 = 1.0 + series.tan.sqr
+    for k in range(order):
+        assert inverse.jet[k] == approx(secant2.jet[k])
+    inverse = 1.0 / series.cosh.sqr
+    secant2 = 1.0 - series.tanh.sqr
+    for k in range(order):
+        assert inverse.jet[k] == approx(secant2.jet[k])
+
+@mark.parametrize('dual', [data1_d, data2_d])
+def test_divide_number_object_dual(dual):
+    inverse = 1.0 / dual.cos.sqr
+    secant2 = 1.0 + dual.tan.sqr
+    assert inverse.val == approx(secant2.val)
+    assert inverse.dot == approx(secant2.dot)
+    inverse = 1.0 / dual.cosh.sqr
+    secant2 = 1.0 - dual.tanh.sqr
+    assert inverse.val == approx(secant2.val)
+    assert inverse.dot == approx(secant2.dot)
 
 @mark.parametrize('number', [1, 1.0])
 def test_pow_object_neg1_number(number):
