@@ -115,62 +115,46 @@ real t_abs (series u, int k) {
     return u[0] < 0.0L ? -u[k] : u[k];
 }
 
+static real fa (series a, series b, int k0, int k1, int k) {
+    real _ = 0.0L;
+    for (int j = k0; j < k1; j++) _ += a[j] * b[k - j];
+    return _;
+}
+
 real t_mul (series u, series v, int k) {
-    real _m = 0.0L;
-    for (int j = 0; j <= k; j++) {
-        _m += u[j] * v[k - j];
-    }
-    return _m;
+    return fa(u, v, 0, k + 1, k);
 }
 
 real t_sqr (series u, int k) {
-    real _s = 0.0L;
-    for (int j = 0; j <= (k - (k % 2 ? 1 : 2)) / 2; j++) {
-        _s += u[j] * u[k - j];
-    }
-    return 2.0L * _s + (k % 2 ? 0.0L : u[k / 2] * u[k / 2]);
+    return 2.0L * fa(u, u, 0, (k - (k % 2 ? 1 : 2)) / 2 + 1, k) + (k % 2 ? 0.0L : u[k / 2] * u[k / 2]);
 }
 
 real t_div (series q, series u, series v, int k) {
     CHECK(v[0] != 0.0L); CHECK(q != u && q != v);
-    if (!k) return q[0] = (u ? u[0] : 1.0L) / v[0];
-    real _d = 0.0L;
-    for (int j = 0; j < k; j++) {
-        _d += q[j] * v[k - j];
-    }
-    return q[k] = ((u ? u[k] : 0.0L) - _d) / v[0];
+    return q[k] = (!k ? (u ? u[0] : 1.0L) : (u ? u[k] : 0.0L) - fa(q, v, 0, k, k)) / v[0];
 }
 
 real t_sqrt (series r, series u, int k) {
     CHECK(u[0] > 0.0L); CHECK(r != u);
     if (!k) return r[0] = sqrtl(u[0]);
-    real _r = 0.0L;
-    for (int j = 1; j <= (k - (k % 2 ? 1 : 2)) / 2; j++) {
-        _r += r[j] * r[k - j];
-    }
-    return r[k] = 0.5L * (u[k] - 2.0L * _r - (k % 2 ? 0.0L : r[k / 2] * r[k / 2])) / r[0];
+    return r[k] = 0.5L * (u[k] - 2.0L * fa(r, r, 1, (k - (k % 2 ? 1 : 2)) / 2 + 1, k) - (k % 2 ? 0.0L : r[k / 2] * r[k / 2])) / r[0];
+}
+
+static real fb (series a, series b, int k) {
+    real _ = 0.0L;
+    for (int j = 0; j < k; j++) _ += a[j] * (k - j) * b[k - j];
+    return _ / k;
 }
 
 real t_exp (series e, series u, int k) {
     CHECK(e != u);
-    if (!k) return e[0] = expl(u[0]);
-    real _e = 0.0L;
-    for (int j = 0; j < k; j++) {
-        _e += e[j] * (k - j) * u[k - j];
-    }
-    return e[k] = _e / k;
+    return e[k] = !k ? expl(u[0]) : fb(e, u, k);
 }
 
 pair t_sin_cos (series s, series c, series u, int k, bool trig) {
     CHECK(s != c && s != u && c != u);
     if (!k) return (pair){.a = s[0] = trig ? sinl(u[0]) : sinhl(u[0]), .b = c[0] = trig ? cosl(u[0]) : coshl(u[0])};
-    real _s = 0.0L, _c = 0.0L;
-    for (int j = 0; j < k; j++) {
-        real _ = (k - j) * u[k - j];
-        _s += c[j] * _;
-        _c += s[j] * _;
-    }
-    return (pair){.a = s[k] = _s / k, .b = c[k] = (trig ? -_c : _c) / k};
+    return (pair){.a = s[k] = fb(c, u, k), .b = c[k] = (trig ? -1.0L : 1.0L) * fb(s, u, k)};
 }
 
 pair t_tan_sec2 (series t, series s2, series u, int k, bool trig) {
@@ -179,35 +163,26 @@ pair t_tan_sec2 (series t, series s2, series u, int k, bool trig) {
         t[0] = trig ? tanl(u[0]) : tanhl(u[0]);
         return (pair){.a = t[0], .b = s2[0] = trig ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]};
     }
-    real _t = 0.0L, _s2 = 0.0L;
-    for (int j = 0; j < k; j++) {
-        _t += s2[j] * (k - j) * u[k - j];
-    }
-    t[k] = _t / k;
-    for (int j = 0; j < k; j++) {
-        _s2 += t[j] * (k - j) * t[k - j];
-    }
-    return (pair){.a = t[k], .b = s2[k] = 2.0L * (trig ? _s2 : -_s2) / k};
+    return (pair){.a = t[k] = fb(s2, u, k), .b = s2[k] = (trig ? 2.0L : -2.0L) * fb(t, t, k)};
 }
 
 real t_pwr (series p, series u, real a, int k) {
     CHECK(u[0] > 0.0L); CHECK(p != u);
     if (!k) return p[0] = powl(u[0], a);
-    real _p = 0.0L;
-    for (int j = 0; j < k; j++) {
-        _p += (a * (k - j) - j) * p[j] * u[k - j];
-    }
-    return p[k] = _p / (k * u[0]);
+    real _ = 0.0L;
+    for (int j = 0; j < k; j++) _ += (a * (k - j) - j) * p[j] * u[k - j];
+    return p[k] = _ / (k * u[0]);
+}
+
+static real fc (series a, series b, series c, int k, bool flag) {
+    real _ = 0.0L;
+    for (int j = 1; j < k; j++) _ += j * a[j] * b[k - j];
+    return (c[k] + (flag ? 1.0L : -1.0L) * _ / k) / b[0];
 }
 
 real t_ln (series l, series u, int k) {
     CHECK(u[0] > 0.0L); CHECK(l != u);
-    if (!k) return l[0] = logl(u[0]);
-    real _l = 0.0L;
-    for (int j = 1; j < k; j++) {
-        _l += j * l[j] * u[k - j];
-    }
-    return l[k] = (u[k] - _l / k) / u[0];
+    return l[k] = !k ? logl(u[0]) : fc(l, u, u, k, false);
 }
 
 pair t_asin (series a, series g, series u, int k, bool trig) {
@@ -216,15 +191,7 @@ pair t_asin (series a, series g, series u, int k, bool trig) {
         .a = a[0] = trig ? asinl(u[0]) : asinhl(u[0]),
         .b = g[0] = trig ? sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] + 1.0L)
     };
-    real _a = 0.0L, _g = 0.0L;
-    for (int j = 1; j < k; j++) {
-        _a += j * a[j] * g[k - j];
-    }
-    a[k] = (u[k] - _a / k) / g[0];
-    for (int j = 0; j < k; j++) {
-        _g += u[j] * (k - j) * a[k - j];
-    }
-    return (pair){.a = a[k], .b = g[k] = (trig ? -_g : _g) / k};
+    return (pair){.a = a[k] = fc(a, g, u, k, false), .b = g[k] = (trig ? -1.0L : 1.0L) * fb(u, a, k)};
 }
 
 pair t_acos (series a, series g, series u, int k, bool trig) {
@@ -233,15 +200,7 @@ pair t_acos (series a, series g, series u, int k, bool trig) {
         .a = a[0] = trig ? acosl(u[0]) : acoshl(u[0]),
         .b = g[0] = trig ? - sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] - 1.0L)
     };
-    real _a = 0.0L, _g = 0.0L;
-    for (int j = 1; j < k; j++) {
-        _a += j * a[j] * g[k - j];
-    }
-    a[k] = (u[k] - (trig ? -_a : _a) / k) / g[0];
-    for (int j = 0; j < k; j++) {
-        _g += u[j] * (k - j) * a[k - j];
-    }
-    return (pair){.a = a[k], .b = g[k] = _g / k};
+    return (pair){.a = a[k] = fc(a, g, u, k, trig), .b = g[k] = fb(u, a, k)};
 }
 
 pair t_atan (series a, series g, series u, int k, bool trig) {
@@ -250,12 +209,5 @@ pair t_atan (series a, series g, series u, int k, bool trig) {
         .a = a[0] = trig ? atanl(u[0]) : atanhl(u[0]),
         .b = g[0] = trig ? 1.0L + u[0] * u[0] : 1.0L - u[0] * u[0]
     };
-    real _a = 0.0L, _g = 0.0L;
-    for (int j = 1; j < k; j++) {
-        _a += j * a[j] * g[k - j];
-    }
-    for (int j = 0; j < k; j++) {
-        _g += u[j] * (k - j) * u[k - j];
-    }
-    return (pair){.a = a[k] = (u[k] - _a / k) / g[0], .b = g[k] = 2.0L * (trig ? _g : -_g) / k};
+    return (pair){.a = a[k] = fc(a, g, u, k, false), .b = g[k] = (trig ? 2.0L : -2.0L) * fb(u, u, k)};
 }
