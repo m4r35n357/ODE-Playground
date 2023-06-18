@@ -29,9 +29,7 @@ def t_prod(u, v, k):
     return fa(u, v, k, 0, k + 1)
 
 def t_quot(q, u, v, k):
-    if k == 0:
-        return (u[0] if u else 1.0) / v[0]
-    return ((u[k] if u else 0.0) - fa(q, v, k, 0, k)) / v[0]
+    return ((u[0] if u else 1.0) if k == 0 else (u[k] if u else 0.0) - fa(q, v, k, 0, k)) / v[0]
 
 def t_sqr(u, k):
     odd = (k % 2 == 1)
@@ -48,9 +46,7 @@ def fb(a, b, k):
     return fsum(a[j] * (k - j) * b[k - j] for j in range(k)) / k
 
 def t_exp(e, u, k):
-    if k == 0:
-        return exp(u[0])
-    return fb(e, u, k)
+    return exp(u[0]) if k == 0 else fb(e, u, k)
 
 def t_sin_cos(s, c, u, k, trig=True):
     if k == 0:
@@ -68,17 +64,13 @@ def t_tan_sec2(t, s2, u, k, trig=True):
     return t[k], (2.0 if trig else -2.0) * s2[k]
 
 def t_pwr(p, u, a, k):
-    if k == 0:
-        return u[0]**a
-    return fsum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
+    return u[0]**a if k == 0 else fsum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
 
 def fc(a, b, c, k, flag=False):
     return (c[k] + (1.0 if flag else -1.0) * fsum(j * a[j] * b[k - j] for j in range(1, k)) / k) / b[0]
 
 def t_ln(ln, u, k):
-    if k == 0:
-        return log(u[0])
-    return fc(ln, u, u, k)
+    return log(u[0]) if k == 0 else fc(ln, u, u, k)
 
 def t_asin(a, g, u, k, trig=True):
     if k == 0:
