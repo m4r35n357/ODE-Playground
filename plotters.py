@@ -214,6 +214,7 @@ def msave_d(filename, model, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_m
     _plot_d(model, x_min, x_max, steps, y_min, y_max)
     pyplot.savefig(filename)
 
+
 if __name__ == "__main__":  # hard-coded example
     l = lambda a: (a - 1)**2 / (a.cosh + 1).ln - 1
     print(f'Multi Scan (Series)')

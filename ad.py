@@ -22,25 +22,26 @@ def t_const(a, k):
 def t_abs(u, k):
     return - u[k] if u[0] < 0.0 else u[k]
 
-def fa(a, b, k, k0, k1):
+def fa(a, b, k0, k1, k):
     return fsum(a[j] * b[k - j] for j in range(k0, k1))
 
 def t_prod(u, v, k):
-    return fa(u, v, k, 0, k + 1)
+    return fa(u, v, 0, k + 1, k)
 
 def t_quot(q, u, v, k):
-    return ((u[0] if u else 1.0) if k == 0 else (u[k] if u else 0.0) - fa(q, v, k, 0, k)) / v[0]
+    return ((u[0] if u else 1.0) if k == 0 else (u[k] if u else 0.0) - fa(q, v, 0, k, k)) / v[0]
+
+def half(k):
+    return 1 + (k - (1 if k % 2 else 2)) // 2
+
+def rem(a, k):
+    return 0.0 if k % 2 else a[k // 2] * a[k // 2]
 
 def t_sqr(u, k):
-    odd = (k % 2 == 1)
-    return 2.0 * fa(u, u, k, 0, (k - (1 if odd else 2)) // 2 + 1) + (0.0 if odd else u[k // 2]**2)
+    return 2.0 * fa(u, u, 0, half(k), k) + rem(u, k)
 
 def t_sqrt(r, u, k):
-    if k == 0:
-        return sqrt(u[0])
-    odd = (k % 2 == 1)
-    return 0.5 * (u[k] - 2.0 * fa(r, r, k, 1, (k - (1 if odd else 2)) // 2 + 1)
-                  - (0.0 if odd else r[k // 2]**2)) / r[0]
+    return sqrt(u[0]) if k == 0 else 0.5 * (u[k] - 2.0 * fa(r, r, 1, half(k), k) - rem(r, k)) / r[0]
 
 def fb(a, b, k):
     return fsum(a[j] * (k - j) * b[k - j] for j in range(k)) / k
