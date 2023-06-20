@@ -49,6 +49,7 @@ def update(data):
         ax.figure.canvas.draw()
     return line_data()
 
+
 print(f'Animated ODE Plotter: {argv}', file=stderr)
 if len(argv) < 2:
     raise Exception('>>> ERROR! Please supply min and max <<<')
