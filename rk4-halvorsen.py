@@ -6,16 +6,16 @@ from sys import argv
 from collections import namedtuple
 from ad import Components, Context, rk4
 
-class Parameters(namedtuple('ParametersType', ['a', 'b'])):
+class Parameters(namedtuple('ParametersType', ['a'])):
     pass
 
 def get_p():
-    return Parameters(a=float(argv[8]), b=float(argv[9]))
+    return Parameters(a=float(argv[8]))
 
 def ode(x, y, z, p):
-    return Components(x=-p.a * x - p.b * (y + z) - y * y,
-                      y=-p.a * y - p.b * (z + x) - z * z,
-                      z=-p.a * z - p.b * (x + y) - x * x)
+    return Components(x=-p.a * x - 4.0 * (y + z) - y * y,
+                      y=-p.a * y - 4.0 * (z + x) - z * z,
+                      z=-p.a * z - 4.0 * (x + y) - x * x)
 
 
 Context.places, n, h, steps = int(argv[1]), int(argv[2]), float(argv[3]), int(argv[4])  # controls
