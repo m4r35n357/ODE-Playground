@@ -19,5 +19,5 @@ def ode(x, y, z, p):
                       z=sin(x) - p.b * z)
 
 
-Context.places, n, h, steps = int(argv[1]), int(argv[2]), float(argv[3]), int(argv[4])  # controls
-rk4(ode, Context.places, n, h, steps, float(argv[5]), float(argv[6]), float(argv[7]), get_p())
+Context.places, skip, h, steps = int(argv[1]), int(argv[2]), float(argv[3]), int(argv[4])  # controls
+rk4(ode, Context.places, skip, h, steps, float(argv[5]), float(argv[6]), float(argv[7]), get_p())

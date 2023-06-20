@@ -9,7 +9,7 @@ from ad import Components, Context, rk4
 class Parameters(namedtuple('ParametersType', ['α', 'γ'])):
     pass
 
-def get_p(order):
+def get_p():
     return Parameters(α=float(argv[8]), γ=float(argv[9]))
 
 def ode(x, y, z, p):
@@ -21,5 +21,5 @@ def ode(x, y, z, p):
                       z=- 2.0 * z * c)
 
 
-Context.places, n, h, steps = int(argv[1]), int(argv[2]), float(argv[3]), int(argv[4])  # controls
-rk4(ode, Context.places, n, h, steps, float(argv[5]), float(argv[6]), float(argv[7]), get_p(n))
+Context.places, skip, h, steps = int(argv[1]), int(argv[2]), float(argv[3]), int(argv[4])  # controls
+rk4(ode, Context.places, skip, h, steps, float(argv[5]), float(argv[6]), float(argv[7]), get_p())

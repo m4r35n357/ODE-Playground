@@ -117,7 +117,7 @@ def tsm(ode, places, n, h, steps, x0, y0, z0, p):
     t_out(places, x[0], y[0], z[0], steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
 
 
-def rk4(ode, places, n, h, steps, x, y, z, p):
+def rk4(ode, places, skip, h, steps, x, y, z, p):
     t0 = clock_gettime(CLOCK_MONOTONIC)
     for step in range(steps):
         k1 = ode(x, y, z, p)
@@ -127,7 +127,7 @@ def rk4(ode, places, n, h, steps, x, y, z, p):
         x += h * (k1.x + 2.0 * (k2.x + k3.x) + k4.x) / 6.0
         y += h * (k1.y + 2.0 * (k2.y + k3.y) + k4.y) / 6.0
         z += h * (k1.z + 2.0 * (k2.z + k3.z) + k4.z) / 6.0
-        if step % n == 0:
+        if step % skip == 0:
             t_out(places, x, y, z, step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
     t_out(places, x, y, z, steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
 
