@@ -149,10 +149,10 @@ real t_sqrt (series r, series u, int k) {
     return r[k] = !k ? sqrtl(u[0]) : 0.5L * (u[k] - 2.0L * fa(r, r, 1, half(k), k) - rem(r, k)) / r[0];
 }
 
-static real fb (series a, series b, int k) {
+static real fb (series df_du, series u, int k) {
     real _ = 0.0L;
     for (int j = 0; j < k; j++) {
-        _ += a[j] * (k - j) * b[k - j];
+        _ += df_du[j] * (k - j) * u[k - j];
     }
     return _ / k;
 }
@@ -176,10 +176,10 @@ pair t_sin_cos (series s, series c, series u, int k, bool trig) {
 pair t_tan_sec2 (series t, series s2, series u, int k, bool trig) {
     CHECK(t != s2 && t != u && s2 != u);
     return !k ? (pair){
-        .a = t[0] = trig ? tanl(u[0]) : tanhl(u[0]),
+        .a =  t[0] = trig ? tanl(u[0]) : tanhl(u[0]),
         .b = s2[0] = trig ? 1.0L + t[0] * t[0] : 1.0L - t[0] * t[0]
     } : (pair){
-        .a = t[k] = fb(s2, u, k),
+        .a =  t[k] = fb(s2, u, k),
         .b = s2[k] = fb(t, t, k) * (trig ? 2.0L : -2.0L)
     };
 }
@@ -194,12 +194,12 @@ real t_pwr (series p, series u, real a, int k) {
     return p[k] = _ / (k * u[0]);
 }
 
-static real fc (series a, series b, series c, int k, bool flag) {
+static real fc (series f, series du_df, series u, int k, bool neg) {
     real _ = 0.0L;
     for (int j = 1; j < k; j++) {
-        _ += j * a[j] * b[k - j];
+        _ += j * f[j] * du_df[k - j];
     }
-    return (c[k] + (flag ? 1.0L : -1.0L) * _ / k) / b[0];
+    return (u[k] + (neg ? _ : -_) / k) / du_df[0];
 }
 
 real t_ln (series l, series u, int k) {
@@ -207,35 +207,35 @@ real t_ln (series l, series u, int k) {
     return l[k] = !k ? logl(u[0]) : fc(l, u, u, k, false);
 }
 
-pair t_asin (series a, series g, series u, int k, bool trig) {
-    CHECK(trig ? u[0] >= -1.0L && u[0] <= 1.0L : 1); CHECK(a != g && a != u && g != u);
+pair t_asin (series as, series g, series u, int k, bool trig) {
+    CHECK(trig ? u[0] >= -1.0L && u[0] <= 1.0L : 1); CHECK(as != g && as != u && g != u);
     return !k ? (pair){
-        .a = a[0] = trig ? asinl(u[0]) : asinhl(u[0]),
-        .b = g[0] = trig ? sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] + 1.0L)
+        .a = as[0] = trig ? asinl(u[0]) : asinhl(u[0]),
+        .b =  g[0] = trig ? sqrtl(1.0L - u[0] * u[0]) : sqrtl(1.0L + u[0] * u[0])
     } : (pair){
-        .a = a[k] = fc(a, g, u, k, false),
-        .b = g[k] = fb(u, a, k) * (trig ? -1.0L : 1.0L)
+        .a = as[k] = fc(as, g, u, k, false),
+        .b =  g[k] = fb(u, as, k) * (trig ? -1.0L : 1.0L)
     };
 }
 
-pair t_acos (series a, series g, series u, int k, bool trig) {
-    CHECK(trig ? u[0] >= -1.0L && u[0] <= 1.0L : u[0] >= 1.0L); CHECK(a != g && a != u && g != u);
+pair t_acos (series ac, series g, series u, int k, bool trig) {
+    CHECK(trig ? u[0] >= -1.0L && u[0] <= 1.0L : u[0] >= 1.0L); CHECK(ac != g && ac != u && g != u);
     return !k ? (pair){
-        .a = a[0] = trig ? acosl(u[0]) : acoshl(u[0]),
-        .b = g[0] = trig ? - sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] - 1.0L)
+        .a = ac[0] = trig ? acosl(u[0]) : acoshl(u[0]),
+        .b =  g[0] = trig ? - sqrtl(1.0L - u[0] * u[0]) : sqrtl(u[0] * u[0] - 1.0L)
     } : (pair){
-        .a = a[k] = fc(a, g, u, k, trig),
-        .b = g[k] = fb(u, a, k)
+        .a = ac[k] = fc(ac, g, u, k, trig),
+        .b =  g[k] = fb(u, ac, k)
     };
 }
 
-pair t_atan (series a, series g, series u, int k, bool trig) {
-    CHECK(trig ? 1 : u[0] >= -1.0L && u[0] <= 1.0L); CHECK(a != g && a != u && g != u);
+pair t_atan (series at, series g, series u, int k, bool trig) {
+    CHECK(trig ? 1 : u[0] >= -1.0L && u[0] <= 1.0L); CHECK(at != g && at != u && g != u);
     return !k ? (pair){
-        .a = a[0] = trig ? atanl(u[0]) : atanhl(u[0]),
-        .b = g[0] = trig ? 1.0L + u[0] * u[0] : 1.0L - u[0] * u[0]
+        .a = at[0] = trig ? atanl(u[0]) : atanhl(u[0]),
+        .b =  g[0] = trig ? 1.0L + u[0] * u[0] : 1.0L - u[0] * u[0]
     } : (pair){
-        .a = a[k] = fc(a, g, u, k, false),
-        .b = g[k] = fb(u, u, k) * (trig ? 2.0L : -2.0L)
+        .a = at[k] = fc(at, g, u, k, false),
+        .b =  g[k] = fb(u, u, k) * (trig ? 2.0L : -2.0L)
     };
 }
