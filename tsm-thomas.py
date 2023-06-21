@@ -10,10 +10,7 @@ class Parameters(namedtuple('ParametersType', ['b', 'sx', 'sy', 'sz', 'cx', 'cy'
     pass
 
 def get_p(n):
-    return Parameters(b=float(argv[8]),
-                      sx=t_jet(n), cx=t_jet(n),
-                      sy=t_jet(n), cy=t_jet(n),
-                      sz=t_jet(n), cz=t_jet(n))
+    return Parameters(b=float(argv[8]), sx=t_jet(n), cx=t_jet(n), sy=t_jet(n), cy=t_jet(n), sz=t_jet(n), cz=t_jet(n))
 
 def ode(x, y, z, p, k):
     return Components(x=t_sin_cos(p.sy, p.cy, y, k)[0] - p.b * x[k],

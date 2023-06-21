@@ -43,8 +43,8 @@ def t_sqr(u, k):
 def t_sqrt(r, u, k):
     return sqrt(u[0]) if k == 0 else 0.5 * (u[k] - 2.0 * fa(r, r, 1, half(k), k) - rem(r, k)) / r[0]
 
-def fb(a, b, k):
-    return fsum(a[j] * (k - j) * b[k - j] for j in range(k)) / k
+def fb(df_du, u, k):
+    return fsum(df_du[j] * (k - j) * u[k - j] for j in range(k)) / k
 
 def t_exp(e, u, k):
     return exp(u[0]) if k == 0 else fb(e, u, k)
@@ -67,18 +67,18 @@ def t_tan_sec2(t, s2, u, k, trig=True):
 def t_pwr(p, u, a, k):
     return u[0]**a if k == 0 else fsum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
 
-def fc(a, b, c, k, flag=False):
-    return (c[k] + (1.0 if flag else -1.0) * fsum(j * a[j] * b[k - j] for j in range(1, k)) / k) / b[0]
+def fc(f, du_df, u, k, flag=False):
+    return (u[k] + (1.0 if flag else -1.0) * fsum(j * f[j] * du_df[k - j] for j in range(1, k)) / k) / du_df[0]
 
 def t_ln(ln, u, k):
     return log(u[0]) if k == 0 else fc(ln, u, u, k)
 
 def t_asin(a, g, u, k, trig=True):
     if k == 0:
-        return (asin(u[0]), sqrt(1.0 - u[0] * u[0])) if trig else (asinh(u[0]), sqrt(u[0] * u[0] + 1.0))
+        return (asin(u[0]), sqrt(1.0 - u[0] * u[0])) if trig else (asinh(u[0]), sqrt(1.0 + u[0] * u[0]))
     a[k] = fc(a, g, u, k)
     g[k] = fb(u, a, k)
-    return (a[k], -g[k]) if trig else (a[k], g[k])
+    return a[k], -g[k] if trig else g[k]
 
 def t_acos(a, g, u, k, trig=True):
     if k == 0:
@@ -92,7 +92,7 @@ def t_atan(a, g, u, k, trig=True):
         return (atan(u[0]), 1.0 + u[0] * u[0]) if trig else (atanh(u[0]), 1.0 - u[0] * u[0])
     a[k] = fc(a, g, u, k)
     g[k] = 2.0 * fb(u, u, k)
-    return (a[k], g[k]) if trig else (a[k], -g[k])
+    return a[k], g[k] if trig else -g[k]
 
 
 def t_out(dp, x, y, z, t, cpu):
