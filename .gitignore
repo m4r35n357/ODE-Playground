@@ -6,7 +6,6 @@
 
 # TSM artifacts
 tsm-*-std
-tsm-*-std
 tsm-*-gl
 divergence
 
@@ -15,7 +14,6 @@ libad-test*
 libdual-test*
 
 # Symplectic artifacts
-h-*-std
 h-*-std
 h-*-gl
 h-kerr-gen-*
