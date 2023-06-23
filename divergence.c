@@ -13,11 +13,11 @@ int main(int argc, char **argv) {
     FILE *fileA = fopen(argv[1], "r"); CHECK(fileA);
     FILE *fileB = fopen(argv[2], "r"); CHECK(fileB);
     real xA, yA, zA, xB, yB, zB, tA, tB, cpuA, cpuB;
-    char tag[2];
+    char *format = "%Le %Le %Le %Le %1s %1s %1s %Le", tag[2];
     for (int i = 3; i < argc; i++) {
         real threshold = strtold(argv[i], NULL);
-        while(fscanf(fileA, "%Le %Le %Le %Le %1s %1s %1s %Le", &xA, &yA, &zA, &tA, tag, tag, tag, &cpuA) != EOF &&
-              fscanf(fileB, "%Le %Le %Le %Le %1s %1s %1s %Le", &xB, &yB, &zB, &tB, tag, tag, tag, &cpuB) != EOF) {
+        while(fscanf(fileA, format, &xA, &yA, &zA, &tA, tag, tag, tag, &cpuA) != EOF &&
+              fscanf(fileB, format, &xB, &yB, &zB, &tB, tag, tag, tag, &cpuB) != EOF) {
             CHECK(tB == tA);
             if (sqrtl((xA - xB) * (xA - xB) + (yA - yB) * (yA - yB) + (zA - zB) * (zA - zB)) > threshold) {
                 printf("%s %.1Le  %s %6.3Lf  %s %.3Lf\n", "threshold:", threshold, "t:", tB, "cpu:", cpuB);
