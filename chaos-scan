@@ -34,7 +34,7 @@ count=$steps
 while [ $count -ge 0 ]
 do
     eval $command 2>/dev/null | /usr/bin/tee $tmp_raw | /usr/bin/tail -n $samples >$tmp_valid
-    if [ $(/usr/bin/wc --lines <$tmp_raw) -eq $(($5 + 1)) ]
+    if [ $(/usr/bin/wc --lines <$tmp_raw) -eq $((datalines + 1)) ]
     then
         echo -n "\r   \033[0;32mLatest value\033[0;37m $p"
         filter 'X' 1
