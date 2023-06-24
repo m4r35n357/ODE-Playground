@@ -268,7 +268,7 @@ Parameter | Meaning
 ----------|-----------
 1 | start of parameter range
 2 | end of parameter range
-3 | "transient skip" value; skip first (1 / value) of lines, or 0
+3 | number of valid samples at end of raw data
 4+ | ODE call with variable parameter replaced by ['$p']
 
 The general idea is to replace one of the model parameters with the string '$p' (including quotes!).

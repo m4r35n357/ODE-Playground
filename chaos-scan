@@ -10,34 +10,31 @@ start=$1
 end=$2
 steps=1000
 increment=$(echo "scale=9; ($end - $start) / $steps;" | /usr/bin/bc)
-skip=$3
+samples=$3
 shift 3
 datalines=$5
 command=$*
 
 tmpdir=${TMP_TAYLOR:-/tmp/$USER}
-tmpfile=${tmpdir}/data
+tmp_raw=${tmpdir}/data
+tmp_valid=${tmpdir}/corr
 filtered=${tmpdir}/chaos
 for tag in X x Y y Z z
 do
     >${filtered}$tag
 done
 
-lower=1
-[ $skip -ne 0 ] && lower=$((datalines / skip + 1))
-upper=$((datalines + 1))
-
 filter () {  # $1 is the turning point tag, $2 is the column containing its data
     data='[^ ][^ ]*'
-    /bin/grep $1 $tmpfile | /bin/sed "s/\($data\) \($data\) \($data\) .*/$p \\$2/" >>${filtered}$1 &
+    /bin/grep $1 $tmp_valid | /bin/sed "s/\($data\) \($data\) \($data\) .*/$p \\$2/" >>${filtered}$1 &
 }
 
 p=$start
 count=$steps
 while [ $count -ge 0 ]
 do
-    eval $command 2>/dev/null | /bin/sed --quiet "$lower,$ p" >$tmpfile  # run & save data, skipping "transient"
-    if [ $(/usr/bin/wc --lines <$tmpfile) -eq $((upper - lower + 1)) ]
+    eval $command 2>/dev/null | /usr/bin/tee $tmp_raw | /usr/bin/tail -n $samples >$tmp_valid
+    if [ $(/usr/bin/wc --lines <$tmp_raw) -eq $(($5 + 1)) ]
     then
         echo -n "\r   \033[0;32mLatest value\033[0;37m $p"
         filter 'X' 1
