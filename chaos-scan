@@ -12,7 +12,7 @@ steps=1000
 increment=$(echo "scale=9; ($end - $start) / $steps;" | /usr/bin/bc)
 samples=$3
 shift 3
-datalines=$5
+datalines=$(($5 + 1))
 command=$*
 
 tmpdir=${TMP_TAYLOR:-/tmp/$USER}
@@ -33,10 +33,11 @@ p=$start
 count=$steps
 while [ $count -ge 0 ]
 do
+    percent=$(((steps - count) / 10))
     eval $command 2>/dev/null | /usr/bin/tee $tmp_raw | /usr/bin/tail -n $samples >$tmp_valid
-    if [ $(/usr/bin/wc --lines <$tmp_raw) -eq $((datalines + 1)) ]
+    if [ $(/usr/bin/wc --lines <$tmp_raw) -eq $datalines ]
     then
-        echo -n "\r   \033[0;32mLatest value\033[0;37m $p"
+        echo -n "\r\033[1;37m$percent\033[0;37m%  \033[0;32mLatest value\033[0;37m $p"
         filter 'X' 1
         filter 'x' 1
         filter 'Y' 2
@@ -45,7 +46,7 @@ do
         filter 'z' 3
         wait
     else
-        echo -n "\r   \033[1;31mLatest value\033[0;37m $p"
+        echo -n "\r\033[1;37m$percent\033[0;37m%  \033[1;31mLatest value\033[0;37m $p"
     fi
     p=$(echo "$p + $increment;" | /usr/bin/bc)
     count=$((count - 1))
