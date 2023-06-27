@@ -197,7 +197,7 @@ real t_pwr (series p, series u, real a, int k) {
 static real fc (series f, series du_df, series u, int k, bool neg) {
     real _ = 0.0L;
     for (int j = 1; j < k; j++) {
-        _ += j * f[j] * du_df[k - j];
+        _ += du_df[j] * (k - j) * f[k - j];
     }
     return (u[k] + (neg ? _ : -_) / k) / du_df[0];
 }
