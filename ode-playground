@@ -38,7 +38,7 @@ case $model in
                 '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
-            --field="Maxium Order":NUM --field="Separation" --field="Model":RO \
+            --field="Maximum Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
             --  '16!2..32!1' '1.0' './tsm-lorenz.py' \
@@ -64,7 +64,7 @@ case $model in
                 '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '0.185') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
-            --field="Maxium Order":NUM --field="Separation" --field="Model":RO \
+            --field="Maximum Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="b" \
             --  '16!2..64!1' '1.0' './tsm-thomas.py' \
@@ -90,7 +90,7 @@ case $model in
                 '6!0..36!3' '8!4..32!1' '0.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
-            --field="Maxium Order":NUM --field="Separation" --field="Model":RO \
+            --field="Maximum Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
             --  '16!2..64!1' '1.0' './tsm-rf.py' \
@@ -116,7 +116,7 @@ case $model in
                 '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '1.4') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
-            --field="Maxium Order":NUM --field="Separation" --field="Model":RO \
+            --field="Maximum Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  '16!2..64!1' '1.0' './tsm-halvorsen.py' \
