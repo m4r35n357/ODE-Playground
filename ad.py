@@ -68,7 +68,7 @@ def t_pwr(p, u, a, k):
     return u[k]**a if k == 0 else fsum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
 
 def fc(f, du_df, u, k, flag=False):
-    return (u[k] + (1.0 if flag else -1.0) * fsum(j * f[j] * du_df[k - j] for j in range(1, k)) / k) / du_df[0]
+    return (u[k] + (1.0 if flag else -1.0) * fsum(du_df[j] * (k - j) * f[k - j] for j in range(1, k)) / k) / du_df[0]
 
 def t_ln(ln, u, k):
     return log(u[k]) if k == 0 else fc(ln, u, u, k)
