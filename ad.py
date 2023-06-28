@@ -22,77 +22,77 @@ def t_const(a, k):
 def t_abs(u, k):
     return - u[k] if u[0] < 0.0 else u[k]
 
-def fa(a, b, k0, k1, k):
+def _fa(a, b, k0, k1, k):
     return fsum(a[j] * b[k - j] for j in range(k0, k1))
 
 def t_prod(u, v, k):
-    return fa(u, v, 0, k + 1, k)
+    return _fa(u, v, 0, k + 1, k)
 
 def t_quot(q, u, v, k):
-    return ((u[0] if u else 1.0) if k == 0 else (u[k] if u else 0.0) - fa(q, v, 0, k, k)) / v[0]
+    return ((u[0] if u else 1.0) if k == 0 else (u[k] if u else 0.0) - _fa(q, v, 0, k, k)) / v[0]
 
-def half(k):
+def _half(k):
     return 1 + (k - (1 if k % 2 else 2)) // 2
 
-def rem(a, k):
+def _rem(a, k):
     return 0.0 if k % 2 else a[k // 2] * a[k // 2]
 
 def t_sqr(u, k):
-    return 2.0 * fa(u, u, 0, half(k), k) + rem(u, k)
+    return 2.0 * _fa(u, u, 0, _half(k), k) + _rem(u, k)
 
 def t_sqrt(r, u, k):
-    return sqrt(u[k]) if k == 0 else 0.5 * (u[k] - 2.0 * fa(r, r, 1, half(k), k) - rem(r, k)) / r[0]
+    return sqrt(u[k]) if k == 0 else 0.5 * (u[k] - 2.0 * _fa(r, r, 1, _half(k), k) - _rem(r, k)) / r[0]
 
-def fb(df_du, u, k):
+def _fb(df_du, u, k):
     return fsum(df_du[j] * (k - j) * u[k - j] for j in range(k)) / k
 
 def t_exp(e, u, k):
-    return exp(u[k]) if k == 0 else fb(e, u, k)
+    return exp(u[k]) if k == 0 else _fb(e, u, k)
 
 def t_sin_cos(s, c, u, k, trig=True):
     if k == 0:
         return (sin(u[k]), cos(u[k])) if trig else (sinh(u[k]), cosh(u[k]))
-    s[k] = fb(c, u, k)
-    c[k] = fb(s, u, k)
+    s[k] = _fb(c, u, k)
+    c[k] = _fb(s, u, k)
     return s[k], -c[k] if trig else c[k]
 
 def t_tan_sec2(t, s2, u, k, trig=True):
     if k == 0:
         t[k] = tan(u[k]) if trig else tanh(u[k])
         return (t[k], 1.0 + t[k] * t[k]) if trig else (t[k], 1.0 - t[k] * t[k])
-    t[k] = fb(s2, u, k)
-    s2[k] = fb(t, t, k)
+    t[k] = _fb(s2, u, k)
+    s2[k] = _fb(t, t, k)
     return t[k], (2.0 if trig else -2.0) * s2[k]
 
 def t_pwr(p, u, a, k):
     return u[k]**a if k == 0 else fsum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
 
-def fc(f, du_df, u, k, flag=False):
+def _fc(f, du_df, u, k, flag=False):
     return (u[k] + (1.0 if flag else -1.0) * fsum(du_df[j] * (k - j) * f[k - j] for j in range(1, k)) / k) / du_df[0]
 
 def t_ln(ln, u, k):
-    return log(u[k]) if k == 0 else fc(ln, u, u, k)
+    return log(u[k]) if k == 0 else _fc(ln, u, u, k)
 
 def t_asin(a, g, u, k, trig=True):
     if k == 0:
         return (asin(u[k]), sqrt(1.0 - u[k] * u[k])) if trig else (asinh(u[k]), sqrt(1.0 + u[k] * u[k]))
-    a[k] = fc(a, g, u, k)
-    g[k] = fb(u, a, k)
+    a[k] = _fc(a, g, u, k)
+    g[k] = _fb(u, a, k)
     return a[k], -g[k] if trig else g[k]
 
 def t_acos(a, g, u, k, trig=True):
     if k == 0:
         return (acos(u[k]), - sqrt(1.0 - u[k] * u[k])) if trig else (acosh(u[k]), sqrt(u[k] * u[k] - 1.0))
-    a[k] = fc(a, g, u, k, trig)
-    g[k] = fb(u, a, k)
+    a[k] = _fc(a, g, u, k, trig)
+    g[k] = _fb(u, a, k)
     return a[k], g[k]
 
 def t_atan(a, g, u, k, trig=True):
     if k == 0:
         return (atan(u[k]), 1.0 + u[k] * u[k]) if trig else (atanh(u[k]), 1.0 - u[k] * u[k])
-    a[k] = fc(a, g, u, k)
-    g[k] = 2.0 * fb(u, u, k)
-    return a[k], g[k] if trig else -g[k]
+    a[k] = _fc(a, g, u, k)
+    g[k] = _fb(u, u, k)
+    return a[k], (2.0 if trig else -2.0) * g[k]
 
 
 def t_out(dp, x, y, z, t, cpu):
