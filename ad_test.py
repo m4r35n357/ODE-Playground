@@ -450,20 +450,14 @@ def test_pow_object_object():
     assert series.val == approx(f3**f4)
 
 @mark.parametrize('number', [0, zero, -zero])
-def test_pow_object_zero(number):
-    power = t_jet(order)
-    t_series = s_4**number
-    for k in range(order):
-        power[k] = t_pwr(power, s_4.jet, number, k)
-        assert power[k] == approx(t_series.jet[k])
-    dual = d_4**number
-    assert dual.val == approx(1.0)
-    assert dual.dot == approx(0.0)
-    series = ~ s_4**number
-    assert len(series.jet) == order
-    assert series.val == approx(1.0)
-    for term in series.jet[1:]:
-        assert term == approx(0.0)
+def test_pow_object_zero_dual(number):
+    compare_dual(data1_d**number, D1)
+    compare_dual(data2_d**number, D1)
+
+@mark.parametrize('number', [0, zero, -zero])
+def test_pow_object_zero_series(number):
+    compare_series(data1_s**number, S1)
+    compare_series(data2_s**number, S1)
 
 @mark.parametrize('number', [100, -100, 100.0, -100.0, 0, -0, i5, - i5, f3, - f3])
 def test_pow_object_number(number):
@@ -674,340 +668,222 @@ def test_var():
     assert len(Series.get(2).var.jet) == 2
 
 #  Zero identities
-@mark.toplevel
 def test_diff_squares_dual():
     compare_dual(data1_d**2 - data2_d**2 - (data1_d - data2_d) * (data1_d + data2_d), D0)
     compare_dual(data1_d**2.0 - data2_d**2.0 - (data1_d - data2_d) * (data1_d + data2_d), D0)
 
-@mark.toplevel
 def test_diff_squares_series():
     compare_series(data1_s**2 - data2_s**2 - (data1_s - data2_s) * (data1_s + data2_s), S0)
     compare_series(data1_s**2.0 - data2_s**2.0 - (data1_s - data2_s) * (data1_s + data2_s), S0)
 
-@mark.toplevel
 def test_abs_identities_dual():
     compare_dual(abs(data1_d * data2_d), abs(data1_d) * abs(data2_d))
     compare_dual(abs(data1_d / data2_d), abs(data1_d) / abs(data2_d))
 
-@mark.toplevel
 def test_abs_identities_series():
     compare_series(abs(data1_s * data2_s), abs(data1_s) * abs(data2_s))
     compare_series(abs(data1_s / data2_s), abs(data1_s) / abs(data2_s))
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_pow_neg_zero_dual(dual):
     compare_dual(dual**-2.0 - 1.0 / dual**2, D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_pow_neg_zero_series(series):
     compare_series(series**-2.0 - 1.0 / series**2, S0)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_pow_frac_zero_dual(dual):
     compare_dual((dual**2)**0.5 - abs(dual), D0)
     compare_dual((dual**2)**-0.5 - 1.0 / abs(dual), D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_pow_frac_zero_series(series):
     compare_series((series**2)**0.5 - abs(series), S0)
     compare_series((series**2)**-0.5 - 1.0 / abs(series), S0)
 
-@mark.toplevel
 def test_exp_zero_dual():
     compare_dual((data1_d + data2_d).exp - data1_d.exp * data2_d.exp, D0)
 
-@mark.toplevel
 def test_exp_zero_series():
     compare_series((data1_s + data2_s).exp - data1_s.exp * data2_s.exp, S0)
 
-@mark.toplevel
 def test_ln_zero_dual():
     compare_dual((data1_d * data2_d).ln - (data1_d.ln + data2_d.ln), D0)
 
-@mark.toplevel
 def test_ln_zero_series():
     compare_series((data1_s * data2_s).ln - (data1_s.ln + data2_s.ln), S0)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_sinh_zero_dual(dual):
     compare_dual(0.5 * (dual.exp - (- dual).exp) - dual.sinh, D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_sinh_zero_series(series):
     compare_series(0.5 * (series.exp - (- series).exp) - series.sinh, S0)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_cosh_zero_dual(dual):
     compare_dual(0.5 * (dual.exp + (- dual).exp) - dual.cosh, D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_cosh_zero_series(series):
     compare_series(0.5 * (series.exp + (- series).exp) - series.cosh, S0)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_tan_zero_dual(dual):
-    e = dual.tan - dual.sin / dual.cos
-    assert e.val == approx(0.0)
-    assert e.dot == approx(0.0)
+    compare_dual(dual.tan - dual.sin / dual.cos, D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_tan_zero_series(series):
-    for term in (series.tan - series.sin / series.cos).jet:
-        assert term == approx(0.0)
+    compare_series(series.tan - series.sin / series.cos, S0)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_tanh_zero_dual(dual):
-    e = dual.tanh - dual.sinh / dual.cosh
-    assert e.val == approx(0.0)
-    assert e.dot == approx(0.0)
+    compare_dual(dual.tanh - dual.sinh / dual.cosh, D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_tanh_zero_series(series):
-    for term in (series.tanh - series.sinh / series.cosh).jet:
-        assert term == approx(0.0)
+    compare_series(series.tanh - series.sinh / series.cosh, S0)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_pythagoras_trig_dual(dual):
-    e = dual.cos ** 2 + dual.sin ** 2 - 1.0
-    assert e.val == approx(0.0)
-    assert e.dot == approx(0.0)
+    compare_dual(dual.cos.sqr + dual.sin.sqr, D1)
+    compare_dual(dual.cos**2 + dual.sin**2, D1)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_pythagoras_trig_series(series):
-    for term in (series.cos**2 + series.sin**2 - 1.0).jet:
-        assert term == approx(0.0)
+    compare_series(series.cos.sqr + series.sin.sqr, S1)
+    compare_series(series.cos**2 + series.sin**2, S1)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_pythagoras_hyp_dual(dual):
-    e = dual.cosh ** 2 - dual.sinh ** 2 - 1.0
-    assert e.val == approx(0.0)
-    assert e.dot == approx(0.0)
+    compare_dual(dual.cosh.sqr - dual.sinh.sqr, D1)
+    compare_dual(dual.cosh**2 - dual.sinh**2, D1)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_pythagoras_hyp_series(series):
-    for term in (series.cosh**2 - series.sinh**2 - 1.0).jet:
-        assert term == approx(0.0)
+    compare_series(series.cosh.sqr - series.sinh.sqr, S1)
+    compare_series(series.cosh**2 - series.sinh**2, S1)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_sin_3x_dual(dual):
-    a = (3 * dual).sin
-    b = 3.0 * dual.sin - 4.0 * dual.sin**3
-    assert a.val == approx(b.val)
-    assert a.dot == approx(b.dot)
+    compare_dual((3 * dual).sin - (3.0 * dual.sin - 4.0 * dual.sin**3), D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_sin_3x_series(series):
-    for a, b in zip((3 * series).sin.jet, (3.0 * series.sin - 4.0 * series.sin**3).jet):
-        assert a == approx(b)
+    compare_series((3 * series).sin - (3.0 * series.sin - 4.0 * series.sin**3), S0)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_cos_3x_dual(dual):
-    a = (3 * dual).cos
-    b = - 3.0 * dual.cos + 4.0 * dual.cos**3
-    assert a.val == approx(b.val)
-    assert a.dot == approx(b.dot)
+    compare_dual((3 * dual).cos - (-3.0 * dual.cos + 4.0 * dual.cos**3), D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_cos_3x_series(series):
-    for a, b in zip((3 * series).cos.jet, (- 3.0 * series.cos + 4.0 * series.cos**3).jet):
-        assert a == approx(b)
+    compare_series((3 * series).cos - (-3.0 * series.cos + 4.0 * series.cos**3), S0)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_sinh_3x_dual(dual):
-    a = (3 * dual).sinh
-    b = 3.0 * dual.sinh + 4.0 * dual.sinh**3
-    assert a.val == approx(b.val)
-    assert a.dot == approx(b.dot)
+    compare_dual((3 * dual).sinh - (3.0 * dual.sinh + 4.0 * dual.sinh**3), D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_sinh_3x_series(series):
-    for a, b in zip((3 * series).sinh.jet, (3.0 * series.sinh + 4.0 * series.sinh**3).jet):
-        assert a == approx(b)
+    compare_series((3 * series).sinh - (3.0 * series.sinh + 4.0 * series.sinh**3), S0)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_cosh_3x_dual(dual):
-    a = (3 * dual).cosh
-    b = - 3.0 * dual.cosh + 4.0 * dual.cosh**3
-    assert a.val == approx(b.val)
-    assert a.dot == approx(b.dot)
+    compare_dual((3 * dual).cosh - (-3.0 * dual.cosh + 4.0 * dual.cosh**3), D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_cosh_3x_series(series):
-    for a, b in zip((3 * series).cosh.jet, (- 3.0 * series.cosh + 4.0 * series.cosh**3).jet):
-        assert a == approx(b)
+    compare_series((3 * series).cosh - (-3.0 * series.cosh + 4.0 * series.cosh**3), S0)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_sin_asin_dual(dual):
-    a = dual.sin.asin
-    b = dual
-    assert a.val == approx(b.val)
-    assert a.dot == approx(b.dot)
+    compare_dual(dual.sin.asin - dual, D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_sin_asin_series(series):
-    for a, b in zip(series.sin.asin.jet, series.jet):
-        assert a == approx(b)
+    compare_series(series.sin.asin - series, S0)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_cos_acos_dual(dual):
-    a = dual.cos.acos
-    b = dual
-    assert a.val == approx(b.val)
-    assert a.dot == approx(b.dot)
+    compare_dual(dual.cos.acos - dual, D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_cos_acos_series(series):
-    for a, b in zip(series.cos.acos.jet, series.jet):
-        assert a == approx(b)
+    compare_series(series.cos.acos - series, S0)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_tan_atan_dual(dual):
-    a = dual.tan.atan
-    b = dual
-    assert a.val == approx(b.val)
-    assert a.dot == approx(b.dot)
+    compare_dual(dual.tan.atan - dual, D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_tan_atan_series(series):
-    for a, b in zip(series.tan.atan.jet, series.jet):
-        assert a == approx(b)
+    compare_series(series.tan.atan - series, S0)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_sinh_asinh_dual(dual):
-    a = dual.sinh.asinh
-    b = dual
-    assert a.val == approx(b.val)
-    assert a.dot == approx(b.dot)
+    compare_dual(dual.sinh.asinh - dual, D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_sinh_asinh_series(series):
-    for a, b in zip(series.sinh.asinh.jet, series.jet):
-        assert a == approx(b)
+    compare_series(series.sinh.asinh - series, S0)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_cosh_acosh_dual(dual):
-    a = dual.cosh.acosh
-    b = dual
-    assert a.val == approx(b.val)
-    assert a.dot == approx(b.dot)
+    compare_dual(dual.cosh.acosh - dual, D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_cosh_acosh_series(series):
-    for a, b in zip(series.cosh.acosh.jet, series.jet):
-        assert a == approx(b)
+    compare_series(series.cosh.acosh - series, S0)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_tanh_atanh_dual(dual):
-    a = dual.tanh.atanh
-    b = dual
-    assert a.val == approx(b.val)
-    assert a.dot == approx(b.dot)
+    compare_dual(dual.tanh.atanh - dual, D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_tanh_atanh_series(series):
-    for a, b in zip(series.tanh.atanh.jet, series.jet):
-        assert a == approx(b)
+    compare_series(series.tanh.atanh - series, S0)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_sqr_sqrt_dual(dual):
-    a, b = dual.sqr.sqrt, abs(dual)
-    assert a.val == approx(b.val)
-    assert a.dot == approx(b.dot)
+    compare_dual(dual.sqr.sqrt - abs(dual), D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_sqr_sqrt_series(series):
-    for a, b in zip(series.sqr.sqrt.jet, abs(series).jet):
-        assert a == approx(b)
+    compare_series(series.sqr.sqrt - abs(series), S0)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_sqr_dual(dual):
-    a, b = dual.sqr, dual**2
-    assert a.val == approx(b.val)
-    assert a.dot == approx(b.dot)
+    compare_dual(dual.sqr - dual**2, D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_sqr_series(series):
-    for a, b in zip(series.sqr.jet, (series**2).jet):
-        assert a == approx(b)
+    compare_series(series.sqr - series**2, S0)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_sqrt_dual(dual):
-    a, b = dual.sqrt, dual**0.5
-    assert a.val == approx(b.val)
-    assert a.dot == approx(b.dot)
+    compare_dual(dual.sqrt - dual**0.5, D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_sqrt_series(series):
-    for a, b in zip(series.sqrt.jet, (series**0.5).jet):
-        assert a == approx(b)
+    compare_series(series.sqrt - series**0.5, S0)
 
-@mark.toplevel
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_exp_ln_dual(dual):
-    a, b = dual.exp.ln, dual
-    assert a.val == approx(b.val)
-    assert a.dot == approx(b.dot)
+    compare_dual(dual.exp.ln - dual, D0)
 
-@mark.toplevel
 @mark.parametrize('series', [data1_s, data2_s])
 def test_exp_ln_series(series):
-    for a, b in zip(series.exp.ln.jet, series.jet):
-        assert a == approx(b)
+    compare_series(series.exp.ln - series, S0)
 
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_abs_reflect_dual(dual):
-    a, b = abs(- dual), abs(dual)
-    assert a.val == approx(b.val)
-    assert a.dot == approx(b.dot)
-    a, b = abs(abs(dual)), abs(dual)
-    assert a.val == approx(b.val)
-    assert a.dot == approx(b.dot)
+    compare_dual(abs(- dual) - abs(dual), D0)
+    compare_dual(abs(abs(dual)) - abs(dual), D0)
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_abs_reflect_series(series):
-    for a, b in zip(abs(- series).jet, abs(series).jet):
-        assert a == approx(b)
-    for a, b in zip(abs(abs(series)).jet, abs(series).jet):
-        assert a == approx(b)
+    compare_series(abs(- series) - abs(series), S0)
+    compare_series(abs(abs(series)) - abs(series), S0)
