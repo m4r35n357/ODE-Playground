@@ -68,8 +68,10 @@ def test_t_jet(number):
         assert term == approx(0.0)
 
 def test_horner():
+    assert t_horner([1, 3, 0, 2], 2) == 23
     assert t_horner([-19, 7, -4, 6], 3) == 128
-    assert t_horner([-19.0, 7.0, -4.0, 6.0], 3.0) == approx(128.0)
+    assert t_horner([3, -1, 2, -4, 0, 1], 3) == 153
+    assert t_horner([1, -4, 0, 0, 2, 3, 0, -2], -2) == 201
 
 def test_t_const():
     value = 1.23456
@@ -496,13 +498,15 @@ def test_pow_number_object(number):
     assert len(series.jet) == order
     assert series.val == approx(number**data1_s.val)
 
-def test_exp_series():
-    arg = 1.0
-    compare_series(~ Series.get(order, arg).var.exp, Series([exp(arg)] * order))
-
 def test_exp_dual():
     arg = 1.0
     compare_dual(Dual(arg).var.exp, Dual(exp(arg), exp(arg)))
+    compare_dual((data1_d + data2_d).exp - data1_d.exp * data2_d.exp, D0)
+
+def test_exp_series():
+    arg = 1.0
+    compare_series(~ Series.get(order, arg).var.exp, Series([exp(arg)] * order))
+    compare_series((data1_s + data2_s).exp - data1_s.exp * data2_s.exp, S0)
 
 @mark.domain
 @mark.parametrize('number', [1, δ])
@@ -518,23 +522,33 @@ def test_ln_domain_bad(number):
     with raises(AssertionError):
         _ = Series.get(order, number).var.ln
 
-@mark.parametrize('series', [data1_s, data2_s])
-def test_ln_series(series):
-    logarithm = series.ln
-    compare_series(series.exp.ln, series)
-    compare_series(series.sqr.ln, 2.0 * logarithm)
-    compare_series(series.sqrt.ln, 0.5 * logarithm)
-    compare_series((1.0 / series).ln, - logarithm)
-    compare_series((series**-3).ln, - 3.0 * logarithm)
-
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_ln_dual(dual):
     logarithm = dual.ln
     compare_dual(dual.exp.ln, dual)
+    compare_dual(dual.sqr.ln, 2 * logarithm)
     compare_dual(dual.sqr.ln, 2.0 * logarithm)
     compare_dual(dual.sqrt.ln, 0.5 * logarithm)
     compare_dual((1.0 / dual).ln, - logarithm)
-    compare_dual((dual**-3).ln, - 3.0 * logarithm)
+    compare_dual((dual**-3).ln, - 3 * logarithm)
+    compare_dual((dual**-3.0).ln, - 3.0 * logarithm)
+
+@mark.parametrize('series', [data1_s, data2_s])
+def test_ln_series(series):
+    logarithm = series.ln
+    compare_series(series.exp.ln, series)
+    compare_series(series.sqr.ln, 2 * logarithm)
+    compare_series(series.sqr.ln, 2.0 * logarithm)
+    compare_series(series.sqrt.ln, 0.5 * logarithm)
+    compare_series((1.0 / series).ln, - logarithm)
+    compare_series((series**-3).ln, - 3 * logarithm)
+    compare_series((series**-3.0).ln, - 3.0 * logarithm)
+
+def test_ln_dual_dual():
+    compare_dual((data1_d * data2_d).ln - (data1_d.ln + data2_d.ln), D0)
+
+def test_ln_series_series():
+    compare_series((data1_s * data2_s).ln - (data1_s.ln + data2_s.ln), S0)
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_sin_cos_series(series):
@@ -702,101 +716,101 @@ def test_pow_frac_zero_series(series):
     compare_series((series**2)**0.5 - abs(series), S0)
     compare_series((series**2)**-0.5 - 1.0 / abs(series), S0)
 
-def test_exp_zero_dual():
-    compare_dual((data1_d + data2_d).exp - data1_d.exp * data2_d.exp, D0)
-
-def test_exp_zero_series():
-    compare_series((data1_s + data2_s).exp - data1_s.exp * data2_s.exp, S0)
-
-def test_ln_zero_dual():
-    compare_dual((data1_d * data2_d).ln - (data1_d.ln + data2_d.ln), D0)
-
-def test_ln_zero_series():
-    compare_series((data1_s * data2_s).ln - (data1_s.ln + data2_s.ln), S0)
-
 @mark.parametrize('dual', [data1_d, data2_d])
-def test_sinh_zero_dual(dual):
+def test_sinh_dual(dual):
     compare_dual(0.5 * (dual.exp - (- dual).exp) - dual.sinh, D0)
 
 @mark.parametrize('series', [data1_s, data2_s])
-def test_sinh_zero_series(series):
+def test_sinh_series(series):
     compare_series(0.5 * (series.exp - (- series).exp) - series.sinh, S0)
 
 @mark.parametrize('dual', [data1_d, data2_d])
-def test_cosh_zero_dual(dual):
+def test_cosh_dual(dual):
     compare_dual(0.5 * (dual.exp + (- dual).exp) - dual.cosh, D0)
 
 @mark.parametrize('series', [data1_s, data2_s])
-def test_cosh_zero_series(series):
+def test_cosh_series(series):
     compare_series(0.5 * (series.exp + (- series).exp) - series.cosh, S0)
 
 @mark.parametrize('dual', [data1_d, data2_d])
-def test_tan_zero_dual(dual):
+def test_tan_dual(dual):
     compare_dual(dual.tan - dual.sin / dual.cos, D0)
 
 @mark.parametrize('series', [data1_s, data2_s])
-def test_tan_zero_series(series):
+def test_tan_series(series):
     compare_series(series.tan - series.sin / series.cos, S0)
 
 @mark.parametrize('dual', [data1_d, data2_d])
-def test_tanh_zero_dual(dual):
+def test_tanh_dual(dual):
     compare_dual(dual.tanh - dual.sinh / dual.cosh, D0)
 
 @mark.parametrize('series', [data1_s, data2_s])
-def test_tanh_zero_series(series):
+def test_tanh_series(series):
     compare_series(series.tanh - series.sinh / series.cosh, S0)
 
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_pythagoras_trig_dual(dual):
     compare_dual(dual.cos.sqr + dual.sin.sqr, D1)
     compare_dual(dual.cos**2 + dual.sin**2, D1)
+    compare_dual(dual.cos**2.0 + dual.sin**2.0, D1)
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_pythagoras_trig_series(series):
     compare_series(series.cos.sqr + series.sin.sqr, S1)
     compare_series(series.cos**2 + series.sin**2, S1)
+    compare_series(series.cos**2.0 + series.sin**2.0, S1)
 
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_pythagoras_hyp_dual(dual):
     compare_dual(dual.cosh.sqr - dual.sinh.sqr, D1)
     compare_dual(dual.cosh**2 - dual.sinh**2, D1)
+    compare_dual(dual.cosh**2.0 - dual.sinh**2.0, D1)
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_pythagoras_hyp_series(series):
     compare_series(series.cosh.sqr - series.sinh.sqr, S1)
     compare_series(series.cosh**2 - series.sinh**2, S1)
+    compare_series(series.cosh**2.0 - series.sinh**2.0, S1)
 
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_sin_3x_dual(dual):
-    compare_dual((3 * dual).sin - (3.0 * dual.sin - 4.0 * dual.sin**3), D0)
+    compare_dual((3 * dual).sin - (3 * dual.sin - 4 * dual.sin**3), D0)
+    compare_dual((3.0 * dual).sin - (3.0 * dual.sin - 4.0 * dual.sin**3.0), D0)
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_sin_3x_series(series):
-    compare_series((3 * series).sin - (3.0 * series.sin - 4.0 * series.sin**3), S0)
+    compare_series((3 * series).sin - (3 * series.sin - 4 * series.sin**3), S0)
+    compare_series((3.0 * series).sin - (3.0 * series.sin - 4.0 * series.sin**3.0), S0)
 
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_cos_3x_dual(dual):
-    compare_dual((3 * dual).cos - (-3.0 * dual.cos + 4.0 * dual.cos**3), D0)
+    compare_dual((3 * dual).cos - (-3 * dual.cos + 4 * dual.cos**3), D0)
+    compare_dual((3.0 * dual).cos - (-3.0 * dual.cos + 4.0 * dual.cos**3.0), D0)
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_cos_3x_series(series):
-    compare_series((3 * series).cos - (-3.0 * series.cos + 4.0 * series.cos**3), S0)
+    compare_series((3 * series).cos - (-3 * series.cos + 4 * series.cos**3), S0)
+    compare_series((3.0 * series).cos - (-3.0 * series.cos + 4.0 * series.cos**3.0), S0)
 
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_sinh_3x_dual(dual):
-    compare_dual((3 * dual).sinh - (3.0 * dual.sinh + 4.0 * dual.sinh**3), D0)
+    compare_dual((3 * dual).sinh - (3 * dual.sinh + 4 * dual.sinh**3), D0)
+    compare_dual((3.0 * dual).sinh - (3.0 * dual.sinh + 4.0 * dual.sinh**3.0), D0)
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_sinh_3x_series(series):
-    compare_series((3 * series).sinh - (3.0 * series.sinh + 4.0 * series.sinh**3), S0)
+    compare_series((3 * series).sinh - (3 * series.sinh + 4 * series.sinh**3), S0)
+    compare_series((3.0 * series).sinh - (3.0 * series.sinh + 4.0 * series.sinh**3.0), S0)
 
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_cosh_3x_dual(dual):
-    compare_dual((3 * dual).cosh - (-3.0 * dual.cosh + 4.0 * dual.cosh**3), D0)
+    compare_dual((3 * dual).cosh - (-3 * dual.cosh + 4 * dual.cosh**3), D0)
+    compare_dual((3.0 * dual).cosh - (-3.0 * dual.cosh + 4.0 * dual.cosh**3.0), D0)
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_cosh_3x_series(series):
-    compare_series((3 * series).cosh - (-3.0 * series.cosh + 4.0 * series.cosh**3), S0)
+    compare_series((3 * series).cosh - (-3 * series.cosh + 4 * series.cosh**3), S0)
+    compare_series((3.0 * series).cosh - (-3.0 * series.cosh + 4.0 * series.cosh**3.0), S0)
 
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_sin_asin_dual(dual):
@@ -856,11 +870,15 @@ def test_sqr_sqrt_series(series):
 
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_sqr_dual(dual):
+    compare_dual(dual.sqr - dual * dual, D0)
     compare_dual(dual.sqr - dual**2, D0)
+    compare_dual(dual.sqr - dual**2.0, D0)
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_sqr_series(series):
+    compare_series(series.sqr - series * series, S0)
     compare_series(series.sqr - series**2, S0)
+    compare_series(series.sqr - series**2.0, S0)
 
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_sqrt_dual(dual):
