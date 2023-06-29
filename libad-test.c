@@ -105,15 +105,15 @@ int main (int argc, char **argv) {
     fprintf(stderr, "%sHorner Summation %s", WHT, NRM);
     series s = t_jet(n >= 8 ? n : 8);
     s[0] = 1.0L; s[1] = 3.0L; s[2] = 0.0L; s[3] = 2.0L;
-    CHECK(t_horner(s, 3, 2.0L) == 23); fprintf(stderr, ".");
-    s[0] = 3; s[1] = -1.0L; s[2] = 2.0L; s[3] = -4.0L; s[4] = 0.0L; s[5] = 1.0L;
-    CHECK(t_horner(s, 5, 3.0L) == 153); fprintf(stderr, ".");
+    CHECK(t_horner(s, 3, 2.0L) == 23.0L); fprintf(stderr, ".");
+    s[0] = 3.0L; s[1] = -1.0L; s[2] = 2.0L; s[3] = -4.0L; s[4] = 0.0L; s[5] = 1.0L;
+    CHECK(t_horner(s, 5, 3.0L) == 153.0L); fprintf(stderr, ".");
     s[0] = 1.0L; s[1] = -4.0L; s[2] = 0.0L; s[3] = 0.0L; s[4] = 2.0L; s[5] = 3.0L; s[6] = 0.0L; s[7] = -2.0L;
-    CHECK(t_horner(s, 7, -2.0L) == 201); fprintf(stderr, ". %sOK%s\n", GRN, NRM);
+    CHECK(t_horner(s, 7, -2.0L) == 201.0L); fprintf(stderr, ". %sOK%s\n", GRN, NRM);
 
     fprintf(stderr, "%sTaylor Series Method %s", WHT, NRM);
     controls c = {.order=n, .step=0, .steps=10, .step_size=0.1L};
-    parameters p = {.a=1, .b=0, .c=-1};
+    parameters p = {.a=1.0L, .b=0.0L, .c=-1.0L};
     series3 *j = malloc(sizeof (series3)); CHECK(j);
     j->x = t_const(n + 1, 1.0L);
     j->y = t_const(n + 1, 1.0L);
