@@ -174,19 +174,17 @@ def test_unary_plus():
     dual = + data1_d
     assert dual.val == approx(data1_d.val)
     assert dual.dot == approx(data1_d.dot)
-    series = ~ (+ data1_s)
-    assert len(series.jet) == order
-    for result, original in zip(series.jet, (~ data1_s).jet):
-        assert result == approx(original)
+    series = + data1_s
+    for k in range(order):
+        assert series.jet[k] == approx(data1_s.jet[k])
 
 def test_unary_minus():
     dual = - data1_d
     assert dual.val == approx(- data1_d.val)
     assert dual.dot == approx(- data1_d.dot)
-    series = ~ (- data1_s)
-    assert len(series.jet) == order
-    for result, original in zip(series.jet, (~ data1_s).jet):
-        assert result == approx(- original)
+    series = - data1_s
+    for k in range(order):
+        assert series.jet[k] == approx(- data1_s.jet[k])
 
 def compare_series(result, target):
     for k in range(order):
@@ -209,9 +207,8 @@ def test_add_object_object():
     assert dual.val == approx(data1_d.val + data2_d.val)
     assert dual.dot == approx(data1_d.dot + data2_d.dot)
     series = data1_s + data2_s
-    assert len(series.jet) == order
-    for result, s1, s2 in zip(series.jet, data1_s.jet, data2_s.jet):
-        assert result == approx(s1 + s2)
+    for k in range(order):
+        assert series.jet[k] == approx(data1_s.jet[k] + data2_s.jet[k])
 
 @mark.parametrize('number', [i5, f3])
 def test_add_object_number(number):
@@ -219,10 +216,9 @@ def test_add_object_number(number):
     assert dual.val == approx(data1_d.val + number)
     assert dual.dot == approx(data1_d.dot)
     series = data1_s + number
-    assert len(series.jet) == order
-    assert series.val == approx(data1_s.val + number)
-    for result, original in zip(series.jet[1:], data1_s.jet[1:]):
-        assert result == approx(original)
+    assert series.jet[0] == approx(data1_s.jet[0] + number)
+    for k in range(1, order):
+        assert series.jet[k] == approx(data1_s.jet[k])
 
 @mark.parametrize('number', [i5, f3])
 def test_add_number_object(number):
@@ -230,19 +226,17 @@ def test_add_number_object(number):
     assert dual.val == approx(number + data1_d.val)
     assert dual.dot == approx(data1_d.dot)
     series = number + data1_s
-    assert len(series.jet) == order
-    assert series.val == approx(number + data1_s.val)
-    for result, original in zip(series.jet[1:], data1_s.jet[1:]):
-        assert result == approx(original)
+    assert series.jet[0] == approx(number + data1_s.jet[0])
+    for k in range(1, order):
+        assert series.jet[k] == approx(data1_s.jet[k])
 
 def test_subtract_object_object():
     dual = data1_d - data2_d
     assert dual.val == approx(data1_d.val - data2_d.val)
     assert dual.dot == approx(data1_d.dot - data2_d.dot)
     series = data1_s - data2_s
-    assert len(series.jet) == order
-    for result, s1, s2 in zip(series.jet, data1_s.jet, data2_s.jet):
-        assert result == approx(s1 - s2)
+    for k in range(order):
+        assert series.jet[k] == approx(data1_s.jet[k] - data2_s.jet[k])
 
 @mark.parametrize('number', [i5, f3])
 def test_subtract_object_number(number):
@@ -250,10 +244,9 @@ def test_subtract_object_number(number):
     assert dual.val == approx(data1_d.val - number)
     assert dual.dot == approx(data1_d.dot)
     series = data1_s - number
-    assert len(series.jet) == order
-    assert series.val == approx(data1_s.val - number)
-    for result, original in zip(series.jet[1:], data1_s.jet[1:]):
-        assert result == approx(original)
+    assert series.jet[0] == approx(data1_s.jet[0] - number)
+    for k in range(1, order):
+        assert series.jet[k] == approx(data1_s.jet[k])
 
 @mark.parametrize('number', [i5, f3])
 def test_subtract_number_object(number):
@@ -261,10 +254,9 @@ def test_subtract_number_object(number):
     assert dual.val == approx(number - data1_d.val)
     assert dual.dot == approx(- data1_d.dot)
     series = number - data1_s
-    assert len(series.jet) == order
-    assert series.val == approx(number - data1_s.val)
-    for result, original in zip(series.jet[1:], data1_s.jet[1:]):
-        assert result == approx(- original)
+    assert series.jet[0] == approx(number - data1_s.jet[0])
+    for k in range(1, order):
+        assert series.jet[k] == approx(- data1_s.jet[k])
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_multiply_object_object_series(series):
@@ -276,25 +268,21 @@ def test_multiply_object_object_dual(dual):
 
 @mark.parametrize('number', [i5, f3])
 def test_multiply_object_number(number):
-    dual = d_3 * number
-    assert dual.val == approx(f3 * number)
-    assert dual.dot == approx(number)
-    series = ~ (s_3 * number)
-    assert series.val == approx(f3 * number)
-    assert series.jet[1] == approx(number)
-    for term in series.jet[2:]:
-        assert term == approx(0.0)
+    dual = data1_d * number
+    assert dual.val == approx(data1_d.val * number)
+    assert dual.dot == approx(data1_d.dot * number)
+    series = data1_s * number
+    for k in range(order):
+        assert series.jet[k] == approx(data1_s.jet[k] * number)
 
 @mark.parametrize('number', [i5, f3])
 def test_multiply_number_object(number):
-    dual = number * d_3
-    assert dual.val == approx(number * f3)
-    assert dual.dot == approx(number)
-    series = ~ (number * s_3)
-    assert series.val == approx(number * f3)
-    assert series.jet[1] == approx(number)
-    for term in series.jet[2:]:
-        assert term == approx(0.0)
+    dual = number * data1_d
+    assert dual.val == approx(number * data1_d.val)
+    assert dual.dot == approx(number * data1_d.dot)
+    series = number * data1_s
+    for k in range(order):
+        assert series.jet[k] == approx(number * data1_s.jet[k])
 
 @mark.domain
 @mark.parametrize('number', [i5, δ, - δ, - i5])
@@ -312,11 +300,11 @@ def test_divide_domain_object_bad(number):
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_divide_object_object_series(series):
-    compare_series(series.sin / series.cos, series.tan)
+    compare_series(series / series, S1)
 
 @mark.parametrize('dual', [data1_d, data2_d])
 def test_divide_object_object_dual(dual):
-    compare_dual(dual.sin / dual.cos, dual.tan)
+    compare_dual(dual / dual, D1)
 
 @mark.domain
 @mark.parametrize('number', [1, δ, -δ, -1])
@@ -334,14 +322,12 @@ def test_divide_domain_object_number_bad(number):
 
 @mark.parametrize('number', [i5, f4])
 def test_divide_object_number(number):
-    dual = d_3 / number
-    assert dual.val == approx(f3 / number)
-    assert dual.dot == approx(1.0 / number)
-    series = ~ (s_3 / number)
-    assert series.val == approx(f3 / number)
-    assert series.jet[1] == approx(1.0 / number)
-    for term in series.jet[2:]:
-        assert term == approx(0.0)
+    dual = data1_d / number
+    assert dual.val == approx(data1_d.val / number)
+    assert dual.dot == approx(data1_d.dot / number)
+    series = data1_s / number
+    for k in range(order):
+        assert series.jet[k] == approx(data1_s.jet[k] / number)
 
 @mark.domain
 @mark.parametrize('number', [1, δ, -δ, -1])
