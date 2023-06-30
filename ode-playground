@@ -247,7 +247,7 @@ case $model in
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d":RO \
-            --  '0.0' '5.0' '10000!20000!50000!100000' './tsm-yu-wang-std' \
+            --  '0.0' '15.0' '10000!20000!50000!100000' './tsm-yu-wang-std' \
                 '6!0..36!3' '4!4..32!1' '.001!0.001..0.1!0.001!3' '25000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '$p') ;;
     esac ;;
@@ -313,7 +313,7 @@ case $model in
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="S" --field="V":RO \
-            --  '0.0' '10.0' '10000!20000!50000!100000' './tsm-burke-shaw-std' \
+            --  '0.0' '100.0' '10000!20000!50000!100000' './tsm-burke-shaw-std' \
                 '6!0..36!3' '4!4..32!1' '.01!0.01..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '1.0' '1.0' '10.0' '$p') ;;
     esac ;;
@@ -346,7 +346,7 @@ case $model in
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha":RO --field="kappa" \
-            --  '0.0' '10.0' '10000!20000!50000!100000' './tsm-rucklidge-std' \
+            --  '0.0' '45.0' '10000!20000!50000!100000' './tsm-rucklidge-std' \
                 '6!0..36!3' '4!4..32!1' '.01!0.01..0.1!0.001!3' '20000!1..1000000!1000' \
                 '1.0' '1.0' '1.0' '$p' '2.0') ;;
     esac ;;
@@ -412,7 +412,7 @@ case $model in
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c":RO \
-            --  '0.0' '10.0' '10000!20000!50000!100000' './tsm-isuc-std' \
+            --  '0.0' '50.0' '20000!20000!50000!100000' './tsm-isuc-std' \
                 '6!0..36!3' '4!4..32!1' '.01!0.01..0.1!0.001!3' '50000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '0.1' '0.1' '$p') ;;
     esac ;;
