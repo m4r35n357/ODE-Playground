@@ -69,14 +69,14 @@ These models use the arbitrary-order Taylor Series Method (TSM)
 * Investigate the validity of chaotic solutions against integrator order and step size
 * Plot bifurcation (chaos scanning) diagrams, to find "interesting" parameter values to study
 
-There is a script that provides a dialogue-based user interface for six of the supplied models:
+There is a script that provides a dialogue-based user interface for most of the supplied models:
 ```
 ./ode-playground
 ```
 
 ### Hamiltonian analysis with Symplectic Integrators
 
-2nd to 10th order Suzuki integrators, with a model to help in visualization
+2nd to 10th order Suzuki integrators, with a model to help in visualization.
 All models except N-Body use Dual Numbers for Automatic Differentiation
 
 Examples:
@@ -110,7 +110,7 @@ There are also programs to create model parameters and initial conditions for bo
 
 ### Running c Tests
 
-The tests enforce a "redundant mesh of densely interrelated functionality that cannot exist in the presence of coding errors"!
+The tests enforce a "redundant mesh of densely interrelated functionality that cannot exist in the presence of coding errors", or something like that!
 
 **libad-test** (c executable)
 
@@ -121,7 +121,7 @@ Parameter | Meaning
 3 | Error limit (absolute)
 4 | (Optional) verbosity: 0: summary (default), 1: list, 2: detail
 
-The final parameter can be set to 0 (or left absent) for a summary, 1 for individual tests, or 2 for full detail of Taylor Series.
+The final parameter can be set to 0 (or left absent) for a summary, 1 to list individual tests, or 2 for full detail of Taylor Series coefficients.
 Depending on the x value, some tests might be skipped owing to domain restrictions on some of the functions involved.
 
 ```
@@ -185,12 +185,6 @@ make clean && scan-build make
 scan-build: No bugs found.
 ```
 
-### Find examples for ODE parameters and many other things:
-Useful commands are frequently added to the comments in source headings.
-```
-grep Example *
-```
-
 ### Development
 
 There is an optional git pre-commit script that you can use automatically by copying:
@@ -206,7 +200,7 @@ It does a clean build, runs tests, and performs basic sanity checks on key execu
 ## Running the programs
 
 ### Solving and Plotting ODEs
-This use case only involves calling the "t-functions" in ad.py or taylor-ode.c.
+This use case only involves calling the "t_functions" in ad.py or taylor-ode.c.
 No differentiation happens in these functions (they only implement the recurrence relations); it is the responsibility of the calling program to organize this properly.
 Refer to tsm-*.c for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors and http://www.atomosyd.net/spip.php?rubrique5.
 
