@@ -115,7 +115,7 @@ real t_abs (series u, int k) {
     return u[0] < 0.0L ? -u[k] : u[k];
 }
 
-static real fa (series a, series b, int k0, int k1, int k) {
+static real fa (series a, series b, int k, int k0, int k1) {
     real _ = 0.0L;
     for (int j = k0; j < k1; j++) {
         _ += a[j] * b[k - j];
@@ -124,12 +124,12 @@ static real fa (series a, series b, int k0, int k1, int k) {
 }
 
 real t_mul (series u, series v, int k) {
-    return fa(u, v, 0, k + 1, k);
+    return fa(u, v, k, 0, k + 1);
 }
 
 real t_div (series q, series u, series v, int k) {
     CHECK(v[0] != 0.0L); CHECK(q != u && q != v);
-    return q[k] = (!k ? (u ? u[k] : 1.0L) : (u ? u[k] : 0.0L) - fa(q, v, 0, k, k)) / v[0];
+    return q[k] = (!k ? (u ? u[k] : 1.0L) : (u ? u[k] : 0.0L) - fa(q, v, k, 0, k)) / v[0];
 }
 
 static int half (int k) {
@@ -141,12 +141,12 @@ static real rem (series a, int k) {
 }
 
 real t_sqr (series u, int k) {
-    return 2.0L * fa(u, u, 0, half(k), k) + rem(u, k);
+    return 2.0L * fa(u, u, k, 0, half(k)) + rem(u, k);
 }
 
 real t_sqrt (series r, series u, int k) {
     CHECK(u[0] > 0.0L); CHECK(r != u);
-    return r[k] = !k ? sqrtl(u[k]) : 0.5L * (u[k] - 2.0L * fa(r, r, 1, half(k), k) - rem(r, k)) / r[0];
+    return r[k] = !k ? sqrtl(u[k]) : 0.5L * (u[k] - 2.0L * fa(r, r, k, 1, half(k)) - rem(r, k)) / r[0];
 }
 
 static real fb (series df_du, series u, int k) {
