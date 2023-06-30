@@ -13,9 +13,12 @@ def get_p(n):
     return Parameters(b=float(argv[8]), sx=t_jet(n), cx=t_jet(n), sy=t_jet(n), cy=t_jet(n), sz=t_jet(n), cz=t_jet(n))
 
 def ode(x, y, z, p, k):
-    return Components(x=t_sin_cos(p.sy, p.cy, y, k)[0] - p.b * x[k],
-                      y=t_sin_cos(p.sz, p.cz, z, k)[0] - p.b * y[k],
-                      z=t_sin_cos(p.sx, p.cx, x, k)[0] - p.b * z[k])
+    p.sx[k], p.cx[k] = t_sin_cos(p.sx, p.cx, x, k)
+    p.sy[k], p.cy[k] = t_sin_cos(p.sy, p.cy, y, k)
+    p.sz[k], p.cz[k] = t_sin_cos(p.sz, p.cz, z, k)
+    return Components(x=p.sy[k] - p.b * x[k],
+                      y=p.sz[k] - p.b * y[k],
+                      z=p.sx[k] - p.b * z[k])
 
 
 print(f'TSM: {argv}', file=stderr)
