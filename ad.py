@@ -2,7 +2,7 @@
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 from sys import stderr
-from math import fsum, sin, cos, sinh, cosh, tan, tanh, exp, log, asinh, asin, acosh, acos, atanh, atan, sqrt
+from math import sin, cos, sinh, cosh, tan, tanh, exp, log, asinh, asin, acosh, acos, atanh, atan, sqrt
 from collections import namedtuple
 from time import clock_gettime, CLOCK_MONOTONIC
 
@@ -23,7 +23,7 @@ def t_abs(u, k):
     return - u[k] if u[0] < 0.0 else u[k]
 
 def _fa(a, b, k0, k1, k):
-    return fsum(a[j] * b[k - j] for j in range(k0, k1))
+    return sum(a[j] * b[k - j] for j in range(k0, k1))
 
 def t_prod(u, v, k):
     return _fa(u, v, 0, k + 1, k)
@@ -44,7 +44,7 @@ def t_sqrt(r, u, k):
     return sqrt(u[k]) if k == 0 else 0.5 * (u[k] - 2.0 * _fa(r, r, 1, _half(k), k) - _rem(r, k)) / r[0]
 
 def _fb(df_du, u, k):
-    return fsum(df_du[j] * (k - j) * u[k - j] for j in range(k)) / k
+    return sum(df_du[j] * (k - j) * u[k - j] for j in range(k)) / k
 
 def t_exp(e, u, k):
     return exp(u[k]) if k == 0 else _fb(e, u, k)
@@ -62,10 +62,10 @@ def t_tan_sec2(t, s2, u, k, trig=True):
     return t[k], (2.0 if trig else -2.0) * _fb(t, t, k)
 
 def t_pwr(p, u, a, k):
-    return u[k]**a if k == 0 else fsum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
+    return u[k]**a if k == 0 else sum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
 
 def _fc(f, du_df, u, k, flag=False):
-    return (u[k] + (1.0 if flag else -1.0) * fsum(du_df[j] * (k - j) * f[k - j] for j in range(1, k)) / k) / du_df[0]
+    return (u[k] + (1.0 if flag else -1.0) * sum(du_df[j] * (k - j) * f[k - j] for j in range(1, k)) / k) / du_df[0]
 
 def t_ln(ln, u, k):
     return log(u[k]) if k == 0 else _fc(ln, u, u, k)
