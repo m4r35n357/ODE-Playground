@@ -1,26 +1,15 @@
 
-## NEWS: Default compiler (c99)
-
-Changed to GCC; MUSL is still available as an option (also Clang).
-
 ## NEWS: Basic dialogue box UI for many operations using yad
 
-Several cut & paste examples are provided in comments at the top of the following source files:
-* tsm-lorenz.c
-* tsm-thomas.c
-* tsm-halvorsen.c
-* rk4-lorenz.c
-* rk4-thomas.c
-* rk4-halvorsen.c
-* h-*
-
-A blank initial character is provided to keep these long lines off your history (bash).
-These examples allow simple selection of static & debug executables, and Python versions (where valid).
-
-There are also yad dialogues for running tests and making executables using zig-build:
-* libad-test.c
-* libdual-test.c
-* zig-builds
+Built-in models:
+* tsm-lorenz.py
+* tsm-thomas.py
+* tsm-halvorsen.py
+* tsm-rf.py
+* rk4-lorenz.py
+* rk4-thomas.py
+* rk4-halvorsen.py
+* rk4-rf.py
 
 ## Quick Start
 
@@ -33,7 +22,7 @@ Optional:
 sudo apt install yad ffmpeg
 ```
 
-#### Python 3 Packages (for plotting), please use a virtual environment!
+#### Python 3 Packages, please use a virtual environment!
 There are some plotting and graphing utilities written in Python 3, (the data itself can come from either c or Python executables, which share output "formats").
 In the example invocations given below, communication between the executable and plotting script uses a Unix pipe.
 The dependencies are:
@@ -65,9 +54,8 @@ Useful commands are frequently added to the comments in source headings.
 grep Example *
 ```
 ## Solving and Plotting ODEs
-This use case only involves calling the "t-functions" in ad.py or taylor-ode.c.
+This use case only involves calling the "t_functions" in ad.py or taylor-ode.c.
 No differentiation happens in these functions (they only implement the recurrence relations); it is the responsibility of the calling program to organize this properly.
-Refer to tsm-lorenz.py and tsm-*.c for a varied selection of examples, including several from https://chaoticatmospheres.com/mathrules-strange-attractors.
 
 Where CPU timings are given, they are made on a Raspberry Pi 400, mildly overclocked to 2100MHz, and writing output to a tmpfs file.
 
