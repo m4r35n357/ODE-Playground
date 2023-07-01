@@ -92,7 +92,7 @@ int main (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     CHECK(argc == 4 || argc == 5);
 
-    n = (int)strtol(argv[1], NULL, BASE); CHECK(n > 0);
+    n = (int)strtol(argv[1], NULL, BASE); CHECK(n > 8);
     series x = t_jet(n + 1);
     for (int k = 0; k <= n; k++) {
         x[k] = !k ? strtold(argv[2], NULL) : x[0] / (k * k);
@@ -103,7 +103,7 @@ int main (int argc, char **argv) {
     }
 
     fprintf(stderr, "%sHorner Summation %s", WHT, NRM);
-    series s = t_jet(n >= 8 ? n : 8);
+    series s = t_jet(n);
     s[0] = 1.0L; s[1] = 3.0L; s[2] = 0.0L; s[3] = 2.0L;
     CHECK(t_horner(s, 3, 2.0L) == 23.0L); fprintf(stderr, ".");
     s[0] = 3.0L; s[1] = -1.0L; s[2] = 2.0L; s[3] = -4.0L; s[4] = 0.0L; s[5] = 1.0L;
