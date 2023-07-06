@@ -37,7 +37,7 @@ do
     eval $command 2>/dev/null | /usr/bin/tee $tmp_raw | /usr/bin/tail -n $samples >$tmp_valid
     if [ $(/usr/bin/wc --lines <$tmp_raw) -eq $datalines ]
     then
-        echo -n "\r\033[1;37m$percent\033[0;37m%  \033[0;32mLatest value\033[0;37m $p"
+        echo -n "\r\033[1;37m $percent\033[0;37m%  \033[0;32mLatest value\033[0;37m $p"
         filter 'X' 1
         filter 'x' 1
         filter 'Y' 2
@@ -46,7 +46,7 @@ do
         filter 'z' 3
         wait
     else
-        echo -n "\r\033[1;37m$percent\033[0;37m%  \033[1;31mLatest value\033[0;37m $p"
+        echo -n "\r\033[1;37m $percent\033[0;37m%  \033[1;31mLatest value\033[0;37m $p"
     fi
     p=$(echo "$p + $increment;" | /usr/bin/bc)
     count=$((count - 1))
