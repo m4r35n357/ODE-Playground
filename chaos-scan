@@ -66,8 +66,8 @@ set border back
 set title '$args'
 set xrange [$start:$end]
 set format x "%.6g"
-plot 1/0 lt rgb '$2' lw 3 t 'Maxima', '${filtered}$1' lt rgb '$2' notitle w dots,\
-     1/0 lt rgb '$4' lw 3 t 'Minima', '${filtered}$3' lt rgb '$4' notitle w dots
+plot 1/0 lt rgb '$2' lw 3 t '$1 maxima', '${filtered}$1' lt rgb '$2' notitle w dots,\
+     1/0 lt rgb '$4' lw 3 t '$1 minima', '${filtered}$3' lt rgb '$4' notitle w dots
 EOF
 }
 
