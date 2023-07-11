@@ -39,11 +39,6 @@ series3 *initial_values (char **argv, int order);
 void t_params (char **argv, int count, ...);
 
 /*
- * Prints a line of data to stdout, with turning point markers
- */
-void t_out (int dp, real x, real y, real z, real t, char *x_label, char *y_label, char *z_label, clock_t since);
-
-/*
  * Creates a Taylor Series "jet" with the specified number of elements
  */
 series t_jet (int size);
