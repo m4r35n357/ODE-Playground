@@ -20,7 +20,7 @@ typedef struct Parameters {
     real m, q_r, p_r, q_phi, p_phi, h0;  // mass, coordinates, momenta, initial hamiltonian
 } parameters;
 
-void *get_p (int argc, char **argv) { (void)argc;
+void *symp_init_p (int argc, char **argv) { (void)argc;
     CHECK(argc == 8);
     parameters *p = malloc(sizeof (parameters)); CHECK(p);
     p->m = strtold(argv[5], NULL);
@@ -50,6 +50,6 @@ static void plot (int dp, void *params, real t) {
 }
 
 int main (int argc, char **argv) {
-    solve(argv, get_c_symp(argc, argv), get_p(argc, argv), plot);
+    solve(argv, symp_get_c(argc, argv), symp_init_p(argc, argv), plot);
     return 0;
 }

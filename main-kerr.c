@@ -32,7 +32,7 @@ static void plot (int dp, void *params, real mino) {
 }
 
 int main (int argc, char **argv) {
-    controls *c = get_c_symp(argc, argv);
-    solve(argv, c, get_p_kerr(argc, argv, c->step_size), plot);
+    controls *c = symp_get_c(argc, argv);
+    solve(argv, c, kerr_get_p(argc, argv, c->step_size), plot);
     return 0;
 }

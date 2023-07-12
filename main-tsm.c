@@ -8,9 +8,9 @@
 
 int main (int argc, char **argv) {
     int display_precision = (int)strtol(argv[1], NULL, BASE); CHECK(display_precision >= 0 && display_precision <= 32);
-    controls *c = get_c_tsm(argc, argv);
+    controls *c = tsm_get_c(argc, argv);
 
-    tsm_stdout(display_precision, c, initial_values(argv, c->order), get_p(argc, argv, c->order), clock());
+    tsm_stdout(display_precision, c, tsm_init_xyz(argv, c->order), tsm_init_p(argc, argv, c->order), clock());
 
     return 0;
 }

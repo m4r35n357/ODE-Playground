@@ -10,12 +10,12 @@
 /*
  * Retrieves integrator control parameters
  */
-controls *get_c_symp (int argc, char **argv);
+controls *symp_get_c (int argc, char **argv);
 
 /*
  * Get model data from the command to be passed into solve()
  */
-void *get_p (int argc, char **argv);
+void *symp_init_p (int argc, char **argv);
 
 /*
  * "Logarithmic" error function

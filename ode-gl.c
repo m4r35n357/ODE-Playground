@@ -47,10 +47,10 @@ void Animate () {
 
 int main (int argc, char **argv) {
     since = clock();
-    c = get_c_tsm(argc, argv);
-    m = get_p(argc, argv, c->order);
+    c = tsm_get_c(argc, argv);
+    m = tsm_init_p(argc, argv, c->order);
 
-    jets = initial_values(argv, c->order);
+    jets = tsm_init_xyz(argv, c->order);
 
     length = (int)strtol(argv[1], NULL, BASE); CHECK(length >= 0 && length <= c->steps);
     t = malloc(sizeof (trail)); CHECK(t);

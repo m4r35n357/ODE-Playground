@@ -12,7 +12,7 @@
 
 typedef struct Parameters { real c, d; } parameters;
 
-void *get_p (int argc, char **argv) { (void)argc; (void)argv;
+void *symp_init_p (int argc, char **argv) { (void)argc; (void)argv;
     CHECK(argc == 5);
     parameters *p = malloc(sizeof (parameters)); CHECK(p);
     p->c = 0.0L;
@@ -38,6 +38,6 @@ void update_p (void *params, real d) {
 }
 
 int main (int argc, char **argv) {
-    solve(argv, get_c_symp(argc, argv), get_p(argc, argv), plot);
+    solve(argv, symp_get_c(argc, argv), symp_init_p(argc, argv), plot);
     return 0;
 }

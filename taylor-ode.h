@@ -26,17 +26,17 @@ typedef struct triple_s {
 /*
  * Retrieves integrator control parameters
  */
-controls *get_c_tsm (int argc, char **argv);
+controls *tsm_get_c (int argc, char **argv);
 
 /*
  * Inital values for Taylor Series'
  */
-series3 *initial_values (char **argv, int order);
+series3 *tsm_init_xyz (char **argv, int order);
 
 /*
  * Retrieves ODE parameters from the tail of the command (arguments 8 onwards)
  */
-void t_params (char **argv, int count, ...);
+void tsm_get_p (char **argv, int count, ...);
 
 /*
  * Creates a Taylor Series "jet" with the specified number of elements
@@ -70,7 +70,7 @@ bool tsm_gen (controls *cont, series3 *jets, void *P);
 /*
  * Get a blob of parameter data from the model to be passed into ode()
  */
-void *get_p (int argc, char **argv, int order);
+void *tsm_init_p (int argc, char **argv, int order);
 
 /*
  * Calculate the kth components of the velocity jet V, using the coordinate jets and the parameter data,

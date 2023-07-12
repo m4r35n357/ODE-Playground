@@ -9,7 +9,7 @@
 #include <math.h>
 #include "symplectic.h"
 
-controls *get_c_symp (int argc, char **argv) {
+controls *symp_get_c (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     controls *c = malloc(sizeof (controls)); CHECK(c);
     c->order = (int)strtol(argv[2], NULL, BASE); CHECK(c->order >= 2 && c->order <= 10 && c->order % 2 == 0);

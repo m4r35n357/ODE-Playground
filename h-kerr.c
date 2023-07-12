@@ -34,7 +34,7 @@ static void refresh (kerr *k) {
     k->v_ph = (k->L / k->sth2.val - k->aE) + k->a * P.val / k->D.val;
 }
 
-kerr *get_p_kerr (int argc, char **argv, real step_size) {
+kerr *kerr_get_p (int argc, char **argv, real step_size) {
     CHECK(argc == 13);
     kerr *k = malloc(sizeof (kerr)); CHECK(k);
     k->step_size = step_size;

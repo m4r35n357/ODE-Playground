@@ -20,7 +20,7 @@ typedef struct Kerr {
 /*
  * Get a blob of model data from the command to be passed into solve()
  */
-kerr *get_p_kerr (int argc, char **argv, real step);
+kerr *kerr_get_p (int argc, char **argv, real step);
 
 real elevation_to_colatitude (real elevation);
 

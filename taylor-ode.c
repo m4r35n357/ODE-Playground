@@ -10,7 +10,7 @@
 #include <math.h>
 #include "taylor-ode.h"
 
-controls *get_c_tsm (int argc, char **argv) {
+controls *tsm_get_c (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     controls *c = malloc(sizeof (controls)); CHECK(c);
     c->order = (int)strtol(argv[2], NULL, BASE); CHECK(c->order >= 2 && c->order <= 64);
@@ -19,7 +19,7 @@ controls *get_c_tsm (int argc, char **argv) {
     return c;
 }
 
-series3 *initial_values (char **argv, int order) {
+series3 *tsm_init_xyz (char **argv, int order) {
     series3 *jets = malloc(sizeof (series3)); CHECK(jets);
     jets->x = t_const(order + 1, strtold(argv[5], NULL));
     jets->y = t_const(order + 1, strtold(argv[6], NULL));
@@ -27,7 +27,7 @@ series3 *initial_values (char **argv, int order) {
     return jets;
 }
 
-void t_params (char **argv, int argc, ...) {
+void tsm_get_p (char **argv, int argc, ...) {
     va_list model;
     va_start(model, argc);
     for (int i = 8; i < argc; i++) {

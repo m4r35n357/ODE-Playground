@@ -10,10 +10,10 @@
 
 typedef struct Parameters { real s, v; series _V; } parameters;
 
-void *get_p (int argc, char **argv, int n) { (void)n;
+void *tsm_init_p (int argc, char **argv, int n) { (void)n;
     CHECK(argc == 10);
     parameters *p = malloc(sizeof (parameters)); CHECK(p);
-    t_params(argv, argc, &p->s, &p->v);
+    tsm_get_p(argv, argc, &p->s, &p->v);
     p->_V = t_const(n, p->v);
     return p;
 }
