@@ -88,12 +88,12 @@ static void _next (series3 *j, int n, real h) {
 }
 
 void tsm_stdout (int dp, controls *c, series3 *jets, void *p, clock_t t0) {
-    triplet slope = {0.0L, 0.0L, 0.0L};
+    real slope_x = 0.0L, slope_y = 0.0L, slope_z = 0.0L;
     for (int step = 0; step < c->steps; step++) {
         _diff(jets, p, c->order);
         _out(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * step,
-             _tag(jets->x, slope.x, "x", "X"), _tag(jets->y, slope.y, "y", "Y"), _tag(jets->z, slope.z, "z", "Z"), t0);
-        slope.x = jets->x[1]; slope.y = jets->y[1]; slope.z = jets->z[1];
+             _tag(jets->x, slope_x, "x", "X"), _tag(jets->y, slope_y, "y", "Y"), _tag(jets->z, slope_z, "z", "Z"), t0);
+        slope_x = jets->x[1]; slope_y = jets->y[1]; slope_z = jets->z[1];
         _next(jets, c->order, c->step_size);
     }
     _out(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * c->steps, "_", "_", "_", t0);
