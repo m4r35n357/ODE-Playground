@@ -10,6 +10,12 @@
 #include <math.h>
 #include "taylor-ode.h"
 
+static void _out (int dp, real x, real y, real z, real t, char *x_tag, char *y_tag, char *z_tag, clock_t since) {
+    real cpu = (real)(clock() - since) / CLOCKS_PER_SEC;
+    if (dp) printf("%+.*Le %+.*Le %+.*Le %.6Le %s %s %s %.3Lf\n", dp, x, dp, y, dp, z, t, x_tag, y_tag, z_tag, cpu);
+    else printf("%+La %+La %+La %.6Le %s %s %s %.3Lf\n", x, y, z, t, x_tag, y_tag, z_tag, cpu);
+}
+
 controls *tsm_get_c (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     controls *c = malloc(sizeof (controls)); CHECK(c);
@@ -30,19 +36,8 @@ series3 *tsm_init_xyz (char **argv, int order) {
 void tsm_get_p (char **argv, int argc, ...) {
     va_list model;
     va_start(model, argc);
-    for (int i = 8; i < argc; i++) {
-        *va_arg(model, real *) = strtold(argv[i], NULL);
-    }
+    for (int i = 8; i < argc; i++) *va_arg(model, real *) = strtold(argv[i], NULL);
     va_end(model);
-}
-
-static void _out (int dp, real x, real y, real z, real t, char *x_tag, char *y_tag, char *z_tag, clock_t since) {
-    real cpu = (real)(clock() - since) / CLOCKS_PER_SEC;
-    if (!dp) {
-        printf("%+La %+La %+La %.6Le %s %s %s %.3Lf\n", x, y, z, t, x_tag, y_tag, z_tag, cpu);
-    } else {
-        printf("%+.*Le %+.*Le %+.*Le %.6Le %s %s %s %.3Lf\n", dp, x, dp, y, dp, z, t, x_tag, y_tag, z_tag, cpu);
-    }
 }
 
 series t_jet (int n) {
@@ -53,23 +48,15 @@ series t_jet (int n) {
 
 series t_const (int n, real a) {
     series c = t_jet(n);
-    for (int k = 0; k < n; k++) {
-        c[k] = !k ? a : 0.0L;
-    }
+    for (int k = 0; k < n; k++) c[k] = !k ? a : 0.0L;
     return c;
 }
 
 real t_horner (series s, int n, real h) {
     real sum = 0.0L;
-    for (int i = n; i >= 0; i--) {
-        sum = sum * h + s[i];
-    }
+    for (int i = n; i >= 0; i--) sum = sum * h + s[i];
     CHECK(isfinite(sum));
     return sum;
-}
-
-static char *_tag (series jet, real slope, char *min, char *max) {
-    return jet[1] * slope < 0.0L ? (jet[2] > 0.0L ? min : max) : "_";
 }
 
 static void _diff (series3 *j, void *p, int n) {
@@ -85,6 +72,10 @@ static void _next (series3 *j, int n, real h) {
     j->x[0] = t_horner(j->x, n, h);
     j->y[0] = t_horner(j->y, n, h);
     j->z[0] = t_horner(j->z, n, h);
+}
+
+static char *_tag (series jet, real slope, char *min, char *max) {
+    return jet[1] * slope < 0.0L ? (jet[2] > 0.0L ? min : max) : "_";
 }
 
 void tsm_stdout (int dp, controls *c, series3 *jets, void *p, clock_t t0) {
