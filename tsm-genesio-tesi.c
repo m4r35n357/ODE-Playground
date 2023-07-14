@@ -17,10 +17,10 @@ parameters *tsm_init_p (int argc, char **argv, int n) { (void)n;
     return _;
 }
 
-triplet ode (series x, series y, series z, parameters *p, int k) {
+triplet ode (series x, series y, series z, parameters *_, int k) {
     return (triplet) {
         .x = y[k],
         .y = z[k],
-        .z = - t_sqr(x, k) - x[k] - p->b * y[k] - p->a * z[k]
+        .z = - t_sqr(x, k) - x[k] - _->b * y[k] - _->a * z[k]
     };
 }

@@ -20,11 +20,11 @@ parameters *tsm_init_p (int argc, char **argv, int n) {
     return _;
 }
 
-triplet ode (series x, series y, series z, parameters *p, int k) {
-    t_tan_sec2(p->tx, p->s2x, x, k, false);
+triplet ode (series x, series y, series z, parameters *_, int k) {
+    t_tan_sec2(_->tx, _->s2x, x, k, false);
     return (triplet) {
         .x = y[k] - x[k],
-        .y = - t_mul(z, p->tx, k),
-        .z = - p->_A[k] + t_mul(x, y, k) + t_abs(y, k)
+        .y = - t_mul(z, _->tx, k),
+        .z = - _->_A[k] + t_mul(x, y, k) + t_abs(y, k)
     };
 }

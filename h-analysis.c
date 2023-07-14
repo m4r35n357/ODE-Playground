@@ -14,10 +14,10 @@ struct Parameters { real c, d; };
 
 parameters *symp_init_p (int argc, char **argv) { (void)argc; (void)argv;
     CHECK(argc == 5);
-    parameters *p = malloc(sizeof (parameters)); CHECK(p);
-    p->c = 0.0L;
-    p->d = 0.0L;
-    return p;
+    parameters *_ = malloc(sizeof (parameters)); CHECK(_);
+    _->c = 0.0L;
+    _->d = 0.0L;
+    return _;
 }
 
 static void plot (int dp, parameters *p, real t) { (void)dp; (void)t;

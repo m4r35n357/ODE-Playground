@@ -22,13 +22,13 @@ parameters *tsm_init_p (int argc, char **argv, int n) {
     return _;
 }
 
-triplet ode (series x, series y, series z, parameters *p, int k) {
-    p->sa[k] = z[k] + t_sqr(x, k) - p->_1[k];
-    p->sb[k] = 4.0L * z[k] - p->sa[k];
-    p->sc[k] = p->_ALPHA[k] + t_mul(x, y, k);
+triplet ode (series x, series y, series z, parameters *_, int k) {
+    _->sa[k] = z[k] + t_sqr(x, k) - _->_1[k];
+    _->sb[k] = 4.0L * z[k] - _->sa[k];
+    _->sc[k] = _->_ALPHA[k] + t_mul(x, y, k);
     return (triplet) {
-        .x = t_mul(y, p->sa, k) + p->gamma * x[k],
-        .y = t_mul(x, p->sb, k) + p->gamma * y[k],
-        .z = - 2.0L * t_mul(z, p->sc, k)
+        .x = t_mul(y, _->sa, k) + _->gamma * x[k],
+        .y = t_mul(x, _->sb, k) + _->gamma * y[k],
+        .z = - 2.0L * t_mul(z, _->sc, k)
     };
 }

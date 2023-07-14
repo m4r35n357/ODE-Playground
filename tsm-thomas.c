@@ -20,10 +20,10 @@ parameters *tsm_init_p (int argc, char **argv, int n) {
     return _;
 }
 
-triplet ode (series x, series y, series z, parameters *p, int k) {
+triplet ode (series x, series y, series z, parameters *_, int k) {
     return (triplet) {
-        .x = t_sin_cos(p->sy, p->cy, y, k, true).a - p->b * x[k],
-        .y = t_sin_cos(p->sz, p->cz, z, k, true).a - p->b * y[k],
-        .z = t_sin_cos(p->sx, p->cx, x, k, true).a - p->b * z[k]
+        .x = t_sin_cos(_->sy, _->cy, y, k, true).a - _->b * x[k],
+        .y = t_sin_cos(_->sz, _->cz, z, k, true).a - _->b * y[k],
+        .z = t_sin_cos(_->sx, _->cx, x, k, true).a - _->b * z[k]
     };
 }

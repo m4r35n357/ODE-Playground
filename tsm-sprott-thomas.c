@@ -22,13 +22,13 @@ parameters *tsm_init_p (int argc, char **argv, int n) {
     return _;
 }
 
-triplet ode (series x, series y, series z, parameters *p, int k) {
-    p->ax[k] = p->a * x[k];
-    p->ay[k] = p->a * y[k];
-    p->az[k] = p->a * z[k];
+triplet ode (series x, series y, series z, parameters *_, int k) {
+    _->ax[k] = _->a * x[k];
+    _->ay[k] = _->a * y[k];
+    _->az[k] = _->a * z[k];
     return (triplet) {
-        .x = t_sin_cos(p->say, p->cay, p->ay, k, true).a - p->b * t_tan_sec2(p->tx, p->s2x, x, k, true).a,
-        .y = t_sin_cos(p->saz, p->caz, p->az, k, true).a - p->b * t_tan_sec2(p->ty, p->s2y, y, k, true).a,
-        .z = t_sin_cos(p->sax, p->cax, p->ax, k, true).a - p->b * t_tan_sec2(p->tz, p->s2z, z, k, true).a
+        .x = t_sin_cos(_->say, _->cay, _->ay, k, true).a - _->b * t_tan_sec2(_->tx, _->s2x, x, k, true).a,
+        .y = t_sin_cos(_->saz, _->caz, _->az, k, true).a - _->b * t_tan_sec2(_->ty, _->s2y, y, k, true).a,
+        .z = t_sin_cos(_->sax, _->cax, _->ax, k, true).a - _->b * t_tan_sec2(_->tz, _->s2z, z, k, true).a
     };
 }

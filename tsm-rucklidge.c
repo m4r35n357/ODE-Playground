@@ -17,9 +17,9 @@ parameters *tsm_init_p (int argc, char **argv, int n) { (void)n;
     return _;
 }
 
-triplet ode (series x, series y, series z, parameters *p,  int k) {
+triplet ode (series x, series y, series z, parameters *_,  int k) {
     return (triplet) {
-        .x = p->alpha * y[k] - p->kappa * x[k] - t_mul(y, z, k),
+        .x = _->alpha * y[k] - _->kappa * x[k] - t_mul(y, z, k),
         .y = x[k],
         .z = t_sqr(y, k) - z[k]
     };

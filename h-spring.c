@@ -21,27 +21,27 @@ struct Parameters {
 
 parameters *symp_init_p (int argc, char **argv) { (void)argc;
     CHECK(argc == 8);
-    parameters *p = malloc(sizeof (parameters)); CHECK(p);
-    p->m = strtold(argv[5], NULL);
-    p->k = strtold(argv[6], NULL);
-    p->l = strtold(argv[7], NULL);
-    p->q = p->l + 1.0L;
-    p->p = 0.0L;
-    p->h0 = hamiltonian(p->m, p->k, p->l, d_dual(p->q), d_dual(p->p)).val;
-    return p;
+    parameters *_ = malloc(sizeof (parameters)); CHECK(_);
+    _->m = strtold(argv[5], NULL);
+    _->k = strtold(argv[6], NULL);
+    _->l = strtold(argv[7], NULL);
+    _->q = _->l + 1.0L;
+    _->p = 0.0L;
+    _->h0 = hamiltonian(_->m, _->k, _->l, d_dual(_->q), d_dual(_->p)).val;
+    return _;
 }
 
-void update_q (parameters *p, real c) {
-    p->q += c * hamiltonian(p->m, p->k, p->l, d_dual(p->q), d_var(p->p)).dot;
+void update_q (parameters *_, real c) {
+    _->q += c * hamiltonian(_->m, _->k, _->l, d_dual(_->q), d_var(_->p)).dot;
 }
 
-void update_p (parameters *p, real d) {
-    p->p -= d * hamiltonian(p->m, p->k, p->l, d_var(p->q), d_dual(p->p)).dot;
+void update_p (parameters *_, real d) {
+    _->p -= d * hamiltonian(_->m, _->k, _->l, d_var(_->q), d_dual(_->p)).dot;
 }
 
-static void plot (int dp, parameters *p, real t) {
-    real h_now = hamiltonian(p->m, p->k, p->l, d_dual(p->q), d_dual(p->p)).val;
-    printf("%+.*Le %+.*Le %+.3Lf %.6Le %+.*Le %+.*Le\n", dp, p->q, dp, p->p, 0.0L, t, dp, error(h_now - p->h0), dp, h_now);
+static void plot (int dp, parameters *_, real t) {
+    real h_now = hamiltonian(_->m, _->k, _->l, d_dual(_->q), d_dual(_->p)).val;
+    printf("%+.*Le %+.*Le %+.3Lf %.6Le %+.*Le %+.*Le\n", dp, _->q, dp, _->p, 0.0L, t, dp, error(h_now - _->h0), dp, h_now);
 }
 
 int main (int argc, char **argv) {

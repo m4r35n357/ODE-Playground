@@ -19,10 +19,10 @@ parameters *tsm_init_p (int argc, char **argv, int n) { (void)n;
     return _;
 }
 
-triplet ode (series x, series y, series z, parameters *p, int k) {
+triplet ode (series x, series y, series z, parameters *_, int k) {
     return (triplet) {
         .x = y[k],
         .y = t_mul(y, z, k) - x[k],
-        .z = p->a - t_sqr(y, k)
+        .z = _->a - t_sqr(y, k)
     };
 }

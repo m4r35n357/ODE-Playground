@@ -10,35 +10,35 @@
 
 parameters *get_p_nbody (int argc, char **argv) {
     CHECK((argc - 6) % 7 == 0);
-    parameters *nb = malloc(sizeof (parameters)); CHECK(nb);
-    nb->g = strtold(argv[5], NULL); CHECK(nb->g > 0.0L);
-    nb->n = (argc - 6) / 7;
-    nb->bodies = malloc((size_t)nb->n * sizeof (body)); CHECK(nb->bodies);
-    for (int i = 0; i < nb->n; i++) {
-        nb->bodies[i].m = strtold(argv[7 * i + 6], NULL); CHECK(nb->bodies[i].m > 0.0L);
-        nb->bodies[i].r = (float)powl(nb->bodies[i].m, 1.0L / 3.0L);
-        nb->bodies[i].x = strtold(argv[7 * i + 7], NULL);
-        nb->bodies[i].y = strtold(argv[7 * i + 8], NULL);
-        nb->bodies[i].z = strtold(argv[7 * i + 9], NULL);
-        nb->bodies[i].px = strtold(argv[7 * i + 10], NULL);
-        nb->bodies[i].py = strtold(argv[7 * i + 11], NULL);
-        nb->bodies[i].pz = strtold(argv[7 * i + 12], NULL);
+    parameters *_ = malloc(sizeof (parameters)); CHECK(_);
+    _->g = strtold(argv[5], NULL); CHECK(_->g > 0.0L);
+    _->n = (argc - 6) / 7;
+    _->bodies = malloc((size_t)_->n * sizeof (body)); CHECK(_->bodies);
+    for (int i = 0; i < _->n; i++) {
+        _->bodies[i].m = strtold(argv[7 * i + 6], NULL); CHECK(_->bodies[i].m > 0.0L);
+        _->bodies[i].r = (float)powl(_->bodies[i].m, 1.0L / 3.0L);
+        _->bodies[i].x = strtold(argv[7 * i + 7], NULL);
+        _->bodies[i].y = strtold(argv[7 * i + 8], NULL);
+        _->bodies[i].z = strtold(argv[7 * i + 9], NULL);
+        _->bodies[i].px = strtold(argv[7 * i + 10], NULL);
+        _->bodies[i].py = strtold(argv[7 * i + 11], NULL);
+        _->bodies[i].pz = strtold(argv[7 * i + 12], NULL);
     }
-    reset_cog(nb);
-    nb->h0 = hamiltonian(nb);
-    return nb;
+    reset_cog(_);
+    _->h0 = hamiltonian(_);
+    return _;
 }
 
-void reset_cog (parameters *nb) {
-    body *b = nb->bodies;
+void reset_cog (parameters *_) {
+    body *b = _->bodies;
     real X = 0.0L, Y = 0.0L, Z = 0.0L, M = 0.0L;
-    for (int i = 0; i < nb->n; i++) {
+    for (int i = 0; i < _->n; i++) {
         X += b[i].x * b[i].m;
         Y += b[i].y * b[i].m;
         Z += b[i].z * b[i].m;
         M += b[i].m;
     }
-    for (int i = 0; i < nb->n; i++) {
+    for (int i = 0; i < _->n; i++) {
         b[i].x -= X / M;
         b[i].y -= Y / M;
         b[i].z -= Z / M;
@@ -49,13 +49,13 @@ static real distance (real x, real y, real z, real X, real Y, real Z) {
     return sqrtl((x - X) * (x - X) + (y - Y) * (y - Y) + (z - Z) * (z - Z));
 }
 
-real hamiltonian (parameters *nb) {
-    body *b = nb->bodies;
+real hamiltonian (parameters *_) {
+    body *b = _->bodies;
     real e = 0.0L;
-    for (int i = 0; i < nb->n; i++) {
+    for (int i = 0; i < _->n; i++) {
         e += 0.5L * (b[i].px * b[i].px + b[i].py * b[i].py + b[i].pz * b[i].pz) / b[i].m;
         for (int j = 0; j < i; j++) {
-            e -= nb->g * b[i].m * b[j].m / distance(b[i].x, b[i].y, b[i].z, b[j].x, b[j].y, b[j].z);
+            e -= _->g * b[i].m * b[j].m / distance(b[i].x, b[i].y, b[i].z, b[j].x, b[j].y, b[j].z);
         }
     }
     return e;

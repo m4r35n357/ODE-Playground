@@ -22,28 +22,28 @@ struct Parameters {
 
 parameters *symp_init_p (int argc, char **argv) { (void)argc;
     CHECK(argc == 8);
-    parameters *p = malloc(sizeof (parameters)); CHECK(p);
-    p->m = strtold(argv[5], NULL);
-    p->q_r = strtold(argv[6], NULL);
-    p->q_phi = p->p_r = 0.0L;
-    p->p_phi = strtold(argv[7], NULL) * p->m * sqrtl(p->q_r); // arg 7 = 1.0 gives a circular orbit
-    p->h0 = hamiltonian(p->m, d_dual(p->q_r), d_dual(p->p_r), d_dual(p->p_phi)).val;
-    return p;
+    parameters *_ = malloc(sizeof (parameters)); CHECK(_);
+    _->m = strtold(argv[5], NULL);
+    _->q_r = strtold(argv[6], NULL);
+    _->q_phi = _->p_r = 0.0L;
+    _->p_phi = strtold(argv[7], NULL) * _->m * sqrtl(_->q_r); // arg 7 = 1.0 gives a circular orbit
+    _->h0 = hamiltonian(_->m, d_dual(_->q_r), d_dual(_->p_r), d_dual(_->p_phi)).val;
+    return _;
 }
 
-void update_q (parameters *p, real c) {
-    p->q_r += c * hamiltonian(p->m, d_dual(p->q_r), d_var(p->p_r), d_dual(p->p_phi)).dot;
-    p->q_phi += c * hamiltonian(p->m, d_dual(p->q_r), d_dual(p->p_r), d_var(p->p_phi)).dot;
+void update_q (parameters *_, real c) {
+    _->q_r += c * hamiltonian(_->m, d_dual(_->q_r), d_var(_->p_r), d_dual(_->p_phi)).dot;
+    _->q_phi += c * hamiltonian(_->m, d_dual(_->q_r), d_dual(_->p_r), d_var(_->p_phi)).dot;
 }
 
-void update_p (parameters *p, real d) {
-    p->p_r -= d * hamiltonian(p->m, d_var(p->q_r), d_dual(p->p_r), d_dual(p->p_phi)).dot;
+void update_p (parameters *_, real d) {
+    _->p_r -= d * hamiltonian(_->m, d_var(_->q_r), d_dual(_->p_r), d_dual(_->p_phi)).dot;
 }
 
-static void plot (int dp, parameters *p, real t) {
-    real h_now = hamiltonian(p->m, d_dual(p->q_r), d_dual(p->p_r), d_dual(p->p_phi)).val;
+static void plot (int dp, parameters *_, real t) {
+    real h_now = hamiltonian(_->m, d_dual(_->q_r), d_dual(_->p_r), d_dual(_->p_phi)).val;
     printf("%+.*Le %+.*Le %+.3Lf %.6Le %+.*Le %+.*Le\n",
-           dp, p->q_r * sinl(p->q_phi), dp, p->q_r * cosl(p->q_phi), 0.0L, t, dp, error(h_now - p->h0), dp, h_now);
+           dp, _->q_r * sinl(_->q_phi), dp, _->q_r * cosl(_->q_phi), 0.0L, t, dp, error(h_now - _->h0), dp, h_now);
 }
 
 int main (int argc, char **argv) {
