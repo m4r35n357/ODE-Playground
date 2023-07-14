@@ -11,11 +11,11 @@
 
 controls *symp_get_c (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
-    controls *c = malloc(sizeof (controls)); CHECK(c);
-    c->order = (int)strtol(argv[2], NULL, BASE); CHECK(c->order >= 2 && c->order <= 10 && c->order % 2 == 0);
-    c->step_size = strtold(argv[3], NULL);       CHECK(c->step_size > 0.0L);
-    c->steps = (int)strtol(argv[4], NULL, BASE); CHECK(c->steps >= 0 && c->steps <= 1000000);
-    return c;
+    controls *_ = malloc(sizeof (controls)); CHECK(_);
+    _->order = (int)strtol(argv[2], NULL, BASE); CHECK(_->order >= 2 && _->order <= 10 && _->order % 2 == 0);
+    _->step_size = strtold(argv[3], NULL);       CHECK(_->step_size > 0.0L);
+    _->steps = (int)strtol(argv[4], NULL, BASE); CHECK(_->steps >= 0 && _->steps <= 1000000);
+    return _;
 }
 
 real error (real e) {
@@ -83,13 +83,13 @@ static integrator get_integrator (controls *c) {
 }
 
 void solve (char **argv, controls *c, void *p, plotter output) {
-    int display_precision = (int)strtol(argv[1], NULL, BASE); CHECK(display_precision >= 1 && display_precision <= 32);
+    int _ = (int)strtol(argv[1], NULL, BASE); CHECK(_ >= 1 && _ <= 32); // display precision
     integrator evolve = get_integrator(c);
     for (int step = 0; step < c->steps; step++) {
-        output(display_precision, p, step * c->step_size);
+        output(_, p, step * c->step_size);
         evolve(c, p, c->step_size);
     }
-    output(display_precision, p, c->steps * c->step_size);
+    output(_, p, c->steps * c->step_size);
 }
 
 bool generate (controls *c, void *p) {

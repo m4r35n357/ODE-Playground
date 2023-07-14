@@ -54,8 +54,8 @@ dual d_div (dual a, dual b) {
 }
 
 dual d_exp (dual a) {
-    real exp_val = expl(a.val);
-    return (dual){.val = exp_val, .dot = a.dot * exp_val};
+    real _ = expl(a.val);
+    return (dual){.val = _, .dot = a.dot * _};
 }
 
 dual d_ln (dual a) {
@@ -65,14 +65,14 @@ dual d_ln (dual a) {
 
 dual d_sqrt (dual a) {
     CHECK(a.val > 0.0L);
-    real root_val = sqrtl(a.val);
-    return (dual){.val = root_val, .dot = a.dot * 0.5L / root_val};
+    real _ = sqrtl(a.val);
+    return (dual){.val = _, .dot = a.dot * 0.5L / _};
 }
 
 dual d_pow (dual a, real b) {
     CHECK(a.val > 0.0L);
-    real pow_val = powl(a.val, b);
-    return (dual){.val = pow_val, .dot = a.dot * b * pow_val / a.val};
+    real _ = powl(a.val, b);
+    return (dual){.val = _, .dot = a.dot * b * _ / a.val};
 }
 
 dual d_sin (dual a) {
@@ -84,8 +84,8 @@ dual d_cos (dual a) {
 }
 
 dual d_tan (dual a) {
-    real tan_val = tanl(a.val);
-    return (dual){.val = tan_val, .dot = a.dot * (1.0L + tan_val * tan_val)};
+    real _ = tanl(a.val);
+    return (dual){.val = _, .dot = a.dot * (1.0L + _ * _)};
 }
 
 dual d_sinh (dual a) {
@@ -97,8 +97,8 @@ dual d_cosh (dual a) {
 }
 
 dual d_tanh (dual a) {
-    real tanh_val = tanhl(a.val);
-    return (dual){.val = tanh_val, .dot = a.dot * (1.0L - tanh_val * tanh_val)};
+    real _ = tanhl(a.val);
+    return (dual){.val = _, .dot = a.dot * (1.0L - _ * _)};
 }
 
 dual d_asin (dual a) {

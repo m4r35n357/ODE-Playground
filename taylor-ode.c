@@ -11,60 +11,60 @@
 #include "taylor-ode.h"
 
 static void _out (int dp, real x, real y, real z, real t, char *x_tag, char *y_tag, char *z_tag, clock_t since) {
-    real cpu = (real)(clock() - since) / CLOCKS_PER_SEC;
-    if (dp) printf("%+.*Le %+.*Le %+.*Le %.6Le %s %s %s %.3Lf\n", dp, x, dp, y, dp, z, t, x_tag, y_tag, z_tag, cpu);
-    else printf("%+La %+La %+La %.6Le %s %s %s %.3Lf\n", x, y, z, t, x_tag, y_tag, z_tag, cpu);
+    real _ = (real)(clock() - since) / CLOCKS_PER_SEC;
+    if (dp) printf("%+.*Le %+.*Le %+.*Le %.6Le %s %s %s %.3Lf\n", dp, x, dp, y, dp, z, t, x_tag, y_tag, z_tag, _);
+    else printf("%+La %+La %+La %.6Le %s %s %s %.3Lf\n", x, y, z, t, x_tag, y_tag, z_tag, _);
 }
 
 controls *tsm_get_c (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
-    controls *c = malloc(sizeof (controls)); CHECK(c);
-    c->order = (int)strtol(argv[2], NULL, BASE); CHECK(c->order >= 2 && c->order <= 64);
-    c->step_size = strtold(argv[3], NULL);       CHECK(c->step_size > 0.0L);
-    c->steps = (int)strtol(argv[4], NULL, BASE); CHECK(c->steps >= 0 && c->steps <= 1000000);
-    return c;
+    controls *_ = malloc(sizeof (controls)); CHECK(_);
+    _->order = (int)strtol(argv[2], NULL, BASE); CHECK(_->order >= 2 && _->order <= 64);
+    _->step_size = strtold(argv[3], NULL);       CHECK(_->step_size > 0.0L);
+    _->steps = (int)strtol(argv[4], NULL, BASE); CHECK(_->steps >= 0 && _->steps <= 1000000);
+    return _;
 }
 
 series3 *tsm_init_xyz (char **argv, int order) {
-    series3 *jets = malloc(sizeof (series3)); CHECK(jets);
-    jets->x = t_const(order + 1, strtold(argv[5], NULL));
-    jets->y = t_const(order + 1, strtold(argv[6], NULL));
-    jets->z = t_const(order + 1, strtold(argv[7], NULL));
-    return jets;
+    series3 *_ = malloc(sizeof (series3)); CHECK(_);
+    _->x = t_const(order + 1, strtold(argv[5], NULL));
+    _->y = t_const(order + 1, strtold(argv[6], NULL));
+    _->z = t_const(order + 1, strtold(argv[7], NULL));
+    return _;
 }
 
 void tsm_get_p (char **argv, int argc, ...) {
-    va_list model;
-    va_start(model, argc);
-    for (int i = 8; i < argc; i++) *va_arg(model, real *) = strtold(argv[i], NULL);
-    va_end(model);
+    va_list _;
+    va_start(_, argc);
+    for (int i = 8; i < argc; i++) *va_arg(_, real *) = strtold(argv[i], NULL);
+    va_end(_);
 }
 
 series t_jet (int n) {
     CHECK(n > 0);
-    series s = malloc((size_t)n * sizeof (real)); CHECK(s);
-    return s;
+    series _ = malloc((size_t)n * sizeof (real)); CHECK(_);
+    return _;
 }
 
 series t_const (int n, real a) {
-    series c = t_jet(n);
-    for (int k = 0; k < n; k++) c[k] = !k ? a : 0.0L;
-    return c;
+    series _ = t_jet(n);
+    for (int k = 0; k < n; k++) _[k] = !k ? a : 0.0L;
+    return _;
 }
 
 real t_horner (series s, int n, real h) {
-    real sum = 0.0L;
-    for (int i = n; i >= 0; i--) sum = sum * h + s[i];
-    CHECK(isfinite(sum));
-    return sum;
+    real _ = 0.0L;
+    for (int i = n; i >= 0; i--) _ = _ * h + s[i];
+    CHECK(isfinite(_));
+    return _;
 }
 
 static void _diff (series3 *j, void *p, int n) {
     for (int k = 0; k < n; k++) {
-        triplet v = ode(j->x, j->y, j->z, p, k);
-        j->x[k + 1] = v.x / (k + 1);
-        j->y[k + 1] = v.y / (k + 1);
-        j->z[k + 1] = v.z / (k + 1);
+        triplet _ = ode(j->x, j->y, j->z, p, k);
+        j->x[k + 1] = _.x / (k + 1);
+        j->y[k + 1] = _.y / (k + 1);
+        j->z[k + 1] = _.z / (k + 1);
     }
 }
 
