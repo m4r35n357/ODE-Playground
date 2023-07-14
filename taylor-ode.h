@@ -11,8 +11,6 @@
 #include <stdbool.h>
 #include "real.h"
 
-typedef struct Parameters parameters;
-
 /*
  * Type for Taylor Series coordinate jets
  */
@@ -70,9 +68,9 @@ bool tsm_gen (controls *cont, series3 *jets, parameters *P);
  */
 
 /*
- * Get a blob of parameter data from the model to be passed into ode()
+ * Populate parameter data from command arguments
  */
-void *tsm_init_p (int argc, char **argv, int order);
+parameters *tsm_init_p (int argc, char **argv, int order);
 
 /*
  * Calculate the kth components of the velocity jet V, using the coordinate jets and the parameter data,

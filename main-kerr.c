@@ -17,8 +17,7 @@ static real v2 (real vt, real vr, real vth, real vph, real a, real ra2, real sth
     return sth2 / S * va * va + vr * vr / D / S + vth * vth / S - D / S * vb * vb;
 }
 
-static void plot (int dp, void *params, real mino) {
-    kerr *p = (kerr *)params;
+static void plot (int dp, parameters *p, real mino) {
     real S = sigma(p);
     pair Y = gamma_v(p, S);
     p->tau += p->step_size * S;

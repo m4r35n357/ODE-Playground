@@ -8,9 +8,9 @@
 #include "symplectic.h"
 #include "h-nbody.h"
 
-nbody *get_p_nbody (int argc, char **argv) {
+parameters *get_p_nbody (int argc, char **argv) {
     CHECK((argc - 6) % 7 == 0);
-    nbody *nb = malloc(sizeof (nbody)); CHECK(nb);
+    parameters *nb = malloc(sizeof (parameters)); CHECK(nb);
     nb->g = strtold(argv[5], NULL); CHECK(nb->g > 0.0L);
     nb->n = (argc - 6) / 7;
     nb->bodies = malloc((size_t)nb->n * sizeof (body)); CHECK(nb->bodies);
@@ -29,7 +29,7 @@ nbody *get_p_nbody (int argc, char **argv) {
     return nb;
 }
 
-void reset_cog (nbody *nb) {
+void reset_cog (parameters *nb) {
     body *b = nb->bodies;
     real X = 0.0L, Y = 0.0L, Z = 0.0L, M = 0.0L;
     for (int i = 0; i < nb->n; i++) {
@@ -49,7 +49,7 @@ static real distance (real x, real y, real z, real X, real Y, real Z) {
     return sqrtl((x - X) * (x - X) + (y - Y) * (y - Y) + (z - Z) * (z - Z));
 }
 
-real hamiltonian (nbody *nb) {
+real hamiltonian (parameters *nb) {
     body *b = nb->bodies;
     real e = 0.0L;
     for (int i = 0; i < nb->n; i++) {
@@ -61,8 +61,7 @@ real hamiltonian (nbody *nb) {
     return e;
 }
 
-void update_q (void *n_body, real c) {
-    nbody *nb = (nbody *)n_body;
+void update_q (parameters *nb, real c) {
     body *b = nb->bodies;
     for (int i = 0; i < nb->n; i++) {
         real _ = c / b[i].m;
@@ -72,8 +71,7 @@ void update_q (void *n_body, real c) {
     }
 }
 
-void update_p (void *n_body, real c) {
-    nbody *nb = (nbody *)n_body;
+void update_p (parameters *nb, real c) {
     body *b = nb->bodies;
     for (int i = 0; i < nb->n; i++) {
         for (int j = 0; j < i; j++) {

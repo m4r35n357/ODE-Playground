@@ -10,7 +10,7 @@
 #include "opengl.h"
 #include "h-nbody.h"
 
-static nbody *nb;  // the model
+static parameters *nb;  // the model
 
 point get_current_point (void *data) {
     body *b = (body *)data;

@@ -12,16 +12,16 @@ real elevation_to_colatitude (real elevation) {
     return (90.0L - elevation) * acosl(-1.0L)  / 180.0L;
 }
 
-real sigma (kerr *k) {
+real sigma (parameters *k) {
     return k->q_r * k->q_r + k->a * k->a * (1.0L - k->sth2.val);
 }
 
-pair gamma_v (kerr *k, real sigma) {
+pair gamma_v (parameters *k, real sigma) {
     real g = k->v_t / sigma;
     return (pair){g, sqrtl(1.0L - 1.0L / (g * g))};
 }
 
-static void refresh (kerr *k) {
+static void refresh (parameters *k) {
     dual r = d_var(k->q_r);
     dual r2 = d_sqr(r);
     k->ra2 = d_shift(r2, k->a2);
@@ -34,9 +34,9 @@ static void refresh (kerr *k) {
     k->v_ph = (k->L / k->sth2.val - k->aE) + k->a * P.val / k->D.val;
 }
 
-kerr *kerr_get_p (int argc, char **argv, real step_size) {
+parameters *kerr_get_p (int argc, char **argv, real step_size) {
     CHECK(argc == 13);
-    kerr *k = malloc(sizeof (kerr)); CHECK(k);
+    parameters *k = malloc(sizeof (parameters)); CHECK(k);
     k->step_size = step_size;
     k->a = strtold(argv[5], NULL);          CHECK(k->a >= -1.0L && k->a <= 1.0L);  // constants
     k->mu2 = strtold(argv[6], NULL) == 0.0L ? 0.0L : 1.0L;
@@ -61,17 +61,15 @@ kerr *kerr_get_p (int argc, char **argv, real step_size) {
     return k;
 }
 
-void update_q (void *params, real c) {  // dq/dt = d"H"/dp
-    kerr *k = (kerr *)params;
-    k->q_t  += c * k->v_t;
-    k->q_r  += c * k->v_r;
-    k->q_th += c * k->v_th;
-    k->q_ph += c * k->v_ph;
-    refresh(k);
+void update_q (parameters *p, real c) {  // dq/dt = d"H"/dp
+    p->q_t  += c * p->v_t;
+    p->q_r  += c * p->v_r;
+    p->q_th += c * p->v_th;
+    p->q_ph += c * p->v_ph;
+    refresh(p);
 }
 
-void update_p (void *params, real d) {  // dp/dt = - d"H"/dq = - (- 0.5 dX/dq) where X is R or THETA
-    kerr *k = (kerr *)params;
-    k->v_r  += 0.5L * d * k->R.dot;
-    k->v_th += 0.5L * d * k->TH.dot;
+void update_p (parameters *p, real d) {  // dp/dt = - d"H"/dq = - (- 0.5 dX/dq) where X is R or THETA
+    p->v_r  += 0.5L * d * p->R.dot;
+    p->v_th += 0.5L * d * p->TH.dot;
 }

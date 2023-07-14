@@ -59,7 +59,7 @@ real t_horner (series s, int n, real h) {
     return _;
 }
 
-static void _diff (series3 *j, void *p, int n) {
+static void _diff (series3 *j, parameters *p, int n) {
     for (int k = 0; k < n; k++) {
         triplet _ = ode(j->x, j->y, j->z, p, k);
         j->x[k + 1] = _.x / (k + 1);

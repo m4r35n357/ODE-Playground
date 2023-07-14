@@ -9,7 +9,7 @@
 #include "taylor-ode.h"
 #include "opengl.h"
 
-static void *m;  // the model
+static parameters *m;  // the model
 static series3 *jets;
 
 point get_current_point (void *data) {

@@ -15,11 +15,11 @@ static dual hamiltonian (real M, real k, real l, dual q, dual p) {
     return d_add(d_scale(d_sqr(p), 0.5L / M), d_scale(d_sqr(d_shift(q, -l)), 0.5L * k));
 }
 
-typedef struct Parameters {
+struct Parameters {
     real m, k, l, q, p, h0;  // mass, spring constant, length, coordinate, momentum, initial hamiltonian
-} parameters;
+};
 
-void *symp_init_p (int argc, char **argv) { (void)argc;
+parameters *symp_init_p (int argc, char **argv) { (void)argc;
     CHECK(argc == 8);
     parameters *p = malloc(sizeof (parameters)); CHECK(p);
     p->m = strtold(argv[5], NULL);
@@ -31,18 +31,15 @@ void *symp_init_p (int argc, char **argv) { (void)argc;
     return p;
 }
 
-void update_q (void *params, real c) {
-    parameters *p = (parameters *)params;
+void update_q (parameters *p, real c) {
     p->q += c * hamiltonian(p->m, p->k, p->l, d_dual(p->q), d_var(p->p)).dot;
 }
 
-void update_p (void *params, real d) {
-    parameters *p = (parameters *)params;
+void update_p (parameters *p, real d) {
     p->p -= d * hamiltonian(p->m, p->k, p->l, d_var(p->q), d_dual(p->p)).dot;
 }
 
-static void plot (int dp, void *params, real t) {
-    parameters *p = (parameters *)params;
+static void plot (int dp, parameters *p, real t) {
     real h_now = hamiltonian(p->m, p->k, p->l, d_dual(p->q), d_dual(p->p)).val;
     printf("%+.*Le %+.*Le %+.3Lf %.6Le %+.*Le %+.*Le\n", dp, p->q, dp, p->p, 0.0L, t, dp, error(h_now - p->h0), dp, h_now);
 }

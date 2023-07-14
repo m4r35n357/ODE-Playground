@@ -11,12 +11,12 @@
 #include "h-kerr.h"
 #include "opengl.h"
 
-static kerr *k;  // the model
+static parameters *k;  // the model
 
 static real RAD_TO_DEG;
 
 point get_current_point (void *data) {
-    kerr *m = (kerr *)data;
+    parameters *m = (parameters *)data;
     real ra_sth = sqrtl(m->ra2.val) * sinl(m->q_th);
     return (point){(float)(ra_sth * cosl(m->q_ph)), (float)(ra_sth * sinl(m->q_ph)), (float)(m->q_r * cosl(m->q_th))};
 }

@@ -16,11 +16,11 @@ static dual hamiltonian (real gm, dual q_r, dual p_r, dual p_phi) {
     return d_sub(d_scale(d_add(d_sqr(p_r), d_div(d_sqr(p_phi), d_sqr(q_r))), 0.5L), d_scale(d_inv(q_r), gm));
 }
 
-typedef struct Parameters {
+struct Parameters {
     real m, q_r, p_r, q_phi, p_phi, h0;  // mass, coordinates, momenta, initial hamiltonian
-} parameters;
+};
 
-void *symp_init_p (int argc, char **argv) { (void)argc;
+parameters *symp_init_p (int argc, char **argv) { (void)argc;
     CHECK(argc == 8);
     parameters *p = malloc(sizeof (parameters)); CHECK(p);
     p->m = strtold(argv[5], NULL);
@@ -31,19 +31,16 @@ void *symp_init_p (int argc, char **argv) { (void)argc;
     return p;
 }
 
-void update_q (void *params, real c) {
-    parameters *p = (parameters *)params;
+void update_q (parameters *p, real c) {
     p->q_r += c * hamiltonian(p->m, d_dual(p->q_r), d_var(p->p_r), d_dual(p->p_phi)).dot;
     p->q_phi += c * hamiltonian(p->m, d_dual(p->q_r), d_dual(p->p_r), d_var(p->p_phi)).dot;
 }
 
-void update_p (void *params, real d) {
-    parameters *p = (parameters *)params;
+void update_p (parameters *p, real d) {
     p->p_r -= d * hamiltonian(p->m, d_var(p->q_r), d_dual(p->p_r), d_dual(p->p_phi)).dot;
 }
 
-static void plot (int dp, void *params, real t) {
-    parameters *p = (parameters *)params;
+static void plot (int dp, parameters *p, real t) {
     real h_now = hamiltonian(p->m, d_dual(p->q_r), d_dual(p->p_r), d_dual(p->p_phi)).val;
     printf("%+.*Le %+.*Le %+.3Lf %.6Le %+.*Le %+.*Le\n",
            dp, p->q_r * sinl(p->q_phi), dp, p->q_r * cosl(p->q_phi), 0.0L, t, dp, error(h_now - p->h0), dp, h_now);

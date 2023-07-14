@@ -10,7 +10,7 @@
 
 struct Parameters { real a, b, c; series x2py2, _B; };
 
-void *tsm_init_p (int argc, char **argv, int n) {
+parameters *tsm_init_p (int argc, char **argv, int n) {
     CHECK(argc == 11);
     parameters *_ = malloc(sizeof (parameters)); CHECK(_);
     tsm_get_p(argv, argc, &_->a, &_->b, &_->c);

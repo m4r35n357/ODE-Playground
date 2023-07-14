@@ -11,23 +11,23 @@ typedef struct Body {
     float r;
 } body;
 
-typedef struct Nbody {
+struct Parameters {
     int n;
     body *bodies;
     real g, h0;
-} nbody;
+};
 
 /*
  * Get a blob of model data from the command to be passed into solve()
  */
-nbody *get_p_nbody (int argc, char **argv);
+parameters *get_p_nbody (int argc, char **argv);
 
 /*
  * Calculate the centre of mass of the system
  */
-void reset_cog (nbody *nb);
+void reset_cog (parameters *nb);
 
 /*
  * Hamiltonian
  */
-real hamiltonian (nbody *nb);
+real hamiltonian (parameters *nb);

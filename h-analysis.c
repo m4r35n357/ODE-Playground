@@ -10,9 +10,9 @@
 #include <stdlib.h>
 #include "symplectic.h"
 
-typedef struct Parameters { real c, d; } parameters;
+struct Parameters { real c, d; };
 
-void *symp_init_p (int argc, char **argv) { (void)argc; (void)argv;
+parameters *symp_init_p (int argc, char **argv) { (void)argc; (void)argv;
     CHECK(argc == 5);
     parameters *p = malloc(sizeof (parameters)); CHECK(p);
     p->c = 0.0L;
@@ -20,19 +20,16 @@ void *symp_init_p (int argc, char **argv) { (void)argc; (void)argv;
     return p;
 }
 
-static void plot (int dp, void *params, real t) { (void)dp; (void)t;
-    parameters *p = (parameters *)params;
+static void plot (int dp, parameters *p, real t) { (void)dp; (void)t;
     printf("%+.3Le %+.3Le\n", p->c, p->d);
 }
 
-void update_q (void *params, real c) {
-    parameters *p = (parameters *)params;
+void update_q (parameters *p, real c) {
     p->c += c;
     plot(0L, p, 0.0L);
 }
 
-void update_p (void *params, real d) {
-    parameters *p = (parameters *)params;
+void update_p (parameters *p, real d) {
     p->d += d;
     plot(0L, p, 0.0L);
 }

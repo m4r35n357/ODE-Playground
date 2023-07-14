@@ -12,7 +12,7 @@
 
 struct Parameters { real a; };
 
-void *tsm_init_p (int argc, char **argv, int n) { (void)n;
+parameters *tsm_init_p (int argc, char **argv, int n) { (void)n;
     CHECK(argc == 9);
     parameters *_ = malloc(sizeof (parameters)); CHECK(_);
     tsm_get_p(argv, argc, &_->a);

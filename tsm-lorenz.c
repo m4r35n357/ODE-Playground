@@ -10,7 +10,7 @@
 
 struct Parameters { real sigma, rho, beta; };
 
-void *tsm_init_p (int argc, char **argv, int n) { (void)n;
+parameters *tsm_init_p (int argc, char **argv, int n) { (void)n;
     CHECK(argc == 12);
     parameters *_ = malloc(sizeof (parameters)); CHECK(_);
     real d;

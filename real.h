@@ -7,6 +7,11 @@
 typedef long double real;
 
 /*
+ * Client model data
+ */
+typedef struct Parameters parameters;
+
+/*
  * For returning combined values from trig/hyp functions
  */
 typedef struct pair_l {

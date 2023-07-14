@@ -9,8 +9,7 @@
 #include "symplectic.h"
 #include "h-nbody.h"
 
-static void plot (int dp, void *n_body, real t) {
-    nbody *nb = (nbody *)n_body;
+static void plot (int dp, parameters *nb, real t) {
     body *b = nb->bodies;
     printf("%.6Le %+*Le", t, dp, error(hamiltonian(nb) - nb->h0));
     for (int i = 0; i < nb->n; i++) {
