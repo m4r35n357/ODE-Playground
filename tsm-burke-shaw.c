@@ -21,7 +21,7 @@ parameters *tsm_init_p (int argc, char **argv, int n) { (void)n;
 triplet ode (series x, series y, series z, parameters *_, int k) {
     return (triplet) {
         .x = - _->s * (x[k] + y[k]),
-        .y = - (_->s * t_mul(x, z, k) + y[k]),
-        .z = _->s * t_mul(x, y, k) + _->_V[k]
+        .y = - _->s * t_mul(x, z, k) - y[k],
+        .z =   _->s * t_mul(x, y, k) + _->_V[k]
     };
 }
