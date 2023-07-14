@@ -12,9 +12,9 @@ struct Parameters { real a, b; };
 
 void *tsm_init_p (int argc, char **argv, int n) { (void)n;
     CHECK(argc == 10);
-    parameters *p = malloc(sizeof (parameters)); CHECK(p);
-    tsm_get_p(argv, argc, &p->a, &p->b);
-    return p;
+    parameters *_ = malloc(sizeof (parameters)); CHECK(_);
+    tsm_get_p(argv, argc, &_->a, &_->b);
+    return _;
 }
 
 triplet ode (series x, series y, series z, parameters *p, int k) {

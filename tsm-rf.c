@@ -12,14 +12,14 @@ struct Parameters { real alpha, gamma; series sa, sb, sc, _ALPHA, _1; };
 
 void *tsm_init_p (int argc, char **argv, int n) {
     CHECK(argc == 10);
-    parameters *p = malloc(sizeof (parameters)); CHECK(p);
-    tsm_get_p(argv, argc, &p->alpha, &p->gamma);
-    p->sa = t_jet(n);
-    p->sb = t_jet(n);
-    p->sc = t_jet(n);
-    p->_ALPHA = t_const(n, p->alpha);
-    p->_1 = t_const(n, 1.0L);
-    return p;
+    parameters *_ = malloc(sizeof (parameters)); CHECK(_);
+    tsm_get_p(argv, argc, &_->alpha, &_->gamma);
+    _->sa = t_jet(n);
+    _->sb = t_jet(n);
+    _->sc = t_jet(n);
+    _->_ALPHA = t_const(n, _->alpha);
+    _->_1 = t_const(n, 1.0L);
+    return _;
 }
 
 triplet ode (series x, series y, series z, parameters *p, int k) {
