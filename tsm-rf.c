@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include "taylor-ode.h"
 
-typedef struct Parameters { real alpha, gamma; series sa, sb, sc, _ALPHA, _1; } parameters;
+struct Parameters { real alpha, gamma; series sa, sb, sc, _ALPHA, _1; };
 
 void *tsm_init_p (int argc, char **argv, int n) {
     CHECK(argc == 10);
@@ -22,8 +22,7 @@ void *tsm_init_p (int argc, char **argv, int n) {
     return p;
 }
 
-triplet ode (series x, series y, series z, void *params, int k) {
-    parameters *p = (parameters *)params;
+triplet ode (series x, series y, series z, parameters *p, int k) {
     p->sa[k] = z[k] + t_sqr(x, k) - p->_1[k];
     p->sb[k] = 4.0L * z[k] - p->sa[k];
     p->sc[k] = p->_ALPHA[k] + t_mul(x, y, k);

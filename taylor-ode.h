@@ -11,6 +11,8 @@
 #include <stdbool.h>
 #include "real.h"
 
+typedef struct Parameters parameters;
+
 /*
  * Type for Taylor Series coordinate jets
  */
@@ -56,12 +58,12 @@ real t_horner (series S, int n, real h);
 /*
  *  Dump data to stdout
  */
-void tsm_stdout (int dp, controls *cont, series3 *jets, void *P, clock_t since);
+void tsm_stdout (int dp, controls *cont, series3 *jets, parameters *P, clock_t since);
 
 /*
  * Generator implementation of TSM
  */
-bool tsm_gen (controls *cont, series3 *jets, void *P);
+bool tsm_gen (controls *cont, series3 *jets, parameters *P);
 
 /*
  * Obligatory client method signatures
@@ -76,7 +78,7 @@ void *tsm_init_p (int argc, char **argv, int order);
  * Calculate the kth components of the velocity jet V, using the coordinate jets and the parameter data,
  * together with the functions below as necessary.
  */
-triplet ode (series X, series Y, series Z, void *P, int k);
+triplet ode (series X, series Y, series Z, parameters *P, int k);
 
 /*
  * Basic Taylor Series functions

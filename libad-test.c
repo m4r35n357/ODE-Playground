@@ -20,7 +20,7 @@ static int n, debug = 0, total = 0, passed = 0, skipped = 0;
 
 static real delta, tolerance;
 
-typedef struct Parameters { real a, b, c; } parameters;
+struct Parameters { real a, b, c; };
 
 static series ad_scale (series s, series u, real a) { for (int k = 0; k < n; k++) s[k] = u[k] * a; return s; }
 
@@ -56,8 +56,7 @@ static void ad_acos (series ac, series du_df, series u, bool trig) { for (int k 
 
 static void ad_atan (series at, series du_df, series u, bool trig) { for (int k = 0; k < n; k++) t_atan(at, du_df, u, k, trig); }
 
-triplet ode (series x, series y, series z, void *params, int k) {
-    parameters *p = (parameters *)params;
+triplet ode (series x, series y, series z, parameters *p, int k) {
     return (triplet) {
         .x = p->a * x[k],
         .y = p->b * y[k],

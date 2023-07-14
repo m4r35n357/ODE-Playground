@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include "taylor-ode.h"
 
-typedef struct Parameters { real a, b; series ax, ay, az, sax, say, saz, cax, cay, caz, tx, ty, tz, s2x, s2y, s2z; } parameters;
+struct Parameters { real a, b; series ax, ay, az, sax, say, saz, cax, cay, caz, tx, ty, tz, s2x, s2y, s2z; };
 
 void *tsm_init_p (int argc, char **argv, int n) {
     CHECK(argc == 10);
@@ -22,8 +22,7 @@ void *tsm_init_p (int argc, char **argv, int n) {
     return p;
 }
 
-triplet ode (series x, series y, series z, void *params, int k) {
-    parameters *p = (parameters *)params;
+triplet ode (series x, series y, series z, parameters *p, int k) {
     p->ax[k] = p->a * x[k];
     p->ay[k] = p->a * y[k];
     p->az[k] = p->a * z[k];

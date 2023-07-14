@@ -78,7 +78,7 @@ static char *_tag (series jet, real slope, char *min, char *max) {
     return jet[1] * slope < 0.0L ? (jet[2] > 0.0L ? min : max) : "_";
 }
 
-void tsm_stdout (int dp, controls *c, series3 *jets, void *p, clock_t t0) {
+void tsm_stdout (int dp, controls *c, series3 *jets, parameters *p, clock_t t0) {
     real slope_x = 0.0L, slope_y = 0.0L, slope_z = 0.0L;
     for (int step = 0; step < c->steps; step++) {
         _diff(jets, p, c->order);
@@ -90,7 +90,7 @@ void tsm_stdout (int dp, controls *c, series3 *jets, void *p, clock_t t0) {
     _out(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * c->steps, "_", "_", "_", t0);
 }
 
-bool tsm_gen (controls *c, series3 *jets, void *p) {
+bool tsm_gen (controls *c, series3 *jets, parameters *p) {
     static bool looping = false;
     if (looping) goto resume; else looping = true;
     for (c->step = 0; c->step < c->steps; c->step++) {
