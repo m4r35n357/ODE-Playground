@@ -29,16 +29,16 @@ parameters *get_p_nbody (int argc, char **argv) {
     return _;
 }
 
-void reset_cog (parameters *_) {
-    body *b = _->bodies;
+void reset_cog (parameters *p) {
+    body *b = p->bodies;
     real X = 0.0L, Y = 0.0L, Z = 0.0L, M = 0.0L;
-    for (int i = 0; i < _->n; i++) {
+    for (int i = 0; i < p->n; i++) {
         X += b[i].x * b[i].m;
         Y += b[i].y * b[i].m;
         Z += b[i].z * b[i].m;
         M += b[i].m;
     }
-    for (int i = 0; i < _->n; i++) {
+    for (int i = 0; i < p->n; i++) {
         b[i].x -= X / M;
         b[i].y -= Y / M;
         b[i].z -= Z / M;
@@ -49,21 +49,21 @@ static real distance (real x, real y, real z, real X, real Y, real Z) {
     return sqrtl((x - X) * (x - X) + (y - Y) * (y - Y) + (z - Z) * (z - Z));
 }
 
-real hamiltonian (parameters *_) {
-    body *b = _->bodies;
+real hamiltonian (parameters *p) {
+    body *b = p->bodies;
     real e = 0.0L;
-    for (int i = 0; i < _->n; i++) {
+    for (int i = 0; i < p->n; i++) {
         e += 0.5L * (b[i].px * b[i].px + b[i].py * b[i].py + b[i].pz * b[i].pz) / b[i].m;
         for (int j = 0; j < i; j++) {
-            e -= _->g * b[i].m * b[j].m / distance(b[i].x, b[i].y, b[i].z, b[j].x, b[j].y, b[j].z);
+            e -= p->g * b[i].m * b[j].m / distance(b[i].x, b[i].y, b[i].z, b[j].x, b[j].y, b[j].z);
         }
     }
     return e;
 }
 
-void update_q (parameters *nb, real c) {
-    body *b = nb->bodies;
-    for (int i = 0; i < nb->n; i++) {
+void update_q (parameters *p, real c) {
+    body *b = p->bodies;
+    for (int i = 0; i < p->n; i++) {
         real _ = c / b[i].m;
         b[i].x += b[i].px * _;
         b[i].y += b[i].py * _;
@@ -71,12 +71,12 @@ void update_q (parameters *nb, real c) {
     }
 }
 
-void update_p (parameters *nb, real c) {
-    body *b = nb->bodies;
-    for (int i = 0; i < nb->n; i++) {
+void update_p (parameters *p, real c) {
+    body *b = p->bodies;
+    for (int i = 0; i < p->n; i++) {
         for (int j = 0; j < i; j++) {
             real d = distance(b[i].x, b[i].y, b[i].z, b[j].x, b[j].y, b[j].z);
-            real _ = c * nb->g * b[i].m * b[j].m / (d * d * d);
+            real _ = c * p->g * b[i].m * b[j].m / (d * d * d);
             real dPx = (b[j].x - b[i].x) * _;
             real dPy = (b[j].y - b[i].y) * _;
             real dPz = (b[j].z - b[i].z) * _;

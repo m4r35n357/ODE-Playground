@@ -67,8 +67,8 @@ void OpenGLInit () {
 }
 
 void ResizeWindow (int w, int h) {
-    h = (!h) ? 1 : h;
-    w = (!w) ? 1 : w;
+    h = !h ? 1 : h;
+    w = !w ? 1 : w;
     glViewport(0, 0, w, h);  // View port uses whole window
     glMatrixMode(GL_PROJECTION);  // Set up the projection view matrix (not very well!)
     glLoadIdentity();
