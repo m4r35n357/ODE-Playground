@@ -12,7 +12,7 @@
 controls *symp_get_c (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     controls *_ = malloc(sizeof (controls)); CHECK(_);
-    _->order = (int)strtol(argv[2], NULL, BASE); CHECK(_->order >= 2 && _->order <= 10 && _->order % 2 == 0);
+    _->order = (int)strtol(argv[2], NULL, BASE); CHECK(_->order > 0 && _->order % 2 == 0);
     _->step_size = strtold(argv[3], NULL);       CHECK(_->step_size > 0.0L);
     _->steps = (int)strtol(argv[4], NULL, BASE); CHECK(_->steps >= 0 && _->steps <= 1000000);
     return _;
@@ -77,8 +77,8 @@ static integrator get_integrator (controls *c) {
         case  6: _ =   sixth_order; c->r2 = w(2); c->r4 = w(4); break;
         case  8: _ = eightth_order; c->r2 = w(2); c->r4 = w(4); c->r6 = w(6); break;
         case 10: _ =   tenth_order; c->r2 = w(2); c->r4 = w(4); c->r6 = w(6); c->r8 = w(8); break;
-    }
-    CHECK(_);
+        default: break;
+    }; CHECK(_);
     return _;
 }
 
