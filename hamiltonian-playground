@@ -28,11 +28,11 @@ plot_analysis () {
 gnuplot -p << EOF
 set key left
 set terminal wxt size 600,450 background rgb "grey85"
-set xrange [-0.1:1.1]
-set yrange [-0.1:1.1]
-set xlabel 'coordinate steps'
-set ylabel 'momentum steps'
-plot '$user_data' using 1:2 title 'time step sequence' with linespoints pt 7 ps 0
+set xrange $3
+set yrange $4
+set xlabel '$5'
+set ylabel '$6'
+plot '$user_data' using $1:$2 with linespoints pt 7 ps 0
 EOF
 }
 
@@ -56,9 +56,11 @@ case $model in
         parameters=$(yad --title="Mass-Spring System" --form --separator=" " --align=right \
         --field="mass" --field="spring constant" --field="length" \
         -- "1" "1" "1")
-        ./plot ./h-spring-std $display_places $1 $2 $3 $parameters; plot_hamiltonian_error 4 5 ;;
+        ./h-spring-std $display_places $1 $2 $3 $parameters >$user_data;
+        plot_analysis 4 1 '[:]' '[:]' 'time' 'q'; plot_hamiltonian_error 4 5 ;;
     Analysis)
-        ./h-analysis-std $display_places $1 1.0 1 >$user_data; plot_analysis ;;
+        ./h-analysis-std $display_places $1 1.0 1 >$user_data;
+        plot_analysis 1 2 '[-0.1:1.1]' '[-0.1:1.1]' 'coordinate steps' 'momentum steps' ;;
     *Body*)
         case $model in
             EightBody) g=0.05
