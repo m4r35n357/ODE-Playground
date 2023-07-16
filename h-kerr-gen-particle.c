@@ -73,16 +73,16 @@ static dual THETA (real theta, dual E, dual L, dual Q, real a) {
 }
 
 static parameters *get_p_gen (char **argv) {
-    parameters *k = malloc(sizeof (parameters)); CHECK(k);
-    k->epsilon = strtold(argv[1], NULL);
-    k->rmin = strtold(argv[2], NULL);
-    k->rmax = strtold(argv[3], NULL);
-    k->thmax = elevation_to_colatitude(strtold(argv[4], NULL));
-    k->a = strtold(argv[5], NULL);
-    k->E = 1.0L;
-    k->L = 5.0L;
-    k->Q = 0.0L;
-    return k;
+    parameters *_ = malloc(sizeof (parameters)); CHECK(_);
+    _->epsilon = strtold(argv[1], NULL);
+    _->rmin = strtold(argv[2], NULL);
+    _->rmax = strtold(argv[3], NULL);
+    _->thmax = elevation_to_colatitude(strtold(argv[4], NULL));
+    _->a = strtold(argv[5], NULL);
+    _->E = 1.0L;
+    _->L = 5.0L;
+    _->Q = 0.0L;
+    return _;
 }
 
 int main (int argc, char **argv) { (void)argc;
