@@ -50,7 +50,7 @@ tsm-gl: tsm-bouali-gl tsm-burke-shaw-gl tsm-genesio-tesi-gl tsm-halvorsen-gl tsm
 h-%-std: h-%.o symplectic.o dual.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LIB_STD)
 
-hamiltonian: h-analysis-std h-newton-std h-spring-std
+hamiltonian: h-analysis-std h-newton-std h-coupled-std
 
 
 h-kerr-gen-light: h-kerr-gen-light.o
