@@ -17,7 +17,7 @@ static dual hamiltonian (real m, real k, dual q1, dual p1, dual q2, dual p2) {
 }
 
 struct Parameters {
-    real m, k, q1, p1, q2, p2, h0;  // mass, spring constant, length, coordinate, momentum, ..., initial hamiltonian
+    real m, k, q1, p1, q2, p2, h0;
 };
 
 parameters *symp_init_p (int argc, char **argv) { (void)argc;

@@ -54,10 +54,10 @@ case $model in
         ./plot ./h-newton-std $display_places $1 $2 $3 $parameters; plot_hamiltonian_error 4 5 ;;
     Spring)
         parameters=$(yad --title="Mass-Spring System" --form --separator=" " --align=right \
-        --field="mass" --field="spring constant" --field="length" \
-        -- "1" "1" "1")
+        --field="mass" --field="spring constant" --field="q" \
+        -- "1" "1" "1.01")
         ./h-spring-std $display_places $1 $2 $3 $parameters >$user_data;
-        plot_analysis 4 1 '[:]' '[:]' 'time' 'q'; plot_hamiltonian_error 4 5 ;;
+        plot_analysis 3 1 '[:]' '[:]' 'time' 'q'; plot_hamiltonian_error 3 4 ;;
     Coupled)
         parameters=$(yad --title="Coupled Oscillator System" --form --separator=" " --align=right \
         --field="mass" --field="spring constant" --field="q1"  --field="q2"\
