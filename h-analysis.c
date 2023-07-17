@@ -1,8 +1,6 @@
 /*
  * Symplectic integration analyzer
  *
- * Example:  ./h-analysis-std  6 8 1 1 >/tmp/$USER/data
-  *
  * (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 

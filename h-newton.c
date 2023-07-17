@@ -1,8 +1,6 @@
 /*
  * Newtonian central value problem using Hamilton's equations with automatic differentiation
  *
- * Example:  ./h-newton-std  6 8 1 10000  1 12 .6 >/tmp/$USER/data
- *
  * (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
@@ -17,7 +15,7 @@ static dual hamiltonian (real gm, dual q_r, dual p_r, dual p_phi) {
 }
 
 struct Parameters {
-    real m, q_r, p_r, q_phi, p_phi, h0;  // mass, coordinates, momenta, initial hamiltonian
+    real m, q_r, p_r, q_phi, p_phi, h0;
 };
 
 parameters *symp_init_p (int argc, char **argv) { (void)argc;
@@ -32,8 +30,8 @@ parameters *symp_init_p (int argc, char **argv) { (void)argc;
 }
 
 void update_q (parameters *_, real c) {
-    _->q_r += c * hamiltonian(_->m, d_dual(_->q_r), d_var(_->p_r), d_dual(_->p_phi)).dot;
-    _->q_phi += c * hamiltonian(_->m, d_dual(_->q_r), d_dual(_->p_r), d_var(_->p_phi)).dot;
+    _->q_r   += c * hamiltonian(_->m, d_dual(_->q_r),  d_var(_->p_r), d_dual(_->p_phi)).dot;
+    _->q_phi += c * hamiltonian(_->m, d_dual(_->q_r), d_dual(_->p_r),  d_var(_->p_phi)).dot;
 }
 
 void update_p (parameters *_, real d) {
