@@ -129,6 +129,7 @@ static real _log (series f, series du_df, series u, int k, bool neg) {
 }
 
 real t_abs (series u, int k) {
+    CHECK(u[0] != 0.0L);
     return u[0] < 0.0L ? -u[k] : u[k];
 }
 

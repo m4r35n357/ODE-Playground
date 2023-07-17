@@ -16,6 +16,7 @@ dual d_var (real a) {
 }
 
 dual d_abs (dual a) {
+    CHECK(a.val != 0.0L);
     return (dual){.val = a.val < 0.0L ? - a.val : a.val, .dot = a.val < 0.0L ? - a.dot : a.dot};
 }
 

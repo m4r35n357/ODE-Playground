@@ -58,13 +58,18 @@ int main (int argc, char **argv) {
 
     fprintf(stderr, "%sDual Numbers %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x.val, NRM);
     bool positive = x.val > 0.0L, non_zero = x.val != 0.0L, lt_pi_2 = fabsl(x.val) < 0.5L * acosl(-1.0L);
-    dual abs_x, inv_x, sqr_x, sqrt_x, exp_x, neg_exp_x, ln_x, gd_1;
-    dual sin_x, sin2_x, cos_x, cos2_x, tan_x, sin_2x, cos_2x, sinh_x, sinh2_x, cosh_x, cosh2_x, tanh_x, sinh_2x, cosh_2x;
     dual D1 = d_dual(1.0L), xpx = d_scale(x, 2.0L);
-
-    sqr_x = d_sqr(x);
+    dual abs_x, inv_x, sqrt_x, ln_x;
+    if (non_zero) abs_x = d_abs(x);
     if (positive || non_zero) inv_x = d_inv(x);
     if (positive) sqrt_x = d_sqrt(x);
+    if (positive) ln_x = d_ln(x);
+    dual sin_x = d_sin(x), cos_x = d_cos(x), tan_x = d_tan(x);
+    dual sin2_x = d_sqr(sin_x), cos2_x = d_sqr(cos_x), sin_2x = d_sin(xpx), cos_2x = d_cos(xpx);
+    dual sinh_x = d_sinh(x), cosh_x = d_cosh(x), tanh_x = d_tanh(x);
+    dual sinh2_x = d_sqr(sinh_x), cosh2_x = d_sqr(cosh_x), sinh_2x = d_sinh(xpx), cosh_2x = d_cosh(xpx);
+    dual sqr_x = d_sqr(x), exp_x = d_exp(x), neg_exp_x = d_exp(d_scale(x, -1.0L));
+    dual gd_1 = d_ln(d_abs(d_div(d_add(sin_x, D1), cos_x)));
 
     char* name = "x * x == sqr(x)"; compare(name, d_mul(x, x), sqr_x);
     name = "sqr(x) / x == x"; non_zero ? compare(name, d_div(sqr_x, x), x) : skip(name);
@@ -83,15 +88,12 @@ int main (int argc, char **argv) {
     name = "x^-2.0 == 1 / sqr(x)"; positive ? compare(name, d_pow(x, -2.0L), d_inv(sqr_x)) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
-    abs_x = d_abs(x);
 
     name = "sqr(x) * x^-3 == 1 / x"; positive ? compare(name, d_mul(sqr_x, d_pow(x, -3.0L)), inv_x) : skip(name);
     name = "sqr(x)^0.5 == |x|"; non_zero ? compare(name, d_pow(sqr_x, 0.5L), abs_x) : skip(name);
     name = "sqrt(sqr(x) == |x|"; non_zero ? compare(name, d_sqrt(sqr_x), abs_x) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
-    exp_x = d_exp(x);
-    if (positive) ln_x = d_ln(x);
 
     name = "ln(e^x) == x"; compare(name, d_ln(d_exp(x)), x);
     name = "ln(sqr(x)) == ln(x) * 2"; positive ? compare(name, d_ln(sqr_x), d_scale(ln_x, 2.0L)) : skip(name);
@@ -100,13 +102,6 @@ int main (int argc, char **argv) {
     name = "ln(x^-3) == -3*ln(x)"; positive ? compare(name, d_ln(d_pow(x, -3.0L)), d_scale(ln_x, -3.0L)) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
-    sinh_x = d_sinh(x);
-    cosh_x = d_cosh(x);
-    tanh_x = d_tanh(x);
-    sinh2_x = d_sqr(sinh_x);
-    cosh2_x = d_sqr(cosh_x);
-    sinh_2x = d_sinh(xpx);
-    cosh_2x = d_cosh(xpx);
 
     name = "cosh^2(x) - sinh^2(x) == 1"; compare(name, d_sub(cosh2_x, sinh2_x), D1);
     name = "tanh(x) == sinh(x) / cosh(x)"; compare(name, tanh_x, d_div(sinh_x, cosh_x));
@@ -114,7 +109,6 @@ int main (int argc, char **argv) {
     name = "cosh(2x) == cosh^2(x) + sinh^2(x)"; compare(name, cosh_2x, d_add(cosh2_x, sinh2_x));
 
     if (debug) fprintf(stderr, "\n");
-    neg_exp_x = d_exp(d_scale(x, -1.0L));
 
     name = "cosh(x) == (e^x + e^-x) / 2"; compare(name, cosh_x, d_scale(d_add(exp_x, neg_exp_x), 0.5L));
     name = "sinh(x) == (e^x - e^-x) / 2"; compare(name, sinh_x, d_scale(d_sub(exp_x, neg_exp_x), 0.5L));
@@ -122,17 +116,10 @@ int main (int argc, char **argv) {
     if (debug) fprintf(stderr, "\n");
 
     name = "arcsinh(sinh(x)) == x"; compare(name, d_asinh(sinh_x), x);
-    name = "arccosh(cosh(x)) == |x|"; compare(name, d_acosh(cosh_x), abs_x);
+    name = "arccosh(cosh(x)) == |x|"; non_zero ? compare(name, d_acosh(cosh_x), abs_x) : skip(name);
     name = "arctanh(tanh(x)) == x"; compare(name, d_atanh(tanh_x), x);
 
     if (debug) fprintf(stderr, "\n");
-    sin_x = d_sin(x);
-    cos_x = d_cos(x);
-    tan_x = d_tan(x);
-    sin2_x = d_sqr(sin_x);
-    cos2_x = d_sqr(cos_x);
-    sin_2x = d_sin(xpx);
-    cos_2x = d_cos(xpx);
 
     name = "cos^2(x) + sin^2(x) == 1"; compare(name, d_add(cos2_x, sin2_x), D1);
     name = "tan(x) == sin(x) / cos(x)"; lt_pi_2 ? compare(name, tan_x, d_div(sin_x, cos_x)) : skip(name);
@@ -142,11 +129,10 @@ int main (int argc, char **argv) {
     if (debug) fprintf(stderr, "\n");
 
     name = "arcsin(sin(x)) == x"; compare(name, d_asin(sin_x), x);
-    name = "arccos(cos(x)) == |x|"; compare(name, d_acos(cos_x), abs_x);
+    name = "arccos(cos(x)) == |x|"; non_zero ? compare(name, d_acos(cos_x), abs_x) : skip(name);
     name = "arcsin(tan(x)) == x"; compare(name, d_atan(tan_x), x);
 
     if (debug) fprintf(stderr, "\n");
-    gd_1 = d_ln(d_abs(d_div(d_add(sin_x, D1), cos_x)));
 
     name = "arsin(tan(x)) == gd^-1 x"; compare(name, gd_1, d_asinh(tan_x));
     name = "artan(sin(x)) == gd^-1 x"; compare(name, gd_1, d_atanh(sin_x));
