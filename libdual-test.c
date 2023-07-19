@@ -115,9 +115,9 @@ int main (int argc, char **argv) {
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "arcsinh(sinh(x)) == x"; compare(name, d_asinh(sinh_x), x);
-    name = "arccosh(cosh(x)) == |x|"; non_zero ? compare(name, d_acosh(cosh_x), abs_x) : skip(name);
-    name = "arctanh(tanh(x)) == x"; compare(name, d_atanh(tanh_x), x);
+    name = "arsinh(sinh(x)) == x"; compare(name, d_asinh(sinh_x), x);
+    name = "arcosh(cosh(x)) == |x|"; non_zero ? compare(name, d_acosh(cosh_x), abs_x) : skip(name);
+    name = "artanh(tanh(x)) == x"; compare(name, d_atanh(tanh_x), x);
 
     if (debug) fprintf(stderr, "\n");
 
@@ -134,8 +134,8 @@ int main (int argc, char **argv) {
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "arsin(tan(x)) == gd^-1 x"; compare(name, gd_1, d_asinh(tan_x));
-    name = "artan(sin(x)) == gd^-1 x"; compare(name, gd_1, d_atanh(sin_x));
+    name = "arsinh(tan(x)) == gd^-1 x"; compare(name, gd_1, d_asinh(tan_x));
+    name = "artanh(sin(x)) == gd^-1 x"; compare(name, gd_1, d_atanh(sin_x));
     name = "arcsin(tanh(gd^-1 x)) == x"; compare(name, d_asin(d_tanh(gd_1)), x);
     name = "arctan(sinh(gd^-1 x)) == x"; compare(name, d_atan(d_sinh(gd_1)), x);
 

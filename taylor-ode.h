@@ -29,7 +29,7 @@ typedef struct triple_s {
 controls *tsm_get_c (int argc, char **argv);
 
 /*
- * Inital values for Taylor Series'
+ * Initial values for Taylor Series'
  */
 series3 *tsm_init_xyz (char **argv, int order);
 
