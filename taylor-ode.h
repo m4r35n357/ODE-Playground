@@ -6,6 +6,35 @@
  */
 
 #include <time.h>
+#include <stdbool.h>
+
+/*
+ * Report program arguments in colour
+ */
+#define PRINT_ARGS(argc, argv) \
+    fprintf(stderr, "argc: \x1B[1;37m%d\x1B[0;37m, argv: [ \x1B[0;36m", argc); \
+    for (int i = 0; i < argc; i++) { \
+        fprintf(stderr, "%s ", argv[i]); \
+    } \
+    fprintf(stderr, "\x1B[0;37m]\n");
+
+/*
+ * Unavoidable assert(), in colour
+ */
+#define CHECK(x) \
+    do { \
+        if(!(x)) { \
+            fprintf(stderr, \
+                "\x1B[1;31mFAIL\x1B[0;37m \x1B[1;37m%s\x1B[0;37m \x1B[0;35m%s\x1B[0;37m:\x1B[0;35m%i\x1B[0;37m\n", \
+                #x, __FILE__, __LINE__); \
+            exit(1); \
+        } \
+    } while (0)
+
+/*
+ * Client model data
+ */
+typedef struct Parameters parameters;
 
 /*
  * The numerical base for string IO conversions
@@ -82,7 +111,7 @@ mpfr_t *t_horner (series S, int n, mpfr_t h);
  *
  * 2. Apply Horner's method to calculate the new values x(t0 + h), which become X[0] for the next time step.
  */
-void tsm (int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0, void *P, clock_t since);
+void tsm (int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0, parameters *P, clock_t since);
 
 /*
  * For returning x, y, z velocities from the model
@@ -107,7 +136,7 @@ void *get_p (int argc, char **argv, int order);
  *
  * together with the functions below as necessary.
  */
-void ode (components *V, series X, series Y, series Z, void *P, int k);
+void ode (components *V, series X, series Y, series Z, parameters *P, int k);
 
 /*
  * Basic Taylor Series functions
@@ -116,7 +145,7 @@ void ode (components *V, series X, series Y, series Z, void *P, int k);
 /*
  * Returns value if k is 0, and zero otherwise.  For handling _additive_ constants.
  */
-mpfr_t *t_const (mpfr_t value, int k);
+mpfr_t *t_const (int n, mpfr_t a);
 
 /*
  * Returns a pointer to kth element of the absolute value of U, no user-supplied jet storage needed
@@ -229,11 +258,6 @@ mpfr_t *t_sqrt (series R, series U, int k);
 mpfr_t *t_exp (series E, series U, int k);
 
 /*
- * Selects either a trigonometric or hyperbolic version of the function
- */
-typedef enum {TRIG, HYP} geometry;
-
-/*
  * For returning combined recurrence values
  */
 typedef struct {
@@ -250,7 +274,7 @@ typedef struct {
  *    S[k] = sum{j=0->k-1}       C[j].(k-j).U[k-j]/k
  *    C[k] = sum{j=0->k-1} (+/-) S[j].(k-j).U[k-j]/k
  */
-pair t_sin_cos (series S, series C, series U, int k, geometry g);
+pair t_sin_cos (series S, series C, series U, int k, bool trig);
 
 /*
  * Returns struct of pointers to kth elements of both tangent and squared secant of U, results stored in user-supplied jets T and S2
@@ -261,7 +285,7 @@ pair t_sin_cos (series S, series C, series U, int k, geometry g);
  *    T[k] = sum{j=0->k-1}       S2[j].(k-j).U[k-j]/k
  *   S2[k] = sum{j=0->k-1} (+/-)2 T[j].(k-j).T[k-j]/k
  */
-pair t_tan_sec2 (series T, series S2, series U, int k, geometry g);
+pair t_tan_sec2 (series T, series S2, series U, int k, bool trig);
 
 /*
  * Returns a pointer to kth element of P = U^a (where a is scalar), results stored in user-supplied jet P, DOMAIN RESTRICTION U[0] > 0.0
@@ -313,7 +337,7 @@ mpfr_t *t_ln (series L, series U, int k);
  *
  *     dUdF[k] = sum{j=0->k-1} U[j].(k-j).AS[k-j]/k
  */
-pair t_asin (series AS, series DU_DF, series U, int k, geometry g);
+pair t_asin (series AS, series DU_DF, series U, int k, bool trig);
 
 /*
  * Returns kth elements of arccos(h) of U and 1 / DF_DU, results stored in user-supplied jets As and DU_DF
@@ -328,7 +352,7 @@ pair t_asin (series AS, series DU_DF, series U, int k, geometry g);
  *
  *     dUdF[k] = sum{j=0->k-1} U[j].(k-j).AC[k-j]/k
  */
-pair t_acos (series AC, series G, series U, int k, geometry g);
+pair t_acos (series AC, series G, series U, int k, bool trig);
 
 /*
  * Returns kth elements of arctan(h) of U and 1 / DF_DU, results stored in user-supplied jets As and DU_DF
@@ -343,4 +367,4 @@ pair t_acos (series AC, series G, series U, int k, geometry g);
  *
  *     dUdF[k] = sum{j=0->k-1} (+/-)2 U[j].(k-j).U[k-j]/k
  */
-pair t_atan (series AT, series G, series U, int k, geometry g);
+pair t_atan (series AT, series G, series U, int k, bool trig);

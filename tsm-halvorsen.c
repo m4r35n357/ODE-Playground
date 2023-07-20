@@ -41,7 +41,7 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-typedef struct { mpfr_t a, b; } parameters;
+struct Parameters { mpfr_t a, b; };
 
 void *get_p (int argc, char **argv, int n) { (void)n;
     assert(argc == 11);
@@ -50,8 +50,7 @@ void *get_p (int argc, char **argv, int n) { (void)n;
     return p;
 }
 
-void ode (components *vk, series x, series y, series z, void *params, int k) {
-    parameters *p = (parameters *)params;
+void ode (components *vk, series x, series y, series z, parameters *p, int k) {
     //  x' = - Ax - By - Bz - y^2
     mpfr_fmma(vk->x, p->b, y[k], p->b, z[k], RND);
     mpfr_fma(vk->x, p->a, x[k], vk->x, RND);

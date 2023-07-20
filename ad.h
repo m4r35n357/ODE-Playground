@@ -30,7 +30,7 @@ void ad_init (int n);
 /*
  * Set up a constant jet of value a, result stored in jet C
  */
-series ad_const (series C, mpfr_t a);
+series ad_const (mpfr_t a);
 
 /*
  * Scales Taylor Series U by a factor a, result stored in jet S
@@ -85,12 +85,12 @@ series ad_exp (series E, series U);
 /*
  * Calculates Taylor Series for the trigonometric sine and cosine of U, results stored in jets S and C
  */
-pair ad_sin_cos (series S, series C, series U, geometry g);
+pair ad_sin_cos (series S, series C, series U, bool trig);
 
 /*
  * Calculates Taylor Series for the trigonometric tangent and squared secant of U, results stored in jets T and S2
  */
-pair ad_tan_sec2 (series T, series S2, series U, geometry g);
+pair ad_tan_sec2 (series T, series S2, series U, bool trig);
 
 /*
  * Calculates Taylor Series for U^a, results stored in jet P
@@ -104,8 +104,8 @@ series ad_ipwr (series P, series U, int a);
  */
 series ad_ln (series L, series U);
 
-void ad_asin (series AS, series DU_DF, series U, geometry G);
+void ad_asin (series AS, series DU_DF, series U, bool trig);
 
-void ad_acos (series AC, series DU_DF, series U, geometry G);
+void ad_acos (series AC, series DU_DF, series U, bool trig);
 
-void ad_atan (series AT, series DU_DF, series U, geometry G);
+void ad_atan (series AT, series DU_DF, series U, bool trig);

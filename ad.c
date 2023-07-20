@@ -15,11 +15,8 @@ void ad_init (int n) {
     order = n;
 }
 
-series ad_const (series c, mpfr_t a) {
-    for (int k = 0; k < order; k++) {
-        mpfr_set(c[k], *t_const(a, k), RND);
-    }
-    return c;
+series ad_const (mpfr_t a) {
+    return t_const(order, a);
 }
 
 series ad_scale (series s, series u, mpfr_t a) {
@@ -53,6 +50,7 @@ series ad_abs (series a, series u) {
 series ad_mul (series p, series u, series v) {
     for (int k = 0; k < order; k++) {
         mpfr_set(p[k], *t_mul(u, v, k), RND);
+        //fprintf(stderr, "ad_mul %d\n", k);
     }
     return p;
 }
@@ -92,16 +90,16 @@ series ad_exp (series e, series u) {
     return e;
 }
 
-pair ad_sin_cos (series s, series c, series u, geometry g) {
+pair ad_sin_cos (series s, series c, series u, bool trig) {
     for (int k = 0; k < order; k++) {
-        t_sin_cos(s, c, u, k, g);
+        t_sin_cos(s, c, u, k, trig);
     }
     return (pair){ .a = s, .b = c };
 }
 
-pair ad_tan_sec2 (series t, series s2, series u, geometry g) {
+pair ad_tan_sec2 (series t, series s2, series u, bool trig) {
     for (int k = 0; k < order; k++) {
-        t_tan_sec2(t, s2, u, k, g);
+        t_tan_sec2(t, s2, u, k, trig);
     }
     return (pair){ .a = t, .b = s2 };
 }
@@ -127,20 +125,20 @@ series ad_ln (series l, series u) {
     return l;
 }
 
-void ad_asin (series as, series du_df, series u, geometry g) {
+void ad_asin (series as, series du_df, series u, bool trig) {
     for (int k = 0; k < order; k++) {
-        t_asin(as, du_df, u, k, g);
+        t_asin(as, du_df, u, k, trig);
     }
 }
 
-void ad_acos (series ac, series du_df, series u, geometry g) {
+void ad_acos (series ac, series du_df, series u, bool trig) {
     for (int k = 0; k < order; k++) {
-        t_acos(ac, du_df, u, k, g);
+        t_acos(ac, du_df, u, k, trig);
     }
 }
 
-void ad_atan (series at, series du_df, series u, geometry g) {
+void ad_atan (series at, series du_df, series u, bool trig) {
     for (int k = 0; k < order; k++) {
-        t_atan(at, du_df, u, k, g);
+        t_atan(at, du_df, u, k, trig);
     }
 }

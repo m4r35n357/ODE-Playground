@@ -32,7 +32,7 @@ endif
 %.o: %.c
 	$(CC) $(CFLAGS) -MT $@ -MMD -MP -c -o $@ $< $(WARNINGS)
 
-all: tsm-std
+all: tsm-std tests
 
 
 tsm-%-std: tsm-%.o taylor-ode.o main.o
@@ -45,26 +45,22 @@ divergence: divergence.o
 	$(CC) $(CFLAGS) -o $@ $< $(LIB_STD)
 
 
-libad-test: libad-test.o taylor-ode.o
+libad-test: libad-test.o taylor-ode.o ad.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LIB_STD)
 
-libdual-test: libdual-test.o dual.o
-	$(CC) $(CFLAGS) -o $@ $^ $(LIB_STD)
-
-tests: libad-test libdual-test
+tests: libad-test
 
 
 .PHONY: test clean depclean ctags ctags-system ctags-system-all coverage
 
 test:
 	@for x in -.5 0 .5; do \
-		./libad-test 20 $$x 1e-15 >/dev/null || exit 1; echo ""; \
-		./libdual-test $$x 1e-15 >/dev/null || exit 1; echo ""; \
+		./libad-test 237 20 $$x 1e-15 >/dev/null || exit 1; echo ""; \
 	done
 	@echo "\033[1;37mCore Tests Passed\033[0;37m\n"
 
 test-all: test
-	@if ! ./tsm-lorenz-std  6 8 .01 1000  -15.8 -17.48 35.64  10 28 8 3 >/dev/null; then exit 1; fi
+	@if ! ./tsm-lorenz-std  6 113 8 .01 1000  -15.8 -17.48 35.64  10 28 8 3 >/dev/null; then exit 1; fi
 	@echo "\n\033[1;37mSanity Tests Passed\033[0;37m"
 
 ctags:
