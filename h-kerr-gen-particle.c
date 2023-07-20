@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <stdbool.h>
 #include "h-kerr.h"
 
 typedef struct Vector3 { real a, b, c; } vector3;

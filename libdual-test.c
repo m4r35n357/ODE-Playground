@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <stdbool.h>
 #include "dual.h"
 
 #define NRM "\x1B[0;37m"

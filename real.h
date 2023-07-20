@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <stdbool.h>
+
 typedef long double real;
 
 /*
@@ -29,6 +31,7 @@ typedef struct triple_l {
  * Integrator parameters
  */
 typedef struct Controls {
+    bool looping;         // generators only
     int order, step, steps;
     real step_size;
     pair r2, r4, r6, r8;  // symplectic only

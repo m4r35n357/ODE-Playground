@@ -12,6 +12,7 @@
 controls *symp_get_c (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     controls *_ = malloc(sizeof (controls)); CHECK(_);
+    _->looping = false;
     _->order = (int)strtol(argv[2], NULL, BASE); CHECK(_->order > 0 && _->order % 2 == 0);
     _->step_size = strtold(argv[3], NULL);       CHECK(_->step_size > 0.0L);
     _->steps = (int)strtol(argv[4], NULL, BASE); CHECK(_->steps >= 0 && _->steps <= 1000000);
@@ -93,14 +94,12 @@ void solve (char **argv, controls *c, parameters *p, plotter output) {
 }
 
 bool generate (controls *c, parameters *p) {
-    static bool looping = false;
-    static integrator evolve;
-    if (looping) goto resume; else looping = true;
-    evolve = get_integrator(c);
+    integrator evolve = get_integrator(c);
+    if (c->looping) goto resume; else c->looping = true;
     for (c->step = 0; c->step < c->steps; c->step++) {
         evolve(c, p, c->step_size);
         return true;
         resume: ;
     }
-    return looping = false;
+    return c->looping = false;
 }

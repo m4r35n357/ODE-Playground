@@ -19,6 +19,7 @@ static void _out (int dp, real x, real y, real z, real t, char *x_tag, char *y_t
 controls *tsm_get_c (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     controls *_ = malloc(sizeof (controls)); CHECK(_);
+    _->looping = false;
     _->order = (int)strtol(argv[2], NULL, BASE); CHECK(_->order >= 2 && _->order <= 64);
     _->step_size = strtold(argv[3], NULL);       CHECK(_->step_size > 0.0L);
     _->steps = (int)strtol(argv[4], NULL, BASE); CHECK(_->steps >= 0 && _->steps <= 1000000);
@@ -91,15 +92,14 @@ void tsm_stdout (int dp, controls *c, series3 *jets, parameters *p, clock_t t0) 
 }
 
 bool tsm_gen (controls *c, series3 *jets, parameters *p) {
-    static bool looping = false;
-    if (looping) goto resume; else looping = true;
+    if (c->looping) goto resume; else c->looping = true;
     for (c->step = 0; c->step < c->steps; c->step++) {
         _diff(jets, p, c->order);
         _next(jets, c->order, c->step_size);
         return true;
         resume: ;
     }
-    return looping = false;
+    return c->looping = false;
 }
 
 static int _half (int k) {

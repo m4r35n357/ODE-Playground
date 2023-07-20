@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <stdbool.h>
 #include "real.h"
 
 /*
