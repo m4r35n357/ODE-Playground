@@ -97,6 +97,7 @@ mpfr_t *t_const (mpfr_t value, int k){
 }
 
 mpfr_t *t_abs (series u, int k) {
+    assert(mpfr_zero_p(u[0]) == 0);
     if (mpfr_sgn(u[0]) < 0) {
         mpfr_neg(_abs, u[k], RND);
     } else {
@@ -105,12 +106,16 @@ mpfr_t *t_abs (series u, int k) {
     return &_abs;
 }
 
-mpfr_t *t_mul (series u, series v, int k) {
+static mpfr_t *_prod (series u, series v, int k) {
     mpfr_set_zero(_mul, 1);
     for (int j = 0; j <= k; j++) {
         mpfr_fma(_mul, u[j], v[k - j], _mul, RND);
     }
     return &_mul;
+}
+
+mpfr_t *t_mul (series u, series v, int k) {
+    return _prod(u, v, k);
 }
 
 mpfr_t *t_sqr (series u, int k) {
@@ -158,6 +163,21 @@ mpfr_t *t_sqrt (series r, series u, int k) {
     return &r[k];
 }
 
+static mpfr_t *_exp (series e, series u, int k) {
+    assert(e != u);
+    if (k == 0) {
+        mpfr_exp(e[0], u[0], RND);
+    } else {
+        mpfr_set_zero(_, 1);
+        for (int j = 0; j < k; j++) {
+            mpfr_mul_si(__, u[k - j], k - j, RND);
+            mpfr_fma(_, e[j], __, _, RND);
+        }
+        mpfr_div_si(e[k], _, k, RND);
+    }
+    return &e[k];
+}
+
 mpfr_t *t_exp (series e, series u, int k) {
     assert(e != u);
     if (k == 0) {
@@ -178,17 +198,11 @@ pair t_sin_cos (series s, series c, series u, int k, geometry G) {
     if (k == 0) {
         G == TRIG ? mpfr_sin_cos(s[0], c[0], u[0], RND) : mpfr_sinh_cosh(s[0], c[0], u[0], RND);
     } else {
-        mpfr_set_zero(_a, 1);
-        mpfr_set_zero(_b, 1);
-        for (int j = 0; j < k; j++) {
-            mpfr_mul_si(__, u[k - j], k - j, RND);
-            mpfr_fma(_b, c[j], __, _b, RND);
-            mpfr_fma(_a, s[j], __, _a, RND);
-        }
-        mpfr_div_si(s[k], _b, k, RND);
-        mpfr_div_si(c[k], _a, G == TRIG ? - k : k, RND);
+        mpfr_set(s[k], *_exp(c, u, k), RND);
+        mpfr_set(c[k], *_exp(s, u, k), RND);
+        if (G == TRIG) mpfr_neg(c[k], c[k], RND);
     }
-    return (pair) {&s[k], &c[k]};
+    return (pair){&s[k], &c[k]};
 }
 
 pair t_tan_sec2 (series t, series s, series u, int k, geometry G) {
