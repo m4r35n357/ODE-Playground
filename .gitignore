@@ -1,22 +1,22 @@
 
 # Defaults
-*.[oa]
+*.[oad]
 *.so
 *~
 
 # TSM artifacts
-tsm-*-dbg
-tsm-*-static
-tsm-*-dynamic
+tsm-*-std
+tsm-*-gl
 divergence
 
 # Test artifacts
-libad-test-dbg
-libdual-test-dbg
+libad-test*
+libdual-test*
 
 # Symplectic artifacts
-h-*-dbg
-h-*-static
+h-*-std
+h-*-gl
+h-kerr-gen-*
 
 # C coverage artifacts
 *.gcov
@@ -32,12 +32,7 @@ gmon.out
 
 # Vim/Python/Pycharm stuff
 tags
-.idea/
-__pycache__/
-.coverage
-cov_html/
 
 # Optional
-zig
-zig-cache/
 kerr-image.c
+RaytracingOutput/
