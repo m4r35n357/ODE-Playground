@@ -11,7 +11,7 @@
 
 struct Parameters { mpfr_t a, b, g, m; series gx2; };
 
-void *get_p (int argc, char **argv, int n) {
+parameters *get_p (int argc, char **argv, int n) {
     assert(argc == 13);
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->a, &p->b, &p->g, &p->m);

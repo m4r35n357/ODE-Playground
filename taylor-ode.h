@@ -129,7 +129,7 @@ typedef struct {
 /*
  * Get a blob of parameter data from the model to be passed into ode()
  */
-void *get_p (int argc, char **argv, int order);
+parameters *get_p (int argc, char **argv, int order);
 
 /*
  * Calculate the kth components of the velocity jet V, using the coordinate jets and the parameter data,
