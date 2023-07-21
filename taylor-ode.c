@@ -26,21 +26,14 @@ void t_params (char **argv, int argc, ...) {
     PRINT_ARGS(argc, argv);
     va_list model;
     va_start(model, argc);
-    for (int i = 9; i < argc; i++) {
-        mpfr_init_set_str(*va_arg(model, mpfr_t *), argv[i], BASE, RND);
-    }
+    for (int i = 9; i < argc; i++) mpfr_init_set_str(*va_arg(model, mpfr_t *), argv[i], BASE, RND);
     va_end(model);
 }
 
 series t_jet (int n) {
     mpfr_t *s = calloc((size_t)n, sizeof (mpfr_t));
-    if (!s) {
-        fprintf(stderr, "Allocation failure!\n");
-        exit(1);
-    }
-    for (int i = 0; i <= n; i++) {
-        mpfr_init(s[i]);
-    }
+    CHECK(s);
+    for (int i = 0; i <= n; i++) mpfr_init(s[i]);
     return s;
 }
 
@@ -51,13 +44,8 @@ void t_out (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, clock_t since) {
 
 mpfr_t *t_horner (series s, int n, mpfr_t h) {
     mpfr_set_zero(_, 1);
-    for (int i = n; i >= 0; i--) {
-        mpfr_fma(_, _, h, s[i], RND);
-    }
-    if (mpfr_number_p(_) == 0) {
-        fprintf(stderr, "Value error!\n");
-        exit(2);
-    }
+    for (int i = n; i >= 0; i--) mpfr_fma(_, _, h, s[i], RND);
+    CHECK(mpfr_number_p(_) != 0);
     return &_;
 }
 
@@ -85,22 +73,15 @@ void tsm (int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0, parameter
 mpfr_t *t_const (int n, mpfr_t a) {
     series _c = t_jet(n);
     for (int k = 0; k < n; k++) {
-        if (!k) {
-            mpfr_set(_c[k], a, RND);
-        } else {
-            mpfr_set_zero(_c[k], 1);
-        }
+        if (!k) mpfr_set(_c[k], a, RND);
+        else mpfr_set_zero(_c[k], 1);
     }
     return _c;
 }
 
 mpfr_t *t_abs (series u, int k) {
     CHECK(mpfr_zero_p(u[0]) == 0);
-    if (mpfr_sgn(u[0]) < 0) {
-        mpfr_neg(_abs, u[k], RND);
-    } else {
-        mpfr_set(_abs, u[k], RND);
-    }
+    mpfr_sgn(u[0]) < 0 ? mpfr_neg(_abs, u[k], RND) : mpfr_set(_abs, u[k], RND);
     return &_abs;
 }
 
@@ -181,11 +162,7 @@ mpfr_t *t_sqrt (series r, series u, int k) {
 
 mpfr_t *t_exp (series e, series u, int k) {
     CHECK(e != u);
-    if (!k) {
-        mpfr_exp(e[0], u[0], RND);
-    } else {
-        mpfr_set(e[k], *_exp(e, u, k, &_, &__), RND);
-    }
+    !k ? mpfr_exp(e[0], u[0], RND) : mpfr_set(e[k], *_exp(e, u, k, &_, &__), RND);
     return &e[k];
 }
 
@@ -254,11 +231,7 @@ mpfr_t *t_ipwr (series p, series u, int a, int k) {
 mpfr_t *t_ln (series l, series u, int k) {
     CHECK(mpfr_sgn(u[0]) > 0);
     CHECK(l != u);
-    if (!k) {
-        mpfr_log(l[0], u[0], RND);
-    } else {
-        mpfr_set(l[k], *_log(l, u, u, k, false, &_, &__), RND);
-    }
+    !k ? mpfr_log(l[0], u[0], RND) : mpfr_set(l[k], *_log(l, u, u, k, false, &_, &__), RND);
     return &l[k];
 }
 
