@@ -1,8 +1,6 @@
 /*
  * Sprott Minimal System
  *
- * Example: ./tsm-sprott-minimal-dbg 9 32 4 0.1 10000 .02 0 0 2.017
- *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 

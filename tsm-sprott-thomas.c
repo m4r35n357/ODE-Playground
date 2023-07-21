@@ -1,8 +1,6 @@
 /*
  * Sprott-Thomas' cyclically symmetric attractor
  *
- * Example: ./tsm-sprott-thomas-dbg 9 32 10 0.01 30000 1 0 0 4.75 1
- *
  * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
