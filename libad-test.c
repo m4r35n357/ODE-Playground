@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
+#include <stdio.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 #include "ad.h"
@@ -89,10 +89,10 @@ int main (int argc, char **argv) {
     mpfr_t PI_2;
 
     PRINT_ARGS(argc, argv);
-    assert(argc == 5 || argc == 6);
+    CHECK(argc == 5 || argc == 6);
     mpfr_set_default_prec((int)strtol(argv[1], NULL, BASE));
     n = (int)strtol(argv[2], NULL, BASE);
-    assert(n > 1);
+    CHECK(n > 1);
     libad_test_init();
     series x = t_jet(n + 1);
     mpfr_init_set_str(x[0], argv[3], BASE, RND);

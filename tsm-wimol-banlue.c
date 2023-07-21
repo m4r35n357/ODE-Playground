@@ -5,14 +5,14 @@
  */
 
 #include <stdlib.h>
-#include <assert.h>
+#include <stdio.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 
 struct Parameters { mpfr_t a; series tx, s2x, _A; };
 
 parameters *get_p (int argc, char **argv, int n) {
-    assert(argc == 10);
+    CHECK(argc == 10);
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->a);
     p->tx = t_jet(n);

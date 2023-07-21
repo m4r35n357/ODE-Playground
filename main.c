@@ -4,7 +4,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 

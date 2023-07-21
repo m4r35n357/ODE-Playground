@@ -5,14 +5,14 @@
  */
 
 #include <stdlib.h>
-#include <assert.h>
+#include <stdio.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 
 struct Parameters { mpfr_t sigma, rho, beta, _; };
 
 parameters *get_p (int argc, char **argv, int n) { (void)n;
-    assert(argc == 13);
+    CHECK(argc == 13);
     parameters *p = malloc(sizeof (parameters));
     t_params(argv, argc, &p->sigma, &p->rho, &p->beta, &p->_);
     mpfr_div(p->beta, p->beta, p->_, RND);
