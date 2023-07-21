@@ -1,13 +1,14 @@
 #!/bin/sh
 #
-#  (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 
-echo "CNS duration vs Integrator Order: [$0 $*]" >&2
+args="$0 $*"
+echo "args: \033[1;37m$(($# + 1))\033[0;37m, [ \033[0;35m$args\033[0;37m ]" >&2
 
-min_order=$1
-max_order=$2
-threshold=$3
-shift 3
+max=$1
+threshold=$2
+shift 2
+original=$*
 
 case $4 in
     "_")  ;;
@@ -16,12 +17,10 @@ esac
 
 . ./cns-functions.sh
 
-processed="$(get_precision $*)"
-
-n=$min_order
-while [ $n -le $max_order ]
+n=2
+while [ $n -le $max ]
 do
-    set $processed
+    set $original
     begin="$1 $2 $3"
     shift 4
     current="$begin $n $*"
@@ -36,14 +35,20 @@ do
             echo $n $4 $6;;
     esac
     n=$((n + 1))
-done 2>/dev/null
+done 2>/dev/null | tee /tmp/$USER/data
 
  /usr/bin/gnuplot -p << EOF
+set terminal wxt background rgb "grey85"
+set title noenhanced '$args'
 set key left
 set ytics nomirror
 set y2tics
 set xlabel 'Taylor Series Order'
-set ylabel 'CNS Time, model units'
+set ylabel 'Clean Simulation Time, model units'
 set y2label 'CPU Time, seconds'
+set style fill solid border -1
+set xrange [0:]
+set yrange [0:]
+set y2range [0:]
 plot '/tmp/$USER/data' using 1:2 axes x1y1 title 'CNS' with boxes, '' u 1:3 axes x1y2 t 'CPU' w boxes
 EOF

@@ -32,7 +32,7 @@ endif
 %.o: %.c
 	$(CC) $(CFLAGS) -MT $@ -MMD -MP -c -o $@ $< $(WARNINGS)
 
-all: tsm-std tests
+all: tsm-std divergence tests
 
 
 tsm-%-std: tsm-%.o taylor-ode.o main.o
@@ -42,7 +42,7 @@ tsm-std: tsm-bouali-std tsm-burke-shaw-std tsm-genesio-tesi-std tsm-halvorsen-st
 
 
 divergence: divergence.o
-	$(CC) $(CFLAGS) -o $@ $< $(LIB_STD)
+	$(CC) $(CFLAGS) -o $@ $< $(LIB_STD) -lm
 
 
 libad-test: libad-test.o taylor-ode.o ad.o
