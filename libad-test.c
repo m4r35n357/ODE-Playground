@@ -145,7 +145,7 @@ int main (int argc, char **argv) {
     bool positive = mpfr_sgn(x[0]) > 0, non_zero = mpfr_zero_p(x[0]) == 0, lt_pi_2 = mpfr_cmpabs(x[0], PI_2) < 0;
     series r1 = t_jet(n), r2 = t_jet(n), r3 = t_jet(n), S1 = t_const(n, D1);
     series abs_x = t_jet(n), inv_x = t_jet(n), sqrt_x = t_jet(n), ln_x = t_jet(n);
-    ad_abs(abs_x, x);
+    if (non_zero) ad_abs(abs_x, x);
     if (non_zero) ad_inv(inv_x, x);
     if (positive) ad_sqrt(sqrt_x, x);
     if (positive) ad_ln(ln_x, x);

@@ -130,21 +130,21 @@ case $model in
             --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  '6!0..36!3' '53!63!113!^237' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '0.0' '0.0' '1.0') ;;
+                '1.0' '0.1' '0.1' '1.0') ;;
         CNS) ./cns $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  'step2!nosim' '1.0' './tsm-wimol-banlue-std' \
                 '6!0..36!3' '53!63!113!^237' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '0.0' '0.0' '1.0') ;;
+                '1.0' '0.1' '0.1' '1.0') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  '32!2..64!1' '1.0' './tsm-wimol-banlue-std' \
                 '6!0..36!3' '53!63!113!^237' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '0.0' '0.0' '1.0') ;;
+                '1.0' '0.1' '0.1' '1.0') ;;
     esac ;;
     YuWang) case $analysis in
         Gnuplot) ./plot ./tsm-yu-wang-std $(yad --columns=2 --title="Yu-Wang" --form --separator=" " --align=right \
