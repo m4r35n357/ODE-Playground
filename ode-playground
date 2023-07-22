@@ -109,7 +109,7 @@ case $model in
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="b" \
             --  '32!2..64!1' '1.0' './tsm-thomas-std' \
-                '6!0..36!3' '_' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                '6!0..36!3' '_' '.1!0.001..0.1!0.001!3' '16000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '0.185') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Model":RO \
@@ -190,33 +190,33 @@ case $model in
             --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '0.0' '0.0' '1.0') ;;
+                '1.0' '0.1' '0.1' '1.0') ;;
         Gnuplot) ./plot ./tsm-wimol-banlue-std $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '0.0' '0.0' '1.0') ;;
+                '1.0' '0.1' '0.1' '1.0') ;;
         CNS) ./cns $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  'step2!nosim' '1.0' './tsm-wimol-banlue-std' \
                 '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '0.0' '0.0' '1.0') ;;
+                '1.0' '0.1' '0.1' '1.0') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  '32!2..64!1' '1.0' './tsm-wimol-banlue-std' \
                 '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '0.0' '0.0' '1.0') ;;
+                '1.0' '0.1' '0.1' '1.0') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a":RO \
             --  '0.0' '1.0' '10000!20000!50000!100000' './tsm-wimol-banlue-std' \
                 '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '0.0' '0.0' '$p') ;;
+                '1.0' '0.1' '0.1' '$p') ;;
     esac ;;
     YuWang) case $analysis in
         GLplot) ./tsm-yu-wang-gl $(yad --columns=2 --title="Yu-Wang" --form --separator=" " --align=right \
