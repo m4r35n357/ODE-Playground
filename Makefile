@@ -55,7 +55,7 @@ tests: libad-test
 
 test:
 	@for x in -.5 0 .5; do \
-		./libad-test 237 20 $$x 1e-15 >/dev/null || exit 1; echo ""; \
+		./libad-test 237 20 $$x 1e-64 >/dev/null || exit 1; echo ""; \
 	done
 	@echo "\033[1;37mCore Tests Passed\033[0;37m\n"
 
