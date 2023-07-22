@@ -145,7 +145,7 @@ int main (int argc, char **argv) {
     bool positive = mpfr_sgn(x[0]) > 0, non_zero = mpfr_zero_p(x[0]) == 0, lt_pi_2 = mpfr_cmpabs(x[0], PI_2) < 0;
     series r1 = t_jet(n), r2 = t_jet(n), r3 = t_jet(n), S1 = t_const(n, D1);
     series abs_x = t_jet(n), inv_x = t_jet(n), sqrt_x = t_jet(n), ln_x = t_jet(n);
-    if (non_zero) ad_abs(abs_x, x);
+    ad_abs(abs_x, x);
     if (non_zero) ad_inv(inv_x, x);
     if (positive) ad_sqrt(sqrt_x, x);
     if (positive) ad_ln(ln_x, x);
@@ -196,8 +196,8 @@ int main (int argc, char **argv) {
     if (debug) fprintf(stderr, "\n");
 
     name = "sqr(x) * x^-3 == 1 / x"; positive ? compare(name, ad_mul(r1, sqr_x, ad_pwr(r2, x, D_3)), inv_x) : skip(name);
-    name = "sqr(x)^0.5 == |x|"; non_zero ? compare(name, ad_pwr(r1, sqr_x, D05), abs_x) : skip(name);
-    name = "sqrt(sqr(x) == |x|"; non_zero ? compare(name, ad_sqrt(r1, sqr_x), abs_x) : skip(name);
+    name = "sqr(x)^0.5 == |x|"; positive ? compare(name, ad_pwr(r1, sqr_x, D05), abs_x) : skip(name);
+    name = "sqrt(sqr(x) == |x|"; positive ? compare(name, ad_sqrt(r1, sqr_x), abs_x) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
 

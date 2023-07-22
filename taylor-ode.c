@@ -112,7 +112,6 @@ static mpfr_t *_log (series f, series du_df, series u, int k, bool neg, mpfr_t *
 }
 
 mpfr_t *t_abs (series u, int k) {
-    CHECK(mpfr_zero_p(u[0]) == 0);
     mpfr_sgn(u[0]) < 0 ? mpfr_neg(_abs, u[k], RND) : mpfr_set(_abs, u[k], RND);
     return &_abs;
 }
