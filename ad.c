@@ -49,7 +49,6 @@ series ad_abs (series a, series u) {
 series ad_mul (series p, series u, series v) {
     for (int k = 0; k < order; k++) {
         mpfr_set(p[k], *t_mul(u, v, k), RND);
-        //fprintf(stderr, "ad_mul %d\n", k);
     }
     return p;
 }
