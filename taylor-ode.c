@@ -17,11 +17,6 @@ static mpfr_t _, __, _abs, _mul, _sqr;
 
 static char template[60];
 
-void t_init (int places) {
-    sprintf(template, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", places, places, places);
-    mpfr_inits( _, __, _abs, _mul, _sqr, NULL);
-}
-
 void t_params (char **argv, int argc, ...) {
     PRINT_ARGS(argc, argv);
     va_list model;
@@ -58,7 +53,9 @@ mpfr_t *t_horner (series s, int n, mpfr_t h) {
     return &_;
 }
 
-void tsm (int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0, parameters *p, clock_t t0) {
+void tsm (int places, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0, parameters *p, clock_t t0) {
+    sprintf(template, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", places, places, places);
+    mpfr_inits( _, __, _abs, _mul, _sqr, NULL);
     series x = t_jet(n + 1); mpfr_set(x[0], x0, RND);
     series y = t_jet(n + 1); mpfr_set(y[0], y0, RND);
     series z = t_jet(n + 1); mpfr_set(z[0], z0, RND);

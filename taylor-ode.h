@@ -47,11 +47,6 @@ extern const int BASE;
 extern const mpfr_rnd_t RND;
 
 /*
- * Pre-allocates some local MPFR variables
- */
-void t_init (int dp);
-
-/*
  * Type for Taylor Series coordinate jets
  */
 typedef mpfr_t *series;
@@ -111,7 +106,7 @@ mpfr_t *t_horner (series S, int n, mpfr_t h);
  *
  * 2. Apply Horner's method to calculate the new values x(t0 + h), which become X[0] for the next time step.
  */
-void tsm (int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0, parameters *P, clock_t since);
+void tsm (int places, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0, parameters *P, clock_t since);
 
 /*
  * For returning x, y, z velocities from the model

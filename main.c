@@ -12,7 +12,6 @@ int main (int argc, char **argv) {
     mpfr_set_default_prec((mpfr_prec_t)strtol(argv[2], NULL, BASE));
     fprintf(stderr, " MPFR default precision: %lu bits\n", mpfr_get_default_prec());
     int order = (int)strtol(argv[3], NULL, BASE);
-    t_init(display_precision);
 
     mpfr_t step_size, x0, y0, z0;
     mpfr_init_set_str(step_size, argv[4], BASE, RND);
@@ -22,7 +21,7 @@ int main (int argc, char **argv) {
     mpfr_init_set_str(y0, argv[7], BASE, RND);
     mpfr_init_set_str(z0, argv[8], BASE, RND);
 
-    tsm(order, step_size, steps, x0, y0, z0, get_p(argc, argv, order), clock());
+    tsm(display_precision, order, step_size, steps, x0, y0, z0, get_p(argc, argv, order), clock());
 
     return 0;
 }

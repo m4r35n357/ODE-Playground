@@ -24,13 +24,12 @@
 #define RED "\x1B[1;31m"
 #define CYN "\x1B[0;36m"
 
-static int n, debug = 0, total = 0, passed = 0, skipped = 0;
+static int display_places, n, debug = 0, total = 0, passed = 0, skipped = 0;
 
 static mpfr_t delta, tolerance, D0, D01, D05, D_05, D1, D_1, D2, D_2, D3, D_3;
 
 static void libad_test_init (void) {
     ad_init(n);
-    t_init(12);
     mpfr_init(delta);
     mpfr_init_set_si(D0, 0, RND);
     mpfr_init_set_str(D01, "0.1", BASE, RND);
@@ -89,24 +88,36 @@ int main (int argc, char **argv) {
     mpfr_t PI_2;
 
     PRINT_ARGS(argc, argv);
-    CHECK(argc == 5 || argc == 6);
-    mpfr_set_default_prec((int)strtol(argv[1], NULL, BASE));
-    n = (int)strtol(argv[2], NULL, BASE);
+    CHECK(argc == 6 || argc == 7);
+    display_places = (int)strtol(argv[1], NULL, BASE);
+    mpfr_set_default_prec((int)strtol(argv[2], NULL, BASE));
+    n = (int)strtol(argv[3], NULL, BASE);
     CHECK(n > 1);
     libad_test_init();
     series x = t_jet(n + 1);
-    mpfr_init_set_str(x[0], argv[3], BASE, RND);
+    mpfr_init_set_str(x[0], argv[4], BASE, RND);
     for (int k = 1; k <= n; k++) {
         mpfr_div_si(x[k], x[0], k * k, RND);
     }
-    mpfr_init_set_str(tolerance, argv[4], BASE, RND);
-    if (argc == 6) debug = (int)strtol(argv[5], NULL, BASE);
+    mpfr_init_set_str(tolerance, argv[5], BASE, RND);
+    if (argc == 7) debug = (int)strtol(argv[6], NULL, BASE);
 
     mpfr_init(PI_2);
     mpfr_const_pi(PI_2, RND);
     mpfr_div_2si(PI_2, PI_2, 1, RND);
 
-    fprintf(stderr, "%sHorner Summation %s", WHT, NRM);
+    fprintf(stderr, "%sTaylor Series Method %s", WHT, NRM);
+    int steps = 10;
+    tsm(display_places, n, D01, steps, D1, D1, D1, get_p(argc, argv, n), clock());
+    fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);
+    mpfr_t e1, e0, e_1;
+    mpfr_inits(e1, e0, e_1, NULL);
+    mpfr_exp(e1, D1, RND);
+    mpfr_exp(e0, D0, RND);
+    mpfr_exp(e_1, D_1, RND);
+    t_out(e1, e0, e_1, D01, steps, 0.0F);
+
+    fprintf(stderr, "%sHorner Summation %s\n", WHT, NRM);
     series p = t_jet(n >= 7 ? n : 7);
     mpfr_set_si(p[0], 1, RND);
     mpfr_set_si(p[1], 3, RND);
@@ -129,17 +140,6 @@ int main (int argc, char **argv) {
     mpfr_set_si(p[6], 0, RND);
     mpfr_set_si(p[7], -2, RND);
     mpfr_fprintf(stdout, "201 %8.3RNf\n", *t_horner(p, 7, D_2));
-
-    fprintf(stderr, "%sTaylor Series Method %s", WHT, NRM);
-    int steps = 10;
-    tsm(n, D01, steps, D1, D1, D1, get_p(argc, argv, n), clock());
-    fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);
-    mpfr_t e1, e0, e_1;
-    mpfr_inits(e1, e0, e_1, NULL);
-    mpfr_exp(e1, D1, RND);
-    mpfr_exp(e0, D0, RND);
-    mpfr_exp(e_1, D_1, RND);
-    t_out(e1, e0, e_1, D01, steps, 0.0F);
 
     fprintf(stderr, "%sRecurrence Relations: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, mpfr_get_ld(x[0], RND), NRM);
     bool positive = mpfr_sgn(x[0]) > 0, non_zero = mpfr_zero_p(x[0]) == 0, lt_pi_2 = mpfr_cmpabs(x[0], PI_2) < 0;
