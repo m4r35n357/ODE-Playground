@@ -97,8 +97,8 @@ kerr-image: kerr-image.o
 
 test:
 	@for x in -.5 0 .5; do \
-		./libad-test 20 $$x 1e-15 >/dev/null || exit 1; echo ""; \
-		./libdual-test $$x 1e-15 >/dev/null || exit 1; echo ""; \
+		./libad-test 9 20 $$x 1e-15 >/dev/null || exit 1; echo ""; \
+		./libdual-test 9 $$x 1e-15 >/dev/null || exit 1; echo ""; \
 	done
 	@echo "\033[1;37mCore Tests Passed\033[0;37m\n"
 

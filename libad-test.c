@@ -16,7 +16,7 @@
 #define RED "\x1B[1;31m"
 #define CYN "\x1B[0;36m"
 
-static int n, debug = 0, total = 0, passed = 0, skipped = 0;
+static int dp, n, debug = 0, total = 0, passed = 0, skipped = 0;
 
 static real delta, tolerance;
 
@@ -75,12 +75,12 @@ static void compare (char* name, series a, series b) {
     for (int k = 0; k < n; k++) {
         delta = a[k] - b[k];
         if (!isfinite(delta) || fabsl(delta) > tolerance) {
-            fprintf(stderr, "%s FAIL%s %s\n  k=%d  LHS: %+.18Le  RHS: %+.18Le  (%+.3Le)\n", RED, NRM, name, k, a[k], b[k], delta);
+            fprintf(stderr, "%s FAIL%s %s\n  k=%d  LHS: %+.*Le  RHS: %+.*Le  (%+.3Le)\n", RED, NRM, name, k, dp, a[k], dp, b[k], delta);
             return;
         }
         if (debug >= 2) {
             if (!k) fprintf(stderr, "\n");
-            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.18Le %+.18Le  (%+.3Le)\n", NRM, NRM, k, a[k], b[k], delta);
+            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.*Le %+.*Le  (%+.3Le)\n", NRM, NRM, k, dp, a[k], dp, b[k], delta);
         }
     }
     if (debug) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
@@ -89,16 +89,17 @@ static void compare (char* name, series a, series b) {
 
 int main (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
-    CHECK(argc == 4 || argc == 5);
+    CHECK(argc == 5 || argc == 6);
 
-    n = (int)strtol(argv[1], NULL, BASE); CHECK(n > 8);
+    dp = (int)strtol(argv[1], NULL, BASE);
+    n = (int)strtol(argv[2], NULL, BASE); CHECK(n > 8);
     series x = t_jet(n + 1);
     for (int k = 0; k <= n; k++) {
-        x[k] = !k ? strtold(argv[2], NULL) : x[0] / (k * k);
+        x[k] = !k ? strtold(argv[3], NULL) : x[0] / (k * k);
     }
-    tolerance = strtold(argv[3], NULL); CHECK(tolerance > 0.0L);
-    if (argc == 5) {
-        debug = (int)strtol(argv[4], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
+    tolerance = strtold(argv[4], NULL); CHECK(tolerance > 0.0L);
+    if (argc == 6) {
+        debug = (int)strtol(argv[5], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
     }
 
     fprintf(stderr, "%sHorner Summation %s", WHT, NRM);

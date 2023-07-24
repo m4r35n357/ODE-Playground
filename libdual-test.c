@@ -16,7 +16,7 @@
 #define RED "\x1B[1;31m"
 #define CYN "\x1B[0;36m"
 
-static int debug = 0, total = 0, passed = 0, skipped = 0;
+static int dp, debug = 0, total = 0, passed = 0, skipped = 0;
 
 static real delta_val, delta_dot, tolerance;
 
@@ -30,29 +30,30 @@ static void compare (char* name, dual a, dual b) {
     total++;
     delta_val = a.val - b.val;
     if (fabsl(delta_val) > tolerance) {
-        fprintf(stderr, "%s FAIL%s %s\n  VAL  LHS: %+.18Le  RHS: %+.18Le  (%+.3Le)\n", RED, NRM, name, a.val, b.val, delta_val);
+        fprintf(stderr, "%s FAIL%s %s\n  VAL  LHS: %+.*Le  RHS: %+.*Le  (%+.3Le)\n", RED, NRM, name, dp, a.val, dp, b.val, delta_val);
         return;
     }
     delta_dot = a.dot - b.dot;
     if (fabsl(delta_dot) > tolerance) {
-        fprintf(stderr, "%s FAIL%s %s\n  DOT  LHS: %+.18Le  RHS: %+.18Le  (%+.3Le)\n", RED, NRM, name, a.dot, b.dot, delta_dot);
+        fprintf(stderr, "%s FAIL%s %s\n  DOT  LHS: %+.*Le  RHS: %+.*Le  (%+.3Le)\n", RED, NRM, name, dp, a.dot, dp, b.dot, delta_dot);
         return;
     }
     if (debug >= 2) fprintf(stderr, "\n");
-    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.18Le %+.18Le  diff %+.3Le\n", NRM, NRM, a.val, b.val, delta_val);
-    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.18Le %+.18Le  diff %+.3Le\n", NRM, NRM, a.dot, b.dot, delta_dot);
+    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.*Le %+.*Le  diff %+.3Le\n", NRM, NRM, dp, a.val, dp, b.val, delta_val);
+    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.*Le %+.*Le  diff %+.3Le\n", NRM, NRM, dp, a.dot, dp, b.dot, delta_dot);
     if (debug) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
     passed++;
 }
 
 int main (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
-    CHECK(argc == 3 || argc == 4);
+    CHECK(argc == 4 || argc == 5);
 
-    dual x = d_var(strtold(argv[1], NULL));
-    tolerance = strtold(argv[2], NULL); CHECK(tolerance > 0.0L);
-    if (argc == 4) {
-        debug = (int)strtol(argv[3], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
+    dp = (int)strtol(argv[1], NULL, BASE);
+    dual x = d_var(strtold(argv[2], NULL));
+    tolerance = strtold(argv[3], NULL); CHECK(tolerance > 0.0L);
+    if (argc == 5) {
+        debug = (int)strtol(argv[4], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
     }
 
     fprintf(stderr, "%sDual Numbers %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x.val, NRM);
