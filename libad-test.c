@@ -24,7 +24,7 @@
 #define RED "\x1B[1;31m"
 #define CYN "\x1B[0;36m"
 
-static int display_places, n, debug = 0, total = 0, passed = 0, skipped = 0;
+static int dp, n, debug = 0, total = 0, passed = 0, skipped = 0;
 
 static mpfr_t delta, tolerance, D0, D01, D05, D_05, D1, D_1, D2, D_2, D3, D_3;
 
@@ -70,14 +70,14 @@ static void compare (char* name, series a, series b) {
     for (int k = 0; k < n; k++) {
         mpfr_sub(delta, a[k], b[k], RND);
         if (mpfr_number_p(delta) == 0 || mpfr_cmpabs(delta, tolerance) > 0) {
-            fprintf(stderr, "%s FAIL%s %s  k=%d  LHS: %.6e  RHS: %.6e  (%.3e)\n",
-                    RED, NRM, name, k, mpfr_get_d(a[k], RND), mpfr_get_d(b[k], RND), mpfr_get_d(delta, RND));
+            fprintf(stderr, "%s FAIL%s %s  k=%d  LHS: %.*e  RHS: %.*e  (%.3e)\n",
+                    RED, NRM, name, k, dp, mpfr_get_d(a[k], RND), dp, mpfr_get_d(b[k], RND), mpfr_get_d(delta, RND));
             return;
         }
         if (debug >= 2) {
             if (k == 0) fprintf(stderr, "\n");
-            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.6e %+.6e  (%+.3e)\n",
-                    NRM, NRM, k, mpfr_get_d(a[k], RND), mpfr_get_d(b[k], RND), mpfr_get_d(delta, RND));
+            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.*e %+.*e  (%+.3e)\n",
+                    NRM, NRM, k, dp, mpfr_get_d(a[k], RND), dp, mpfr_get_d(b[k], RND), mpfr_get_d(delta, RND));
         }
     }
     if (debug >= 1) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
@@ -89,7 +89,7 @@ int main (int argc, char **argv) {
 
     PRINT_ARGS(argc, argv);
     CHECK(argc == 6 || argc == 7);
-    display_places = (int)strtol(argv[1], NULL, BASE);
+    dp = (int)strtol(argv[1], NULL, BASE);
     mpfr_set_default_prec((int)strtol(argv[2], NULL, BASE));
     n = (int)strtol(argv[3], NULL, BASE);
     CHECK(n > 1);
@@ -106,9 +106,9 @@ int main (int argc, char **argv) {
     mpfr_const_pi(PI_2, RND);
     mpfr_div_2si(PI_2, PI_2, 1, RND);
 
-    fprintf(stderr, "%sTaylor Series Method %s", WHT, NRM);
+    fprintf(stderr, "%sTaylor Series Method %s\n", WHT, NRM);
     int steps = 10;
-    tsm(display_places, n, D01, steps, D1, D1, D1, get_p(argc, argv, n), clock());
+    tsm(dp, n, D01, steps, D1, D1, D1, get_p(argc, argv, n), clock());
     fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);
     mpfr_t e1, e0, e_1;
     mpfr_inits(e1, e0, e_1, NULL);
