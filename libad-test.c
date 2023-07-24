@@ -85,22 +85,19 @@ static void compare (char* name, series a, series b) {
 }
 
 int main (int argc, char **argv) {
-    mpfr_t PI_2;
-
     PRINT_ARGS(argc, argv);
     CHECK(argc == 6 || argc == 7);
+
+    mpfr_t PI_2;
     dp = (int)strtol(argv[1], NULL, BASE);
     mpfr_set_default_prec((int)strtol(argv[2], NULL, BASE));
-    n = (int)strtol(argv[3], NULL, BASE);
-    CHECK(n > 1);
+    n = (int)strtol(argv[3], NULL, BASE); CHECK(n > 8);
     libad_test_init();
     series x = t_jet(n + 1);
     mpfr_init_set_str(x[0], argv[4], BASE, RND);
-    for (int k = 1; k <= n; k++) {
-        mpfr_div_si(x[k], x[0], k * k, RND);
-    }
-    mpfr_init_set_str(tolerance, argv[5], BASE, RND);
-    if (argc == 7) debug = (int)strtol(argv[6], NULL, BASE);
+    for (int k = 1; k <= n; k++) mpfr_div_si(x[k], x[0], k * k, RND);
+    mpfr_init_set_str(tolerance, argv[5], BASE, RND); CHECK(mpfr_sgn(tolerance) > 0);
+    if (argc == 7) debug = (int)strtol(argv[6], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
 
     mpfr_init(PI_2);
     mpfr_const_pi(PI_2, RND);
@@ -118,7 +115,7 @@ int main (int argc, char **argv) {
     t_out(e1, e0, e_1, D01, steps, 0.0F);
 
     fprintf(stderr, "%sHorner Summation %s\n", WHT, NRM);
-    series p = t_jet(n >= 7 ? n : 7);
+    series p = t_jet(n);
     mpfr_set_si(p[0], 1, RND);
     mpfr_set_si(p[1], 3, RND);
     mpfr_set_si(p[2], 0, RND);
