@@ -18,13 +18,13 @@ parameters *get_p (int argc, char **argv, int n) { (void)n;
     return p;
 }
 
-void ode (components *vk, series x, series y, series z, parameters *p, int k) {
+void ode (components *v_k, series x, series y, series z, parameters *p, int k) {
     //  x' = - S(x + y)
-    mpfr_fmma(vk->x, p->s, x[k], p->s, y[k], RND);
-    mpfr_neg(vk->x, vk->x, RND);
+    mpfr_fmma(v_k->x, p->s, x[k], p->s, y[k], RND);
+    mpfr_neg(v_k->x, v_k->x, RND);
     //  y' = - (Sxz + y)
-    mpfr_fma(vk->y, p->s, *t_mul(x, z, k), y[k], RND);
-    mpfr_neg(vk->y, vk->y, RND);
+    mpfr_fma(v_k->y, p->s, *t_mul(x, z, k), y[k], RND);
+    mpfr_neg(v_k->y, v_k->y, RND);
     //  z' = Sxy + V
-    mpfr_fma(vk->z, p->s, *t_mul(x, y, k), p->v, RND);
+    mpfr_fma(v_k->z, p->s, *t_mul(x, y, k), p->v, RND);
 }

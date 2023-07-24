@@ -58,14 +58,14 @@ void tsm (int places, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z
     series x = t_jet(n + 1); mpfr_set(x[0], x0, RND);
     series y = t_jet(n + 1); mpfr_set(y[0], y0, RND);
     series z = t_jet(n + 1); mpfr_set(z[0], z0, RND);
-    components *vk = malloc(sizeof (components)); CHECK(vk);
-    mpfr_inits(vk->x, vk->y, vk->z, NULL);
+    components *v_k = malloc(sizeof (components)); CHECK(v_k);
+    mpfr_inits(v_k->x, v_k->y, v_k->z, NULL);
     for (int step = 0; step < steps; step++) {
         for (int k = 0; k < n; k++) {
-            ode(vk, x, y, z, p, k);
-            mpfr_div_si(x[k + 1], vk->x, k + 1, RND);
-            mpfr_div_si(y[k + 1], vk->y, k + 1, RND);
-            mpfr_div_si(z[k + 1], vk->z, k + 1, RND);
+            ode(v_k, x, y, z, p, k);
+            mpfr_div_si(x[k + 1], v_k->x, k + 1, RND);
+            mpfr_div_si(y[k + 1], v_k->y, k + 1, RND);
+            mpfr_div_si(z[k + 1], v_k->z, k + 1, RND);
         }
         t_out(x[0], y[0], z[0], h, step, t0);
         mpfr_swap(x[0], *t_horner(x, n, h));
