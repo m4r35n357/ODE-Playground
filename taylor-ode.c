@@ -26,8 +26,7 @@ void t_params (char **argv, int argc, ...) {
 }
 
 series t_jet (int n) {
-    mpfr_t *s = calloc((size_t)n, sizeof (mpfr_t));
-    CHECK(s);
+    mpfr_t *s = calloc((size_t)n, sizeof (mpfr_t)); CHECK(s);
     for (int i = 0; i <= n; i++) mpfr_init(s[i]);
     return s;
 }
@@ -59,7 +58,7 @@ void tsm (int places, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z
     series x = t_jet(n + 1); mpfr_set(x[0], x0, RND);
     series y = t_jet(n + 1); mpfr_set(y[0], y0, RND);
     series z = t_jet(n + 1); mpfr_set(z[0], z0, RND);
-    components *vk = malloc(sizeof (components));
+    components *vk = malloc(sizeof (components)); CHECK(vk);
     mpfr_inits(vk->x, vk->y, vk->z, NULL);
     for (int step = 0; step < steps; step++) {
         for (int k = 0; k < n; k++) {
