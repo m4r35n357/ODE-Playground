@@ -184,14 +184,6 @@ int main (int argc, char **argv) {
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "x^2 == sqr(x)"; positive ? compare(name, ad_ipwr(r1, x, 2), sqr_x) : skip(name);
-    name = "x^1 == x"; positive ? compare(name, ad_ipwr(r1, x, 1), x) : skip(name);
-    name = "x^0 == 1"; positive ? compare(name, ad_ipwr(r1, x, 0), S1) : skip(name);
-    name = "x^-1 == 1 / x"; positive ? compare(name, ad_ipwr(r1, x, -1), inv_x) : skip(name);
-    name = "x^-2 == 1 / sqr(x)"; positive ? compare(name, ad_ipwr(r1, x, -2), ad_inv(r2, sqr_x)) : skip(name);
-
-    if (debug) fprintf(stderr, "\n");
-
     name = "sqr(x) * x^-3 == 1 / x"; positive ? compare(name, ad_mul(r1, sqr_x, ad_pwr(r2, x, D_3)), inv_x) : skip(name);
     name = "sqr(x)^0.5 == |x|"; positive ? compare(name, ad_pwr(r1, sqr_x, D05), abs_x) : skip(name);
     name = "sqrt(sqr(x) == |x|"; positive ? compare(name, ad_sqrt(r1, sqr_x), abs_x) : skip(name);

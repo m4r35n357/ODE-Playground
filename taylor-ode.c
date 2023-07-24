@@ -198,21 +198,6 @@ mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {
     return &p[k];
 }
 
-mpfr_t *t_ipwr (series p, series u, int a, int k) {
-    CHECK(mpfr_sgn(u[0]) > 0); CHECK(p != u);
-    if (!k) mpfr_pow_si(p[k], u[k], a, RND);
-    else {
-        mpfr_set_zero(p[k], 1);
-        for (int j = 0; j < k; j++) {
-            mpfr_mul_si(_, u[k - j], a * (k - j) - j, RND);
-            mpfr_fma(p[k], p[j], _, p[k], RND);
-        }
-        mpfr_div_si(p[k], p[k], k, RND);
-        mpfr_div(p[k], p[k], u[0], RND);
-    }
-    return &p[k];
-}
-
 mpfr_t *t_ln (series l, series u, int k) {
     CHECK(mpfr_sgn(u[0]) > 0); CHECK(l != u);
     !k ? mpfr_log(l[k], u[k], RND) : mpfr_set(l[k], *_log(l, u, u, k, false, &_, &__), RND);

@@ -155,8 +155,6 @@ pair t_tan_sec2 (series T, series S2, series U, int k, bool trig);
  */
 mpfr_t *t_pwr (series P, series U, mpfr_t a, int k);
 
-mpfr_t *t_ipwr (series p, series u, int a, int k);
-
 /*
  * Returns a pointer to kth element of the natural logarithm of U, results stored in user-supplied jet L, DOMAIN RESTRICTION U[0] > 0.0
  */
