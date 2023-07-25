@@ -54,9 +54,7 @@ tests: libad-test
 .PHONY: test clean depclean ctags ctags-system ctags-system-all coverage
 
 test:
-	@for x in -.5 0 .5; do \
-		./libad-test 15 237 20 $$x 1e-64 >/dev/null || exit 1; echo ""; \
-	done
+	@for x in -.5 0 .5; do ./libad-test 15 237 20 $$x 1e-64 >/dev/null || exit 1; echo ""; done
 	@echo "\033[1;37mCore Tests Passed\033[0;37m\n"
 
 test-all: test
@@ -75,8 +73,7 @@ ctags-system-all:
 	@/usr/bin/ctags -R --c-kinds=+p --fields=+iaS --extras=+q /usr/include .
 
 clean:
-	@rm -rf *.o *.gcda *.gcno *-std *-gl h-kerr-gen-light h-kerr-gen-particle divergence libad-test libdual-test \
-		coverage* gmon.out
+	@rm -rf *.o *.gcda *.gcno *-std *-gl h-kerr-gen-light h-kerr-gen-particle divergence libad-test libdual-test coverage* gmon.out
 
 depclean: clean
 	@rm -f *.d

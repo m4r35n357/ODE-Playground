@@ -33,10 +33,8 @@ series t_jet (int n) {
 
 mpfr_t *t_const (int n, mpfr_t a) {
     series c = t_jet(n);
-    for (int k = 0; k < n; k++) {
-        if (!k) mpfr_set(c[k], a, RND);
-        else mpfr_set_zero(c[k], 1);
-    }
+    mpfr_set(c[0], a, RND);
+    for (int k = 1; k < n; k++) mpfr_set_zero(c[k], 1);
     return c;
 }
 
