@@ -19,7 +19,7 @@ parameters *get_p (int argc, char **argv, int n) {
     return p;
 }
 
-void ode (components *v_k, series x, series y, series z, parameters *p, int k) {
+void ode (triplet *v_k, series x, series y, series z, parameters *p, int k) {
     //  x' = Ax(1 - y) - Bz
     mpfr_fmms(v_k->x, p->a, x[k], p->a, *t_mul(x, y, k), RND);
     mpfr_fms(v_k->x, p->b, z[k], v_k->x, RND);

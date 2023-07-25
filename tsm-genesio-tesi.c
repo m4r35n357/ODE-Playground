@@ -18,7 +18,7 @@ parameters *get_p (int argc, char **argv, int n) { (void)n;
     return p;
 }
 
-void ode (components *v_k, series x, series y, series z, parameters *p, int k) {
+void ode (triplet *v_k, series x, series y, series z, parameters *p, int k) {
     //  x' = y
     mpfr_set(v_k->x, y[k], RND);
     //  y' = z

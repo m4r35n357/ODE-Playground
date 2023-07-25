@@ -18,7 +18,7 @@ parameters *get_p (int argc, char **argv, int n) { (void)n;
     return p;
 }
 
-void ode (components *v_k, series x, series y, series z, parameters *p, int k) {
+void ode (triplet *v_k, series x, series y, series z, parameters *p, int k) {
     //  x' = - Ax - By - Bz - y^2
     mpfr_fmma(v_k->x, p->b, y[k], p->b, z[k], RND);
     mpfr_fma(v_k->x, p->a, x[k], v_k->x, RND);

@@ -80,7 +80,7 @@ typedef struct {
     mpfr_t x;
     mpfr_t y;
     mpfr_t z;
-} components;
+} triplet;
 
 /*
  * Get a blob of parameter data from the model to be passed into ode()
@@ -91,7 +91,7 @@ parameters *get_p (int argc, char **argv, int order);
  * Calculate the kth components of the velocity jet V, using the coordinate jets and the parameter data,
  * together with the functions below as necessary.
  */
-void ode (components *V, series X, series Y, series Z, parameters *P, int k);
+void ode (triplet *V, series X, series Y, series Z, parameters *P, int k);
 
 /*
  * Basic Taylor Series functions

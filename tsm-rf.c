@@ -25,7 +25,7 @@ parameters *get_p (int argc, char **argv, int n) {
     return p;
 }
 
-void ode (components *v_k, series x, series y, series z, parameters *p, int k) {
+void ode (triplet *v_k, series x, series y, series z, parameters *p, int k) {
     //  x' = y(z - 1 + x^2) + Gx
     mpfr_sub(p->a[k], *t_sqr(x, k), p->_1[k], RND);
     mpfr_add(p->a[k], z[k], p->a[k], RND);

@@ -21,7 +21,7 @@ parameters *get_p (int argc, char **argv, int n) {
     return p;
 }
 
-void ode (components *v_k, series x, series y, series z, parameters *p, int k) {
+void ode (triplet *v_k, series x, series y, series z, parameters *p, int k) {
     //  x' = y - x
     mpfr_sub(v_k->x, y[k], x[k], RND);
     //  y' = - z * tan(x)

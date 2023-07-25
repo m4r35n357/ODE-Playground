@@ -21,7 +21,7 @@ parameters *get_p (int argc, char **argv, int n) {
     return p;
 }
 
-void ode (components *v_k, series x, series y, series z, parameters *p, int k) {
+void ode (triplet *v_k, series x, series y, series z, parameters *p, int k) {
     //  x' = sin(y) - Bx
     mpfr_fms(v_k->x, p->b, x[k], *t_sin_cos(p->sy, p->cy, y, k, true).a, RND);
     mpfr_neg(v_k->x, v_k->x, RND);
