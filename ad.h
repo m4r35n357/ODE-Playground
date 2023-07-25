@@ -7,21 +7,6 @@
  */
 
 /*
- * Solver method
- */
-typedef enum {NONE=0, NEWTON=2} solver;
-
-/*
- * Solver mode
- */
-typedef enum {ROOT=0, MIN_MAX=1, INFLECTION=2} mode;
-
-/*
- * Signature for solver model functions
- */
-typedef void (*model)(series, series);
-
-/*
  * Initialize file scoped temporary storage
  */
 void ad_init (int n);
