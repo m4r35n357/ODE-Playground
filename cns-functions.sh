@@ -8,12 +8,12 @@ fileB="/tmp/$USER/dataB"  # results of the requested simulation
 get_precision () {
     begin="$1 $2"
     case $3 in
-        single) p='23';;
-        double) p='53';;
-        ext*)   p='63';;
-        quad*)  p='113';;
-        oct*)   p='237';;
-        *)      p="$3";;
+        single)    p='23';;
+        double)    p='53';;
+        extended)  p='63';;
+        quadruple) p='113';;
+        octuple)   p='237';;
+        *)         p="$3";;
     esac
     shift 3
     echo "$begin $p $*"

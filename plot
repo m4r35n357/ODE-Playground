@@ -20,5 +20,8 @@ splot '$user_data' with lines
 EOF
 }
 
+. ./cns-functions.sh
+set "$(get_precision $*)"
+
 $* >$user_data
 plot
