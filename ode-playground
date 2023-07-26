@@ -31,14 +31,14 @@ case $model in
             --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
             --  'step2!nosim' '1.0' './tsm-lorenz-std' \
-                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '8!2..256!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '8!2..256!1' '.01!0.001..0.1!0.001!3' '20000!1..1000000!1000' \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
             --  '32!2..256!1' '1.0' './tsm-lorenz-std' \
-                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '_' '.01!0.001..0.1!0.001!3' '20000!1..1000000!1000' \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
     esac ;;
     Rossler) case $analysis in
@@ -115,14 +115,14 @@ case $model in
             --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  'step2!nosim' '1.0' './tsm-halvorsen-std' \
-                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '8!2..256!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '8!2..256!1' '.01!0.001..0.1!0.001!3' '25000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '1.4') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  '32!2..256!1' '1.0' './tsm-halvorsen-std' \
-                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '_' '.01!0.001..0.1!0.001!3' '25000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '1.4') ;;
     esac ;;
     WimolBanlue) case $analysis in
@@ -220,14 +220,14 @@ case $model in
             --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="kappa" \
             --  'step2!nosim' '1.0' './tsm-rucklidge-std' \
-                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '8!2..256!1' '.01!0.001..0.1!0.001!3' '40000!1..1000000!1000' \
+                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '8!2..256!1' '.01!0.001..0.1!0.001!3' '90000!1..1000000!1000' \
                 '1.0' '1.0' '1.0' '6.7' '2.0') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Rucklidge" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="kappa" \
             --  '32!2..256!1' '1.0' './tsm-rucklidge-std' \
-                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '_' '.01!0.001..0.1!0.01!3' '40000!1..1000000!1000' \
+                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '_' '.01!0.001..0.1!0.01!3' '90000!1..1000000!1000' \
                 '1.0' '1.0' '1.0' '6.7' '2.0') ;;
     esac ;;
     GenesioTesi) case $analysis in
