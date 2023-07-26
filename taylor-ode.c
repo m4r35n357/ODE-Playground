@@ -94,7 +94,7 @@ static mpfr_t *_exp_ (mpfr_t *_e, series df_du, series u, int k, mpfr_t *_du_dt,
     return _e;
 }
 
-static mpfr_t *_log_ (mpfr_t *_l, series f, series du_df, series u, int k, bool neg, mpfr_t *_df_dt) {
+static mpfr_t *_log_ (mpfr_t *_l, series f, series du_df, series u, int k, mpfr_t *_df_dt, bool neg) {
     mpfr_set_zero(*_l, 1);
     for (int j = 1; j < k; j++) {
         mpfr_mul_si(*_df_dt, f[k - j], k - j, RND);
@@ -200,7 +200,7 @@ mpfr_t *t_ln (series l, series u, int k) {
     if (!k) {
         mpfr_log(l[k], u[k], RND);
         return &l[k];
-    } else return _log_(&l[k], l, u, u, k, false, &_);
+    } else return _log_(&l[k], l, u, u, k, &_, false);
 }
 
 pair t_asin (series a, series g, series u, int k, bool trig) {
@@ -212,7 +212,7 @@ pair t_asin (series a, series g, series u, int k, bool trig) {
         mpfr_sqrt(g[k], g[k], RND);
         return (pair){.a = &a[k], .b = &g[k]};
     } else return (pair){
-        .a = _log_(&a[k], a, g, u, k, false, &_),
+        .a = _log_(&a[k], a, g, u, k, &_, false),
         .b = _exp_(&g[k], u, a, k, &_, trig ? -1 : 1)
     };
 }
@@ -227,7 +227,7 @@ pair t_acos (series a, series g, series u, int k, bool trig) {
         if (trig) mpfr_neg(g[k], g[k], RND);
         return (pair){.a = &a[k], .b = &g[k]};
     } else return (pair){
-        .a = _log_(&a[k], a, g, u, k, trig, &_),
+        .a = _log_(&a[k], a, g, u, k, &_, trig),
         .b = _exp_(&g[k], u, a, k, &_, 1)
     };
 }
@@ -240,7 +240,7 @@ pair t_atan (series a, series g, series u, int k, bool trig) {
         trig ? mpfr_add_si(g[k], g[k], 1, RND) : mpfr_si_sub(g[k], 1, g[k], RND);
         return (pair){.a = &a[k], .b = &g[k]};
     } else return (pair){
-        .a = _log_(&a[k], a, g, u, k, false, &_),
+        .a = _log_(&a[k], a, g, u, k, &_, false),
         .b = _exp_(&g[k], u, u, k, &_, trig ? 2 : -2)
     };
 }
