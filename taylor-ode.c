@@ -75,35 +75,35 @@ static int _half_ (int k) {
     return 1 + (k - (k % 2 ? 1 : 2)) / 2;
 }
 
-static mpfr_t *_prod_ (mpfr_t *_p, series u, series v, int k, int k0, int k1) {
-    mpfr_set_zero(*_p, 1);
+static mpfr_t *_prod_ (mpfr_t *p, series u, series v, int k, int k0, int k1) {
+    mpfr_set_zero(*p, 1);
     for (int j = k0; j < k1; j++) {
-        mpfr_fma(*_p, u[j], v[k - j], *_p, RND);
+        mpfr_fma(*p, u[j], v[k - j], *p, RND);
     }
-    return _p;
+    return p;
 }
 
-static mpfr_t *_exp_ (mpfr_t *_e, series df_du, series u, int k, mpfr_t *_du_dt, int factor) {
-    mpfr_set_zero(*_e, 1);
+static mpfr_t *_exp_ (mpfr_t *e, series df_du, series u, int k, mpfr_t *du_dt, int factor) {
+    mpfr_set_zero(*e, 1);
     for (int j = 0; j < k; j++) {
-        mpfr_mul_si(*_du_dt, u[k - j], k - j, RND);
-        mpfr_fma(*_e, df_du[j], *_du_dt, *_e, RND);
+        mpfr_mul_si(*du_dt, u[k - j], k - j, RND);
+        mpfr_fma(*e, df_du[j], *du_dt, *e, RND);
     }
-    mpfr_div_si(*_e, *_e, k, RND);
-    if (factor != 1) mpfr_mul_si(*_e, *_e, factor, RND);
-    return _e;
+    mpfr_div_si(*e, *e, k, RND);
+    if (factor != 1) mpfr_mul_si(*e, *e, factor, RND);
+    return e;
 }
 
-static mpfr_t *_log_ (mpfr_t *_l, series f, series du_df, series u, int k, mpfr_t *_df_dt, bool neg) {
-    mpfr_set_zero(*_l, 1);
+static mpfr_t *_log_ (mpfr_t *l, series f, series du_df, series u, int k, mpfr_t *df_dt, bool neg) {
+    mpfr_set_zero(*l, 1);
     for (int j = 1; j < k; j++) {
-        mpfr_mul_si(*_df_dt, f[k - j], k - j, RND);
-        mpfr_fma(*_l, du_df[j], *_df_dt, *_l, RND);
+        mpfr_mul_si(*df_dt, f[k - j], k - j, RND);
+        mpfr_fma(*l, du_df[j], *df_dt, *l, RND);
     }
-    mpfr_div_si(*_l, *_l, k, RND);
-    neg ? mpfr_add(*_l, u[k], *_l, RND) : mpfr_sub(*_l, u[k], *_l, RND);
-    mpfr_div(*_l, *_l, du_df[0], RND);
-    return _l;
+    mpfr_div_si(*l, *l, k, RND);
+    neg ? mpfr_add(*l, u[k], *l, RND) : mpfr_sub(*l, u[k], *l, RND);
+    mpfr_div(*l, *l, du_df[0], RND);
+    return l;
 }
 
 mpfr_t *t_abs (series u, int k) {
