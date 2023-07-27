@@ -15,14 +15,14 @@ const mpfr_rnd_t RND = MPFR_RNDN;
 
 static mpfr_t _, _a, _m, _s;
 
-static char template[60];
+static char format[60];
 
 void t_params (char **argv, int argc, ...) {
     PRINT_ARGS(argc, argv);
-    va_list model;
-    va_start(model, argc);
-    for (int i = 9; i < argc; i++) mpfr_init_set_str(*va_arg(model, mpfr_t *), argv[i], BASE, RND);
-    va_end(model);
+    va_list args;
+    va_start(args, argc);
+    for (int i = 9; i < argc; i++) mpfr_init_set_str(*va_arg(args, mpfr_t *), argv[i], BASE, RND);
+    va_end(args);
 }
 
 series t_jet (int n) {
@@ -40,7 +40,7 @@ mpfr_t *t_const (int n, mpfr_t a) {
 
 void t_out (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, clock_t since) {
     mpfr_mul_si(_, h, step, RND);
-    mpfr_printf(template, x, y, z, _, (double)(clock() - since) / CLOCKS_PER_SEC);
+    mpfr_printf(format, x, y, z, _, (double)(clock() - since) / CLOCKS_PER_SEC);
 }
 
 mpfr_t *t_horner (series s, int n, mpfr_t h) {
@@ -50,8 +50,8 @@ mpfr_t *t_horner (series s, int n, mpfr_t h) {
     return &_;
 }
 
-void tsm (int places, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0, parameters *p, clock_t t0) {
-    sprintf(template, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", places, places, places);
+void tsm (int dp, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0, parameters *p, clock_t t0) {
+    sprintf(format, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", dp, dp, dp);
     mpfr_inits(_, _a, _m, _s, NULL);
     series x = t_const(n + 1, x0), y = t_const(n + 1, y0), z = t_const(n + 1, z0);
     triplet *v_k = malloc(sizeof (triplet)); CHECK(v_k);
