@@ -148,7 +148,7 @@ mpfr_t *t_sqrt (series r, series u, int k) {
 
 mpfr_t *t_exp (series e, series u, int k) {
     CHECK(e != u);
-    if (!k) mpfr_exp(e[k], u[k], RND); else return _exp_(&e[k], e, u, k, &_, 1);
+    if (!k) mpfr_exp(e[k], u[k], RND); else _exp_(&e[k], e, u, k, &_, 1);
     return &e[k];
 }
 
