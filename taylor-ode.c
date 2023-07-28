@@ -204,7 +204,7 @@ pair t_asin (series a, series g, series u, int k, bool trig) {
     if (!k) {
         trig ? mpfr_asin(a[k], u[k], RND) : mpfr_asinh(a[k], u[k], RND);
         mpfr_sqr(g[k], u[k], RND);
-        trig ? mpfr_si_sub(g[0], 1, g[k], RND) : mpfr_add_si(g[k], g[k], 1, RND);
+        trig ? mpfr_si_sub(g[k], 1, g[k], RND) : mpfr_add_si(g[k], g[k], 1, RND);
         mpfr_sqrt(g[k], g[k], RND);
     } else {
         _log_(&a[k], a, g, u, k, &_, false);
