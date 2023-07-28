@@ -52,7 +52,7 @@ def t_exp(e, u, k):
 def t_sin_cos(s, c, u, k, trig=True):
     if k == 0:
         return (sin(u[k]), cos(u[k])) if trig else (sinh(u[k]), cosh(u[k]))
-    return _fb(c, u, k), (-1.0 if trig else 1.0) * _fb(s, u, k)
+    return _fb(c, u, k), _fb(s, u, k) * (-1.0 if trig else 1.0)
 
 def t_tan_sec2(t, s2, u, k, trig=True):
     if k == 0:
@@ -74,7 +74,7 @@ def t_asin(a, g, u, k, trig=True):
     if k == 0:
         return (asin(u[k]), sqrt(1.0 - u[k] * u[k])) if trig else (asinh(u[k]), sqrt(1.0 + u[k] * u[k]))
     a[k] = _fc(a, g, u, k)
-    return a[k], (-1.0 if trig else 1.0) * _fb(u, a, k)
+    return a[k], _fb(u, a, k) * (-1.0 if trig else 1.0)
 
 def t_acos(a, g, u, k, trig=True):
     if k == 0:
@@ -85,7 +85,7 @@ def t_acos(a, g, u, k, trig=True):
 def t_atan(a, g, u, k, trig=True):
     if k == 0:
         return (atan(u[k]), 1.0 + u[k] * u[k]) if trig else (atanh(u[k]), 1.0 - u[k] * u[k])
-    return _fc(a, g, u, k), (2.0 if trig else -2.0) * _fb(u, u, k)
+    return _fc(a, g, u, k), _fb(u, u, k) * (2.0 if trig else -2.0)
 
 
 def t_out(dp, x, y, z, t, cpu):
