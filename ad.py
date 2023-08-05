@@ -6,9 +6,11 @@ from math import sin, cos, sinh, cosh, tan, tanh, exp, log, asinh, asin, acosh, 
 from collections import namedtuple
 from time import clock_gettime, CLOCK_MONOTONIC
 
-
 def t_jet(n, value=0.0):
     return [value if isinstance(value, float) else float(value)] + [0.0] * (n - 1)
+
+def t_const(a, k):
+    return a if k == 0 else 0.0
 
 def t_horner(jet, h):
     result = 0.0
@@ -16,14 +18,51 @@ def t_horner(jet, h):
         result = result * h + term
     return result
 
-def t_const(a, k):
-    return a if k == 0 else 0.0
+def t_out(dp, x, y, z, t, cpu):
+    print(f'{x:+.{dp}e} {y:+.{dp}e} {z:+.{dp}e} {t:.5e} _ _ _ {cpu:.5e}')
 
-def t_abs(u, k):
-    return - u[k] if u[0] < 0.0 else u[k]
+def tsm(ode, places, n, h, steps, x0, y0, z0, p):
+    x = t_jet(n + 1, x0)
+    y = t_jet(n + 1, y0)
+    z = t_jet(n + 1, z0)
+    t0 = clock_gettime(CLOCK_MONOTONIC)
+    for step in range(steps):
+        for k in range(n):
+            c = ode(x, y, z, p, k)
+            x[k + 1] = c.x / (k + 1)
+            y[k + 1] = c.y / (k + 1)
+            z[k + 1] = c.z / (k + 1)
+        t_out(places, x[0], y[0], z[0], step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
+        x[0] = t_horner(x, h)
+        y[0] = t_horner(y, h)
+        z[0] = t_horner(z, h)
+    t_out(places, x[0], y[0], z[0], steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
+
+def rk4(ode, places, skip, h, steps, x, y, z, p):
+    t0 = clock_gettime(CLOCK_MONOTONIC)
+    for step in range(steps):
+        k1 = ode(x, y, z, p)
+        k2 = ode(x + 0.5 * k1.x * h, y + 0.5 * k1.y * h, z + 0.5 * k1.z * h, p)
+        k3 = ode(x + 0.5 * k2.x * h, y + 0.5 * k2.y * h, z + 0.5 * k2.z * h, p)
+        k4 = ode(x + k3.x * h, y + k3.y * h, z + k3.z * h, p)
+        x += h * (k1.x + 2.0 * (k2.x + k3.x) + k4.x) / 6.0
+        y += h * (k1.y + 2.0 * (k2.y + k3.y) + k4.y) / 6.0
+        z += h * (k1.z + 2.0 * (k2.z + k3.z) + k4.z) / 6.0
+        if step % skip == 0:
+            t_out(places, x, y, z, step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
+    t_out(places, x, y, z, steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
 
 def _fa(a, b, k, k0, k1):
     return sum(a[j] * b[k - j] for j in range(k0, k1))
+
+def _fb(df_du, u, k, factor=1.0):
+    return factor * sum(df_du[j] * (k - j) * u[k - j] for j in range(k)) / k
+
+def _fc(f, du_df, u, k, flag=False):
+    return (u[k] + (1.0 if flag else -1.0) * sum(du_df[j] * (k - j) * f[k - j] for j in range(1, k)) / k) / du_df[0]
+
+def t_abs(u, k):
+    return - u[k] if u[0] < 0.0 else u[k]
 
 def t_prod(u, v, k):
     return _fa(u, v, k, 0, k + 1)
@@ -43,9 +82,6 @@ def t_sqr(u, k):
 def t_sqrt(r, u, k):
     return sqrt(u[k]) if k == 0 else 0.5 * (u[k] - 2.0 * _fa(r, r, k, 1, _half(k)) - _rem(r, k)) / r[0]
 
-def _fb(df_du, u, k):
-    return sum(df_du[j] * (k - j) * u[k - j] for j in range(k)) / k
-
 def t_exp(e, u, k):
     return exp(u[k]) if k == 0 else _fb(e, u, k)
 
@@ -53,22 +89,19 @@ def t_sin_cos(s, c, u, k, trig=True):
     if k == 0:
         return (sin(u[k]), cos(u[k])) if trig else (sinh(u[k]), cosh(u[k]))
     s[k] = _fb(c, u, k)
-    c[k] = _fb(s, u, k)
-    return s[k], c[k] * (-1.0 if trig else 1.0)
+    c[k] = _fb(s, u, k, -1.0 if trig else 1.0)
+    return s[k], c[k]
 
 def t_tan_sec2(t, s, u, k, trig=True):
     if k == 0:
         t[k] = tan(u[k]) if trig else tanh(u[k])
         return (t[k], 1.0 + t[k] * t[k]) if trig else (t[k], 1.0 - t[k] * t[k])
     t[k] = _fb(s, u, k)
-    s[k] = _fb(t, t, k)
-    return t[k], s[k] * (2.0 if trig else -2.0)
+    s[k] = _fb(t, t, k, 2.0 if trig else -2.0)
+    return t[k], s[k]
 
 def t_pwr(p, u, a, k):
     return u[k]**a if k == 0 else sum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
-
-def _fc(f, du_df, u, k, flag=False):
-    return (u[k] + (1.0 if flag else -1.0) * sum(du_df[j] * (k - j) * f[k - j] for j in range(1, k)) / k) / du_df[0]
 
 def t_ln(ln, u, k):
     return log(u[k]) if k == 0 else _fc(ln, u, u, k)
@@ -77,8 +110,8 @@ def t_asin(a, g, u, k, trig=True):
     if k == 0:
         return (asin(u[k]), sqrt(1.0 - u[k] * u[k])) if trig else (asinh(u[k]), sqrt(1.0 + u[k] * u[k]))
     a[k] = _fc(a, g, u, k)
-    g[k] = _fb(u, a, k)
-    return a[k], g[k] * (-1.0 if trig else 1.0)
+    g[k] = _fb(u, a, k, -1.0 if trig else 1.0)
+    return a[k], g[k]
 
 def t_acos(a, g, u, k, trig=True):
     if k == 0:
@@ -91,45 +124,8 @@ def t_atan(a, g, u, k, trig=True):
     if k == 0:
         return (atan(u[k]), 1.0 + u[k] * u[k]) if trig else (atanh(u[k]), 1.0 - u[k] * u[k])
     a[k] = _fc(a, g, u, k)
-    g[k] = _fb(u, u, k)
-    return a[k], g[k] * (2.0 if trig else -2.0)
-
-
-def t_out(dp, x, y, z, t, cpu):
-    print(f'{x:+.{dp}e} {y:+.{dp}e} {z:+.{dp}e} {t:.5e} _ _ _ {cpu:.5e}')
-
-
-def tsm(ode, places, n, h, steps, x0, y0, z0, p):
-    x = t_jet(n + 1, x0)
-    y = t_jet(n + 1, y0)
-    z = t_jet(n + 1, z0)
-    t0 = clock_gettime(CLOCK_MONOTONIC)
-    for step in range(steps):
-        for k in range(n):
-            c = ode(x, y, z, p, k)
-            x[k + 1] = c.x / (k + 1)
-            y[k + 1] = c.y / (k + 1)
-            z[k + 1] = c.z / (k + 1)
-        t_out(places, x[0], y[0], z[0], step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
-        x[0] = t_horner(x, h)
-        y[0] = t_horner(y, h)
-        z[0] = t_horner(z, h)
-    t_out(places, x[0], y[0], z[0], steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
-
-
-def rk4(ode, places, skip, h, steps, x, y, z, p):
-    t0 = clock_gettime(CLOCK_MONOTONIC)
-    for step in range(steps):
-        k1 = ode(x, y, z, p)
-        k2 = ode(x + 0.5 * k1.x * h, y + 0.5 * k1.y * h, z + 0.5 * k1.z * h, p)
-        k3 = ode(x + 0.5 * k2.x * h, y + 0.5 * k2.y * h, z + 0.5 * k2.z * h, p)
-        k4 = ode(x + k3.x * h, y + k3.y * h, z + k3.z * h, p)
-        x += h * (k1.x + 2.0 * (k2.x + k3.x) + k4.x) / 6.0
-        y += h * (k1.y + 2.0 * (k2.y + k3.y) + k4.y) / 6.0
-        z += h * (k1.z + 2.0 * (k2.z + k3.z) + k4.z) / 6.0
-        if step % skip == 0:
-            t_out(places, x, y, z, step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
-    t_out(places, x, y, z, steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
+    g[k] = _fb(u, u, k, 2.0 if trig else -2.0)
+    return a[k], g[k]
 
 
 class Components(namedtuple('ParametersType', ['x', 'y', 'z'])):
