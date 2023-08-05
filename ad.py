@@ -106,26 +106,26 @@ def t_pwr(p, u, a, k):
 def t_ln(ln, u, k):
     return log(u[k]) if k == 0 else _fc_(ln, u, u, k)
 
-def t_asin(a, g, u, k, trig=True):
+def t_asin(u, g, s, k, trig=True):
     if k == 0:
-        return (asin(u[k]), sqrt(1.0 - u[k] * u[k])) if trig else (asinh(u[k]), sqrt(1.0 + u[k] * u[k]))
-    a[k] = _fc_(a, g, u, k)
-    g[k] = _fb_(u, a, k, -1.0 if trig else 1.0)
-    return a[k], g[k]
+        return (asin(s[k]), sqrt(1.0 - s[k] * s[k])) if trig else (asinh(s[k]), sqrt(1.0 + s[k] * s[k]))
+    u[k] = _fc_(u, g, s, k)
+    g[k] = _fb_(s, u, k, -1.0 if trig else 1.0)
+    return u[k], g[k]
 
-def t_acos(a, g, u, k, trig=True):
+def t_acos(u, g, c, k, trig=True):
     if k == 0:
-        return (acos(u[k]), - sqrt(1.0 - u[k] * u[k])) if trig else (acosh(u[k]), sqrt(u[k] * u[k] - 1.0))
-    a[k] = _fc_(a, g, u, k, trig)
-    g[k] = _fb_(u, a, k)
-    return a[k], g[k]
+        return (acos(c[k]), - sqrt(1.0 - c[k] * c[k])) if trig else (acosh(c[k]), sqrt(c[k] * c[k] - 1.0))
+    u[k] = _fc_(u, g, c, k, trig)
+    g[k] = _fb_(c, u, k)
+    return u[k], g[k]
 
-def t_atan(a, g, u, k, trig=True):
+def t_atan(u, g, t, k, trig=True):
     if k == 0:
-        return (atan(u[k]), 1.0 + u[k] * u[k]) if trig else (atanh(u[k]), 1.0 - u[k] * u[k])
-    a[k] = _fc_(a, g, u, k)
-    g[k] = _fb_(u, u, k, 2.0 if trig else -2.0)
-    return a[k], g[k]
+        return (atan(t[k]), 1.0 + t[k] * t[k]) if trig else (atanh(t[k]), 1.0 - t[k] * t[k])
+    u[k] = _fc_(u, g, t, k)
+    g[k] = _fb_(t, t, k, 2.0 if trig else -2.0)
+    return u[k], g[k]
 
 
 class Components(namedtuple('ParametersType', ['x', 'y', 'z'])):
