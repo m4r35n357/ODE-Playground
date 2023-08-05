@@ -167,14 +167,14 @@ pair t_sin_cos (series s, series c, series u, int k, bool trig) {
     };
 }
 
-pair t_tan_sec2 (series t, series s2, series u, int k, bool trig) {
-    CHECK(t != s2 && t != u && s2 != u);
+pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
+    CHECK(t != s && t != u && s != u);
     return !k ? (pair){
-        .a =  t[k] = trig ? tanl(u[k]) : tanhl(u[k]),
-        .b = s2[k] = trig ? 1.0L + t[k] * t[k] : 1.0L - t[k] * t[k]
+        .a = t[k] = trig ? tanl(u[k]) : tanhl(u[k]),
+        .b = s[k] = trig ? 1.0L + t[k] * t[k] : 1.0L - t[k] * t[k]
     } : (pair){
-        .a =  t[k] = _exp_(s2, u, k),
-        .b = s2[k] = _exp_(t, t, k) * (trig ? 2.0L : -2.0L)
+        .a = t[k] = _exp_(s, u, k),
+        .b = s[k] = _exp_(t, t, k) * (trig ? 2.0L : -2.0L)
     };
 }
 
@@ -191,35 +191,35 @@ real t_ln (series l, series u, int k) {
     return l[k] = !k ? logl(u[k]) : _log_(l, u, u, k, false);
 }
 
-pair t_asin (series as, series g, series u, int k, bool trig) {
-    CHECK(trig ? u[0] >= -1.0L && u[0] <= 1.0L : 1); CHECK(as != g && as != u && g != u);
+pair t_asin (series u, series g, series s, int k, bool trig) {
+    CHECK(trig ? s[0] >= -1.0L && s[0] <= 1.0L : 1); CHECK(u != g && u != s && g != s);
     return !k ? (pair){
-        .a = as[k] = trig ? asinl(u[k]) : asinhl(u[k]),
-        .b =  g[k] = trig ? sqrtl(1.0L - u[k] * u[k]) : sqrtl(1.0L + u[k] * u[k])
+        .a = u[k] = trig ? asinl(s[k]) : asinhl(s[k]),
+        .b = g[k] = trig ? cosl(u[k]) : coshl(u[k])
     } : (pair){
-        .a = as[k] = _log_(as, g, u, k, false),
-        .b =  g[k] = _exp_(u, as, k) * (trig ? -1.0L : 1.0L)
+        .a = u[k] = _log_(u, g, s, k, false),
+        .b = g[k] = _exp_(s, u, k) * (trig ? -1.0L : 1.0L)
     };
 }
 
-pair t_acos (series ac, series g, series u, int k, bool trig) {
-    CHECK(trig ? u[0] >= -1.0L && u[0] <= 1.0L : u[0] >= 1.0L); CHECK(ac != g && ac != u && g != u);
+pair t_acos (series u, series g, series c, int k, bool trig) {
+    CHECK(trig ? c[0] >= -1.0L && c[0] <= 1.0L : c[0] >= 1.0L); CHECK(u != g && u != c && g != c);
     return !k ? (pair){
-        .a = ac[k] = trig ? acosl(u[k]) : acoshl(u[k]),
-        .b =  g[k] = trig ? - sqrtl(1.0L - u[k] * u[k]) : sqrtl(u[k] * u[k] - 1.0L)
+        .a = u[k] = trig ? acosl(c[k]) : acoshl(c[k]),
+        .b = g[k] = trig ? - sinl(u[k]) : sinhl(u[k])
     } : (pair){
-        .a = ac[k] = _log_(ac, g, u, k, trig),
-        .b =  g[k] = _exp_(u, ac, k)
+        .a = u[k] = _log_(u, g, c, k, trig),
+        .b = g[k] = _exp_(c, u, k)
     };
 }
 
-pair t_atan (series at, series g, series u, int k, bool trig) {
-    CHECK(trig ? 1 : u[0] >= -1.0L && u[0] <= 1.0L); CHECK(at != g && at != u && g != u);
+pair t_atan (series u, series g, series t, int k, bool trig) {
+    CHECK(trig ? 1 : t[0] >= -1.0L && t[0] <= 1.0L); CHECK(u != g && u != t && g != t);
     return !k ? (pair){
-        .a = at[k] = trig ? atanl(u[k]) : atanhl(u[k]),
-        .b =  g[k] = trig ? 1.0L + u[k] * u[k] : 1.0L - u[k] * u[k]
+        .a = u[k] = trig ? atanl(t[k]) : atanhl(t[k]),
+        .b = g[k] = trig ? 1.0L + t[k] * t[k] : 1.0L - t[k] * t[k]
     } : (pair){
-        .a = at[k] = _log_(at, g, u, k, false),
-        .b =  g[k] = _exp_(u, u, k) * (trig ? 2.0L : -2.0L)
+        .a = u[k] = _log_(u, g, t, k, false),
+        .b = g[k] = _exp_(t, t, k) * (trig ? 2.0L : -2.0L)
     };
 }

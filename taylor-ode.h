@@ -138,14 +138,14 @@ real t_ln (series L, series U, int k);
 /*
  * Returns kth elements of arcsin/arsinh of U and 1 / DF_DU, results stored in user-supplied jets AS and DU_DF
  */
-pair t_asin (series AS, series DU_DF, series U, int k, bool trig);
+pair t_asin (series AS, series DU_DF, series S, int k, bool trig);
 
 /*
  * Returns kth elements of arccos/arcosh of U and 1 / DF_DU, results stored in user-supplied jets AC and DU_DF
  */
-pair t_acos (series AC, series DU_DF, series U, int k, bool trig);
+pair t_acos (series AC, series DU_DF, series C, int k, bool trig);
 
 /*
  * Returns kth elements of arctan/artanh of U and 1 / DF_DU, results stored in user-supplied jets AT and DU_DF
  */
-pair t_atan (series AT, series DU_DF, series U, int k, bool trig);
+pair t_atan (series AT, series DU_DF, series T, int k, bool trig);
