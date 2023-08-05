@@ -195,7 +195,7 @@ pair t_asin (series u, series g, series s, int k, bool trig) {
     CHECK(trig ? s[0] >= -1.0L && s[0] <= 1.0L : 1); CHECK(u != g && u != s && g != s);
     return !k ? (pair){
         .a = u[k] = trig ? asinl(s[k]) : asinhl(s[k]),
-        .b = g[k] = trig ? cosl(u[k]) : coshl(u[k])
+        .b = g[k] = trig ?  cosl(u[k]) :  coshl(u[k])
     } : (pair){
         .a = u[k] = _log_(u, g, s, k, false),
         .b = g[k] = _exp_(s, u, k) * (trig ? -1.0L : 1.0L)
@@ -206,7 +206,7 @@ pair t_acos (series u, series g, series c, int k, bool trig) {
     CHECK(trig ? c[0] >= -1.0L && c[0] <= 1.0L : c[0] >= 1.0L); CHECK(u != g && u != c && g != c);
     return !k ? (pair){
         .a = u[k] = trig ? acosl(c[k]) : acoshl(c[k]),
-        .b = g[k] = trig ? - sinl(u[k]) : sinhl(u[k])
+        .b = g[k] = trig ? -sinl(u[k]) :  sinhl(u[k])
     } : (pair){
         .a = u[k] = _log_(u, g, c, k, trig),
         .b = g[k] = _exp_(c, u, k)

@@ -101,51 +101,51 @@ real t_mul (series U, series V, int k);
 real t_sqr (series U, int k);
 
 /*
- * Returns kth element of U / V, results stored in user-supplied jet Q
+ * Returns kth element of U / V, results stored in user-supplied jet QUOT
  */
-real t_div (series Q, series U, series V, int k);
+real t_div (series QUOT, series U, series V, int k);
 
 /*
- * Returns kth element of the square root of U, results stored in user-supplied jet R
+ * Returns kth element of the square root of U, results stored in user-supplied jet ROOT
  */
-real t_sqrt (series R, series U, int k);
+real t_sqrt (series ROOT, series U, int k);
 
 /*
- * Returns kth element of the exponential of U, results stored in user-supplied jet E
+ * Returns kth element of the exponential of U, results stored in user-supplied jet EXP
  */
-real t_exp (series E, series U, int k);
+real t_exp (series EXP, series U, int k);
 
 /*
- * Returns kth elements of both sine and cosine of U, results stored in user-supplied jets S and C
+ * Returns kth elements of both sine and cosine of U, results stored in user-supplied jets SIN and COS
  */
-pair t_sin_cos (series S, series C, series U, int k, bool trig);
+pair t_sin_cos (series SIN, series COS, series U, int k, bool trig);
 
 /*
- * Returns kth elements of both tangent and squared secant of U, results stored in user-supplied jets T and S2
+ * Returns kth elements of both tangent and squared secant of U, results stored in user-supplied jets TAN and SEC2
  */
-pair t_tan_sec2 (series T, series S2, series U, int k, bool trig);
+pair t_tan_sec2 (series TAN, series SEC2, series U, int k, bool trig);
 
 /*
- * Returns kth element of P = U^a (where a is scalar), results stored in user-supplied jet P
+ * Returns kth element of P = U^a (where a is scalar), results stored in user-supplied jet PWR
  */
-real t_pwr (series P, series U, real a, int k);
+real t_pwr (series PWR, series U, real a, int k);
 
 /*
- * Returns kth element of the natural logarithm of U, results stored in user-supplied jet L
+ * Returns kth element of the natural logarithm of U, results stored in user-supplied jet LN
  */
-real t_ln (series L, series U, int k);
+real t_ln (series LN, series U, int k);
 
 /*
- * Returns kth elements of arcsin/arsinh of U and 1 / DF_DU, results stored in user-supplied jets AS and DU_DF
+ * Returns kth elements of arcsin/arsinh of SIN, and G == 1 / DF_DU, results stored in user-supplied jets U and DU_DF
  */
-pair t_asin (series AS, series DU_DF, series S, int k, bool trig);
+pair t_asin (series U, series DU_DF, series SIN, int k, bool trig);
 
 /*
- * Returns kth elements of arccos/arcosh of U and 1 / DF_DU, results stored in user-supplied jets AC and DU_DF
+ * Returns kth elements of arccos/arcosh of COS, and G == 1 / DF_DU, results stored in user-supplied jets U and DU_DF
  */
-pair t_acos (series AC, series DU_DF, series C, int k, bool trig);
+pair t_acos (series U, series DU_DF, series COS, int k, bool trig);
 
 /*
- * Returns kth elements of arctan/artanh of U and 1 / DF_DU, results stored in user-supplied jets AT and DU_DF
+ * Returns kth elements of arctan/artanh of TAN, and G == 1 / DF_DU, results stored in user-supplied jets U and DU_DF
  */
-pair t_atan (series AT, series DU_DF, series T, int k, bool trig);
+pair t_atan (series U, series DU_DF, series TAN, int k, bool trig);
