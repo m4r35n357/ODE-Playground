@@ -118,19 +118,19 @@ mpfr_t *t_mul (series U, series V, int k);
 mpfr_t *t_sqr (series U, int k);
 
 /*
- * Returns a pointer to kth element of U / V, results stored in user-supplied jet Q, DOMAIN RESTRICTION v[0] != 0.0
+ * Returns a pointer to kth element of U / V, results stored in user-supplied jet QUOT
  */
-mpfr_t *t_div (series Q, series U, series V, int k);
+mpfr_t *t_div (series QUOT, series U, series V, int k);
 
 /*
- * Returns a pointer to kth element of the square root of U, results stored in user-supplied jet R, DOMAIN RESTRICTION U[0] > 0.0
+ * Returns a pointer to kth element of the square root of U, results stored in user-supplied jet ROOT
  */
-mpfr_t *t_sqrt (series R, series U, int k);
+mpfr_t *t_sqrt (series ROOT, series U, int k);
 
 /*
- * Returns a pointer to kth element of the exponential of U, results stored in user-supplied jet E
+ * Returns a pointer to kth element of the exponential of U, results stored in user-supplied jet EXP
  */
-mpfr_t *t_exp (series E, series U, int k);
+mpfr_t *t_exp (series EXP, series U, int k);
 
 /*
  * For returning combined recurrence values
@@ -141,36 +141,36 @@ typedef struct {
 } pair;
 
 /*
- * Returns struct of pointers to kth elements of both sine and cosine of U, results stored in user-supplied jets S and C
+ * Returns pointers to kth elements of both sine and cosine of U, results stored in user-supplied jets SIN and COS
  */
-pair t_sin_cos (series S, series C, series U, int k, bool trig);
+pair t_sin_cos (series SIN, series COS, series U, int k, bool trig);
 
 /*
- * Returns struct of pointers to kth elements of both tangent and squared secant of U, results stored in user-supplied jets T and S2
+ * Returns pointers to kth elements of both tangent and squared secant of U, results stored in user-supplied jets TAN and SEC2
  */
-pair t_tan_sec2 (series T, series S2, series U, int k, bool trig);
+pair t_tan_sec2 (series TAN, series SEC2, series U, int k, bool trig);
 
 /*
- * Returns a pointer to kth element of P = U^a (where a is scalar), results stored in user-supplied jet P, DOMAIN RESTRICTION U[0] > 0.0
+ * Returns a pointer to kth element of P = U^a (where a is scalar), results stored in user-supplied jet PWR
  */
-mpfr_t *t_pwr (series P, series U, mpfr_t a, int k);
+mpfr_t *t_pwr (series PWR, series U, mpfr_t a, int k);
 
 /*
- * Returns a pointer to kth element of the natural logarithm of U, results stored in user-supplied jet L, DOMAIN RESTRICTION U[0] > 0.0
+ * Returns a pointer to kth element of the natural logarithm of U, results stored in user-supplied jet LN
  */
-mpfr_t *t_ln (series L, series U, int k);
+mpfr_t *t_ln (series LN, series U, int k);
 
 /*
- * Returns kth elements of arcsin/arsinh of U and 1 / DF_DU, results stored in user-supplied jets AS and DU_DF
+ * Returns pointers to kth elements of arcsin/arsinh of SIN, and G == 1 / DF_DU, results stored in user-supplied jets U and DU_DF
  */
-pair t_asin (series AS, series DU_DF, series S, int k, bool trig);
+pair t_asin (series U, series DU_DF, series SIN, int k, bool trig);
 
 /*
- * Returns kth elements of arccos/arcosh of U and 1 / DF_DU, results stored in user-supplied jets AC and DU_DF
+ * Returns pointers to kth elements of arccos/arcosh of COS, and G == 1 / DF_DU, results stored in user-supplied jets U and DU_DF
  */
-pair t_acos (series AC, series DU_DF, series C, int k, bool trig);
+pair t_acos (series U, series DU_DF, series COS, int k, bool trig);
 
 /*
- * Returns kth elements of arctan/artanh of U and 1 / DF_DU, results stored in user-supplied jets AT and DU_DF
+ * Returns pointers to kth elements of arctan/artanh of TAN, and G == 1 / DF_DU, results stored in user-supplied jets U and DU_DF
  */
-pair t_atan (series AT, series DU_DF, series T, int k, bool trig);
+pair t_atan (series U, series DU_DF, series TAN, int k, bool trig);
