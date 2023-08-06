@@ -10,7 +10,7 @@
 #include <math.h>
 #include "taylor-ode.h"
 
-static void _out (int dp, real x, real y, real z, real t, char *x_tag, char *y_tag, char *z_tag, clock_t since) {
+static void _out_ (int dp, real x, real y, real z, real t, char *x_tag, char *y_tag, char *z_tag, clock_t since) {
     real _ = (real)(clock() - since) / CLOCKS_PER_SEC;
     if (dp) printf("%+.*Le %+.*Le %+.*Le %.6Le %s %s %s %.3Lf\n", dp, x, dp, y, dp, z, t, x_tag, y_tag, z_tag, _);
     else printf("%+La %+La %+La %.6Le %s %s %s %.3Lf\n", x, y, z, t, x_tag, y_tag, z_tag, _);
@@ -60,7 +60,7 @@ real t_horner (series s, int n, real h) {
     return _;
 }
 
-static void _diff (series3 *j, parameters *p, int n) {
+static void _diff_ (series3 *j, parameters *p, int n) {
     for (int k = 0; k < n; k++) {
         triplet _ = ode(j->x, j->y, j->z, p, k);
         j->x[k + 1] = _.x / (k + 1);
@@ -69,33 +69,33 @@ static void _diff (series3 *j, parameters *p, int n) {
     }
 }
 
-static void _next (series3 *j, int n, real h) {
+static void _next_ (series3 *j, int n, real h) {
     j->x[0] = t_horner(j->x, n, h);
     j->y[0] = t_horner(j->y, n, h);
     j->z[0] = t_horner(j->z, n, h);
 }
 
-static char *_tag (series jet, real slope, char *min, char *max) {
+static char *_tag_ (series jet, real slope, char *min, char *max) {
     return jet[1] * slope < 0.0L ? (jet[2] > 0.0L ? min : max) : "_";
 }
 
 void tsm_stdout (int dp, controls *c, series3 *jets, parameters *p, clock_t t0) {
     real slope_x = 0.0L, slope_y = 0.0L, slope_z = 0.0L;
     for (int step = 0; step < c->steps; step++) {
-        _diff(jets, p, c->order);
-        _out(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * step,
-             _tag(jets->x, slope_x, "x", "X"), _tag(jets->y, slope_y, "y", "Y"), _tag(jets->z, slope_z, "z", "Z"), t0);
+        _diff_(jets, p, c->order);
+        _out_(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * step,
+             _tag_(jets->x, slope_x, "x", "X"), _tag_(jets->y, slope_y, "y", "Y"), _tag_(jets->z, slope_z, "z", "Z"), t0);
         slope_x = jets->x[1]; slope_y = jets->y[1]; slope_z = jets->z[1];
-        _next(jets, c->order, c->step_size);
+        _next_(jets, c->order, c->step_size);
     }
-    _out(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * c->steps, "_", "_", "_", t0);
+    _out_(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * c->steps, "_", "_", "_", t0);
 }
 
 bool tsm_gen (controls *c, series3 *jets, parameters *p) {
     if (c->looping) goto resume; else c->looping = true;
     for (c->step = 0; c->step < c->steps; c->step++) {
-        _diff(jets, p, c->order);
-        _next(jets, c->order, c->step_size);
+        _diff_(jets, p, c->order);
+        _next_(jets, c->order, c->step_size);
         return true;
         resume: ;
     }
