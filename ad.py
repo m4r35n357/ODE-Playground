@@ -132,7 +132,7 @@ def t_ln(ln, u, k):
 def t_asin(u, g, s, k, trig=True):
     if k == 0:
         u[k] = asin(s[k]) if trig else asinh(s[k])
-        g[k] = sqrt(1.0 - s[k] * s[k]) if trig else sqrt(1.0 + s[k] * s[k])
+        g[k] = cos(u[k]) if trig else cosh(u[k])
     else:
         u[k] = _fc_(u, g, s, k)
         g[k] = _fb_(s, u, k, -1.0 if trig else 1.0)
@@ -141,7 +141,7 @@ def t_asin(u, g, s, k, trig=True):
 def t_acos(u, g, c, k, trig=True):
     if k == 0:
         u[k] = acos(c[k]) if trig else acosh(c[k])
-        g[k] = -sqrt(1.0 - c[k] * c[k]) if trig else sqrt(c[k] * c[k] - 1.0)
+        g[k] = -sin(u[k]) if trig else sinh(u[k])
     else:
         u[k] = _fc_(u, g, c, k, trig)
         g[k] = _fb_(c, u, k)
