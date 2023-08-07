@@ -124,8 +124,9 @@ mpfr_t *t_sqr (series u, int k) {
 
 mpfr_t *t_div (series q, series u, series v, int k) {
     CHECK(mpfr_zero_p(v[0]) == 0); CHECK(q != u && q != v);
-    if (!k) u ? mpfr_set(q[k], u[k], RND) : mpfr_set_si(q[k], 1, RND);
-    else {
+    if (!k) {
+        u ? mpfr_set(q[k], u[k], RND) : mpfr_set_si(q[k], 1, RND);
+    } else {
         _prod_(&q[k], q, v, k, 0, k);
         u ? mpfr_sub(q[k], u[k], q[k], RND) : mpfr_neg(q[k], q[k], RND);
     }
@@ -135,8 +136,9 @@ mpfr_t *t_div (series q, series u, series v, int k) {
 
 mpfr_t *t_sqrt (series r, series u, int k) {
     CHECK(mpfr_sgn(u[0]) > 0); CHECK(r != u);
-    if (!k) mpfr_sqrt(r[k], u[k], RND);
-    else {
+    if (!k) {
+        mpfr_sqrt(r[k], u[k], RND);
+    } else {
         mpfr_mul_2si(r[k], *_prod_(&r[k], r, r, k, 1, _half_(k)), 1, RND);
         if (!(k % 2)) mpfr_fma(r[k], r[k / 2], r[k / 2], r[k], RND);
         mpfr_sub(r[k], u[k], r[k], RND);
@@ -148,7 +150,11 @@ mpfr_t *t_sqrt (series r, series u, int k) {
 
 mpfr_t *t_exp (series e, series u, int k) {
     CHECK(e != u);
-    if (!k) mpfr_exp(e[k], u[k], RND); else _exp_(&e[k], e, u, k, &__, 1);
+    if (!k) {
+        mpfr_exp(e[k], u[k], RND);
+    } else {
+        _exp_(&e[k], e, u, k, &__, 1);
+    };
     return &e[k];
 }
 
@@ -178,8 +184,9 @@ pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
 
 mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {
     CHECK(mpfr_sgn(u[0]) > 0); CHECK(p != u);
-    if (!k) mpfr_pow(p[k], u[k], a, RND);
-    else {
+    if (!k) {
+        mpfr_pow(p[k], u[k], a, RND);
+    } else {
         mpfr_set_zero(p[k], 1);
         for (int j = 0; j < k; j++) {
             mpfr_mul_si(__, a, k - j, RND);
@@ -195,7 +202,11 @@ mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {
 
 mpfr_t *t_ln (series l, series u, int k) {
     CHECK(mpfr_sgn(u[0]) > 0); CHECK(l != u);
-    if (!k) mpfr_log(l[k], u[k], RND); else _log_(&l[k], l, u, u, k, &__, false);
+    if (!k) {
+        mpfr_log(l[k], u[k], RND);
+    } else {
+        _log_(&l[k], l, u, u, k, &__, false);
+    };
     return &l[k];
 }
 
