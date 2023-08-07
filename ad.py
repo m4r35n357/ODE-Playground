@@ -68,7 +68,10 @@ def t_prod(u, v, k):
     return _fa_(u, v, k, 0, k + 1)
 
 def t_quot(q, u, v, k):
-    q[k] = ((u[0] if u else 1.0) if k == 0 else (u[k] if u else 0.0) - _fa_(q, v, k, 0, k)) / v[0]
+    if k == 0:
+        q[k] = (u[0] if u else 1.0) / v[0]
+    else:
+        q[k] = ((u[k] if u else 0.0) - _fa_(q, v, k, 0, k)) / v[0]
     return q[k]
 
 def _half_(k):
@@ -81,11 +84,17 @@ def t_sqr(u, k):
     return 2.0 * _fa_(u, u, k, 0, _half_(k)) + _rem_(u, k)
 
 def t_sqrt(r, u, k):
-    r[k] = sqrt(u[k]) if k == 0 else 0.5 * (u[k] - 2.0 * _fa_(r, r, k, 1, _half_(k)) - _rem_(r, k)) / r[0]
+    if k == 0:
+        r[k] = sqrt(u[k])
+    else:
+        r[k] = 0.5 * (u[k] - 2.0 * _fa_(r, r, k, 1, _half_(k)) - _rem_(r, k)) / r[0]
     return r[k]
 
 def t_exp(e, u, k):
-    e[k] = exp(u[k]) if k == 0 else _fb_(e, u, k)
+    if k == 0:
+        e[k] = exp(u[k])
+    else:
+        e[k] = _fb_(e, u, k)
     return e[k]
 
 def t_sin_cos(s, c, u, k, trig=True):
@@ -107,11 +116,17 @@ def t_tan_sec2(t, s, u, k, trig=True):
     return t[k], s[k]
 
 def t_pwr(p, u, a, k):
-    p[k] = u[k]**a if k == 0 else sum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
+    if k == 0:
+        p[k] = u[k]**a
+    else:
+        p[k] = sum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
     return p[k]
 
 def t_ln(ln, u, k):
-    ln[k] = log(u[k]) if k == 0 else _fc_(ln, u, u, k)
+    if k == 0:
+        ln[k] = log(u[k])
+    else:
+        ln[k] = _fc_(ln, u, u, k)
     return ln[k]
 
 def t_asin(u, g, s, k, trig=True):
