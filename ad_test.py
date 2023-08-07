@@ -8,7 +8,7 @@
 from collections import namedtuple
 from math import exp, factorial
 from pytest import mark, raises, approx
-from ad import Components, t_jet, t_horner, t_const, t_abs, t_pwr, Series, Dual
+from ad import Components, t_jet, t_horner, t_const, t_abs, Series, Dual
 
 order = 12
 # noinspection NonAsciiCharacters

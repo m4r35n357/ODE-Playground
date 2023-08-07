@@ -69,7 +69,7 @@ def t_prod(u, v, k):
 
 def t_quot(q, u, v, k):
     if k == 0:
-        q[k] = (u[0] if u else 1.0) / v[0]
+        q[k] = (u[k] if u else 1.0) / v[0]
     else:
         q[k] = ((u[k] if u else 0.0) - _fa_(q, v, k, 0, k)) / v[0]
     return q[k]
