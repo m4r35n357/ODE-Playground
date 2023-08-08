@@ -116,16 +116,16 @@ static real _prod_ (series a, series b, int k, int k0, int k1) {
     return _;
 }
 
-static real _exp_ (series df_du, series u, int k) {
+static real _fwd_ (series g, series u, int k) {
     real _ = 0.0L;
-    for (int j = 0; j < k; j++) _ += df_du[j] * (k - j) * u[k - j];
+    for (int j = 0; j < k; j++) _ += g[j] * (k - j) * u[k - j];
     return _ / k;
 }
 
-static real _log_ (series f, series du_df, series u, int k, bool neg) {
+static real _rev_ (series u, series g, real f_k, int k, bool neg) {
     real _ = 0.0L;
-    for (int j = 1; j < k; j++) _ += du_df[j] * (k - j) * f[k - j];
-    return (u[k] + (neg ? _ : -_) / k) / du_df[0];
+    for (int j = 1; j < k; j++) _ += g[j] * (k - j) * u[k - j];
+    return (f_k + (neg ? _ : -_) / k) / g[0];
 }
 
 real t_abs (series u, int k) {
@@ -153,7 +153,7 @@ real t_sqrt (series r, series u, int k) {
 
 real t_exp (series e, series u, int k) {
     CHECK(e != u);
-    return e[k] = !k ? expl(u[k]) : _exp_(e, u, k);
+    return e[k] = !k ? expl(u[k]) : _fwd_(e, u, k);
 }
 
 pair t_sin_cos (series s, series c, series u, int k, bool trig) {
@@ -162,8 +162,8 @@ pair t_sin_cos (series s, series c, series u, int k, bool trig) {
         .a = s[k] = trig ? sinl(u[k]) : sinhl(u[k]),
         .b = c[k] = trig ? cosl(u[k]) : coshl(u[k])
     } : (pair){
-        .a = s[k] = _exp_(c, u, k),
-        .b = c[k] = _exp_(s, u, k) * (trig ? -1.0L : 1.0L)
+        .a = s[k] = _fwd_(c, u, k),
+        .b = c[k] = _fwd_(s, u, k) * (trig ? -1.0L : 1.0L)
     };
 }
 
@@ -173,8 +173,8 @@ pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
         .a = t[k] = trig ? tanl(u[k]) : tanhl(u[k]),
         .b = s[k] = trig ? 1.0L + t[k] * t[k] : 1.0L - t[k] * t[k]
     } : (pair){
-        .a = t[k] = _exp_(s, u, k),
-        .b = s[k] = _exp_(t, t, k) * (trig ? 2.0L : -2.0L)
+        .a = t[k] = _fwd_(s, u, k),
+        .b = s[k] = _fwd_(t, t, k) * (trig ? 2.0L : -2.0L)
     };
 }
 
@@ -188,7 +188,7 @@ real t_pwr (series p, series u, real a, int k) {
 
 real t_ln (series l, series u, int k) {
     CHECK(u[0] > 0.0L); CHECK(l != u);
-    return l[k] = !k ? logl(u[k]) : _log_(l, u, u, k, false);
+    return l[k] = !k ? logl(u[k]) : _rev_(l, u, u[k], k, false);
 }
 
 pair t_asin (series u, series g, series s, int k, bool trig) {
@@ -197,8 +197,8 @@ pair t_asin (series u, series g, series s, int k, bool trig) {
         .a = u[k] = trig ? asinl(s[k]) : asinhl(s[k]),
         .b = g[k] = trig ?  cosl(u[k]) :  coshl(u[k])
     } : (pair){
-        .a = u[k] = _log_(u, g, s, k, false),
-        .b = g[k] = _exp_(s, u, k) * (trig ? -1.0L : 1.0L)
+        .a = u[k] = _rev_(u, g, s[k], k, false),
+        .b = g[k] = _fwd_(s, u, k) * (trig ? -1.0L : 1.0L)
     };
 }
 
@@ -208,8 +208,8 @@ pair t_acos (series u, series g, series c, int k, bool trig) {
         .a = u[k] = trig ? acosl(c[k]) : acoshl(c[k]),
         .b = g[k] = trig ? -sinl(u[k]) :  sinhl(u[k])
     } : (pair){
-        .a = u[k] = _log_(u, g, c, k, trig),
-        .b = g[k] = _exp_(c, u, k)
+        .a = u[k] = _rev_(u, g, c[k], k, trig),
+        .b = g[k] = _fwd_(c, u, k)
     };
 }
 
@@ -219,7 +219,7 @@ pair t_atan (series u, series g, series t, int k, bool trig) {
         .a = u[k] = trig ? atanl(t[k]) : atanhl(t[k]),
         .b = g[k] = trig ? 1.0L + t[k] * t[k] : 1.0L - t[k] * t[k]
     } : (pair){
-        .a = u[k] = _log_(u, g, t, k, false),
-        .b = g[k] = _exp_(t, t, k) * (trig ? 2.0L : -2.0L)
+        .a = u[k] = _rev_(u, g, t[k], k, false),
+        .b = g[k] = _fwd_(t, t, k) * (trig ? 2.0L : -2.0L)
     };
 }
