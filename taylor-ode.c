@@ -83,26 +83,26 @@ static mpfr_t *_prod_ (mpfr_t *_, series u, series v, int k, int k0, int k1) {
     return _;
 }
 
-static mpfr_t *_exp_ (mpfr_t *_, series df_du, series u, int k, mpfr_t *du_dt, int factor) {
+static mpfr_t *_fwd_ (mpfr_t *_, series g, series u, int k, mpfr_t *du_dt, int scale) {
     mpfr_set_zero(*_, 1);
     for (int j = 0; j < k; j++) {
         mpfr_mul_si(*du_dt, u[k - j], k - j, RND);
-        mpfr_fma(*_, df_du[j], *du_dt, *_, RND);
+        mpfr_fma(*_, g[j], *du_dt, *_, RND);
     }
     mpfr_div_si(*_, *_, k, RND);
-    if (factor != 1) mpfr_mul_si(*_, *_, factor, RND);
+    if (scale != 1) mpfr_mul_si(*_, *_, scale, RND);
     return _;
 }
 
-static mpfr_t *_log_ (mpfr_t *_, series f, series du_df, series u, int k, mpfr_t *df_dt, bool neg) {
+static mpfr_t *_rev_ (mpfr_t *_, series u, series g, mpfr_t *f_k, int k, mpfr_t *du_dt, bool neg) {
     mpfr_set_zero(*_, 1);
     for (int j = 1; j < k; j++) {
-        mpfr_mul_si(*df_dt, f[k - j], k - j, RND);
-        mpfr_fma(*_, du_df[j], *df_dt, *_, RND);
+        mpfr_mul_si(*du_dt, u[k - j], k - j, RND);
+        mpfr_fma(*_, g[j], *du_dt, *_, RND);
     }
     mpfr_div_si(*_, *_, k, RND);
-    neg ? mpfr_add(*_, u[k], *_, RND) : mpfr_sub(*_, u[k], *_, RND);
-    mpfr_div(*_, *_, du_df[0], RND);
+    neg ? mpfr_add(*_, *f_k, *_, RND) : mpfr_sub(*_, *f_k, *_, RND);
+    mpfr_div(*_, *_, g[0], RND);
     return _;
 }
 
@@ -153,7 +153,7 @@ mpfr_t *t_exp (series e, series u, int k) {
     if (!k) {
         mpfr_exp(e[k], u[k], RND);
     } else {
-        _exp_(&e[k], e, u, k, &__, 1);
+        _fwd_(&e[k], e, u, k, &__, 1);
     };
     return &e[k];
 }
@@ -163,8 +163,8 @@ pair t_sin_cos (series s, series c, series u, int k, bool trig) {
     if (!k) {
         trig ? mpfr_sin_cos(s[k], c[k], u[k], RND) : mpfr_sinh_cosh(s[k], c[k], u[k], RND);
     } else {
-        _exp_(&s[k], c, u, k, &__, 1);
-        _exp_(&c[k], s, u, k, &__, trig ? -1 : 1);
+        _fwd_(&s[k], c, u, k, &__, 1);
+        _fwd_(&c[k], s, u, k, &__, trig ? -1 : 1);
     };
     return (pair){.a = &s[k], .b = &c[k]};
 }
@@ -176,8 +176,8 @@ pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
         trig ? mpfr_sec(s[k], u[k], RND) : mpfr_sech(s[k], u[k], RND);
         mpfr_sqr(s[k], s[k], RND);
     } else {
-        _exp_(&t[k], s, u, k, &__, 1);
-        _exp_(&s[k], t, t, k, &__, trig ? 2 : -2);
+        _fwd_(&t[k], s, u, k, &__, 1);
+        _fwd_(&s[k], t, t, k, &__, trig ? 2 : -2);
     };
     return (pair){.a = &t[k], .b = &s[k]};
 }
@@ -205,7 +205,7 @@ mpfr_t *t_ln (series l, series u, int k) {
     if (!k) {
         mpfr_log(l[k], u[k], RND);
     } else {
-        _log_(&l[k], l, u, u, k, &__, false);
+        _rev_(&l[k], l, u, &u[k], k, &__, false);
     };
     return &l[k];
 }
@@ -216,8 +216,8 @@ pair t_asin (series u, series g, series s, int k, bool trig) {
         trig ? mpfr_asin(u[k], s[k], RND) : mpfr_asinh(u[k], s[k], RND);
         trig ? mpfr_cos(g[k], u[k], RND) : mpfr_cosh(g[k], u[k], RND);
     } else {
-        _log_(&u[k], u, g, s, k, &__, false);
-        _exp_(&g[k], s, u, k, &__, trig ? -1 : 1);
+        _rev_(&u[k], u, g, &s[k], k, &__, false);
+        _fwd_(&g[k], s, u, k, &__, trig ? -1 : 1);
     };
     return (pair){.a = &u[k], .b = &g[k]};
 }
@@ -229,8 +229,8 @@ pair t_acos (series u, series g, series c, int k, bool trig) {
         trig ? mpfr_sin(g[k], u[k], RND) : mpfr_sinh(g[k], u[k], RND);
         if (trig) mpfr_neg(g[k], g[k], RND);
     } else {
-        _log_(&u[k], u, g, c, k, &__, trig);
-        _exp_(&g[k], c, u, k, &__, 1);
+        _rev_(&u[k], u, g, &c[k], k, &__, trig);
+        _fwd_(&g[k], c, u, k, &__, 1);
     };
     return (pair){.a = &u[k], .b = &g[k]};
 }
@@ -242,8 +242,8 @@ pair t_atan (series u, series g, series t, int k, bool trig) {
         trig ? mpfr_sec(g[k], u[k], RND) : mpfr_sech(g[k], u[k], RND);
         mpfr_sqr(g[k], g[k], RND);
     } else {
-        _log_(&u[k], u, g, t, k, &__, false);
-        _exp_(&g[k], t, t, k, &__, trig ? 2 : -2);
+        _rev_(&u[k], u, g, &t[k], k, &__, false);
+        _fwd_(&g[k], t, t, k, &__, trig ? 2 : -2);
     };
     return (pair){.a = &u[k], .b = &g[k]};
 }
