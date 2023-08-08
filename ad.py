@@ -115,13 +115,6 @@ def t_tan_sec2(t, s, u, k, trig=True):
         s[k] = _fwd_(t, t, k, 2.0 if trig else -2.0)
     return t[k], s[k]
 
-def t_pwr(p, u, a, k):
-    if k == 0:
-        p[k] = u[k]**a
-    else:
-        p[k] = _rev_(p, u, a * _fwd_(p, u, k), k, False)
-    return p[k]
-
 def t_ln(ln, u, k):
     if k == 0:
         ln[k] = log(u[k])
@@ -155,6 +148,13 @@ def t_atan(u, g, t, k, trig=True):
         u[k] = _rev_(u, g, t[k], k)
         g[k] = _fwd_(t, t, k, 2.0 if trig else -2.0)
     return u[k], g[k]
+
+def t_pwr(p, u, a, k):
+    if k == 0:
+        p[k] = u[k]**a
+    else:
+        p[k] = _rev_(p, u, _fwd_(p, u, k, a), k, False)
+    return p[k]
 
 
 class Components(namedtuple('ParametersType', ['x', 'y', 'z'])):
