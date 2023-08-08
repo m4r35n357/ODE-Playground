@@ -178,14 +178,6 @@ pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
     };
 }
 
-real t_pwr (series p, series u, real a, int k) {
-    CHECK(u[0] > 0.0L); CHECK(p != u);
-    if (!k) return p[k] = powl(u[k], a);
-    real _ = 0.0L;
-    for (int j = 0; j < k; j++) _ += (a * (k - j) - j) * p[j] * u[k - j];
-    return p[k] = _ / (k * u[0]);
-}
-
 real t_ln (series l, series u, int k) {
     CHECK(u[0] > 0.0L); CHECK(l != u);
     return l[k] = !k ? logl(u[k]) : _rev_(l, u, u[k], k, false);
@@ -222,4 +214,9 @@ pair t_atan (series u, series g, series t, int k, bool trig) {
         .a = u[k] = _rev_(u, g, t[k], k, false),
         .b = g[k] = _fwd_(t, t, k) * (trig ? 2.0L : -2.0L)
     };
+}
+
+real t_pwr (series p, series u, real a, int k) {
+    CHECK(u[0] > 0.0L); CHECK(p != u);
+    return p[k] = !k ? powl(u[k], a) : _rev_(p, u, a * _fwd_(p, u, k), k, false);
 }
