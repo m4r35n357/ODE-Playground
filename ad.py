@@ -119,7 +119,7 @@ def t_pwr(p, u, a, k):
     if k == 0:
         p[k] = u[k]**a
     else:
-        p[k] = sum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
+        p[k] = _rev_(p, u, a * _fwd_(p, u, k), k, False)
     return p[k]
 
 def t_ln(ln, u, k):
