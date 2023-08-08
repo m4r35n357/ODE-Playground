@@ -52,6 +52,13 @@ extern const mpfr_rnd_t RND;
 typedef mpfr_t *series;
 
 /*
+ * Combined x, y, z series
+ */
+typedef struct triple_s {
+    series x, y, z;
+} series3;
+
+/*
  * Prints a line of data to stdout
  */
 void t_out (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, clock_t since);
@@ -71,7 +78,7 @@ series t_jet (int size);
  */
 mpfr_t *t_horner (series S, int n, mpfr_t h);
 
-void tsm (int places, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0, parameters *P, clock_t since);
+void tsm (int places, int n, mpfr_t h, int steps, series3 *jets, parameters *P, clock_t since);
 
 /*
  * For returning x, y, z velocities from the model

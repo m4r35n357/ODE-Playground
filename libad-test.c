@@ -105,7 +105,11 @@ int main (int argc, char **argv) {
 
     fprintf(stderr, "%sTaylor Series Method %s\n", WHT, NRM);
     int steps = 10;
-    tsm(dp, n, D01, steps, D1, D1, D1, get_p(argc, argv, n), clock());
+    series3 *j = malloc(sizeof (series3)); CHECK(j);
+    j->x = t_const(n + 1, D1);
+    j->y = t_const(n + 1, D1);
+    j->z = t_const(n + 1, D1);
+    tsm(dp, n, D01, steps, j, get_p(argc, argv, n), clock());
     fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);
     mpfr_t e1, e0, e_1;
     mpfr_inits(e1, e0, e_1, NULL);

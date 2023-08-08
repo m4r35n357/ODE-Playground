@@ -13,7 +13,7 @@ const int BASE = 10;
 
 const mpfr_rnd_t RND = MPFR_RNDN;
 
-static mpfr_t __, _a, _m, _s;
+static mpfr_t __, _a, _m, _s, _p;
 
 static char format[60];
 
@@ -50,25 +50,24 @@ mpfr_t *t_horner (series s, int n, mpfr_t h) {
     return &__;
 }
 
-void tsm (int dp, int n, mpfr_t h, int steps, mpfr_t x0, mpfr_t y0, mpfr_t z0, parameters *p, clock_t t0) {
+void tsm (int dp, int n, mpfr_t h, int steps, series3 *j, parameters *p, clock_t t0) {
     sprintf(format, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", dp, dp, dp);
-    mpfr_inits(__, _a, _m, _s, NULL);
-    series x = t_const(n + 1, x0), y = t_const(n + 1, y0), z = t_const(n + 1, z0);
+    mpfr_inits(__, _a, _m, _s, _p, NULL);
     triplet *v_k = malloc(sizeof (triplet)); CHECK(v_k);
     mpfr_inits(v_k->x, v_k->y, v_k->z, NULL);
     for (int step = 0; step < steps; step++) {
         for (int k = 0; k < n; k++) {
-            ode(v_k, x, y, z, p, k);
-            mpfr_div_si(x[k + 1], v_k->x, k + 1, RND);
-            mpfr_div_si(y[k + 1], v_k->y, k + 1, RND);
-            mpfr_div_si(z[k + 1], v_k->z, k + 1, RND);
+            ode(v_k, j->x, j->y, j->z, p, k);
+            mpfr_div_si(j->x[k + 1], v_k->x, k + 1, RND);
+            mpfr_div_si(j->y[k + 1], v_k->y, k + 1, RND);
+            mpfr_div_si(j->z[k + 1], v_k->z, k + 1, RND);
         }
-        t_out(x[0], y[0], z[0], h, step, t0);
-        mpfr_swap(x[0], *t_horner(x, n, h));
-        mpfr_swap(y[0], *t_horner(y, n, h));
-        mpfr_swap(z[0], *t_horner(z, n, h));
+        t_out(j->x[0], j->y[0], j->z[0], h, step, t0);
+        mpfr_swap(j->x[0], *t_horner(j->x, n, h));
+        mpfr_swap(j->y[0], *t_horner(j->y, n, h));
+        mpfr_swap(j->z[0], *t_horner(j->z, n, h));
     }
-    t_out(x[0], y[0], z[0], h, steps, t0);
+    t_out(j->x[0], j->y[0], j->z[0], h, steps, t0);
 }
 
 static int _half_ (int k) {
@@ -235,9 +234,9 @@ mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {
     if (!k) {
         mpfr_pow(p[k], u[k], a, RND);
     } else {
-        _fwd_(&_m, p, u, k, &__, 1);
-        mpfr_mul(_m, a, _m, RND);
-        _rev_(&p[k], p, u, &_m, k, &__, false);
+        _fwd_(&_p, p, u, k, &__, 1);
+        mpfr_mul(_p, a, _p, RND);
+        _rev_(&p[k], p, u, &_p, k, &__, false);
     }
     return &p[k];
 }
