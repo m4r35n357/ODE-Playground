@@ -182,24 +182,6 @@ pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
     return (pair){.a = &t[k], .b = &s[k]};
 }
 
-mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {
-    CHECK(mpfr_sgn(u[0]) > 0); CHECK(p != u);
-    if (!k) {
-        mpfr_pow(p[k], u[k], a, RND);
-    } else {
-        mpfr_set_zero(p[k], 1);
-        for (int j = 0; j < k; j++) {
-            mpfr_mul_si(__, a, k - j, RND);
-            mpfr_sub_si(__, __, j, RND);
-            mpfr_mul(__, __, u[k - j], RND);
-            mpfr_fma(p[k], p[j], __, p[k], RND);
-        }
-        mpfr_div_si(p[k], p[k], k, RND);
-        mpfr_div(p[k], p[k], u[0], RND);
-    }
-    return &p[k];
-}
-
 mpfr_t *t_ln (series l, series u, int k) {
     CHECK(mpfr_sgn(u[0]) > 0); CHECK(l != u);
     if (!k) {
@@ -246,4 +228,16 @@ pair t_atan (series u, series g, series t, int k, bool trig) {
         _fwd_(&g[k], t, t, k, &__, trig ? 2 : -2);
     };
     return (pair){.a = &u[k], .b = &g[k]};
+}
+
+mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {
+    CHECK(mpfr_sgn(u[0]) > 0); CHECK(p != u);
+    if (!k) {
+        mpfr_pow(p[k], u[k], a, RND);
+    } else {
+        _fwd_(&_m, p, u, k, &__, 1);
+        mpfr_mul(_m, a, _m, RND);
+        _rev_(&p[k], p, u, &_m, k, &__, false);
+    }
+    return &p[k];
 }
