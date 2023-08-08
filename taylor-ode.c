@@ -75,27 +75,27 @@ static void _next_ (series3 *j, int n, real h) {
     j->z[0] = t_horner(j->z, n, h);
 }
 
-static char *_tag_ (series jet, real slope, char *min, char *max) {
-    return jet[1] * slope < 0.0L ? (jet[2] > 0.0L ? min : max) : "_";
+static char *_tag_ (series j, real slope, char *min, char *max) {
+    return j[1] * slope < 0.0L ? (j[2] > 0.0L ? min : max) : "_";
 }
 
-void tsm_stdout (int dp, controls *c, series3 *jets, parameters *p, clock_t t0) {
+void tsm_stdout (int dp, controls *c, series3 *j, parameters *p, clock_t t0) {
     real slope_x = 0.0L, slope_y = 0.0L, slope_z = 0.0L;
     for (int step = 0; step < c->steps; step++) {
-        _diff_(jets, p, c->order);
-        _out_(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * step,
-             _tag_(jets->x, slope_x, "x", "X"), _tag_(jets->y, slope_y, "y", "Y"), _tag_(jets->z, slope_z, "z", "Z"), t0);
-        slope_x = jets->x[1]; slope_y = jets->y[1]; slope_z = jets->z[1];
-        _next_(jets, c->order, c->step_size);
+        _diff_(j, p, c->order);
+        _out_(dp, j->x[0], j->y[0], j->z[0], c->step_size * step,
+             _tag_(j->x, slope_x, "x", "X"), _tag_(j->y, slope_y, "y", "Y"), _tag_(j->z, slope_z, "z", "Z"), t0);
+        slope_x = j->x[1]; slope_y = j->y[1]; slope_z = j->z[1];
+        _next_(j, c->order, c->step_size);
     }
-    _out_(dp, jets->x[0], jets->y[0], jets->z[0], c->step_size * c->steps, "_", "_", "_", t0);
+    _out_(dp, j->x[0], j->y[0], j->z[0], c->step_size * c->steps, "_", "_", "_", t0);
 }
 
-bool tsm_gen (controls *c, series3 *jets, parameters *p) {
+bool tsm_gen (controls *c, series3 *j, parameters *p) {
     if (c->looping) goto resume; else c->looping = true;
     for (c->step = 0; c->step < c->steps; c->step++) {
-        _diff_(jets, p, c->order);
-        _next_(jets, c->order, c->step_size);
+        _diff_(j, p, c->order);
+        _next_(j, c->order, c->step_size);
         return true;
         resume: ;
     }
