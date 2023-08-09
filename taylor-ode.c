@@ -17,13 +17,6 @@ static mpfr_t __, _a, _m, _s, _p, D1, D_1, D2, D_2;
 
 static char format[60];
 
-static void libad_test_init (void) {
-    mpfr_init_set_si(D1, 1, RND);
-    mpfr_init_set_si(D2, 2, RND);
-    mpfr_init_set_si(D_1, -1, RND);
-    mpfr_init_set_si(D_2, -2, RND);
-}
-
 void t_out (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, clock_t since) {
     mpfr_mul_si(__, h, step, RND);
     mpfr_printf(format, x, y, z, __, (double)(clock() - since) / CLOCKS_PER_SEC);
@@ -66,10 +59,13 @@ mpfr_t *t_horner (series s, int n, mpfr_t h) {
 }
 
 void tsm (int dp, int n, mpfr_t h, int steps, series3 *j, parameters *p, clock_t t0) {
-    libad_test_init();
     sprintf(format, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", dp, dp, dp);
     triplet *v_k = malloc(sizeof (triplet)); CHECK(v_k);
     mpfr_inits(v_k->x, v_k->y, v_k->z, __, _a, _m, _s, _p, NULL);
+    mpfr_init_set_si(D1, 1, RND);
+    mpfr_init_set_si(D2, 2, RND);
+    mpfr_init_set_si(D_1, -1, RND);
+    mpfr_init_set_si(D_2, -2, RND);
     for (int step = 0; step < steps; step++) {
         for (int k = 0; k < n; k++) {
             ode(v_k, j->x, j->y, j->z, p, k);
