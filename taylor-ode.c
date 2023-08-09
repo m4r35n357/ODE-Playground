@@ -241,8 +241,7 @@ mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {
     if (!k) {
         mpfr_pow(p[k], u[k], a, RND);
     } else {
-        _fwd_(&_p, p, u, k, &__, 1);
-        mpfr_mul(_p, a, _p, RND);
+        mpfr_mul(_p, a, *_fwd_(&_p, p, u, k, &__, 1), RND);
         _rev_(&p[k], p, u, &_p, k, &__, false);
     }
     return &p[k];

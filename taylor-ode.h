@@ -124,7 +124,7 @@ mpfr_t *t_abs (series U, int k);
  *
  *     P = U.V
  *
- *  P[k] = sum{j=0->k} U[j].V[k-j]
+ *   P_k = sum{j=0->k} U[j].V[k-j]
  */
 mpfr_t *t_mul (series U, series V, int k);
 
@@ -133,7 +133,7 @@ mpfr_t *t_mul (series U, series V, int k);
  *
  *     S = U.U
  *
- *  S[k] = sum{j=0->k} U[j].U[k-j]
+ *   S_k = sum{j=0->k} U[j].U[k-j]
  */
 mpfr_t *t_sqr (series U, int k);
 
