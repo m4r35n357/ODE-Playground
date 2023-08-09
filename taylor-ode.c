@@ -27,14 +27,18 @@ void t_params (char **argv, int argc, ...) {
 
 series t_jet (int n) {
     mpfr_t *s = calloc((size_t)n, sizeof (mpfr_t)); CHECK(s);
-    for (int i = 0; i <= n; i++) mpfr_init(s[i]);
+    for (int i = 0; i <= n; i++) {
+        mpfr_init(s[i]);
+    }
     return s;
 }
 
 mpfr_t *t_const (int n, mpfr_t a) {
     series c = t_jet(n);
     mpfr_set(c[0], a, RND);
-    for (int k = 1; k < n; k++) mpfr_set_zero(c[k], 1);
+    for (int k = 1; k < n; k++) {
+        mpfr_set_zero(c[k], 1);
+    }
     return c;
 }
 
@@ -45,7 +49,9 @@ void t_out (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, clock_t since) {
 
 mpfr_t *t_horner (series s, int n, mpfr_t h) {
     mpfr_set_zero(__, 1);
-    for (int i = n; i >= 0; i--) mpfr_fma(__, __, h, s[i], RND);
+    for (int i = n; i >= 0; i--) {
+        mpfr_fma(__, __, h, s[i], RND);
+    }
     CHECK(mpfr_number_p(__) != 0);
     return &__;
 }
@@ -73,34 +79,34 @@ static int _half_ (int k) {
     return 1 + (k - (k % 2 ? 1 : 2)) / 2;
 }
 
-static mpfr_t *_prod_ (mpfr_t *_, series u, series v, int k, int k0, int k1) {
+static mpfr_t *_prod_ (mpfr_t *_, series b, series a, int k, int k0, int k1) {
     mpfr_set_zero(*_, 1);
     for (int j = k0; j < k1; j++) {
-        mpfr_fma(*_, u[j], v[k - j], *_, RND);
+        mpfr_fma(*_, b[j], a[k - j], *_, RND);
     }
     return _;
 }
 
-static mpfr_t *_fwd_ (mpfr_t *_, series g, series u, int k, mpfr_t *du_dt, int scale) {
+static mpfr_t *_fwd_ (mpfr_t *_, series b, series a, int k, mpfr_t *da_dt, int scale) {
     mpfr_set_zero(*_, 1);
     for (int j = 0; j < k; j++) {
-        mpfr_mul_si(*du_dt, u[k - j], k - j, RND);
-        mpfr_fma(*_, g[j], *du_dt, *_, RND);
+        mpfr_mul_si(*da_dt, a[k - j], k - j, RND);
+        mpfr_fma(*_, b[j], *da_dt, *_, RND);
     }
     mpfr_div_si(*_, *_, k, RND);
     if (scale != 1) mpfr_mul_si(*_, *_, scale, RND);
     return _;
 }
 
-static mpfr_t *_rev_ (mpfr_t *_, series u, series g, mpfr_t *f_k, int k, mpfr_t *du_dt, bool neg) {
+static mpfr_t *_rev_ (mpfr_t *_, series a, series b, mpfr_t *c_k, int k, mpfr_t *da_dt, bool neg) {
     mpfr_set_zero(*_, 1);
     for (int j = 1; j < k; j++) {
-        mpfr_mul_si(*du_dt, u[k - j], k - j, RND);
-        mpfr_fma(*_, g[j], *du_dt, *_, RND);
+        mpfr_mul_si(*da_dt, a[k - j], k - j, RND);
+        mpfr_fma(*_, b[j], *da_dt, *_, RND);
     }
     mpfr_div_si(*_, *_, k, RND);
-    neg ? mpfr_add(*_, *f_k, *_, RND) : mpfr_sub(*_, *f_k, *_, RND);
-    mpfr_div(*_, *_, g[0], RND);
+    neg ? mpfr_add(*_, *c_k, *_, RND) : mpfr_sub(*_, *c_k, *_, RND);
+    mpfr_div(*_, *_, b[0], RND);
     return _;
 }
 
