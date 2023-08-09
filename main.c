@@ -8,6 +8,8 @@
 #include "taylor-ode.h"
 
 int main (int argc, char **argv) {
+    PRINT_ARGS(argc, argv);
+
     int display_precision = (int)strtol(argv[1], NULL, BASE); CHECK(display_precision >= 2);
     int mpfr_precision_bits = (int)strtol(argv[2], NULL, BASE); CHECK(mpfr_precision_bits >= 53);
     mpfr_set_default_prec((mpfr_prec_t)mpfr_precision_bits);

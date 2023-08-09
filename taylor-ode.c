@@ -17,34 +17,36 @@ static mpfr_t __, _a, _m, _s, _p;
 
 static char format[60];
 
-void t_params (char **argv, int argc, ...) {
-    PRINT_ARGS(argc, argv);
-    va_list args;
-    va_start(args, argc);
-    for (int i = 9; i < argc; i++) mpfr_init_set_str(*va_arg(args, mpfr_t *), argv[i], BASE, RND);
-    va_end(args);
-}
-
-series t_jet (int n) {
-    mpfr_t *s = calloc((size_t)n, sizeof (mpfr_t)); CHECK(s);
-    for (int i = 0; i <= n; i++) {
-        mpfr_init(s[i]);
-    }
-    return s;
-}
-
-mpfr_t *t_const (int n, mpfr_t a) {
-    series c = t_jet(n);
-    mpfr_set(c[0], a, RND);
-    for (int k = 1; k < n; k++) {
-        mpfr_set_zero(c[k], 1);
-    }
-    return c;
-}
-
 void t_out (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, clock_t since) {
     mpfr_mul_si(__, h, step, RND);
     mpfr_printf(format, x, y, z, __, (double)(clock() - since) / CLOCKS_PER_SEC);
+}
+
+void t_params (char **argv, int argc, ...) {
+    va_list _;
+    va_start(_, argc);
+    for (int i = 9; i < argc; i++) {
+        mpfr_init_set_str(*va_arg(_, mpfr_t *), argv[i], BASE, RND);
+    }
+    va_end(_);
+}
+
+series t_jet (int n) {
+    CHECK(n > 0);
+    mpfr_t *_ = calloc((size_t)n, sizeof (mpfr_t)); CHECK(_);
+    for (int i = 0; i <= n; i++) {
+        mpfr_init(_[i]);
+    }
+    return _;
+}
+
+mpfr_t *t_const (int n, mpfr_t a) {
+    series _ = t_jet(n);
+    mpfr_set(_[0], a, RND);
+    for (int k = 1; k < n; k++) {
+        mpfr_set_zero(_[k], 1);
+    }
+    return _;
 }
 
 mpfr_t *t_horner (series s, int n, mpfr_t h) {
