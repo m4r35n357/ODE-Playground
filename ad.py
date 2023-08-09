@@ -52,14 +52,14 @@ def rk4(ode, places, skip, h, steps, x, y, z, p):
             t_out(places, x, y, z, step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
     t_out(places, x, y, z, steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
 
-def _prod_(a, b, k, k0, k1):
-    return sum(a[j] * b[k - j] for j in range(k0, k1))
+def _prod_(b, a, k, k0, k1):
+    return sum(b[j] * a[k - j] for j in range(k0, k1))
 
-def _fwd_(g, u, k, scale=1.0):
-    return scale * sum(g[j] * (k - j) * u[k - j] for j in range(k)) / k
+def _fwd_(b, a, k, scale=1.0):
+    return scale * sum(b[j] * (k - j) * a[k - j] for j in range(k)) / k
 
-def _rev_(u, g, f_k, k, flag=False):
-    return (f_k + (1.0 if flag else -1.0) * sum(g[j] * (k - j) * u[k - j] for j in range(1, k)) / k) / g[0]
+def _rev_(a, b, c_k, k, flag=False):
+    return (c_k + (1.0 if flag else -1.0) * sum(b[j] * (k - j) * a[k - j] for j in range(1, k)) / k) / b[0]
 
 def t_abs(u, k):
     return - u[k] if u[0] < 0.0 else u[k]
