@@ -9,13 +9,17 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-const int BASE = 10;
-
-const mpfr_rnd_t RND = MPFR_RNDN;
-
 static mpfr_t __, _a, _m, _s, _p, D1, D_1, D2, D_2;
 
 static char format[60];
+
+void tsm_init(int dp) {
+    sprintf(format, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", dp, dp, dp);
+    mpfr_init_set_si(D1, 1, RND);
+    mpfr_init_set_si(D2, 2, RND);
+    mpfr_init_set_si(D_1, -1, RND);
+    mpfr_init_set_si(D_2, -2, RND);
+}
 
 void t_out (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, clock_t since) {
     mpfr_mul_si(__, h, step, RND);
@@ -56,12 +60,7 @@ mpfr_t *t_horner (series s, int n, mpfr_t h) {
     return &__;
 }
 
-void tsm (int dp, int n, mpfr_t h, int steps, series3 *j, parameters *p, clock_t t0) {
-    sprintf(format, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", dp, dp, dp);
-    mpfr_init_set_si(D1, 1, RND);
-    mpfr_init_set_si(D2, 2, RND);
-    mpfr_init_set_si(D_1, -1, RND);
-    mpfr_init_set_si(D_2, -2, RND);
+void tsm (int n, mpfr_t h, int steps, series3 *j, parameters *p, clock_t t0) {
     triplet *v_k = malloc(sizeof (triplet)); CHECK(v_k);
     mpfr_inits(v_k->x, v_k->y, v_k->z, __, _a, _m, _s, _p, NULL);
     for (int step = 0; step < steps; step++) {

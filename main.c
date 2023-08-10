@@ -29,7 +29,8 @@ int main (int argc, char **argv) {
     jets->y = t_const(order + 1, y0);
     jets->z = t_const(order + 1, z0);
 
-    tsm(display_precision, order, step_size, steps, jets, get_p(argc, argv, order), clock());
+    tsm_init(display_precision);
+    tsm(order, step_size, steps, jets, get_p(argc, argv, order), clock());
 
     return 0;
 }

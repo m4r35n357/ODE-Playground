@@ -32,19 +32,19 @@ do { \
 } while (0)
 
 /*
+ * Number base for integer conversions
+ */
+#define BASE 10
+
+/*
+ * Default MPFR rounding mode
+ */
+#define RND MPFR_RNDN
+
+/*
  * Client model data
  */
 typedef struct Parameters parameters;
-
-/*
- * The numerical base for string IO conversions
- */
-extern const int BASE;
-
-/*
- * Global rounding strategy for MPFR
- */
-extern const mpfr_rnd_t RND;
 
 /*
  * Type for Taylor Series coordinate jets
@@ -92,7 +92,15 @@ series t_jet (int size);
  */
 mpfr_t *t_horner (series S, int n, mpfr_t h);
 
-void tsm (int places, int n, mpfr_t h, int steps, series3 *jets, parameters *P, clock_t since);
+/*
+ * Initialize constants
+ */
+void tsm_init(int display_precision);
+
+/*
+ * Execute the Taylor Series Method
+ */
+void tsm (int n, mpfr_t h, int steps, series3 *jets, parameters *P, clock_t since);
 
 /*
  * Get a blob of parameter data from the model to be passed into ode()

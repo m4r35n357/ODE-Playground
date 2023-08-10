@@ -118,7 +118,8 @@ int main (int argc, char **argv) {
     j->x = t_const(n + 1, D1);
     j->y = t_const(n + 1, D1);
     j->z = t_const(n + 1, D1);
-    tsm(dp, n, D01, steps, j, get_p(argc, argv, n), clock());
+    tsm_init(dp);
+    tsm(n, D01, steps, j, get_p(argc, argv, n), clock());
     fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);
     mpfr_t e1, e0, e_1;
     mpfr_inits(e1, e0, e_1, NULL);
