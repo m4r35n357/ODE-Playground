@@ -24,13 +24,16 @@
 #define RED "\x1B[1;31m"
 #define CYN "\x1B[0;36m"
 
-static int dp, n, debug = 0, total = 0, passed = 0, skipped = 0;
+static int k_max = 0, dp, n, debug = 0, total = 0, passed = 0, skipped = 0;
 
-static mpfr_t delta, tolerance, D0, D01, D05, D_05, D1, D_1, D2, D_2, D3, D_3;
+static mpfr_t delta, delta_max, tolerance, D0, D01, D05, D_05, D1, D_1, D2, D_2, D3, D_3;
+
+static char *name_max = "N/A";
 
 static void libad_test_init (void) {
     ad_init(n);
-    mpfr_init(delta);
+    mpfr_inits(delta, delta_max, NULL);
+    mpfr_set_zero(delta_max, 1);
     mpfr_init_set_si(D0, 0, RND);
     mpfr_init_set_str(D01, "0.1", BASE, RND);
     mpfr_init_set_str(D05, "0.5", BASE, RND);
@@ -69,6 +72,12 @@ static void compare (char* name, series a, series b) {
     total++;
     for (int k = 0; k < n; k++) {
         mpfr_sub(delta, a[k], b[k], RND);
+        mpfr_abs(delta, delta, RND);
+        if (mpfr_cmp(delta, delta_max) > 0) {
+            mpfr_set(delta_max, delta, RND);
+            name_max = name;
+            k_max = k;
+        }
         if (mpfr_number_p(delta) == 0 || mpfr_cmpabs(delta, tolerance) > 0) {
             fprintf(stderr, "%s FAIL%s %s  k=%d  LHS: %.*e  RHS: %.*e  (%.3e)\n",
                     RED, NRM, name, k, dp, mpfr_get_d(a[k], RND), dp, mpfr_get_d(b[k], RND), mpfr_get_d(delta, RND));
@@ -95,7 +104,7 @@ int main (int argc, char **argv) {
     libad_test_init();
     series x = t_jet(n + 1);
     mpfr_init_set_str(x[0], argv[4], BASE, RND);
-    for (int k = 1; k <= n; k++) mpfr_div_si(x[k], x[0], k * k, RND);
+    for (int k = 1; k <= n; k++) mpfr_div_si(x[k], D05, k * k, RND);
     mpfr_init_set_str(tolerance, argv[5], BASE, RND); CHECK(mpfr_sgn(tolerance) > 0);
     if (argc == 7) debug = (int)strtol(argv[6], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
 
@@ -246,7 +255,7 @@ int main (int argc, char **argv) {
     fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
     if (skipped) fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
     if (passed == total - skipped) {
-        fprintf(stderr, "\n");
+        fprintf(stderr, "\n%sDelta%s %.1Le %s%s%s k == %d\n", WHT, NRM, mpfr_get_ld(delta_max, RND), CYN, name_max, NRM, k_max);
         return 0;
     } else {
         fprintf(stderr, ", %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);
