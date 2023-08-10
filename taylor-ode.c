@@ -46,17 +46,15 @@ void tsm_get_p (char **argv, int argc, ...) {
     va_end(_);
 }
 
-series t_jet (int n) {
-    CHECK(n > 0);
-    series _ = malloc((size_t)n * sizeof (real)); CHECK(_);
+series t_jet (int k) {
+    CHECK(k > 0);
+    series _ = calloc((size_t)k, sizeof (real)); CHECK(_);
     return _;
 }
 
-series t_const (int n, real a) {
-    series _ = t_jet(n);
-    for (int k = 0; k < n; k++) {
-        _[k] = !k ? a : 0.0L;
-    }
+series t_const (int k, real a) {
+    series _ = t_jet(k);
+    _[0] = a;
     return _;
 }
 
