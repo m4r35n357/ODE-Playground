@@ -16,9 +16,11 @@
 #define RED "\x1B[1;31m"
 #define CYN "\x1B[0;36m"
 
-static int dp, n, debug = 0, total = 0, passed = 0, skipped = 0;
+static int k_max = 0, dp, n, debug = 0, total = 0, passed = 0, skipped = 0;
 
-static real delta, tolerance;
+static real delta, delta_max = 0.0L, tolerance;
+
+static char *name_max = "N/A";
 
 struct Parameters { real a, b, c; };
 
@@ -73,14 +75,19 @@ static void skip (char* name) {
 static void compare (char* name, series a, series b) {
     total++;
     for (int k = 0; k < n; k++) {
-        delta = a[k] - b[k];
+        delta = fabsl(a[k] - b[k]);
+        if (delta > delta_max) {
+            delta_max = delta;
+            name_max = name;
+            k_max = k;
+        }
         if (!isfinite(delta) || fabsl(delta) > tolerance) {
-            fprintf(stderr, "%s FAIL%s %s\n  k=%d  LHS: %+.*Le  RHS: %+.*Le  (%+.3Le)\n", RED, NRM, name, k, dp, a[k], dp, b[k], delta);
+            fprintf(stderr, "%s FAIL%s %s\n  k=%d  LHS: %+.*Le  RHS: %+.*Le  (%.1Le)\n", RED, NRM, name, k, dp, a[k], dp, b[k], delta);
             return;
         }
         if (debug >= 2) {
             if (!k) fprintf(stderr, "\n");
-            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.*Le %+.*Le  (%+.3Le)\n", NRM, NRM, k, dp, a[k], dp, b[k], delta);
+            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.*Le %+.*Le  (%.1Le)\n", NRM, NRM, k, dp, a[k], dp, b[k], delta);
         }
     }
     if (debug) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
@@ -95,7 +102,7 @@ int main (int argc, char **argv) {
     n = (int)strtol(argv[2], NULL, BASE); CHECK(n > 8);
     series x = t_jet(n + 1);
     for (int k = 0; k <= n; k++) {
-        x[k] = !k ? strtold(argv[3], NULL) : x[0] / (k * k);
+        x[k] = !k ? strtold(argv[3], NULL) : 0.5L / (k * k);
     }
     tolerance = strtold(argv[4], NULL); CHECK(tolerance > 0.0L);
     if (argc == 6) {
@@ -228,7 +235,7 @@ int main (int argc, char **argv) {
     fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
     if (skipped) fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
     if (passed == total - skipped) {
-        fprintf(stderr, "\n");
+        fprintf(stderr, "\n%sDelta%s %.1Le %s%s%s k == %d\n", WHT, NRM, delta_max, CYN, name_max, NRM, k_max);
         return 0;
     } else {
         fprintf(stderr, ", %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);

@@ -18,7 +18,9 @@
 
 static int dp, debug = 0, total = 0, passed = 0, skipped = 0;
 
-static real delta_val, delta_dot, tolerance;
+static real delta_val, delta_dot, delta_max = 0.0L, tolerance;
+
+static char *name_max = "N/A", *field_max = "N/A";
 
 static void skip (char* name) {
     total++;
@@ -28,12 +30,22 @@ static void skip (char* name) {
 
 static void compare (char* name, dual a, dual b) {
     total++;
-    delta_val = a.val - b.val;
+    delta_val = fabsl(a.val - b.val);
+    if (delta_val > delta_max) {
+        delta_max = delta_val;
+        name_max = name;
+        field_max = "VAL";
+    }
     if (fabsl(delta_val) > tolerance) {
         fprintf(stderr, "%s FAIL%s %s\n  VAL  LHS: %+.*Le  RHS: %+.*Le  (%+.3Le)\n", RED, NRM, name, dp, a.val, dp, b.val, delta_val);
         return;
     }
-    delta_dot = a.dot - b.dot;
+    delta_dot = fabsl(a.dot - b.dot);
+    if (delta_dot > delta_max) {
+        delta_max = delta_dot;
+        name_max = name;
+        field_max = "DOT";
+    }
     if (fabsl(delta_dot) > tolerance) {
         fprintf(stderr, "%s FAIL%s %s\n  DOT  LHS: %+.*Le  RHS: %+.*Le  (%+.3Le)\n", RED, NRM, name, dp, a.dot, dp, b.dot, delta_dot);
         return;
@@ -50,7 +62,7 @@ int main (int argc, char **argv) {
     CHECK(argc == 4 || argc == 5);
 
     dp = (int)strtol(argv[1], NULL, BASE);
-    dual x = d_var(strtold(argv[2], NULL));
+    dual x = (dual){.val = strtold(argv[2], NULL), .dot = 0.5L};
     tolerance = strtold(argv[3], NULL); CHECK(tolerance > 0.0L);
     if (argc == 5) {
         debug = (int)strtol(argv[4], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
@@ -143,7 +155,7 @@ int main (int argc, char **argv) {
     fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
     if (skipped) fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
     if (passed == total - skipped) {
-        fprintf(stderr, "\n");
+        fprintf(stderr, "\n%sDelta%s %.1Le %s%s%s (%s)\n", WHT, NRM, delta_max, CYN, name_max, NRM, field_max);
         return 0;
     } else {
         fprintf(stderr, ", %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);
