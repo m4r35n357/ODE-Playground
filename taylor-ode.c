@@ -31,21 +31,19 @@ void t_params (char **argv, int argc, ...) {
     va_end(_);
 }
 
-series t_jet (int n) {
-    CHECK(n > 0);
-    mpfr_t *_ = calloc((size_t)n, sizeof (mpfr_t)); CHECK(_);
-    for (int i = 0; i <= n; i++) {
+series t_jet (int k) {
+    CHECK(k > 0);
+    series _ = malloc((size_t)k * sizeof (mpfr_t)); CHECK(_);
+    for (int i = 0; i < k; i++) {
         mpfr_init(_[i]);
+        mpfr_set_zero(_[i], 1);
     }
     return _;
 }
 
-mpfr_t *t_const (int n, mpfr_t a) {
-    series _ = t_jet(n);
+series t_const (int k, mpfr_t a) {
+    series _ = t_jet(k);
     mpfr_set(_[0], a, RND);
-    for (int k = 1; k < n; k++) {
-        mpfr_set_zero(_[k], 1);
-    }
     return _;
 }
 
