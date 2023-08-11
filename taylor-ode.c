@@ -90,9 +90,9 @@ static mpfr_t *_prod_ (mpfr_t *_, series b, series a, int k, int k0, int k1) {
     return _;
 }
 
-static mpfr_t *_fwd_ (mpfr_t *_, series b, series a, int k, mpfr_t *da_dt, mpfr_t scale) {
+static mpfr_t *_chain_ (mpfr_t *_, series b, series a, int k, int k0, mpfr_t *da_dt, mpfr_t scale) {
     mpfr_set_zero(*_, 1);
-    for (int j = 0; j < k; j++) {
+    for (int j = k0; j < k; j++) {
         mpfr_mul_si(*da_dt, a[k - j], k - j, RND);
         mpfr_fma(*_, b[j], *da_dt, *_, RND);
     }
@@ -101,14 +101,12 @@ static mpfr_t *_fwd_ (mpfr_t *_, series b, series a, int k, mpfr_t *da_dt, mpfr_
     return _;
 }
 
+static mpfr_t *_fwd_ (mpfr_t *_, series b, series a, int k, mpfr_t *da_dt, mpfr_t scale) {
+    return _chain_(_, b, a, k, 0, da_dt, scale);
+}
+
 static mpfr_t *_rev_ (mpfr_t *_, series a, series b, mpfr_t *c_k, int k, mpfr_t *da_dt, bool neg) {
-    mpfr_set_zero(*_, 1);
-    for (int j = 1; j < k; j++) {
-        mpfr_mul_si(*da_dt, a[k - j], k - j, RND);
-        mpfr_fma(*_, b[j], *da_dt, *_, RND);
-    }
-    mpfr_div_si(*_, *_, k, RND);
-    neg ? mpfr_add(*_, *c_k, *_, RND) : mpfr_sub(*_, *c_k, *_, RND);
+    mpfr_add(*_, *c_k, *_chain_(_, b, a, k, 1, da_dt, neg ? D1 : D_1), RND);
     mpfr_div(*_, *_, b[0], RND);
     return _;
 }
