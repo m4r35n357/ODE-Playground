@@ -54,7 +54,7 @@ tests: libad-test
 .PHONY: test clean depclean ctags ctags-system ctags-system-all coverage
 
 test:
-	@for x in -.5 0 .5; do ./libad-test 15 237 20 $$x 1e-64 >/dev/null || exit 1; echo ""; done
+	@for x in -1 -.5 0 .5 1; do ./libad-test 15 1024 20 $$x 1e-64 >/dev/null || exit 1; echo ""; done
 	@echo "\033[1;37mCore Tests Passed\033[0;37m\n"
 
 test-all: test

@@ -112,7 +112,7 @@ int main (int argc, char **argv) {
     mpfr_const_pi(PI_2, RND);
     mpfr_div_2si(PI_2, PI_2, 1, RND);
 
-    fprintf(stderr, "%sTaylor Series Method %s\n", WHT, NRM);
+    fprintf(stderr, "Taylor Series Method \n");
     int steps = 10;
     series3 *j = malloc(sizeof (series3)); CHECK(j);
     j->x = t_const(n + 1, D1);
@@ -128,20 +128,20 @@ int main (int argc, char **argv) {
     mpfr_exp(e_1, D_1, RND);
     t_out(e1, e0, e_1, D01, steps, 0.0F);
 
-    fprintf(stderr, "%sHorner Summation %s\n", WHT, NRM);
+    fprintf(stderr, "Horner Summation ");
     series p = t_jet(n);
     mpfr_set_si(p[0], 1, RND);
     mpfr_set_si(p[1], 3, RND);
     mpfr_set_si(p[2], 0, RND);
     mpfr_set_si(p[3], 2, RND);
-    mpfr_fprintf(stdout, " 23 %8.3RNf\n", *t_horner(p, 3, D2));
+    CHECK(!mpfr_cmp_ld(*t_horner(p, 3, D2), 23.0L)); fprintf(stderr, ".");
     mpfr_set_si(p[0], 3, RND);
     mpfr_set_si(p[1], -1, RND);
     mpfr_set_si(p[2], 2, RND);
     mpfr_set_si(p[3], -4, RND);
     mpfr_set_si(p[4], 0, RND);
     mpfr_set_si(p[5], 1, RND);
-    mpfr_fprintf(stdout, "153 %8.3RNf\n", *t_horner(p, 5, D3));
+    CHECK(!mpfr_cmp_ld(*t_horner(p, 5, D3), 153.0L)); fprintf(stderr, ".");
     mpfr_set_si(p[0], 1, RND);
     mpfr_set_si(p[1], -4, RND);
     mpfr_set_si(p[2], 0, RND);
@@ -150,9 +150,9 @@ int main (int argc, char **argv) {
     mpfr_set_si(p[5], 3, RND);
     mpfr_set_si(p[6], 0, RND);
     mpfr_set_si(p[7], -2, RND);
-    mpfr_fprintf(stdout, "201 %8.3RNf\n", *t_horner(p, 7, D_2));
+    CHECK(!mpfr_cmp_ld(*t_horner(p, 7, D_2), 201.0L)); fprintf(stderr, ". %sOK%s\n", GRN, NRM);
 
-    fprintf(stderr, "%sRecurrence Relations: %s%sx = %.1Lf%s\n", WHT, NRM, CYN, mpfr_get_ld(x[0], RND), NRM);
+    fprintf(stderr, "Recurrence Relations: %sx = %.1Lf%s\n", CYN, mpfr_get_ld(x[0], RND), NRM);
     bool positive = mpfr_sgn(x[0]) > 0, non_zero = mpfr_zero_p(x[0]) == 0, lt_pi_2 = mpfr_cmpabs(x[0], PI_2) < 0;
     series r1 = t_jet(n), r2 = t_jet(n), r3 = t_jet(n), S1 = t_const(n, D1);
     series abs_x = t_jet(n), inv_x = t_jet(n), sqrt_x = t_jet(n), ln_x = t_jet(n);
@@ -256,7 +256,7 @@ int main (int argc, char **argv) {
     fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
     if (skipped) fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
     if (passed == total - skipped) {
-        fprintf(stderr, "\n%sDelta%s %.1Le %s%s%s k == %d\n", WHT, NRM, mpfr_get_ld(delta_max, RND), CYN, name_max, NRM, k_max);
+        fprintf(stderr, "\nDelta %s%.1Le%s %s%s%s k == %d\n", WHT, mpfr_get_ld(delta_max, RND), NRM, CYN, name_max, NRM, k_max);
         return 0;
     } else {
         fprintf(stderr, ", %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);
