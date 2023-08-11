@@ -155,7 +155,7 @@ int main (int argc, char **argv) {
     fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
     if (skipped) fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
     if (passed == total - skipped) {
-        fprintf(stderr, "\n%sDelta%s %.1Le %s%s%s (%s)\n", WHT, NRM, delta_max, CYN, name_max, NRM, field_max);
+        fprintf(stderr, "\nDelta %s%.1Le%s %s%s%s (%s)\n", WHT, delta_max, NRM, CYN, name_max, NRM, field_max);
         return 0;
     } else {
         fprintf(stderr, ", %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);

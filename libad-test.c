@@ -109,7 +109,7 @@ int main (int argc, char **argv) {
         debug = (int)strtol(argv[5], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
     }
 
-    fprintf(stderr, "%sHorner Summation %s", WHT, NRM);
+    fprintf(stderr, "Horner Summation ");
     series s = t_jet(n);
     s[0] = 1.0L; s[1] = 3.0L; s[2] = 0.0L; s[3] = 2.0L;
     CHECK(t_horner(s, 3, 2.0L) == 23.0L); fprintf(stderr, ".");
@@ -118,7 +118,7 @@ int main (int argc, char **argv) {
     s[0] = 1.0L; s[1] = -4.0L; s[2] = 0.0L; s[3] = 0.0L; s[4] = 2.0L; s[5] = 3.0L; s[6] = 0.0L; s[7] = -2.0L;
     CHECK(t_horner(s, 7, -2.0L) == 201.0L); fprintf(stderr, ". %sOK%s\n", GRN, NRM);
 
-    fprintf(stderr, "%sTaylor Series Method %s", WHT, NRM);
+    fprintf(stderr, "Taylor Series Method ");
     controls c = {.order=n, .step=0, .steps=10, .step_size=0.1L};
     parameters p = {.a=1.0L, .b=0.0L, .c=-1.0L};
     series3 *j = malloc(sizeof (series3)); CHECK(j);
@@ -235,7 +235,7 @@ int main (int argc, char **argv) {
     fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
     if (skipped) fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
     if (passed == total - skipped) {
-        fprintf(stderr, "\n%sDelta%s %.1Le %s%s%s k == %d\n", WHT, NRM, delta_max, CYN, name_max, NRM, k_max);
+        fprintf(stderr, "\nDelta %s%.1Le%s %s%s%s k == %d\n", WHT, delta_max, NRM, CYN, name_max, NRM, k_max);
         return 0;
     } else {
         fprintf(stderr, ", %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);
