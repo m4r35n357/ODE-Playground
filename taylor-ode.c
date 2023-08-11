@@ -126,20 +126,20 @@ static real _prod_ (series b, series a, int k, int k0, int k1) {
     return _;
 }
 
-static real _fwd_ (series b, series a, int k) {
+static real _chain_ (series b, series a, int k, int k0) {
     real _ = 0.0L;
-    for (int j = 0; j < k; j++) {
+    for (int j = k0; j < k; j++) {
         _ += b[j] * (k - j) * a[k - j];
     }
     return _ / k;
 }
 
+static real _fwd_ (series b, series a, int k) {
+    return _chain_(b, a, k, 0);
+}
+
 static real _rev_ (series a, series b, real c_k, int k, bool neg) {
-    real _ = 0.0L;
-    for (int j = 1; j < k; j++) {
-        _ += b[j] * (k - j) * a[k - j];
-    }
-    return (c_k + (neg ? _ : -_) / k) / b[0];
+    return (c_k + (neg ? 1.0L : -1.0L) * _chain_(b, a, k, 1)) / b[0];
 }
 
 real t_abs (series u, int k) {
