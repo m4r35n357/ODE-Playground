@@ -79,12 +79,12 @@ void tsm (int n, mpfr_t h, int steps, series3 *j, parameters *p, clock_t t0) {
 }
 
 static int _half_ (int k) {
-    return 1 + (k - (k % 2 ? 1 : 2)) / 2;
+    return (k - (k % 2 ? 1 : 2)) / 2;
 }
 
-static mpfr_t *_prod_ (mpfr_t *_, series b, series a, int k, int k0, int k1) {
+static mpfr_t *_cauchy_ (mpfr_t *_, series b, series a, int k, int k0, int k1) {
     mpfr_set_zero(*_, 1);
-    for (int j = k0; j < k1; j++) {
+    for (int j = k0; j <= k1; j++) {
         mpfr_fma(*_, b[j], a[k - j], *_, RND);
     }
     return _;
@@ -101,11 +101,11 @@ static mpfr_t *_chain_ (mpfr_t *_, series b, series a, int k, int k0, mpfr_t *da
     return _;
 }
 
-static mpfr_t *_fwd_ (mpfr_t *_, series b, series a, int k, mpfr_t *da_dt, mpfr_t scale) {
+static mpfr_t *_forward_ (mpfr_t *_, series b, series a, int k, mpfr_t *da_dt, mpfr_t scale) {
     return _chain_(_, b, a, k, 0, da_dt, scale);
 }
 
-static mpfr_t *_rev_ (mpfr_t *_, series a, series b, mpfr_t *c_k, int k, mpfr_t *da_dt, bool neg) {
+static mpfr_t *_reverse_ (mpfr_t *_, series a, series b, mpfr_t *c_k, int k, mpfr_t *da_dt, bool neg) {
     mpfr_add(*_, *c_k, *_chain_(_, b, a, k, 1, da_dt, neg ? D1 : D_1), RND);
     mpfr_div(*_, *_, b[0], RND);
     return _;
@@ -118,11 +118,11 @@ mpfr_t *t_abs (series u, int k) {
 }
 
 mpfr_t *t_mul (series u, series v, int k) {
-    return _prod_(&_m, u, v, k, 0, k + 1);
+    return _cauchy_(&_m, u, v, k, 0, k);
 }
 
 mpfr_t *t_sqr (series u, int k) {
-    mpfr_mul_2si(_s, *_prod_(&_s, u, u, k, 0, _half_(k)), 1, RND);
+    mpfr_mul_2si(_s, *_cauchy_(&_s, u, u, k, 0, _half_(k)), 1, RND);
     if (!(k % 2)) mpfr_fma(_s, u[k / 2], u[k / 2], _s, RND);
     return &_s;
 }
@@ -132,7 +132,7 @@ mpfr_t *t_div (series q, series u, series v, int k) {
     if (!k) {
         u ? mpfr_set(q[k], u[k], RND) : mpfr_set_si(q[k], 1, RND);
     } else {
-        _prod_(&q[k], q, v, k, 0, k);
+        _cauchy_(&q[k], q, v, k, 0, k - 1);
         u ? mpfr_sub(q[k], u[k], q[k], RND) : mpfr_neg(q[k], q[k], RND);
     }
     mpfr_div(q[k], q[k], v[0], RND);
@@ -144,7 +144,7 @@ mpfr_t *t_sqrt (series r, series u, int k) {
     if (!k) {
         mpfr_sqrt(r[k], u[k], RND);
     } else {
-        mpfr_mul_2si(r[k], *_prod_(&r[k], r, r, k, 1, _half_(k)), 1, RND);
+        mpfr_mul_2si(r[k], *_cauchy_(&r[k], r, r, k, 1, _half_(k)), 1, RND);
         if (!(k % 2)) mpfr_fma(r[k], r[k / 2], r[k / 2], r[k], RND);
         mpfr_sub(r[k], u[k], r[k], RND);
         mpfr_div_2si(r[k], r[k], 1, RND);
@@ -158,7 +158,7 @@ mpfr_t *t_exp (series e, series u, int k) {
     if (!k) {
         mpfr_exp(e[k], u[k], RND);
     } else {
-        _fwd_(&e[k], e, u, k, &__, D1);
+        _forward_(&e[k], e, u, k, &__, D1);
     };
     return &e[k];
 }
@@ -168,8 +168,8 @@ pair t_sin_cos (series s, series c, series u, int k, bool trig) {
     if (!k) {
         trig ? mpfr_sin_cos(s[k], c[k], u[k], RND) : mpfr_sinh_cosh(s[k], c[k], u[k], RND);
     } else {
-        _fwd_(&s[k], c, u, k, &__, D1);
-        _fwd_(&c[k], s, u, k, &__, trig ? D_1 : D1);
+        _forward_(&s[k], c, u, k, &__, D1);
+        _forward_(&c[k], s, u, k, &__, trig ? D_1 : D1);
     };
     return (pair){.a = &s[k], .b = &c[k]};
 }
@@ -181,8 +181,8 @@ pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
         trig ? mpfr_sec(s[k], u[k], RND) : mpfr_sech(s[k], u[k], RND);
         mpfr_sqr(s[k], s[k], RND);
     } else {
-        _fwd_(&t[k], s, u, k, &__, D1);
-        _fwd_(&s[k], t, t, k, &__, trig ? D2 : D_2);
+        _forward_(&t[k], s, u, k, &__, D1);
+        _forward_(&s[k], t, t, k, &__, trig ? D2 : D_2);
     };
     return (pair){.a = &t[k], .b = &s[k]};
 }
@@ -192,7 +192,7 @@ mpfr_t *t_ln (series l, series u, int k) {
     if (!k) {
         mpfr_log(l[k], u[k], RND);
     } else {
-        _rev_(&l[k], l, u, &u[k], k, &__, false);
+        _reverse_(&l[k], l, u, &u[k], k, &__, false);
     };
     return &l[k];
 }
@@ -203,8 +203,8 @@ pair t_asin (series u, series g, series s, int k, bool trig) {
         trig ? mpfr_asin(u[k], s[k], RND) : mpfr_asinh(u[k], s[k], RND);
         trig ? mpfr_cos(g[k], u[k], RND) : mpfr_cosh(g[k], u[k], RND);
     } else {
-        _rev_(&u[k], u, g, &s[k], k, &__, false);
-        _fwd_(&g[k], s, u, k, &__, trig ? D_1 : D1);
+        _reverse_(&u[k], u, g, &s[k], k, &__, false);
+        _forward_(&g[k], s, u, k, &__, trig ? D_1 : D1);
     };
     return (pair){.a = &u[k], .b = &g[k]};
 }
@@ -216,8 +216,8 @@ pair t_acos (series u, series g, series c, int k, bool trig) {
         trig ? mpfr_sin(g[k], u[k], RND) : mpfr_sinh(g[k], u[k], RND);
         if (trig) mpfr_neg(g[k], g[k], RND);
     } else {
-        _rev_(&u[k], u, g, &c[k], k, &__, trig);
-        _fwd_(&g[k], c, u, k, &__, D1);
+        _reverse_(&u[k], u, g, &c[k], k, &__, trig);
+        _forward_(&g[k], c, u, k, &__, D1);
     };
     return (pair){.a = &u[k], .b = &g[k]};
 }
@@ -229,8 +229,8 @@ pair t_atan (series u, series g, series t, int k, bool trig) {
         trig ? mpfr_sec(g[k], u[k], RND) : mpfr_sech(g[k], u[k], RND);
         mpfr_sqr(g[k], g[k], RND);
     } else {
-        _rev_(&u[k], u, g, &t[k], k, &__, false);
-        _fwd_(&g[k], t, t, k, &__, trig ? D2 : D_2);
+        _reverse_(&u[k], u, g, &t[k], k, &__, false);
+        _forward_(&g[k], t, t, k, &__, trig ? D2 : D_2);
     };
     return (pair){.a = &u[k], .b = &g[k]};
 }
@@ -240,7 +240,7 @@ mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {
     if (!k) {
         mpfr_pow(p[k], u[k], a, RND);
     } else {
-        _rev_(&p[k], p, u, _fwd_(&_p, p, u, k, &__, a), k, &__, false);
+        _reverse_(&p[k], p, u, _forward_(&_p, p, u, k, &__, a), k, &__, false);
     }
     return &p[k];
 }
