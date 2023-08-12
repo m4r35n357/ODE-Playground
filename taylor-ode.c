@@ -83,9 +83,9 @@ static void _next_ (series3 *j, int n, real h) {
 }
 
 static char *_tag_ (series j, real *slope, char *min, char *max) {
-    char *tag = *slope * j[1] < 0.0L ? (j[2] > 0.0L ? min : max) : "_";
+    char *_ = *slope * j[1] < 0.0L ? (j[2] > 0.0L ? min : max) : "_";
     *slope = j[1];
-    return tag;
+    return _;
 }
 
 void tsm_stdout (int dp, controls *c, series3 *j, parameters *p, clock_t t0) {
@@ -111,16 +111,16 @@ bool tsm_gen (controls *c, series3 *j, parameters *p) {
 }
 
 static int _half_ (int k) {
-    return 1 + (k - (k % 2 ? 1 : 2)) / 2;
+    return (k - (k % 2 ? 1 : 2)) / 2;
 }
 
 static real _rem_ (series a, int k) {
     return k % 2 ? 0.0L : a[k / 2] * a[k / 2];
 }
 
-static real _prod_ (series b, series a, int k, int k0, int k1) {
+static real _cauchy_ (series b, series a, int k, int k0, int k1) {
     real _ = 0.0L;
-    for (int j = k0; j < k1; j++) {
+    for (int j = k0; j <= k1; j++) {
         _ += b[j] * a[k - j];
     }
     return _;
@@ -134,11 +134,11 @@ static real _chain_ (series b, series a, int k, int k0) {
     return _ / k;
 }
 
-static real _fwd_ (series b, series a, int k) {
+static real _forward_ (series b, series a, int k) {
     return _chain_(b, a, k, 0);
 }
 
-static real _rev_ (series a, series b, real c_k, int k, bool neg) {
+static real _reverse_ (series a, series b, real c_k, int k, bool neg) {
     return (c_k + (neg ? 1.0L : -1.0L) * _chain_(b, a, k, 1)) / b[0];
 }
 
@@ -148,26 +148,26 @@ real t_abs (series u, int k) {
 }
 
 real t_mul (series u, series v, int k) {
-    return _prod_(u, v, k, 0, k + 1);
+    return _cauchy_(u, v, k, 0, k);
 }
 
 real t_div (series q, series u, series v, int k) {
     CHECK(v[0] != 0.0L); CHECK(q != u && q != v);
-    return q[k] = (!k ? (u ? u[k] : 1.0L) : (u ? u[k] : 0.0L) - _prod_(q, v, k, 0, k)) / v[0];
+    return q[k] = (!k ? (u ? u[k] : 1.0L) : (u ? u[k] : 0.0L) - _cauchy_(q, v, k, 0, k - 1)) / v[0];
 }
 
 real t_sqr (series u, int k) {
-    return 2.0L * _prod_(u, u, k, 0, _half_(k)) + _rem_(u, k);
+    return 2.0L * _cauchy_(u, u, k, 0, _half_(k)) + _rem_(u, k);
 }
 
 real t_sqrt (series r, series u, int k) {
     CHECK(u[0] > 0.0L); CHECK(r != u);
-    return r[k] = !k ? sqrtl(u[k]) : 0.5L * (u[k] - 2.0L * _prod_(r, r, k, 1, _half_(k)) - _rem_(r, k)) / r[0];
+    return r[k] = !k ? sqrtl(u[k]) : 0.5L * (u[k] - 2.0L * _cauchy_(r, r, k, 1, _half_(k)) - _rem_(r, k)) / r[0];
 }
 
 real t_exp (series e, series u, int k) {
     CHECK(e != u);
-    return e[k] = !k ? expl(u[k]) : _fwd_(e, u, k);
+    return e[k] = !k ? expl(u[k]) : _forward_(e, u, k);
 }
 
 pair t_sin_cos (series s, series c, series u, int k, bool trig) {
@@ -176,8 +176,8 @@ pair t_sin_cos (series s, series c, series u, int k, bool trig) {
         .a = s[k] = trig ? sinl(u[k]) : sinhl(u[k]),
         .b = c[k] = trig ? cosl(u[k]) : coshl(u[k])
     } : (pair){
-        .a = s[k] = _fwd_(c, u, k),
-        .b = c[k] = _fwd_(s, u, k) * (trig ? -1.0L : 1.0L)
+        .a = s[k] = _forward_(c, u, k),
+        .b = c[k] = _forward_(s, u, k) * (trig ? -1.0L : 1.0L)
     };
 }
 
@@ -187,14 +187,14 @@ pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
         .a = t[k] = trig ? tanl(u[k]) : tanhl(u[k]),
         .b = s[k] = trig ? 1.0L + t[k] * t[k] : 1.0L - t[k] * t[k]
     } : (pair){
-        .a = t[k] = _fwd_(s, u, k),
-        .b = s[k] = _fwd_(t, t, k) * (trig ? 2.0L : -2.0L)
+        .a = t[k] = _forward_(s, u, k),
+        .b = s[k] = _forward_(t, t, k) * (trig ? 2.0L : -2.0L)
     };
 }
 
 real t_ln (series l, series u, int k) {
     CHECK(u[0] > 0.0L); CHECK(l != u);
-    return l[k] = !k ? logl(u[k]) : _rev_(l, u, u[k], k, false);
+    return l[k] = !k ? logl(u[k]) : _reverse_(l, u, u[k], k, false);
 }
 
 pair t_asin (series u, series g, series s, int k, bool trig) {
@@ -203,8 +203,8 @@ pair t_asin (series u, series g, series s, int k, bool trig) {
         .a = u[k] = trig ? asinl(s[k]) : asinhl(s[k]),
         .b = g[k] = trig ?  cosl(u[k]) :  coshl(u[k])
     } : (pair){
-        .a = u[k] = _rev_(u, g, s[k], k, false),
-        .b = g[k] = _fwd_(s, u, k) * (trig ? -1.0L : 1.0L)
+        .a = u[k] = _reverse_(u, g, s[k], k, false),
+        .b = g[k] = _forward_(s, u, k) * (trig ? -1.0L : 1.0L)
     };
 }
 
@@ -214,8 +214,8 @@ pair t_acos (series u, series g, series c, int k, bool trig) {
         .a = u[k] = trig ? acosl(c[k]) : acoshl(c[k]),
         .b = g[k] = trig ? -sinl(u[k]) :  sinhl(u[k])
     } : (pair){
-        .a = u[k] = _rev_(u, g, c[k], k, trig),
-        .b = g[k] = _fwd_(c, u, k)
+        .a = u[k] = _reverse_(u, g, c[k], k, trig),
+        .b = g[k] = _forward_(c, u, k)
     };
 }
 
@@ -225,12 +225,12 @@ pair t_atan (series u, series g, series t, int k, bool trig) {
         .a = u[k] = trig ? atanl(t[k]) : atanhl(t[k]),
         .b = g[k] = trig ? 1.0L + t[k] * t[k] : 1.0L - t[k] * t[k]
     } : (pair){
-        .a = u[k] = _rev_(u, g, t[k], k, false),
-        .b = g[k] = _fwd_(t, t, k) * (trig ? 2.0L : -2.0L)
+        .a = u[k] = _reverse_(u, g, t[k], k, false),
+        .b = g[k] = _forward_(t, t, k) * (trig ? 2.0L : -2.0L)
     };
 }
 
 real t_pwr (series p, series u, real a, int k) {
     CHECK(u[0] > 0.0L); CHECK(p != u);
-    return p[k] = !k ? powl(u[k], a) : _rev_(p, u, a * _fwd_(p, u, k), k, false);
+    return p[k] = !k ? powl(u[k], a) : _reverse_(p, u, a * _forward_(p, u, k), k, false);
 }
