@@ -23,6 +23,7 @@
 #define YLW "\x1B[1;33m"
 #define RED "\x1B[1;31m"
 #define CYN "\x1B[0;36m"
+#define MGT "\x1B[0;35m"
 
 static int k_max = 0, dp, n, debug = 0, total = 0, passed = 0, skipped = 0;
 
@@ -152,7 +153,7 @@ int main (int argc, char **argv) {
     mpfr_set_si(p[7], -2, RND);
     CHECK(!mpfr_cmp_ld(*t_horner(p, 7, D_2), 201.0L)); fprintf(stderr, ". %sOK%s\n", GRN, NRM);
 
-    fprintf(stderr, "Recurrence Relations: %sx = %.1Lf%s\n", CYN, mpfr_get_ld(x[0], RND), NRM);
+    fprintf(stderr, "Recurrence Relations %sx = %s%s%.1Lf%s\n", MGT, NRM, WHT, mpfr_get_ld(x[0], RND), NRM);
     bool positive = mpfr_sgn(x[0]) > 0, non_zero = mpfr_zero_p(x[0]) == 0, lt_pi_2 = mpfr_cmpabs(x[0], PI_2) < 0;
     series r1 = t_jet(n), r2 = t_jet(n), r3 = t_jet(n), S1 = t_const(n, D1);
     series abs_x = t_jet(n), inv_x = t_jet(n), sqrt_x = t_jet(n), ln_x = t_jet(n);
@@ -256,7 +257,7 @@ int main (int argc, char **argv) {
     fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
     if (skipped) fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
     if (passed == total - skipped) {
-        fprintf(stderr, "\nDelta %s%.1Le%s %s%s%s k == %d\n", WHT, mpfr_get_ld(delta_max, RND), NRM, CYN, name_max, NRM, k_max);
+        fprintf(stderr, "\nDelta %s%.1Le%s %s%s%s k == %d\n", WHT, mpfr_get_ld(delta_max, RND), NRM, MGT, name_max, NRM, k_max);
         return 0;
     } else {
         fprintf(stderr, ", %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);
