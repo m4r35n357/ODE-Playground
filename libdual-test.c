@@ -15,6 +15,7 @@
 #define YLW "\x1B[1;33m"
 #define RED "\x1B[1;31m"
 #define CYN "\x1B[0;36m"
+#define MGT "\x1B[0;35m"
 
 static int dp, debug = 0, total = 0, passed = 0, skipped = 0;
 
@@ -68,7 +69,7 @@ int main (int argc, char **argv) {
         debug = (int)strtol(argv[4], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
     }
 
-    fprintf(stderr, "%sDual Numbers %s%sx = %.1Lf%s\n", WHT, NRM, CYN, x.val, NRM);
+    fprintf(stderr, "Dual Numbers %sx = %s%s%.1Lf%s\n", MGT, NRM, WHT, x.val, NRM);
     bool positive = x.val > 0.0L, non_zero = x.val != 0.0L, lt_pi_2 = fabsl(x.val) < 0.5L * acosl(-1.0L);
     dual D1 = d_dual(1.0L), xpx = d_scale(x, 2.0L);
     dual abs_x, inv_x, sqrt_x, ln_x;
@@ -155,7 +156,7 @@ int main (int argc, char **argv) {
     fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
     if (skipped) fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
     if (passed == total - skipped) {
-        fprintf(stderr, "\nDelta %s%.1Le%s %s%s%s (%s)\n", WHT, delta_max, NRM, CYN, name_max, NRM, field_max);
+        fprintf(stderr, "\nDelta %s%.1Le%s %s%s%s (%s)\n", WHT, delta_max, NRM, MGT, name_max, NRM, field_max);
         return 0;
     } else {
         fprintf(stderr, ", %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);
