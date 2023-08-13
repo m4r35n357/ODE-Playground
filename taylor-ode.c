@@ -134,12 +134,12 @@ static real _chain_ (series b, series a, int k, int k0) {
     return _ / k;
 }
 
-static real _forward_ (series b, series a, int k) {
-    return _chain_(b, a, k, 0);
+static real _fk_ (series g, series u, int k) {
+    return _chain_(g, u, k, 0);
 }
 
-static real _reverse_ (series a, series b, real c_k, int k, bool neg) {
-    return (c_k + (neg ? 1.0L : -1.0L) * _chain_(b, a, k, 1)) / b[0];
+static real _uk_(series g, series u, real fk, int k, bool neg) {
+    return (fk + (neg ? 1.0L : -1.0L) * _chain_(g, u, k, 1)) / g[0];
 }
 
 real t_abs (series u, int k) {
@@ -167,7 +167,7 @@ real t_sqrt (series r, series u, int k) {
 
 real t_exp (series e, series u, int k) {
     CHECK(e != u);
-    return e[k] = !k ? expl(u[k]) : _forward_(e, u, k);
+    return e[k] = !k ? expl(u[k]) : _fk_(e, u, k);
 }
 
 pair t_sin_cos (series s, series c, series u, int k, bool trig) {
@@ -176,8 +176,8 @@ pair t_sin_cos (series s, series c, series u, int k, bool trig) {
         .a = s[k] = trig ? sinl(u[k]) : sinhl(u[k]),
         .b = c[k] = trig ? cosl(u[k]) : coshl(u[k])
     } : (pair){
-        .a = s[k] = _forward_(c, u, k),
-        .b = c[k] = _forward_(s, u, k) * (trig ? -1.0L : 1.0L)
+        .a = s[k] = _fk_(c, u, k),
+        .b = c[k] = _fk_(s, u, k) * (trig ? -1.0L : 1.0L)
     };
 }
 
@@ -187,50 +187,50 @@ pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
         .a = t[k] = trig ? tanl(u[k]) : tanhl(u[k]),
         .b = s[k] = trig ? 1.0L + t[k] * t[k] : 1.0L - t[k] * t[k]
     } : (pair){
-        .a = t[k] = _forward_(s, u, k),
-        .b = s[k] = _forward_(t, t, k) * (trig ? 2.0L : -2.0L)
+        .a = t[k] = _fk_(s, u, k),
+        .b = s[k] = _fk_(t, t, k) * (trig ? 2.0L : -2.0L)
     };
 }
 
-real t_ln (series l, series u, int k) {
-    CHECK(u[0] > 0.0L); CHECK(l != u);
-    return l[k] = !k ? logl(u[k]) : _reverse_(l, u, u[k], k, false);
+real t_ln (series u, series e, int k) {
+    CHECK(e[0] > 0.0L); CHECK(u != e);
+    return u[k] = !k ? logl(e[k]) : _uk_(e, u, e[k], k, false);
 }
 
-pair t_asin (series u, series g, series s, int k, bool trig) {
-    CHECK(trig ? s[0] >= -1.0L && s[0] <= 1.0L : 1); CHECK(u != g && u != s && g != s);
+pair t_asin (series u, series c, series s, int k, bool trig) {
+    CHECK(trig ? s[0] >= -1.0L && s[0] <= 1.0L : 1); CHECK(u != c && u != s && c != s);
     return !k ? (pair){
         .a = u[k] = trig ? asinl(s[k]) : asinhl(s[k]),
-        .b = g[k] = trig ?  cosl(u[k]) :  coshl(u[k])
+        .b = c[k] = trig ?  cosl(u[k]) :  coshl(u[k])
     } : (pair){
-        .a = u[k] = _reverse_(u, g, s[k], k, false),
-        .b = g[k] = _forward_(s, u, k) * (trig ? -1.0L : 1.0L)
+        .a = u[k] = _uk_(c, u, s[k], k, false),
+        .b = c[k] = _fk_(s, u, k) * (trig ? -1.0L : 1.0L)
     };
 }
 
-pair t_acos (series u, series g, series c, int k, bool trig) {
-    CHECK(trig ? c[0] >= -1.0L && c[0] <= 1.0L : c[0] >= 1.0L); CHECK(u != g && u != c && g != c);
+pair t_acos (series u, series s, series c, int k, bool trig) {
+    CHECK(trig ? c[0] >= -1.0L && c[0] <= 1.0L : c[0] >= 1.0L); CHECK(u != s && u != c && s != c);
     return !k ? (pair){
         .a = u[k] = trig ? acosl(c[k]) : acoshl(c[k]),
-        .b = g[k] = trig ? -sinl(u[k]) :  sinhl(u[k])
+        .b = s[k] = trig ? -sinl(u[k]) :  sinhl(u[k])
     } : (pair){
-        .a = u[k] = _reverse_(u, g, c[k], k, trig),
-        .b = g[k] = _forward_(c, u, k)
+        .a = u[k] = _uk_(s, u, c[k], k, trig),
+        .b = s[k] = _fk_(c, u, k)
     };
 }
 
-pair t_atan (series u, series g, series t, int k, bool trig) {
-    CHECK(trig ? 1 : t[0] >= -1.0L && t[0] <= 1.0L); CHECK(u != g && u != t && g != t);
+pair t_atan (series u, series s, series t, int k, bool trig) {
+    CHECK(trig ? 1 : t[0] >= -1.0L && t[0] <= 1.0L); CHECK(u != s && u != t && s != t);
     return !k ? (pair){
         .a = u[k] = trig ? atanl(t[k]) : atanhl(t[k]),
-        .b = g[k] = trig ? 1.0L + t[k] * t[k] : 1.0L - t[k] * t[k]
+        .b = s[k] = trig ? 1.0L + t[k] * t[k] : 1.0L - t[k] * t[k]
     } : (pair){
-        .a = u[k] = _reverse_(u, g, t[k], k, false),
-        .b = g[k] = _forward_(t, t, k) * (trig ? 2.0L : -2.0L)
+        .a = u[k] = _uk_(s, u, t[k], k, false),
+        .b = s[k] = _fk_(t, t, k) * (trig ? 2.0L : -2.0L)
     };
 }
 
 real t_pwr (series p, series u, real a, int k) {
     CHECK(u[0] > 0.0L); CHECK(p != u);
-    return p[k] = !k ? powl(u[k], a) : _reverse_(p, u, a * _forward_(p, u, k), k, false);
+    return p[k] = !k ? powl(u[k], a) : _uk_(u, p, _fk_(p, u, k) * a, k, false);
 }
