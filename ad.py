@@ -61,7 +61,7 @@ def _chain_(b, a, k, k0):
 def _fk_(g, u, k, scale=1.0):
     return scale * _chain_(g, u, k, 0)
 
-def _uk_(g, u, fk, k, flag=False):
+def _uk_(g, u, k, fk, flag=False):
     return (fk + (1.0 if flag else -1.0) * _chain_(g, u, k, 1)) / g[0]
 
 def t_abs(u, k):
@@ -122,7 +122,7 @@ def t_ln(u, e, k):
     if k == 0:
         u[k] = log(e[k])
     else:
-        u[k] = _uk_(e, u, e[k], k)
+        u[k] = _uk_(e, u, k, e[k])
     return u[k]
 
 def t_asin(u, c, s, k, trig=True):
@@ -130,7 +130,7 @@ def t_asin(u, c, s, k, trig=True):
         u[k] = asin(s[k]) if trig else asinh(s[k])
         c[k] = cos(u[k]) if trig else cosh(u[k])
     else:
-        u[k] = _uk_(c, u, s[k], k)
+        u[k] = _uk_(c, u, k, s[k])
         c[k] = _fk_(s, u, k, -1.0 if trig else 1.0)
     return u[k], c[k]
 
@@ -139,7 +139,7 @@ def t_acos(u, s, c, k, trig=True):
         u[k] = acos(c[k]) if trig else acosh(c[k])
         s[k] = -sin(u[k]) if trig else sinh(u[k])
     else:
-        u[k] = _uk_(s, u, c[k], k, trig)
+        u[k] = _uk_(s, u, k, c[k], trig)
         s[k] = _fk_(c, u, k)
     return u[k], s[k]
 
@@ -148,7 +148,7 @@ def t_atan(u, s, t, k, trig=True):
         u[k] = atan(t[k]) if trig else atanh(t[k])
         s[k] = 1.0 + t[k] * t[k] if trig else 1.0 - t[k] * t[k]
     else:
-        u[k] = _uk_(s, u, t[k], k)
+        u[k] = _uk_(s, u, k, t[k])
         s[k] = _fk_(t, t, k, 2.0 if trig else -2.0)
     return u[k], s[k]
 
@@ -156,7 +156,7 @@ def t_pwr(p, u, a, k):
     if k == 0:
         p[k] = u[k]**a
     else:
-        p[k] = _uk_(u, p, _fk_(p, u, k, a), k, False)
+        p[k] = _uk_(u, p, k, _fk_(p, u, k, a), False)
     return p[k]
 
 
