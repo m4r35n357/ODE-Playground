@@ -138,7 +138,7 @@ static real _fk_ (series g, series u, int k) {
     return _chain_(g, u, k, 0);
 }
 
-static real _uk_(series g, series u, real fk, int k, bool neg) {
+static real _uk_(series g, series u, int k, real fk, bool neg) {
     return (fk + (neg ? 1.0L : -1.0L) * _chain_(g, u, k, 1)) / g[0];
 }
 
@@ -194,7 +194,7 @@ pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
 
 real t_ln (series u, series e, int k) {
     CHECK(e[0] > 0.0L); CHECK(u != e);
-    return u[k] = !k ? logl(e[k]) : _uk_(e, u, e[k], k, false);
+    return u[k] = !k ? logl(e[k]) : _uk_(e, u, k, e[k], false);
 }
 
 pair t_asin (series u, series c, series s, int k, bool trig) {
@@ -203,7 +203,7 @@ pair t_asin (series u, series c, series s, int k, bool trig) {
         .a = u[k] = trig ? asinl(s[k]) : asinhl(s[k]),
         .b = c[k] = trig ?  cosl(u[k]) :  coshl(u[k])
     } : (pair){
-        .a = u[k] = _uk_(c, u, s[k], k, false),
+        .a = u[k] = _uk_(c, u, k, s[k], false),
         .b = c[k] = _fk_(s, u, k) * (trig ? -1.0L : 1.0L)
     };
 }
@@ -214,7 +214,7 @@ pair t_acos (series u, series s, series c, int k, bool trig) {
         .a = u[k] = trig ? acosl(c[k]) : acoshl(c[k]),
         .b = s[k] = trig ? -sinl(u[k]) :  sinhl(u[k])
     } : (pair){
-        .a = u[k] = _uk_(s, u, c[k], k, trig),
+        .a = u[k] = _uk_(s, u, k, c[k], trig),
         .b = s[k] = _fk_(c, u, k)
     };
 }
@@ -225,12 +225,12 @@ pair t_atan (series u, series s, series t, int k, bool trig) {
         .a = u[k] = trig ? atanl(t[k]) : atanhl(t[k]),
         .b = s[k] = trig ? 1.0L + t[k] * t[k] : 1.0L - t[k] * t[k]
     } : (pair){
-        .a = u[k] = _uk_(s, u, t[k], k, false),
+        .a = u[k] = _uk_(s, u, k, t[k], false),
         .b = s[k] = _fk_(t, t, k) * (trig ? 2.0L : -2.0L)
     };
 }
 
 real t_pwr (series p, series u, real a, int k) {
     CHECK(u[0] > 0.0L); CHECK(p != u);
-    return p[k] = !k ? powl(u[k], a) : _uk_(u, p, _fk_(p, u, k) * a, k, false);
+    return p[k] = !k ? powl(u[k], a) : _uk_(u, p, k, _fk_(p, u, k) * a, false);
 }
