@@ -80,17 +80,17 @@ static void compare (char* name, series a, series b) {
             k_max = k;
         }
         if (mpfr_number_p(delta) == 0 || mpfr_cmpabs(delta, tolerance) > 0) {
-            fprintf(stderr, "%s FAIL%s %s  k=%d  LHS: %.*e  RHS: %.*e  (%.3e)\n",
-                    RED, NRM, name, k, dp, mpfr_get_d(a[k], RND), dp, mpfr_get_d(b[k], RND), mpfr_get_d(delta, RND));
+            fprintf(stderr, "%s FAIL%s %s\n  k=%d  LHS: %+.*Le  RHS: %+.*Le  (%.1Le)\n",
+                    RED, NRM, name, k, dp, mpfr_get_ld(a[k], RND), dp, mpfr_get_ld(b[k], RND), mpfr_get_ld(delta, RND));
             return;
         }
         if (debug >= 2) {
-            if (k == 0) fprintf(stderr, "\n");
-            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.*e %+.*e  (%+.3e)\n",
-                    NRM, NRM, k, dp, mpfr_get_d(a[k], RND), dp, mpfr_get_d(b[k], RND), mpfr_get_d(delta, RND));
+            if (!k) fprintf(stderr, "\n");
+            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.*Le %+.*Le  (%.1Le)\n",
+                    NRM, NRM, k, dp, mpfr_get_ld(a[k], RND), dp, mpfr_get_ld(b[k], RND), mpfr_get_ld(delta, RND));
         }
     }
-    if (debug >= 1) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
+    if (debug) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
     passed++;
 }
 
@@ -105,9 +105,13 @@ int main (int argc, char **argv) {
     libad_test_init();
     series x = t_jet(n + 1);
     mpfr_init_set_str(x[0], argv[4], BASE, RND);
-    for (int k = 1; k <= n; k++) mpfr_div_si(x[k], D05, k * k, RND);
+    for (int k = 1; k <= n; k++) {
+        mpfr_div_si(x[k], D05, k * k, RND);
+    }
     mpfr_init_set_str(tolerance, argv[5], BASE, RND); CHECK(mpfr_sgn(tolerance) > 0);
-    if (argc == 7) debug = (int)strtol(argv[6], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
+    if (argc == 7) {
+        debug = (int)strtol(argv[6], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
+    }
 
     mpfr_init(PI_2);
     mpfr_const_pi(PI_2, RND);

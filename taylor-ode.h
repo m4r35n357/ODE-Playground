@@ -193,70 +193,93 @@ mpfr_t *t_exp (series EXP, series U, int k);
 /*
  * Returns pointers to kth elements of both sine and cosine of U, results stored in user-supplied jets SIN and COS
  *
- *      SIN' =  COS.U' = COSH.U'
- *      COS' = -SIN.U' = SINH.U'
+ *        SIN' =     G.U'  ==>  G = COS or COSH
+ *          G' =  -SIN.U' or SINH.U'
  *
- *    SIN[k] = sum{j=0->k-1}     COS[j].(k-j).U[k-j]/k
- *    COS[k] = sum{j=0->k-1} +/- SIN[j].(k-j).U[k-j]/k
+ *     SINH[0] = sinh(U[0])
+ *
+ *     COSH[0] = cosh(U[0])
+ *
+ *    SINH[k] = sum{j=0->k-1} COSH[j].(k-j).U[k-j] / k
+ *
+ *    COSH[k] = sum{j=0->k-1} SINH[j].(k-j).U[k-j] / k
  */
 pair t_sin_cos (series SIN, series COS, series U, int k, bool trig);
 
 /*
- * Returns pointers to kth elements of both tangent and squared secant of U, results stored in user-supplied jets TAN and SEC2
+ * Returns pointers to kth elements of both tan(h) and sec(h)^2 of U, results stored in user-supplied jets TAN(H) and SEC(H)2
  *
  *      TAN' =  SEC^2.U' = SECH^2.U'
  *     SEC2' = 2.TAN.TAN' = -2.TANH.TANH'
  *
- *    TAN[k] = sum{j=0->k-1}     SEC2[j].(k-j).U[k-j]/k
- *   SEC2[k] = sum{j=0->k-1} +/-2 TAN[j].(k-j).TAN[k-j]/k
+ *    TAN[0] = tan(U[0])
+ *
+ *   SEC2[0] = sec^2(U[0])
+ *
+ *    TAN[k] = sum{j=0->k-1}  SEC2[j].(k-j).U[k-j] / k
+ *
+ *   SEC2[k] = sum{j=0->k-1} 2.TAN[j].(k-j).TAN[k-j] / k
  */
 pair t_tan_sec2 (series TAN, series SEC2, series U, int k, bool trig);
 
 /*
- * Returns a pointer to kth element of the natural logarithm of U, results stored in user-supplied jet LN
+ * Returns a pointer to kth element of the logarithm (inverse of EXP), results stored in user-supplied jet U
  *
- * This is the simplest "reverse" example, where the wanted quantity is now on the RHS, and G = DU_DF!
+ * This is the simplest "reverse" example, where the wanted quantity is now on the RHS
  *
- *         LN' = [1 / U].U'
- *          U' = U.LN'
+ *        EXP' = EXP.U'  ==>  G = EXP
  *
- *       LN[k] = (U[k] - sum{j=1->k-1} U[j].(k-j).LN[k-j]/k) / U[0]     "reverse"
+ *        U[0] = ln(EXP[0])
+ *
+ *        U[k] = (EXP[k] - sum{j=1->k-1} EXP[j].(k-j).U[k-j] / k) / EXP[0]       "reverse"
  */
-mpfr_t *t_ln (series LN, series U, int k);
+mpfr_t *t_ln (series U, series EXP, int k);
 
 /*
  * Returns pointers to kth elements of arcsin/arsinh of SIN, and G == DF_DU, results stored in user-supplied jets U and G
  *
- *        SIN' =     G.U'  ==>  G = COS(U) = COSH(U)
- *          G' =  -SIN.U' = SINH.U'
+ *        SIN' =     G.U'  ==>  G = COS or COSH
+ *          G' =  -SIN.U' or SINH.U'
  *
- *        U[k] = (SIN[k] - sum{j=1->k-1} G[j].(k-j).U[k-j]/k) / G[0]
+ *        U[0] = arsinh(SINH[0])
  *
- *        G[k] = sum{j=0->k-1} +/- SIN[j].(k-j).U[k-j]/k
+ *     COSH[0] = cosh(U[0])
+ *
+ *        U[k] = (SINH[k] - sum{j=1->k-1} COSH[j].(k-j).U[k-j] / k) / COSH[0]    "reverse"
+ *
+ *     COSH[k] = sum{j=0->k-1} SINH[j].(k-j).U[k-j] / k                          "forward"
  */
 pair t_asin (series U, series G, series SIN, int k, bool trig);
 
 /*
- * Returns pointers to kth elements of arccos/arcosh of COS, and G == DF_DU, results stored in user-supplied jets U and G
+ * Returns pointers to kth elements of arccos/arcosh (inverse of COSH), results stored in user-supplied jets U and G
  *
- *        COS' =   G.U'  ==>  G = -SIN(U) = SINH(U)
- *          G' = COS.U' = COSH.U'
+ *        COS' =   G.U'  ==>  G = -SIN or SINH
+ *          G' = COS.U' or COSH.U'
  *
- *        U[k] = (COS[k] -/+ sum{j=1->k-1} G[j].(k-j).U[k-j]/k) / G[0]
+ *        U[0] = arcosh(COSH[0])
  *
- *        G[k] = sum{j=0->k-1} COS[j].(k-j).U[k-j]/k
+ *     SINH[0] = sinh(U[0])
+ *
+ *        U[k] = (COSH[k] - sum{j=1->k-1} SINH[j].(k-j).U[k-j] / k) / SINH[0]    "reverse"
+ *
+ *     SINH[k] = sum{j=0->k-1} COSH[j].(k-j).U[k-j] / k                          "forward"
  */
 pair t_acos (series U, series G, series COS, int k, bool trig);
 
 /*
- * Returns pointers to kth elements of arctan/artanh of TAN, and G == DF_DU, results stored in user-supplied jets U and G
+ * Returns pointers to kth elements of arctan/artanh (inverse of TAN), results stored in user-supplied jets U and G
  *
- *        TAN' =     G.U'  ==>  G = SEC^2(U) = SECH^2(U)
- *          G' = 2.TAN.TAN' = -2.TANH.TANH'
+ *        TAN' =     G.U'  ==>  G = SEC^2 or SECH^2
+ *          G' = 2.TAN.TAN' or -2.TANH.TANH'
  *
- *        U[k] = (TAN[k] - sum{j=1->k-1} G[j].(k-j).U[k-j]/k) / G[0]
+ *        U[0] = arctan(TAN[0])
  *
- *        G[k] = sum{j=0->k-1} +/-2 TAN[j].(k-j).TAN[k-j]/k
+ *     SEC2[0] = sec^2(U[0])
+ *
+ *        U[k] = (TAN[k] - sum{j=1->k-1} SEC2[j].(k-j).U[k-j] / k) / SEC2[0]     "reverse"
+ *
+ *     SEC2[k] = sum{j=0->k-1} 2.TAN[j].(k-j).TAN[k-j] / k                       "forward"
  */
 pair t_atan (series U, series G, series TAN, int k, bool trig);
 
@@ -266,12 +289,10 @@ pair t_atan (series U, series G, series TAN, int k, bool trig);
  *        dp/dt =   (dp/du).(du/dt)
  *   PWR'= U^a' = a.U^(a-1).U'
  *       U.U^a' = a.U^a.U'
- *       U.PWR' = a.PWR.U'
+ *       U.PWR' = a.PWR.U' = E_k
  *
- *          P_k = a * sum{j=0->k-1} PWR[j].(k-j).U[k-j]/k                   (RHS)
+ *          E_k = a * sum{j=0->k-1} PWR[j].(k-j).U[k-j]/k                   (RHS)
  *
- *       PWR[k] = (P_k - sum{j=1->k-1} U[j].(k-j).PWR[k-j]/k) / U[0]        (LHS)
- *
- *              = (a * sum{j=0->k-1} PWR[j].(k-j).U[k-j] - sum{j=1->k-1} U[j].(k-j).PWR[k-j]) / k.U[0]
+ *       PWR[k] = (E_k - sum{j=1->k-1} U[j].(k-j).PWR[k-j]/k) / U[0]        (LHS)
  */
 mpfr_t *t_pwr (series PWR, series U, mpfr_t a, int k);
