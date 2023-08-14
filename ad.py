@@ -52,26 +52,29 @@ def rk4(ode, places, skip, h, steps, x, y, z, p):
             t_out(places, x, y, z, step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
     t_out(places, x, y, z, steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
 
-def _prod_(b, a, k, k0, k1):
+def _cauchy_(b, a, k, k0, k1):
     return sum(b[j] * a[k - j] for j in range(k0, k1))
 
-def _fwd_(b, a, k, scale=1.0):
-    return scale * sum(b[j] * (k - j) * a[k - j] for j in range(k)) / k
+def _chain_(b, a, k, k0):
+    return sum(b[j] * (k - j) * a[k - j] for j in range(k0, k)) / k
 
-def _rev_(a, b, c_k, k, flag=False):
-    return (c_k + (1.0 if flag else -1.0) * sum(b[j] * (k - j) * a[k - j] for j in range(1, k)) / k) / b[0]
+def _fk_(g, u, k, scale=1.0):
+    return scale * _chain_(g, u, k, 0)
+
+def _uk_(g, u, fk, k, flag=False):
+    return (fk + (1.0 if flag else -1.0) * _chain_(g, u, k, 1)) / g[0]
 
 def t_abs(u, k):
     return - u[k] if u[0] < 0.0 else u[k]
 
 def t_prod(u, v, k):
-    return _prod_(u, v, k, 0, k + 1)
+    return _cauchy_(u, v, k, 0, k + 1)
 
 def t_quot(q, u, v, k):
     if k == 0:
         q[k] = (u[k] if u else 1.0) / v[0]
     else:
-        q[k] = ((u[k] if u else 0.0) - _prod_(q, v, k, 0, k)) / v[0]
+        q[k] = ((u[k] if u else 0.0) - _cauchy_(q, v, k, 0, k)) / v[0]
     return q[k]
 
 def _half_(k):
@@ -81,20 +84,20 @@ def _rem_(a, k):
     return 0.0 if k % 2 else a[k // 2] * a[k // 2]
 
 def t_sqr(u, k):
-    return 2.0 * _prod_(u, u, k, 0, _half_(k)) + _rem_(u, k)
+    return 2.0 * _cauchy_(u, u, k, 0, _half_(k)) + _rem_(u, k)
 
 def t_sqrt(r, u, k):
     if k == 0:
         r[k] = sqrt(u[k])
     else:
-        r[k] = 0.5 * (u[k] - 2.0 * _prod_(r, r, k, 1, _half_(k)) - _rem_(r, k)) / r[0]
+        r[k] = 0.5 * (u[k] - 2.0 * _cauchy_(r, r, k, 1, _half_(k)) - _rem_(r, k)) / r[0]
     return r[k]
 
 def t_exp(e, u, k):
     if k == 0:
         e[k] = exp(u[k])
     else:
-        e[k] = _fwd_(e, u, k)
+        e[k] = _fk_(e, u, k)
     return e[k]
 
 def t_sin_cos(s, c, u, k, trig=True):
@@ -102,8 +105,8 @@ def t_sin_cos(s, c, u, k, trig=True):
         s[k] = sin(u[k]) if trig else sinh(u[k])
         c[k] = cos(u[k]) if trig else cosh(u[k])
     else:
-        s[k] = _fwd_(c, u, k)
-        c[k] = _fwd_(s, u, k, -1.0 if trig else 1.0)
+        s[k] = _fk_(c, u, k)
+        c[k] = _fk_(s, u, k, -1.0 if trig else 1.0)
     return s[k], c[k]
 
 def t_tan_sec2(t, s, u, k, trig=True):
@@ -111,49 +114,49 @@ def t_tan_sec2(t, s, u, k, trig=True):
         t[k] = tan(u[k]) if trig else tanh(u[k])
         s[k] = 1.0 + t[k] * t[k] if trig else 1.0 - t[k] * t[k]
     else:
-        t[k] = _fwd_(s, u, k)
-        s[k] = _fwd_(t, t, k, 2.0 if trig else -2.0)
+        t[k] = _fk_(s, u, k)
+        s[k] = _fk_(t, t, k, 2.0 if trig else -2.0)
     return t[k], s[k]
 
-def t_ln(ln, u, k):
+def t_ln(u, e, k):
     if k == 0:
-        ln[k] = log(u[k])
+        u[k] = log(e[k])
     else:
-        ln[k] = _rev_(ln, u, u[k], k)
-    return ln[k]
+        u[k] = _uk_(e, u, e[k], k)
+    return u[k]
 
-def t_asin(u, g, s, k, trig=True):
+def t_asin(u, c, s, k, trig=True):
     if k == 0:
         u[k] = asin(s[k]) if trig else asinh(s[k])
-        g[k] = cos(u[k]) if trig else cosh(u[k])
+        c[k] = cos(u[k]) if trig else cosh(u[k])
     else:
-        u[k] = _rev_(u, g, s[k], k)
-        g[k] = _fwd_(s, u, k, -1.0 if trig else 1.0)
-    return u[k], g[k]
+        u[k] = _uk_(c, u, s[k], k)
+        c[k] = _fk_(s, u, k, -1.0 if trig else 1.0)
+    return u[k], c[k]
 
-def t_acos(u, g, c, k, trig=True):
+def t_acos(u, s, c, k, trig=True):
     if k == 0:
         u[k] = acos(c[k]) if trig else acosh(c[k])
-        g[k] = -sin(u[k]) if trig else sinh(u[k])
+        s[k] = -sin(u[k]) if trig else sinh(u[k])
     else:
-        u[k] = _rev_(u, g, c[k], k, trig)
-        g[k] = _fwd_(c, u, k)
-    return u[k], g[k]
+        u[k] = _uk_(s, u, c[k], k, trig)
+        s[k] = _fk_(c, u, k)
+    return u[k], s[k]
 
-def t_atan(u, g, t, k, trig=True):
+def t_atan(u, s, t, k, trig=True):
     if k == 0:
         u[k] = atan(t[k]) if trig else atanh(t[k])
-        g[k] = 1.0 + t[k] * t[k] if trig else 1.0 - t[k] * t[k]
+        s[k] = 1.0 + t[k] * t[k] if trig else 1.0 - t[k] * t[k]
     else:
-        u[k] = _rev_(u, g, t[k], k)
-        g[k] = _fwd_(t, t, k, 2.0 if trig else -2.0)
-    return u[k], g[k]
+        u[k] = _uk_(s, u, t[k], k)
+        s[k] = _fk_(t, t, k, 2.0 if trig else -2.0)
+    return u[k], s[k]
 
 def t_pwr(p, u, a, k):
     if k == 0:
         p[k] = u[k]**a
     else:
-        p[k] = _rev_(p, u, _fwd_(p, u, k, a), k, False)
+        p[k] = _uk_(u, p, _fk_(p, u, k, a), k, False)
     return p[k]
 
 
