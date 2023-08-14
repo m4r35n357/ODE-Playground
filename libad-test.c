@@ -82,13 +82,15 @@ static void compare (char* name, series a, series b) {
             name_max = name;
             k_max = k;
         }
-        if (!isfinite(delta) || fabsl(delta) > tolerance) {
-            fprintf(stderr, "%s FAIL%s %s\n  k=%d  LHS: %+.*Le  RHS: %+.*Le  (%.1Le)\n", RED, NRM, name, k, dp, a[k], dp, b[k], delta);
+        if (!isfinite(delta) || delta > tolerance) {
+            fprintf(stderr, "%s FAIL%s %s\n  k=%d  LHS: %+.*Le  RHS: %+.*Le  (%.1Le)\n",
+                    RED, NRM, name, k, dp, a[k], dp, b[k], delta);
             return;
         }
         if (debug >= 2) {
             if (!k) fprintf(stderr, "\n");
-            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.*Le %+.*Le  (%.1Le)\n", NRM, NRM, k, dp, a[k], dp, b[k], delta);
+            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.*Le %+.*Le  (%.1Le)\n",
+                    NRM, NRM, k, dp, a[k], dp, b[k], delta);
         }
     }
     if (debug) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
