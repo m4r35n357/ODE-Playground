@@ -11,7 +11,7 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-static mpfr_t __, _a, _m, _s, _e, D1, D_1, D2, D_2;
+static mpfr_t __, _a, _m, _s, _e, _fk, D1, D_1, D2, D_2;
 
 static char format[60];
 
@@ -64,7 +64,7 @@ mpfr_t *t_horner (series s, int n, mpfr_t h) {
 
 void tsm (int n, mpfr_t h, int steps, series3 *j, parameters *p, clock_t t0) {
     triplet *v_k = malloc(sizeof (triplet)); CHECK(v_k);
-    mpfr_inits(v_k->x, v_k->y, v_k->z, __, _a, _m, _s, _e, NULL);
+    mpfr_inits(v_k->x, v_k->y, v_k->z, __, _a, _m, _s, _e, _fk, NULL);
     for (int step = 0; step < steps; step++) {
         for (int k = 0; k < n; k++) {
             ode(v_k, j->x, j->y, j->z, p, k);
@@ -108,7 +108,7 @@ static mpfr_t *_fk_ (mpfr_t *_, series g, series u, int k, mpfr_t *da_dt, mpfr_t
 }
 
 static mpfr_t *_uk_ (mpfr_t *_, series g, series u, mpfr_t *fk, int k, mpfr_t *da_dt, bool neg) {
-    mpfr_add(*_, *fk, *_chain_(_, g, u, k, 1, da_dt, neg ? D1 : D_1), RND);
+    mpfr_add(*_, *fk, *_chain_(&_fk, g, u, k, 1, da_dt, neg ? D1 : D_1), RND);
     mpfr_div(*_, *_, g[0], RND);
     return _;
 }
