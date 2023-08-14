@@ -107,7 +107,7 @@ static mpfr_t *_fk_ (mpfr_t *_, series g, series u, int k, mpfr_t scale) {
     return _chain_(_, g, u, k, 0, scale);
 }
 
-static mpfr_t *_uk_ (mpfr_t *_, series g, series u, mpfr_t *fk, int k, bool neg) {
+static mpfr_t *_uk_ (mpfr_t *_, series g, series u, int k, mpfr_t *fk, bool neg) {
     mpfr_add(*_, *fk, *_chain_(&_fk, g, u, k, 1, neg ? D1 : D_1), RND);
     mpfr_div(*_, *_, g[0], RND);
     return _;
@@ -194,7 +194,7 @@ mpfr_t *t_ln (series u, series e, int k) {
     if (!k) {
         mpfr_log(u[k], e[k], RND);
     } else {
-        _uk_(&u[k], e, u, &e[k], k, false);
+        _uk_(&u[k], e, u, k, &e[k], false);
     };
     return &u[k];
 }
@@ -205,7 +205,7 @@ pair t_asin (series u, series c, series s, int k, bool trig) {
         trig ? mpfr_asin(u[k], s[k], RND) : mpfr_asinh(u[k], s[k], RND);
         trig ? mpfr_cos(c[k], u[k], RND) : mpfr_cosh(c[k], u[k], RND);
     } else {
-        _uk_(&u[k], c, u, &s[k], k, false);
+        _uk_(&u[k], c, u, k, &s[k], false);
         _fk_(&c[k], s, u, k, trig ? D_1 : D1);
     };
     return (pair){.a = &u[k], .b = &c[k]};
@@ -218,7 +218,7 @@ pair t_acos (series u, series s, series c, int k, bool trig) {
         trig ? mpfr_sin(s[k], u[k], RND) : mpfr_sinh(s[k], u[k], RND);
         if (trig) mpfr_neg(s[k], s[k], RND);
     } else {
-        _uk_(&u[k], s, u, &c[k], k, trig);
+        _uk_(&u[k], s, u, k, &c[k], trig);
         _fk_(&s[k], c, u, k, D1);
     };
     return (pair){.a = &u[k], .b = &s[k]};
@@ -231,7 +231,7 @@ pair t_atan (series u, series s, series t, int k, bool trig) {
         trig ? mpfr_sec(s[k], u[k], RND) : mpfr_sech(s[k], u[k], RND);
         mpfr_sqr(s[k], s[k], RND);
     } else {
-        _uk_(&u[k], s, u, &t[k], k, false);
+        _uk_(&u[k], s, u, k, &t[k], false);
         _fk_(&s[k], t, t, k, trig ? D2 : D_2);
     };
     return (pair){.a = &u[k], .b = &s[k]};
@@ -242,7 +242,7 @@ mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {
     if (!k) {
         mpfr_pow(p[k], u[k], a, RND);
     } else {
-        _uk_(&p[k], u, p, _fk_(&_e, p, u, k, a), k, false);
+        _uk_(&p[k], u, p, k, _fk_(&_e, p, u, k, a), false);
     }
     return &p[k];
 }
