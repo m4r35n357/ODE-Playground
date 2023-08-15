@@ -123,12 +123,6 @@ mpfr_t *t_mul (series u, series v, int k) {
     return _cauchy_(&_m, u, v, k, 0, k);
 }
 
-mpfr_t *t_sqr (series u, int k) {
-    mpfr_mul_2si(_s, *_cauchy_(&_s, u, u, k, 0, _half_(k)), 1, RND);
-    if (!(k % 2)) mpfr_fma(_s, u[k / 2], u[k / 2], _s, RND);
-    return &_s;
-}
-
 mpfr_t *t_div (series q, series u, series v, int k) {
     CHECK(mpfr_zero_p(v[0]) == 0); CHECK(q != u && q != v);
     if (!k) {
@@ -139,6 +133,12 @@ mpfr_t *t_div (series q, series u, series v, int k) {
     }
     mpfr_div(q[k], q[k], v[0], RND);
     return &q[k];
+}
+
+mpfr_t *t_sqr (series u, int k) {
+    mpfr_mul_2si(_s, *_cauchy_(&_s, u, u, k, 0, _half_(k)), 1, RND);
+    if (!(k % 2)) mpfr_fma(_s, u[k / 2], u[k / 2], _s, RND);
+    return &_s;
 }
 
 mpfr_t *t_sqrt (series r, series u, int k) {
