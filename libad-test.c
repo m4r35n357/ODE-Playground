@@ -187,7 +187,7 @@ int main (int argc, char **argv) {
 
     char* name = "x * x == sqr(x)"; compare(name, ad_mul(r1, x, x), sqr_x);
     name = "sqr(x) / x == x"; non_zero ? compare(name, ad_div(r1, sqr_x, x), x) : skip(name);
-    name = "x * 1 / x == 1"; non_zero ? compare(name, ad_mul(r1, x, inv_x), S1) : skip(name);
+    name = "x * (1 / x) == 1"; non_zero ? compare(name, ad_mul(r1, x, inv_x), S1) : skip(name);
     name = "sqrt(x) * sqrt(x) == x"; positive ? compare(name, ad_mul(r1, sqrt_x, sqrt_x), x) : skip(name);
     name = "x / sqrt(x) == sqrt(x)"; positive ? compare(name, ad_div(r1, x, sqrt_x), sqrt_x) : skip(name);
 
