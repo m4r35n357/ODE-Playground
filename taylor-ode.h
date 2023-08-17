@@ -73,6 +73,38 @@ typedef struct pair_m {
 } pair;
 
 /*
+ * The Taylor Series Method (TSM) in brief; to solve a system of Ordinary Differential Equations defined by:
+ *
+ *                         v(t) = ode(x(t))                  (where x represents x, y, z coordinates)
+ *
+ * We plug x(t) into the equations, then use the value(s) of the first derivatives v(t) to estimate the next x value(s) in the sequence.
+ *
+ * Now, a time-varying quantity x can be represented locally (instantaneously) as a Taylor Series:
+ *
+ *             x(t0 + h) = x(t) = sum{k=0->inf} X[k].h^k    where X[0] = x(t0), X[k] = (d/dt)^k x(t0) / k! and h = t - t0  (A)
+ *
+ * (this summation is best performed using Horner's method.) Similarly, the velocity v can be represented as:
+ *
+ *                         v(t) = sum{k=0->inf} V[k].h^k                                                                   (B)
+ *
+ * Where V[k] is the result of evaluating the ODE equation, but with all variables expressed as Taylor Series, X[k].
+ *
+ *                         V[k] = ODE(X[k])
+ *
+ * Furthermore, by explicitly differentiating (A) wrt t, we obtain an alternative description of the velocity:
+ *
+ *                    d/dt x(t) = sum{k=1->inf} k.X[k].h^(k-1)
+ *
+ *                              = sum{k=0->inf} (k+1).X[k+1].h^k                                                           (C)
+ *
+ * Comparing (B) and (C),  V[k] = (k+1).X[k+1]        *** this IDENTITY is also used in deriving the recurrences below ***
+ *
+ *                   ==> X[k+1] = V[k] / (k + 1)
+ *
+ * which (together with all lower X derivatives) we then use to find V[k+1], and so on . . ..
+ */
+
+/*
  * Prints a line of data to stdout
  */
 void t_out (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, clock_t since);
@@ -128,6 +160,24 @@ mpfr_t *t_const (int n, mpfr_t a);
 mpfr_t *t_abs (series U, int k);
 
 /*
+ * Taylor Series recurrence relationships
+ */
+
+/*
+ * Cauchy product for C = A.B
+ *
+ *   if c(t) = a(t).b(t)
+ *
+ * then c(t) = sum{k=0->inf} C(k).h^k
+ *
+ *           = sum{j=0->inf} A(j).h^j sum{i=0->inf} B(i).h^i
+ *
+ *           = sum{k=0->inf} sum{j=0->k} A[j].B[k - j].h^k     where k = i + j  ==>  i = k - j
+ *
+ *  ==> C[k] = sum{j=0->k} A[j].B[k-j] = sum{j=0->k} A[k-j].B[j]
+ */
+
+/*
  * Returns a pointer to kth element of the product of U and V, no user-supplied jet storage needed
  *
  *     P = U.V
@@ -180,6 +230,34 @@ mpfr_t *t_div (series QUOT, series U, series V, int k);
  *  R[k] = (U[k] - sum{j=1->k-1} R[j].R[k-j]) / 2.R[0]
  */
 mpfr_t *t_sqrt (series ROOT, series U, int k);
+
+/*
+ * Applying the chain rule for the derivative of a composed function f(u(t)) creates another Cauchy product:
+ *
+ *           F' = (df/dt) = (df/du).(du/dt) = dFdU.U' = G.U'
+ *
+ *  Using F'[k] = (k+1).F[k+1]   (the IDENTITY from earlier)
+ *
+ * ==>  F'[k-1] = k.F[k], because we WANT F[k], and we can now replace F' with F, and U' with U as follows:
+ *
+ * Starting from the Cauchy product:
+ *
+ *        F'[k] = sum{j=1->k} G[j].U'[k-j]              differentiated series has one fewer terms
+ *
+ *  rewrite it with j index starting from 0, for "neatness":
+ *
+ *      F'[k-1] = sum{j=0->k-1} G[j].U'[k-1-j]
+ *
+ * then make the IDENTITY substitutions
+ *
+ *       k.F[k] = sum{j=0->k-1} G[j].(k-j).U[k-j]         only for k > 0.  Use a mathematical function call for G[0]
+ *
+ *     ==> F[k] = sum{j=0->k-1} G[j].(k-j).U[k-j] / k                             "forward"
+ *
+ *              = G[0].U[k] + sum{j=1->k-1} G[j].(k-j).U[k-j] / k
+ *
+ *     ==> U[k] = (F[k] - sum{j=1->k-1} G[j].(k-j).U[k-j]) / k) / dFdU[0]         "inverse"
+ */
 
 /*
  * Returns a pointer to kth element of the exponential of U, results stored in user-supplied jet EXP
