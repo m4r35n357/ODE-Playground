@@ -180,54 +180,54 @@ mpfr_t *t_abs (series U, int k);
 /*
  * Returns a pointer to kth element of the product of U and V, no user-supplied jet storage needed
  *
- *     P = U.V
+ *     PROD = U.V
  *
- *   P_k = sum{j=0->k} U[j].V[k-j]
+ *   PROD_k = sum{j=0->k} U[j].V[k-j]
  */
 mpfr_t *t_mul (series U, series V, int k);
 
 /*
  * Returns a pointer to kth element of the square of U, no user-supplied jet storage needed
  *
- *     S = U.U
+ *     SQR = U.U
  *
- *   S_k = sum{j=0->k} U[j].U[k-j]
+ *   SQR_k = sum{j=0->k} U[j].U[k-j]
  */
 mpfr_t *t_sqr (series U, int k);
 
 /*
  * Returns a pointer to kth element of U / V, results stored in user-supplied jet QUOT
  *
- *     Q = U / V ==> U = Q.V
+ *     QUOT = U / V ==> U = QUOT.V
  *
- *                U[k] = sum{j=0->k} Q[j].V[k-j]
+ *                   U[k] = sum{j=0->k} QUOT[j].V[k-j]
  *
- *                     = sum{j=0->k-1} Q[j].V[k-j] + Q[k].V[0]
+ *                        = sum{j=0->k-1} QUOT[j].V[k-j] + QUOT[k].V[0]
  *
- *                Q[k] = (U[k] - sum{j=0->k-1} Q[j].V[k-j]) / V[0]
+ *                QUOT[k] = (U[k] - sum{j=0->k-1} QUOT[j].V[k-j]) / V[0]
  *
- *                     =  U[0] / V[0]                                 if k == 0
+ *                        =  U[0] / V[0]                                    if k == 0
  *
- *                     = (U[k] - sum{j=0->k-1} Q[j].V[k-j]) / V[0]    otherwise
+ *                        = (U[k] - sum{j=0->k-1} QUOT[j].V[k-j]) / V[0]    otherwise
  *
- * If U == NULL, returns kth element of 1 / V, results stored in user-supplied jet Q,
+ * If U == NULL, returns kth element of 1 / V, results stored in user-supplied jet QUOT,
  *
- * from above,    Q[k] = 1.0 / V[0]                                   if k == 0
+ * from above,    QUOT[k] = 1.0 / V[0]                                      if k == 0
  *
- *                Q[k] = - sum{j=0->k-1} Q[j].V[k-j] / V[0]           otherwise
+ *                QUOT[k] = - sum{j=0->k-1} QUOT[j].V[k-j] / V[0]           otherwise
  */
 mpfr_t *t_div (series QUOT, series U, series V, int k);
 
 /*
  * Returns a pointer to kth element of the square root of U, results stored in user-supplied jet ROOT
  *
- *     U = R.R
+ *        U = ROOT.ROOT
  *
- *  U[k] = sum{j=0->k} R[j].R[k - j]
+ *     U[k] = sum{j=0->k} ROOT[j].ROOT[k - j]
  *
- *       = sum{j=1->k-1} R[j].R[k - j] + 2.R[k].R[0]
+ *          = sum{j=1->k-1} ROOT[j].ROOT[k - j] + 2.ROOT[k].ROOT[0]
  *
- *  R[k] = (U[k] - sum{j=1->k-1} R[j].R[k-j]) / 2.R[0]
+ *  ROOT[k] = (U[k] - sum{j=1->k-1} ROOT[j].ROOT[k-j]) / 2.ROOT[0]
  */
 mpfr_t *t_sqrt (series ROOT, series U, int k);
 
