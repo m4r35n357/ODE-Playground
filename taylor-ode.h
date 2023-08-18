@@ -316,7 +316,7 @@ pair t_tan_sec2 (series TAN, series SEC2, series U, int k, bool trig);
 mpfr_t *t_ln (series U, series EXP, int k);
 
 /*
- * Returns pointers to kth elements of arcsin/arsinh of (inverse of SIN/SINH), results stored in user-supplied jets U and G
+ * Returns pointers to kth elements of arcsin/arsinh of (inverse of SIN/SINH), results stored in user-supplied jets U and COSH
  *
  *       SINH' =   dFdU.U' = COSH.U' (=  COS.U')
  *       COSH' = d2FdU2.U' = SINH.U' (= -SIN.U')
@@ -329,10 +329,10 @@ mpfr_t *t_ln (series U, series EXP, int k);
  *
  *     COSH[k] = sum{j=0->k-1} SINH[j].(k-j).U[k-j] / k                          "forward"
  */
-pair t_asin (series U, series G, series SIN, int k, bool trig);
+pair t_asin (series U, series COSH, series SINH, int k, bool trig);
 
 /*
- * Returns pointers to kth elements of arccos/arcosh (inverse of COS/COSH), results stored in user-supplied jets U and G
+ * Returns pointers to kth elements of arccos/arcosh (inverse of COS/COSH), results stored in user-supplied jets U and SINH
  *
  *       COSH' =   dFdU.U' = SINH.U' (= -SIN.U')
  *       SINH' = d2FdU2.U' = COSH.U' (=  COS.U')
@@ -345,10 +345,10 @@ pair t_asin (series U, series G, series SIN, int k, bool trig);
  *
  *     SINH[k] = sum{j=0->k-1} COSH[j].(k-j).U[k-j] / k                          "forward"
  */
-pair t_acos (series U, series G, series COS, int k, bool trig);
+pair t_acos (series U, series SINH, series COSH, int k, bool trig);
 
 /*
- * Returns pointers to kth elements of arctan/artanh (inverse of TAN/TANH), results stored in user-supplied jets U and G
+ * Returns pointers to kth elements of arctan/artanh (inverse of TAN/TANH), results stored in user-supplied jets U and SEC2
  *
  *        TAN' =   dFdU.U' = SEC2.U'    (=  SECH^2.U')
  *       SEC2' = d2FdU2.U' = 2.TAN.TAN' (= -2.TANH.TANH')
@@ -361,7 +361,7 @@ pair t_acos (series U, series G, series COS, int k, bool trig);
  *
  *     SEC2[k] = sum{j=0->k-1} 2.TAN[j].(k-j).TAN[k-j] / k                       "forward"
  */
-pair t_atan (series U, series G, series TAN, int k, bool trig);
+pair t_atan (series U, series SEC2, series TAN, int k, bool trig);
 
 /*
  * Returns kth element of P = U^a (where a is scalar), results stored in user-supplied jet PWR
