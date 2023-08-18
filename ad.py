@@ -58,11 +58,11 @@ def _cauchy_(b, a, k, k0, k1):
 def _chain_(b, a, k, k0):
     return sum(b[j] * (k - j) * a[k - j] for j in range(k0, k)) / k
 
-def _fk_(g, u, k, scale=1.0):
-    return scale * _chain_(g, u, k, 0)
+def _fk_(df_du, u, k, scale=1.0):
+    return scale * _chain_(df_du, u, k, 0)
 
-def _uk_(g, u, k, fk, flag=False):
-    return (fk + (1.0 if flag else -1.0) * _chain_(g, u, k, 1)) / g[0]
+def _uk_(df_du, u, k, fk, flag=False):
+    return (fk + (1.0 if flag else -1.0) * _chain_(df_du, u, k, 1)) / df_du[0]
 
 def t_abs(u, k):
     return - u[k] if u[0] < 0.0 else u[k]
