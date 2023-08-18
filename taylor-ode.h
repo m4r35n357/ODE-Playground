@@ -234,7 +234,7 @@ mpfr_t *t_sqrt (series ROOT, series U, int k);
 /*
  * Applying the chain rule for the derivative of a composed function f(u(t)) creates another Cauchy product:
  *
- *           F' = (df/dt) = (df/du).(du/dt) = dFdU.U' = G.U'
+ *           F' = (df/dt) = (df/du).(du/dt) = dFdU.U'
  *
  *  Using F'[k] = (k+1).F[k+1]   (the IDENTITY from earlier)
  *
@@ -242,41 +242,43 @@ mpfr_t *t_sqrt (series ROOT, series U, int k);
  *
  * Starting from the Cauchy product:
  *
- *        F'[k] = sum{j=1->k} G[j].U'[k-j]              differentiated series has one fewer terms
+ *        F'[k] = sum{j=1->k} dFdU[j].U'[k-j]              differentiated series has one fewer terms
  *
  *  rewrite it with j index starting from 0, for "neatness":
  *
- *      F'[k-1] = sum{j=0->k-1} G[j].U'[k-1-j]
+ *      F'[k-1] = sum{j=0->k-1} dFdU[j].U'[k-1-j]
  *
  * then make the IDENTITY substitutions
  *
- *       k.F[k] = sum{j=0->k-1} G[j].(k-j).U[k-j]         only for k > 0.  Use a mathematical function call for G[0]
+ *       k.F[k] = sum{j=0->k-1} dFdU[j].(k-j).U[k-j]         only for k > 0.  Use a mathematical function call for G[0]
  *
- *     ==> F[k] = sum{j=0->k-1} G[j].(k-j).U[k-j] / k                             "forward"
+ *     ==> F[k] = sum{j=0->k-1} dFdU[j].(k-j).U[k-j] / k                             "forward"
  *
- *              = G[0].U[k] + sum{j=1->k-1} G[j].(k-j).U[k-j] / k
+ *              = dFdU[0].U[k] + sum{j=1->k-1} dFdU[j].(k-j).U[k-j] / k
  *
- *     ==> U[k] = (F[k] - sum{j=1->k-1} G[j].(k-j).U[k-j]) / k) / dFdU[0]         "inverse"
+ *     ==> U[k] = (F[k] - sum{j=1->k-1} dFdU[j].(k-j).U[k-j]) / k) / dFdU[0]         "inverse"
  */
 
 /*
  * Returns a pointer to kth element of the exponential of U, results stored in user-supplied jet EXP
  *
- *      EXP' = EXP.U'
+ *      EXP' = dFdU.U' = EXP.U'
  *
- *    EXP[k] = sum{j=0->k-1} EXP[j].(k-j).U[k-j]/k
+ *    EXP[0] = exp(U[0])
+ *
+ *    EXP[k] = sum{j=0->k-1} EXP[j].(k-j).U[k-j] / k
  */
 mpfr_t *t_exp (series EXP, series U, int k);
 
 /*
  * Returns pointers to kth elements of both sine and cosine of U, results stored in user-supplied jets SIN and COS
  *
- *        SIN' =     G.U'  ==>  G = COS or COSH
- *          G' =  -SIN.U' or SINH.U'
+ *      SINH' =   dFdU.U' = COSH.U' (=  COS.U')
+ *      COSH' = d2FdU2.U' = SINH.U' (= -SIN.U')
  *
- *     SINH[0] = sinh(U[0])
+ *    SINH[0] = sinh(U[0])
  *
- *     COSH[0] = cosh(U[0])
+ *    COSH[0] = cosh(U[0])
  *
  *    SINH[k] = sum{j=0->k-1} COSH[j].(k-j).U[k-j] / k
  *
@@ -287,12 +289,12 @@ pair t_sin_cos (series SIN, series COS, series U, int k, bool trig);
 /*
  * Returns pointers to kth elements of both tan(h) and sec(h)^2 of U, results stored in user-supplied jets TAN(H) and SEC(H)2
  *
- *      TAN' =  SEC^2.U' = SECH^2.U'
- *     SEC2' = 2.TAN.TAN' = -2.TANH.TANH'
+ *      TAN' =   dFdU.U' = SEC^2.U'   (=   SECH2.U')
+ *     SEC2' = d2FdU2.U' = 2.TAN.TAN' (= -2.TANH.TANH')
  *
  *    TAN[0] = tan(U[0])
  *
- *   SEC2[0] = sec^2(U[0])
+ *   SEC2[0] = sec(U[0]).sec(U[0])
  *
  *    TAN[k] = sum{j=0->k-1}  SEC2[j].(k-j).U[k-j] / k
  *
@@ -305,7 +307,7 @@ pair t_tan_sec2 (series TAN, series SEC2, series U, int k, bool trig);
  *
  * This is the simplest "reverse" example, where the wanted quantity is now on the RHS
  *
- *        EXP' = EXP.U'  ==>  G = EXP
+ *        EXP' =   dFdU.U' = EXP.U'
  *
  *        U[0] = ln(EXP[0])
  *
@@ -314,10 +316,10 @@ pair t_tan_sec2 (series TAN, series SEC2, series U, int k, bool trig);
 mpfr_t *t_ln (series U, series EXP, int k);
 
 /*
- * Returns pointers to kth elements of arcsin/arsinh of SIN, and G == DF_DU, results stored in user-supplied jets U and G
+ * Returns pointers to kth elements of arcsin/arsinh of (inverse of SIN/SINH), results stored in user-supplied jets U and G
  *
- *        SIN' =     G.U'  ==>  G = COS or COSH
- *          G' =  -SIN.U' or SINH.U'
+ *       SINH' =   dFdU.U' = COSH.U' (=  COS.U')
+ *       COSH' = d2FdU2.U' = SINH.U' (= -SIN.U')
  *
  *        U[0] = arsinh(SINH[0])
  *
@@ -330,10 +332,10 @@ mpfr_t *t_ln (series U, series EXP, int k);
 pair t_asin (series U, series G, series SIN, int k, bool trig);
 
 /*
- * Returns pointers to kth elements of arccos/arcosh (inverse of COSH), results stored in user-supplied jets U and G
+ * Returns pointers to kth elements of arccos/arcosh (inverse of COS/COSH), results stored in user-supplied jets U and G
  *
- *        COS' =   G.U'  ==>  G = -SIN or SINH
- *          G' = COS.U' or COSH.U'
+ *       COSH' =   dFdU.U' = SINH.U' (= -SIN.U')
+ *       SINH' = d2FdU2.U' = COSH.U' (=  COS.U')
  *
  *        U[0] = arcosh(COSH[0])
  *
@@ -346,14 +348,14 @@ pair t_asin (series U, series G, series SIN, int k, bool trig);
 pair t_acos (series U, series G, series COS, int k, bool trig);
 
 /*
- * Returns pointers to kth elements of arctan/artanh (inverse of TAN), results stored in user-supplied jets U and G
+ * Returns pointers to kth elements of arctan/artanh (inverse of TAN/TANH), results stored in user-supplied jets U and G
  *
- *        TAN' =     G.U'  ==>  G = SEC^2 or SECH^2
- *          G' = 2.TAN.TAN' or -2.TANH.TANH'
+ *        TAN' =   dFdU.U' = SEC2.U'    (=  SECH^2.U')
+ *       SEC2' = d2FdU2.U' = 2.TAN.TAN' (= -2.TANH.TANH')
  *
  *        U[0] = arctan(TAN[0])
  *
- *     SEC2[0] = sec^2(U[0])
+ *     SEC2[0] = sec(U[0]).sec(U[0])
  *
  *        U[k] = (TAN[k] - sum{j=1->k-1} SEC2[j].(k-j).U[k-j] / k) / SEC2[0]     "reverse"
  *

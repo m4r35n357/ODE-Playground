@@ -103,13 +103,13 @@ static mpfr_t *_chain_ (mpfr_t *_, series b, series a, int k, int k0, mpfr_t sca
     return _;
 }
 
-static mpfr_t *_fk_ (mpfr_t *_, series g, series u, int k, mpfr_t scale) {
-    return _chain_(_, g, u, k, 0, scale);
+static mpfr_t *_fk_ (mpfr_t *_, series df_du, series u, int k, mpfr_t scale) {
+    return _chain_(_, df_du, u, k, 0, scale);
 }
 
-static mpfr_t *_uk_ (mpfr_t *_, series g, series u, int k, mpfr_t *fk, bool neg) {
-    mpfr_add(*_, *fk, *_chain_(&_fk, g, u, k, 1, neg ? D1 : D_1), RND);
-    mpfr_div(*_, *_, g[0], RND);
+static mpfr_t *_uk_ (mpfr_t *_, series df_du, series u, int k, mpfr_t *f_k, bool neg) {
+    mpfr_add(*_, *f_k, *_chain_(&_fk, df_du, u, k, 1, neg ? D1 : D_1), RND);
+    mpfr_div(*_, *_, df_du[0], RND);
     return _;
 }
 
