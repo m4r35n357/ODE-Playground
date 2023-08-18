@@ -8,7 +8,7 @@ user_data="$user_dir/data"
 
 choice=$(yad --columns=2 --title="ODE Playground" --form --separator=" " --align=right \
     --field="Model:CB" --field="Analysis type:CB" \
-    -- 'Halvorsen!Lorenz!RF!^Thomas' '^GLplot!Gnuplot!CNS!CNSScan')
+    -- 'Halvorsen!Lorenz!RF!^Thomas' '^GLplot!Animated!Gnuplot!CNS!CNSScan')
 
 case $? in
     1) exit;;
@@ -25,6 +25,11 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
             --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') | ./plot3d.py ;;
+        Animated) ./tsm-lorenz.py $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
+            --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+            --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
+            --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                '-15.8' '-18.48' '35.64' '10' '28' '8' '3') | ./plotAnimated.py -30 50 ;;
         Gnuplot) ./plot ./tsm-lorenz.py $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
@@ -51,6 +56,11 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="b" \
             --  '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '0.185') | ./plot3d.py ;;
+        Animated) ./tsm-thomas.py $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
+            --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+            --field="x0" --field="y0" --field="z0" --field="b" \
+            --  '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                '1.0' '0.0' '0.0' '0.185') | ./plotAnimated.py -5 5 ;;
         Gnuplot) ./plot ./tsm-thomas.py $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="b" \
@@ -77,6 +87,11 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
             --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '.2875' '.1') | ./plot3d.py ;;
+        Animated) ./tsm-rf.py $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
+            --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+            --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
+            --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
+                '0.05' '-0.05' '0.3' '.2875' '.1') | ./plotAnimated.py -3 3 ;;
         Gnuplot) ./plot ./tsm-rf.py $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
@@ -103,6 +118,11 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '1.4') | ./plot3d.py ;;
+        Animated) ./tsm-halvorsen.py $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
+            --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+            --field="x0" --field="y0" --field="z0" --field="a" \
+            --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                '1.0' '0.0' '0.0' '1.4') | ./plotAnimated.py -15 10 ;;
         Gnuplot) ./plot ./tsm-halvorsen.py $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
