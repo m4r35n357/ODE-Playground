@@ -91,9 +91,9 @@ real t_abs (series U, int k);
  */
 
 /*
- * Returns kth element of the product of U and V, no user-supplied jet storage needed
+ * Returns kth element of the product of U and W, no user-supplied jet storage needed
  */
-real t_mul (series U, series V, int k);
+real t_mul (series U, series W, int k);
 
 /*
  * Returns kth element of the square of U, no user-supplied jet storage needed
@@ -101,9 +101,9 @@ real t_mul (series U, series V, int k);
 real t_sqr (series U, int k);
 
 /*
- * Returns kth element of U / V, results stored in user-supplied jet QUOT
+ * Returns kth element of U / W, results stored in user-supplied jet QUOT
  */
-real t_div (series QUOT, series U, series V, int k);
+real t_div (series QUOT, series U, series W, int k);
 
 /*
  * Returns kth element of the square root of U, results stored in user-supplied jet ROOT
@@ -126,26 +126,28 @@ pair t_sin_cos (series SIN, series COS, series U, int k, bool trig);
 pair t_tan_sec2 (series TAN, series SEC2, series U, int k, bool trig);
 
 /*
+ * Returns kth element of the logarithm (inverse of EXP), results stored in user-supplied jet U
+ */
+real t_ln (series U, series EXP, int k);
+
+/*
+ * Returns kth elements of arcsin/arsinh of (inverse of SIN/SINH), results stored in user-supplied jets U and COSH
+ */
+pair t_asin (series U, series COSH, series SINH, int k, bool trig);
+
+/*
+ * Returns kth elements of arccos/arcosh (inverse of COS/COSH), results stored in user-supplied jets U and SINH
+ */
+pair t_acos (series U, series SINH, series COSH, int k, bool trig);
+
+/*
+ * Returns kth elements of arctan/artanh (inverse of TAN/TANH), results stored in user-supplied jets U and SEC2
+ */
+pair t_atan (series U, series SEC2, series TAN, int k, bool trig);
+
+/*
  * Returns kth element of P = U^a (where a is scalar), results stored in user-supplied jet PWR
  */
 real t_pwr (series PWR, series U, real a, int k);
 
-/*
- * Returns kth element of the natural logarithm of U, results stored in user-supplied jet LN
- */
-real t_ln (series LN, series U, int k);
 
-/*
- * Returns kth elements of arcsin/arsinh of SIN, and G == 1 / DF_DU, results stored in user-supplied jets U and DU_DF
- */
-pair t_asin (series U, series DU_DF, series SIN, int k, bool trig);
-
-/*
- * Returns kth elements of arccos/arcosh of COS, and G == 1 / DF_DU, results stored in user-supplied jets U and DU_DF
- */
-pair t_acos (series U, series DU_DF, series COS, int k, bool trig);
-
-/*
- * Returns kth elements of arctan/artanh of TAN, and G == 1 / DF_DU, results stored in user-supplied jets U and DU_DF
- */
-pair t_atan (series U, series DU_DF, series TAN, int k, bool trig);
