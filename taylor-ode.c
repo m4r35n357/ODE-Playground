@@ -134,12 +134,12 @@ static real _chain_ (series b, series a, int k, int k0) {
     return _ / k;
 }
 
-static real _fk_ (series g, series u, int k) {
-    return _chain_(g, u, k, 0);
+static real _fk_ (series df_du, series u, int k) {
+    return _chain_(df_du, u, k, 0);
 }
 
-static real _uk_(series g, series u, int k, real fk, bool neg) {
-    return (fk + (neg ? 1.0L : -1.0L) * _chain_(g, u, k, 1)) / g[0];
+static real _uk_(series df_du, series u, int k, real f_k, bool neg) {
+    return (f_k + (neg ? 1.0L : -1.0L) * _chain_(df_du, u, k, 1)) / df_du[0];
 }
 
 real t_abs (series u, int k) {
