@@ -1,0 +1,61 @@
+#!/usr/bin/bc -q
+#
+# BC_LINE_LENGTH=0 ./tsm-lorenz.bc >filename
+# gnuplot -p -e "set terminal wxt size 1200,900; splot '<filename' with lines"
+
+define void t_print(x, y, z, t) {
+    print x, " ", y, " ", z, " ", t, " _ _ _ 0.0\n"
+}
+
+define t_horner(n, j[], h) {
+    auto i, s
+ 
+    s = 0.0
+    for (i = n; i > - 1; i--) {
+        s = s * h + j[i]
+    }
+    return(s)
+}
+ 
+define t_prod(u[], v[], k) {
+    auto j, p
+ 
+    p = 0.0
+    for (j = 0; j < k + 1; j++) {
+        p = p + u[j] * v[k - j]
+    }
+    return(p)
+}
+
+scale=36
+n=100
+h=0.01
+steps=10000
+x=-15.8
+y=-17.48
+z=35.64
+a=10.0
+b=28.0
+c=8.0
+d=3.0
+
+t_print(x, y, z, 0.0)
+
+for (step = 1; step < steps + 1; step++) {
+    x[0] = x
+    y[0] = y
+    z[0] = z
+    for (k = 0; k < n; k++) {
+        x[k + 1] = a * (y[k] - x[k]) / (k + 1)
+        y[k + 1] = (b * x[k] - t_prod(x[], z[], k) - y[k]) / (k + 1)
+        z[k + 1] = (t_prod(x[], y[], k) - c / d * z[k]) / (k + 1)
+    }
+
+    x = t_horner(n, x[], h)
+    y = t_horner(n, y[], h)
+    z = t_horner(n, z[], h)
+
+    t_print(x, y, z, h * step)
+}
+
+quit
