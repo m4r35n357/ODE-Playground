@@ -119,19 +119,19 @@ mpfr_t *t_abs (series u, int k) {
     return &_a;
 }
 
-mpfr_t *t_mul (series u, series v, int k) {
-    return _cauchy_(&_m, u, v, k, 0, k);
+mpfr_t *t_mul (series u, series w, int k) {
+    return _cauchy_(&_m, u, w, k, 0, k);
 }
 
-mpfr_t *t_div (series q, series u, series v, int k) {
-    CHECK(mpfr_zero_p(v[0]) == 0); CHECK(q != u && q != v);
+mpfr_t *t_div (series q, series u, series w, int k) {
+    CHECK(mpfr_zero_p(w[0]) == 0); CHECK(q != u && q != w);
     if (!k) {
         u ? mpfr_set(q[k], u[k], RND) : mpfr_set_si(q[k], 1, RND);
     } else {
-        _cauchy_(&q[k], q, v, k, 0, k - 1);
+        _cauchy_(&q[k], q, w, k, 0, k - 1);
         u ? mpfr_sub(q[k], u[k], q[k], RND) : mpfr_neg(q[k], q[k], RND);
     }
-    mpfr_div(q[k], q[k], v[0], RND);
+    mpfr_div(q[k], q[k], w[0], RND);
     return &q[k];
 }
 

@@ -75,13 +75,13 @@ typedef struct pair_m {
 /*
  * The Taylor Series Method (TSM) in brief; to solve a system of Ordinary Differential Equations defined by:
  *
- *                         v(t) = ode(x(t))                  (where x represents x, y, z coordinates)
+ *                         v(t) = ode(u(t))                  (where u represents x, y, z coordinates)
  *
- * We plug x(t) into the equations, then use the value(s) of the first derivatives v(t) to estimate the next x value(s) in the sequence.
+ * We plug u(t) into the equations, then use the values of the first derivatives v(t) to estimate the next u values in the sequence.
  *
  * Now, a time-varying quantity x can be represented locally (instantaneously) as a Taylor Series:
  *
- *             x(t0 + h) = x(t) = sum{k=0->inf} X[k].h^k    where X[0] = x(t0), X[k] = (d/dt)^k x(t0) / k! and h = t - t0  (A)
+ *             u(t0 + h) = u(t) = sum{k=0->inf} U[k].h^k    where U[0] = u(t0), U[k] = (d/dt)^k u(t0) / k! and h = t - t0  (A)
  *
  * (this summation is best performed using Horner's method.) Similarly, the velocity v can be represented as:
  *
@@ -89,19 +89,19 @@ typedef struct pair_m {
  *
  * Where V[k] is the result of evaluating the ODE equation, but with all variables expressed as Taylor Series, X[k].
  *
- *                         V[k] = ODE(X[k])
+ *                         V[k] = ODE(U[k])
  *
  * Furthermore, by explicitly differentiating (A) wrt t, we obtain an alternative description of the velocity:
  *
- *                    d/dt x(t) = sum{k=1->inf} k.X[k].h^(k-1)
+ *                    d/dt u(t) = sum{k=1->inf} k.U[k].h^(k-1)
  *
- *                              = sum{k=0->inf} (k+1).X[k+1].h^k                                                           (C)
+ *                              = sum{k=0->inf} (k+1).U[k+1].h^k                                                           (C)
  *
- * Comparing (B) and (C),  V[k] = (k+1).X[k+1]        *** this IDENTITY is also used in deriving the recurrences below ***
+ * Comparing (B) and (C),  V[k] = (k+1).U[k+1]        *** this IDENTITY is also used in deriving the recurrences below ***
  *
- *                   ==> X[k+1] = V[k] / (k + 1)
+ *                   ==> U[k+1] = V[k] / (k + 1)
  *
- * which (together with all lower X derivatives) we then use to find V[k+1], and so on . . ..
+ * which (together with all lower U derivatives) we then use to find V[k+1], and so on . . ..
  */
 
 /*
@@ -178,13 +178,13 @@ mpfr_t *t_abs (series U, int k);
  */
 
 /*
- * Returns a pointer to kth element of the product of U and V, no user-supplied jet storage needed
+ * Returns a pointer to kth element of the product of U and W, no user-supplied jet storage needed
  *
- *     PROD = U.V
+ *     PROD = U.W
  *
- *   PROD_k = sum{j=0->k} U[j].V[k-j]
+ *   PROD_k = sum{j=0->k} U[j].W[k-j]
  */
-mpfr_t *t_mul (series U, series V, int k);
+mpfr_t *t_mul (series U, series W, int k);
 
 /*
  * Returns a pointer to kth element of the square of U, no user-supplied jet storage needed
@@ -196,27 +196,27 @@ mpfr_t *t_mul (series U, series V, int k);
 mpfr_t *t_sqr (series U, int k);
 
 /*
- * Returns a pointer to kth element of U / V, results stored in user-supplied jet QUOT
+ * Returns a pointer to kth element of U / W, results stored in user-supplied jet QUOT
  *
- *     QUOT = U / V ==> U = QUOT.V
+ *     QUOT = U / W ==> U = QUOT.W
  *
- *                   U[k] = sum{j=0->k} QUOT[j].V[k-j]
+ *                   U[k] = sum{j=0->k} QUOT[j].W[k-j]
  *
- *                        = sum{j=0->k-1} QUOT[j].V[k-j] + QUOT[k].V[0]
+ *                        = sum{j=0->k-1} QUOT[j].W[k-j] + QUOT[k].W[0]
  *
- *                QUOT[k] = (U[k] - sum{j=0->k-1} QUOT[j].V[k-j]) / V[0]
+ *                QUOT[k] = (U[k] - sum{j=0->k-1} QUOT[j].W[k-j]) / W[0]
  *
- *                        =  U[0] / V[0]                                    if k == 0
+ *                        =  U[0] / W[0]                                    if k == 0
  *
- *                        = (U[k] - sum{j=0->k-1} QUOT[j].V[k-j]) / V[0]    otherwise
+ *                        = (U[k] - sum{j=0->k-1} QUOT[j].W[k-j]) / V[0]    otherwise
  *
- * If U == NULL, returns kth element of 1 / V, results stored in user-supplied jet QUOT,
+ * If U == NULL, returns kth element of 1 / W, results stored in user-supplied jet QUOT,
  *
- * from above,    QUOT[k] = 1.0 / V[0]                                      if k == 0
+ * from above,    QUOT[k] = 1.0 / W[0]                                      if k == 0
  *
- *                QUOT[k] = - sum{j=0->k-1} QUOT[j].V[k-j] / V[0]           otherwise
+ *                QUOT[k] = - sum{j=0->k-1} QUOT[j].W[k-j] / W[0]           otherwise
  */
-mpfr_t *t_div (series QUOT, series U, series V, int k);
+mpfr_t *t_div (series QUOT, series U, series W, int k);
 
 /*
  * Returns a pointer to kth element of the square root of U, results stored in user-supplied jet ROOT
