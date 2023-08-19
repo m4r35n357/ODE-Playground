@@ -155,7 +155,7 @@ void ode (triplet *V, series X, series Y, series Z, parameters *P, int k);
 mpfr_t *t_const (int n, mpfr_t a);
 
 /*
- * Returns a pointer to kth element of the absolute value of U, no user-supplied jet storage needed
+ * Returns a pointer to kth element of the absolute value of U, no jet storage needed
  */
 mpfr_t *t_abs (series U, int k);
 
@@ -178,7 +178,7 @@ mpfr_t *t_abs (series U, int k);
  */
 
 /*
- * Returns a pointer to kth element of the product of U and W, no user-supplied jet storage needed
+ * Returns a pointer to kth element of the product of U and W, no jet storage needed
  *
  *     PROD = U.W
  *
@@ -187,7 +187,7 @@ mpfr_t *t_abs (series U, int k);
 mpfr_t *t_mul (series U, series W, int k);
 
 /*
- * Returns a pointer to kth element of the square of U, no user-supplied jet storage needed
+ * Returns a pointer to kth element of the square of U, no jet storage needed
  *
  *     SQR = U.U
  *
@@ -196,7 +196,7 @@ mpfr_t *t_mul (series U, series W, int k);
 mpfr_t *t_sqr (series U, int k);
 
 /*
- * Returns a pointer to kth element of U / W, results stored in user-supplied jet QUOT
+ * Returns a pointer to kth element of U / W, results stored in jet QUOT
  *
  *     QUOT = U / W ==> U = QUOT.W
  *
@@ -210,7 +210,7 @@ mpfr_t *t_sqr (series U, int k);
  *
  *                        = (U[k] - sum{j=0->k-1} QUOT[j].W[k-j]) / V[0]    otherwise
  *
- * If U == NULL, returns kth element of 1 / W, results stored in user-supplied jet QUOT,
+ * If U == NULL, returns kth element of 1 / W, results stored in jet QUOT,
  *
  * from above,    QUOT[k] = 1.0 / W[0]                                      if k == 0
  *
@@ -219,7 +219,7 @@ mpfr_t *t_sqr (series U, int k);
 mpfr_t *t_div (series QUOT, series U, series W, int k);
 
 /*
- * Returns a pointer to kth element of the square root of U, results stored in user-supplied jet ROOT
+ * Returns a pointer to kth element of the square root of U, results stored in jet ROOT
  *
  *        U = ROOT.ROOT
  *
@@ -260,7 +260,7 @@ mpfr_t *t_sqrt (series ROOT, series U, int k);
  */
 
 /*
- * Returns a pointer to kth element of the exponential of U, results stored in user-supplied jet EXP
+ * Returns a pointer to kth element of the exponential of U, results stored in jet EXP
  *
  *      EXP' = dFdU.U' = EXP.U'
  *
@@ -271,7 +271,7 @@ mpfr_t *t_sqrt (series ROOT, series U, int k);
 mpfr_t *t_exp (series EXP, series U, int k);
 
 /*
- * Returns pointers to kth elements of both sine and cosine of U, results stored in user-supplied jets SIN and COS
+ * Returns pointers to kth elements of both sine and cosine of U, results stored in jets SIN and COS
  *
  *      SINH' =   dFdU.U' = COSH.U' (=  COS.U')
  *      COSH' = d2FdU2.U' = SINH.U' (= -SIN.U')
@@ -287,7 +287,7 @@ mpfr_t *t_exp (series EXP, series U, int k);
 pair t_sin_cos (series SIN, series COS, series U, int k, bool trig);
 
 /*
- * Returns pointers to kth elements of both tan(h) and sec(h)^2 of U, results stored in user-supplied jets TAN(H) and SEC(H)2
+ * Returns pointers to kth elements of both tan(h) and sec(h)^2 of U, results stored in jets TAN(H) and SEC(H)2
  *
  *      TAN' =   dFdU.U' = SEC^2.U'   (=   SECH2.U')
  *     SEC2' = d2FdU2.U' = 2.TAN.TAN' (= -2.TANH.TANH')
@@ -303,7 +303,7 @@ pair t_sin_cos (series SIN, series COS, series U, int k, bool trig);
 pair t_tan_sec2 (series TAN, series SEC2, series U, int k, bool trig);
 
 /*
- * Returns a pointer to kth element of the logarithm (inverse of EXP), results stored in user-supplied jet U
+ * Returns a pointer to kth element of the logarithm (inverse of EXP), results stored in jet U
  *
  * This is the simplest "reverse" example, where the wanted quantity is now on the RHS
  *
@@ -316,7 +316,7 @@ pair t_tan_sec2 (series TAN, series SEC2, series U, int k, bool trig);
 mpfr_t *t_ln (series U, series EXP, int k);
 
 /*
- * Returns pointers to kth elements of arcsin/arsinh of (inverse of SIN/SINH), results stored in user-supplied jets U and COSH
+ * Returns pointers to kth elements of arcsin/arsinh (inverse of SIN/SINH), results stored in jets U and COSH
  *
  *       SINH' =   dFdU.U' = COSH.U' (=  COS.U')
  *       COSH' = d2FdU2.U' = SINH.U' (= -SIN.U')
@@ -332,7 +332,7 @@ mpfr_t *t_ln (series U, series EXP, int k);
 pair t_asin (series U, series COSH, series SINH, int k, bool trig);
 
 /*
- * Returns pointers to kth elements of arccos/arcosh (inverse of COS/COSH), results stored in user-supplied jets U and SINH
+ * Returns pointers to kth elements of arccos/arcosh (inverse of COS/COSH), results stored in jets U and SINH
  *
  *       COSH' =   dFdU.U' = SINH.U' (= -SIN.U')
  *       SINH' = d2FdU2.U' = COSH.U' (=  COS.U')
@@ -348,7 +348,7 @@ pair t_asin (series U, series COSH, series SINH, int k, bool trig);
 pair t_acos (series U, series SINH, series COSH, int k, bool trig);
 
 /*
- * Returns pointers to kth elements of arctan/artanh (inverse of TAN/TANH), results stored in user-supplied jets U and SEC2
+ * Returns pointers to kth elements of arctan/artanh (inverse of TAN/TANH), results stored in jets U and SEC2
  *
  *        TAN' =   dFdU.U' = SEC2.U'    (=  SECH^2.U')
  *       SEC2' = d2FdU2.U' = 2.TAN.TAN' (= -2.TANH.TANH')
@@ -364,7 +364,7 @@ pair t_acos (series U, series SINH, series COSH, int k, bool trig);
 pair t_atan (series U, series SEC2, series TAN, int k, bool trig);
 
 /*
- * Returns kth element of P = U^a (where a is scalar), results stored in user-supplied jet PWR
+ * Returns kth element of P = U^a (where a is scalar), results stored in jet PWR
  *
  *        dp/dt =   (dp/du).(du/dt)
  *   PWR'= U^a' = a.U^(a-1).U'
