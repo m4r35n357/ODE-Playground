@@ -80,8 +80,8 @@ static void compare (char* name, series a, series b) {
             k_max = k;
         }
         if (mpfr_number_p(delta) == 0 || mpfr_cmpabs(delta, tolerance) > 0) {
-            fprintf(stderr, "%s FAIL%s %s\n  k=%d  LHS: %+.*Le  RHS: %+.*Le  (%.1Le)\n",
-                    RED, NRM, name, k, dp, mpfr_get_ld(a[k], RND), dp, mpfr_get_ld(b[k], RND), mpfr_get_ld(delta, RND));
+            fprintf(stderr, "%s FAIL%s %s%s%s\n  k=%d  LHS: %+.*Le  RHS: %+.*Le  (%.1Le)\n",
+                    RED, NRM, MGT, name, NRM, k, dp, mpfr_get_ld(a[k], RND), dp, mpfr_get_ld(b[k], RND), mpfr_get_ld(delta, RND));
             return;
         }
         if (debug >= 2) {
@@ -90,7 +90,7 @@ static void compare (char* name, series a, series b) {
                     NRM, NRM, k, dp, mpfr_get_ld(a[k], RND), dp, mpfr_get_ld(b[k], RND), mpfr_get_ld(delta, RND));
         }
     }
-    if (debug) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
+    if (debug) fprintf(stderr, "%s PASS%s %s%s%s\n", GRN, NRM, MGT, name, NRM);
     passed++;
 }
 
