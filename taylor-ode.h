@@ -53,12 +53,12 @@ series t_const (int size, real a);
 real t_horner (series S, int n, real h);
 
 /*
- *  Dump data to stdout
+ *  Run TSM, send data to stdout
  */
 void tsm_stdout (int dp, controls *cont, series3 *jets, parameters *P, clock_t since);
 
 /*
- * Generator implementation of TSM
+ * Generator (step-wise) implementation of TSM
  */
 bool tsm_gen (controls *cont, series3 *jets, parameters *P);
 
@@ -72,8 +72,7 @@ bool tsm_gen (controls *cont, series3 *jets, parameters *P);
 parameters *tsm_init_p (int argc, char **argv, int order);
 
 /*
- * Calculate the kth components of the velocity jet V, using the coordinate jets and the parameter data,
- * together with the functions below as necessary.
+ * Calculate kth components of the velocity jet V, using the ODE model together with the functions below as necessary.
  */
 triplet ode (series X, series Y, series Z, parameters *P, int k);
 
@@ -149,5 +148,3 @@ pair t_atan (series U, series SEC2, series TAN, int k, bool trig);
  * Returns kth element of P = U^a (where a is scalar), results stored in jet PWR
  */
 real t_pwr (series PWR, series U, real a, int k);
-
-

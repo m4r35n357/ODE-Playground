@@ -30,7 +30,9 @@ static void second_order (controls *cont, parameters *p, real cd) { (void)cont;
 }
 
 static void suzuki (controls *c, parameters *p, integrator base, real cd, pair weights) {
-    for (int step = 0; step < 5; step++) base(c, p, cd * (step == 2 ? weights.b : weights.a));
+    for (int step = 0; step < 5; step++) {
+        base(c, p, cd * (step == 2 ? weights.b : weights.a));
+    }
 }
 
 static void _base4 (controls *c, parameters *p, real cd) {
