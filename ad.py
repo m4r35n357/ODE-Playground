@@ -57,8 +57,8 @@ def _chain_(b, a, k, k0):
 def _fk_(df_du, u, k, scale=1.0):
     return scale * _chain_(df_du, u, k, 0)
 
-def _uk_(df_du, u, k, fk, flag=False):
-    return (fk + (1.0 if flag else -1.0) * _chain_(df_du, u, k, 1)) / df_du[0]
+def _uk_(df_du, u, k, fk, scale=1.0):
+    return (fk - scale * _chain_(df_du, u, k, 1)) / df_du[0]
 
 def t_abs(u, k):
     return - u[k] if u[0] < 0.0 else u[k]
@@ -135,7 +135,7 @@ def t_acos(u, s, c, k, trig=True):
         u[k] = acos(c[k]) if trig else acosh(c[k])
         s[k] = -sin(u[k]) if trig else sinh(u[k])
     else:
-        u[k] = _uk_(s, u, k, c[k], trig)
+        u[k] = _uk_(s, u, k, c[k], -1.0 if trig else 1.0)
         s[k] = _fk_(c, u, k)
     return u[k], s[k]
 
@@ -152,7 +152,7 @@ def t_pwr(p, u, a, k):
     if k == 0:
         p[k] = u[k]**a
     else:
-        p[k] = _uk_(u, p, k, _fk_(p, u, k, a), False)
+        p[k] = _uk_(u, p, k, _fk_(p, u, k, a))
     return p[k]
 
 
