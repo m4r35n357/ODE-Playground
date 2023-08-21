@@ -11,12 +11,13 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-static mpfr_t __, _a, _m, _s, _e, _fk, D1, D_1, D2, D_2;
+static mpfr_t __, _a, _m, _s, _e, _fk, D0, D1, D_1, D2, D_2;
 
 static char format[60];
 
 void tsm_init(int dp) {
     sprintf(format, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", dp, dp, dp);
+    mpfr_init_set_si(D0, 0, RND);
     mpfr_init_set_si(D1, 1, RND);
     mpfr_init_set_si(D2, 2, RND);
     mpfr_init_set_si(D_1, -1, RND);
@@ -126,10 +127,9 @@ mpfr_t *t_mul (series u, series w, int k) {
 mpfr_t *t_div (series q, series u, series w, int k) {
     CHECK(mpfr_zero_p(w[0]) == 0); CHECK(q != u && q != w);
     if (!k) {
-        u ? mpfr_set(q[k], u[k], RND) : mpfr_set_si(q[k], 1, RND);
+        mpfr_set(q[k], u ? u[k] : D1, RND);
     } else {
-        _cauchy_(&q[k], q, w, k, 0, k - 1);
-        u ? mpfr_sub(q[k], u[k], q[k], RND) : mpfr_neg(q[k], q[k], RND);
+        mpfr_sub(q[k], u ? u[k] : D0, *_cauchy_(&q[k], q, w, k, 0, k - 1), RND);
     }
     mpfr_div(q[k], q[k], w[0], RND);
     return &q[k];
