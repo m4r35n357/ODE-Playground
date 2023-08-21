@@ -46,11 +46,13 @@ typedef struct Controls {
  * Report program arguments in colour
  */
 #define PRINT_ARGS(argc, argv) \
-fprintf(stderr, "argc: \x1B[1;37m%d\x1B[0;37m, argv: [ \x1B[0;36m", argc); \
-for (int i = 0; i < argc; i++) { \
-    fprintf(stderr, "%s ", argv[i]); \
-} \
-fprintf(stderr, "\x1B[0;37m]\n");
+do { \
+    fprintf(stderr, "argc: \x1B[1;37m%d\x1B[0;37m, argv: [ \x1B[0;36m", (argc)); \
+    for (int i = 0; i < (argc); i++) { \
+        fprintf(stderr, "%s ", (argv)[i]); \
+    } \
+    fprintf(stderr, "\x1B[0;37m]\n"); \
+} while (0)
 
 /*
  * Unavoidable assert(), in colour
