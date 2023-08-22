@@ -68,10 +68,10 @@ def t_prod(u, v, k):
 
 def t_quot(q, u, v, k):
     if k == 0:
-        q[k] = (u[k] if u else 1.0) / v[0]
+        q[k] = u[k] if u else 1.0
     else:
-        q[k] = ((u[k] if u else 0.0) - _cauchy_(q, v, k, 0, k)) / v[0]
-    return q[k]
+        q[k] = (u[k] if u else 0.0) - _cauchy_(q, v, k, 0, k)
+    return q[k] / v[0]
 
 def _half_(k):
     return 1 + (k - (1 if k % 2 else 2)) // 2
