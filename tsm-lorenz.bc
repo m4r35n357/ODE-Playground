@@ -27,7 +27,7 @@ define t_horner(n, j[], h) {
     return(s)
 }
  
-define t_prod(u[], v[], k) {
+define t_mul(u[], v[], k) {
     auto j, p
     p = 0.0
     for (j = 0; j < k + 1; j++) {
@@ -43,8 +43,8 @@ for (step = 1; step < steps + 1; step++) {
     z[0] = z
     for (k = 0; k < n; k++) {
         x[k + 1] = a * (y[k] - x[k]) / (k + 1)
-        y[k + 1] = (b * x[k] - t_prod(x[], z[], k) - y[k]) / (k + 1)
-        z[k + 1] = (t_prod(x[], y[], k) - c / d * z[k]) / (k + 1)
+        y[k + 1] = (b * x[k] - t_mul(x[], z[], k) - y[k]) / (k + 1)
+        z[k + 1] = (t_mul(x[], y[], k) - c / d * z[k]) / (k + 1)
     }
     x = t_horner(n, x[], h)
     y = t_horner(n, y[], h)

@@ -63,10 +63,10 @@ def _uk_(df_du, u, k, fk, scale=1.0):
 def t_abs(u, k):
     return - u[k] if u[0] < 0.0 else u[k]
 
-def t_prod(u, v, k):
+def t_mul(u, v, k):
     return _cauchy_(u, v, k, 0, k + 1)
 
-def t_quot(q, u, v, k):
+def t_div(q, u, v, k):
     if k == 0:
         q[k] = u[k] if u else 1.0
     else:
@@ -215,7 +215,7 @@ class Series:
     def __mul__(self, o):
         if isinstance(o, Series):
             assert o.n == self.n, f"Size mismatch - self: {self.n}, other: {o.n}"
-            return Series([t_prod(self.jet, o.jet, k) for k in self.index])
+            return Series([t_mul(self.jet, o.jet, k) for k in self.index])
         elif isinstance(o, (float, int)):
             return Series([term * o for term in self.jet])
         raise RuntimeError(f"Incompatible Type: {type(o)}")
@@ -229,7 +229,7 @@ class Series:
             assert abs(o.val) != 0.0, f"other.val = {o.val}"
             jet = t_jet(self.n)
             for k in self.index:
-                jet[k] = t_quot(jet, self.jet, o.jet, k)
+                jet[k] = t_div(jet, self.jet, o.jet, k)
             return Series(jet)
         elif isinstance(o, (float, int)):
             assert abs(o) != 0.0, f"other = {o}"
@@ -241,7 +241,7 @@ class Series:
         jet = t_jet(self.n)
         for k in self.index:
             # noinspection PyTypeChecker
-            jet[k] = t_quot(jet, None, self.jet, k) * o
+            jet[k] = t_div(jet, None, self.jet, k) * o
         return Series(jet)
 
     def __pow__(self, o):

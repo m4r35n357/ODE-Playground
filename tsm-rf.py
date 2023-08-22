@@ -4,7 +4,7 @@
 
 from sys import argv, stderr
 from collections import namedtuple
-from ad import Components, Context, tsm, t_jet, t_const, t_prod, t_sqr
+from ad import Components, Context, tsm, t_jet, t_const, t_mul, t_sqr
 
 class Parameters(namedtuple('ParametersType', ['α', 'γ', 'a', 'b', 'c'])):
     pass
@@ -15,10 +15,10 @@ def get_p(n):
 def ode(x, y, z, p, k):
     p.a[k] = z[k] + t_sqr(x, k) - t_const(1.0, k)
     p.b[k] = 4.0 * z[k] - p.a[k]
-    p.c[k] = t_const(p.α, k) + t_prod(x, y, k)
-    return Components(x=t_prod(y, p.a, k) + p.γ * x[k],
-                      y=t_prod(x, p.b, k) + p.γ * y[k],
-                      z=- 2.0 * t_prod(z, p.c, k))
+    p.c[k] = t_const(p.α, k) + t_mul(x, y, k)
+    return Components(x=t_mul(y, p.a, k) + p.γ * x[k],
+                      y=t_mul(x, p.b, k) + p.γ * y[k],
+                      z=- 2.0 * t_mul(z, p.c, k))
 
 
 print(f'TSM: {argv}', file=stderr)
