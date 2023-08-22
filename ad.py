@@ -49,7 +49,7 @@ def rk4(ode, places, skip, h, steps, x, y, z, p):
     t_out(places, x, y, z, steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
 
 def _cauchy_(b, a, k, k0, k1):
-    return sum(b[j] * a[k - j] for j in range(k0, k1))
+    return sum(b[j] * a[k - j] for j in range(k0, k1 + 1))
 
 def _chain_(b, a, k, k0):
     return sum(b[j] * (k - j) * a[k - j] for j in range(k0, k)) / k
@@ -64,17 +64,17 @@ def t_abs(u, k):
     return - u[k] if u[0] < 0.0 else u[k]
 
 def t_mul(u, v, k):
-    return _cauchy_(u, v, k, 0, k + 1)
+    return _cauchy_(u, v, k, 0, k)
 
 def t_div(q, u, v, k):
     if k == 0:
         q[k] = u[k] if u else 1.0
     else:
-        q[k] = (u[k] if u else 0.0) - _cauchy_(q, v, k, 0, k)
+        q[k] = (u[k] if u else 0.0) - _cauchy_(q, v, k, 0, k - 1)
     return q[k] / v[0]
 
 def _half_(k):
-    return 1 + (k - (1 if k % 2 else 2)) // 2
+    return (k - (1 if k % 2 else 2)) // 2
 
 def _rem_(a, k):
     return 0.0 if k % 2 else a[k // 2] * a[k // 2]
