@@ -7,7 +7,7 @@
     --field="Precision (bits)":NUM --field="Order":NUM --field="Value":NUM --field="Max. Error":CB --field="Detail":CB \
     -- '237!11..999!2' '64!4..256!1' '0.5!-1.0..1.0!0.1!1' '1.0e-36!1.0e-48!1.0e-60!1.0e-72' '0!1!2')
  *
- * (c) 2018-2022 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
 #include <stdio.h>
