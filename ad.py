@@ -2,7 +2,7 @@
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 from sys import stderr
-from math import sin, cos, sinh, cosh, tan, tanh, exp, log, asinh, asin, acosh, acos, atanh, atan, sqrt
+from math import sin, cos, sinh, cosh, tan, tanh, exp, log, asinh, asin, acosh, acos, atanh, atan, sqrt, fsum
 from collections import namedtuple
 from time import clock_gettime, CLOCK_MONOTONIC
 
@@ -49,10 +49,10 @@ def rk4(ode, places, skip, h, steps, x, y, z, p):
     t_out(places, x, y, z, steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
 
 def _cauchy_(b, a, k, k0, k1):
-    return sum(b[j] * a[k - j] for j in range(k0, k1 + 1))
+    return fsum(b[j] * a[k - j] for j in range(k0, k1 + 1))
 
 def _chain_(b, a, k, k0):
-    return sum(b[j] * (k - j) * a[k - j] for j in range(k0, k)) / k
+    return fsum(b[j] * (k - j) * a[k - j] for j in range(k0, k)) / k
 
 def _fk_(df_du, u, k, scale=1.0):
     return scale * _chain_(df_du, u, k, 0)
