@@ -100,59 +100,6 @@ Each output line consists of a column each for x, y, z, t, followed by three tur
 ```
 It should be possible to send output directly to gnuplot via a pipe, but many versions segfault when reading stdin so I now specify a temporary file instead.
 
-### Bifurcation Diagrams:
-
-This script runs a simulation many times for different values of a single parameter, and uses turning point tags in the ODE simulation output for plotting bifurcation diagrams in X, Y and Z, and saves plots to PNG files.
-Because the simulations carry second derivatives in the coordinate jets, we can plot maxima and minima in different colours!
-Optionally, we can skip the initial transient by dropping the first (datalines / value) results (10 is usually a good value).
-
-**bifurcation-scan** (shell script)
-
-| Parameter | Meaning                                                  |
-|-----------|----------------------------------------------------------|
-| 1         | start of parameter range                                 |
-| 2         | end of parameter range                                   |
-| 3         | "transient skip" value; skip first (lines / value), or 0 |
-| 4+        | ODE call with variable parameter replaced by '$p'        |
-
-The general idea is to replace one of the model parameters with the literal string '$p' (including the quotes).
-
-#### Bifurcation Diagram (manual gnuplot graph):
-
-A fourth-order integrator is sufficient for bifurcation diagrams and will run faster; for this scenario we only care about transitions into and out of chaos, not accuracy within the chaotic regions.
-Progress output is sent to /dev/null in the examples below for brevity, but is useful in most situations.
-```
-time -p ./bifurcation-scan .1 .225 10 ./tsm-thomas.py 6 4 0.1 10000 1 0 0 '$p' >/dev/null
-Bifurcation Diagrams: [.1 .225 10 ./tsm-thomas.py 6 4 0.1 10000 1 0 0 $p]
-real 194.46
-user 195.12
-sys 116.62
-```
-This produces three PNG files, one for each coordinate.
-You can see them using any image viewer e.g. ImageMagick:
-```
-display /tmp/$USER/X.png
-```
-If you want to interact with actual plots (e.g. to read off parameter values for simulation), use a command like (for the x coordinate):
-```
- gnuplot -p << EOF
-set t wxt size 1350,800 background rgb 'grey85'
-set grid back
-plot '/tmp/$USER/bifurcationX' lt rgb 'dark-blue' with dots, '/tmp/$USER/bifurcationx' lt rgb 'dark-green' w d
-EOF
-```
-If you are curious about Python performance, you can try this:
-```
-time -p ./bifurcation-scan .1 .225 10 ./tsm-thomas.py 6 4 0.1 10000 1 0 0 '$p' >/dev/null                                        
-    ...
-_harmless "missing maxima" gnuplot data errors skipped_
-    ...
-real 1923.69
-user 1915.76
-sys 87.86
-```
-This is why the Python implementation does not identify turning points!
-
 #### Clean Numerical Simulation:
 
 In a chaotic system, accuracy can only be maintained for a finite simulation time.
