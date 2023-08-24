@@ -49,7 +49,7 @@ def main():
             files.append(open(arg))
     else:
         raise Exception('>>> ERROR! Please supply 1, 2 or 7 arguments! <<<')
-    # Setup display and initialise pi3d
+    # Setup display and initialise
     display = Display.create(x=0, y=0, frames_per_second=60)
     display.set_background(0, 0, 0, 1)  # r,g,b,alpha
     # Camera
@@ -134,5 +134,6 @@ def main():
                 mouse.stop()
                 display.stop()
                 break
+
 
 main()
