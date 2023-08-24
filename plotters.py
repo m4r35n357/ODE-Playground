@@ -167,7 +167,7 @@ def newton_s(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=
     x, f = Series.get(2 + mode.value, x0).var, [1.0, 0.0]
     δx = i = 1
     while i <= limit and (abs(f[0]) > εf or abs(δx) > εx):
-        f = (~ model(x)).jet[mode.value : 2 + mode.value]
+        f = (~ model(x)).jet[mode.value:2 + mode.value]
         δx = - f[0] / f[1]
         x += δx
         i += 1
@@ -216,13 +216,13 @@ def msave_d(filename, model, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_m
 
 
 if __name__ == "__main__":  # hard-coded example
-    l = lambda a: (a - 1)**2 / (a.cosh + 1).ln - 1
-    print(f'Multi Scan (Series)')
-    scan_s(l)
-    mplot_s(l)
+    function = lambda a: (a - 1) ** 2 / (a.cosh + 1).ln - 1
     print(f'Root Scan (Dual)')
-    scan_d(l)
-    mplot_d(l)
+    scan_d(function)
+    mplot_d(function)
+    print(f'Multi Scan (Series)')
+    scan_s(function)
+    mplot_s(function)
 else:
     print(__name__ + " module loaded", file=stderr)
 

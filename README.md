@@ -66,25 +66,25 @@ Each output line consists of a column each for x, y, z, t, followed by three tur
 
 **tsm-model.py** (Python script)
 
-Parameter | Meaning
-----------|-----------
-1 | x,y,z output decimal places (0 for full precision binary hex)
-2 | order of Taylor Series
-3 | time step
-4 | number of steps
-5,6,7 | initial conditions, x0,y0,z0
-8+ | Model parameters
+| Parameter | Meaning                      |
+|-----------|------------------------------|
+| 1         | x,y,z output decimal places  |
+| 2         | order of Taylor Series       |
+| 3         | time step                    |
+| 4         | number of steps              |
+| 5,6,7     | initial conditions, x0,y0,z0 |
+| 8+        | Model parameters             |
 
 **rk4-model.py** (Python script)
 
-Parameter | Meaning
-----------|-----------
-1 | x,y,z output decimal places (0 for full precision binary hex)
-2 | only plot every ? lines of output (for smaller internal step than plot step)
-3 | time step
-4 | number of steps
-5,6,7 | initial conditions, x0,y0,z0
-8+ | Model parameters
+| Parameter | Meaning                                                                      |
+|-----------|------------------------------------------------------------------------------|
+| 1         | x,y,z output decimal places                                                  |
+| 2         | only plot every ? lines of output (for smaller internal step than plot step) |
+| 3         | time step                                                                    |
+| 4         | number of steps                                                              |
+| 5,6,7     | initial conditions, x0,y0,z0                                                 |
+| 8+        | Model parameters                                                             |
 
 ##### Run & plot (3D plot using pi3d):
 ```
@@ -108,14 +108,14 @@ Optionally, we can skip the initial transient by dropping the first (datalines /
 
 **bifurcation-scan** (shell script)
 
-Parameter | Meaning
-----------|-----------
-1 | start of parameter range
-2 | end of parameter range
-3 | "transient skip" value; skip first (lines / value), or 0
-4+ | ODE call with variable parameter replaced by ['$p']
+| Parameter | Meaning                                                  |
+|-----------|----------------------------------------------------------|
+| 1         | start of parameter range                                 |
+| 2         | end of parameter range                                   |
+| 3         | "transient skip" value; skip first (lines / value), or 0 |
+| 4+        | ODE call with variable parameter replaced by '$p'        |
 
-The general idea is to replace one of the model parameters with the string '$p' (including quotes!).
+The general idea is to replace one of the model parameters with the literal string '$p' (including the quotes).
 
 #### Bifurcation Diagram (manual gnuplot graph):
 
@@ -162,20 +162,20 @@ Step size and order can affect the efficiency of the calculations, but not the u
 
 **cns** (shell script)
 
-Parameter | Meaning
-----------|-----------
-1 | CNS function, Selects a better integrator for comparison, see below
-2 | deviation threshold
-3+ | ODE call
+| Parameter | Meaning                                                             |
+|-----------|---------------------------------------------------------------------|
+| 1         | CNS function, Selects a better integrator for comparison, see below |
+| 2         | deviation threshold                                                 |
+| 3+        | ODE call                                                            |
 
-CNS function | Meaning
-----------|-----------
-step2 | The step size is halved (this is  now the _only_ "better" integrator!)
-nosim | User-defined comparison between /tmp/$USER/dataA and /tmp/$USER/dataB
+| CNS function | Meaning                                                                |
+|--------------|------------------------------------------------------------------------|
+| step2        | The step size is halved (this is  now the _only_ "better" integrator!) |
+| nosim        | User-defined comparison between /tmp/$USER/dataA and /tmp/$USER/dataB  |
 
 ##### Make a CNS plot (matplotlib diff graph):
 
-Here are some comparisons bewtween TSM and RK4 for roughly similar clean simulation times in each case.
+Here are some comparisons between TSM and RK4 for roughly similar clean simulation times in each case.
 Note that RK4 quickly becomes impractical because of excessive CPU usage, whereas TSM can stay clean up to even higher time values.
 These specific results require 128-bit precision, i.e. aarch64 long double (software).
 In hardware 80-bit (x86-64) or 64-bit (armhf) floating point, the maximum clean simulation time will be correspondingly lower.
@@ -212,11 +212,11 @@ You can run this to determine the maximum _useful_ integrator order to use, for 
 
 **cns-scan** (shell script) 
 
-Parameter | Meaning
-----------|-----------
-1 | Maximum order for Taylor integrator (minimum is 2)
-2 | deviation threshold
-3+ | ODE call (with "order" argument set to "_")
+| Parameter | Meaning                                            |
+|-----------|----------------------------------------------------|
+| 1         | Maximum order for Taylor integrator (minimum is 2) |
+| 2         | deviation threshold                                |
+| 3+        | ODE call (with "order" argument set to "_")        |
 
 #### CNS duration vs. Simulation Order (gnuplot graph) for the given step size:
 
@@ -241,11 +241,11 @@ Runs a simulation together with six additional ones (+- deviations in X, Y and Z
 
 **ic** (shell script)
 
-Parameter | Meaning
-----------|-----------
-1 | Initial separation between "original" trajectory and the extra ones
-2 | Precision in decimal places ("scale" variable in bc)
-3+ | ODE call
+| Parameter | Meaning                                                             |
+|-----------|---------------------------------------------------------------------|
+| 1         | Initial separation between "original" trajectory and the extra ones |
+| 2         | Precision in decimal places ("scale" variable in bc)                |
+| 3+        | ODE call                                                            |
 
 The simulation is run seven times in parallel processes, the original along with each perturbed x, y, z.
 ```
@@ -279,7 +279,7 @@ mplot_s() plots the function and its first 12 derivatives by default;
 
 Partly to verify my own implementation of the Taylor recurrence rules, I have added a demonstration of using series arithmetic to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
 The solver demo can be used to find roots (and also extrema and inflection points by "extending" Newton to higher derivatives) in single variable nonlinear equations.
-Of course it is more generally useful for finding inverse values (where real solutions exist) of complicated functions, not just their roots.
+Of course, it is more generally useful for finding inverse values (where real solutions exist) of complicated functions, not just their roots.
 
 The "higher-level" ad_functions (or the Series class in Python) manipulate entire  Taylor series "jets" at once, so are only useful for univariate functions.
 In Python there is an overloaded operator "~" which extracts the actual derivative values from the taylor series coefficents, as well as additional operators for (negation and **).
@@ -289,11 +289,11 @@ There are also functions for (matching the lower-level t_functions):
 * sqr
 * sqrt
 * exp
-* sin(h)_cos(h)
-* tan(h)_sec(h)2
+* sin_cos (trig & hyp)
+* tan_sec2 (trig & hyp)
 * pwr (f(x)^a, where a is a scalar)
 * ln
-* asin(h), acos(h), atan(h)
+* asin, acos, atan (trig & hyp)
 
 Using these "higher level" functions, Newton's method is implemented trivially, but I have also provided an implementation of the bisection method for comparison.
 
