@@ -25,18 +25,20 @@ def tsm(ode, places, n, h, steps, x0, y0, z0, p):
     x, y, z = t_jet(n + 1, x0), t_jet(n + 1, y0), t_jet(n + 1, z0)
     t0 = clock_gettime(CLOCK_MONOTONIC)
     for step in range(steps):
+        t_out(places, x[0], y[0], z[0], step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
         for k in range(n):
             v = ode(x, y, z, p, k)
             x[k + 1] = v.x / (k + 1)
             y[k + 1] = v.y / (k + 1)
             z[k + 1] = v.z / (k + 1)
-        t_out(places, x[0], y[0], z[0], step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
         x[0], y[0], z[0] = t_horner(x, h), t_horner(y, h), t_horner(z, h)
     t_out(places, x[0], y[0], z[0], steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
 
 def rk4(ode, places, skip, h, steps, x, y, z, p):
     t0 = clock_gettime(CLOCK_MONOTONIC)
     for step in range(steps):
+        if step % skip == 0:
+            t_out(places, x, y, z, step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
         k1 = ode(x, y, z, p)
         k2 = ode(x + 0.5 * k1.x * h, y + 0.5 * k1.y * h, z + 0.5 * k1.z * h, p)
         k3 = ode(x + 0.5 * k2.x * h, y + 0.5 * k2.y * h, z + 0.5 * k2.z * h, p)
@@ -44,8 +46,6 @@ def rk4(ode, places, skip, h, steps, x, y, z, p):
         x += h * (k1.x + 2.0 * (k2.x + k3.x) + k4.x) / 6.0
         y += h * (k1.y + 2.0 * (k2.y + k3.y) + k4.y) / 6.0
         z += h * (k1.z + 2.0 * (k2.z + k3.z) + k4.z) / 6.0
-        if step % skip == 0:
-            t_out(places, x, y, z, step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
     t_out(places, x, y, z, steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
 
 def _cauchy_(b, a, k, k0, k1):
