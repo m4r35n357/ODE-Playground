@@ -7,9 +7,10 @@
 #include "taylor-ode.h"
 
 int main (int argc, char **argv) {
+    CHECK(argc > 8);
     int display_precision = (int)strtol(argv[1], NULL, BASE); CHECK(display_precision >= 0 && display_precision <= 32);
-    controls *c = tsm_get_c(argc, argv);
 
+    controls *c = tsm_get_c(argc, argv);
     tsm_stdout(display_precision, c, tsm_init_xyz(argv, c->order), tsm_init_p(argc, argv, c->order), clock());
 
     return 0;
