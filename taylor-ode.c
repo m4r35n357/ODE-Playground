@@ -110,14 +110,6 @@ bool tsm_gen (controls *c, series3 *j, parameters *p) {
     return c->looping = false;
 }
 
-static int _half_ (int k) {
-    return (k - (k % 2 ? 1 : 2)) / 2;
-}
-
-static real _rem_ (series a, int k) {
-    return k % 2 ? 0.0L : a[k / 2] * a[k / 2];
-}
-
 static real _cauchy_ (series b, series a, int k, int k0, int k1) {
     real _ = 0.0L;
     for (int j = k0; j <= k1; j++) {
@@ -156,13 +148,17 @@ real t_div (series q, series u, series v, int k) {
     return q[k] = (!k ? (u ? u[k] : 1.0L) : (u ? u[k] : 0.0L) - _cauchy_(q, v, k, 0, k - 1)) / v[0];
 }
 
+static real _half_ (series a, int k, int k0) {
+    return 2.0L * _cauchy_(a, a, k, k0, (k - (k % 2 ? 1 : 2)) / 2) + (k % 2 ? 0.0L : a[k / 2] * a[k / 2]);
+}
+
 real t_sqr (series u, int k) {
-    return 2.0L * _cauchy_(u, u, k, 0, _half_(k)) + _rem_(u, k);
+    return _half_(u, k, 0);
 }
 
 real t_sqrt (series r, series u, int k) {
     CHECK(u[0] > 0.0L); CHECK(r != u);
-    return r[k] = !k ? sqrtl(u[k]) : 0.5L * (u[k] - 2.0L * _cauchy_(r, r, k, 1, _half_(k)) - _rem_(r, k)) / r[0];
+    return r[k] = !k ? sqrtl(u[k]) : 0.5L * (u[k] - _half_(r, k, 1)) / r[0];
 }
 
 real t_exp (series e, series u, int k) {
