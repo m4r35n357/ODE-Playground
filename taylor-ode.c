@@ -11,7 +11,7 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-static mpfr_t __, _a, _m, _s, _e, _fk, D0, D1, D_1, D2, D_2;
+static mpfr_t __, _a, _m, _h, _e, _fk, D0, D1, D_1, D2, D_2;
 
 static char format[60];
 
@@ -65,7 +65,7 @@ mpfr_t *t_horner (series s, int n, mpfr_t h) {
 
 void tsm (int n, mpfr_t h, int steps, series3 *j, parameters *p, clock_t t0) {
     triplet *v_k = malloc(sizeof (triplet)); CHECK(v_k);
-    mpfr_inits(v_k->x, v_k->y, v_k->z, __, _a, _m, _s, _e, _fk, NULL);
+    mpfr_inits(v_k->x, v_k->y, v_k->z, __, _a, _m, _h, _e, _fk, NULL);
     for (int step = 0; step < steps; step++) {
         for (int k = 0; k < n; k++) {
             ode(v_k, j->x, j->y, j->z, p, k);
@@ -79,10 +79,6 @@ void tsm (int n, mpfr_t h, int steps, series3 *j, parameters *p, clock_t t0) {
         mpfr_swap(j->z[0], *t_horner(j->z, n, h));
     }
     t_out(j->x[0], j->y[0], j->z[0], h, steps, t0);
-}
-
-static int _half_ (int k) {
-    return (k - (k % 2 ? 1 : 2)) / 2;
 }
 
 static mpfr_t *_cauchy_ (mpfr_t *_, series b, series a, int k, int k0, int k1) {
@@ -135,10 +131,14 @@ mpfr_t *t_div (series q, series u, series w, int k) {
     return &q[k];
 }
 
+static mpfr_t *_half_ (series a, int k, int k0) {
+    mpfr_mul_2si(_h, *_cauchy_(&_h, a, a, k, k0, (k - (k % 2 ? 1 : 2)) / 2), 1, RND);
+    if (!(k % 2)) mpfr_fma(_h, a[k / 2], a[k / 2], _h, RND);
+    return &_h;
+}
+
 mpfr_t *t_sqr (series u, int k) {
-    mpfr_mul_2si(_s, *_cauchy_(&_s, u, u, k, 0, _half_(k)), 1, RND);
-    if (!(k % 2)) mpfr_fma(_s, u[k / 2], u[k / 2], _s, RND);
-    return &_s;
+    return _half_(u, k, 0);
 }
 
 mpfr_t *t_sqrt (series r, series u, int k) {
@@ -146,9 +146,7 @@ mpfr_t *t_sqrt (series r, series u, int k) {
     if (!k) {
         mpfr_sqrt(r[k], u[k], RND);
     } else {
-        mpfr_mul_2si(r[k], *_cauchy_(&r[k], r, r, k, 1, _half_(k)), 1, RND);
-        if (!(k % 2)) mpfr_fma(r[k], r[k / 2], r[k / 2], r[k], RND);
-        mpfr_sub(r[k], u[k], r[k], RND);
+        mpfr_sub(r[k], u[k], *_half_(r, k, 1), RND);
         mpfr_div_2si(r[k], r[k], 1, RND);
         mpfr_div(r[k], r[k], r[0], RND);
     }
