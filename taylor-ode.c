@@ -11,7 +11,7 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-static mpfr_t __, _a, _m, _h, _e, _fk, D0, D1, D_1, D2, D_2;
+static mpfr_t __, _a, _m, _h, _p, _fk, D0, D1, D_1, D2, D_2;
 
 static char format[60];
 
@@ -65,7 +65,7 @@ mpfr_t *t_horner (series s, int n, mpfr_t h) {
 
 void tsm (int n, mpfr_t h, int steps, series3 *j, parameters *p, clock_t t0) {
     triplet *v_k = malloc(sizeof (triplet)); CHECK(v_k);
-    mpfr_inits(v_k->x, v_k->y, v_k->z, __, _a, _m, _h, _e, _fk, NULL);
+    mpfr_inits(v_k->x, v_k->y, v_k->z, __, _a, _m, _h, _p, _fk, NULL);
     for (int step = 0; step < steps; step++) {
         for (int k = 0; k < n; k++) {
             ode(v_k, j->x, j->y, j->z, p, k);
@@ -87,6 +87,12 @@ static mpfr_t *_cauchy_ (mpfr_t *_, series b, series a, int k, int k0, int k1) {
         mpfr_fma(*_, b[j], a[k - j], *_, RND);
     }
     return _;
+}
+
+static mpfr_t *_half_ (series a, int k, int k0) {
+    mpfr_mul_2si(_h, *_cauchy_(&_h, a, a, k, k0, (k - (k % 2 ? 1 : 2)) / 2), 1, RND);
+    if (!(k % 2)) mpfr_fma(_h, a[k / 2], a[k / 2], _h, RND);
+    return &_h;
 }
 
 static mpfr_t *_chain_ (mpfr_t *_, series b, series a, int k, int k0, mpfr_t scale) {
@@ -129,12 +135,6 @@ mpfr_t *t_div (series q, series u, series w, int k) {
     }
     mpfr_div(q[k], q[k], w[0], RND);
     return &q[k];
-}
-
-static mpfr_t *_half_ (series a, int k, int k0) {
-    mpfr_mul_2si(_h, *_cauchy_(&_h, a, a, k, k0, (k - (k % 2 ? 1 : 2)) / 2), 1, RND);
-    if (!(k % 2)) mpfr_fma(_h, a[k / 2], a[k / 2], _h, RND);
-    return &_h;
 }
 
 mpfr_t *t_sqr (series u, int k) {
@@ -240,7 +240,7 @@ mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {
     if (!k) {
         mpfr_pow(p[k], u[k], a, RND);
     } else {
-        _uk_(&p[k], u, p, k, _fk_(&_e, p, u, k, a), D1);
+        _uk_(&p[k], u, p, k, _fk_(&_p, p, u, k, a), D1);
     }
     return &p[k];
 }
