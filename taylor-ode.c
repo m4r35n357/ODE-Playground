@@ -118,6 +118,10 @@ static real _cauchy_ (series b, series a, int k, int k0, int k1) {
     return _;
 }
 
+static real _half_ (series a, int k, int k0) {
+    return 2.0L * _cauchy_(a, a, k, k0, (k - (k % 2 ? 1 : 2)) / 2) + (k % 2 ? 0.0L : a[k / 2] * a[k / 2]);
+}
+
 static real _chain_ (series b, series a, int k, int k0) {
     real _ = 0.0L;
     for (int j = k0; j < k; j++) {
@@ -146,10 +150,6 @@ real t_mul (series u, series v, int k) {
 real t_div (series q, series u, series v, int k) {
     CHECK(v[0] != 0.0L); CHECK(q != u && q != v);
     return q[k] = (!k ? (u ? u[k] : 1.0L) : (u ? u[k] : 0.0L) - _cauchy_(q, v, k, 0, k - 1)) / v[0];
-}
-
-static real _half_ (series a, int k, int k0) {
-    return 2.0L * _cauchy_(a, a, k, k0, (k - (k % 2 ? 1 : 2)) / 2) + (k % 2 ? 0.0L : a[k / 2] * a[k / 2]);
 }
 
 real t_sqr (series u, int k) {
