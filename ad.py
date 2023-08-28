@@ -58,7 +58,7 @@ def _fk_(df_du, u, k, scale=1.0):
     return scale * _chain_(df_du, u, k, 0)
 
 def _uk_(df_du, u, k, fk, scale=1.0):
-    return (fk - scale * _chain_(df_du, u, k, 1)) / df_du[0]
+    return (fk - _chain_(df_du, u, k, 1) * scale) / df_du[0]
 
 def t_abs(u, k):
     return - u[k] if u[0] < 0.0 else u[k]
@@ -73,20 +73,17 @@ def t_div(q, u, v, k):
         q[k] = (u[k] if u else 0.0) - _cauchy_(q, v, k, 0, k - 1)
     return q[k] / v[0]
 
-def _half_(k):
-    return (k - (1 if k % 2 else 2)) // 2
-
-def _rem_(a, k):
-    return 0.0 if k % 2 else a[k // 2] * a[k // 2]
+def _half_(a, k, k0):
+    return 2.0 * _cauchy_(a, a, k, k0, (k - (1 if k % 2 else 2)) // 2) + (0.0 if k % 2 else a[k // 2] * a[k // 2])
 
 def t_sqr(u, k):
-    return 2.0 * _cauchy_(u, u, k, 0, _half_(k)) + _rem_(u, k)
+    return _half_(u, k, 0)
 
 def t_sqrt(r, u, k):
     if k == 0:
         r[k] = sqrt(u[k])
     else:
-        r[k] = 0.5 * (u[k] - 2.0 * _cauchy_(r, r, k, 1, _half_(k)) - _rem_(r, k)) / r[0]
+        r[k] = 0.5 * (u[k] - _half_(r, k, 1)) / r[0]
     return r[k]
 
 def t_exp(e, u, k):
