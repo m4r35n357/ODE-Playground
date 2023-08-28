@@ -51,6 +51,9 @@ def rk4(ode, places, skip, h, steps, x, y, z, p):
 def _cauchy_(b, a, k, k0, k1):
     return fsum(b[j] * a[k - j] for j in range(k0, k1 + 1))
 
+def _half_(a, k, k0):
+    return 2.0 * _cauchy_(a, a, k, k0, (k - (1 if k % 2 else 2)) // 2) + (0.0 if k % 2 else a[k // 2] * a[k // 2])
+
 def _chain_(b, a, k, k0):
     return fsum(b[j] * (k - j) * a[k - j] for j in range(k0, k)) / k
 
@@ -72,9 +75,6 @@ def t_div(q, u, v, k):
     else:
         q[k] = (u[k] if u else 0.0) - _cauchy_(q, v, k, 0, k - 1)
     return q[k] / v[0]
-
-def _half_(a, k, k0):
-    return 2.0 * _cauchy_(a, a, k, k0, (k - (1 if k % 2 else 2)) // 2) + (0.0 if k % 2 else a[k // 2] * a[k // 2])
 
 def t_sqr(u, k):
     return _half_(u, k, 0)
