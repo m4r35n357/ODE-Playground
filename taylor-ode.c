@@ -79,7 +79,7 @@ static void _next_ (series3 *j, int n, real h) {
 }
 
 static char *_tag_ (series j, real *slope, char *min, char *max) {
-    char *_ = *slope * j[1] < 0.0L ? (j[2] > 0.0L ? min : max) : "_";
+    char *_ = *slope * j[1] >= 0.0L ? "_" : (j[2] > 0.0L ? min : max);
     *slope = j[1];
     return _;
 }
