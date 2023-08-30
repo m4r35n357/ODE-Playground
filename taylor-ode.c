@@ -10,15 +10,6 @@
 #include <math.h>
 #include "taylor-ode.h"
 
-static void _out_ (int dp, real x, real y, real z, real t, char *x_tag, char *y_tag, char *z_tag, clock_t since) {
-    real _ = (real)(clock() - since) / CLOCKS_PER_SEC;
-    if (dp) {
-        printf("%+.*Le %+.*Le %+.*Le %.6Le %s %s %s %.3Lf\n", dp, x, dp, y, dp, z, t, x_tag, y_tag, z_tag, _);
-    } else {
-        printf("%+La %+La %+La %.6Le %s %s %s %.3Lf\n", x, y, z, t, x_tag, y_tag, z_tag, _);
-    }
-}
-
 controls *tsm_get_c (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     controls *_ = malloc(sizeof (controls)); CHECK(_);
@@ -29,42 +20,47 @@ controls *tsm_get_c (int argc, char **argv) {
     return _;
 }
 
-series3 *tsm_init_xyz (char **argv, int order) {
-    series3 *_ = malloc(sizeof (series3)); CHECK(_);
-    _->x = t_const(order + 1, strtold(argv[5], NULL));
-    _->y = t_const(order + 1, strtold(argv[6], NULL));
-    _->z = t_const(order + 1, strtold(argv[7], NULL));
-    return _;
-}
-
 void tsm_get_p (char **argv, int argc, ...) {
     va_list _;
     va_start(_, argc);
-    for (int i = 8; i < argc; i++) {
-        *va_arg(_, real *) = strtold(argv[i], NULL);
-    }
+    for (int i = 8; i < argc; i++) *va_arg(_, real *) = strtold(argv[i], NULL);
     va_end(_);
 }
 
-series t_jet (int k) {
+series3 *tsm_init_xyz (char **argv, int order) {
+    series3 *_ = malloc(sizeof (series3)); CHECK(_);
+    _->x = tsm_const(order + 1, strtold(argv[5], NULL));
+    _->y = tsm_const(order + 1, strtold(argv[6], NULL));
+    _->z = tsm_const(order + 1, strtold(argv[7], NULL));
+    return _;
+}
+
+series tsm_var (int k) {
     CHECK(k > 0);
-    series _ = calloc((size_t)k, sizeof (real)); CHECK(_);
+    series _ = malloc((size_t)k * sizeof (real)); CHECK(_);
     return _;
 }
 
-series t_const (int k, real a) {
-    series _ = t_jet(k);
-    _[0] = a;
+series tsm_const (int k, real a) {
+    series _ = tsm_var(k);
+    for (int i = 0; i < k; i++) _[i] = i ? 0.0L : a;
     return _;
 }
 
-real t_horner (series s, int n, real h) {
+real horner (series s, int n, real h) {
     real _ = 0.0L;
-    for (int i = n; i >= 0; i--) {
-        _ = _ * h + s[i];
-    }
+    for (int i = n; i >= 0; i--) _ = _ * h + s[i];
     CHECK(isfinite(_));
     return _;
+}
+
+static void _out_ (int dp, real x, real y, real z, real t, char *x_tag, char *y_tag, char *z_tag, clock_t since) {
+    real _ = (real)(clock() - since) / CLOCKS_PER_SEC;
+    if (dp) {
+        printf("%+.*Le %+.*Le %+.*Le %.6Le %s %s %s %.3Lf\n", dp, x, dp, y, dp, z, t, x_tag, y_tag, z_tag, _);
+    } else {
+        printf("%+La %+La %+La %.6Le %s %s %s %.3Lf\n", x, y, z, t, x_tag, y_tag, z_tag, _);
+    }
 }
 
 static void _diff_ (series3 *j, parameters *p, int n) {
@@ -77,9 +73,9 @@ static void _diff_ (series3 *j, parameters *p, int n) {
 }
 
 static void _next_ (series3 *j, int n, real h) {
-    j->x[0] = t_horner(j->x, n, h);
-    j->y[0] = t_horner(j->y, n, h);
-    j->z[0] = t_horner(j->z, n, h);
+    j->x[0] = horner(j->x, n, h);
+    j->y[0] = horner(j->y, n, h);
+    j->z[0] = horner(j->z, n, h);
 }
 
 static char *_tag_ (series j, real *slope, char *min, char *max) {
@@ -112,9 +108,7 @@ bool tsm_gen (controls *c, series3 *j, parameters *p) {
 
 static real _cauchy_ (series b, series a, int k, int k0, int k1) {
     real _ = 0.0L;
-    for (int j = k0; j <= k1; j++) {
-        _ += b[j] * a[k - j];
-    }
+    for (int j = k0; j <= k1; j++) _ += b[j] * a[k - j];
     return _;
 }
 
@@ -124,9 +118,7 @@ static real _half_ (series a, int k, int k0) {
 
 static real _chain_ (series b, series a, int k, int k0) {
     real _ = 0.0L;
-    for (int j = k0; j < k; j++) {
-        _ += b[j] * (k - j) * a[k - j];
-    }
+    for (int j = k0; j < k; j++) _ += b[j] * (k - j) * a[k - j];
     return _ / k;
 }
 

@@ -40,17 +40,17 @@ void tsm_get_p (char **argv, int count, ...);
 /*
  * Creates a Taylor Series "jet" with the specified number of elements
  */
-series t_jet (int size);
+series tsm_var (int size);
 
 /*
  * Set up a constant jet of value a
  */
-series t_const (int size, real a);
+series tsm_const (int size, real a);
 
 /*
  * Safely and efficiently evaluates a polynomial of degree n, with the coefficients in S, and the variable in h
  */
-real t_horner (series S, int n, real h);
+real horner (series S, int n, real h);
 
 /*
  *  Run TSM, send data to stdout

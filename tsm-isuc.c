@@ -14,8 +14,8 @@ parameters *tsm_init_p (int argc, char **argv, int n) {
     CHECK(argc == 11);
     parameters *_ = malloc(sizeof (parameters)); CHECK(_);
     tsm_get_p(argv, argc, &_->a, &_->b, &_->c);
-    _->x2py2 = t_jet(n);
-    _->_B = t_const(n, _->b);
+    _->x2py2 = tsm_var(n);
+    _->_B = tsm_const(n, _->b);
     return _;
 }
 
