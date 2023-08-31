@@ -128,11 +128,7 @@ mpfr_t *t_mul (series u, series w, int k) {
 
 mpfr_t *t_div (series q, series u, series w, int k) {
     CHECK(mpfr_zero_p(w[0]) == 0); CHECK(q != u && q != w);
-    if (!k) {
-        mpfr_set(q[k], u ? u[k] : D1, RND);
-    } else {
-        mpfr_sub(q[k], u ? u[k] : D0, *_cauchy_(&q[k], q, w, k, 0, k - 1), RND);
-    }
+    mpfr_sub(q[k], u[k], !k ? D0 : *_cauchy_(&q[k], q, w, k, 0, k - 1), RND);
     mpfr_div(q[k], q[k], w[0], RND);
     return &q[k];
 }

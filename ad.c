@@ -60,13 +60,6 @@ series ad_div (series q, series u, series v) {
     return q;
 }
 
-series ad_inv (series i, series v) {
-    for (int k = 0; k < order; k++) {
-        t_div(i, NULL, v, k);
-    }
-    return i;
-}
-
 series ad_sqr (series s, series u) {
     for (int k = 0; k < order; k++) {
         mpfr_swap(s[k], *t_sqr(u, k));
