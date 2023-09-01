@@ -15,7 +15,7 @@ void ad_init (int n) {
 }
 
 series ad_const (mpfr_t a) {
-    return t_const(order, a);
+    return tsm_const(order, a);
 }
 
 series ad_scale (series s, series u, mpfr_t a) {

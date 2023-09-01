@@ -14,8 +14,8 @@ struct Parameters { mpfr_t a, b, c, d; series xy, e_xy; };
 parameters *get_p (int argc, char **argv, int n) {
     CHECK(argc == 13);
     parameters *p = malloc(sizeof (parameters));
-    t_params(argv, argc, &p->a, &p->b, &p->c, &p->d);
-    p->xy = t_jet(n); p->e_xy = t_jet(n);
+    tsm_get_p(argv, argc, &p->a, &p->b, &p->c, &p->d);
+    p->xy = tsm_var(n); p->e_xy = tsm_var(n);
     return p;
 }
 

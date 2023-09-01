@@ -14,14 +14,14 @@ struct Parameters { mpfr_t alpha, gamma, D1, D4; series a, b, c, _ALPHA, _1; };
 parameters *get_p (int argc, char **argv, int n) {
     CHECK(argc == 11);
     parameters *p = malloc(sizeof (parameters));
-    t_params(argv, argc, &p->alpha, &p->gamma);
+    tsm_get_p(argv, argc, &p->alpha, &p->gamma);
     mpfr_init_set_si(p->D1, 1, RND);
     mpfr_init_set_si(p->D4, 4, RND);
-    p->a = t_jet(n);
-    p->b = t_jet(n);
-    p->c = t_jet(n);
-    p->_ALPHA = t_const(n, p->alpha);
-    p->_1 = t_const(n, p->D1);
+    p->a = tsm_var(n);
+    p->b = tsm_var(n);
+    p->c = tsm_var(n);
+    p->_ALPHA = tsm_const(n, p->alpha);
+    p->_1 = tsm_const(n, p->D1);
     return p;
 }
 

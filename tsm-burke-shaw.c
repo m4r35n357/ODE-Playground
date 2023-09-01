@@ -14,7 +14,7 @@ struct Parameters { mpfr_t s, v; };
 parameters *get_p (int argc, char **argv, int n) { (void)n;
     CHECK(argc == 11);
     parameters *p = malloc(sizeof (parameters));
-    t_params(argv, argc, &p->s, &p->v);
+    tsm_get_p(argv, argc, &p->s, &p->v);
     return p;
 }
 

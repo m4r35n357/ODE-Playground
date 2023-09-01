@@ -14,10 +14,10 @@ struct Parameters { mpfr_t b; series sx, sy, sz, cx, cy, cz; };
 parameters *get_p (int argc, char **argv, int n) {
     CHECK(argc == 10);
     parameters *p = malloc(sizeof (parameters));
-    t_params(argv, argc, &p->b);
-    p->sx = t_jet(n); p->cx = t_jet(n);
-    p->sy = t_jet(n); p->cy = t_jet(n);
-    p->sz = t_jet(n); p->cz = t_jet(n);
+    tsm_get_p(argv, argc, &p->b);
+    p->sx = tsm_var(n); p->cx = tsm_var(n);
+    p->sy = tsm_var(n); p->cy = tsm_var(n);
+    p->sz = tsm_var(n); p->cz = tsm_var(n);
     return p;
 }
 

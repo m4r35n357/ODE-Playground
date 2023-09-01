@@ -25,9 +25,9 @@ int main (int argc, char **argv) {
     mpfr_init_set_str(z0, argv[8], BASE, RND);
 
     series3 *jets = malloc(sizeof (series3)); CHECK(jets);
-    jets->x = t_const(order + 1, x0);
-    jets->y = t_const(order + 1, y0);
-    jets->z = t_const(order + 1, z0);
+    jets->x = tsm_const(order + 1, x0);
+    jets->y = tsm_const(order + 1, y0);
+    jets->z = tsm_const(order + 1, z0);
 
     tsm_init(display_precision);
     tsm(order, step_size, steps, jets, get_p(argc, argv, order), clock());

@@ -24,12 +24,7 @@ void tsm_init(int dp) {
     mpfr_init_set_si(D_2, -2, RND);
 }
 
-void t_out (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, clock_t since) {
-    mpfr_mul_si(__, h, step, RND);
-    mpfr_printf(format, x, y, z, __, (double)(clock() - since) / CLOCKS_PER_SEC);
-}
-
-void t_params (char **argv, int argc, ...) {
+void tsm_get_p (char **argv, int argc, ...) {
     va_list _;
     va_start(_, argc);
     for (int i = 9; i < argc; i++) {
@@ -38,29 +33,35 @@ void t_params (char **argv, int argc, ...) {
     va_end(_);
 }
 
-series t_jet (int k) {
+series tsm_var (int k) {
     CHECK(k > 0);
     series _ = malloc((size_t)k * sizeof (mpfr_t)); CHECK(_);
     for (int i = 0; i < k; i++) {
         mpfr_init(_[i]);
-        mpfr_set_zero(_[i], 1);
     }
     return _;
 }
 
-series t_const (int k, mpfr_t a) {
-    series _ = t_jet(k);
-    mpfr_set(_[0], a, RND);
+series tsm_const (int k, mpfr_t a) {
+    series _ = tsm_var(k);
+    for (int i = 0; i < k; i++) {
+        mpfr_set(_[i], i ? D0 : a, RND);
+    }
     return _;
 }
 
-mpfr_t *t_horner (series s, int n, mpfr_t h) {
+mpfr_t *horner (series s, int n, mpfr_t h) {
     mpfr_set_zero(__, 1);
     for (int i = n; i >= 0; i--) {
         mpfr_fma(__, __, h, s[i], RND);
     }
     CHECK(mpfr_number_p(__) != 0);
     return &__;
+}
+
+void _out_ (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, clock_t since) {
+    mpfr_mul_si(__, h, step, RND);
+    mpfr_printf(format, x, y, z, __, (double)(clock() - since) / CLOCKS_PER_SEC);
 }
 
 void tsm (int n, mpfr_t h, int steps, series3 *j, parameters *p, clock_t t0) {
@@ -73,12 +74,12 @@ void tsm (int n, mpfr_t h, int steps, series3 *j, parameters *p, clock_t t0) {
             mpfr_div_si(j->y[k + 1], v_k->y, k + 1, RND);
             mpfr_div_si(j->z[k + 1], v_k->z, k + 1, RND);
         }
-        t_out(j->x[0], j->y[0], j->z[0], h, step, t0);
-        mpfr_swap(j->x[0], *t_horner(j->x, n, h));
-        mpfr_swap(j->y[0], *t_horner(j->y, n, h));
-        mpfr_swap(j->z[0], *t_horner(j->z, n, h));
+        _out_(j->x[0], j->y[0], j->z[0], h, step, t0);
+        mpfr_swap(j->x[0], *horner(j->x, n, h));
+        mpfr_swap(j->y[0], *horner(j->y, n, h));
+        mpfr_swap(j->z[0], *horner(j->z, n, h));
     }
-    t_out(j->x[0], j->y[0], j->z[0], h, steps, t0);
+    _out_(j->x[0], j->y[0], j->z[0], h, steps, t0);
 }
 
 static mpfr_t *_cauchy_ (mpfr_t *_, series b, series a, int k, int k0, int k1) {

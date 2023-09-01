@@ -109,22 +109,22 @@ typedef struct pair_m {
 /*
  * Prints a line of data to stdout
  */
-void t_out (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, clock_t since);
+void _out_ (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, clock_t since);
 
 /*
  * Retrieves ODE parameters from the tail of the command (arguments 9 onwards)
  */
-void t_params (char **argv, int count, ...);
+void tsm_get_p (char **argv, int count, ...);
 
 /*
  * Creates a zeroed Taylor Series jet with the specified number of elements
  */
-series t_jet (int size);
+series tsm_var (int size);
 
 /*
  * Safely and efficiently evaluates a polynomial of degree n, with the coefficients in S, and the variable in h
  */
-mpfr_t *t_horner (series S, int n, mpfr_t h);
+mpfr_t *horner (series S, int n, mpfr_t h);
 
 /*
  * Initialize constants
@@ -154,7 +154,7 @@ void ode (triplet *V, series X, series Y, series Z, parameters *P, int k);
 /*
  * Returns value if k is 0, and zero otherwise.  For handling _additive_ constants in ODE models.
  */
-mpfr_t *t_const (int n, mpfr_t a);
+mpfr_t *tsm_const (int n, mpfr_t a);
 
 /*
  * Returns a pointer to kth element of the absolute value of U, no jet storage needed
