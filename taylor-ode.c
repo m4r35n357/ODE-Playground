@@ -27,34 +27,26 @@ void tsm_init(int dp) {
 void tsm_get_p (char **argv, int argc, ...) {
     va_list _;
     va_start(_, argc);
-    for (int i = 9; i < argc; i++) {
-        mpfr_init_set_str(*va_arg(_, mpfr_t *), argv[i], BASE, RND);
-    }
+    for (int i = 9; i < argc; i++) mpfr_init_set_str(*va_arg(_, mpfr_t *), argv[i], BASE, RND);
     va_end(_);
 }
 
 series tsm_var (int k) {
     CHECK(k > 0);
     series _ = malloc((size_t)k * sizeof (mpfr_t)); CHECK(_);
-    for (int i = 0; i < k; i++) {
-        mpfr_init(_[i]);
-    }
+    for (int i = 0; i < k; i++) mpfr_init(_[i]);
     return _;
 }
 
 series tsm_const (int k, mpfr_t a) {
     series _ = tsm_var(k);
-    for (int i = 0; i < k; i++) {
-        mpfr_set(_[i], i ? D0 : a, RND);
-    }
+    for (int i = 0; i < k; i++) mpfr_set(_[i], i ? D0 : a, RND);
     return _;
 }
 
 mpfr_t *horner (series s, int n, mpfr_t h) {
     mpfr_set_zero(__, 1);
-    for (int i = n; i >= 0; i--) {
-        mpfr_fma(__, __, h, s[i], RND);
-    }
+    for (int i = n; i >= 0; i--) mpfr_fma(__, __, h, s[i], RND);
     CHECK(mpfr_number_p(__) != 0);
     return &__;
 }
@@ -84,9 +76,7 @@ void tsm (int n, mpfr_t h, int steps, series3 *j, parameters *p, clock_t t0) {
 
 static mpfr_t *_cauchy_ (mpfr_t *_, series b, series a, int k, int k0, int k1) {
     mpfr_set_zero(*_, 1);
-    for (int j = k0; j <= k1; j++) {
-        mpfr_fma(*_, b[j], a[k - j], *_, RND);
-    }
+    for (int j = k0; j <= k1; j++) mpfr_fma(*_, b[j], a[k - j], *_, RND);
     return _;
 }
 
