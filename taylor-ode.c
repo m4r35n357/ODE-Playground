@@ -31,7 +31,7 @@ void tsm_get_p (char **argv, int argc, ...) {
     va_end(_);
 }
 
-series tsm_var (int k) {
+series tsm_jet (int k) {
     CHECK(k > 0);
     series _ = malloc((size_t)k * sizeof (mpfr_t)); CHECK(_);
     for (int i = 0; i < k; i++) mpfr_init(_[i]);
@@ -39,7 +39,7 @@ series tsm_var (int k) {
 }
 
 series tsm_const (int k, mpfr_t a) {
-    series _ = tsm_var(k);
+    series _ = tsm_jet(k);
     for (int i = 0; i < k; i++) mpfr_set(_[i], i ? D0 : a, RND);
     return _;
 }

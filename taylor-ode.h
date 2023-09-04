@@ -119,7 +119,7 @@ void tsm_get_p (char **argv, int count, ...);
 /*
  * Creates a zeroed Taylor Series jet with the specified number of elements
  */
-series tsm_var (int size);
+series tsm_jet (int size);
 
 /*
  * Safely and efficiently evaluates a polynomial of degree n, with the coefficients in S, and the variable in h

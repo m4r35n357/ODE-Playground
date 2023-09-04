@@ -103,7 +103,7 @@ int main (int argc, char **argv) {
     mpfr_set_default_prec((int)strtol(argv[2], NULL, BASE));
     n = (int)strtol(argv[3], NULL, BASE); CHECK(n > 8);
     libad_test_init();
-    series x = tsm_var(n + 1);
+    series x = tsm_jet(n + 1);
     mpfr_init_set_str(x[0], argv[4], BASE, RND);
     for (int k = 1; k <= n; k++) {
         mpfr_div_si(x[k], D05, k * k, RND);
@@ -134,7 +134,7 @@ int main (int argc, char **argv) {
     _out_(e1, e0, e_1, D01, steps, 0.0F);
 
     fprintf(stderr, "Horner Summation ");
-    series p = tsm_var(n);
+    series p = tsm_jet(n);
     mpfr_set_si(p[0], 1, RND);
     mpfr_set_si(p[1], 3, RND);
     mpfr_set_si(p[2], 0, RND);
@@ -159,27 +159,27 @@ int main (int argc, char **argv) {
 
     fprintf(stderr, "Recurrence Relations %sx = %s%s%.1Lf%s\n", MGT, NRM, WHT, mpfr_get_ld(x[0], RND), NRM);
     bool positive = mpfr_sgn(x[0]) > 0, non_zero = mpfr_zero_p(x[0]) == 0, lt_pi_2 = mpfr_cmpabs(x[0], PI_2) < 0;
-    series r1 = tsm_var(n), r2 = tsm_var(n), r3 = tsm_var(n), S1 = tsm_const(n, D1);
-    series abs_x = tsm_var(n), inv_x = tsm_var(n), sqrt_x = tsm_var(n), ln_x = tsm_var(n);
+    series r1 = tsm_jet(n), r2 = tsm_jet(n), r3 = tsm_jet(n), S1 = tsm_const(n, D1);
+    series abs_x = tsm_jet(n), inv_x = tsm_jet(n), sqrt_x = tsm_jet(n), ln_x = tsm_jet(n);
     if (non_zero) ad_abs(abs_x, x);
     if (non_zero) ad_div(inv_x, S1, x);
     if (positive) ad_sqrt(sqrt_x, x);
     if (positive) ad_ln(ln_x, x);
-    series sin_x = tsm_var(n), cos_x = tsm_var(n), tan_x = tsm_var(n), sec2_x = tsm_var(n);
-    series sin2_x = tsm_var(n), cos2_x = tsm_var(n), tan2_x = tsm_var(n), sin_2x = tsm_var(n), cos_2x = tsm_var(n);
+    series sin_x = tsm_jet(n), cos_x = tsm_jet(n), tan_x = tsm_jet(n), sec2_x = tsm_jet(n);
+    series sin2_x = tsm_jet(n), cos2_x = tsm_jet(n), tan2_x = tsm_jet(n), sin_2x = tsm_jet(n), cos_2x = tsm_jet(n);
     ad_sin_cos(sin_x, cos_x, x, true);
     ad_tan_sec2(tan_x, sec2_x, x, true);
     ad_sqr(sin2_x, sin_x);
     ad_sqr(cos2_x, cos_x);
     ad_sin_cos(sin_2x, cos_2x, ad_scale(r1, x, D2), true);
-    series sinh_x = tsm_var(n), cosh_x = tsm_var(n), tanh_x = tsm_var(n), sech2_x = tsm_var(n);
-    series sinh2_x = tsm_var(n), cosh2_x = tsm_var(n), tanh2_x = tsm_var(n), sinh_2x = tsm_var(n), cosh_2x = tsm_var(n);
+    series sinh_x = tsm_jet(n), cosh_x = tsm_jet(n), tanh_x = tsm_jet(n), sech2_x = tsm_jet(n);
+    series sinh2_x = tsm_jet(n), cosh2_x = tsm_jet(n), tanh2_x = tsm_jet(n), sinh_2x = tsm_jet(n), cosh_2x = tsm_jet(n);
     ad_sin_cos(sinh_x, cosh_x, x, false);
     ad_tan_sec2(tanh_x, sech2_x, x, false);
     ad_sqr(sinh2_x, sinh_x);
     ad_sqr(cosh2_x, cosh_x);
     ad_sin_cos(sinh_2x, cosh_2x, ad_scale(r1, x, D2), false);
-    series sqr_x = tsm_var(n), exp_x = tsm_var(n), neg_exp_x = tsm_var(n), gd_1 = tsm_var(n);
+    series sqr_x = tsm_jet(n), exp_x = tsm_jet(n), neg_exp_x = tsm_jet(n), gd_1 = tsm_jet(n);
     ad_sqr(sqr_x, x);
     ad_exp(exp_x, x);
     ad_exp(neg_exp_x, ad_scale(r1, x, D_1));

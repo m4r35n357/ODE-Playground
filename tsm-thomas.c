@@ -15,9 +15,9 @@ parameters *get_p (int argc, char **argv, int n) {
     CHECK(argc == 10);
     parameters *p = malloc(sizeof (parameters));
     tsm_get_p(argv, argc, &p->b);
-    p->sx = tsm_var(n); p->cx = tsm_var(n);
-    p->sy = tsm_var(n); p->cy = tsm_var(n);
-    p->sz = tsm_var(n); p->cz = tsm_var(n);
+    p->sx = tsm_jet(n); p->cx = tsm_jet(n);
+    p->sy = tsm_jet(n); p->cy = tsm_jet(n);
+    p->sz = tsm_jet(n); p->cz = tsm_jet(n);
     return p;
 }
 

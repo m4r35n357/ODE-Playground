@@ -17,9 +17,9 @@ parameters *get_p (int argc, char **argv, int n) {
     tsm_get_p(argv, argc, &p->alpha, &p->gamma);
     mpfr_init_set_si(p->D1, 1, RND);
     mpfr_init_set_si(p->D4, 4, RND);
-    p->a = tsm_var(n);
-    p->b = tsm_var(n);
-    p->c = tsm_var(n);
+    p->a = tsm_jet(n);
+    p->b = tsm_jet(n);
+    p->c = tsm_jet(n);
     p->_ALPHA = tsm_const(n, p->alpha);
     p->_1 = tsm_const(n, p->D1);
     return p;
