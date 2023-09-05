@@ -50,7 +50,7 @@ int main (int argc, char **argv) {
     c = tsm_get_c(argc, argv);
     m = tsm_init_p(argc, argv, c->order);
 
-    jets = tsm_init_xyz(argv, c->order);
+    jets = tsm_init(argv, c->order);
 
     length = (int)strtol(argv[1], NULL, BASE); CHECK(length >= 0 && length <= c->steps);
     t = malloc(sizeof (trail)); CHECK(t);

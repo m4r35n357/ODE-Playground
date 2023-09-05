@@ -30,7 +30,7 @@ controls *tsm_get_c (int argc, char **argv);
 /*
  * Initial values for Taylor Series'
  */
-series3 *tsm_init_xyz (char **argv, int order);
+series3 *tsm_init (char **argv, int order);
 
 /*
  * Retrieves ODE parameters from the tail of the command (arguments 8 onwards)
@@ -40,7 +40,7 @@ void tsm_get_p (char **argv, int count, ...);
 /*
  * Creates a Taylor Series "jet" with the specified number of elements
  */
-series tsm_var (int size);
+series tsm_jet (int size);
 
 /*
  * Set up a constant jet of value a

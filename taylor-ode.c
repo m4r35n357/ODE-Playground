@@ -27,23 +27,23 @@ void tsm_get_p (char **argv, int argc, ...) {
     va_end(_);
 }
 
-series3 *tsm_init_xyz (char **argv, int order) {
-    series3 *_ = malloc(sizeof (series3)); CHECK(_);
-    _->x = tsm_const(order + 1, strtold(argv[5], NULL));
-    _->y = tsm_const(order + 1, strtold(argv[6], NULL));
-    _->z = tsm_const(order + 1, strtold(argv[7], NULL));
-    return _;
-}
-
-series tsm_var (int k) {
+series tsm_jet (int k) {
     CHECK(k > 0);
     series _ = malloc((size_t)k * sizeof (real)); CHECK(_);
     return _;
 }
 
 series tsm_const (int k, real a) {
-    series _ = tsm_var(k);
+    series _ = tsm_jet(k);
     for (int i = 0; i < k; i++) _[i] = i ? 0.0L : a;
+    return _;
+}
+
+series3 *tsm_init (char **argv, int order) {
+    series3 *_ = malloc(sizeof (series3)); CHECK(_);
+    _->x = tsm_const(order + 1, strtold(argv[5], NULL));
+    _->y = tsm_const(order + 1, strtold(argv[6], NULL));
+    _->z = tsm_const(order + 1, strtold(argv[7], NULL));
     return _;
 }
 

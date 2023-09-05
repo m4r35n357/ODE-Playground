@@ -14,8 +14,8 @@ parameters *tsm_init_p (int argc, char **argv, int n) {
     CHECK(argc == 9);
     parameters *_ = malloc(sizeof (parameters)); CHECK(_);
     tsm_get_p(argv, argc, &_->a);
-    _->tx = tsm_var(n);
-    _->sx = tsm_var(n);
+    _->tx = tsm_jet(n);
+    _->sx = tsm_jet(n);
     _->_A = tsm_const(n, _->a);
     return _;
 }
