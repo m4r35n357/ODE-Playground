@@ -6,39 +6,39 @@ from math import sin, cos, sinh, cosh, tan, tanh, exp, log, asinh, asin, acosh, 
 from collections import namedtuple
 from time import clock_gettime, CLOCK_MONOTONIC
 
-def t_jet(n, value=0.0):
+def tsm_jet(n, value=0.0):
     return [value if isinstance(value, float) else float(value)] + [0.0] * (n - 1)
 
-def t_const(a, k):
-    return a if k == 0 else 0.0
+def tsm_const(a, k):
+    return tsm_jet(k, a)
 
-def t_horner(jet, h):
+def horner(jet, h):
     result = 0.0
     for term in reversed(jet):
         result = result * h + term
     return result
 
-def t_out(dp, x, y, z, t, cpu):
+def _out_(dp, x, y, z, t, cpu):
     print(f'{x:+.{dp}e} {y:+.{dp}e} {z:+.{dp}e} {t:.5e} _ _ _ {cpu:.5e}')
 
 def tsm(ode, places, n, h, steps, x0, y0, z0, p):
-    x, y, z = t_jet(n + 1, x0), t_jet(n + 1, y0), t_jet(n + 1, z0)
+    x, y, z = tsm_jet(n + 1, x0), tsm_jet(n + 1, y0), tsm_jet(n + 1, z0)
     t0 = clock_gettime(CLOCK_MONOTONIC)
     for step in range(steps):
-        t_out(places, x[0], y[0], z[0], step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
+        _out_(places, x[0], y[0], z[0], step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
         for k in range(n):
             v = ode(x, y, z, p, k)
             x[k + 1] = v.x / (k + 1)
             y[k + 1] = v.y / (k + 1)
             z[k + 1] = v.z / (k + 1)
-        x[0], y[0], z[0] = t_horner(x, h), t_horner(y, h), t_horner(z, h)
-    t_out(places, x[0], y[0], z[0], steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
+        x[0], y[0], z[0] = horner(x, h), horner(y, h), horner(z, h)
+    _out_(places, x[0], y[0], z[0], steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
 
 def rk4(ode, places, skip, h, steps, x, y, z, p):
     t0 = clock_gettime(CLOCK_MONOTONIC)
     for step in range(steps):
         if step % skip == 0:
-            t_out(places, x, y, z, step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
+            _out_(places, x, y, z, step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
         k1 = ode(x, y, z, p)
         k2 = ode(x + 0.5 * k1.x * h, y + 0.5 * k1.y * h, z + 0.5 * k1.z * h, p)
         k3 = ode(x + 0.5 * k2.x * h, y + 0.5 * k2.y * h, z + 0.5 * k2.z * h, p)
@@ -46,7 +46,7 @@ def rk4(ode, places, skip, h, steps, x, y, z, p):
         x += h * (k1.x + 2.0 * (k2.x + k3.x) + k4.x) / 6.0
         y += h * (k1.y + 2.0 * (k2.y + k3.y) + k4.y) / 6.0
         z += h * (k1.z + 2.0 * (k2.z + k3.z) + k4.z) / 6.0
-    t_out(places, x, y, z, steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
+    _out_(places, x, y, z, steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
 
 def _cauchy_(b, a, k, k0, k1):
     return fsum(b[j] * a[k - j] for j in range(k0, k1 + 1))
@@ -170,7 +170,7 @@ class Series:
 
     @classmethod
     def get(cls, size, value=0.0):
-        return cls(t_jet(size, value))
+        return cls(tsm_jet(size, value))
 
     def __str__(self):
         return ''.join(f'{term:+.{Context.places}e} ' for term in self.jet)
@@ -185,7 +185,7 @@ class Series:
         return Series([- term for term in self.jet])
 
     def __invert__(self):  # override - returns a derivative Series
-        derivatives = t_jet(self.n, self.val)
+        derivatives = tsm_jet(self.n, self.val)
         factorial = 1
         for i in range(1, self.n):
             factorial *= i
@@ -224,7 +224,7 @@ class Series:
         if isinstance(o, Series):
             assert o.n == self.n, f"Size mismatch - self: {self.n}, other: {o.n}"
             assert abs(o.val) != 0.0, f"other.val = {o.val}"
-            jet = t_jet(self.n)
+            jet = tsm_jet(self.n)
             for k in self.index:
                 jet[k] = t_div(jet, self.jet, o.jet, k)
             return Series(jet)
@@ -235,7 +235,7 @@ class Series:
 
     def __rtruediv__(self, o):
         assert self.val != 0.0, f"self.val = {self.val}"
-        jet = t_jet(self.n)
+        jet = tsm_jet(self.n)
         for k in self.index:
             # noinspection PyTypeChecker
             jet[k] = t_div(jet, None, self.jet, k) * o
@@ -246,10 +246,10 @@ class Series:
             i_pow = Series(self.jet)
             for _ in range(abs(o) - 1):
                 i_pow = i_pow * self
-            return i_pow if o > 0 else (1.0 / i_pow if o < 0 else Series(t_jet(self.n, 1.0)))
+            return i_pow if o > 0 else (1.0 / i_pow if o < 0 else Series(tsm_jet(self.n, 1.0)))
         elif isinstance(o, float):
             assert self.val > 0.0, f"self.val = {self.val}"  # pragma: no mutate
-            jet = t_jet(self.n)
+            jet = tsm_jet(self.n)
             for k in self.index:
                 jet[k] = t_pwr(jet, self.jet, o, k)
             return Series(jet)
@@ -263,13 +263,13 @@ class Series:
         return (self * log(o)).exp
 
     def _exp_log_sqrt(self, f):
-        a = t_jet(self.n)
+        a = tsm_jet(self.n)
         for k in self.index:
             a[k] = f(a, self.jet, k)
         return Series(a)
 
     def _trig_hyp(self, f, trig=True):
-        a, b = t_jet(self.n), t_jet(self.n)
+        a, b = tsm_jet(self.n), tsm_jet(self.n)
         for k in self.index:
             a[k], b[k] = f(a, b, self.jet, k, trig)
         return Series(a), Series(b)

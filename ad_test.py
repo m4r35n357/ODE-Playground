@@ -8,7 +8,7 @@
 from collections import namedtuple
 from math import exp, factorial
 from pytest import mark, raises, approx
-from ad import Components, t_jet, t_horner, t_const, t_abs, Series, Dual
+from ad import Components, tsm_jet, horner, tsm_const, t_abs, Series, Dual
 
 order = 12
 # noinspection NonAsciiCharacters
@@ -50,16 +50,29 @@ def simple_ode(x, y, z, p, k):
                       y=p.b * y[k],
                       z=p.c * z[k])
 
+def compare_series(result, target):
+    for k in range(order):
+        assert result.jet[k] == approx(target.jet[k])
+
+def compare_dual(result, target):
+    assert result.val == approx(target.val)
+    assert result.dot == approx(target.dot)
+
 def test_t_jet_default():
-    jet = t_jet(order)
+    jet = tsm_jet(order)
     assert len(jet) == order
     for term in jet:
         assert isinstance(term, float)
         assert term == approx(0.0)
 
+def test_t_jet():
+    jet = tsm_jet(order)
+    for k in range(order):
+        assert jet[k] == 0.0
+
 @mark.parametrize('number', [zero, -zero, f05, -f05, i5, -i5])
-def test_t_jet(number):
-    jet = t_jet(order, number)
+def test_t_const(number):
+    jet = tsm_jet(order, number)
     assert len(jet) == order
     assert isinstance(jet[0], float)
     assert jet[0] == approx(number)
@@ -68,16 +81,10 @@ def test_t_jet(number):
         assert term == approx(0.0)
 
 def test_horner():
-    assert t_horner([1, 3, 0, 2], 2) == 23
-    assert t_horner([-19, 7, -4, 6], 3) == 128
-    assert t_horner([3, -1, 2, -4, 0, 1], 3) == 153
-    assert t_horner([1, -4, 0, 0, 2, 3, 0, -2], -2) == 201
-
-def test_t_const():
-    value = 1.23456
-    ref = Series.get(order, value)
-    for k in range(order):
-        assert t_const(value, k) == ref.jet[k]
+    assert horner([1, 3, 0, 2], 2) == 23
+    assert horner([-19, 7, -4, 6], 3) == 128
+    assert horner([3, -1, 2, -4, 0, 1], 3) == 153
+    assert horner([1, -4, 0, 0, 2, 3, 0, -2], -2) == 201
 
 @mark.parametrize('number', [1.0, δ])
 def test_t_abs_positive(number):
@@ -185,14 +192,6 @@ def test_unary_minus():
     series = - data1_s
     for k in range(order):
         assert series.jet[k] == approx(- data1_s.jet[k])
-
-def compare_series(result, target):
-    for k in range(order):
-        assert result.jet[k] == approx(target.jet[k])
-
-def compare_dual(result, target):
-    assert result.val == approx(target.val)
-    assert result.dot == approx(target.dot)
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_abs_series(series):

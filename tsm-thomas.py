@@ -4,13 +4,13 @@
 
 from sys import argv, stderr
 from collections import namedtuple
-from ad import Components, Context, tsm, t_jet, t_sin_cos
+from ad import Components, Context, tsm, tsm_jet, t_sin_cos
 
 class Parameters(namedtuple('ParametersType', ['b', 'sx', 'sy', 'sz', 'cx', 'cy', 'cz'])):
     pass
 
 def get_p(n):
-    return Parameters(b=float(argv[8]), sx=t_jet(n), cx=t_jet(n), sy=t_jet(n), cy=t_jet(n), sz=t_jet(n), cz=t_jet(n))
+    return Parameters(b=float(argv[8]), sx=tsm_jet(n), cx=tsm_jet(n), sy=tsm_jet(n), cy=tsm_jet(n), sz=tsm_jet(n), cz=tsm_jet(n))
 
 def ode(x, y, z, p, k):
     p.sx[k], p.cx[k] = t_sin_cos(p.sx, p.cx, x, k)

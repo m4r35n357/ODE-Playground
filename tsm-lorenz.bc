@@ -18,7 +18,7 @@ define void t_print(x, y, z, t) {
     print x, " ", y, " ", z, " ", t, " _ _ _ 0.0\n"
 }
 
-define t_horner(n, j[], h) {
+define horner(n, j[], h) {
     auto i, s
     s = 0.0
     for (i = n; i > - 1; i--) {
@@ -46,9 +46,9 @@ for (step = 1; step < steps + 1; step++) {
         y[k + 1] = (b * x[k] - t_mul(x[], z[], k) - y[k]) / (k + 1)
         z[k + 1] = (t_mul(x[], y[], k) - c / d * z[k]) / (k + 1)
     }
-    x = t_horner(n, x[], h)
-    y = t_horner(n, y[], h)
-    z = t_horner(n, z[], h)
+    x = horner(n, x[], h)
+    y = horner(n, y[], h)
+    z = horner(n, z[], h)
     t_print(x, y, z, h * step)
 }
 quit

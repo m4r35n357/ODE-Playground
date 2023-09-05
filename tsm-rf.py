@@ -4,18 +4,18 @@
 
 from sys import argv, stderr
 from collections import namedtuple
-from ad import Components, Context, tsm, t_jet, t_const, t_mul, t_sqr
+from ad import Components, Context, tsm, tsm_jet, tsm_const, t_mul, t_sqr
 
 class Parameters(namedtuple('ParametersType', ['α', 'γ', 'a', 'b', 'c'])):
     pass
 
 def get_p(n):
-    return Parameters(α=float(argv[8]), γ=float(argv[9]), a=t_jet(n), b=t_jet(n), c=t_jet(n))
+    return Parameters(α=float(argv[8]), γ=float(argv[9]), a=tsm_jet(n), b=tsm_jet(n), c=tsm_jet(n))
 
 def ode(x, y, z, p, k):
-    p.a[k] = z[k] + t_sqr(x, k) - t_const(1.0, k)
+    p.a[k] = z[k] + t_sqr(x, k) - tsm_const(1.0, k)
     p.b[k] = 4.0 * z[k] - p.a[k]
-    p.c[k] = t_const(p.α, k) + t_mul(x, y, k)
+    p.c[k] = tsm_const(p.α, k) + t_mul(x, y, k)
     return Components(x=t_mul(y, p.a, k) + p.γ * x[k],
                       y=t_mul(x, p.b, k) + p.γ * y[k],
                       z=- 2.0 * t_mul(z, p.c, k))
