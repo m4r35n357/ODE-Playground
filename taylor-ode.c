@@ -15,15 +15,6 @@ static mpfr_t __, _a, _m, _h, _p, _fk, D0, D1, D_1, D2, D_2;
 
 static char format[60];
 
-void tsm_init(int dp) {
-    sprintf(format, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", dp, dp, dp);
-    mpfr_init_set_si(D0, 0, RND);
-    mpfr_init_set_si(D1, 1, RND);
-    mpfr_init_set_si(D2, 2, RND);
-    mpfr_init_set_si(D_1, -1, RND);
-    mpfr_init_set_si(D_2, -2, RND);
-}
-
 void tsm_get_p (char **argv, int argc, ...) {
     va_list _;
     va_start(_, argc);
@@ -42,6 +33,15 @@ series tsm_const (int k, mpfr_t a) {
     series _ = tsm_jet(k);
     for (int i = 0; i < k; i++) mpfr_set(_[i], i ? D0 : a, RND);
     return _;
+}
+
+void tsm_init(int dp) {
+    sprintf(format, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", dp, dp, dp);
+    mpfr_init_set_si(D0, 0, RND);
+    mpfr_init_set_si(D1, 1, RND);
+    mpfr_init_set_si(D2, 2, RND);
+    mpfr_init_set_si(D_1, -1, RND);
+    mpfr_init_set_si(D_2, -2, RND);
 }
 
 mpfr_t *horner (series s, int n, mpfr_t h) {
