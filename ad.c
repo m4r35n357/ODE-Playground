@@ -14,11 +14,11 @@ void ad_init (int n) {
     order = n;
 }
 
-series ad_const (mpfr_t a) {
+series ad_const (real a) {
     return tsm_const(order, a);
 }
 
-series ad_scale (series s, series u, mpfr_t a) {
+series ad_scale (series s, series u, real a) {
     for (int k = 0; k < order; k++) {
         mpfr_mul(s[k], u[k], a, RND);
     }
@@ -95,7 +95,7 @@ pair ad_tan_sec2 (series t, series s2, series u, bool trig) {
     return (pair){ .a = t, .b = s2 };
 }
 
-series ad_pwr (series p, series u, mpfr_t a) {
+series ad_pwr (series p, series u, real a) {
     for (int k = 0; k < order; k++) {
         t_pwr(p, u, a, k);
     }

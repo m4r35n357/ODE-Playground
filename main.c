@@ -16,7 +16,7 @@ int main (int argc, char **argv) {
     fprintf(stderr, " MPFR default precision: %lu bits\n", mpfr_get_default_prec());
     int order = (int)strtol(argv[3], NULL, BASE); CHECK(order >= 2);
 
-    mpfr_t step_size, x0, y0, z0;
+    real step_size, x0, y0, z0;
     mpfr_init_set_str(step_size, argv[4], BASE, RND); CHECK(mpfr_sgn(step_size) > 0);
     int steps = (int)strtol(argv[5], NULL, BASE); CHECK(steps >= 0 && steps <= 1000000);
 
@@ -30,7 +30,7 @@ int main (int argc, char **argv) {
     jets->z = tsm_const(order + 1, z0);
 
     tsm_init(display_precision);
-    tsm(order, step_size, steps, jets, get_p(argc, argv, order), clock());
+    tsm_stdout(order, step_size, steps, jets, tsm_init_p(argc, argv, order), clock());
 
     return 0;
 }

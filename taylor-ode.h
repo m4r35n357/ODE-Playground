@@ -48,10 +48,13 @@ do { \
  */
 typedef struct Parameters parameters;
 
+
+typedef mpfr_t real;
+
 /*
  * Type for Taylor Series coordinate jets
  */
-typedef mpfr_t *series;
+typedef real *series;
 
 /*
  * Combined x, y, z series
@@ -64,14 +67,14 @@ typedef struct triple_s {
  * For returning x, y, z velocities from the model
  */
 typedef struct triple_m {
-    mpfr_t x, y, z;
+    real x, y, z;
 } triplet;
 
 /*
  * For returning combined recurrence values
  */
 typedef struct pair_m {
-    mpfr_t *a, *b;
+    real *a, *b;
 } pair;
 
 /*
@@ -109,22 +112,7 @@ typedef struct pair_m {
 /*
  * Prints a line of data to stdout
  */
-void _out_ (mpfr_t x, mpfr_t y, mpfr_t z, mpfr_t h, int step, clock_t since);
-
-/*
- * Retrieves ODE parameters from the tail of the command (arguments 9 onwards)
- */
-void tsm_get_p (char **argv, int count, ...);
-
-/*
- * Creates a zeroed Taylor Series jet with the specified number of elements
- */
-series tsm_jet (int size);
-
-/*
- * Safely and efficiently evaluates a polynomial of degree n, with the coefficients in S, and the variable in h
- */
-mpfr_t *horner (series S, int n, mpfr_t h);
+void _out_ (real x, real y, real z, real h, int step, clock_t since);
 
 /*
  * Initialize constants
@@ -132,18 +120,41 @@ mpfr_t *horner (series S, int n, mpfr_t h);
 void tsm_init(int display_precision);
 
 /*
- * Execute the Taylor Series Method
+ * Retrieves ODE parameters from the tail of the command (arguments 9 onwards)
  */
-void tsm (int n, mpfr_t h, int steps, series3 *jets, parameters *P, clock_t since);
+void tsm_get_p (char **argv, int count, ...);
 
 /*
- * Get a blob of parameter data from the model to be passed into ode()
+ * Creates a Taylor Series "jet" with the specified number of elements
  */
-parameters *get_p (int argc, char **argv, int order);
+series tsm_jet (int size);
 
 /*
- * Calculate the kth components of the velocity jet V, using the coordinate jets and the parameter data,
- * together with the functions below as necessary.
+ * Set up a constant jet of value a
+ */
+series tsm_const (int size, real a);
+
+/*
+ * Safely and efficiently evaluates a polynomial of degree n, with the coefficients in S, and the variable in h
+ */
+real *horner (series S, int n, real h);
+
+/*
+ *  Run TSM, send data to stdout
+ */
+void tsm_stdout (int n, real h, int steps, series3 *jets, parameters *P, clock_t since);
+
+/*
+ * Obligatory client method signatures
+ */
+
+/*
+ * Populate parameter data from command arguments
+ */
+parameters *tsm_init_p (int argc, char **argv, int order);
+
+/*
+ * Calculate kth components of the velocity jet V, using the ODE model together with the functions below as necessary.
  */
 void ode (triplet *V, series X, series Y, series Z, parameters *P, int k);
 
@@ -152,14 +163,9 @@ void ode (triplet *V, series X, series Y, series Z, parameters *P, int k);
  */
 
 /*
- * Returns value if k is 0, and zero otherwise.  For handling _additive_ constants in ODE models.
- */
-mpfr_t *tsm_const (int n, mpfr_t a);
-
-/*
  * Returns a pointer to kth element of the absolute value of U, no jet storage needed
  */
-mpfr_t *t_abs (series U, int k);
+real *t_abs (series U, int k);
 
 /*
  * Taylor Series recurrence relationships
@@ -186,7 +192,7 @@ mpfr_t *t_abs (series U, int k);
  *
  *   PROD_k = sum{j=0->k} U[j].W[k-j]
  */
-mpfr_t *t_mul (series U, series W, int k);
+real *t_mul (series U, series W, int k);
 
 /*
  * Returns a pointer to kth element of the square of U, no jet storage needed
@@ -195,7 +201,7 @@ mpfr_t *t_mul (series U, series W, int k);
  *
  *   SQR_k = sum{j=0->k} U[j].U[k-j]
  */
-mpfr_t *t_sqr (series U, int k);
+real *t_sqr (series U, int k);
 
 /*
  * Returns a pointer to kth element of U / W, results stored in jet QUOT
@@ -218,7 +224,7 @@ mpfr_t *t_sqr (series U, int k);
  *
  *                QUOT[k] = - sum{j=0->k-1} QUOT[j].W[k-j] / W[0]           otherwise
  */
-mpfr_t *t_div (series QUOT, series U, series W, int k);
+real *t_div (series QUOT, series U, series W, int k);
 
 /*
  * Returns a pointer to kth element of the square root of U, results stored in jet ROOT
@@ -231,7 +237,7 @@ mpfr_t *t_div (series QUOT, series U, series W, int k);
  *
  *  ROOT[k] = (U[k] - sum{j=1->k-1} ROOT[j].ROOT[k-j]) / 2.ROOT[0]
  */
-mpfr_t *t_sqrt (series ROOT, series U, int k);
+real *t_sqrt (series ROOT, series U, int k);
 
 /*
  * Applying the chain rule for the derivative of a composed function f(u(t)) creates another Cauchy product:
@@ -270,7 +276,7 @@ mpfr_t *t_sqrt (series ROOT, series U, int k);
  *
  *    EXP[k] = sum{j=0->k-1} EXP[j].(k-j).U[k-j] / k
  */
-mpfr_t *t_exp (series EXP, series U, int k);
+real *t_exp (series EXP, series U, int k);
 
 /*
  * Returns pointers to kth elements of both sine and cosine of U, results stored in jets SIN and COS
@@ -315,7 +321,7 @@ pair t_tan_sec2 (series TAN, series SEC2, series U, int k, bool trig);
  *
  *        U[k] = (EXP[k] - sum{j=1->k-1} EXP[j].(k-j).U[k-j] / k) / EXP[0]       "reverse"
  */
-mpfr_t *t_ln (series U, series EXP, int k);
+real *t_ln (series U, series EXP, int k);
 
 /*
  * Returns pointers to kth elements of arcsin/arsinh (inverse of SIN/SINH), results stored in jets U and COSH
@@ -377,4 +383,4 @@ pair t_atan (series U, series SEC2, series TAN, int k, bool trig);
  *
  *       PWR[k] = (E_k - sum{j=1->k-1} U[j].(k-j).PWR[k-j]/k) / U[0]        (LHS)
  */
-mpfr_t *t_pwr (series PWR, series U, mpfr_t a, int k);
+real *t_pwr (series PWR, series U, real a, int k);

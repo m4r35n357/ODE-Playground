@@ -9,9 +9,9 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-struct Parameters { mpfr_t alpha, kappa; };
+struct Parameters { real alpha, kappa; };
 
-parameters *get_p (int argc, char **argv, int n) { (void)n;
+parameters *tsm_init_p (int argc, char **argv, int n) { (void)n;
     CHECK(argc == 11);
     parameters *p = malloc(sizeof (parameters));
     tsm_get_p(argv, argc, &p->alpha, &p->kappa);

@@ -27,7 +27,7 @@
 
 static int k_max = 0, dp, n, debug = 0, total = 0, passed = 0, skipped = 0;
 
-static mpfr_t delta, delta_max, tolerance, D0, D01, D05, D_05, D1, D_1, D2, D_2, D3, D_3;
+static real delta, delta_max, tolerance, D0, D01, D05, D_05, D1, D_1, D2, D_2, D3, D_3;
 
 static char *name_max = "N/A";
 
@@ -47,9 +47,9 @@ static void libad_test_init (void) {
     mpfr_init_set_si(D_3, -3, RND);
 }
 
-struct Parameters { mpfr_t a, b, c; };
+struct Parameters { real a, b, c; };
 
-parameters *get_p (int argc, char **argv, int order) { (void)argc; (void)argv; (void)order;
+parameters *tsm_init_p (int argc, char **argv, int order) { (void)argc; (void)argv; (void)order;
     parameters *p = malloc(sizeof (parameters));
     mpfr_init_set_si(p->a, 1, RND);
     mpfr_init_set_si(p->b, 0, RND);
@@ -98,7 +98,7 @@ int main (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     CHECK(argc == 6 || argc == 7);
 
-    mpfr_t PI_2;
+    real PI_2;
     dp = (int)strtol(argv[1], NULL, BASE);
     mpfr_set_default_prec((int)strtol(argv[2], NULL, BASE));
     n = (int)strtol(argv[3], NULL, BASE); CHECK(n > 8);
@@ -124,9 +124,9 @@ int main (int argc, char **argv) {
     j->y = tsm_const(n + 1, D1);
     j->z = tsm_const(n + 1, D1);
     tsm_init(dp);
-    tsm(n, D01, steps, j, get_p(argc, argv, n), clock());
+    tsm_stdout(n, D01, steps, j, tsm_init_p(argc, argv, n), clock());
     fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);
-    mpfr_t e1, e0, e_1;
+    real e1, e0, e_1;
     mpfr_inits(e1, e0, e_1, NULL);
     mpfr_exp(e1, D1, RND);
     mpfr_exp(e0, D0, RND);

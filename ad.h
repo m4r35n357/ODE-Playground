@@ -15,12 +15,12 @@ void ad_init (int n);
 /*
  * Set up a constant jet of value a, result stored in jet C
  */
-series ad_const (mpfr_t a);
+series ad_const (real a);
 
 /*
  * Scales Taylor Series U by a factor a, result stored in jet S
  */
-series ad_scale (series S, series U, mpfr_t a);
+series ad_scale (series S, series U, real a);
 
 /*
  * Calculates Taylor Series for the sum of U and V, result stored in jet P
@@ -75,7 +75,7 @@ pair ad_tan_sec2 (series T, series S2, series U, bool trig);
 /*
  * Calculates Taylor Series for U^a, results stored in jet P
  */
-series ad_pwr (series P, series U, mpfr_t a);
+series ad_pwr (series P, series U, real a);
 
 /*
  * Calculates Taylor Series for the natural logarithm of U, results stored in jet L
