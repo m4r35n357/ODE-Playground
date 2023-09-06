@@ -71,9 +71,9 @@ def t_mul(u, v, k):
 
 def t_div(q, u, v, k):
     if k == 0:
-        q[k] = u[k] if u else 1.0
+        q[k] = u[k]
     else:
-        q[k] = (u[k] if u else 0.0) - _cauchy_(q, v, k, 0, k - 1)
+        q[k] = u[k] - _cauchy_(q, v, k, 0, k - 1)
     return q[k] / v[0]
 
 def t_sqr(u, k):
@@ -235,10 +235,11 @@ class Series:
 
     def __rtruediv__(self, o):
         assert self.val != 0.0, f"self.val = {self.val}"
+        j_1 = tsm_const(1.0, self.n)
         jet = tsm_jet(self.n)
         for k in self.index:
             # noinspection PyTypeChecker
-            jet[k] = t_div(jet, None, self.jet, k) * o
+            jet[k] = t_div(jet, j_1, self.jet, k) * o
         return Series(jet)
 
     def __pow__(self, o):
