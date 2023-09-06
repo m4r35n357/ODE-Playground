@@ -97,7 +97,7 @@ def _plot_s(model, order, x_min, x_max, steps, y_min, y_max):
     colour = ['k-', 'r-', 'g-', 'b-', 'y-', 'c-', 'm-', 'r:', 'g:', 'b:', 'y:', 'c:', 'm:']
     data = [[] for _ in range(order + 2)]
     step = (x_max - x_min) / (steps - 1)
-    for k in range(steps):
+    for k in range(1, steps - 1):
         x = Series.get(order + 1, x_min + k * step)
         x = x.var if order > 0 else x
         for d_term, p_term in zip(data, [x.val] + (~ model(x)).jet):
@@ -116,7 +116,7 @@ def _plot_d(model, x_min, x_max, steps, y_min, y_max):
     colour = ['k-', 'r-', 'g-', 'b-', 'y-', 'c-', 'm-', 'r:', 'g:', 'b:', 'y:', 'c:', 'm:']
     data = [[] for _ in range(3)]
     step = (x_max - x_min) / (steps - 1)
-    for k in range(steps):
+    for k in range(1, steps - 1):
         x = Dual(x_min + k * step).var
         y = model(x)
         for d_term, p_term in zip(data, [x.val] + [y.val] + [y.dot]):
