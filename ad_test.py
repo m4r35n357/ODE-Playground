@@ -637,15 +637,9 @@ def test_sqrt_domain_good(number):
     _ = Series.get(order, number).var.sqrt
 
 @mark.domain
-@mark.parametrize('number', [0, zero, - zero])
-def test_sqrt_domain_bad_assert(number):
+@mark.parametrize('number', [- δ, -1, - zero, 0, zero])
+def test_sqrt_domain_bad(number):
     with raises(AssertionError):
-        _ = Series.get(order, number).var.sqrt
-
-@mark.domain
-@mark.parametrize('number', [- δ, -1])
-def test_sqrt_domain_bad_value(number):
-    with raises(ValueError):
         _ = Series.get(order, number).var.sqrt
 
 def test_var():

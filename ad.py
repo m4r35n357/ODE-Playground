@@ -70,6 +70,7 @@ def t_mul(u, v, k):
     return _cauchy_(u, v, k, 0, k)
 
 def t_div(q, u, v, k):
+    assert v[0] != 0.0
     q[k] = u[k] if k == 0 else u[k] - _cauchy_(q, v, k, 0, k - 1)
     return q[k] / v[0]
 
@@ -77,6 +78,7 @@ def t_sqr(u, k):
     return _half_(u, k, 0)
 
 def t_sqrt(r, u, k):
+    assert u[0] > 0.0
     r[k] = sqrt(u[k]) if k == 0 else 0.5 * (u[k] - _half_(r, k, 1)) / r[0]
     return r[k]
 
@@ -103,10 +105,12 @@ def t_tan_sec2(t, s, u, k, trig=True):
     return t[k], s[k]
 
 def t_ln(u, e, k):
+    assert e[0] > 0.0
     u[k] = log(e[k]) if k == 0 else _uk_(e, u, k, e[k])
     return u[k]
 
 def t_asin(u, c, s, k, trig=True):
+    assert -1.0 <= s[0] <= 1.0 if trig else True
     if k == 0:
         u[k] = asin(s[k]) if trig else asinh(s[k])
         c[k] = cos(u[k]) if trig else cosh(u[k])
@@ -116,6 +120,7 @@ def t_asin(u, c, s, k, trig=True):
     return u[k], c[k]
 
 def t_acos(u, s, c, k, trig=True):
+    assert -1.0 <= c[0] <= 1.0 if trig else c[0] >= 1.0
     if k == 0:
         u[k] = acos(c[k]) if trig else acosh(c[k])
         s[k] = -sin(u[k]) if trig else sinh(u[k])
@@ -125,6 +130,7 @@ def t_acos(u, s, c, k, trig=True):
     return u[k], s[k]
 
 def t_atan(u, s, t, k, trig=True):
+    assert True if trig else -1.0 <= t[0] <= 1.0
     if k == 0:
         u[k] = atan(t[k]) if trig else atanh(t[k])
         s[k] = 1.0 + t[k] * t[k] if trig else 1.0 - t[k] * t[k]
@@ -134,6 +140,7 @@ def t_atan(u, s, t, k, trig=True):
     return u[k], s[k]
 
 def t_pwr(p, u, a, k):
+    assert u[0] > 0.0
     p[k] = u[k]**a if k == 0 else _uk_(u, p, k, _fk_(p, u, k, a))
     return p[k]
 
