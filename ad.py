@@ -70,27 +70,18 @@ def t_mul(u, v, k):
     return _cauchy_(u, v, k, 0, k)
 
 def t_div(q, u, v, k):
-    if k == 0:
-        q[k] = u[k]
-    else:
-        q[k] = u[k] - _cauchy_(q, v, k, 0, k - 1)
+    q[k] = u[k] if k == 0 else u[k] - _cauchy_(q, v, k, 0, k - 1)
     return q[k] / v[0]
 
 def t_sqr(u, k):
     return _half_(u, k, 0)
 
 def t_sqrt(r, u, k):
-    if k == 0:
-        r[k] = sqrt(u[k])
-    else:
-        r[k] = 0.5 * (u[k] - _half_(r, k, 1)) / r[0]
+    r[k] = sqrt(u[k]) if k == 0 else 0.5 * (u[k] - _half_(r, k, 1)) / r[0]
     return r[k]
 
 def t_exp(e, u, k):
-    if k == 0:
-        e[k] = exp(u[k])
-    else:
-        e[k] = _fk_(e, u, k)
+    e[k] = exp(u[k]) if k == 0 else _fk_(e, u, k)
     return e[k]
 
 def t_sin_cos(s, c, u, k, trig=True):
@@ -112,10 +103,7 @@ def t_tan_sec2(t, s, u, k, trig=True):
     return t[k], s[k]
 
 def t_ln(u, e, k):
-    if k == 0:
-        u[k] = log(e[k])
-    else:
-        u[k] = _uk_(e, u, k, e[k])
+    u[k] = log(e[k]) if k == 0 else _uk_(e, u, k, e[k])
     return u[k]
 
 def t_asin(u, c, s, k, trig=True):
@@ -146,10 +134,7 @@ def t_atan(u, s, t, k, trig=True):
     return u[k], s[k]
 
 def t_pwr(p, u, a, k):
-    if k == 0:
-        p[k] = u[k]**a
-    else:
-        p[k] = _uk_(u, p, k, _fk_(p, u, k, a))
+    p[k] = u[k]**a if k == 0 else _uk_(u, p, k, _fk_(p, u, k, a))
     return p[k]
 
 
