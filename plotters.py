@@ -16,9 +16,9 @@ class Solver(Enum):
     NT = "Newton-Raphson method"
 
 @unique
-class Sense(Enum):
-    INCREASING = '/'
-    DECREASING = '\\'
+class Label(Enum):
+    MIN = '/'
+    MAX = '\\'
     FLAT = '_'
 
 @unique
@@ -29,10 +29,10 @@ class Mode(Enum):
     ALL = 3
 
 
-class Result(namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', 'sense', 'mode'])):
+class Result(namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', 'label', 'mode'])):
     def __str__(self):
         return f'{self.method}  x: {self.x:+.{Context.places}e}  δx: {self.δx:+.{Context.places}e}  ' \
-               f'f: {self.f:+.{Context.places}e}  {self.sense} {self.mode} {self.count}'
+               f'f: {self.f:+.{Context.places}e}  {self.label} {self.mode} {self.count}'
 
 def _analyze_s(model, method, x0, x1, steps, εf, εx, limit, mode, console, debug):
     x_prev = f0_prev = f1_prev = f2_prev = None
@@ -45,23 +45,23 @@ def _analyze_s(model, method, x0, x1, steps, εf, εx, limit, mode, console, deb
         if method != Solver.NA:
             if k > 0:
                 if (mode == Mode.ROOT___ or mode == Mode.ALL) and f0_prev * f.val < 0.0:
-                    sense = Sense.DECREASING if f0_prev > f.val else Sense.INCREASING
+                    sense = Label.MAX if f0_prev > f.val else Label.MIN
                     if method == Solver.BI:
-                        yield bisect_s(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=sense, debug=debug)
+                        yield bisect_s(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, label=sense, debug=debug)
                     if method == Solver.NT:
-                        yield newton_s(model, x.val, εf=εf, εx=εx, limit=limit, sense=sense, debug=debug)
+                        yield newton_s(model, x.val, εf=εf, εx=εx, limit=limit, label=sense, debug=debug)
                 if (mode == Mode.MIN_MAX or mode == Mode.ALL) and f1_prev * f.jet[Mode.MIN_MAX.value] < 0.0:
-                    sense = Sense.DECREASING if f1_prev > f.jet[Mode.MIN_MAX.value] else Sense.INCREASING
+                    sense = Label.MAX if f1_prev > f.jet[Mode.MIN_MAX.value] else Label.MIN
                     if method == Solver.BI:
-                        yield bisect_s(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=sense, mode=Mode.MIN_MAX, debug=debug)
+                        yield bisect_s(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, label=sense, mode=Mode.MIN_MAX, debug=debug)
                     if method == Solver.NT:
-                        yield newton_s(model, x.val, εf=εf, εx=εx, limit=limit, sense=sense, mode=Mode.MIN_MAX, debug=debug)
+                        yield newton_s(model, x.val, εf=εf, εx=εx, limit=limit, label=sense, mode=Mode.MIN_MAX, debug=debug)
                 if (mode == Mode.INFLECT or mode == Mode.ALL) and f2_prev * f.jet[Mode.INFLECT.value] < 0.0:
-                    sense = Sense.DECREASING if f2_prev > f.jet[Mode.INFLECT.value] else Sense.INCREASING
+                    sense = Label.MAX if f2_prev > f.jet[Mode.INFLECT.value] else Label.MIN
                     if method == Solver.BI:
-                        yield bisect_s(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=sense, mode=Mode.INFLECT, debug=debug)
+                        yield bisect_s(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, label=sense, mode=Mode.INFLECT, debug=debug)
                     if method == Solver.NT:
-                        yield newton_s(model, x.val, εf=εf, εx=εx, limit=limit, sense=sense, mode=Mode.INFLECT, debug=debug)
+                        yield newton_s(model, x.val, εf=εf, εx=εx, limit=limit, label=sense, mode=Mode.INFLECT, debug=debug)
         x_prev = x.val
         f0_prev = f.val
         f1_prev = f.jet[Mode.MIN_MAX.value]
@@ -78,11 +78,11 @@ def _analyze_d(model, method, x0, x1, steps, εf, εx, limit, console, debug):
         if method != Solver.NA:
             if k > 0:
                 if f0_prev * f.val < 0.0:
-                    sense = Sense.DECREASING if f0_prev > f.val else Sense.INCREASING
+                    sense = Label.MAX if f0_prev > f.val else Label.MIN
                     if method == Solver.BI:
-                        yield bisect_d(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, sense=sense, debug=debug)
+                        yield bisect_d(model, x.val, x_prev, εf=εf, εx=εx, limit=limit, label=sense, debug=debug)
                     if method == Solver.NT:
-                        yield newton_d(model, x.val, εf=εf, εx=εx, limit=limit, sense=sense, debug=debug)
+                        yield newton_d(model, x.val, εf=εf, εx=εx, limit=limit, label=sense, debug=debug)
         x_prev = x.val
         f0_prev = f.val
 
@@ -125,7 +125,7 @@ def _plot_d(model, x_min, x_max, steps, y_min, y_max):
         ax1.plot(data[0], data[c], f'{colour[c - 1]}', linewidth=2 if c == 1 else 1, markersize=0, label=c-1)
     ax1.legend(loc='lower right')
 
-def bisect_s(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
+def bisect_s(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, label=Label.FLAT, mode=Mode.ROOT___, debug=False):
     a, b, c = Series.get(3, xa).var, Series.get(3, xb).var, Series.get(3)
     f_sign = model(a).jet[mode.value]
     fc = δx = i = 1
@@ -141,10 +141,10 @@ def bisect_s(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, m
         δx = b.val - a.val
         i += 1
         if debug:
-            print(Result(method=Solver.BI.name, count=i-1, sense=sense.value, mode=mode.name, x=c.val, f=fc, δx=δx), file=stderr)
-    return Result(method=Solver.BI.name, count=i-1, sense=sense.value, mode=mode.name, x=c.val, f=fc, δx=δx)
+            print(Result(method=Solver.BI.name, count=i-1, label=label.value, mode=mode.name, x=c.val, f=fc, δx=δx), file=stderr)
+    return Result(method=Solver.BI.name, count=i-1, label=label.value, mode=mode.name, x=c.val, f=fc, δx=δx)
 
-def bisect_d(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug=False):
+def bisect_d(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, label=Label.FLAT, debug=False):
     a, b, c = Dual(xa), Dual(xb), Dual(3)
     f_sign = model(Dual(xa)).val
     δx = fc = i = 1
@@ -160,10 +160,10 @@ def bisect_d(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, d
         δx = b.val - a.val
         i += 1
         if debug:
-            print(Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=fc, δx=δx, mode=Mode.ROOT___.name), file=stderr)
-    return Result(method=Solver.BI.name, count=i-1, sense=sense.value, x=c.val, f=fc, δx=δx, mode=Mode.ROOT___.name)
+            print(Result(method=Solver.BI.name, count=i-1, label=label.value, x=c.val, f=fc, δx=δx, mode=Mode.ROOT___.name), file=stderr)
+    return Result(method=Solver.BI.name, count=i-1, label=label.value, x=c.val, f=fc, δx=δx, mode=Mode.ROOT___.name)
 
-def newton_s(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=Mode.ROOT___, debug=False):
+def newton_s(model, x0, εf=1e-12, εx=1e-12, limit=101, label=Label.FLAT, mode=Mode.ROOT___, debug=False):
     x, f = Series.get(2 + mode.value, x0).var, [1.0, 0.0]
     δx = i = 1
     while i <= limit and (abs(f[0]) > εf or abs(δx) > εx):
@@ -172,10 +172,10 @@ def newton_s(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, mode=
         x += δx
         i += 1
         if debug:
-            print(Result(method=Solver.NT.name, count=i-1, sense=sense.value, mode=mode.name, x=x.val, f=f[0], δx=δx), file=stderr)
-    return Result(method=Solver.NT.name, count=i-1, sense=sense.value, mode=mode.name, x=x.val, f=f[0], δx=δx)
+            print(Result(method=Solver.NT.name, count=i-1, label=label.value, mode=mode.name, x=x.val, f=f[0], δx=δx), file=stderr)
+    return Result(method=Solver.NT.name, count=i-1, label=label.value, mode=mode.name, x=x.val, f=f[0], δx=δx)
 
-def newton_d(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug=False):
+def newton_d(model, x0, εf=1e-12, εx=1e-12, limit=101, label=Label.FLAT, debug=False):
     x, f = Dual(x0).var, Dual(1)
     δx = i = 1
     while i <= limit and (abs(f.val) > εf or abs(δx) > εx):
@@ -184,33 +184,32 @@ def newton_d(model, x0, εf=1e-12, εx=1e-12, limit=101, sense=Sense.FLAT, debug
         x += δx
         i += 1
         if debug:
-            print(Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=x.val, f=f.val, δx=δx, mode=Mode.ROOT___.name), file=stderr)
-    return Result(method=Solver.NT.name, count=i-1, sense=sense.value, x=x.val, f=f.val, δx=δx, mode=Mode.ROOT___.name)
+            print(Result(method=Solver.NT.name, count=i-1, label=label.value, x=x.val, f=f.val, δx=δx, mode=Mode.ROOT___.name), file=stderr)
+    return Result(method=Solver.NT.name, count=i-1, label=label.value, x=x.val, f=f.val, δx=δx, mode=Mode.ROOT___.name)
 
-def scan_s(model, x_min=-8.0, x_max=8.0, steps=1000, εf=1e-9, εx=1e-9, limit=101, newton=True, mode=Mode.ALL, console=True, debug=False):
+def scan_s(model, x_min=-2.0, x_max=2.0, steps=1000, εf=1e-9, εx=1e-9, limit=101, newton=True, mode=Mode.ALL, console=True, debug=False):
     for result in _analyze_s(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, mode, console, debug):
         if result.count < 101:
             print(result, file=stderr)
 
-def scan_d(model, x_min=-8.0, x_max=8.0, steps=1000, εf=1e-9, εx=1e-9, limit=101, newton=True, console=True, debug=False):
+def scan_d(model, x_min=-2.0, x_max=2.0, steps=1000, εf=1e-9, εx=1e-9, limit=101, newton=True, console=True, debug=False):
     for result in _analyze_d(model, Solver.NT if newton else Solver.BI, x_min, x_max, steps, εf, εx, limit, console, debug):
         if result.count < 101:
             print(result, file=stderr)
 
-
-def mplot_s(model, order=12, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
+def mplot_s(model, order=12, x_min=-2.0, x_max=2.0, steps=1000, y_min=-10.0, y_max=10.0):
     _plot_s(model, order, x_min, x_max, steps, y_min, y_max)
     pyplot.show()
 
-def mplot_d(model, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
+def mplot_d(model, x_min=-2.0, x_max=2.0, steps=1000, y_min=-10.0, y_max=10.0):
     _plot_d(model, x_min, x_max, steps, y_min, y_max)
     pyplot.show()
 
-def msave_s(filename, model, order=12, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
+def msave_s(filename, model, order=12, x_min=-2.0, x_max=2.0, steps=1000, y_min=-10.0, y_max=10.0):
     _plot_s(model, order, x_min, x_max, steps, y_min, y_max)
     pyplot.savefig(filename)
 
-def msave_d(filename, model, x_min=-8.0, x_max=8.0, steps=1000, y_min=-10.0, y_max=10.0):
+def msave_d(filename, model, x_min=-2.0, x_max=2.0, steps=1000, y_min=-10.0, y_max=10.0):
     _plot_d(model, x_min, x_max, steps, y_min, y_max)
     pyplot.savefig(filename)
 

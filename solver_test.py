@@ -5,7 +5,7 @@
 #  pytest --cov=ad --cov=plotters --cov-report html:cov_html ad_test.py solver_test.py -v
 
 from math import sqrt
-from plotters import Solver, Mode, Sense, bisect_s, newton_s, _analyze_s, bisect_d, newton_d, _analyze_d
+from plotters import Solver, Mode, Label, bisect_s, newton_s, _analyze_s, bisect_d, newton_d, _analyze_d
 import pytest
 
 εf = 1.0e-9
@@ -101,12 +101,12 @@ def test_analysis_cubic_series(solver):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 6  # 3 roots, 1 maximum, 1 minimum, 1 inflection
-    assert (results[0].mode == Mode.ROOT___.name) and (results[0].sense == Sense.INCREASING.value)
-    assert (results[1].mode == Mode.MIN_MAX.name) and (results[1].sense == Sense.DECREASING.value)
-    assert (results[2].mode == Mode.ROOT___.name) and (results[2].sense == Sense.DECREASING.value)
-    assert (results[3].mode == Mode.INFLECT.name) and (results[3].sense == Sense.INCREASING.value)
-    assert (results[4].mode == Mode.MIN_MAX.name) and (results[4].sense == Sense.INCREASING.value)
-    assert (results[5].mode == Mode.ROOT___.name) and (results[5].sense == Sense.INCREASING.value)
+    assert (results[0].mode == Mode.ROOT___.name) and (results[0].label == Label.MIN.value)
+    assert (results[1].mode == Mode.MIN_MAX.name) and (results[1].label == Label.MAX.value)
+    assert (results[2].mode == Mode.ROOT___.name) and (results[2].label == Label.MAX.value)
+    assert (results[3].mode == Mode.INFLECT.name) and (results[3].label == Label.MIN.value)
+    assert (results[4].mode == Mode.MIN_MAX.name) and (results[4].label == Label.MIN.value)
+    assert (results[5].mode == Mode.ROOT___.name) and (results[5].label == Label.MIN.value)
 
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cubic_dual(solver):
@@ -117,9 +117,9 @@ def test_analysis_cubic_dual(solver):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 3  # 3 roots
-    assert (results[0].mode == Mode.ROOT___.name) and (results[0].sense == Sense.INCREASING.value)
-    assert (results[1].mode == Mode.ROOT___.name) and (results[1].sense == Sense.DECREASING.value)
-    assert (results[2].mode == Mode.ROOT___.name) and (results[2].sense == Sense.INCREASING.value)
+    assert (results[0].mode == Mode.ROOT___.name) and (results[0].label == Label.MIN.value)
+    assert (results[1].mode == Mode.ROOT___.name) and (results[1].label == Label.MAX.value)
+    assert (results[2].mode == Mode.ROOT___.name) and (results[2].label == Label.MIN.value)
 
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cos_cubic_series(solver):
@@ -130,10 +130,10 @@ def test_analysis_cos_cubic_series(solver):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 4
-    assert (results[0].mode == Mode.MIN_MAX.name) and (results[0].sense == Sense.INCREASING.value)
-    assert (results[1].mode == Mode.INFLECT.name) and (results[1].sense == Sense.DECREASING.value)
-    assert (results[2].mode == Mode.MIN_MAX.name) and (results[2].sense == Sense.DECREASING.value)
-    assert (results[3].mode == Mode.ROOT___.name) and (results[3].sense == Sense.DECREASING.value)
+    assert (results[0].mode == Mode.MIN_MAX.name) and (results[0].label == Label.MIN.value)
+    assert (results[1].mode == Mode.INFLECT.name) and (results[1].label == Label.MAX.value)
+    assert (results[2].mode == Mode.MIN_MAX.name) and (results[2].label == Label.MAX.value)
+    assert (results[3].mode == Mode.ROOT___.name) and (results[3].label == Label.MAX.value)
 
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cos_cubic_dual(solver):
@@ -144,7 +144,7 @@ def test_analysis_cos_cubic_dual(solver):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 1
-    assert (results[0].mode == Mode.ROOT___.name) and (results[0].sense == Sense.DECREASING.value)
+    assert (results[0].mode == Mode.ROOT___.name) and (results[0].label == Label.MAX.value)
 
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_messy_series(solver):
@@ -155,12 +155,12 @@ def test_analysis_messy_series(solver):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 6
-    assert (results[0].mode == Mode.INFLECT.name) and (results[0].sense == Sense.DECREASING.value)
-    assert (results[1].mode == Mode.INFLECT.name) and (results[1].sense == Sense.INCREASING.value)
-    assert (results[2].mode == Mode.ROOT___.name) and (results[2].sense == Sense.DECREASING.value)
-    assert (results[3].mode == Mode.MIN_MAX.name) and (results[3].sense == Sense.INCREASING.value)
-    assert (results[4].mode == Mode.ROOT___.name) and (results[4].sense == Sense.INCREASING.value)
-    assert (results[5].mode == Mode.INFLECT.name) and (results[5].sense == Sense.DECREASING.value)
+    assert (results[0].mode == Mode.INFLECT.name) and (results[0].label == Label.MAX.value)
+    assert (results[1].mode == Mode.INFLECT.name) and (results[1].label == Label.MIN.value)
+    assert (results[2].mode == Mode.ROOT___.name) and (results[2].label == Label.MAX.value)
+    assert (results[3].mode == Mode.MIN_MAX.name) and (results[3].label == Label.MIN.value)
+    assert (results[4].mode == Mode.ROOT___.name) and (results[4].label == Label.MIN.value)
+    assert (results[5].mode == Mode.INFLECT.name) and (results[5].label == Label.MAX.value)
 
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_messy_dual(solver):
@@ -171,8 +171,8 @@ def test_analysis_messy_dual(solver):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 2
-    assert (results[0].mode == Mode.ROOT___.name) and (results[0].sense == Sense.DECREASING.value)
-    assert (results[1].mode == Mode.ROOT___.name) and (results[1].sense == Sense.INCREASING.value)
+    assert (results[0].mode == Mode.ROOT___.name) and (results[0].label == Label.MAX.value)
+    assert (results[1].mode == Mode.ROOT___.name) and (results[1].label == Label.MIN.value)
 
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_septic_series(solver):
@@ -183,24 +183,24 @@ def test_analysis_septic_series(solver):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 18  # 7 roots, 3 maxima, 3 minima, 5 inflections
-    assert (results[0].mode == Mode.ROOT___.name) and (results[0].sense == Sense.INCREASING.value)
-    assert (results[1].mode == Mode.MIN_MAX.name) and (results[1].sense == Sense.DECREASING.value)
-    assert (results[2].mode == Mode.INFLECT.name) and (results[2].sense == Sense.INCREASING.value)
-    assert (results[3].mode == Mode.ROOT___.name) and (results[3].sense == Sense.DECREASING.value)
-    assert (results[4].mode == Mode.MIN_MAX.name) and (results[4].sense == Sense.INCREASING.value)
-    assert (results[5].mode == Mode.INFLECT.name) and (results[5].sense == Sense.DECREASING.value)
-    assert (results[6].mode == Mode.ROOT___.name) and (results[6].sense == Sense.INCREASING.value)
-    assert (results[7].mode == Mode.MIN_MAX.name) and (results[7].sense == Sense.DECREASING.value)
-    assert (results[8].mode == Mode.INFLECT.name) and (results[8].sense == Sense.INCREASING.value)
-    assert (results[9].mode == Mode.ROOT___.name) and (results[9].sense == Sense.DECREASING.value)
-    assert (results[10].mode == Mode.MIN_MAX.name) and (results[10].sense == Sense.INCREASING.value)
-    assert (results[11].mode == Mode.ROOT___.name) and (results[11].sense == Sense.INCREASING.value)
-    assert (results[12].mode == Mode.INFLECT.name) and (results[12].sense == Sense.DECREASING.value)
-    assert (results[13].mode == Mode.MIN_MAX.name) and (results[13].sense == Sense.DECREASING.value)
-    assert (results[14].mode == Mode.ROOT___.name) and (results[14].sense == Sense.DECREASING.value)
-    assert (results[15].mode == Mode.INFLECT.name) and (results[15].sense == Sense.INCREASING.value)
-    assert (results[16].mode == Mode.MIN_MAX.name) and (results[16].sense == Sense.INCREASING.value)
-    assert (results[17].mode == Mode.ROOT___.name) and (results[17].sense == Sense.INCREASING.value)
+    assert (results[0].mode == Mode.ROOT___.name) and (results[0].label == Label.MIN.value)
+    assert (results[1].mode == Mode.MIN_MAX.name) and (results[1].label == Label.MAX.value)
+    assert (results[2].mode == Mode.INFLECT.name) and (results[2].label == Label.MIN.value)
+    assert (results[3].mode == Mode.ROOT___.name) and (results[3].label == Label.MAX.value)
+    assert (results[4].mode == Mode.MIN_MAX.name) and (results[4].label == Label.MIN.value)
+    assert (results[5].mode == Mode.INFLECT.name) and (results[5].label == Label.MAX.value)
+    assert (results[6].mode == Mode.ROOT___.name) and (results[6].label == Label.MIN.value)
+    assert (results[7].mode == Mode.MIN_MAX.name) and (results[7].label == Label.MAX.value)
+    assert (results[8].mode == Mode.INFLECT.name) and (results[8].label == Label.MIN.value)
+    assert (results[9].mode == Mode.ROOT___.name) and (results[9].label == Label.MAX.value)
+    assert (results[10].mode == Mode.MIN_MAX.name) and (results[10].label == Label.MIN.value)
+    assert (results[11].mode == Mode.ROOT___.name) and (results[11].label == Label.MIN.value)
+    assert (results[12].mode == Mode.INFLECT.name) and (results[12].label == Label.MAX.value)
+    assert (results[13].mode == Mode.MIN_MAX.name) and (results[13].label == Label.MAX.value)
+    assert (results[14].mode == Mode.ROOT___.name) and (results[14].label == Label.MAX.value)
+    assert (results[15].mode == Mode.INFLECT.name) and (results[15].label == Label.MIN.value)
+    assert (results[16].mode == Mode.MIN_MAX.name) and (results[16].label == Label.MIN.value)
+    assert (results[17].mode == Mode.ROOT___.name) and (results[17].label == Label.MIN.value)
 
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_septic_dual(solver):
@@ -211,10 +211,10 @@ def test_analysis_septic_dual(solver):
         if result.count < max_it:
             results.append(result)
     assert len(results) == 7  # 7 roots
-    assert (results[0].mode == Mode.ROOT___.name) and (results[0].sense == Sense.INCREASING.value)
-    assert (results[1].mode == Mode.ROOT___.name) and (results[1].sense == Sense.DECREASING.value)
-    assert (results[2].mode == Mode.ROOT___.name) and (results[2].sense == Sense.INCREASING.value)
-    assert (results[3].mode == Mode.ROOT___.name) and (results[3].sense == Sense.DECREASING.value)
-    assert (results[4].mode == Mode.ROOT___.name) and (results[4].sense == Sense.INCREASING.value)
-    assert (results[5].mode == Mode.ROOT___.name) and (results[5].sense == Sense.DECREASING.value)
-    assert (results[6].mode == Mode.ROOT___.name) and (results[6].sense == Sense.INCREASING.value)
+    assert (results[0].mode == Mode.ROOT___.name) and (results[0].label == Label.MIN.value)
+    assert (results[1].mode == Mode.ROOT___.name) and (results[1].label == Label.MAX.value)
+    assert (results[2].mode == Mode.ROOT___.name) and (results[2].label == Label.MIN.value)
+    assert (results[3].mode == Mode.ROOT___.name) and (results[3].label == Label.MAX.value)
+    assert (results[4].mode == Mode.ROOT___.name) and (results[4].label == Label.MIN.value)
+    assert (results[5].mode == Mode.ROOT___.name) and (results[5].label == Label.MAX.value)
+    assert (results[6].mode == Mode.ROOT___.name) and (results[6].label == Label.MIN.value)

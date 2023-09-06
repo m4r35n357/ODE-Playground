@@ -60,8 +60,8 @@ def _chain_(b, a, k, k0):
 def _fk_(df_du, u, k, scale=1.0):
     return scale * _chain_(df_du, u, k, 0)
 
-def _uk_(df_du, u, k, fk, scale=1.0):
-    return (fk - _chain_(df_du, u, k, 1) * scale) / df_du[0]
+def _uk_(df_du, u, k, f_k, scale=1.0):
+    return (f_k - _chain_(df_du, u, k, 1) * scale) / df_du[0]
 
 def t_abs(u, k):
     return - u[k] if u[0] < 0.0 else u[k]
