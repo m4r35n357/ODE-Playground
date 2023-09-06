@@ -215,32 +215,36 @@ class Series:
     def __truediv__(self, o):
         if isinstance(o, Series):
             assert o.n == self.n, f"Size mismatch - self: {self.n}, other: {o.n}"
-            assert abs(o.val) != 0.0, f"other.val = {o.val}"
+            assert o.val != 0.0, f"other.val = {o.val}"
             jet = tsm_jet(self.n)
             for k in self.index:
                 jet[k] = t_div(jet, self.jet, o.jet, k)
             return Series(jet)
         elif isinstance(o, (float, int)):
-            assert abs(o) != 0.0, f"other = {o}"
+            assert o != 0.0, f"other = {o}"
             return Series([term / o for term in self.jet])
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __rtruediv__(self, o):
-        assert self.val != 0.0, f"self.val = {self.val}"
-        j_1 = tsm_const(1.0, self.n)
-        jet = tsm_jet(self.n)
-        for k in self.index:
-            # noinspection PyTypeChecker
-            jet[k] = t_div(jet, j_1, self.jet, k) * o
-        return Series(jet)
+        if isinstance(o, Series):
+            assert o.n == self.n, f"Size mismatch - self: {self.n}, other: {o.n}"
+            assert self.val != 0.0, f"self.val = {self.val}"
+            jet = tsm_jet(self.n)
+            for k in self.index:
+                jet[k] = t_div(jet, o.jet, self.jet, k)
+            return Series(jet)
+        elif isinstance(o, (float, int)):
+            assert self.val != 0.0, f"self.val = {self.val}"
+            j_o = tsm_const(o, self.n)
+            jet = tsm_jet(self.n)
+            for k in self.index:
+                # noinspection PyTypeChecker
+                jet[k] = t_div(jet, j_o, self.jet, k)
+            return Series(jet)
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __pow__(self, o):
-        if isinstance(o, int):
-            i_pow = Series(self.jet)
-            for _ in range(abs(o) - 1):
-                i_pow = i_pow * self
-            return i_pow if o > 0 else (1.0 / i_pow if o < 0 else Series(tsm_jet(self.n, 1.0)))
-        elif isinstance(o, float):
+        if isinstance(o, (float, int)):
             assert self.val > 0.0, f"self.val = {self.val}"  # pragma: no mutate
             jet = tsm_jet(self.n)
             for k in self.index:
@@ -252,8 +256,13 @@ class Series:
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __rpow__(self, o):
-        assert o > 0.0, f"other = {o}"
-        return (self * log(o)).exp
+        if isinstance(o, (float, int)):
+            assert o > 0.0, f"other = {o}"
+            return (log(o) * self).exp
+        elif isinstance(o, Series):
+            assert o.val > 0.0, f"other = {o}"
+            return (o.ln * self).exp
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def _exp_log_sqrt(self, f):
         a = tsm_jet(self.n)
@@ -417,24 +426,24 @@ class Dual:
 
     def __truediv__(self, o):
         if isinstance(o, Dual):
-            assert abs(o.val) != 0.0, f"other.val = {o.val}"
+            assert o.val != 0.0, f"other.val = {o.val}"
             return Dual(self.val / o.val, (self.dot * o.val - self.val * o.dot) / o.val**2)
         elif isinstance(o, (float, int)):
-            assert abs(o) != 0.0, f"other = {o}"
+            assert o != 0.0, f"other = {o}"
             return Dual(self.val / o, self.dot / o)
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __rtruediv__(self, o):
-        assert self.val != 0.0, f"self.val = {self.val}"
-        return Dual(o / self.val, - self.dot * o / self.val**2)
+        if isinstance(o, Dual):
+            assert self.val != 0.0, f"self.val = {self.val}"
+            return Dual(o.val / self.val, (o.dot * self.val - o.val * self.dot) / self.val**2)
+        elif isinstance(o, (float, int)):
+            assert self.val != 0.0, f"self.val = {self.val}"
+            return Dual(o / self.val, - self.dot * o / self.val**2)
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __pow__(self, o):
-        if isinstance(o, int):
-            i_pow = Dual(self.val, self.dot)
-            for _ in range(abs(o) - 1):
-                i_pow = i_pow * self
-            return i_pow if o > 0 else (1.0 / i_pow if o < 0 else Dual(1.0, 0.0))
-        elif isinstance(o, float):
+        if isinstance(o, (float, int)):
             assert self.val > 0.0, f"self.val = {self.val}"  # pragma: no mutate
             pwr = self.val**o
             return Dual(pwr, self.dot * o * pwr / self.val)
@@ -443,8 +452,13 @@ class Dual:
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __rpow__(self, o):
-        assert o > 0.0, f"other = {o}"
-        return (self * log(o)).exp
+        if isinstance(o, (float, int)):
+            assert o > 0.0, f"other = {o}"
+            return (log(o) * self).exp
+        elif isinstance(o, Dual):
+            assert o.val > 0.0, f"other = {o}"
+            return (o.ln * self).exp
+        raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     @property
     def exp(self):

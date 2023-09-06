@@ -344,16 +344,10 @@ def test_divide_domain_number_object_bad(number):
 
 @mark.parametrize('number', [i5, f4])
 def test_divide_number_object(number):
-    derivative = number / f3
-    dual = number / d_3
-    assert dual.val == approx(derivative)
-    assert dual.dot == approx(- derivative / f3)
-    derivative = number / f3
-    series = ~ (number / s_3)
-    assert series.val == approx(derivative)
-    for k in range(1, order):
-        derivative *= - k * number / f3
-        assert series.jet[k] == approx(derivative)
+    dual = number / data1_d
+    compare_dual(dual * data1_d, Dual(number))
+    series = number / data1_s
+    compare_series(series * data1_s, Series.get(order, number))
 
 @mark.parametrize('series', [data1_s, data2_s])
 def test_divide_number_object_series(series):
@@ -382,26 +376,6 @@ def test_pow_object_neg1_number(number):
     for k in range(1, order):
         derivative *= - k / s_4.val
         assert series.jet[k] == approx(derivative)
-
-@mark.domain
-@mark.parametrize('number', [1, δ, 0, zero, - zero, - δ, - 1])
-def test_pow_domain_object_int_good(number):
-    _ = Dual(number).var**2
-    _ = Series.get(order, number).var**2
-
-@mark.domain
-@mark.parametrize('number', [1, δ, - δ, - 1])
-def test_pow_domain_object_int_neg_good(number):
-    _ = Dual(number).var**-2
-    _ = Series.get(order, number).var**-2
-
-@mark.domain
-@mark.parametrize('number', [0, zero, - zero])
-def test_pow_domain_object_int_neg_bad(number):
-    with raises(AssertionError):
-        _ = Dual(number).var**-2
-    with raises(AssertionError):
-        _ = Series.get(order, number).var**-2
 
 @mark.domain
 @mark.parametrize('number', [1, δ])

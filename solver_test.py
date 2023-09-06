@@ -14,7 +14,7 @@ max_it = 101
 n_points = 1000
 plot_min, plot_max = - 8.0, 8.0
 
-model = lambda x: x**3 - 4 * x**2 + 3 * x - 2
+model = lambda x: x * x * x - 4 * x * x + 3 * x - 2
 
 def test_bail():
     max_iterations = 1
@@ -95,7 +95,7 @@ def test_analysis_na_dual(capsys):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cubic_series(solver):
     results = []
-    for result in _analyze_s(model=lambda a: a**3 + 3 * a**2 - 3,
+    for result in _analyze_s(model=lambda a: a * a * a + 3 * a * a - 3,
                              method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                              limit=max_it, mode=Mode.ALL, console=True, debug=False):
         if result.count < max_it:
@@ -111,7 +111,7 @@ def test_analysis_cubic_series(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cubic_dual(solver):
     results = []
-    for result in _analyze_d(model=lambda a: a**3 + 3 * a**2 - 3,
+    for result in _analyze_d(model=lambda a: a * a * a + 3 * a * a - 3,
                              method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                              limit=max_it, console=True, debug=False):
         if result.count < max_it:
@@ -124,7 +124,7 @@ def test_analysis_cubic_dual(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cos_cubic_series(solver):
     results = []
-    for result in _analyze_s(model=lambda a: a.cos - a**3,
+    for result in _analyze_s(model=lambda a: a.cos - a * a * a,
                              method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                              limit=max_it, mode=Mode.ALL, console=True, debug=False):
         if result.count < max_it:
@@ -138,7 +138,7 @@ def test_analysis_cos_cubic_series(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_cos_cubic_dual(solver):
     results = []
-    for result in _analyze_d(model=lambda a: a.cos - a**3,
+    for result in _analyze_d(model=lambda a: a.cos - a * a * a,
                              method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                              limit=max_it, console=True, debug=False):
         if result.count < max_it:
@@ -149,7 +149,7 @@ def test_analysis_cos_cubic_dual(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_messy_series(solver):
     results = []
-    for result in _analyze_s(model=lambda a: (a - 1)**2 / (a.cosh + 1).ln - 1,
+    for result in _analyze_s(model=lambda a: (a - 1) * (a - 1) / (a.cosh + 1).ln - 1,
                              method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                              limit=max_it, mode=Mode.ALL, console=True, debug=False):
         if result.count < max_it:
@@ -165,7 +165,7 @@ def test_analysis_messy_series(solver):
 @pytest.mark.parametrize('solver', [Solver.BI, Solver.NT])
 def test_analysis_messy_dual(solver):
     results = []
-    for result in _analyze_d(model=lambda a: (a - 1)**2 / (a.cosh + 1).ln - 1,
+    for result in _analyze_d(model=lambda a: (a - 1) * (a - 1) / (a.cosh + 1).ln - 1,
                              method=solver, x0=plot_min, x1=plot_max, steps=n_points, εf=εf, εx=εx,
                              limit=max_it, console=True, debug=False):
         if result.count < max_it:
