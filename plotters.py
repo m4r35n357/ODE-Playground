@@ -215,7 +215,7 @@ def msave_d(filename, model, x_min=-2.0, x_max=2.0, steps=1000, y_min=-10.0, y_m
 
 
 if __name__ == "__main__":  # hard-coded example
-    function = lambda a: (a - 1) ** 2 / (a.cosh + 1).ln - 1
+    function = lambda a: (a - 1)**2 / (a.cosh + 1).ln - 1
     print(f'Root Scan (Dual)')
     scan_d(function)
     mplot_d(function)

@@ -58,7 +58,7 @@ def _chain_(b, a, k, k0):
     return fsum(b[j] * (k - j) * a[k - j] for j in range(k0, k)) / k
 
 def _fk_(df_du, u, k, scale=1.0):
-    return scale * _chain_(df_du, u, k, 0)
+    return _chain_(df_du, u, k, 0) * scale
 
 def _uk_(df_du, u, k, f_k, scale=1.0):
     return (f_k - _chain_(df_du, u, k, 1) * scale) / df_du[0]
@@ -418,7 +418,7 @@ class Dual:
     def __truediv__(self, o):
         if isinstance(o, Dual):
             assert abs(o.val) != 0.0, f"other.val = {o.val}"
-            return Dual(self.val / o.val, (self.dot * o.val - self.val * o.dot) / o.val ** 2)
+            return Dual(self.val / o.val, (self.dot * o.val - self.val * o.dot) / o.val**2)
         elif isinstance(o, (float, int)):
             assert abs(o) != 0.0, f"other = {o}"
             return Dual(self.val / o, self.dot / o)
@@ -426,7 +426,7 @@ class Dual:
 
     def __rtruediv__(self, o):
         assert self.val != 0.0, f"self.val = {self.val}"
-        return Dual(o / self.val, - self.dot * o / self.val ** 2)
+        return Dual(o / self.val, - self.dot * o / self.val**2)
 
     def __pow__(self, o):
         if isinstance(o, int):
@@ -436,7 +436,7 @@ class Dual:
             return i_pow if o > 0 else (1.0 / i_pow if o < 0 else Dual(1.0, 0.0))
         elif isinstance(o, float):
             assert self.val > 0.0, f"self.val = {self.val}"  # pragma: no mutate
-            pwr = self.val ** o
+            pwr = self.val**o
             return Dual(pwr, self.dot * o * pwr / self.val)
         elif isinstance(o, Dual):
             return (self.ln * o).exp
@@ -467,7 +467,7 @@ class Dual:
     @property
     def tan(self):
         t = tan(self.val)
-        return Dual(t, self.dot * (1.0 + t ** 2))
+        return Dual(t, self.dot * (1.0 + t**2))
 
     @property
     def sinh(self):
@@ -480,7 +480,7 @@ class Dual:
     @property
     def tanh(self):
         t = tanh(self.val)
-        return Dual(t, self.dot * (1.0 - t ** 2))
+        return Dual(t, self.dot * (1.0 - t**2))
 
     @property
     def asin(self):
