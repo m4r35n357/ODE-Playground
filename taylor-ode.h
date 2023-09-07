@@ -27,7 +27,7 @@ do { \
 do { \
     if(!(x)) { \
         fprintf(stderr, \
-            "\x1B[1;31mFAILED\x1B[0;37m \x1B[1;37m%s\x1B[0;37m %s() \x1B[1;37m%s\x1B[0;37m:\x1B[1;37m%i\x1B[0;37m\n", \
+            "\x1B[1;31mFAIL\x1B[0;37m \x1B[1;37m%s\x1B[0;37m %s \x1B[1;37m%s\x1B[0;37m:\x1B[1;37m%i\x1B[0;37m\n", \
             #x, __func__, __FILE__, __LINE__); \
         exit(1); \
     } \

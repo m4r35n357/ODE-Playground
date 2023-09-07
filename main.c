@@ -13,7 +13,7 @@ int main (int argc, char **argv) {
     int display_precision = (int)strtol(argv[1], NULL, BASE); CHECK(display_precision >= 2);
     int mpfr_precision_bits = (int)strtol(argv[2], NULL, BASE); CHECK(mpfr_precision_bits >= 53);
     mpfr_set_default_prec((mpfr_prec_t)mpfr_precision_bits);
-    fprintf(stderr, " MPFR default precision: %lu bits\n", mpfr_get_default_prec());
+    fprintf(stderr, " MPFR default precision: \x1B[1;37m%lu\x1B[0;37m bits\n", mpfr_get_default_prec());
     int order = (int)strtol(argv[3], NULL, BASE); CHECK(order >= 2);
 
     real step_size, x0, y0, z0;
