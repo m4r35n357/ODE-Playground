@@ -168,13 +168,13 @@ class Series:
         return ''.join(f'{term:+.{Context.places}e} ' for term in self.jet)
 
     def __abs__(self):
-        return - self if self.val < 0.0 else + self
+        return (-self) if self.val < 0.0 else (+self)
 
     def __pos__(self):
         return Series(self.jet[:])
 
     def __neg__(self):
-        return Series([- term for term in self.jet])
+        return Series([-term for term in self.jet])
 
     def __invert__(self):  # override - returns a derivative Series
         derivatives = tsm_jet(self.n, self.val)
@@ -196,10 +196,10 @@ class Series:
         return self + o
 
     def __sub__(self, o):
-        return self + (- o)
+        return self + (-o)
 
     def __rsub__(self, o):
-        return - self + o
+        return o + (-self)
 
     def __mul__(self, o):
         if isinstance(o, Series):
@@ -390,13 +390,13 @@ class Dual:
         return f'{self.val:+.{Context.places}e} {self.dot:+.{Context.places}e}'
 
     def __abs__(self):
-        return - self if self.val < 0.0 else + self
+        return (-self) if self.val < 0.0 else (+self)
 
     def __pos__(self):
         return Dual(self.val, self.dot)
 
     def __neg__(self):
-        return Dual(- self.val, - self.dot)
+        return Dual(-self.val, -self.dot)
 
     def __add__(self, o):
         if isinstance(o, Dual):
@@ -409,10 +409,10 @@ class Dual:
         return self + o
 
     def __sub__(self, o):
-        return self + (- o)
+        return self + (-o)
 
     def __rsub__(self, o):
-        return - self + o
+        return o + (-self)
 
     def __mul__(self, o):
         if isinstance(o, Dual):
