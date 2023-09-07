@@ -8,19 +8,15 @@
 from collections import namedtuple
 from math import exp, factorial
 from pytest import mark, raises, approx
-from ad import Components, tsm_jet, horner, tsm_const, t_abs, Series, Dual
+from ad import Components, tsm_jet, horner, t_abs, Series, Dual
 
 order = 12
 # noinspection NonAsciiCharacters
 ε = 1.0e-12  # small error
 # noinspection NonAsciiCharacters
 δ = 1.0e-6  # small amount
-zero = 0.0
-f1 = 1.0
-f2 = 2.0
 f3 = 3.0
 f4 = 4.0
-f05 = 0.5
 i5 = 5
 
 d_4, s_4 = Dual(f4).var, Series.get(order, f4).var
@@ -70,7 +66,7 @@ def test_t_jet():
     for k in range(order):
         assert jet[k] == 0.0
 
-@mark.parametrize('number', [zero, -zero, f05, -f05, i5, -i5])
+@mark.parametrize('number', [f3, -f3, i5, -i5])
 def test_t_const(number):
     jet = tsm_jet(order, number)
     assert len(jet) == order
@@ -92,7 +88,7 @@ def test_t_abs_positive(number):
     assert t_abs(delta, 0) > 0.0
     assert t_abs(delta, 0) == number
 
-@mark.parametrize('number', [zero, -zero])
+@mark.parametrize('number', [0, -0, 0.0, -0.0])
 def test_t_abs_zero(number):
     delta = [number] + [0.0] * (order - 1)
     assert t_abs(delta, 0) == 0.0
@@ -150,7 +146,7 @@ def test_get_default():
         assert isinstance(term, float)
         assert term == approx(0.0)
 
-@mark.parametrize('number', [zero, -zero, f05, -f05, i5, -i5])
+@mark.parametrize('number', [f3, -f3, i5, -i5])
 def test_get(number):
     dual = Dual(number)
     series = Series.get(order, number)
@@ -290,7 +286,7 @@ def test_divide_domain_object_good(number):
     _ = data1_s / Series.get(order, number).var
 
 @mark.domain
-@mark.parametrize('number', [0, -0, 0.0, -0.0, zero, -zero])
+@mark.parametrize('number', [0, -0, 0.0, -0.0])
 def test_divide_domain_object_bad(number):
     with raises(AssertionError):
         _ = data1_d / Dual(number).var
@@ -312,7 +308,7 @@ def test_divide_domain_object_number_good(number):
     _ = s_4 / number
 
 @mark.domain
-@mark.parametrize('number', [zero, -zero, 0, -0, 0.0, -0.0])
+@mark.parametrize('number', [0, -0, 0.0, -0.0])
 def test_divide_domain_object_number_bad(number):
     with raises(AssertionError):
         _ = d_3 / number
@@ -335,7 +331,7 @@ def test_divide_domain_number_object_good(number):
     _ = 1.0 / Series.get(order, number).var
 
 @mark.domain
-@mark.parametrize('number', [0, -0, 0.0, -0.0, zero, -zero])
+@mark.parametrize('number', [0, -0, 0.0, -0.0])
 def test_divide_domain_number_object_bad(number):
     with raises(AssertionError):
         _ = 1.0 / Dual(number).var
@@ -388,7 +384,7 @@ def test_pow_domain_object_good(number):
     _ = Series.get(order, number).var**-2.0
 
 @mark.domain
-@mark.parametrize('number', [0, 0.0, zero, -0, -0.0, -zero, -δ, -1])
+@mark.parametrize('number', [0, -0, 0.0, -0.0, -δ, -1])
 def test_pow_domain_object_bad(number):
     with raises(AssertionError):
         _ = Dual(number).var**data1_d
@@ -410,12 +406,12 @@ def test_pow_object_object():
     assert len(series.jet) == order
     assert series.val == approx(f3**f4)
 
-@mark.parametrize('number', [0, zero, -zero])
+@mark.parametrize('number', [0, -0, 0.0, -0.0])
 def test_pow_object_zero_dual(number):
     compare_dual(data1_d**number, D1)
     compare_dual(data2_d**number, D1)
 
-@mark.parametrize('number', [0, zero, -zero])
+@mark.parametrize('number', [0, -0, 0.0, -0.0])
 def test_pow_object_zero_series(number):
     compare_series(data1_s**number, S1)
     compare_series(data2_s**number, S1)
@@ -442,7 +438,7 @@ def test_pow_domain_number_object_good(number):
     _ = number**data1_s
 
 @mark.domain
-@mark.parametrize('number', [-δ, 0, -0, 0.0, -0.0, zero, -zero])
+@mark.parametrize('number', [-δ, 0, -0, 0.0, -0.0])
 def test_pow_domain_number_object_bad(number):
     with raises(AssertionError):
         _ = number**data1_d
@@ -474,7 +470,7 @@ def test_ln_domain_good(number):
     _ = Series.get(order, number).var.ln
 
 @mark.domain
-@mark.parametrize('number', [0, 0.0, zero, -0, -0.0, -zero, -δ, -1, -1.0])
+@mark.parametrize('number', [0, 0.0, -0, -0.0, -δ, -1, -1.0])
 def test_ln_domain_bad(number):
     with raises(AssertionError):
         _ = Dual(number).var.ln
@@ -586,7 +582,7 @@ def test_acosh_domain_good(number):
     _ = Series.get(order, number).var.acosh
 
 @mark.domain
-@mark.parametrize('number', [zero, -zero, 1.0 - δ, 1.0, 1])
+@mark.parametrize('number', [0, -0, 0.0, -0.0, 1.0 - δ, 1.0, 1])
 def test_acosh_domain_bad(number):
     with raises(AssertionError):
         _ = Dual(number).var.acosh
@@ -611,7 +607,7 @@ def test_sqrt_domain_good(number):
     _ = Series.get(order, number).var.sqrt
 
 @mark.domain
-@mark.parametrize('number', [- δ, -1, -1.0, -zero, -0.0, zero, 0.0])
+@mark.parametrize('number', [- δ, -1, -1.0, 0, -0, 0.0, -0.0])
 def test_sqrt_domain_bad(number):
     with raises(AssertionError):
         _ = Series.get(order, number).var.sqrt
