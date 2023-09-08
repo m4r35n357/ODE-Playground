@@ -18,13 +18,14 @@ set $choice
 type=$1
 
 plot () {
-gnuplot -p << EOF
+gnuplot << EOF
 set key left
-set terminal wxt size 600,450 background rgb "grey85"
+set terminal qt size 600,450
 set yrange [*:$5]
 set xlabel "$3"
 set ylabel "$4 potential"
 plot 0.0 title 'zero ref.', '$user_data' using $1:$2 title "$4" with lines
+pause mouse close
 EOF
 }
 

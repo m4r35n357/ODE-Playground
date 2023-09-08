@@ -25,24 +25,26 @@ shift
 control=$*
 
 plot_analysis () {
-gnuplot -p << EOF
+gnuplot << EOF
 set key left
-set terminal wxt size 600,450 background rgb "grey85"
+set terminal qt size 600,450
 set xrange $3
 set yrange $4
 set xlabel '$5'
 set ylabel '$6'
 plot '$user_data' using $1:$2 with linespoints pt 7 ps 0
+pause mouse close
 EOF
 }
 
 plot_hamiltonian_error () {
-gnuplot -p << EOF
+gnuplot << EOF
 set key left
-set terminal wxt size 600,450 background rgb "grey85"
+set terminal qt size 600,450
 set xlabel 'time'
 set ylabel 'approximate places'
 plot '$user_data' using $1:$2 with linespoints pt 7 ps 0
+pause mouse close
 EOF
 }
 

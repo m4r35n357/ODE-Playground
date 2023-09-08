@@ -57,8 +57,8 @@ xmargin=50
 pwidth=$((steps + 2 * xmargin))
 
 plot () {
-/usr/bin/gnuplot -p << EOF
-set terminal $5 size '$pwidth',640 background rgb "grey85"
+/usr/bin/gnuplot << EOF
+set terminal $5 size '$pwidth',640
 set lmargin at screen '$xmargin.0'/'$pwidth'
 set rmargin at screen '$((xmargin + steps)).0'/'$pwidth'
 set grid back
@@ -68,6 +68,7 @@ set xrange [$start:$end]
 set format x "%.6g"
 plot 1/0 lt rgb '$2' lw 3 t '$1 maxima', '${filtered}$1' lt rgb '$2' notitle w dots,\
      1/0 lt rgb '$4' lw 3 t '$1 minima', '${filtered}$3' lt rgb '$4' notitle w dots
+if (GNUTERM eq 'qt') pause mouse close
 EOF
 }
 
@@ -76,6 +77,6 @@ plot Y '#008000' y '#404000' png >${tmpdir}/Y.png &
 plot Z '#800000' z '#400040' png >${tmpdir}/Z.png &
 wait
 
-plot X '#000080' x '#004040' wxt &
-plot Y '#008000' y '#404000' wxt &
-plot Z '#800000' z '#400040' wxt &
+plot X '#000080' x '#004040' qt &
+plot Y '#008000' y '#404000' qt &
+plot Z '#800000' z '#400040' qt &

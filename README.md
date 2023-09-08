@@ -41,7 +41,7 @@ All scripts are in _Posix_ shell syntax.
 
 ### Requirements - Debian/Ubuntu packages
 ```
-sudo apt install bc git build-essential gnuplot-x11 lcov freeglut3-dev glew-utils libglew-dev
+sudo apt install bc git build-essential gnuplot-qt lcov freeglut3-dev glew-utils libglew-dev
 ```
 Optional:
 ```
