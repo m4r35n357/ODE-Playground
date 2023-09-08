@@ -103,7 +103,7 @@ The differences can be plotted for easy visual comparison.
 
 ### Requirements - Debian/Ubuntu packages
 ```
-sudo apt install bc git build-essential libmpc-dev libfreetype6-dev gnuplot-x11 lcov
+sudo apt install bc git build-essential libmpc-dev libfreetype6-dev gnuplot-qt lcov
 ```
 Download:
 ```
@@ -215,22 +215,26 @@ Parameter | Meaning
 ```
 ./tsm-thomas-dbg 6 113 10 0.1 30000 1 0 0 .185 >/tmp/$USER/data
 
- gnuplot -p << EOF
+ gnuplot << EOF
 set xyplane 0
 set view 54.73561,135
 set xlabel 'X'
 set ylabel 'Y'
 set zlabel 'Z'
 splot '/tmp/$USER/data' with lines
+pause mouse close
+print "Done"
 EOF
 ```
 ##### Run & plot (2D gnuplot graph):
 ```
 ./tsm-lorenz-dbg 6 113 10 .01 10000 -15.8 -17.48 35.64 10 28 8 3 >/tmp/$USER/data
 
- gnuplot -p << EOF
+ gnuplot << EOF
 set terminal wxt size 1200,900
 plot '/tmp/$USER/data' using 4:1 with lines, '/tmp/$USER/data' using 4:2 with lines, '/tmp/$USER/data' using 4:3 with lines
+pause mouse close
+print "Done"
 EOF
 ```
 It should be possible to send output directly to gnuplot via a pipe, but many versions segfault when reading stdin so I now specify a temporary file instead.
@@ -335,9 +339,11 @@ sys 2.41
 ```
 If you need to re-plot after closing gnuplot, either use the "nosim" argument, or:
 ```
- gnuplot -p << EOF                                                             
+ gnuplot << EOF                                                             
 set key horizontal left
 plot '/tmp/$USER/dataA' using 4:1 t 'xA' with lines lc black, '' u 4:2 t 'yA' w l lc black, '' u 4:3 t 'zA' w l lc black, '/tmp/$USER/dataB' using 4:1 t 'xB' with lines, '' u 4:2 t 'yB' w l, '' u 4:3 t 'zB' w l
+pause mouse close
+print "Done"
 EOF
 ```
 
@@ -370,7 +376,7 @@ Octuple precision can be clean up to ~173 time units for Lorenz:
 
 To plot clean simulation time and CPU vs. order:
 ```
- gnuplot -p << EOF
+ gnuplot << EOF
 set key left
 set ytics nomirror
 set y2tics
@@ -378,5 +384,7 @@ set xlabel 'Taylor Series Order'
 set ylabel 'CNS Time, model units'
 set y2label 'CPU Time, seconds'
 plot '/tmp/$USER/data' using 1:2 axes x1y1 title 'CNS' with boxes, '/tmp/$USER/data' using 1:3 axes x1y2 title 'CPU' with boxes
+pause mouse close
+print "Done"
 EOF
 ```
