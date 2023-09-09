@@ -45,13 +45,13 @@ splot '$tmp_valid' with lines
 EOF
 }
 
-p=$(echo "scale=9; $start / 1;" | /usr/bin/bc)
+p=$(echo "scale=9; $start / 1.0;" | /usr/bin/bc)
 count=$steps
 while [ $count -ge 0 ]
 do
     percent=$(((steps - count) / 10))
     eval $command 2>/dev/null | /usr/bin/tee $tmp_raw | /usr/bin/tail -n $samples >$tmp_valid
-    snapshot $count $steps >$snaps/snap$p.png &
+    snapshot $count $steps >$snaps/snap_$p.png &
     if [ $(/usr/bin/wc --lines <$tmp_raw) -eq $datalines ]
     then
         echo -n "\r\033[1;37m $percent\033[0;37m%  \033[0;32mLatest value\033[0;37m $p"
