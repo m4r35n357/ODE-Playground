@@ -20,7 +20,7 @@ analysis=$2
 time=$3
 
 plot () {
-gnuplot << EOF
+/usr/bin/gnuplot << EOF
 set key left
 set terminal qt size 600,450
 set yrange [24:0]
@@ -29,7 +29,7 @@ set ylabel 'approximate places'
 plot '$user_data' using $1:5 title 'v4' with lines, '' u $1:6 t 'r' w l, '' u $1:7 t 'theta' w l
 pause mouse close
 EOF
-gnuplot << EOF
+/usr/bin/gnuplot << EOF
 set key left
 set terminal qt size 600,450
 set xlabel "$2"

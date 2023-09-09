@@ -25,7 +25,7 @@ shift
 control=$*
 
 plot_analysis () {
-gnuplot << EOF
+/usr/bin/gnuplot << EOF
 set key left
 set terminal qt size 600,450
 set xrange $3
@@ -38,7 +38,7 @@ EOF
 }
 
 plot_hamiltonian_error () {
-gnuplot << EOF
+/usr/bin/gnuplot << EOF
 set key left
 set terminal qt size 600,450
 set xlabel 'time'

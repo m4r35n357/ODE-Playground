@@ -23,31 +23,48 @@ for tag in X x Y y Z z
 do
     >${filtered}$tag
 done
+snaps=$tmpdir/snapshots
+[ ! -d $snaps ] && mkdir -p $snaps
+rm -f $snaps/*.png
 
 filter () {  # $1 is the turning point tag, $2 is the column containing its data
     data='[^ ][^ ]*'
-    /bin/grep $1 $tmp_valid | /bin/sed "s/\($data\) \($data\) \($data\) .*/$p \\$2/" >>${filtered}$1 &
+    /bin/grep $1 $tmp_valid | /bin/sed "s/\($data\) \($data\) \($data\) .*/$p \\$2/" >>${filtered}$1
 }
 
-p=$start
+snapshot () {
+/usr/bin/gnuplot << EOF
+set terminal pngcairo size 1024,768
+set title '$args'
+set xyplane 0
+set view 54.73561,$(echo "scale=6; 360 * $1 / $2;" | /usr/bin/bc -l)
+set xlabel 'X'
+set ylabel 'Y'
+set zlabel 'Z'
+splot '$tmp_valid' with lines
+EOF
+}
+
+p=$(echo "scale=9; $start / 1;" | /usr/bin/bc)
 count=$steps
 while [ $count -ge 0 ]
 do
     percent=$(((steps - count) / 10))
     eval $command 2>/dev/null | /usr/bin/tee $tmp_raw | /usr/bin/tail -n $samples >$tmp_valid
+    snapshot $count $steps >$snaps/snap$p.png &
     if [ $(/usr/bin/wc --lines <$tmp_raw) -eq $datalines ]
     then
         echo -n "\r\033[1;37m $percent\033[0;37m%  \033[0;32mLatest value\033[0;37m $p"
-        filter 'X' 1
-        filter 'x' 1
-        filter 'Y' 2
-        filter 'y' 2
-        filter 'Z' 3
-        filter 'z' 3
-        wait
+        filter 'X' 1 &
+        filter 'x' 1 &
+        filter 'Y' 2 &
+        filter 'y' 2 &
+        filter 'Z' 3 &
+        filter 'z' 3 &
     else
         echo -n "\r\033[1;37m $percent\033[0;37m%  \033[1;31mLatest value\033[0;37m $p"
     fi
+    wait
     p=$(echo "$p + $increment;" | /usr/bin/bc)
     count=$((count - 1))
 done

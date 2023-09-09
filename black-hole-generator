@@ -18,7 +18,7 @@ set $choice
 type=$1
 
 plot () {
-gnuplot << EOF
+/usr/bin/gnuplot << EOF
 set key left
 set terminal qt size 600,450
 set yrange [*:$5]
