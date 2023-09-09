@@ -46,10 +46,10 @@ case $model in
                 '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
-            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Model":RO \
+            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho":RO --field="beta(n)" --field="beta(d)" \
-            --  '0.0' '50.0' '10000!20000!50000!100000' './tsm-lorenz-std' \
+            --  '0.0' '50.0' '10000!20000!50000!100000' 'no-snaps!snaps' './tsm-lorenz-std' \
                 '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '-15.8' '-18.48' '35.64' '10' '$p' '8' '3') ;;
     esac ;;
@@ -79,10 +79,10 @@ case $model in
                 '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
-            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Model":RO \
+            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c":RO \
-            --  '0.0' '50.0' '10000!20000!50000!100000' './tsm-rossler-std' \
+            --  '0.0' '50.0' '10000!20000!50000!100000' 'no-snaps!snaps' './tsm-rossler-std' \
                 '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '0.0' '-6.78' '0.02' '.2' '.2' '$p') ;;
     esac ;;
@@ -112,10 +112,10 @@ case $model in
                 '6!0..36!3' '_' '.1!0.001..0.1!0.001!3' '16000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '0.185') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
-            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Model":RO \
+            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="b":RO \
-            --  '0.1' '0.23' '10000!20000!50000!100000' './tsm-thomas-std' \
+            --  '0.1' '0.23' '10000!20000!50000!100000' 'no-snaps!snaps' './tsm-thomas-std' \
                 '6!0..36!3' '4!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '$p') ;;
     esac ;;
@@ -145,10 +145,10 @@ case $model in
                 '6!0..36!3' '_' '0.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
-            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Model":RO \
+            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha":RO --field="gamma" \
-            --  '0.1' '0.35' '10000!20000!50000!100000' './tsm-rf-std' \
+            --  '0.1' '0.35' '10000!20000!50000!100000' 'no-snaps!snaps' './tsm-rf-std' \
                 '6!0..36!3' '4!4..32!1' '0.01!0.001..0.1!0.001!3' '50000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '$p' '.1') ;;
     esac ;;
@@ -178,10 +178,10 @@ case $model in
                 '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '1.4') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
-            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Model":RO \
+            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a":RO \
-            --  '1' '4' '10000!20000!50000!100000' './tsm-halvorsen-std' \
+            --  '1' '4' '10000!20000!50000!100000' 'no-snaps!snaps' './tsm-halvorsen-std' \
                 '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '$p') ;;
     esac ;;
@@ -211,10 +211,10 @@ case $model in
                 '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.1' '0.1' '1.0') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
-            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Model":RO \
+            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a":RO \
-            --  '0.0' '1.0' '10000!20000!50000!100000' './tsm-wimol-banlue-std' \
+            --  '0.0' '1.0' '10000!20000!50000!100000' 'no-snaps!snaps' './tsm-wimol-banlue-std' \
                 '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.1' '0.1' '$p') ;;
     esac ;;
@@ -244,10 +244,10 @@ case $model in
                 '6!0..36!3' '_' '.001!0.001..0.1!0.001!3' '25000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '2.5') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Yu-Wang" --form --separator=" " --align=right \
-            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Model":RO \
+            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d":RO \
-            --  '0.0' '15.0' '10000!20000!50000!100000' './tsm-yu-wang-std' \
+            --  '0.0' '15.0' '10000!20000!50000!100000' 'no-snaps!snaps' './tsm-yu-wang-std' \
                 '6!0..36!3' '4!4..32!1' '.001!0.001..0.1!0.001!3' '25000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '$p') ;;
     esac ;;
@@ -277,10 +277,10 @@ case $model in
                 '6!0..36!3' '_' '.01!0.001..0.1!0.01!3' '100000!1..1000000!1000' \
                 '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Bouali" --form --separator=" " --align=right \
-            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Model":RO \
+            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d":RO \
-            --  '0.0' '1.0' '10000!20000!50000!100000' './tsm-bouali-std' \
+            --  '0.0' '1.0' '10000!20000!50000!100000' 'no-snaps!snaps' './tsm-bouali-std' \
                 '6!0..36!3' '4!4..32!1' '.01!0.01..0.1!0.001!3' '100000!1..1000000!1000' \
                 '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '$p') ;;
     esac ;;
@@ -310,10 +310,10 @@ case $model in
                 '6!0..36!3' '_' '.01!0.001..0.1!0.01!3' '12000!1..1000000!1000' \
                 '1.0' '1.0' '1.0' '10.0' '4.272') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
-            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Model":RO \
+            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="S" --field="V":RO \
-            --  '0.0' '100.0' '10000!20000!50000!100000' './tsm-burke-shaw-std' \
+            --  '0.0' '100.0' '10000!20000!50000!100000' 'no-snaps!snaps' './tsm-burke-shaw-std' \
                 '6!0..36!3' '4!4..32!1' '.01!0.01..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '1.0' '1.0' '10.0' '$p') ;;
     esac ;;
@@ -343,10 +343,10 @@ case $model in
                 '6!0..36!3' '_' '.01!0.001..0.1!0.01!3' '40000!1..1000000!1000' \
                 '1.0' '1.0' '1.0' '6.7' '2.0') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Rucklidge" --form --separator=" " --align=right \
-            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Model":RO \
+            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha":RO --field="kappa" \
-            --  '0.0' '45.0' '10000!20000!50000!100000' './tsm-rucklidge-std' \
+            --  '0.0' '45.0' '10000!20000!50000!100000' 'no-snaps!snaps' './tsm-rucklidge-std' \
                 '6!0..36!3' '4!4..32!1' '.01!0.01..0.1!0.001!3' '20000!1..1000000!1000' \
                 '1.0' '1.0' '1.0' '$p' '2.0') ;;
     esac ;;
@@ -376,10 +376,10 @@ case $model in
                 '6!0..36!3' '_' '.01!0.001..0.1!0.01!3' '50000!1..1000000!1000' \
                 '0.1' '0.1' '0.1' '0.446' '1.1') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Genesio-Tesi" --form --separator=" " --align=right \
-            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Model":RO \
+            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a":RO --field="b" \
-            --  '0.41' '0.51' '10000!20000!50000!100000' './tsm-genesio-tesi-std' \
+            --  '0.41' '0.51' '10000!20000!50000!100000' 'no-snaps!snaps' './tsm-genesio-tesi-std' \
                 '6!0..36!3' '4!4..32!1' '.01!0.01..0.1!0.001!3' '20000!1..1000000!1000' \
                 '0.1' '0.1' '0.1' '$p' '1.1') ;;
     esac ;;
@@ -409,10 +409,10 @@ case $model in
                 '6!0..36!3' '_' '.01!0.001..0.1!0.01!3' '60000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '0.1' '0.1' '4.2') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="ISUC" --form --separator=" " --align=right \
-            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Model":RO \
+            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c":RO \
-            --  '0.0' '50.0' '20000!20000!50000!100000' './tsm-isuc-std' \
+            --  '0.0' '50.0' '20000!20000!50000!100000' 'no-snaps!snaps' './tsm-isuc-std' \
                 '6!0..36!3' '4!4..32!1' '.01!0.01..0.1!0.001!3' '50000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '0.1' '0.1' '$p') ;;
     esac ;;
