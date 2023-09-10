@@ -26,7 +26,7 @@ do
 done
 snaps=$tmpdir/snapshots
 [ ! -d $snaps ] && mkdir -p $snaps
-rm -f $snaps/*.png
+rm -f $snaps/*.*
 
 filter () {  # $1 is the turning point tag, $2 is the column containing its data
     data='[^ ][^ ]*'
@@ -46,13 +46,14 @@ splot '$tmp_valid' with lines
 EOF
 }
 
-p=$(echo "scale=9; $start / 1.0;" | /usr/bin/bc)
+p=$(echo "scale=9; $start;" | /usr/bin/bc)
 count=$steps
 while [ $count -ge 0 ]
 do
     percent=$(((steps - count) / 10))
     eval $command 2>/dev/null | /usr/bin/tee $tmp_raw | /usr/bin/tail -n $samples >$tmp_valid
-    [ $snapshots = "snaps" ] && snapshot $count $steps >$snaps/snap_$p.png 2>/dev/null &
+    [ $snapshots = "snaps" ] && \
+	    snapshot $count $steps >$snaps/$(printf %06d%s $((steps - count)))_$p.png 2>/dev/null &
     if [ $(/usr/bin/wc --lines <$tmp_raw) -eq $datalines ]
     then
         echo -n "\r\033[1;37m $percent\033[0;37m%  \033[0;32mLatest value\033[0;37m $p"
