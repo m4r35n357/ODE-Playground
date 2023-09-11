@@ -28,12 +28,15 @@ snaps=$tmpdir/snapshots
 [ ! -d $snaps ] && mkdir -p $snaps
 rm -f $snaps/*.*
 
+xmargin=50
+pwidth=$((steps + 2 * xmargin))
+
 filter () {  # $1 is the turning point tag, $2 is the column containing its data
     data='[^ ][^ ]*'
     /bin/grep $1 $tmp_valid | /bin/sed "s/\($data\) \($data\) \($data\) .*/$p \\$2/" >>${filtered}$1
 }
 
-snapshot () {
+snap () {
 /usr/bin/gnuplot << EOF
 set terminal pngcairo size 1024,768
 set title '$args'
@@ -46,14 +49,29 @@ splot '$tmp_valid' with lines
 EOF
 }
 
+plot () {
+/usr/bin/gnuplot << EOF
+set terminal $5 size '$pwidth',640
+set lmargin at screen '$xmargin.0'/'$pwidth'
+set rmargin at screen '$((xmargin + steps)).0'/'$pwidth'
+set grid back
+set border back
+set title '$args'
+set xrange [$start:$end]
+set format x "%.6g"
+plot 1/0 lt rgb '$2' lw 3 t '$1 maxima', '${filtered}$1' lt rgb '$2' notitle w dots,\
+     1/0 lt rgb '$4' lw 3 t '$1 minima', '${filtered}$3' lt rgb '$4' notitle w dots
+if (GNUTERM eq 'qt') pause mouse close
+EOF
+}
+
 p=$(echo "scale=9; $start;" | /usr/bin/bc)
 count=$steps
 while [ $count -ge 0 ]
 do
     percent=$(((steps - count) / 10))
     eval $command 2>/dev/null | /usr/bin/tee $tmp_raw | /usr/bin/tail -n $samples >$tmp_valid
-    [ $snapshots = "snaps" ] && \
-	    snapshot $count $steps >$snaps/$(printf %06d%s $((steps - count)))_$p.png 2>/dev/null &
+    [ $snapshots = "snaps" ] && snap $count $steps >$snaps/$(printf %06d%s $((steps - count)))_$p.png 2>/dev/null &
     if [ $(/usr/bin/wc --lines <$tmp_raw) -eq $datalines ]
     then
         echo -n "\r\033[1;37m $percent\033[0;37m%  \033[0;32mLatest value\033[0;37m $p"
@@ -71,25 +89,6 @@ do
     count=$((count - 1))
 done
 echo -n "\r                                                            \r"
-
-xmargin=50
-pwidth=$((steps + 2 * xmargin))
-
-plot () {
-/usr/bin/gnuplot << EOF
-set terminal $5 size '$pwidth',640
-set lmargin at screen '$xmargin.0'/'$pwidth'
-set rmargin at screen '$((xmargin + steps)).0'/'$pwidth'
-set grid back
-set border back
-set title '$args'
-set xrange [$start:$end]
-set format x "%.6g"
-plot 1/0 lt rgb '$2' lw 3 t '$1 maxima', '${filtered}$1' lt rgb '$2' notitle w dots,\
-     1/0 lt rgb '$4' lw 3 t '$1 minima', '${filtered}$3' lt rgb '$4' notitle w dots
-if (GNUTERM eq 'qt') pause mouse close
-EOF
-}
 
 plot X '#000080' x '#004040' png >${tmpdir}/X.png &
 plot Y '#008000' y '#404000' png >${tmpdir}/Y.png &
