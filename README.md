@@ -45,7 +45,7 @@ sudo apt install bc git build-essential gnuplot-qt lcov freeglut3-dev glew-utils
 ```
 Optional:
 ```
-sudo apt install yad ffmpeg google-perftools libgoogle-perftools-dev clang-tools
+sudo apt install yad feh ffmpeg google-perftools libgoogle-perftools-dev clang-tools
 ```
 ### Download
 ```
@@ -263,7 +263,8 @@ Parameter | Meaning
 1 | start of parameter range
 2 | end of parameter range
 3 | number of valid samples at end of raw data
-4+ | ODE call with variable parameter replaced by ['$p']
+4 | save snapshots ? [ no-snaps | snaps ]
+5+ | ODE call with variable parameter replaced by ['$p']
 
 The general idea is to replace one of the model parameters with the string '$p' (including quotes!).
 
@@ -283,6 +284,10 @@ As well as three "interactive plots" (mouse hover reads out plot coordinates), t
 You can see them later using any image viewer e.g. ImageMagick (without coordinate readouts of course):
 ```
 display /tmp/$USER/X.png
+```
+If you choose to save snapshots, you can view them later in a slideshow proram of your choice, for example feh:
+```
+feh --slideshow-delay .1 /tmp/pi/snapshots
 ```
 
 ### Clean Numerical Simulation:
