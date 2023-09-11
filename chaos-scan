@@ -90,11 +90,10 @@ do
 done
 echo -n "\r                                                            \r"
 
-plot X '#000080' x '#004040' png >${tmpdir}/X.png &
-plot Y '#008000' y '#404000' png >${tmpdir}/Y.png &
-plot Z '#800000' z '#400040' png >${tmpdir}/Z.png &
-wait
-
 plot X '#000080' x '#004040' qt &
 plot Y '#008000' y '#404000' qt &
 plot Z '#800000' z '#400040' qt &
+
+plot X '#000080' x '#004040' png >${tmpdir}/X.png
+plot Y '#008000' y '#404000' png >${tmpdir}/Y.png
+plot Z '#800000' z '#400040' png >${tmpdir}/Z.png
