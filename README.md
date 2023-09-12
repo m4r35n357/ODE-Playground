@@ -289,6 +289,10 @@ If you choose to save snapshots, you can view them later in a slideshow proram o
 ```
 feh --slideshow-delay .1 /tmp/pi/snapshots
 ```
+To suppress autoscaling you can provide axis limits to the chaos-scan call via environment variables:
+```
+time -p X_START=-3 X_END=3 Y_START=-4 Y_END=4 Z_START=0 Z_END=2 ./chaos-scan 0.1 0.35 10000 snaps ./tsm-rf-std 6 4 0.010 50000 0.05 -0.05 0.3 '$p' .1
+```
 
 ### Clean Numerical Simulation:
 

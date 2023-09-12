@@ -41,10 +41,13 @@ snap () {
 set terminal pngcairo size 1024,768
 set title '$args'
 set xyplane 0
-set view 54.73561,$(echo "scale=6; 360 * $1 / $2;" | /usr/bin/bc -l)
-set xlabel 'X'
-set ylabel 'Y'
-set zlabel 'Z'
+set view 54.73561,$((count % 360))
+set xlabel 'x'
+set ylabel 'y'
+set zlabel 'z'
+set xrange [$X_START:$X_END]
+set yrange [$Y_START:$Y_END]
+set zrange [$Z_START:$Z_END]
 splot '$tmp_valid' with lines
 EOF
 }
@@ -66,12 +69,12 @@ EOF
 }
 
 p=$(echo "scale=9; $start;" | /usr/bin/bc)
-count=$steps
-while [ $count -ge 0 ]
+count=0
+while [ $count -le $steps ]
 do
-    percent=$(((steps - count) / 10))
+    percent=$((count / 10))
     eval $command 2>/dev/null | /usr/bin/tee $tmp_raw | /usr/bin/tail -n $samples >$tmp_valid
-    [ $snapshots = "snaps" ] && snap $count $steps >$snaps/$(printf %06d%s $((steps - count)))_$p.png 2>/dev/null &
+    [ $snapshots = "snaps" ] && snap >$snaps/$(printf %06d%s $count)_$p.png 2>/dev/null &
     if [ $(/usr/bin/wc --lines <$tmp_raw) -eq $datalines ]
     then
         echo -n "\r\033[1;37m $percent\033[0;37m%  \033[0;32mLatest value\033[0;37m $p"
@@ -86,7 +89,7 @@ do
     fi
     wait
     p=$(echo "$p + $increment;" | /usr/bin/bc)
-    count=$((count - 1))
+    count=$((count + 1))
 done
 echo -n "\r                                                            \r"
 
