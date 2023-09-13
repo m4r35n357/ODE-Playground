@@ -285,9 +285,13 @@ You can see them later using any image viewer e.g. ImageMagick (without coordina
 ```
 display /tmp/$USER/X.png
 ```
-If you choose to save snapshots, you can view them later in a slideshow proram of your choice, for example feh:
+If you choose to save snapshots, you can view them later in a slideshow program of your choice, for example feh:
 ```
-feh --slideshow-delay .1 /tmp/pi/snapshots
+feh --slideshow-delay .1 /tmp/$USER/snapshots
+```
+or make a video:
+```
+ffmpeg -framerate 5 -pattern_type glob -i "/tmp/$USER/snapshots/*.png" -c:v libx264 -pix_fmt yuv420p ode.mp4
 ```
 To suppress autoscaling you can provide axis limits to the chaos-scan call via environment variables:
 ```
