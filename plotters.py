@@ -270,20 +270,21 @@ f = lambda a: (a + 7) / (3.0 - a)
 
 for i in range(-50, 51):
     print(i * 0.1)
-    f = lambda a: (a**2 + 1)**(i*0.1)
+    f = lambda a: (a.sqr + 1)**(i*0.1)
     #scan(f)
     #mplot(f)
-    msave_s(f'test_{i+50:03d}.png', f)
+    msave_s(f'output/test_{i+50:03d}.png', f)
 
 for i in range(19):
-    f = lambda a: (a**2 + 1.0 / (10.0)**i)**0.5
-    msave_s(f'test_{i:03d}.png', f)
+    f = lambda a: (a.sqr + 1 / (10**i)).sqrt
+    msave_s(f'output/test_{i:03d}.png', f)
 
 f = lambda a: abs(- (a - 1.5)**3 + 4 * (a - 1.5) - 2)
 f = lambda a: - (abs(a) - 1.5)**3 + 4 * (abs(a) - 1.5) - 2
 
 f = lambda a: a.sin / pi + (3 * a).sin / (3 * pi) + (5 * a).sin / (5 * pi) + (7 * a).sin / (7 * pi)
 
-ffmpeg -y -i test_%03d.png taylor.mp4
-mplayer -fps 2 taylor.mp4
+rm -f output/*.png
+ffmpeg -y -i output/test_%03d.png taylor.mp4
+mplayer -fps 1 taylor.mp4
 '''
