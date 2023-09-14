@@ -103,12 +103,12 @@ dual d_tanh (dual a) {
 }
 
 dual d_asin (dual a) {
-    CHECK(a.val >= -1.0L && a.val <= 1.0L);
+    CHECK(a.val > -1.0L && a.val < 1.0L);
     return (dual){.val = asinl(a.val), .dot = a.dot / sqrtl(1.0L - a.val * a.val)};
 }
 
 dual d_acos (dual a) {
-    CHECK(a.val >= -1.0L && a.val <= 1.0L);
+    CHECK(a.val > -1.0L && a.val < 1.0L);
     return (dual){.val = acosl(a.val), .dot = - a.dot / sqrtl(1.0L - a.val * a.val)};
 }
 
@@ -117,15 +117,15 @@ dual d_atan (dual a) {
 }
 
 dual d_asinh (dual a) {
-    return (dual){.val = asinhl(a.val), .dot = a.dot / sqrtl(1.0L + a.val * a.val)};
+    return (dual){.val = asinhl(a.val), .dot = a.dot / sqrtl(a.val * a.val + 1.0L)};
 }
 
 dual d_acosh (dual a) {
-    CHECK(a.val >= 1.0L);
-    return (dual){.val = acoshl(a.val), .dot = a.dot / sqrtl(1.0L - a.val * a.val)};
+    CHECK(a.val > 1.0L);
+    return (dual){.val = acoshl(a.val), .dot = a.dot / sqrtl(a.val * a.val - 1.0L)};
 }
 
 dual d_atanh (dual a) {
-    CHECK(a.val >= -1.0L && a.val <= 1.0L);
+    CHECK(a.val > -1.0L && a.val < 1.0L);
     return (dual){.val = atanhl(a.val), .dot = a.dot / (1.0L - a.val * a.val)};
 }
