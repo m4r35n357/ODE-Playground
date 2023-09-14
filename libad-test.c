@@ -10,15 +10,6 @@
 #include "taylor-ode.h"
 #include "dual.h"
 
-#define NRM "\x1B[0;37m"
-#define WHT "\x1B[1;37m"
-#define GRY "\x1B[1;30m"
-#define GRN "\x1B[1;32m"
-#define YLW "\x1B[1;33m"
-#define RED "\x1B[1;31m"
-#define CYN "\x1B[0;36m"
-#define MGT "\x1B[0;35m"
-
 static int k_max = 0, dp, n, debug = 0, total = 0, passed = 0, skipped = 0;
 
 static real delta, delta_val, delta_dot, delta_max = 0.0L, tolerance;
@@ -93,7 +84,7 @@ static void compare (char* name, series a, series b) {
                     NRM, NRM, k, dp, a[k], dp, b[k], delta);
         }
     }
-    if (debug) fprintf(stderr, "%s PASS%s %s%s%s\n", GRN, NRM, WHT, name, NRM);
+    if (debug) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
     passed++;
 }
 
@@ -122,7 +113,7 @@ static void compare_s_d (char* name, series a, dual b) {
     if (debug >= 2) fprintf(stderr, "\n");
     if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.*Le %+.*Le  diff %+.3Le\n", NRM, NRM, dp, a[0], dp, b.val, delta_val);
     if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.*Le %+.*Le  diff %+.3Le\n", NRM, NRM, dp, a[1], dp, b.dot, delta_dot);
-    if (debug) fprintf(stderr, "%s PASS%s %s%s%s\n", GRN, NRM, WHT, name, NRM);
+    if (debug) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
     passed++;
 }
 
@@ -146,14 +137,14 @@ int main (int argc, char **argv) {
         debug = (int)strtol(argv[5], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
     }
 
-    fprintf(stderr, "Horner Summation ");
+    fprintf(stderr, "%sHorner Summation ", GRY);
     series s = tsm_jet(n);
     s[0] = 1.0L; s[1] = 3.0L; s[2] = 0.0L; s[3] = 2.0L;
     CHECK(horner(s, 3, 2.0L) == 23.0L); fprintf(stderr, ".");
     s[0] = 3.0L; s[1] = -1.0L; s[2] = 2.0L; s[3] = -4.0L; s[4] = 0.0L; s[5] = 1.0L;
     CHECK(horner(s, 5, 3.0L) == 153.0L); fprintf(stderr, ".");
     s[0] = 1.0L; s[1] = -4.0L; s[2] = 0.0L; s[3] = 0.0L; s[4] = 2.0L; s[5] = 3.0L; s[6] = 0.0L; s[7] = -2.0L;
-    CHECK(horner(s, 7, -2.0L) == 201.0L); fprintf(stderr, ". %sOK%s", GRN, NRM);
+    CHECK(horner(s, 7, -2.0L) == 201.0L); fprintf(stderr, ".%s OK%s", NRM, GRY);
 
     fprintf(stderr, ", Taylor Series Method ");
     controls c = {.order=n, .step=0, .steps=10, .step_size=0.1L};
@@ -166,9 +157,9 @@ int main (int argc, char **argv) {
     CHECK(fabsl(j->x[0] - expl(p.a)) < tolerance);
     CHECK(fabsl(j->y[0] - expl(p.b)) < tolerance);
     CHECK(fabsl(j->z[0] - expl(p.c)) < tolerance);
-    fprintf(stderr, " %sOK%s\n", GRN, NRM);
+    fprintf(stderr, "%s OK\n", NRM);
 
-    fprintf(stderr, "Recurrence Relations %sx = %s%s%.1Lf%s\n", MGT, NRM, WHT, x[0], NRM);
+    fprintf(stderr, "Taylor Arithmetic %sx = %s%.1Lf%s\n", GRY, WHT, x[0], NRM);
     bool positive = x[0] > 0.0L, non_zero = x[0] != 0.0L, lt_1 = fabsl(x[0]) < 1.0L, gt_1 = x[0] > 1.0L, lt_pi_2 = fabsl(x[0]) < 0.5L * acosl(-1.0L);
     series r1 = tsm_jet(n), r2 = tsm_jet(n), r3 = tsm_jet(n), S1 = tsm_const(n, 1.0L);
     series abs_x = tsm_jet(n), inv_x = tsm_jet(n), sqrt_x = tsm_jet(n), ln_x = tsm_jet(n);
@@ -300,13 +291,13 @@ int main (int argc, char **argv) {
     name = "arctan(sinh(gd^-1 x)) == x"; if (lt_pi_2) {ad_sin_cos(r3, r2, gd_1, false); ad_atan(r1, r2, r3, true); compare(name, r1, x);} else skip(name);
 
     if (debug) fprintf(stderr, "\n");
-    fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
-    if (skipped) fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
+    fprintf(stderr, "%sTotal%s %d  %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
+    if (skipped) fprintf(stderr, "  %sSKIPPED%s %d", YLW, NRM, skipped);
     if (passed == total - skipped) {
-        fprintf(stderr, "\nDelta %s%.1Le%s %s%s%s k == %d\n", WHT, delta_max, NRM, MGT, name_max, NRM, k_max);
+        fprintf(stderr, "\n%sDelta%s %.1Le %s%s%s %sk == %d%s\n", GRY, NRM, delta_max, BLU, name_max, NRM, GRY, k_max, NRM);
         return 0;
     } else {
-        fprintf(stderr, ", %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);
+        fprintf(stderr, "  %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);
         return 3;
     }
 }

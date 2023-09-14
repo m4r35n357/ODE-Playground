@@ -24,7 +24,7 @@ int main(int argc, char **argv) { (void)argc;
     fprintf(stdout, "\na: %.3Lf  M: 1.0  min R = %.3Lf  max R = %.3Lf\nL = %.18Lf  Q = %.18Lf\n", a, r_min, r_max, L, Q);
     fprintf(stdout, "\nSimulate:\n");
     fprintf(stdout, "./h-kerr-std 6 8 .01 10000 0 %.3Lf 0.0 1.0 %La 1.0 %La %.3Lf 0.0 >/tmp/$USER/data\n", a, L, Q, r);
-    fprintf(stderr, "\n./h-kerr-gl $(yad --columns=2 --title='Kerr Light Orbit GL' --form --separator=' ' --align=right ");
+    fprintf(stderr, "./h-kerr-gl $(yad --columns=2 --title='Kerr Light Orbit GL' --form --separator=' ' --align=right ");
     fprintf(stderr, "--field='Trail Length':NUM --field='Order':NUM --field='Step Size':NUM --field='Steps':NUM ");
     fprintf(stderr, "--field='BH spin':NUM --field='particle mass':RO ");
     fprintf(stderr, "--field='energy':RO --field='momentum' --field='momentum factor':RO --field='Carter constant' ");

@@ -88,9 +88,9 @@ void ApplicationInit (int argc, char **argv, char *title) {
     glutSpecialFunc(SpecialKeyFunc);
     glutReshapeFunc(ResizeWindow);
     glutDisplayFunc(Animate);
-    fprintf(stderr, "\n  OpenGL: %s\n", glGetString(GL_VERSION));
-    fprintf(stderr, "FreeGLUT: %d\n", glutGet(GLUT_VERSION));
-    fprintf(stderr, "    GLEW: %s\n\n", glewGetString(GLEW_VERSION));
+    fprintf(stderr, "\n   %sOpenGL%s %s\n", GRY, NRM, glGetString(GL_VERSION));
+    fprintf(stderr, "%s FreeGLUT%s %d\n", GRY, NRM, glutGet(GLUT_VERSION));
+    fprintf(stderr, "     %sGLEW%s %s\n\n", GRY, NRM, glewGetString(GLEW_VERSION));
 }
 
 void SetupView () {

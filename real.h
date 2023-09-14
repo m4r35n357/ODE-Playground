@@ -6,6 +6,48 @@
 
 #include <stdbool.h>
 
+/*
+ * Colours
+ */
+#define NRM "\x1B[0;37m"
+#define WHT "\x1B[1;37m"
+#define GRY "\x1B[1;30m"
+#define GRN "\x1B[1;32m"
+#define YLW "\x1B[1;33m"
+#define RED "\x1B[1;31m"
+#define CYN "\x1B[0;36m"
+#define MGT "\x1B[0;35m"
+#define BLU "\x1B[1;34m"
+
+/*
+ * Number base for integer conversions
+ */
+#define BASE 10
+
+/*
+ * Report program arguments in colour
+ */
+#define PRINT_ARGS(argc, argv) \
+do { \
+    fprintf(stderr, "%sargc %s%d%s, argv [ %s", GRY, NRM, (argc), GRY, CYN); \
+    for (int i = 0; i < (argc); i++) fprintf(stderr, "%s ", (argv)[i]); \
+    fprintf(stderr, "%s]%s\n", GRY, NRM); \
+} while (0)
+
+/*
+ * Unavoidable "assert", in colour
+ */
+#define CHECK(x) \
+do { \
+    if(!(x)) { \
+        fprintf(stderr, "%sFAIL %s%s %s%s%s %s%s:%s%i\n", RED, WHT, #x, GRY, __func__, NRM, __FILE__, GRY, NRM, __LINE__); \
+        exit(1); \
+    } \
+} while (0)
+
+/*
+ * Main floating point type
+ */
 typedef long double real;
 
 /*
@@ -36,33 +78,3 @@ typedef struct Controls {
     real step_size;
     pair r2, r4, r6, r8;  // symplectic only
 } controls;
-
-/*
- * Number base for integer conversions
- */
-#define BASE 10
-
-/*
- * Report program arguments in colour
- */
-#define PRINT_ARGS(argc, argv) \
-do { \
-    fprintf(stderr, "argc: \x1B[1;37m%d\x1B[0;37m, argv: [ \x1B[0;36m", (argc)); \
-    for (int i = 0; i < (argc); i++) { \
-        fprintf(stderr, "%s ", (argv)[i]); \
-    } \
-    fprintf(stderr, "\x1B[0;37m]\n"); \
-} while (0)
-
-/*
- * Unavoidable assert(), in colour
- */
-#define CHECK(x) \
-do { \
-    if(!(x)) { \
-        fprintf(stderr, \
-            "\x1B[1;31mFAIL\x1B[0;37m \x1B[1;37m%s\x1B[0;37m %s \x1B[1;37m%s\x1B[0;37m:\x1B[1;37m%i\x1B[0;37m\n", \
-            #x, __func__, __FILE__, __LINE__); \
-        exit(1); \
-    } \
-} while (0)

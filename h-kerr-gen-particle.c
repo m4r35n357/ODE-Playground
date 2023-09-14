@@ -90,7 +90,6 @@ int main (int argc, char **argv) { (void)argc;
     parameters *k = get_p_gen(argv);
     matrix3x3 J;
     vector3 x = {k->E, k->L, k->Q}, f = {1.0L, 1.0L, 1.0L};
-    fprintf(stderr, "\n");
     long count = 0L;
     bool circular = k->rmin * k->rmax < 0.0L;
     while (!converged(f, k->epsilon)) {
