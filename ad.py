@@ -110,7 +110,7 @@ def t_ln(u, e, k):
     return u[k]
 
 def t_asin(u, c, s, k, trig=True):
-    assert -1.0 <= s[0] <= 1.0 if trig else True
+    assert -1.0 < s[0] < 1.0 if trig else True
     if k == 0:
         u[k] = asin(s[k]) if trig else asinh(s[k])
         c[k] = cos(u[k]) if trig else cosh(u[k])
@@ -120,7 +120,7 @@ def t_asin(u, c, s, k, trig=True):
     return u[k], c[k]
 
 def t_acos(u, s, c, k, trig=True):
-    assert -1.0 <= c[0] <= 1.0 if trig else c[0] >= 1.0
+    assert -1.0 < c[0] < 1.0 if trig else c[0] > 1.0
     if k == 0:
         u[k] = acos(c[k]) if trig else acosh(c[k])
         s[k] = -sin(u[k]) if trig else sinh(u[k])
@@ -130,7 +130,7 @@ def t_acos(u, s, c, k, trig=True):
     return u[k], s[k]
 
 def t_atan(u, s, t, k, trig=True):
-    assert True if trig else -1.0 <= t[0] <= 1.0
+    assert True if trig else -1.0 < t[0] < 1.0
     if k == 0:
         u[k] = atan(t[k]) if trig else atanh(t[k])
         s[k] = 1.0 + t[k] * t[k] if trig else 1.0 - t[k] * t[k]
