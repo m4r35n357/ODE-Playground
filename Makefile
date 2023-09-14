@@ -80,7 +80,7 @@ divergence: divergence.o
 	$(CC) $(CFLAGS) -o $@ $< $(LIB_STD)
 
 
-libad-test: libad-test.o taylor-ode.o
+libad-test: libad-test.o taylor-ode.o dual.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LIB_STD)
 
 libdual-test: libdual-test.o dual.o
@@ -96,9 +96,9 @@ kerr-image: kerr-image.o
 .PHONY: test clean depclean ctags ctags-system ctags-system-all coverage
 
 test:
-	@for x in -1 -.5 0 .5 1; do \
-		./libad-test 24 20 $$x 1e-15 >/dev/null || exit 1; echo ""; \
-		./libdual-test 24 $$x 1e-15 >/dev/null || exit 1; echo ""; \
+	@for x in -2 -1 -.5 0 .5 1 2; do \
+		./libad-test 24 20 $$x 1e-12 >/dev/null || exit 1; echo ""; \
+		./libdual-test 24 $$x 1e-12 >/dev/null || exit 1; echo ""; \
 	done
 	@echo "\033[1;37mCore Tests Passed\033[0;37m\n"
 

@@ -8,9 +8,11 @@
 #include <stdlib.h>
 #include <math.h>
 #include "taylor-ode.h"
+#include "dual.h"
 
 #define NRM "\x1B[0;37m"
 #define WHT "\x1B[1;37m"
+#define GRY "\x1B[1;30m"
 #define GRN "\x1B[1;32m"
 #define YLW "\x1B[1;33m"
 #define RED "\x1B[1;31m"
@@ -19,9 +21,9 @@
 
 static int k_max = 0, dp, n, debug = 0, total = 0, passed = 0, skipped = 0;
 
-static real delta, delta_max = 0.0L, tolerance;
+static real delta, delta_val, delta_dot, delta_max = 0.0L, tolerance;
 
-static char *name_max = "N/A";
+static char *name_max = "N/A", *field_max = "N/A";
 
 struct Parameters { real a, b, c; };
 
@@ -68,7 +70,7 @@ triplet ode (series x, series y, series z, parameters *p, int k) {
 static void skip (char* name) {
     total++;
     skipped++;
-    if (debug) fprintf(stderr, "%s SKIP%s %s\n", YLW, NRM, name);
+    if (debug) fprintf(stderr, "%s SKIP%s %s%s%s\n", YLW, NRM, GRY, name, NRM);
 }
 
 static void compare (char* name, series a, series b) {
@@ -82,7 +84,7 @@ static void compare (char* name, series a, series b) {
         }
         if (!isfinite(delta) || delta > tolerance) {
             fprintf(stderr, "%s FAIL%s %s%s%s\n  k=%d  LHS: %+.*Le  RHS: %+.*Le  (%.1Le)\n",
-                    RED, NRM, MGT, name, NRM, k, dp, a[k], dp, b[k], delta);
+                    RED, NRM, WHT, name, NRM, k, dp, a[k], dp, b[k], delta);
             return;
         }
         if (debug >= 2) {
@@ -91,7 +93,36 @@ static void compare (char* name, series a, series b) {
                     NRM, NRM, k, dp, a[k], dp, b[k], delta);
         }
     }
-    if (debug) fprintf(stderr, "%s PASS%s %s%s%s\n", GRN, NRM, MGT, name, NRM);
+    if (debug) fprintf(stderr, "%s PASS%s %s%s%s\n", GRN, NRM, WHT, name, NRM);
+    passed++;
+}
+
+static void compare_s_d (char* name, series a, dual b) {
+    total++;
+    delta_val = fabsl(a[0] - b.val);
+    if (delta_val > delta_max) {
+        delta_max = delta_val;
+        name_max = name;
+        field_max = "VAL";
+    }
+    if (fabsl(delta_val) > tolerance) {
+        fprintf(stderr, "%s FAIL%s %s%s%s\n  [0]VAL  LHS: %+.*Le  RHS: %+.*Le  (%+.3Le)\n", RED, NRM, WHT, name, NRM, dp, a[0], dp, b.val, delta_val);
+        return;
+    }
+    delta_dot = fabsl(a[1] - b.dot);
+    if (delta_dot > delta_max) {
+        delta_max = delta_dot;
+        name_max = name;
+        field_max = "DOT";
+    }
+    if (fabsl(delta_dot) > tolerance) {
+        fprintf(stderr, "%s FAIL%s %s%s%s\n  [1]DOT  LHS: %+.*Le  RHS: %+.*Le  (%+.3Le)\n", RED, NRM, WHT, name, NRM, dp, a[1], dp, b.dot, delta_dot);
+        return;
+    }
+    if (debug >= 2) fprintf(stderr, "\n");
+    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.*Le %+.*Le  diff %+.3Le\n", NRM, NRM, dp, a[0], dp, b.val, delta_val);
+    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.*Le %+.*Le  diff %+.3Le\n", NRM, NRM, dp, a[1], dp, b.dot, delta_dot);
+    if (debug) fprintf(stderr, "%s PASS%s %s%s%s\n", GRN, NRM, WHT, name, NRM);
     passed++;
 }
 
@@ -105,6 +136,11 @@ int main (int argc, char **argv) {
     for (int k = 0; k <= n; k++) {
         x[k] = !k ? strtold(argv[3], NULL) : 0.5L / (k * k);
     }
+    series xs = tsm_jet(2);
+    xs[0] = x[0];
+    xs[1] = x[1];
+    dual xd = (dual){.val = x[0], .dot = 0.5L};
+    dual D1 = d_dual(1.0L);
     tolerance = strtold(argv[4], NULL); CHECK(tolerance > 0.0L);
     if (argc == 6) {
         debug = (int)strtol(argv[5], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
@@ -117,9 +153,9 @@ int main (int argc, char **argv) {
     s[0] = 3.0L; s[1] = -1.0L; s[2] = 2.0L; s[3] = -4.0L; s[4] = 0.0L; s[5] = 1.0L;
     CHECK(horner(s, 5, 3.0L) == 153.0L); fprintf(stderr, ".");
     s[0] = 1.0L; s[1] = -4.0L; s[2] = 0.0L; s[3] = 0.0L; s[4] = 2.0L; s[5] = 3.0L; s[6] = 0.0L; s[7] = -2.0L;
-    CHECK(horner(s, 7, -2.0L) == 201.0L); fprintf(stderr, ". %sOK%s\n", GRN, NRM);
+    CHECK(horner(s, 7, -2.0L) == 201.0L); fprintf(stderr, ". %sOK%s", GRN, NRM);
 
-    fprintf(stderr, "Taylor Series Method ");
+    fprintf(stderr, ", Taylor Series Method ");
     controls c = {.order=n, .step=0, .steps=10, .step_size=0.1L};
     parameters p = {.a=1.0L, .b=0.0L, .c=-1.0L};
     series3 *j = malloc(sizeof (series3)); CHECK(j);
@@ -133,7 +169,7 @@ int main (int argc, char **argv) {
     fprintf(stderr, " %sOK%s\n", GRN, NRM);
 
     fprintf(stderr, "Recurrence Relations %sx = %s%s%.1Lf%s\n", MGT, NRM, WHT, x[0], NRM);
-    bool positive = x[0] > 0.0L, non_zero = x[0] != 0.0L, lt_pi_2 = fabsl(x[0]) < 0.5L * acosl(-1.0L);
+    bool positive = x[0] > 0.0L, non_zero = x[0] != 0.0L, lt_1 = fabsl(x[0]) < 1.0L, gt_1 = x[0] > 1.0L, lt_pi_2 = fabsl(x[0]) < 0.5L * acosl(-1.0L);
     series r1 = tsm_jet(n), r2 = tsm_jet(n), r3 = tsm_jet(n), S1 = tsm_const(n, 1.0L);
     series abs_x = tsm_jet(n), inv_x = tsm_jet(n), sqrt_x = tsm_jet(n), ln_x = tsm_jet(n);
     if (non_zero) ad_abs(abs_x, x);
@@ -160,7 +196,38 @@ int main (int argc, char **argv) {
     ad_exp(neg_exp_x, ad_scale(r1, x, -1.0L));
     ad_ln(gd_1, ad_abs(r3, ad_div(r2, ad_add(r1, sin_x, S1), cos_x)));
 
-    char* name = "x * x == sqr(x)"; compare(name, ad_mul(r1, x, x), sqr_x);
+    char* name = "inv(x)"; non_zero ? compare_s_d(name, ad_div(r1, S1, xs), d_div(D1, xd)) : skip(name);
+    name = "sqr(x)"; compare_s_d(name, ad_sqr(r1, xs), d_sqr(xd));
+    name = "sqrt(x)"; positive ? compare_s_d(name, ad_sqrt(r1, xs), d_sqrt(xd)) : skip(name);
+
+    name = "exp(x)"; compare_s_d(name, ad_exp(r1, xs), d_exp(xd));
+
+    ad_sin_cos(r1, r2, xs, true);
+    name = "sin(x)"; compare_s_d(name, r1, d_sin(xd));
+    name = "cos(x)"; compare_s_d(name, r2, d_cos(xd));
+    name = "tan(x)"; ad_tan_sec2(r1, r2, xs, true); compare_s_d(name, r1, d_tan(xd));
+
+    ad_sin_cos(r1, r2, xs, false);
+    name = "sinh(x)"; compare_s_d(name, r1, d_sinh(xd));
+    name = "cosh(x)"; compare_s_d(name, r2, d_cosh(xd));
+    name = "tanh(x)"; ad_tan_sec2(r1, r2, xs, false); compare_s_d(name, r1, d_tanh(xd));
+
+    name = "ln(x)"; positive ? compare_s_d(name, ad_ln(r1, xs), d_ln(xd)) : skip(name);
+
+    name = "asin(x)"; if (lt_1) {ad_asin(r1, r2, xs, true); compare_s_d(name, r1, d_asin(xd));} else skip(name);
+    name = "acos(x)"; if (lt_1) {ad_acos(r1, r2, xs, true); compare_s_d(name, r1, d_acos(xd));} else skip(name);
+    name = "atan(x)"; ad_atan(r1, r2, xs, true); compare_s_d(name, r1, d_atan(xd));
+
+    ad_asin(r1, r2, xs, false);
+    name = "asinh(x)"; compare_s_d(name, r1, d_asinh(xd));
+    name = "acosh(x)"; if (gt_1) {ad_acos(r1, r2, xs, false); compare_s_d(name, r1, d_acosh(xd));} else skip(name);
+    name = "atanh(x)"; if (lt_1) {ad_atan(r1, r2, xs, false); compare_s_d(name, r1, d_atanh(xd));}  else skip(name);
+
+    name = "x^1.5"; positive ? compare_s_d(name, ad_pwr(r1, xs, 1.5L), d_pow(xd, 1.5L)) : skip(name);
+
+    if (debug) fprintf(stderr, "\n");
+
+    name = "x * x == sqr(x)"; compare(name, ad_mul(r1, x, x), sqr_x);
     name = "sqr(x) / x == x"; non_zero ? compare(name, ad_div(r1, sqr_x, x), x) : skip(name);
     name = "x * (1 / x) == 1"; non_zero ? compare(name, ad_mul(r1, x, inv_x), S1) : skip(name);
     name = "sqrt(x) * sqrt(x) == x"; positive ? compare(name, ad_mul(r1, sqrt_x, sqrt_x), x) : skip(name);
@@ -207,7 +274,7 @@ int main (int argc, char **argv) {
     if (debug) fprintf(stderr, "\n");
 
     name = "arsinh(sinh(x)) == x"; ad_asin(r1, r2, sinh_x, false); compare(name, r1, x);
-    name = "arcosh(cosh(x)) == |x|"; ad_acos(r1, r2, cosh_x, false); non_zero ? compare(name, r1, abs_x) : skip(name);
+    name = "arcosh(cosh(x)) == |x|"; if (non_zero) {ad_acos(r1, r2, cosh_x, false); compare(name, r1, abs_x);} else skip(name);
     name = "artanh(tanh(x)) == x"; ad_atan(r1, r2, tanh_x, false); compare(name, r1, x);
 
     if (debug) fprintf(stderr, "\n");
@@ -221,16 +288,16 @@ int main (int argc, char **argv) {
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "arcsin(sin(x)) == x"; ad_asin(r1, r2, sin_x, true); compare(name, r1, x);
-    name = "arccos(cos(x)) == |x|"; ad_acos(r1, r2, cos_x, true); non_zero ? compare(name, r1, abs_x) : skip(name);
-    name = "arctan(tan(x)) == x"; ad_atan(r1, r2, tan_x, true); compare(name, r1, x);
+    name = "arcsin(sin(x)) == x"; if (lt_pi_2) {ad_asin(r1, r2, sin_x, true); compare(name, r1, x);} else skip(name);
+    name = "arccos(cos(x)) == |x|"; if (non_zero) {ad_acos(r1, r2, cos_x, true); compare(name, r1, abs_x);} else skip(name);
+    name = "arctan(tan(x)) == x"; if (lt_pi_2) {ad_atan(r1, r2, tan_x, true); compare(name, r1, x);} else skip(name);
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "arsinh(tan(x)) == gd^-1 x"; ad_asin(r1, r2, tan_x, false); compare(name, gd_1, r1);
+    name = "arsinh(tan(x)) == gd^-1 x"; if (lt_pi_2) {ad_asin(r1, r2, tan_x, false); compare(name, gd_1, r1);} else skip(name);
     name = "artanh(sin(x)) == gd^-1 x"; ad_atan(r1, r2, sin_x, false); compare(name, gd_1, r1);
-    name = "arcsin(tanh(gd^-1 x)) == x"; ad_tan_sec2(r3, r2, gd_1, false); ad_asin(r1, r2, r3, true); compare(name, r1, x);
-    name = "arctan(sinh(gd^-1 x)) == x"; ad_sin_cos(r3, r2, gd_1, false); ad_atan(r1, r2, r3, true); compare(name, r1, x);
+    name = "arcsin(tanh(gd^-1 x)) == x"; if (lt_pi_2) {ad_tan_sec2(r3, r2, gd_1, false); ad_asin(r1, r2, r3, true); compare(name, r1, x);} else skip(name);
+    name = "arctan(sinh(gd^-1 x)) == x"; if (lt_pi_2) {ad_sin_cos(r3, r2, gd_1, false); ad_atan(r1, r2, r3, true); compare(name, r1, x);} else skip(name);
 
     if (debug) fprintf(stderr, "\n");
     fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);

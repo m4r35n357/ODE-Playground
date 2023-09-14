@@ -11,6 +11,7 @@
 
 #define NRM "\x1B[0;37m"
 #define WHT "\x1B[1;37m"
+#define GRY "\x1B[1;30m"
 #define GRN "\x1B[1;32m"
 #define YLW "\x1B[1;33m"
 #define RED "\x1B[1;31m"
@@ -26,7 +27,7 @@ static char *name_max = "N/A", *field_max = "N/A";
 static void skip (char* name) {
     total++;
     skipped++;
-    if (debug) fprintf(stderr, "%s SKIP%s %s\n", YLW, NRM, name);
+    if (debug) fprintf(stderr, "%s SKIP%s %s%s%s\n", YLW, NRM, GRY, name, NRM);
 }
 
 static void compare (char* name, dual a, dual b) {
@@ -38,7 +39,7 @@ static void compare (char* name, dual a, dual b) {
         field_max = "VAL";
     }
     if (fabsl(delta_val) > tolerance) {
-        fprintf(stderr, "%s FAIL%s %s\n  VAL  LHS: %+.*Le  RHS: %+.*Le  (%+.3Le)\n", RED, NRM, name, dp, a.val, dp, b.val, delta_val);
+        fprintf(stderr, "%s FAIL%s %s%s%s\n  VAL  LHS: %+.*Le  RHS: %+.*Le  (%+.1Le)\n", RED, NRM, WHT, name, NRM, dp, a.val, dp, b.val, delta_val);
         return;
     }
     delta_dot = fabsl(a.dot - b.dot);
@@ -48,13 +49,13 @@ static void compare (char* name, dual a, dual b) {
         field_max = "DOT";
     }
     if (fabsl(delta_dot) > tolerance) {
-        fprintf(stderr, "%s FAIL%s %s\n  DOT  LHS: %+.*Le  RHS: %+.*Le  (%+.3Le)\n", RED, NRM, name, dp, a.dot, dp, b.dot, delta_dot);
+        fprintf(stderr, "%s FAIL%s %s%s%s\n  DOT  LHS: %+.*Le  RHS: %+.*Le  (%+.1Le)\n", RED, NRM, WHT, name, NRM, dp, a.dot, dp, b.dot, delta_dot);
         return;
     }
     if (debug >= 2) fprintf(stderr, "\n");
-    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.*Le %+.*Le  diff %+.3Le\n", NRM, NRM, dp, a.val, dp, b.val, delta_val);
-    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.*Le %+.*Le  diff %+.3Le\n", NRM, NRM, dp, a.dot, dp, b.dot, delta_dot);
-    if (debug) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
+    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.*Le %+.*Le  %+.1Le\n", NRM, NRM, dp, a.val, dp, b.val, delta_val);
+    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.*Le %+.*Le  %+.1Le\n", NRM, NRM, dp, a.dot, dp, b.dot, delta_dot);
+    if (debug) fprintf(stderr, "%s PASS%s %s%s%s\n", GRN, NRM, WHT, name, NRM);
     passed++;
 }
 
@@ -141,16 +142,16 @@ int main (int argc, char **argv) {
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "arcsin(sin(x)) == x"; compare(name, d_asin(sin_x), x);
+    name = "arcsin(sin(x)) == x"; if (lt_pi_2) {compare(name, d_asin(sin_x), x);} else skip(name);
     name = "arccos(cos(x)) == |x|"; non_zero ? compare(name, d_acos(cos_x), abs_x) : skip(name);
-    name = "arcsin(tan(x)) == x"; compare(name, d_atan(tan_x), x);
+    name = "arctan(tan(x)) == x"; if (lt_pi_2) {compare(name, d_atan(tan_x), x);} else skip(name);
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "arsinh(tan(x)) == gd^-1 x"; compare(name, gd_1, d_asinh(tan_x));
+    name = "arsinh(tan(x)) == gd^-1 x"; if (lt_pi_2) {compare(name, gd_1, d_asinh(tan_x));} else skip(name);
     name = "artanh(sin(x)) == gd^-1 x"; compare(name, gd_1, d_atanh(sin_x));
-    name = "arcsin(tanh(gd^-1 x)) == x"; compare(name, d_asin(d_tanh(gd_1)), x);
-    name = "arctan(sinh(gd^-1 x)) == x"; compare(name, d_atan(d_sinh(gd_1)), x);
+    name = "arcsin(tanh(gd^-1 x)) == x"; if (lt_pi_2) {compare(name, d_asin(d_tanh(gd_1)), x);} else skip(name);
+    name = "arctan(sinh(gd^-1 x)) == x"; if (lt_pi_2) {compare(name, d_atan(d_sinh(gd_1)), x);} else skip(name);
 
     if (debug) fprintf(stderr, "\n");
     fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);

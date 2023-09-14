@@ -293,10 +293,11 @@ or make a video:
 ```
 ffmpeg -framerate 5 -pattern_type glob -i "/tmp/$USER/snapshots/*.png" -c:v libx264 -pix_fmt yuv420p ode.mp4
 ```
-To suppress autoscaling you can provide axis limits to the chaos-scan call via environment variables:
+To suppress autoscaling you can provide axis limits to the chaos-scan script via environment variables:
 ```
 time -p X_START=-3 X_END=3 Y_START=-4 Y_END=4 Z_START=0 Z_END=2 ./chaos-scan 0.1 0.35 10000 snaps ./tsm-rf-std 6 4 0.010 50000 0.05 -0.05 0.3 '$p' .1
 ```
+you only need to add the ones that you need, and the order doesn't matter.
 
 ### Clean Numerical Simulation:
 
