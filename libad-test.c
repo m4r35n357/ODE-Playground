@@ -1,12 +1,6 @@
 /*
  * Tests for core Taylor Series Method, Horner's Method, and recurrence relations
  *
- * Example: ./libad-test-dbg 237 64 .5 1e-64 [ 0 | 1 | 2 ]
- *
- ./libad-test-dbg $(yad --columns=2 --title="Taylor Tests" --form --separator=" " --align=right \
-    --field="Precision (bits)":NUM --field="Order":NUM --field="Value":NUM --field="Max. Error":CB --field="Detail":CB \
-    -- '237!11..999!2' '64!4..256!1' '0.5!-1.0..1.0!0.1!1' '1.0e-36!1.0e-48!1.0e-60!1.0e-72' '0!1!2')
- *
  * (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
@@ -16,14 +10,6 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 #include "ad.h"
-
-#define NRM "\x1B[0;37m"
-#define WHT "\x1B[1;37m"
-#define GRN "\x1B[1;32m"
-#define YLW "\x1B[1;33m"
-#define RED "\x1B[1;31m"
-#define CYN "\x1B[0;36m"
-#define MGT "\x1B[0;35m"
 
 static int k_max = 0, dp, n, debug = 0, total = 0, passed = 0, skipped = 0;
 
@@ -66,7 +52,7 @@ void ode (triplet *v, series x, series y, series z, parameters *p, int k) {
 static void skip (char* name) {
     total++;
     skipped++;
-    if (debug) fprintf(stderr, "%s SKIP%s %s\n", YLW, NRM, name);
+    if (debug) fprintf(stderr, "%s SKIP%s %s%s%s\n", YLW, NRM, GRY, name, NRM);
 }
 
 static void compare (char* name, series a, series b) {
@@ -90,7 +76,7 @@ static void compare (char* name, series a, series b) {
                     NRM, NRM, k, dp, mpfr_get_ld(a[k], RND), dp, mpfr_get_ld(b[k], RND), mpfr_get_ld(delta, RND));
         }
     }
-    if (debug) fprintf(stderr, "%s PASS%s %s%s%s\n", GRN, NRM, MGT, name, NRM);
+    if (debug) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
     passed++;
 }
 
@@ -117,7 +103,7 @@ int main (int argc, char **argv) {
     mpfr_const_pi(PI_2, RND);
     mpfr_div_2si(PI_2, PI_2, 1, RND);
 
-    fprintf(stderr, "Taylor Series Method \n");
+    fprintf(stderr, "%sTaylor Series Method", GRY);
     int steps = 10;
     series3 *j = malloc(sizeof (series3)); CHECK(j);
     j->x = tsm_const(n + 1, D1);
@@ -133,7 +119,7 @@ int main (int argc, char **argv) {
     mpfr_exp(e_1, D_1, RND);
     _out_(e1, e0, e_1, D01, steps, 0.0F);
 
-    fprintf(stderr, "Horner Summation ");
+    fprintf(stderr, "%s, Horner Summation ", GRY);
     series p = tsm_jet(n);
     mpfr_set_si(p[0], 1, RND);
     mpfr_set_si(p[1], 3, RND);
@@ -157,7 +143,7 @@ int main (int argc, char **argv) {
     mpfr_set_si(p[7], -2, RND);
     CHECK(!mpfr_cmp_ld(*horner(p, 7, D_2), 201.0L)); fprintf(stderr, ". %sOK%s\n", GRN, NRM);
 
-    fprintf(stderr, "Recurrence Relations %sx = %s%s%.1Lf%s\n", MGT, NRM, WHT, mpfr_get_ld(x[0], RND), NRM);
+    fprintf(stderr, "Taylor Arithmetic %sx = %s%.1Lf%s\n", GRY, WHT, mpfr_get_ld(x[0], RND), NRM);
     bool positive = mpfr_sgn(x[0]) > 0, non_zero = mpfr_zero_p(x[0]) == 0, lt_pi_2 = mpfr_cmpabs(x[0], PI_2) < 0;
     series r1 = tsm_jet(n), r2 = tsm_jet(n), r3 = tsm_jet(n), S1 = tsm_const(n, D1);
     series abs_x = tsm_jet(n), inv_x = tsm_jet(n), sqrt_x = tsm_jet(n), ln_x = tsm_jet(n);
@@ -232,7 +218,7 @@ int main (int argc, char **argv) {
     if (debug) fprintf(stderr, "\n");
 
     name = "arsinh(sinh(x)) == x"; ad_asin(r1, r2, sinh_x, false); compare(name, r1, x);
-    name = "arcosh(cosh(x)) == |x|"; ad_acos(r1, r2, cosh_x, false); non_zero ? compare(name, r1, abs_x) : skip(name);
+    name = "arcosh(cosh(x)) == |x|"; if (non_zero) {ad_acos(r1, r2, cosh_x, false); compare(name, r1, abs_x);} else skip(name);
     name = "artanh(tanh(x)) == x"; ad_atan(r1, r2, tanh_x, false); compare(name, r1, x);
 
     if (debug) fprintf(stderr, "\n");
@@ -246,25 +232,25 @@ int main (int argc, char **argv) {
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "arcsin(sin(x)) == x"; ad_asin(r1, r2, sin_x, true); compare(name, r1, x);
-    name = "arccos(cos(x)) == |x|"; ad_acos(r1, r2, cos_x, true); non_zero ? compare(name, r1, abs_x) : skip(name);
-    name = "arctan(tan(x)) == x"; ad_atan(r1, r2, tan_x, true); compare(name, r1, x);
+    name = "arcsin(sin(x)) == x"; if (lt_pi_2) {ad_asin(r1, r2, sin_x, true); compare(name, r1, x);} else skip(name);
+    name = "arccos(cos(x)) == |x|"; if (non_zero) {ad_acos(r1, r2, cos_x, true); compare(name, r1, abs_x);} else skip(name);
+    name = "arctan(tan(x)) == x"; if (lt_pi_2) {ad_atan(r1, r2, tan_x, true); compare(name, r1, x);} else skip(name);
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "arsinh(tan(x)) == gd^-1 x"; ad_asin(r1, r2, tan_x, false); compare(name, gd_1, r1);
+    name = "arsinh(tan(x)) == gd^-1 x"; if (lt_pi_2) {ad_asin(r1, r2, tan_x, false); compare(name, gd_1, r1);} else skip(name);
     name = "artanh(sin(x)) == gd^-1 x"; ad_atan(r1, r2, sin_x, false); compare(name, gd_1, r1);
-    name = "arcsin(tanh(gd^-1 x)) == x"; ad_tan_sec2(r3, r2, gd_1, false); ad_asin(r1, r2, r3, true); compare(name, r1, x);
-    name = "arctan(sinh(gd^-1 x)) == x"; ad_sin_cos(r3, r2, gd_1, false); ad_atan(r1, r2, r3, true); compare(name, r1, x);
+    name = "arcsin(tanh(gd^-1 x)) == x"; if (lt_pi_2) {ad_tan_sec2(r3, r2, gd_1, false); ad_asin(r1, r2, r3, true); compare(name, r1, x);} else skip(name);
+    name = "arctan(sinh(gd^-1 x)) == x"; if (lt_pi_2) {ad_sin_cos(r3, r2, gd_1, false); ad_atan(r1, r2, r3, true); compare(name, r1, x);} else skip(name);
 
     if (debug) fprintf(stderr, "\n");
-    fprintf(stderr, "%sTotal%s: %d, %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
-    if (skipped) fprintf(stderr, ", %sSKIPPED%s %d", YLW, NRM, skipped);
+    fprintf(stderr, "%sTotal%s %d  %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
+    if (skipped) fprintf(stderr, "  %sSKIPPED%s %d", YLW, NRM, skipped);
     if (passed == total - skipped) {
-        fprintf(stderr, "\nDelta %s%.1Le%s %s%s%s k == %d\n", WHT, mpfr_get_ld(delta_max, RND), NRM, MGT, name_max, NRM, k_max);
+        fprintf(stderr, "\n%sDelta%s %.1Le %s%s%s %sk == %s%s\n", GRY, NRM, mpfr_get_ld(delta_max, RND), BLU, name_max, NRM, GRY, name_max, NRM);
         return 0;
     } else {
-        fprintf(stderr, ", %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);
+        fprintf(stderr, "  %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);
         return 3;
     }
 }

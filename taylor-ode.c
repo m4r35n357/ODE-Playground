@@ -175,7 +175,7 @@ real *t_ln (series u, series e, int k) {
 }
 
 pair t_asin (series u, series c, series s, int k, bool trig) {
-    CHECK(trig ? mpfr_cmpabs_ui(s[0], 1) <= 0 : true); CHECK(u != c && u != s && c != s);
+    CHECK(trig ? mpfr_cmpabs_ui(s[0], 1) < 0 : true); CHECK(u != c && u != s && c != s);
     if (!k) {
         trig ? mpfr_asin(u[k], s[k], RND) : mpfr_asinh(u[k], s[k], RND);
         trig ? mpfr_cos(c[k], u[k], RND) : mpfr_cosh(c[k], u[k], RND);
@@ -187,7 +187,7 @@ pair t_asin (series u, series c, series s, int k, bool trig) {
 }
 
 pair t_acos (series u, series s, series c, int k, bool trig) {
-    CHECK(trig ? mpfr_cmpabs_ui(c[0], 1) <= 0 : mpfr_cmp_si(c[0], 1) >= 0); CHECK(u != s && u != c && s != c);
+    CHECK(trig ? mpfr_cmpabs_ui(c[0], 1) < 0 : mpfr_cmp_si(c[0], 1) > 0); CHECK(u != s && u != c && s != c);
     if (!k) {
         trig ? mpfr_acos(u[k], c[k], RND) : mpfr_acosh(u[k], c[k], RND);
         trig ? mpfr_sin(s[k], u[k], RND) : mpfr_sinh(s[k], u[k], RND);
@@ -200,7 +200,7 @@ pair t_acos (series u, series s, series c, int k, bool trig) {
 }
 
 pair t_atan (series u, series s, series t, int k, bool trig) {
-    CHECK(trig ? true : mpfr_cmpabs_ui(t[0], 1) <= 0); CHECK(u != s && u != t && s != t);
+    CHECK(trig ? true : mpfr_cmpabs_ui(t[0], 1) < 0); CHECK(u != s && u != t && s != t);
     if (!k) {
         trig ? mpfr_atan(u[k], t[k], RND) : mpfr_atanh(u[k], t[k], RND);
         trig ? mpfr_sec(s[k], u[k], RND) : mpfr_sech(s[k], u[k], RND);
