@@ -2,10 +2,7 @@
 #
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 
-args="$0 $*"
-echo "args: \033[1;37m$(($# + 1))\033[0;37m, [ \033[0;35m$args\033[0;37m ]" >&2
-
-user_data="/tmp/$USER/data"
+. ./base.sh
 
 plot () {
 gnuplot << EOF

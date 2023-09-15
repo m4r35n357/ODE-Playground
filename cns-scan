@@ -2,12 +2,8 @@
 #
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 
-args="$0 $*"
-echo "args: \033[1;37m$(($# + 1))\033[0;37m, [ \033[0;35m$args\033[0;37m ]" >&2
-
-user_dir="/tmp/$USER"
-[ ! -d $user_dir ] && mkdir $user_dir
-user_data="$user_dir/data"
+. ./base.sh
+. ./cns-functions.sh
 
 max=$1
 threshold=$2
@@ -20,8 +16,6 @@ case $3 in
 esac
 timestep=$4
 steps=$5
-
-. ./cns-functions.sh
 
 n=2
 while [ $n -le $max ]

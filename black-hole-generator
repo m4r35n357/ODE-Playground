@@ -2,9 +2,7 @@
 #
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 
-user_dir="/tmp/$USER"
-[ ! -d $user_dir ] && mkdir $user_dir
-user_data="$user_dir/data"
+. ./base.sh
 
 choice=$(yad --columns=2 --title="Black Hole Playground" --form --separator=" " --align=right \
     --field="Geodesic Type":CB \

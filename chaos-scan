@@ -3,8 +3,7 @@
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
-args="$0 $*"
-echo "args: \033[1;37m$(($# + 1))\033[0;37m, [ \033[0;35m$args\033[0;37m ]" >&2
+. ./base.sh
 
 start=$1
 end=$2
@@ -16,16 +15,14 @@ shift 4
 datalines=$(($5 + 1))
 command=$*
 
-tmpdir=${TMP_TAYLOR:-/tmp/$USER}
-tmp_raw=${tmpdir}/data
-tmp_valid=${tmpdir}/samples
-filtered=${tmpdir}/chaos
+valid=$user_dir/samples
+filtered=$user_dir/chaos
 for tag in X x Y y Z z
 do
     >${filtered}$tag
 done
-snaps=$tmpdir/snapshots
-[ ! -d $snaps ] && mkdir -p $snaps
+snaps=$user_dir/snapshots
+[ -d $snaps ] || mkdir $snaps
 rm -f $snaps/*.*
 
 xmargin=50
@@ -33,7 +30,7 @@ pwidth=$((steps + 2 * xmargin))
 
 filter () {  # $1 is the turning point tag, $2 is the column containing its data
     data='[^ ][^ ]*'
-    /bin/grep $1 $tmp_valid | /bin/sed "s/\($data\) \($data\) \($data\) .*/$p \\$2/" >>${filtered}$1
+    /bin/grep $1 $valid | /bin/sed "s/\($data\) \($data\) \($data\) .*/$p \\$2/" >>${filtered}$1
 }
 
 snap () {
@@ -48,7 +45,7 @@ set zlabel 'z'
 set xrange [$X_START:$X_END]
 set yrange [$Y_START:$Y_END]
 set zrange [$Z_START:$Z_END]
-splot '$tmp_valid' with lines
+splot '$valid' with lines
 EOF
 }
 
@@ -73,9 +70,9 @@ count=0
 while [ $count -le $steps ]
 do
     percent=$((count / 10))
-    eval $command 2>/dev/null | /usr/bin/tee $tmp_raw | /usr/bin/tail -n $samples >$tmp_valid
+    eval $command 2>/dev/null | /usr/bin/tee $user_data | /usr/bin/tail -n $samples >$valid
     [ $snapshots = "snaps" ] && snap >$snaps/$(printf %06d%s $count)_$p.png 2>/dev/null &
-    if [ $(/usr/bin/wc --lines <$tmp_raw) -eq $datalines ]
+    if [ $(/usr/bin/wc --lines <$user_data) -eq $datalines ]
     then
         echo -n "\r\033[1;37m $percent\033[0;37m%  \033[0;32mLatest value\033[0;37m $p"
         filter 'X' 1 &
@@ -97,6 +94,6 @@ plot X '#000080' x '#004040' qt &
 plot Y '#008000' y '#404000' qt &
 plot Z '#800000' z '#400040' qt &
 
-plot X '#000080' x '#004040' png >${tmpdir}/X.png
-plot Y '#008000' y '#404000' png >${tmpdir}/Y.png
-plot Z '#800000' z '#400040' png >${tmpdir}/Z.png
+plot X '#000080' x '#004040' png >${user_dir}/X.png
+plot Y '#008000' y '#404000' png >${user_dir}/Y.png
+plot Z '#800000' z '#400040' png >${user_dir}/Z.png
