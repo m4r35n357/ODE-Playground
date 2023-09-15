@@ -42,9 +42,9 @@ set view 54.73561,$((count % 360))
 set xlabel 'x'
 set ylabel 'y'
 set zlabel 'z'
-set xrange [$X_START:$X_END]
-set yrange [$Y_START:$Y_END]
-set zrange [$Z_START:$Z_END]
+set xrange [$X_MIN:$X_MAX]
+set yrange [$Y_MIN:$Y_MAX]
+set zrange [$Z_MIN:$Z_MAX]
 splot '$valid' with lines
 EOF
 }
@@ -97,3 +97,5 @@ plot Z '#800000' z '#400040' qt &
 plot X '#000080' x '#004040' png >${user_dir}/X.png
 plot Y '#008000' y '#404000' png >${user_dir}/Y.png
 plot Z '#800000' z '#400040' png >${user_dir}/Z.png
+
+[ $snapshots = "snaps" ] && /usr/bin/ffmpeg -y -framerate 5 -pattern_type glob -i "$snaps/*.png" -c:v libx264 -pix_fmt yuv420p $user_dir/ode.mp4

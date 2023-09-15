@@ -273,13 +273,13 @@ The general idea is to replace one of the model parameters with the string '$p' 
 A fourth-order integrator is sufficient for bifurcation diagrams and will run faster; for this scenario we only care about transitions into and out of chaos, not accuracy within the chaotic regions.
 Progress output (current parameter value) is produced while the script is running.
 ```
-time -p ./chaos-scan 0.177 0.198 10 ./tsm-thomas-std 6 4 0.100 20000 1.0 0.0 0.0 '$p'
-args: 13, [ ./chaos-scan 0.177 0.198 10 ./tsm-thomas-std 6 4 0.100 20000 1.0 0.0 0.0 $p ]
-real 92.67                                                  
-user 95.45
-sys 55.47
+time -p ./chaos-scan .1 .23 10000 no-snaps ./tsm-thomas-std 6 4 0.100 20000 1.0 0.0 0.0 '$p'
+args 14 [ ./chaos-scan .1 .23 10000 no-snaps ./tsm-thomas-std 6 4 0.100 20000 1.0 0.0 0.0 $p ]
+real 179.16
+user 164.32
+sys 107.00
 ```
-Timings are from a Raspberry Pi 4 clocked to 1800 MHz.
+Timings are from a Raspberry Pi 4 clocked at 1800 MHz.
 As well as three "interactive plots" (mouse hover reads out plot coordinates), this produces three PNG files, one each for X, Y, Z.
 You can see them later using any image viewer e.g. ImageMagick (without coordinate readouts of course):
 ```
@@ -291,11 +291,11 @@ feh --slideshow-delay .1 /tmp/$USER/snapshots
 ```
 or make a video:
 ```
-ffmpeg -framerate 5 -pattern_type glob -i "/tmp/$USER/snapshots/*.png" -c:v libx264 -pix_fmt yuv420p ode.mp4
+ffmpeg -framerate 5 -pattern_type glob -i "/tmp/$USER/snapshots/*.png" -c:v libx264 -pix_fmt yuv420p /tmp/$USER/ode.mp4
 ```
 To suppress autoscaling you can provide axis limits to the chaos-scan script via environment variables:
 ```
-time -p X_START=-3 X_END=3 Y_START=-4 Y_END=4 Z_START=0 Z_END=2 ./chaos-scan 0.1 0.35 10000 snaps ./tsm-rf-std 6 4 0.010 50000 0.05 -0.05 0.3 '$p' .1
+time -p X_MIN=-6 X_MAX=6 Y_MIN=-6 Y_MAX=6 Z_MIN=-6 Z_MAX=6 ./chaos-scan .23 .1 10000 snaps ./tsm-thomas-std 6 4 0.100 20000 1.0 0.0 0.0 '$p'
 ```
 you only need to add the ones that you need, and the order doesn't matter.
 
