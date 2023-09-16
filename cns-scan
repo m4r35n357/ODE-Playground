@@ -2,16 +2,13 @@
 #
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 
-args="$0 $*"
-echo "args: \033[1;37m$(($# + 1))\033[0;37m, [ \033[0;35m$args\033[0;37m ]" >&2
-
-user_dir="/tmp/$USER"
-[ ! -d $user_dir ] && mkdir $user_dir
-user_data="$user_dir/data"
+. ./base.sh
+. ./cns-functions.sh
 
 max=$1
 threshold=$2
 shift 2
+processed="$(get_precision $*)"
 
 case $4 in
     "_")  ;;
@@ -20,9 +17,6 @@ esac
 timestep=$5
 steps=$6
 
-. ./cns-functions.sh
-
-processed="$(get_precision $*)"
 n=2
 while [ $n -le $max ]
 do
@@ -63,5 +57,4 @@ set yrange [0:'$max_clean']
 set y2range [0:'$max_cpu']
 plot '$user_data' using 1:2 axes x1y1 title 'CNS' with boxes, '' u 1:3 axes x1y2 t 'CPU' w boxes
 pause mouse close
-print "Done"
 EOF
