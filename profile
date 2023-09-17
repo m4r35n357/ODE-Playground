@@ -1,4 +1,7 @@
 #!/bin/sh
+#
+#  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#
 
 . ./base.sh
 
@@ -6,7 +9,7 @@ method=$1
 prog=$2
 shift 2
 
-echo "\033[33;1mBuilding, please wait . . .\033[0m"
+echo "${YLW}Building, please wait . . .${NRM}"
 case $method in
      'gcc') make clean && make CCC=prof >/dev/null
            $prog $* >/dev/null

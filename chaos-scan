@@ -74,7 +74,7 @@ do
     [ $snapshots = "snaps" ] && snap >$snaps/$(printf %06d%s $count)_$p.png 2>/dev/null &
     if [ $(/usr/bin/wc --lines <$user_data) -eq $datalines ]
     then
-        echo -n "\r\033[1;37m $percent\033[0;37m%  \033[0;32mLatest value\033[0;37m $p"
+        echo -n "\r${WHT} ${percent}${NRM}%  ${GRN}Latest value${NRM} $p"
         filter 'X' 1 &
         filter 'x' 1 &
         filter 'Y' 2 &
@@ -82,7 +82,7 @@ do
         filter 'Z' 3 &
         filter 'z' 3 &
     else
-        echo -n "\r\033[1;37m $percent\033[0;37m%  \033[1;31mLatest value\033[0;37m $p"
+        echo -n "\r${WHT} ${percent}${NRM}%  ${RED}Latest value${NRM} $p"
     fi
     wait
     p=$(echo "$p + $increment;" | /usr/bin/bc)

@@ -1,12 +1,13 @@
 #!/bin/sh
 #
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
-
 set -e
+
+. ./base.sh
 
 make clean
 make -s -j 4 all
 make test-all
 
 echo ""
-echo "\033[33;1mOK, Committing . . .\033[0m"
+echo "${YLW}OK, Committing . . .${NRM}"

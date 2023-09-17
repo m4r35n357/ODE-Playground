@@ -153,8 +153,7 @@ Total: 40, PASSED 40
 ### Code coverage
 
 ```
-make clean && make CCC=cov
-make coverage
+make clean && make CCC=cov && make coverage
 ```
 see local HTML link at the end of the output.
 Note that any of the programs that you run from this point onwards will add to the coverage output.
@@ -165,7 +164,7 @@ Note that any of the programs that you run from this point onwards will add to t
 
 Parameter | Meaning
 ----------|-----------
-1  | gcc|gpt
+1  | gcc/gpt
 2+ | ODE call (-std or -gl)
 
 #### Google performance tools (requires google-perftools & libgoogle-perftools-dev packages on Debian)
