@@ -55,13 +55,13 @@ tests: libad-test
 
 test:
 	@for x in -2 -1.5 -1 -.5 0 .5 1 1.5 2; do ./libad-test 24 1024 20 $$x 1e-64 >/dev/null || exit 1; echo ""; done
-	@echo "\033[1;37mCore Tests Passed\033[0;37m\n"
+	@echo "\033[1;32mCore Tests Passed\033[0;37m\n"
 
 test-all: test
 	@if ! ./tsm-lorenz-std  6 237 8 .01 10000  -15.8 -17.48 35.64  10 28 8 3 >/dev/null; then exit 1; fi
 	@if ! ./tsm-thomas-std 6 237 8 0.100 10000 1.0 0.0 0.0 0.185 >/dev/null; then exit 1; fi
 	@if ! ./tsm-wimol-banlue-std 6 237 8 0.010 10000 1.0 0.1 0.1 1.0 >/dev/null; then exit 1; fi
-	@echo "\n\033[1;37mSanity Tests Passed\033[0;37m"
+	@echo "\n\033[1;32mSanity Tests Passed\033[0;37m"
 
 ctags:
 	@/usr/bin/ctags *.h *.c
@@ -83,6 +83,6 @@ C_OUT_FILE=coverage.info
 coverage: test
 	@lcov --capture --directory . --output-file $(C_OUT_FILE)
 	@genhtml $(C_OUT_FILE) --output-directory $(C_OUT_DIR)
-	@echo "C:      file://$(CURDIR)/$(C_OUT_DIR)/index.html"
+	@echo "\033[1;34mHTML \033[0;36mfile://$(CURDIR)/$(C_OUT_DIR)/index.html\033[0;37m"
 
 -include *.d

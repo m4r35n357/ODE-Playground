@@ -168,14 +168,15 @@ Total: 49, PASSED 28, SKIPPED 21
 #### Code coverage
 Creates a web page summary
 ```
-./coverage
+make clean && make CCC=cov && make coverage
 ```
 The output contains file system links to the HTML results
 
 #### C Code profiling
 Very basic information, included just for completeness
 ```
-./profile
+./profile gpt ./tsm-lorenz-std  6 237 16 .01 1000000  -15.8 -17.48 35.64  10 28 8 3
+./profile gcc ./tsm-lorenz-std  6 237 16 .01 1000000  -15.8 -17.48 35.64  10 28 8 3
 ```
 The results are printed to stdout
 
