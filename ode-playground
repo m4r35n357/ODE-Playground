@@ -28,7 +28,7 @@ case $model in
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
             --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '-15.8' '-18.48' '35.64' '10' '28' '8' '3') & ;;
+                '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
         CNS) ./cns $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
@@ -61,7 +61,7 @@ case $model in
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
             --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
-                '0.0' '-6.78' '0.02' '.2' '.2' '5.7') & ;;
+                '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
         CNS) ./cns $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
@@ -94,7 +94,7 @@ case $model in
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="b" \
             --  '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '0.0' '0.0' '0.185') & ;;
+                '1.0' '0.0' '0.0' '0.185') ;;
         CNS) ./cns $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
@@ -127,7 +127,7 @@ case $model in
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
             --  '6!0..36!3' '8!4..32!1' '0.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
-                '0.05' '-0.05' '0.3' '.2875' '.1') & ;;
+                '0.05' '-0.05' '0.3' '.2875' '.1') ;;
         CNS) ./cns $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
@@ -160,7 +160,7 @@ case $model in
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '0.0' '0.0' '1.4') & ;;
+                '1.0' '0.0' '0.0' '1.4') ;;
         CNS) ./cns $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
@@ -193,7 +193,7 @@ case $model in
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '0.1' '0.1' '1.0') & ;;
+                '1.0' '0.1' '0.1' '1.0') ;;
         CNS) ./cns $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
@@ -226,7 +226,7 @@ case $model in
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
             --  '6!0..36!3' '8!4..32!1' '.001!0.001..0.1!0.001!3' '25000!1..1000000!1000' \
-                '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '2.5') & ;;
+                '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '2.5') ;;
         CNS) ./cns $(yad --columns=2 --title="Yu-Wang" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
@@ -259,7 +259,7 @@ case $model in
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
             --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') & ;;
+                '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
         CNS) ./cns $(yad --columns=2 --title="Bouali" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
@@ -292,7 +292,7 @@ case $model in
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="S" --field="V" \
             --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '1.0' '1.0' '10.0' '4.272') & ;;
+                '1.0' '1.0' '1.0' '10.0' '4.272') ;;
         CNS) ./cns $(yad --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
@@ -325,7 +325,7 @@ case $model in
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="kappa" \
             --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '1.0' '1.0' '6.7' '2.0') & ;;
+                '1.0' '1.0' '1.0' '6.7' '2.0') ;;
         CNS) ./cns $(yad --columns=2 --title="Rucklidge" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
@@ -358,7 +358,7 @@ case $model in
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
             --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '0.1' '0.1' '0.1' '0.446' '1.1') & ;;
+                '0.1' '0.1' '0.1' '0.446' '1.1') ;;
         CNS) ./cns $(yad --columns=2 --title="Genesio-Tesi" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
@@ -391,7 +391,7 @@ case $model in
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
             --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '0.05' '-0.05' '0.3' '0.1' '0.1' '4.2') & ;;
+                '0.05' '-0.05' '0.3' '0.1' '0.1' '4.2') ;;
         CNS) ./cns $(yad --columns=2 --title="ISUC" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":RO \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \

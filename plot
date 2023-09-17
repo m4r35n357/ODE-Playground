@@ -4,8 +4,8 @@
 
 . ./base.sh
 
-plot () {
-gnuplot << EOF
+plot3d () {
+/usr/bin/gnuplot << EOF
 set terminal qt
 set title '$args'
 set xyplane 0
@@ -19,4 +19,5 @@ EOF
 }
 
 $* >$user_data
-plot
+
+plot3d &
