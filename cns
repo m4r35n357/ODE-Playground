@@ -3,14 +3,23 @@
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
-args="$0 $*"
-echo "args: \033[1;37m$(($# + 1))\033[0;37m, [ \033[0;35m$args\033[0;37m ]" >&2
+. ./base.sh
+. ./cns-functions.sh
 
 method=$1
 threshold=$2
 shift 2
 
-. ./cns-functions.sh
+cns_plot () {
+/usr/bin/gnuplot << EOF
+set terminal qt
+set key horizontal left
+set title '$args'
+plot '$fileA' using 4:1 t 'X' w l lc 'dark-red', '' u 4:2 t 'Y' w l lc 'dark-red', '' u 4:3 t 'Z' w l lc 'dark-red', \
+     '$fileB' using 4:1 t 'x' w l lc 'forest-green', '' u 4:2 t 'y' w l lc 'dark-yellow', '' u 4:3 t 'z' w l lc 'dark-turquoise'
+pause mouse close
+EOF
+}
 
 case $method in
     'step2') original=$*
@@ -24,10 +33,4 @@ esac
 
 ./divergence.py $fileA $fileB $threshold
 
- /usr/bin/gnuplot -p << EOF
-set terminal wxt background rgb "grey85"
-set key horizontal left
-set title '$args'
-plot '$fileA' using 4:1 t 'X' w l lc 'dark-red', '' u 4:2 t 'Y' w l lc 'dark-red', '' u 4:3 t 'Z' w l lc 'dark-red', \
-     '$fileB' using 4:1 t 'x' w l lc 'forest-green', '' u 4:2 t 'y' w l lc 'dark-yellow', '' u 4:3 t 'z' w l lc 'dark-turquoise'
-EOF
+cns_plot &
