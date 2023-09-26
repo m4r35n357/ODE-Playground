@@ -15,15 +15,16 @@ shift 4
 datalines=$(($5 + 1))
 command=$*
 
-valid=$user_dir/samples
-filtered=$user_dir/chaos
+valid="$user_dir/samples"
+filtered="$user_dir/chaos"
 for tag in X x Y y Z z
 do
     >${filtered}$tag
 done
-snaps=$user_dir/snapshots
+snaps="$user_dir/snapshots"
 [ -d $snaps ] || mkdir $snaps
 rm -f $snaps/*.*
+video="$user_dir/chaos-scan.mp4"
 
 xmargin=50
 pwidth=$((steps + 2 * xmargin))
@@ -35,7 +36,7 @@ filter () {  # $1 is the turning point tag, $2 is the column containing its data
 
 snap () {
 /usr/bin/gnuplot << EOF
-set terminal pngcairo size 1024,768
+set terminal pngcairo size 1024,768 background rgb "grey20"
 set title '$args'
 set xyplane 0
 set view 54.73561,$((count % 360))
@@ -71,7 +72,7 @@ while [ $count -le $steps ]
 do
     percent=$((count / 10))
     eval $command 2>/dev/null | /usr/bin/tee $user_data | /usr/bin/tail -n $samples >$valid
-    [ $snapshots = "snaps" ] && snap >$snaps/$(printf %06d%s $count)_$p.png 2>/dev/null &
+    [ $snapshots = "snaps" ] && snap >$snaps/$(printf %04d%s $count)_$p.png 2>/dev/null &
     if [ $(/usr/bin/wc --lines <$user_data) -eq $datalines ]
     then
         echo -n "\r${WHT} ${percent}${NRM}%  ${GRN}Latest value${NRM} $p"
@@ -98,4 +99,11 @@ plot X '#000080' x '#004040' png >${user_dir}/X.png
 plot Y '#008000' y '#404000' png >${user_dir}/Y.png
 plot Z '#800000' z '#400040' png >${user_dir}/Z.png
 
-[ $snapshots = "snaps" ] && /usr/bin/ffmpeg -y -framerate 5 -pattern_type glob -i "$snaps/*.png" -c:v libx264 -pix_fmt yuv420p $user_dir/chaos-scan.mp4
+if [ $snapshots = "snaps" ]
+then
+    /usr/bin/ffmpeg -y -framerate 5 -pattern_type glob -i "$snaps/*.png" \
+        -c:v libx264 -pix_fmt yuv420p $user_dir/chaos-scan.mp4
+    echo "\n${GRY} Slideshow [${CYN} feh --slideshow-delay .1 $snaps ${GRY}]${NRM}"
+    echo "${GRY}     Video [${CYN} mplayer $video ${GRY}]${NRM}\n"
+fi
+
