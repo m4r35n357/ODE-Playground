@@ -38,6 +38,7 @@ snap () {
 /usr/bin/gnuplot << EOF
 set terminal pngcairo size 1024,768 background rgb "grey20"
 set title '$args'
+set border lt rgb '#181818'
 set xyplane 0
 set view 54.73561,$((count % 360))
 set xlabel 'x'
@@ -46,7 +47,7 @@ set zlabel 'z'
 set xrange [$X_MIN:$X_MAX]
 set yrange [$Y_MIN:$Y_MAX]
 set zrange [$Z_MIN:$Z_MAX]
-splot '$valid' with lines
+splot '$valid' with lines lt rgb '#a0a0a0' lw 0
 EOF
 }
 
@@ -91,13 +92,13 @@ do
 done
 echo -n "\r                                                            \r"
 
-plot X '#000080' x '#004040' qt &
-plot Y '#008000' y '#404000' qt &
-plot Z '#800000' z '#400040' qt &
+plot X '#0000c0' x '#808000' qt &
+plot Y '#008000' y '#800080' qt &
+plot Z '#c00000' z '#008080' qt &
 
-plot X '#000080' x '#004040' png >${user_dir}/X.png
-plot Y '#008000' y '#404000' png >${user_dir}/Y.png
-plot Z '#800000' z '#400040' png >${user_dir}/Z.png
+plot X '#0000c0' x '#808000' png >${user_dir}/X.png
+plot Y '#00c000' y '#800080' png >${user_dir}/Y.png
+plot Z '#c00000' z '#008080' png >${user_dir}/Z.png
 
 if [ $snapshots = "snaps" ]
 then
