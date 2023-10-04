@@ -1,6 +1,19 @@
+#
+#  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#
+
+GRY='\e[1;30m'
+RED='\e[1;31m'
+GRN='\e[1;32m'
+YLW='\e[1;33m'
+BLU='\e[1;34m'
+MGT='\e[0;35m'
+CYN='\e[0;36m'
+NRM='\e[0;37m'
+WHT='\e[1;37m'
 
 args="$0 $*"
-echo "args \033[1;37m$(($# + 1))\033[0;37m [ \033[0;35m$args\033[0;37m ]" >&2
+echo "${GRY}args ${NRM}$(($# + 1))${GRY} [ ${MGT}${args}${GRY} ]${NRM}" >&2
 
 user_dir="/tmp/$USER"
 [ -d $user_dir ] || mkdir $user_dir

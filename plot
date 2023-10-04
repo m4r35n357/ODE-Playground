@@ -5,10 +5,13 @@
 . ./base.sh
 
 . ./cns-functions.sh
+
+keep=$1
+shift
 set "$(get_precision $*)"
 
-plot () {
-gnuplot << EOF
+plot3d () {
+/usr/bin/gnuplot << EOF
 set terminal qt
 set title '$args'
 set xyplane 0
@@ -21,5 +24,5 @@ pause mouse close
 EOF
 }
 
-$* >$user_data
-plot
+$* | tail -n $keep >$user_data
+plot3d &

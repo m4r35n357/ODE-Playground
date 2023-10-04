@@ -10,6 +10,25 @@ threshold=$2
 shift 2
 processed="$(get_precision $*)"
 
+scan_plot () {
+/usr/bin/gnuplot << EOF
+set terminal qt
+set title noenhanced '$args'
+set key left
+set ytics nomirror
+set y2tics
+set xlabel 'Taylor Series Order'
+set ylabel 'Clean Simulation Time, model units'
+set y2label 'CPU Time, seconds'
+set style fill solid border -1
+set xrange [0:]
+set yrange [0:'$max_clean']
+set y2range [0:'$max_cpu']
+plot '$user_data' using 1:2 axes x1y1 title 'CNS' with boxes, '' u 1:3 axes x1y2 t 'CPU' w boxes
+pause mouse close
+EOF
+}
+
 case $4 in
     "_")  ;;
     *)    echo '"order" argument should be set to "_"'; exit 1;;
@@ -42,19 +61,4 @@ max_clean=$(echo "scale=2; $timestep * $steps;" | /usr/bin/bc)
 set $(tail -1 $user_data)
 max_cpu=$(echo "scale=2; 1.5 * $3;" | /usr/bin/bc)
 
-/usr/bin/gnuplot << EOF
-set terminal qt
-set title noenhanced '$args'
-set key left
-set ytics nomirror
-set y2tics
-set xlabel 'Taylor Series Order'
-set ylabel 'Clean Simulation Time, model units'
-set y2label 'CPU Time, seconds'
-set style fill solid border -1
-set xrange [0:]
-set yrange [0:'$max_clean']
-set y2range [0:'$max_cpu']
-plot '$user_data' using 1:2 axes x1y1 title 'CNS' with boxes, '' u 1:3 axes x1y2 t 'CPU' w boxes
-pause mouse close
-EOF
+scan_plot &
