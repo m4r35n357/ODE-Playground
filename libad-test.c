@@ -35,15 +35,15 @@ static void libad_test_init (void) {
 
 struct Parameters { real a, b, c; };
 
-parameters *tsm_init_p (int argc, char **argv, int order) { (void)argc; (void)argv; (void)order;
-    parameters *p = malloc(sizeof (parameters));
+model *tsm_init_p (int argc, char **argv, int order) { (void)argc; (void)argv; (void)order;
+    model *p = malloc(sizeof (model));
     mpfr_init_set_si(p->a, 1, RND);
     mpfr_init_set_si(p->b, 0, RND);
     mpfr_init_set_si(p->c, -1, RND);
     return p;
 }
 
-void ode (triplet *v, series x, series y, series z, parameters *p, int k) {
+void ode (triplet *v, series x, series y, series z, model *p, int k) {
     mpfr_mul(v->x, p->a, x[k], RND);
     mpfr_mul(v->y, p->b, y[k], RND);
     mpfr_mul(v->z, p->c, z[k], RND);
@@ -105,12 +105,14 @@ int main (int argc, char **argv) {
 
     fprintf(stderr, "%sTaylor Series Method", GRY);
     int steps = 10;
-    series3 *j = malloc(sizeof (series3)); CHECK(j);
-    j->x = tsm_const(n + 1, D1);
-    j->y = tsm_const(n + 1, D1);
-    j->z = tsm_const(n + 1, D1);
+    triplet *v = malloc(sizeof (triplet)); CHECK(v);
+    mpfr_inits(v->x, v->y, v->z, NULL);
+    xyz *_ = malloc(sizeof (xyz)); CHECK(_);
+    _->x = tsm_const(n + 1, D1);
+    _->y = tsm_const(n + 1, D1);
+    _->z = tsm_const(n + 1, D1);
     tsm_init(dp);
-    tsm_stdout(n, D01, steps, j, tsm_init_p(argc, argv, n), clock());
+    tsm(n, D01, steps, v, _, tsm_init_p(argc, argv, n), clock());
     fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);
     real e1, e0, e_1;
     mpfr_inits(e1, e0, e_1, NULL);

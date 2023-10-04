@@ -11,8 +11,8 @@ int main (int argc, char **argv) {
     PRINT_ARGS(argc, argv); CHECK(argc > 9);
 
     int display_precision = (int)strtol(argv[1], NULL, BASE); CHECK(display_precision >= 2);
-    int mpfr_precision_bits = (int)strtol(argv[2], NULL, BASE); CHECK(mpfr_precision_bits >= 53);
-    mpfr_set_default_prec((mpfr_prec_t)mpfr_precision_bits);
+    int precision_in_bits = (int)strtol(argv[2], NULL, BASE); CHECK(precision_in_bits >= 53);
+    mpfr_set_default_prec((mpfr_prec_t)precision_in_bits);
     fprintf(stderr, " %sMPFR default precision:%s %lu bits\n", GRY, NRM, mpfr_get_default_prec());
     int order = (int)strtol(argv[3], NULL, BASE); CHECK(order >= 2);
 
@@ -24,13 +24,16 @@ int main (int argc, char **argv) {
     mpfr_init_set_str(y0, argv[7], BASE, RND);
     mpfr_init_set_str(z0, argv[8], BASE, RND);
 
-    series3 *jets = malloc(sizeof (series3)); CHECK(jets);
+    triplet *lhs = malloc(sizeof (triplet)); CHECK(lhs);
+    mpfr_inits(lhs->x, lhs->y, lhs->z, NULL);
+
+    xyz *jets = malloc(sizeof (xyz)); CHECK(jets);
     jets->x = tsm_const(order + 1, x0);
     jets->y = tsm_const(order + 1, y0);
     jets->z = tsm_const(order + 1, z0);
 
     tsm_init(display_precision);
-    tsm_stdout(order, step_size, steps, jets, tsm_init_p(argc, argv, order), clock());
+    tsm(order, step_size, steps, lhs, jets, tsm_init_p(argc, argv, order), clock());
 
     return 0;
 }

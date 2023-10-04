@@ -4,37 +4,37 @@
  * (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 
 struct Parameters { real alpha, gamma, D1, D4; series a, b, c, _ALPHA, _1; };
 
-parameters *tsm_init_p (int argc, char **argv, int n) {
+model *tsm_init_p (int argc, char **argv, int n) {
     CHECK(argc == 11);
-    parameters *p = malloc(sizeof (parameters));
-    tsm_get_p(argv, argc, &p->alpha, &p->gamma);
-    mpfr_init_set_si(p->D1, 1, RND);
-    mpfr_init_set_si(p->D4, 4, RND);
-    p->a = tsm_jet(n);
-    p->b = tsm_jet(n);
-    p->c = tsm_jet(n);
-    p->_ALPHA = tsm_const(n, p->alpha);
-    p->_1 = tsm_const(n, p->D1);
-    return p;
+    model *_ = malloc(sizeof (model)); CHECK(_);
+    tsm_get_p(argv, argc, &_->alpha, &_->gamma);
+    mpfr_init_set_si(_->D1, 1, RND);
+    mpfr_init_set_si(_->D4, 4, RND);
+    _->a = tsm_jet(n);
+    _->b = tsm_jet(n);
+    _->c = tsm_jet(n);
+    _->_ALPHA = tsm_const(n, _->alpha);
+    _->_1 = tsm_const(n, _->D1);
+    return _;
 }
 
-void ode (triplet *v_k, series x, series y, series z, parameters *p, int k) {
+void ode (triplet *v, series x, series y, series z, model *_, int k) {
     //  x' = y(z - 1 + x^2) + Gx
-    mpfr_sub(p->a[k], *t_sqr(x, k), p->_1[k], RND);
-    mpfr_add(p->a[k], z[k], p->a[k], RND);
-    mpfr_fma(v_k->x, p->gamma, x[k], *t_mul(y, p->a, k), RND);
+    mpfr_sub(_->a[k], *t_sqr(x, k), _->_1[k], RND);
+    mpfr_add(_->a[k], z[k], _->a[k], RND);
+    mpfr_fma(v->x, _->gamma, x[k], *t_mul(y, _->a, k), RND);
     //  y' = x(3z + 1 - x^2) + Gy
-    mpfr_fms(p->b[k], p->D4, z[k], p->a[k], RND);
-    mpfr_fma(v_k->y, p->gamma, y[k], *t_mul(x, p->b, k), RND);
+    mpfr_fms(_->b[k], _->D4, z[k], _->a[k], RND);
+    mpfr_fma(v->y, _->gamma, y[k], *t_mul(x, _->b, k), RND);
     //  z' = -2z(A + xy)
-    mpfr_add(p->c[k], *t_mul(x, y, k), p->_ALPHA[k], RND);
-    mpfr_mul_2si(v_k->z, *t_mul(z, p->c, k), 1, RND);
-    mpfr_neg(v_k->z, v_k->z, RND);
+    mpfr_add(_->c[k], *t_mul(x, y, k), _->_ALPHA[k], RND);
+    mpfr_mul_2si(v->z, *t_mul(z, _->c, k), 1, RND);
+    mpfr_neg(v->z, v->z, RND);
 }

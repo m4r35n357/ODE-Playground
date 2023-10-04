@@ -4,26 +4,26 @@
  * (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 
 struct Parameters { real alpha, kappa; };
 
-parameters *tsm_init_p (int argc, char **argv, int n) { (void)n;
+model *tsm_init_p (int argc, char **argv, int n) { (void)n;
     CHECK(argc == 11);
-    parameters *p = malloc(sizeof (parameters));
-    tsm_get_p(argv, argc, &p->alpha, &p->kappa);
-    return p;
+    model *_ = malloc(sizeof (model)); CHECK(_);
+    tsm_get_p(argv, argc, &_->alpha, &_->kappa);
+    return _;
 }
 
-void ode (triplet *v_k, series x, series y, series z, parameters *p, int k) {
+void ode (triplet *v, series x, series y, series z, model *_, int k) {
     //  x' = ay - kx - yz
-    mpfr_fmms(v_k->x, p->alpha, y[k], p->kappa, x[k], RND);
-    mpfr_sub(v_k->x, v_k->x, *t_mul(y, z, k), RND);
+    mpfr_fmms(v->x, _->alpha, y[k], _->kappa, x[k], RND);
+    mpfr_sub(v->x, v->x, *t_mul(y, z, k), RND);
     //  y' = x
-    mpfr_set(v_k->y, x[k], RND);
+    mpfr_set(v->y, x[k], RND);
     //  z' = y^2 - z
-    mpfr_sub(v_k->z, *t_sqr(y, k), z[k], RND);
+    mpfr_sub(v->z, *t_sqr(y, k), z[k], RND);
 }

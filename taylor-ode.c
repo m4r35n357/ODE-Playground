@@ -11,7 +11,7 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-static real __, _a, _m, _h, _p, _fk, D0, D1, D_1, D2, D_2;
+static real __, _a, _m, _h, _p, _fk, D0, D1, D2, D_1, D_2;
 
 static char format[60];
 
@@ -22,21 +22,22 @@ void tsm_get_p (char **argv, int argc, ...) {
     va_end(_);
 }
 
-series tsm_jet (int k) {
-    CHECK(k > 0);
-    series _ = malloc((size_t)k * sizeof (real)); CHECK(_);
-    for (int i = 0; i < k; i++) mpfr_init(_[i]);
+series tsm_jet (int n) {
+    CHECK(n > 0);
+    series _ = malloc((size_t)n * sizeof (real)); CHECK(_);
+    for (int i = 0; i < n; i++) mpfr_init(_[i]);
     return _;
 }
 
-series tsm_const (int k, real a) {
-    series _ = tsm_jet(k);
-    for (int i = 0; i < k; i++) mpfr_set(_[i], i ? D0 : a, RND);
+series tsm_const (int n, real a) {
+    series _ = tsm_jet(n);
+    for (int i = 0; i < n; i++) mpfr_set(_[i], i ? D0 : a, RND);
     return _;
 }
 
-void tsm_init(int dp) {
+void tsm_init (int dp) {
     sprintf(format, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", dp, dp, dp);
+    mpfr_inits(__, _a, _m, _h, _p, _fk, NULL);
     mpfr_init_set_si(D0, 0, RND);
     mpfr_init_set_si(D1, 1, RND);
     mpfr_init_set_si(D2, 2, RND);
@@ -44,9 +45,9 @@ void tsm_init(int dp) {
     mpfr_init_set_si(D_2, -2, RND);
 }
 
-real *horner (series s, int n, real h) {
+real *horner (series u, int o, real h) {
     mpfr_set_zero(__, 1);
-    for (int i = n; i >= 0; i--) mpfr_fma(__, __, h, s[i], RND);
+    for (int i = o; i >= 0; i--) mpfr_fma(__, __, h, u[i], RND);
     CHECK(mpfr_number_p(__) != 0);
     return &__;
 }
@@ -56,22 +57,20 @@ void _out_ (real x, real y, real z, real h, int step, clock_t since) {
     mpfr_printf(format, x, y, z, __, (double)(clock() - since) / CLOCKS_PER_SEC);
 }
 
-void tsm_stdout (int n, real h, int steps, series3 *j, parameters *p, clock_t t0) {
-    triplet *v_k = malloc(sizeof (triplet)); CHECK(v_k);
-    mpfr_inits(v_k->x, v_k->y, v_k->z, __, _a, _m, _h, _p, _fk, NULL);
+void tsm (int o, real h, int steps, triplet *v, xyz *_, model *p, clock_t t0) {
     for (int step = 0; step < steps; step++) {
-        for (int k = 0; k < n; k++) {
-            ode(v_k, j->x, j->y, j->z, p, k);
-            mpfr_div_si(j->x[k + 1], v_k->x, k + 1, RND);
-            mpfr_div_si(j->y[k + 1], v_k->y, k + 1, RND);
-            mpfr_div_si(j->z[k + 1], v_k->z, k + 1, RND);
+        for (int k = 0; k < o; k++) {
+            ode(v, _->x, _->y, _->z, p, k);
+            mpfr_div_si(_->x[k + 1], v->x, k + 1, RND);
+            mpfr_div_si(_->y[k + 1], v->y, k + 1, RND);
+            mpfr_div_si(_->z[k + 1], v->z, k + 1, RND);
         }
-        _out_(j->x[0], j->y[0], j->z[0], h, step, t0);
-        mpfr_swap(j->x[0], *horner(j->x, n, h));
-        mpfr_swap(j->y[0], *horner(j->y, n, h));
-        mpfr_swap(j->z[0], *horner(j->z, n, h));
+        _out_(_->x[0], _->y[0], _->z[0], h, step, t0);
+        mpfr_swap(_->x[0], *horner(_->x, o, h));
+        mpfr_swap(_->y[0], *horner(_->y, o, h));
+        mpfr_swap(_->z[0], *horner(_->z, o, h));
     }
-    _out_(j->x[0], j->y[0], j->z[0], h, steps, t0);
+    _out_(_->x[0], _->y[0], _->z[0], h, steps, t0);
 }
 
 static real *_cauchy_ (real *_, series b, series a, int k, int k0, int k1) {

@@ -4,28 +4,28 @@
  * (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 
 struct Parameters { real a, b; };
 
-parameters *tsm_init_p (int argc, char **argv, int n) { (void)n;
+model *tsm_init_p (int argc, char **argv, int n) { (void)n;
     CHECK(argc == 11);
-    parameters *p = malloc(sizeof (parameters));
-    tsm_get_p(argv, argc, &p->a, &p->b);
-    return p;
+    model *_ = malloc(sizeof (model)); CHECK(_);
+    tsm_get_p(argv, argc, &_->a, &_->b);
+    return _;
 }
 
-void ode (triplet *v_k, series x, series y, series z, parameters *p, int k) {
+void ode (triplet *v, series x, series y, series z, model *_, int k) {
     //  x' = y
-    mpfr_set(v_k->x, y[k], RND);
+    mpfr_set(v->x, y[k], RND);
     //  y' = z
-    mpfr_set(v_k->y, z[k], RND);
+    mpfr_set(v->y, z[k], RND);
     //  z' = - Az - By - x(1 + x)
-    mpfr_fmma(v_k->z, p->a, z[k], p->b, y[k], RND);
-    mpfr_add(v_k->z, v_k->z, x[k], RND);
-    mpfr_add(v_k->z, v_k->z, *t_sqr(x, k), RND);
-    mpfr_neg(v_k->z, v_k->z, RND);
+    mpfr_fmma(v->z, _->a, z[k], _->b, y[k], RND);
+    mpfr_add(v->z, v->z, x[k], RND);
+    mpfr_add(v->z, v->z, *t_sqr(x, k), RND);
+    mpfr_neg(v->z, v->z, RND);
 }

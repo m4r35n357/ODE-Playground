@@ -1,30 +1,31 @@
 /*
- * Burke & Shaw System http://www.atomosyd.net/spip.php?article33
+ * Burke & Shaw System - http://www.atomosyd.net/spip.php?article33
  *
  * (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-struct Parameters { real s, v; };
+struct Parameters { real s, v; series _V; };
 
-parameters *tsm_init_p (int argc, char **argv, int n) { (void)n;
+model *tsm_init_p (int argc, char **argv, int n) { (void)n;
     CHECK(argc == 11);
-    parameters *p = malloc(sizeof (parameters));
-    tsm_get_p(argv, argc, &p->s, &p->v);
-    return p;
+    model *_ = malloc(sizeof (model)); CHECK(_);
+    tsm_get_p(argv, argc, &_->s, &_->v);
+    _->_V = tsm_const(n, _->v);
+    return _;
 }
 
-void ode (triplet *v_k, series x, series y, series z, parameters *p, int k) {
+void ode (triplet *v, series x, series y, series z, model *_, int k) {
     //  x' = - S(x + y)
-    mpfr_fmma(v_k->x, p->s, x[k], p->s, y[k], RND);
-    mpfr_neg(v_k->x, v_k->x, RND);
+    mpfr_fmma(v->x, _->s, x[k], _->s, y[k], RND);
+    mpfr_neg(v->x, v->x, RND);
     //  y' = - (Sxz + y)
-    mpfr_fma(v_k->y, p->s, *t_mul(x, z, k), y[k], RND);
-    mpfr_neg(v_k->y, v_k->y, RND);
+    mpfr_fma(v->y, _->s, *t_mul(x, z, k), y[k], RND);
+    mpfr_neg(v->y, v->y, RND);
     //  z' = Sxy + V
-    mpfr_fma(v_k->z, p->s, *t_mul(x, y, k), p->v, RND);
+    mpfr_fma(v->z, _->s, *t_mul(x, y, k), _->_V[k], RND);
 }

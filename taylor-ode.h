@@ -14,7 +14,7 @@
 /*
  * Client model data
  */
-typedef struct Parameters parameters;
+typedef struct Parameters model;
 
 /*
  * Main floating point type
@@ -29,9 +29,9 @@ typedef real *series;
 /*
  * Combined x, y, z series
  */
-typedef struct triple_s {
+typedef struct ts3 {
     series x, y, z;
-} series3;
+} xyz;
 
 /*
  * For returning x, y, z velocities from the model
@@ -82,12 +82,7 @@ typedef struct pair_m {
 /*
  * Prints a line of data to stdout
  */
-void _out_ (real x, real y, real z, real h, int step, clock_t since);
-
-/*
- * Initialize constants
- */
-void tsm_init(int display_precision);
+void _out_ (real x, real y, real z, real step_size, int step, clock_t since);
 
 /*
  * Retrieves ODE parameters from the tail of the command (arguments 9 onwards)
@@ -105,14 +100,19 @@ series tsm_jet (int size);
 series tsm_const (int size, real a);
 
 /*
+ * Initialize constants
+ */
+void tsm_init (int display_precision);
+
+/*
  * Safely and efficiently evaluates a polynomial of degree n, with the coefficients in S, and the variable in h
  */
-real *horner (series S, int n, real h);
+real *horner (series U, int order, real step_size);
 
 /*
  *  Run TSM, send data to stdout
  */
-void tsm_stdout (int n, real h, int steps, series3 *jets, parameters *P, clock_t since);
+void tsm (int order, real step_size, int steps, triplet *V, xyz *JETS, model *p, clock_t since);
 
 /*
  * Obligatory client method signatures
@@ -121,12 +121,12 @@ void tsm_stdout (int n, real h, int steps, series3 *jets, parameters *P, clock_t
 /*
  * Populate parameter data from command arguments
  */
-parameters *tsm_init_p (int argc, char **argv, int order);
+model *tsm_init_p (int argc, char **argv, int order);
 
 /*
  * Calculate kth components of the velocity jet V, using the ODE model together with the functions below as necessary.
  */
-void ode (triplet *V, series X, series Y, series Z, parameters *P, int k);
+void ode (triplet *V, series X, series Y, series Z, model *p, int k);
 
 /*
  * Basic Taylor Series functions
