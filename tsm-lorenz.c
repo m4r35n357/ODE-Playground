@@ -8,21 +8,21 @@
 #include <stdlib.h>
 #include "taylor-ode.h"
 
-struct Parameters { real sigma, rho, beta; };
+struct Parameters { real s, r, b; };
 
-parameters *tsm_init_p (int argc, char **argv, int n) { (void)n;
+model *tsm_init_p (int argc, char **argv, int n) { (void)n;
     CHECK(argc == 12);
-    parameters *_ = malloc(sizeof (parameters)); CHECK(_);
+    model *_ = malloc(sizeof (model)); CHECK(_);
     real d;
-    tsm_get_p(argv, argc, &_->sigma, &_->rho, &_->beta, &d);
-    _->beta /= d;
+    tsm_get_p(argv, argc, &_->s, &_->r, &_->b, &d);
+    _->b /= d;
     return _;
 }
 
-triplet ode (series x, series y, series z, parameters *_, int k) {
+triplet ode (series x, series y, series z, model *_, int k) {
     return (triplet) {
-        .x = _->sigma * (y[k] - x[k]),
-        .y = _->rho * x[k] - y[k] - t_mul(x, z, k),
-        .z = t_mul(x, y, k) - _->beta * z[k]
+        .x = _->s * (y[k] - x[k]),
+        .y = _->r * x[k] - y[k] - t_mul(x, z, k),
+        .z = t_mul(x, y, k) - _->b * z[k]
     };
 }

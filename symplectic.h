@@ -14,7 +14,7 @@ controls *symp_get_c (int argc, char **argv);
 /*
  * Get model data from the command
  */
-parameters *symp_init_p (int argc, char **argv);
+model *symp_init_p (int argc, char **argv);
 
 /*
  * "Logarithmic" error function
@@ -24,29 +24,29 @@ real error (real e);
 /*
  * To pass a plotter as parameter
  */
-typedef void (*plotter)(int dp, parameters *params, real t);
+typedef void (*plotter)(int dp, model *p, real t);
 
 /*
  * To pass an integrator as parameter
  */
-typedef void (*integrator)(controls *cont, parameters *params, real h);
+typedef void (*integrator)(controls *c, model *p, real h);
 
 /*
  * Coordinate updater dq = (dH/dp).dt
  */
-void update_q (parameters *p, real c);
+void update_q (model *p, real c);
 
 /*
  * Momentum updater dp = -(dH/dq).dt
  */
-void update_p (parameters *p, real d);
+void update_p (model *p, real d);
 
 /*
  * Call the symplectic solver
  */
-void solve (char **argv, controls *cont, parameters *p, plotter output);
+void solve (char **argv, controls *c, model *p, plotter output);
 
 /*
  * Call the symplectic generator
  */
-bool generate (controls *cont, parameters *p);
+bool generate (controls *c, model *p);

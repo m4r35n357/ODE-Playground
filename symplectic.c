@@ -14,7 +14,7 @@ controls *symp_get_c (int argc, char **argv) {
     controls *_ = malloc(sizeof (controls)); CHECK(_);
     _->looping = false;
     _->order = (int)strtol(argv[2], NULL, BASE); CHECK(_->order > 0 && _->order % 2 == 0);
-    _->step_size = strtold(argv[3], NULL);       CHECK(_->step_size > 0.0L);
+    _->h = strtold(argv[3], NULL);               CHECK(_->h > 0.0L);
     _->steps = (int)strtol(argv[4], NULL, BASE); CHECK(_->steps >= 0 && _->steps <= 1000000);
     return _;
 }
@@ -23,47 +23,47 @@ real error (real e) {
     return - log10l(fabsl(e) >= 1e-36L ? fabsl(e) : 1e-36L);
 }
 
-static void second_order (controls *cont, parameters *p, real cd) { (void)cont;
+static void second_order (controls *cont, model *p, real cd) { (void)cont;
     update_q(p, cd * 0.5L);
     update_p(p, cd);
     update_q(p, cd * 0.5L);
 }
 
-static void suzuki (controls *c, parameters *p, integrator base, real cd, pair weights) {
+static void suzuki (controls *c, model *p, integrator base, real cd, pair weights) {
     for (int step = 0; step < 5; step++) {
         base(c, p, cd * (step == 2 ? weights.b : weights.a));
     }
 }
 
-static void _base4 (controls *c, parameters *p, real cd) {
+static void _base4 (controls *c, model *p, real cd) {
     suzuki(c, p, second_order, cd, c->r2);
 }
 
-static void fourth_order (controls *c, parameters *p, real h) {
+static void fourth_order (controls *c, model *p, real h) {
     _base4(c, p, h);
 }
 
-static void _base6 (controls *c, parameters *p, real cd) {
+static void _base6 (controls *c, model *p, real cd) {
     suzuki(c, p, _base4, cd, c->r4);
 }
 
-static void sixth_order (controls *c, parameters *p, real h) {
+static void sixth_order (controls *c, model *p, real h) {
     _base6(c, p, h);
 }
 
-static void _base8 (controls *c, parameters *p, real cd) {
+static void _base8 (controls *c, model *p, real cd) {
     suzuki(c, p, _base6, cd, c->r6);
 }
 
-static void eightth_order (controls *c, parameters *p, real h) {
+static void eightth_order (controls *c, model *p, real h) {
     _base8(c, p, h);
 }
 
-static void _base10 (controls *c, parameters *p, real cd) {
+static void _base10 (controls *c, model *p, real cd) {
     suzuki(c, p, _base8, cd, c->r8);
 }
 
-static void tenth_order (controls *c, parameters *p, real h) {
+static void tenth_order (controls *c, model *p, real h) {
     _base10(c, p, h);
 }
 
@@ -85,21 +85,21 @@ static integrator get_integrator (controls *c) {
     return _;
 }
 
-void solve (char **argv, controls *c, parameters *p, plotter output) {
+void solve (char **argv, controls *c, model *p, plotter output) {
     int _ = (int)strtol(argv[1], NULL, BASE); CHECK(_ >= 1 && _ <= 32); // display precision
     integrator evolve = get_integrator(c);
     for (int step = 0; step < c->steps; step++) {
-        output(_, p, step * c->step_size);
-        evolve(c, p, c->step_size);
+        output(_, p, step * c->h);
+        evolve(c, p, c->h);
     }
-    output(_, p, c->steps * c->step_size);
+    output(_, p, c->steps * c->h);
 }
 
-bool generate (controls *c, parameters *p) {
+bool generate (controls *c, model *p) {
     integrator evolve = get_integrator(c);
     if (c->looping) goto resume; else c->looping = true;
     for (c->step = 0; c->step < c->steps; c->step++) {
-        evolve(c, p, c->step_size);
+        evolve(c, p, c->h);
         return true;
         resume: ;
     }

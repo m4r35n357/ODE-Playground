@@ -51,7 +51,7 @@ typedef long double real;
 /*
  * Client model data
  */
-typedef struct Parameters parameters;
+typedef struct Parameters model;
 
 /*
  * For returning combined values from trig/hyp functions
@@ -73,6 +73,6 @@ typedef struct triple_l {
 typedef struct Controls {
     bool looping;         // generators only
     int order, step, steps;
-    real step_size;
+    real h;
     pair r2, r4, r6, r8;  // symplectic only
 } controls;

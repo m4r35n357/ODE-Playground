@@ -9,12 +9,12 @@
 #include "taylor-ode.h"
 #include "opengl.h"
 
-static parameters *m;  // the model
-static series3 *jets;
+static model *m;  // the model
+static xyz *jets;
 
 point get_current_point (void *data) {
-    series3 *j = (series3 *)data;
-    return (point){(float)j->x[0], (float)j->y[0], (float)j->z[0]};
+    xyz *_ = (xyz *)data;
+    return (point){(float)_->x[0], (float)_->y[0], (float)_->z[0]};
 }
 
 void Animate () {
@@ -29,7 +29,7 @@ void Animate () {
 
     if (osd_active) {
         glColor3f(0.0F, 0.5F, 0.5F);
-        sprintf(hud, "t: %.1Lf  x: % .1lf  y: % .1lf  z: % .1lf  ", c->step * c->step_size, p.a, p.b, p.c);
+        sprintf(hud, "t: %.1Lf  x: % .1lf  y: % .1lf  z: % .1lf  ", c->step * c->h, p.a, p.b, p.c);
         osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, hud);
         osd_summary();
     }

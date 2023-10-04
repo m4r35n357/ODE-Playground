@@ -11,14 +11,14 @@
 #include "h-kerr.h"
 #include "opengl.h"
 
-static parameters *k;  // the model
+static model *k;  // the model
 
 static real RAD_TO_DEG;
 
 point get_current_point (void *data) {
-    parameters *m = (parameters *)data;
-    real ra_sth = sqrtl(m->ra2.val) * sinl(m->q_th);
-    return (point){(float)(ra_sth * cosl(m->q_ph)), (float)(ra_sth * sinl(m->q_ph)), (float)(m->q_r * cosl(m->q_th))};
+    model *_ = (model *)data;
+    real ra_sth = sqrtl(_->ra2.val) * sinl(_->q_th);
+    return (point){(float)(ra_sth * cosl(_->q_ph)), (float)(ra_sth * sinl(_->q_ph)), (float)(_->q_r * cosl(_->q_th))};
 }
 
 void Animate () {
@@ -62,7 +62,7 @@ void Animate () {
 int main (int argc, char **argv) {
     since = clock();
     c = symp_get_c(argc, argv);
-    k = kerr_get_p(argc, argv, c->step_size);
+    k = kerr_get_p(argc, argv, c->h);
     RAD_TO_DEG = 180.0L / acosl(-1.0L);
 
     length = (int)strtol(argv[1], NULL, BASE); CHECK(length >= 0 && length <= c->steps);

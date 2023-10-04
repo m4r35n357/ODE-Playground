@@ -40,17 +40,17 @@ static void ad_sin_cos (series s, series c, series u, bool trig) { for (int k = 
 
 static void ad_tan_sec2 (series t, series s2, series u, bool trig) { for (int k = 0; k < n; k++) t_tan_sec2(t, s2, u, k, trig); }
 
+static series ad_ln (series u, series e) { for (int k = 0; k < n; k++) t_ln(u, e, k); return u; }
+
+static void ad_asin (series u, series c, series s, bool trig) { for (int k = 0; k < n; k++) t_asin(u, c, s, k, trig); }
+
+static void ad_acos (series u, series s, series c, bool trig) { for (int k = 0; k < n; k++) t_acos(u, s, c, k, trig); }
+
+static void ad_atan (series u, series s, series t, bool trig) { for (int k = 0; k < n; k++) t_atan(u, s, t, k, trig); }
+
 static series ad_pwr (series p, series u, real a) { for (int k = 0; k < n; k++) t_pwr(p, u, a, k); return p; }
 
-static series ad_ln (series l, series u) { for (int k = 0; k < n; k++) t_ln(l, u, k); return l; }
-
-static void ad_asin (series as, series du_df, series u, bool trig) { for (int k = 0; k < n; k++) t_asin(as, du_df, u, k, trig); }
-
-static void ad_acos (series ac, series du_df, series u, bool trig) { for (int k = 0; k < n; k++) t_acos(ac, du_df, u, k, trig); }
-
-static void ad_atan (series at, series du_df, series u, bool trig) { for (int k = 0; k < n; k++) t_atan(at, du_df, u, k, trig); }
-
-triplet ode (series x, series y, series z, parameters *p, int k) {
+triplet ode (series x, series y, series z, model *p, int k) {
     return (triplet) {
         .x = p->a * x[k],
         .y = p->b * y[k],
@@ -147,16 +147,16 @@ int main (int argc, char **argv) {
     CHECK(horner(s, 7, -2.0L) == 201.0L); fprintf(stderr, ".%s OK%s", NRM, GRY);
 
     fprintf(stderr, ", Taylor Series Method ");
-    controls c = {.order=n, .step=0, .steps=10, .step_size=0.1L};
-    parameters p = {.a=1.0L, .b=0.0L, .c=-1.0L};
-    series3 *j = malloc(sizeof (series3)); CHECK(j);
-    j->x = tsm_const(n + 1, 1.0L);
-    j->y = tsm_const(n + 1, 1.0L);
-    j->z = tsm_const(n + 1, 1.0L);
-    while (tsm_gen(&c, j, &p)) fprintf(stderr, ".");
-    CHECK(fabsl(j->x[0] - expl(p.a)) < tolerance);
-    CHECK(fabsl(j->y[0] - expl(p.b)) < tolerance);
-    CHECK(fabsl(j->z[0] - expl(p.c)) < tolerance);
+    controls c = {.order=n, .step=0, .steps=10, .h=0.1L};
+    model p = {.a=1.0L, .b=0.0L, .c=-1.0L};
+    xyz *_ = malloc(sizeof (xyz)); CHECK(_);
+    _->x = tsm_const(n + 1, 1.0L);
+    _->y = tsm_const(n + 1, 1.0L);
+    _->z = tsm_const(n + 1, 1.0L);
+    while (tsm_gen(&c, _, &p)) fprintf(stderr, ".");
+    CHECK(fabsl(_->x[0] - expl(p.a)) < tolerance);
+    CHECK(fabsl(_->y[0] - expl(p.b)) < tolerance);
+    CHECK(fabsl(_->z[0] - expl(p.c)) < tolerance);
     fprintf(stderr, "%s OK\n", NRM);
 
     fprintf(stderr, "Taylor Arithmetic %sx = %s%.1Lf%s\n", GRY, WHT, x[0], NRM);

@@ -10,24 +10,24 @@
 
 struct Parameters { real c, d; };
 
-parameters *symp_init_p (int argc, char **argv) { (void)argc; (void)argv;
+model *symp_init_p (int argc, char **argv) { (void)argc; (void)argv;
     CHECK(argc == 5);
-    parameters *_ = malloc(sizeof (parameters)); CHECK(_);
+    model *_ = malloc(sizeof (model)); CHECK(_);
     _->c = 0.0L;
     _->d = 0.0L;
     return _;
 }
 
-static void plot (int dp, parameters *p, real t) { (void)dp; (void)t;
+static void plot (int dp, model *p, real t) { (void)dp; (void)t;
     printf("%+.3Le %+.3Le\n", p->c, p->d);
 }
 
-void update_q (parameters *p, real c) {
+void update_q (model *p, real c) {
     p->c += c;
     plot(0L, p, 0.0L);
 }
 
-void update_p (parameters *p, real d) {
+void update_p (model *p, real d) {
     p->d += d;
     plot(0L, p, 0.0L);
 }

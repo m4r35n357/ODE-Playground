@@ -10,14 +10,14 @@
 
 struct Parameters { real a, b; };
 
-parameters *tsm_init_p (int argc, char **argv, int n) { (void)n;
+model *tsm_init_p (int argc, char **argv, int n) { (void)n;
     CHECK(argc == 10);
-    parameters *_ = malloc(sizeof (parameters)); CHECK(_);
+    model *_ = malloc(sizeof (model)); CHECK(_);
     tsm_get_p(argv, argc, &_->a, &_->b);
     return _;
 }
 
-triplet ode (series x, series y, series z, parameters *_, int k) {
+triplet ode (series x, series y, series z, model *_, int k) {
     return (triplet) {
         .x = y[k],
         .y = z[k],

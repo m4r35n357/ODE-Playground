@@ -1,6 +1,5 @@
 /*
- * Interface for solving systems of Ordinary Differential Equations
- * using the Taylor Series Method (TSM)
+ * Interface for solving systems of Ordinary Differential Equations using the Taylor Series Method (TSM)
  *
  * (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
@@ -18,19 +17,14 @@ typedef real *series;
 /*
  * Combined x, y, z series
  */
-typedef struct triple_s {
+typedef struct ts3 {
     series x, y, z;
-} series3;
+} xyz;
 
 /*
  * Retrieves integrator control parameters
  */
 controls *tsm_get_c (int argc, char **argv);
-
-/*
- * Initial values for Taylor Series'
- */
-series3 *tsm_init (char **argv, int order);
 
 /*
  * Retrieves ODE parameters from the tail of the command (arguments 8 onwards)
@@ -48,19 +42,24 @@ series tsm_jet (int size);
 series tsm_const (int size, real a);
 
 /*
+ * Initial values for Taylor Series'
+ */
+xyz *tsm_init (char **argv, int order);
+
+/*
  * Safely and efficiently evaluates a polynomial of degree n, with the coefficients in S, and the variable in h
  */
-real horner (series S, int n, real h);
+real horner (series U, int order, real h);
 
 /*
  *  Run TSM, send data to stdout
  */
-void tsm_stdout (int dp, controls *cont, series3 *jets, parameters *P, clock_t since);
+void tsm_stdout (int dp, controls *c, xyz *jets, model *p, clock_t since);
 
 /*
  * Generator (step-wise) implementation of TSM
  */
-bool tsm_gen (controls *cont, series3 *jets, parameters *P);
+bool tsm_gen (controls *c, xyz *jets, model *p);
 
 /*
  * Obligatory client method signatures
@@ -69,12 +68,12 @@ bool tsm_gen (controls *cont, series3 *jets, parameters *P);
 /*
  * Populate parameter data from command arguments
  */
-parameters *tsm_init_p (int argc, char **argv, int order);
+model *tsm_init_p (int argc, char **argv, int order);
 
 /*
  * Calculate kth components of the velocity jet V, using the ODE model together with the functions below as necessary.
  */
-triplet ode (series X, series Y, series Z, parameters *P, int k);
+triplet ode (series X, series Y, series Z, model *p, int k);
 
 /*
  * Basic Taylor Series functions

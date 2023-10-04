@@ -20,10 +20,10 @@ struct Parameters {
 /*
  * Get model data from the command
  */
-parameters *kerr_get_p (int argc, char **argv, real step);
+model *kerr_get_p (int argc, char **argv, real step);
 
 real elevation_to_colatitude (real elevation);
 
-real sigma (parameters *bh);
+real sigma (model *bh);
 
-pair gamma_v (parameters *bh, real sigma);
+pair gamma_v (model *bh, real sigma);

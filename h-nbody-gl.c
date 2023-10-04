@@ -10,11 +10,11 @@
 #include "opengl.h"
 #include "h-nbody.h"
 
-static parameters *nb;  // the model
+static model *nb;  // the model
 
 point get_current_point (void *data) {
-    body *b = (body *)data;
-    return (point){(float)b->x, (float)b->y, (float)b->z};
+    body *_ = (body *)data;
+    return (point){(float)_->x, (float)_->y, (float)_->z};
 }
 
 void Animate () {
@@ -35,7 +35,7 @@ void Animate () {
     if (osd_active) {
         glColor3f(0.0F, 0.5F, 0.5F);
         real h = hamiltonian(nb);
-        sprintf(hud, "t: %.1Lf  h: %.6Le  ~sf: %.1Lf", c->step * c->step_size, h, error(h - nb->h0));
+        sprintf(hud, "t: %.1Lf  h: %.6Le  ~sf: %.1Lf", c->step * c->h, h, error(h - nb->h0));
         osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, hud);
         osd_summary();
     }

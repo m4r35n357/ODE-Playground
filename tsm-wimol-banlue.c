@@ -10,9 +10,9 @@
 
 struct Parameters { real a; series tx, sx, _A; };
 
-parameters *tsm_init_p (int argc, char **argv, int n) {
+model *tsm_init_p (int argc, char **argv, int n) {
     CHECK(argc == 9);
-    parameters *_ = malloc(sizeof (parameters)); CHECK(_);
+    model *_ = malloc(sizeof (model)); CHECK(_);
     tsm_get_p(argv, argc, &_->a);
     _->tx = tsm_jet(n);
     _->sx = tsm_jet(n);
@@ -20,7 +20,7 @@ parameters *tsm_init_p (int argc, char **argv, int n) {
     return _;
 }
 
-triplet ode (series x, series y, series z, parameters *_, int k) {
+triplet ode (series x, series y, series z, model *_, int k) {
     t_tan_sec2(_->tx, _->sx, x, k, false);
     return (triplet) {
         .x = y[k] - x[k],

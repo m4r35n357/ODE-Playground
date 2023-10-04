@@ -10,9 +10,9 @@
 
 struct Parameters { real a, b, c, d; series sa, sb, _1; };
 
-parameters *tsm_init_p (int argc, char **argv, int n) {
+model *tsm_init_p (int argc, char **argv, int n) {
     CHECK(argc == 12);
-    parameters *_ = malloc(sizeof (parameters)); CHECK(_);
+    model *_ = malloc(sizeof (model)); CHECK(_);
     tsm_get_p(argv, argc, &_->a, &_->b, &_->c, &_->d);
     _->sa = tsm_jet(n);
     _->sb = tsm_jet(n);
@@ -20,7 +20,7 @@ parameters *tsm_init_p (int argc, char **argv, int n) {
     return _;
 }
 
-triplet ode (series x, series y, series z, parameters *_, int k) {
+triplet ode (series x, series y, series z, model *_, int k) {
     _->sa[k] = _->_1[k] - y[k];
     _->sb[k] = _->_1[k] - t_sqr(x, k);
     return (triplet) {

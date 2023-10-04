@@ -20,14 +20,14 @@ struct Parameters {
 /*
  * Get a blob of model data from the command to be passed into solve()
  */
-parameters *get_p_nbody (int argc, char **argv);
+model *get_p_nbody (int argc, char **argv);
 
 /*
  * Calculate the centre of mass of the system
  */
-void reset_cog (parameters *nb);
+void reset_cog (model *nb);
 
 /*
  * Hamiltonian
  */
-real hamiltonian (parameters *nb);
+real hamiltonian (model *nb);

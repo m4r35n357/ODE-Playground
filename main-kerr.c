@@ -17,7 +17,7 @@ static real v2 (real vt, real vr, real vth, real vph, real a, real ra2, real sth
     return sth2 / S * va * va + vr * vr / D / S + vth * vth / S - D / S * vb * vb;
 }
 
-static void plot (int dp, parameters *p, real mino) {
+static void plot (int dp, model *p, real mino) {
     real S = sigma(p);
     pair Y = gamma_v(p, S);
     p->tau += p->step_size * S;
@@ -32,6 +32,6 @@ static void plot (int dp, parameters *p, real mino) {
 
 int main (int argc, char **argv) {
     controls *c = symp_get_c(argc, argv);
-    solve(argv, c, kerr_get_p(argc, argv, c->step_size), plot);
+    solve(argv, c, kerr_get_p(argc, argv, c->h), plot);
     return 0;
 }

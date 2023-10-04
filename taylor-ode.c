@@ -15,7 +15,7 @@ controls *tsm_get_c (int argc, char **argv) {
     controls *_ = malloc(sizeof (controls)); CHECK(_);
     _->looping = false;
     _->order = (int)strtol(argv[2], NULL, BASE); CHECK(_->order >= 2 && _->order <= 64);
-    _->step_size = strtold(argv[3], NULL);       CHECK(_->step_size > 0.0L);
+    _->h = strtold(argv[3], NULL);               CHECK(_->h > 0.0L);
     _->steps = (int)strtol(argv[4], NULL, BASE); CHECK(_->steps >= 0 && _->steps <= 1000000);
     return _;
 }
@@ -27,29 +27,29 @@ void tsm_get_p (char **argv, int argc, ...) {
     va_end(_);
 }
 
-series tsm_jet (int k) {
-    CHECK(k > 0);
-    series _ = malloc((size_t)k * sizeof (real)); CHECK(_);
+series tsm_jet (int n) {
+    CHECK(n > 0);
+    series _ = malloc((size_t)n * sizeof (real)); CHECK(_);
     return _;
 }
 
-series tsm_const (int k, real a) {
-    series _ = tsm_jet(k);
-    for (int i = 0; i < k; i++) _[i] = i ? 0.0L : a;
+series tsm_const (int n, real a) {
+    series _ = tsm_jet(n);
+    for (int i = 0; i < n; i++) _[i] = i ? 0.0L : a;
     return _;
 }
 
-series3 *tsm_init (char **argv, int order) {
-    series3 *_ = malloc(sizeof (series3)); CHECK(_);
-    _->x = tsm_const(order + 1, strtold(argv[5], NULL));
-    _->y = tsm_const(order + 1, strtold(argv[6], NULL));
-    _->z = tsm_const(order + 1, strtold(argv[7], NULL));
+xyz *tsm_init (char **argv, int o) {
+    xyz *_ = malloc(sizeof (xyz)); CHECK(_);
+    _->x = tsm_const(o + 1, strtold(argv[5], NULL));
+    _->y = tsm_const(o + 1, strtold(argv[6], NULL));
+    _->z = tsm_const(o + 1, strtold(argv[7], NULL));
     return _;
 }
 
-real horner (series s, int n, real h) {
+real horner (series u, int o, real h) {
     real _ = 0.0L;
-    for (int i = n; i >= 0; i--) _ = _ * h + s[i];
+    for (int i = o; i >= 0; i--) _ = _ * h + u[i];
     CHECK(isfinite(_));
     return _;
 }
@@ -63,43 +63,43 @@ static void _out_ (int dp, real x, real y, real z, real t, char *x_tag, char *y_
     }
 }
 
-static void _diff_ (series3 *j, parameters *p, int n) {
-    for (int k = 0; k < n; k++) {
-        triplet _ = ode(j->x, j->y, j->z, p, k);
-        j->x[k + 1] = _.x / (k + 1);
-        j->y[k + 1] = _.y / (k + 1);
-        j->z[k + 1] = _.z / (k + 1);
+static void _diff_ (xyz *_, model *p, int o) {
+    for (int k = 0; k < o; k++) {
+        triplet v = ode(_->x, _->y, _->z, p, k);
+        _->x[k + 1] = v.x / (k + 1);
+        _->y[k + 1] = v.y / (k + 1);
+        _->z[k + 1] = v.z / (k + 1);
     }
 }
 
-static void _next_ (series3 *j, int n, real h) {
-    j->x[0] = horner(j->x, n, h);
-    j->y[0] = horner(j->y, n, h);
-    j->z[0] = horner(j->z, n, h);
+static void _next_ (xyz *_, int o, real h) {
+    _->x[0] = horner(_->x, o, h);
+    _->y[0] = horner(_->y, o, h);
+    _->z[0] = horner(_->z, o, h);
 }
 
-static char *_tag_ (series j, real *slope, char *min, char *max) {
-    char *_ = *slope * j[1] >= 0.0L ? "_" : (j[2] > 0.0L ? min : max);
-    *slope = j[1];
+static char *_tag_ (series u, real *slope, char *min, char *max) {
+    char *_ = *slope * u[1] >= 0.0L ? "_" : (u[2] > 0.0L ? min : max);
+    *slope = u[1];
     return _;
 }
 
-void tsm_stdout (int dp, controls *c, series3 *j, parameters *p, clock_t t0) {
+void tsm_stdout (int dp, controls *c, xyz *_, model *p, clock_t t0) {
     real slopeX = 0.0L, slopeY = 0.0L, slopeZ = 0.0L;
     for (int step = 0; step < c->steps; step++) {
-        _diff_(j, p, c->order);
-        _out_(dp, j->x[0], j->y[0], j->z[0], c->step_size * step,
-             _tag_(j->x, &slopeX, "x", "X"), _tag_(j->y, &slopeY, "y", "Y"), _tag_(j->z, &slopeZ, "z", "Z"), t0);
-        _next_(j, c->order, c->step_size);
+        _diff_(_, p, c->order);
+        _out_(dp, _->x[0], _->y[0], _->z[0], c->h * step,
+             _tag_(_->x, &slopeX, "x", "X"), _tag_(_->y, &slopeY, "y", "Y"), _tag_(_->z, &slopeZ, "z", "Z"), t0);
+        _next_(_, c->order, c->h);
     }
-    _out_(dp, j->x[0], j->y[0], j->z[0], c->step_size * c->steps, "_", "_", "_", t0);
+    _out_(dp, _->x[0], _->y[0], _->z[0], c->h * c->steps, "_", "_", "_", t0);
 }
 
-bool tsm_gen (controls *c, series3 *j, parameters *p) {
+bool tsm_gen (controls *c, xyz *_, model *p) {
     if (c->looping) goto resume; else c->looping = true;
     for (c->step = 0; c->step < c->steps; c->step++) {
-        _diff_(j, p, c->order);
-        _next_(j, c->order, c->step_size);
+        _diff_(_, p, c->order);
+        _next_(_, c->order, c->h);
         return true;
         resume: ;
     }

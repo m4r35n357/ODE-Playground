@@ -18,9 +18,9 @@ struct Parameters {
     real m, q_r, p_r, q_phi, p_phi, h0;
 };
 
-parameters *symp_init_p (int argc, char **argv) { (void)argc;
+model *symp_init_p (int argc, char **argv) { (void)argc;
     CHECK(argc == 8);
-    parameters *_ = malloc(sizeof (parameters)); CHECK(_);
+    model *_ = malloc(sizeof (model)); CHECK(_);
     _->m = strtold(argv[5], NULL);
     _->q_r = strtold(argv[6], NULL);
     _->q_phi = _->p_r = 0.0L;
@@ -29,16 +29,16 @@ parameters *symp_init_p (int argc, char **argv) { (void)argc;
     return _;
 }
 
-void update_q (parameters *_, real c) {
+void update_q (model *_, real c) {
     _->q_r   += c * hamiltonian(_->m, d_dual(_->q_r),  d_var(_->p_r), d_dual(_->p_phi)).dot;
     _->q_phi += c * hamiltonian(_->m, d_dual(_->q_r), d_dual(_->p_r),  d_var(_->p_phi)).dot;
 }
 
-void update_p (parameters *_, real d) {
+void update_p (model *_, real d) {
     _->p_r -= d * hamiltonian(_->m, d_var(_->q_r), d_dual(_->p_r), d_dual(_->p_phi)).dot;
 }
 
-static void plot (int dp, parameters *_, real t) {
+static void plot (int dp, model *_, real t) {
     real h_now = hamiltonian(_->m, d_dual(_->q_r), d_dual(_->p_r), d_dual(_->p_phi)).val;
     printf("%+.*Le %+.*Le %+.3Lf %.6Le %+.*Le %+.*Le\n",
            dp, _->q_r * sinl(_->q_phi), dp, _->q_r * cosl(_->q_phi), 0.0L, t, dp, error(h_now - _->h0), dp, h_now);
