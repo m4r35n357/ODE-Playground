@@ -4,6 +4,9 @@
 
 . ./base.sh
 
+keep=$1
+shift
+
 plot3d () {
 /usr/bin/gnuplot << EOF
 set terminal qt
@@ -18,6 +21,6 @@ pause mouse close
 EOF
 }
 
-$* >$user_data
+$* | tail -n $keep >$user_data
 
 plot3d &
