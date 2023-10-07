@@ -173,7 +173,7 @@ case $model in
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  '32!2..64!1' '1.0' './tsm-halvorsen-std' \
-                '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '12000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '1.4') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB --field="Model":RO \
@@ -239,7 +239,7 @@ case $model in
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
             --  '32!2..64!1' '1.0' './tsm-yu-wang-std' \
-                '6!0..36!3' '_' '.001!0.001..0.1!0.001!3' '25000!1..1000000!1000' \
+                '6!0..36!3' '_' '.001!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '2.5') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Yu-Wang" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB --field="Model":RO \
