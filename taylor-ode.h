@@ -54,7 +54,7 @@ real horner (series U, int order, real h);
 /*
  *  Run TSM, send data to stdout
  */
-void tsm_stdout (int dp, controls *c, xyz *jets, model *p, clock_t since);
+void tsm_stdout (controls *c, xyz *jets, model *p, clock_t since);
 
 /*
  * Generator (step-wise) implementation of TSM

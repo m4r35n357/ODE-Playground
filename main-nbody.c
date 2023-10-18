@@ -19,6 +19,6 @@ static void plot (int dp, model *nb, real t) {
 }
 
 int main (int argc, char **argv) {
-    solve(argv, symp_get_c(argc, argv), get_p_nbody(argc, argv), plot);
+    solve(symp_get_c(argc, argv), get_p_nbody(argc, argv), plot);
     return 0 ;
 }

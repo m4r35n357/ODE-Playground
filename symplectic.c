@@ -12,10 +12,11 @@
 controls *symp_get_c (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     controls *_ = malloc(sizeof (controls)); CHECK(_);
-    _->looping = false;
+    _->dp = (int)strtol(argv[1], NULL, BASE); CHECK(_->dp >= 1 && _->dp <= 32); // display precision
     _->order = (int)strtol(argv[2], NULL, BASE); CHECK(_->order > 0 && _->order % 2 == 0);
     _->h = strtold(argv[3], NULL);               CHECK(_->h > 0.0L);
     _->steps = (int)strtol(argv[4], NULL, BASE); CHECK(_->steps >= 0 && _->steps <= 1000000);
+    _->looping = false;
     return _;
 }
 
@@ -85,14 +86,13 @@ static integrator get_integrator (controls *c) {
     return _;
 }
 
-void solve (char **argv, controls *c, model *p, plotter output) {
-    int _ = (int)strtol(argv[1], NULL, BASE); CHECK(_ >= 1 && _ <= 32); // display precision
+void solve (controls *c, model *p, plotter output) {
     integrator evolve = get_integrator(c);
     for (int step = 0; step < c->steps; step++) {
-        output(_, p, step * c->h);
+        output(c->dp, p, step * c->h);
         evolve(c, p, c->h);
     }
-    output(_, p, c->steps * c->h);
+    output(c->dp, p, c->steps * c->h);
 }
 
 bool generate (controls *c, model *p) {

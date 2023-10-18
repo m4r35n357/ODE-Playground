@@ -44,7 +44,7 @@ void update_p (model *p, real d);
 /*
  * Call the symplectic solver
  */
-void solve (char **argv, controls *c, model *p, plotter output);
+void solve (controls *c, model *p, plotter output);
 
 /*
  * Call the symplectic generator

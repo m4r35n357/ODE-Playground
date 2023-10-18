@@ -36,7 +36,7 @@ filter () {  # $1 is the turning point tag, $2 is the column containing its data
 
 snap () {
 /usr/bin/gnuplot << EOF
-set terminal pngcairo size 1024,768 background rgb "grey20"
+set terminal pngcairo size ${P_WIDTH:-1024},${P_HEIGHT:-768} background rgb "grey20"
 set title '$args'
 set border lt rgb '#181818'
 set xyplane 0

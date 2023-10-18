@@ -97,7 +97,8 @@ static void compare_s_d (char* name, series a, dual b) {
         field_max = "VAL";
     }
     if (fabsl(delta_val) > tolerance) {
-        fprintf(stderr, "%s FAIL%s %s%s%s\n  [0]VAL  LHS: %+.*Le  RHS: %+.*Le  (%+.3Le)\n", RED, NRM, WHT, name, NRM, dp, a[0], dp, b.val, delta_val);
+        fprintf(stderr, "%s FAIL%s %s%s%s\n  [0]VAL  LHS: %+.*Le  RHS: %+.*Le  (%+.3Le)\n",
+                RED, NRM, WHT, name, NRM, dp, a[0], dp, b.val, delta_val);
         return;
     }
     delta_dot = fabsl(a[1] - b.dot);
@@ -107,7 +108,8 @@ static void compare_s_d (char* name, series a, dual b) {
         field_max = "DOT";
     }
     if (fabsl(delta_dot) > tolerance) {
-        fprintf(stderr, "%s FAIL%s %s%s%s\n  [1]DOT  LHS: %+.*Le  RHS: %+.*Le  (%+.3Le)\n", RED, NRM, WHT, name, NRM, dp, a[1], dp, b.dot, delta_dot);
+        fprintf(stderr, "%s FAIL%s %s%s%s\n  [1]DOT  LHS: %+.*Le  RHS: %+.*Le  (%+.3Le)\n",
+                RED, NRM, WHT, name, NRM, dp, a[1], dp, b.dot, delta_dot);
         return;
     }
     if (debug >= 2) fprintf(stderr, "\n");
@@ -160,7 +162,8 @@ int main (int argc, char **argv) {
     fprintf(stderr, "%s OK\n", NRM);
 
     fprintf(stderr, "Taylor Arithmetic %sx = %s%.1Lf%s\n", GRY, WHT, x[0], NRM);
-    bool positive = x[0] > 0.0L, non_zero = x[0] != 0.0L, lt_1 = fabsl(x[0]) < 1.0L, gt_1 = x[0] > 1.0L, lt_pi_2 = fabsl(x[0]) < 0.5L * acosl(-1.0L);
+    bool positive = x[0] > 0.0L, non_zero = x[0] != 0.0L, lt_1 = fabsl(x[0]) < 1.0L, gt_1 = x[0] > 1.0L,
+         lt_pi_2 = fabsl(x[0]) < 0.5L * acosl(-1.0L);
     series r1 = tsm_jet(n), r2 = tsm_jet(n), r3 = tsm_jet(n), S1 = tsm_const(n, 1.0L);
     series abs_x = tsm_jet(n), inv_x = tsm_jet(n), sqrt_x = tsm_jet(n), ln_x = tsm_jet(n);
     if (non_zero) ad_abs(abs_x, x);

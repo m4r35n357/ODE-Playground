@@ -32,6 +32,6 @@ static void plot (int dp, model *p, real mino) {
 
 int main (int argc, char **argv) {
     controls *c = symp_get_c(argc, argv);
-    solve(argv, c, kerr_get_p(argc, argv, c->h), plot);
+    solve(c, kerr_get_p(argc, argv, c->h), plot);
     return 0;
 }

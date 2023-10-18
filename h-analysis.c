@@ -33,6 +33,6 @@ void update_p (model *p, real d) {
 }
 
 int main (int argc, char **argv) {
-    solve(argv, symp_get_c(argc, argv), symp_init_p(argc, argv), plot);
+    solve(symp_get_c(argc, argv), symp_init_p(argc, argv), plot);
     return 0;
 }

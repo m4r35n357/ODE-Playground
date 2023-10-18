@@ -45,6 +45,6 @@ static void plot (int dp, model *_, real t) {
 }
 
 int main (int argc, char **argv) {
-    solve(argv, symp_get_c(argc, argv), symp_init_p(argc, argv), plot);
+    solve(symp_get_c(argc, argv), symp_init_p(argc, argv), plot);
     return 0;
 }
