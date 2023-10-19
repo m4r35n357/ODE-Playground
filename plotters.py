@@ -208,10 +208,12 @@ def mplot_d(model, x_min=-2.0, x_max=2.0, steps=1000, y_min=-10.0, y_max=10.0):
 def msave_s(filename, model, order=12, x_min=-2.0, x_max=2.0, steps=1000, y_min=-10.0, y_max=10.0):
     _plot_s(model, order, x_min, x_max, steps, y_min, y_max)
     pyplot.savefig(filename)
+    #pyplot.close(filename)
 
 def msave_d(filename, model, x_min=-2.0, x_max=2.0, steps=1000, y_min=-10.0, y_max=10.0):
     _plot_d(model, x_min, x_max, steps, y_min, y_max)
     pyplot.savefig(filename)
+    #pyplot.close(filename)
 
 
 if __name__ == "__main__":  # hard-coded example
@@ -275,6 +277,10 @@ for i in range(-50, 51):
     #mplot(f)
     msave_s(f'output/test_{i+50:03d}.png', f)
 
+for i in range(-10, 10):
+    f = lambda a: a.sqr**(0.5 + 0.01 * i)
+    msave_s(f'output/test_{i+10:03d}.png', f)
+
 for i in range(19):
     f = lambda a: (a.sqr + 1 / (10**i)).sqrt
     msave_s(f'output/test_{i:03d}.png', f)
@@ -285,6 +291,7 @@ f = lambda a: - (abs(a) - 1.5)**3 + 4 * (abs(a) - 1.5) - 2
 f = lambda a: a.sin / pi + (3 * a).sin / (3 * pi) + (5 * a).sin / (5 * pi) + (7 * a).sin / (7 * pi)
 
 rm -f output/*.png
-ffmpeg -y -i output/test_%03d.png taylor.mp4
-mplayer -fps 1 taylor.mp4
+ffmpeg -y -framerate 1 -pattern_type glob -i "/tmp/$USER/output/*.png" -c:v libx264 -pix_fmt yuv420p /tmp/$USER/plots.mp4
+#ffmpeg -y -i output/test_%03d.png taylor.mp4
+mplayer /tmp/$USER/plots.mp4
 '''

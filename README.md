@@ -1,6 +1,10 @@
 
 ## NEWS: Basic dialogue box UI for many operations using yad
 
+Once you have set up your virtual environment, you can access many features from the UI using:
+```
+./ode-playground
+```
 Built-in models:
 * tsm-lorenz.py
 * tsm-thomas.py
@@ -215,14 +219,16 @@ from plotters import *
 $ ipython3 -i ipython.py
 ```
 
-### Higher level function analysis
+### Higher level function analysis (via the Python console or ipython)
+
 Plotting function and derivatives, together with root and turning point analysis.
 Scanning and plotting range is -8.0 to 8.0 by default.
 Roots are found via zeros of f[0], turning points by zeros of f[1], and inflections via zeros of f[2].
-scan_d() finds roots only.
-mplot_d() plots the function and its first derivative.
-scan_s() finds roots, turning points and inflections.
-mplot_s() plots the function and its first 12 derivatives by default; 
+
+* scan_d() finds roots only.
+* mplot_d() plots the function and its first derivative.
+* scan_s() finds roots, turning points and inflections.
+* mplot_s() plots the function and its first 12 derivatives by default; 
 
 Partly to verify my own implementation of the Taylor recurrence rules, I have added a demonstration of using series arithmetic to implement Newton's method along the lines of the Matlab implementation described here http://www.neidinger.net/SIAMRev74362.pdf.
 The solver demo can be used to find roots (and also extrema and inflection points by "extending" Newton to higher derivatives) in single variable nonlinear equations.
