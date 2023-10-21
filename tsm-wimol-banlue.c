@@ -8,15 +8,15 @@
 #include <stdlib.h>
 #include "taylor-ode.h"
 
-struct Parameters { real a; series tx, sx, _A; };
+struct Parameters { series tx, sx, A; };
 
 model *tsm_init_p (int argc, char **argv, int n) {
     CHECK(argc == 9);
     model *_ = malloc(sizeof (model)); CHECK(_);
-    tsm_get_p(argv, argc, &_->a);
     _->tx = tsm_jet(n);
     _->sx = tsm_jet(n);
-    _->_A = tsm_const(n, _->a);
+    _->A = tsm_jet(n);
+    tsm_get_p(argv, argc, &_->A[0]);
     return _;
 }
 
@@ -25,6 +25,6 @@ triplet ode (series x, series y, series z, model *_, int k) {
     return (triplet) {
         .x = y[k] - x[k],
         .y = - t_mul(z, _->tx, k),
-        .z = - _->_A[k] + t_mul(x, y, k) + t_abs(y, k)
+        .z = - _->A[k] + t_mul(x, y, k) + t_abs(y, k)
     };
 }

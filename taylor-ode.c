@@ -13,7 +13,7 @@
 controls *tsm_get_c (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     controls *_ = malloc(sizeof (controls)); CHECK(_);
-    _->dp = (int)strtol(argv[1], NULL, BASE); CHECK(_->dp >= 0 && _->dp <= 32);
+    _->dp = (int)strtol(argv[1], NULL, BASE);    CHECK(_->dp >= 0 && _->dp <= 32);
     _->order = (int)strtol(argv[2], NULL, BASE); CHECK(_->order >= 2 && _->order <= 64);
     _->h = strtold(argv[3], NULL);               CHECK(_->h > 0.0L);
     _->steps = (int)strtol(argv[4], NULL, BASE); CHECK(_->steps >= 0 && _->steps <= 1000000);
@@ -23,9 +23,9 @@ controls *tsm_get_c (int argc, char **argv) {
 
 xyz *tsm_init (char **argv, int o) {
     xyz *_ = malloc(sizeof (xyz)); CHECK(_);
-    _->x = tsm_const(o + 1, strtold(argv[5], NULL));
-    _->y = tsm_const(o + 1, strtold(argv[6], NULL));
-    _->z = tsm_const(o + 1, strtold(argv[7], NULL));
+    _->x = tsm_jet(o + 1); _->x[0] = strtold(argv[5], NULL);
+    _->y = tsm_jet(o + 1); _->y[0] = strtold(argv[6], NULL);
+    _->z = tsm_jet(o + 1); _->z[0] = strtold(argv[7], NULL);
     return _;
 }
 
@@ -39,12 +39,7 @@ void tsm_get_p (char **argv, int argc, ...) {
 series tsm_jet (int n) {
     CHECK(n > 0);
     series _ = malloc((size_t)n * sizeof (real)); CHECK(_);
-    return _;
-}
-
-series tsm_const (int n, real a) {
-    series _ = tsm_jet(n);
-    for (int i = 0; i < n; i++) _[i] = i ? 0.0L : a;
+    for (int i = 0; i < n; i++) _[i] = 0.0L;
     return _;
 }
 
@@ -53,15 +48,6 @@ real horner (series u, int o, real h) {
     for (int i = o; i >= 0; i--) _ = _ * h + u[i];
     CHECK(isfinite(_));
     return _;
-}
-
-static void _out_ (int dp, real x, real y, real z, real t, char *x_tag, char *y_tag, char *z_tag, clock_t since) {
-    real _ = (real)(clock() - since) / CLOCKS_PER_SEC;
-    if (dp) {
-        printf("%+.*Le %+.*Le %+.*Le %.6Le %s %s %s %.3Lf\n", dp, x, dp, y, dp, z, t, x_tag, y_tag, z_tag, _);
-    } else {
-        printf("%+La %+La %+La %.6Le %s %s %s %.3Lf\n", x, y, z, t, x_tag, y_tag, z_tag, _);
-    }
 }
 
 static void _diff_ (xyz *_, model *p, int o) {
@@ -79,23 +65,6 @@ static void _next_ (xyz *_, int o, real h) {
     _->z[0] = horner(_->z, o, h);
 }
 
-static char *_tag_ (series u, real *slope, char *min, char *max) {
-    char *_ = *slope * u[1] >= 0.0L ? "_" : (u[2] > 0.0L ? min : max);
-    *slope = u[1];
-    return _;
-}
-
-void tsm_stdout (controls *c, xyz *_, model *p, clock_t t0) {
-    real slopeX = 0.0L, slopeY = 0.0L, slopeZ = 0.0L;
-    for (int step = 0; step < c->steps; step++) {
-        _diff_(_, p, c->order);
-        _out_(c->dp, _->x[0], _->y[0], _->z[0], c->h * step,
-             _tag_(_->x, &slopeX, "x", "X"), _tag_(_->y, &slopeY, "y", "Y"), _tag_(_->z, &slopeZ, "z", "Z"), t0);
-        _next_(_, c->order, c->h);
-    }
-    _out_(c->dp, _->x[0], _->y[0], _->z[0], c->h * c->steps, "_", "_", "_", t0);
-}
-
 bool tsm_gen (controls *c, xyz *_, model *p) {
     if (c->looping) goto resume; else c->looping = true;
     for (c->step = 0; c->step < c->steps; c->step++) {
@@ -105,6 +74,32 @@ bool tsm_gen (controls *c, xyz *_, model *p) {
         resume: ;
     }
     return c->looping = false;
+}
+
+static void _out_ (int dp, real x, real y, real z, real t, char *x_tag, char *y_tag, char *z_tag, clock_t since) {
+    real _ = (real)(clock() - since) / CLOCKS_PER_SEC;
+    if (dp) {
+        printf("%+.*Le %+.*Le %+.*Le %.6Le %s %s %s %.3Lf\n", dp, x, dp, y, dp, z, t, x_tag, y_tag, z_tag, _);
+    } else {
+        printf("%+La %+La %+La %.6Le %s %s %s %.3Lf\n", x, y, z, t, x_tag, y_tag, z_tag, _);
+    }
+}
+
+static char *_tag_ (series u, real *slope, char *min, char *max) {
+    char *_ = *slope * u[1] >= 0.0L ? "_" : (u[2] > 0.0L ? min : max);
+    *slope = u[1];
+    return _;
+}
+
+void tsm_out (controls *c, xyz *_, model *p, clock_t t0) {
+    real slopeX = 0.0L, slopeY = 0.0L, slopeZ = 0.0L;
+    for (int step = 0; step < c->steps; step++) {
+        _diff_(_, p, c->order);
+        _out_(c->dp, _->x[0], _->y[0], _->z[0], c->h * step,
+             _tag_(_->x, &slopeX, "x", "X"), _tag_(_->y, &slopeY, "y", "Y"), _tag_(_->z, &slopeZ, "z", "Z"), t0);
+        _next_(_, c->order, c->h);
+    }
+    _out_(c->dp, _->x[0], _->y[0], _->z[0], c->h * c->steps, "_", "_", "_", t0);
 }
 
 static real _cauchy_ (series b, series a, int k, int k0, int k1) {

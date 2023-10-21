@@ -13,9 +13,9 @@ struct Parameters { real a, b, c, d; series xy, e_xy; };
 model *tsm_init_p (int argc, char **argv, int n) {
     CHECK(argc == 12);
     model *_ = malloc(sizeof (model)); CHECK(_);
-    tsm_get_p(argv, argc, &_->a, &_->b, &_->c, &_->d);
     _->xy = tsm_jet(n);
     _->e_xy = tsm_jet(n);
+    tsm_get_p(argv, argc, &_->a, &_->b, &_->c, &_->d);
     return _;
 }
 

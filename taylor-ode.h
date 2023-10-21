@@ -22,12 +22,17 @@ typedef struct ts3 {
 } xyz;
 
 /*
- * Retrieves integrator control parameters
+ * Retrieves control parameters from the first four command arguments
  */
 controls *tsm_get_c (int argc, char **argv);
 
 /*
- * Retrieves ODE parameters from the tail of the command (arguments 8 onwards)
+ * Retrieves initial X, Y, Z values from the next three command arguments and populates their Taylor Series'
+ */
+xyz *tsm_init (char **argv, int order);
+
+/*
+ * Retrieves ODE model parameters from the tail of the command (argument 8 onwards)
  */
 void tsm_get_p (char **argv, int count, ...);
 
@@ -37,16 +42,6 @@ void tsm_get_p (char **argv, int count, ...);
 series tsm_jet (int size);
 
 /*
- * Set up a constant jet of value a
- */
-series tsm_const (int size, real a);
-
-/*
- * Initial values for Taylor Series'
- */
-xyz *tsm_init (char **argv, int order);
-
-/*
  * Safely and efficiently evaluates a polynomial of degree n, with the coefficients in S, and the variable in h
  */
 real horner (series U, int order, real h);
@@ -54,7 +49,7 @@ real horner (series U, int order, real h);
 /*
  *  Run TSM, send data to stdout
  */
-void tsm_stdout (controls *c, xyz *jets, model *p, clock_t since);
+void tsm_out (controls *c, xyz *jets, model *p, clock_t since);
 
 /*
  * Generator (step-wise) implementation of TSM

@@ -13,10 +13,10 @@ struct Parameters { real b; series sx, sy, sz, cx, cy, cz; };
 model *tsm_init_p (int argc, char **argv, int n) {
     CHECK(argc == 9);
     model *_ = malloc(sizeof (model)); CHECK(_);
-    tsm_get_p(argv, argc, &_->b);
     _->sx = tsm_jet(n); _->cx = tsm_jet(n);
     _->sy = tsm_jet(n); _->cy = tsm_jet(n);
     _->sz = tsm_jet(n); _->cz = tsm_jet(n);
+    tsm_get_p(argv, argc, &_->b);
     return _;
 }
 

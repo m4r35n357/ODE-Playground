@@ -152,9 +152,9 @@ int main (int argc, char **argv) {
     controls c = {.order=n, .step=0, .steps=10, .h=0.1L};
     model p = {.a=1.0L, .b=0.0L, .c=-1.0L};
     xyz *_ = malloc(sizeof (xyz)); CHECK(_);
-    _->x = tsm_const(n + 1, 1.0L);
-    _->y = tsm_const(n + 1, 1.0L);
-    _->z = tsm_const(n + 1, 1.0L);
+    _->x = tsm_jet(n + 1); _->x[0] = 1.0L;
+    _->y = tsm_jet(n + 1); _->y[0] = 1.0L;
+    _->z = tsm_jet(n + 1); _->z[0] = 1.0L;
     while (tsm_gen(&c, _, &p)) fprintf(stderr, ".");
     CHECK(fabsl(_->x[0] - expl(p.a)) < tolerance);
     CHECK(fabsl(_->y[0] - expl(p.b)) < tolerance);
@@ -164,7 +164,7 @@ int main (int argc, char **argv) {
     fprintf(stderr, "Taylor Arithmetic %sx = %s%.1Lf%s\n", GRY, WHT, x[0], NRM);
     bool positive = x[0] > 0.0L, non_zero = x[0] != 0.0L, lt_1 = fabsl(x[0]) < 1.0L, gt_1 = x[0] > 1.0L,
          lt_pi_2 = fabsl(x[0]) < 0.5L * acosl(-1.0L);
-    series r1 = tsm_jet(n), r2 = tsm_jet(n), r3 = tsm_jet(n), S1 = tsm_const(n, 1.0L);
+    series r1 = tsm_jet(n), r2 = tsm_jet(n), r3 = tsm_jet(n), S1 = tsm_jet(n); S1[0] = 1.0L;
     series abs_x = tsm_jet(n), inv_x = tsm_jet(n), sqrt_x = tsm_jet(n), ln_x = tsm_jet(n);
     if (non_zero) ad_abs(abs_x, x);
     if (non_zero) ad_div(inv_x, S1, x);
