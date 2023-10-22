@@ -7,13 +7,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <ctype.h>
 #include <math.h>
 #include "taylor-ode.h"
 
 controls *tsm_get_c (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     controls *_ = malloc(sizeof (controls)); CHECK(_);
-    _->dp = (int)strtol(argv[1], NULL, BASE);    //CHECK(_->dp >= 0 && _->dp <= 32);
+    _->dp = (int)strtol(argv[1], NULL, BASE);    CHECK(_->dp >= 0);
     _->order = (int)strtol(argv[2], NULL, BASE); CHECK(_->order >= 2 && _->order <= 64);
     _->h = strtold(argv[3], NULL);               CHECK(_->h > 0.0L);
     _->steps = (int)strtol(argv[4], NULL, BASE); CHECK(_->steps >= 0 && _->steps <= 1000000);
@@ -76,59 +77,40 @@ bool tsm_gen (controls *c, xyz *_, model *p) {
     return c->looping = false;
 }
 
-static void _out_ (int dp, real x, real y, real z, real t, char *x_tag, char *y_tag, char *z_tag, clock_t since) {
-    real _ = (real)(clock() - since) / CLOCKS_PER_SEC;
+static void _out_ (int dp, real x, real y, real z, real t, char x_tag, char y_tag, char z_tag, clock_t since) {
+    real cpu = (real)(clock() - since) / CLOCKS_PER_SEC;
     if (dp) {
-        printf("%+.*Le %+.*Le %+.*Le %.6Le %s %s %s %.3Lf\n", dp, x, dp, y, dp, z, t, x_tag, y_tag, z_tag, _);
+        printf("%+.*Le %+.*Le %+.*Le %.6Le %c %c %c %.3Lf\n", dp, x, dp, y, dp, z, t, x_tag, y_tag, z_tag, cpu);
     } else {
-        printf("%+La %+La %+La %.6Le %s %s %s %.3Lf\n", x, y, z, t, x_tag, y_tag, z_tag, _);
+        printf("%+La %+La %+La %.6Le %c %c %c %.3Lf\n", x, y, z, t, x_tag, y_tag, z_tag, cpu);
     }
 }
 
-static char *_tag_ (series u, real *slope, char *min, char *max) {
-    char *_ = *slope * u[1] >= 0.0L ? "_" : (u[2] > 0.0L ? min : max);
+static char _tp_ (series u, real *slope, char min) {
+    char tag = *slope * u[1] >= 0.0L ? '_' : (u[2] > 0.0L ? min : (char)toupper(min));
     *slope = u[1];
-    return _;
+    return tag;
 }
 
 void tsm_out (controls *c, xyz *_, model *p, clock_t t0) {
-    real slopeX = 0.0L, slopeY = 0.0L, slopeZ = 0.0L;
+    real sX = 0.0L, sY = 0.0L, sZ = 0.0L;
     for (int step = 0; step < c->steps; step++) {
         _diff_(_, p, c->order);
-        _out_(c->dp, _->x[0], _->y[0], _->z[0], c->h * step,
-             _tag_(_->x, &slopeX, "x", "X"), _tag_(_->y, &slopeY, "y", "Y"), _tag_(_->z, &slopeZ, "z", "Z"), t0);
+        _out_(c->dp, _->x[0], _->y[0], _->z[0], c->h * step, _tp_(_->x, &sX, 'x'), _tp_(_->y, &sY, 'y'), _tp_(_->z, &sZ, 'z'), t0);
         _next_(_, c->order, c->h);
     }
-    _out_(c->dp, _->x[0], _->y[0], _->z[0], c->h * c->steps, "_", "_", "_", t0);
+    _out_(c->dp, _->x[0], _->y[0], _->z[0], c->h * c->steps, '_', '_', '_', t0);
+}
+
+real t_abs (series u, int k) {
+    CHECK(u[0] != 0.0L);
+    return u[0] < 0.0L ? -u[k] : u[k];
 }
 
 static real _cauchy_ (series b, series a, int k, int k0, int k1) {
     real _ = 0.0L;
     for (int j = k0; j <= k1; j++) _ += b[j] * a[k - j];
     return _;
-}
-
-static real _half_ (series a, int k, int k0) {
-    return 2.0L * _cauchy_(a, a, k, k0, (k - (k % 2 ? 1 : 2)) / 2) + (k % 2 ? 0.0L : a[k / 2] * a[k / 2]);
-}
-
-static real _chain_ (series b, series a, int k, int k0) {
-    real _ = 0.0L;
-    for (int j = k0; j < k; j++) _ += b[j] * (k - j) * a[k - j];
-    return _ / k;
-}
-
-static real _fk_ (series df_du, series u, int k) {
-    return _chain_(df_du, u, k, 0);
-}
-
-static real _uk_(series df_du, series u, int k, real f_k, real sign) {
-    return (f_k - _chain_(df_du, u, k, 1) * sign) / df_du[0];
-}
-
-real t_abs (series u, int k) {
-    CHECK(u[0] != 0.0L);
-    return u[0] < 0.0L ? -u[k] : u[k];
 }
 
 real t_mul (series u, series v, int k) {
@@ -140,6 +122,10 @@ real t_div (series q, series u, series v, int k) {
     return q[k] = (!k ? u[k] : u[k] - _cauchy_(q, v, k, 0, k - 1)) / v[0];
 }
 
+static real _half_ (series a, int k, int k0) {
+    return 2.0L * _cauchy_(a, a, k, k0, (k - (k % 2 ? 1 : 2)) / 2) + (k % 2 ? 0.0L : a[k / 2] * a[k / 2]);
+}
+
 real t_sqr (series u, int k) {
     return _half_(u, k, 0);
 }
@@ -147,6 +133,16 @@ real t_sqr (series u, int k) {
 real t_sqrt (series r, series u, int k) {
     CHECK(u[0] > 0.0L); CHECK(r != u);
     return r[k] = !k ? sqrtl(u[k]) : 0.5L * (u[k] - _half_(r, k, 1)) / r[0];
+}
+
+static real _chain_ (series b, series a, int k, int k0) {
+    real _ = 0.0L;
+    for (int j = k0; j < k; j++) _ += b[j] * (k - j) * a[k - j];
+    return _ / k;
+}
+
+static real _fk_ (series df_du, series u, int k) {
+    return _chain_(df_du, u, k, 0);
 }
 
 real t_exp (series e, series u, int k) {
@@ -174,6 +170,10 @@ pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
         .a = t[k] = _fk_(s, u, k),
         .b = s[k] = _fk_(t, t, k) * (trig ? 2.0L : -2.0L)
     };
+}
+
+static real _uk_(series df_du, series u, int k, real f_k, real sign) {
+    return (f_k - _chain_(df_du, u, k, 1) * sign) / df_du[0];
 }
 
 real t_ln (series u, series e, int k) {

@@ -14,7 +14,7 @@ model *tsm_init_p (int argc, char **argv, int n) { (void)n;
     CHECK(argc == 10);
     model *_ = malloc(sizeof (model)); CHECK(_);
     _->V = tsm_jet(n);
-    tsm_get_p(argv, argc, &_->s, &_->V[0]);
+    tsm_get_p(argv, argc, &_->s, _->V);
     return _;
 }
 

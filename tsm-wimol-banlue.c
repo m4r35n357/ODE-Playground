@@ -16,7 +16,7 @@ model *tsm_init_p (int argc, char **argv, int n) {
     _->tx = tsm_jet(n);
     _->sx = tsm_jet(n);
     _->A = tsm_jet(n);
-    tsm_get_p(argv, argc, &_->A[0]);
+    tsm_get_p(argv, argc, _->A);
     return _;
 }
 

@@ -18,7 +18,7 @@ model *tsm_init_p (int argc, char **argv, int n) {
     _->_c = tsm_jet(n);
     _->_1 = tsm_jet(n); _->_1[0] = 1.0L;
     _->ALPHA = tsm_jet(n);
-    tsm_get_p(argv, argc, &_->ALPHA[0], &_->gamma);
+    tsm_get_p(argv, argc, _->ALPHA, &_->gamma);
     return _;
 }
 
