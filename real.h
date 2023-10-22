@@ -74,5 +74,5 @@ typedef struct Controls {
     bool looping;         // generators only
     int order, step, steps, dp;
     real h;
-    pair r2, r4, r6, r8;  // symplectic only
+    pair w2, w4, w6, w8;  // symplectic only
 } controls;

@@ -13,7 +13,7 @@
 controls *tsm_get_c (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     controls *_ = malloc(sizeof (controls)); CHECK(_);
-    _->dp = (int)strtol(argv[1], NULL, BASE);    CHECK(_->dp >= 0 && _->dp <= 32);
+    _->dp = (int)strtol(argv[1], NULL, BASE);    //CHECK(_->dp >= 0 && _->dp <= 32);
     _->order = (int)strtol(argv[2], NULL, BASE); CHECK(_->order >= 2 && _->order <= 64);
     _->h = strtold(argv[3], NULL);               CHECK(_->h > 0.0L);
     _->steps = (int)strtol(argv[4], NULL, BASE); CHECK(_->steps >= 0 && _->steps <= 1000000);
