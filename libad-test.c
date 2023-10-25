@@ -89,10 +89,10 @@ static void compare (char* name, series a, series b) {
 }
 
 static void compare_s_d (char* name, series a, dual b) {
-	int n_tmp = n;
-	n = 2;
-	compare(name, a, (real []){b.val, b.dot});
-	n = n_tmp;
+    int n_tmp = n;
+    n = 2;
+    compare(name, a, (real []){b.val, b.dot});
+    n = n_tmp;
 }
 
 int main (int argc, char **argv) {

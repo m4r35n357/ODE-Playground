@@ -64,7 +64,7 @@ case $analysis in
     Gnuplot)
         case $type in
             Timelike)
-                ./plot ./h-kerr-std $(yad --columns=2 --title="Kerr Particle Orbit Gnuplot" --form --separator=" " --align=right \
+                ./plot 10000 ./h-kerr-std $(yad --columns=2 --title="Kerr Particle Orbit Gnuplot" --form --separator=" " --align=right \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="BH spin":NUM --field="particle mass":RO \
                 --field="particle energy" --field="particle momentum" --field="momentum factor" --field="Carter's constant" \
@@ -74,7 +74,7 @@ case $analysis in
                    "0.9455050956749083" "1.434374509531738" "1.0" "7.978759958927879" \
                    "12.0" "63.0") ;;
             Lightlike)
-                ./plot ./h-kerr-std $(yad --columns=2 --title="Kerr Light Orbit Gnuplot" --form --separator=" " --align=right \
+                ./plot 10000 ./h-kerr-std $(yad --columns=2 --title="Kerr Light Orbit Gnuplot" --form --separator=" " --align=right \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="BH spin":NUM --field="particle mass":RO \
                 --field="particle energy":RO --field="particle momentum" --field="momentum factor" --field="Carter's constant" \

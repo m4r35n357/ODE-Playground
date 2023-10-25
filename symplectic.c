@@ -24,86 +24,32 @@ controls *symp_get_c (int argc, char **argv) {
     return _;
 }
 
-static void suzuki (controls *c, model *p, block base, real cd, pair weight) {
-    for (int stage = 0; stage < 5; stage++) {
-        base(c, p, (stage == 2 ? weight.b : weight.a) * cd);
+static void _symplectic_ (int order, model *p, real c_d) {
+    if (order > 2) {
+        order -= 2;
+        real fwd = 1.0L / (4.0L - powl(4.0L, 1.0L / (order + 1)));
+        for (int stage = 0; stage < 5; stage++) {
+            _symplectic_(order, p, (stage == 2 ? 1.0L - 4.0L * fwd : fwd) * c_d);
+        }
+    } else {
+        update_q(p, c_d * 0.5L);
+        update_p(p, c_d);
+        update_q(p, c_d * 0.5L);
     }
 }
 
-static void _base2_ (controls *cont, model *p, real cd) { (void)cont;
-    update_q(p, cd * 0.5L);
-    update_p(p, cd);
-    update_q(p, cd * 0.5L);
-}
-
-static void _base4_ (controls *c, model *p, real cd) {
-    suzuki(c, p, _base2_, cd, c->w2);
-}
-
-static void _base6_ (controls *c, model *p, real cd) {
-    suzuki(c, p, _base4_, cd, c->w4);
-}
-
-static void _base8_ (controls *c, model *p, real cd) {
-    suzuki(c, p, _base6_, cd, c->w6);
-}
-
-static void _base10_ (controls *c, model *p, real cd) {
-    suzuki(c, p, _base8_, cd, c->w8);
-}
-
-static void second_order (controls *c, model *p) {
-    _base2_(c, p, c->h);
-}
-
-static void fourth_order (controls *c, model *p) {
-    _base4_(c, p, c->h);
-}
-
-static void sixth_order (controls *c, model *p) {
-    _base6_(c, p, c->h);
-}
-
-static void eightth_order (controls *c, model *p) {
-    _base8_(c, p, c->h);
-}
-
-static void tenth_order (controls *c, model *p) {
-    _base10_(c, p, c->h);
-}
-
-static pair w (int order) {  // composition increases order by one, then symmetry bumps that to the next even order!
-    real _ = 1.0L / (4.0L - powl(4.0L, 1.0L / (order + 1)));
-    return (pair){.a = _, .b = 1.0L - 4.0L * _};
-}
-
-static integrator get_integrator (controls *c) {
-    integrator _ = NULL;
-    switch (c->order) {
-        case  2: _ =  second_order; break;
-        case  4: _ =  fourth_order; c->w2 = w(2); break;
-        case  6: _ =   sixth_order; c->w2 = w(2); c->w4 = w(4); break;
-        case  8: _ = eightth_order; c->w2 = w(2); c->w4 = w(4); c->w6 = w(6); break;
-        case 10: _ =   tenth_order; c->w2 = w(2); c->w4 = w(4); c->w6 = w(6); c->w8 = w(8); break;
-        default: break;
-    }; CHECK(_);
-    return _;
-}
-
 void solve (controls *c, model *p, plotter output) {
-    integrator symplectic = get_integrator(c);
     for (int step = 0; step < c->steps; step++) {
         output(c->dp, p, step * c->h);
-        symplectic(c, p);
+        _symplectic_(c->order, p, c->h);
     }
     output(c->dp, p, c->steps * c->h);
 }
 
 bool generate (controls *c, model *p) {
-    integrator symplectic = get_integrator(c);
     if (c->looping) goto resume; else c->looping = true;
     for (c->step = 0; c->step < c->steps; c->step++) {
-        symplectic(c, p);
+        _symplectic_(c->order, p, c->h);
         return true;
         resume: ;
     }

@@ -27,16 +27,6 @@ real error (real e);
 typedef void (*plotter)(int dp, model *p, real t);
 
 /*
- * Building block for composing integrators
- */
-typedef void (*block)(controls *c, model *p, real cd);
-
-/*
- * To pass an integrator as parameter
- */
-typedef void (*integrator)(controls *c, model *p);
-
-/*
  * Coordinate updater dq = (dH/dp).dt
  */
 void update_q (model *p, real c);
