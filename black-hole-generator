@@ -4,7 +4,7 @@
 
 . ./base.sh
 
-choice=$(yad --columns=2 --title="Black Hole Playground" --form --separator=" " --align=right \
+choice=$(yad --columns=2 --title="Black Hole Parameter Generators" --form --separator=" " --align=right \
     --field="Geodesic Type":CB \
     -- '^Timelike!Lightlike')
 
@@ -34,8 +34,8 @@ case $type in
         --field="Elevation (degrees)" --field="BH spin (-ve for retrograde)":NUM \
         -- "1.0e-9" "4.0" "12.0" \
            "63.0" '0.8!-1.0..1.0!0.1!1') >$user_data
-        plot 1 2 'r' 'R' 10
-        plot 3 4 'theta' 'THETA' 1 ;;
+        plot 1 2 'r' 'R' 10 &
+        plot 3 4 'theta' 'THETA' 1 & ;;
     Lightlike) ./h-kerr-gen-light \
         $(yad --columns=2 --title="Generate Parameters (light)" --form --separator=" " --align=right \
         --field="r":NUM --field="BH spin":NUM \

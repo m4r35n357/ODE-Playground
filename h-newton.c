@@ -40,8 +40,9 @@ void update_p (model *_, real d) {
 
 static void plot (int dp, model *_, real t) {
     real h_now = hamiltonian(_->m, d_dual(_->q_r), d_dual(_->p_r), d_dual(_->p_phi)).val;
-    printf("%+.*Le %+.*Le %+.3Lf %.6Le %+.*Le %+.*Le\n",
-           dp, _->q_r * sinl(_->q_phi), dp, _->q_r * cosl(_->q_phi), 0.0L, t, dp, error(h_now - _->h0), dp, h_now);
+    printf("%+.*Le %+.*Le %+.*Le %+.*Le %.6Le %+.*Le %+.*Le\n",
+           dp, _->q_r * sinl(_->q_phi), dp, _->q_r * cosl(_->q_phi),
+           dp, _->q_r, dp, _->p_r, t, dp, error(h_now - _->h0), dp, h_now);
 }
 
 int main (int argc, char **argv) {

@@ -4,11 +4,9 @@
 
 . ./base.sh
 
-choice=$(yad --columns=2 --title="ODE Playground (TSM)" --form --separator=" " --align=right \
+choice=$(yad --columns=2 --title="Hamiltonian Playground" --form --separator=" " --align=right \
     --field="Model:CB" \
-    --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-    -- 'Newton!Coupled!Analysis!^EightBody!FourBodyA!FourBodyB!ThreeBody!TwoBody' \
-       '2000!1000..10000!1000' '8!2..16!2' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000')
+    -- 'Newton!Coupled!Analysis!^EightBody!FourBodyA!FourBodyB!ThreeBody!TwoBody')
 
 case $? in
     1) exit;;
@@ -18,9 +16,6 @@ set $choice
 model=$1
 shift
 display_places=6
-track_length=$1
-shift
-control=$*
 
 plot_analysis () {
 /usr/bin/gnuplot << EOF
@@ -39,6 +34,7 @@ plot_hamiltonian_error () {
 /usr/bin/gnuplot << EOF
 set key left
 set terminal qt size 600,450
+set yrange [40.0:0.0]
 set xlabel 'time'
 set ylabel 'approximate places'
 plot '$user_data' using $1:$2 with linespoints pt 7 ps 0
@@ -48,22 +44,40 @@ EOF
 
 case $model in
     Newton)
-        parameters=$(yad --title="Newtonian Orbit" --form --separator=" " --align=right \
+        parameters=$(yad --columns=2 --title="Newtonian Orbit" --form --separator=" " --align=right \
+        --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
         --field="mass" --field="r0" --field="L factor":NUM \
-        -- "1" "12" '0.6!0.0..1.0!0.1!1')
-        ./plot 10000 ./h-newton-std $display_places $1 $2 $3 $parameters; plot_hamiltonian_error 4 5 ;;
+        -- '8!2..16!2' '.1!0.001..1.0!0.001!3' '10000!1..1000000!1000' \
+           '1' '12' '0.6!0.0..1.0!0.1!1')
+        time -p ./h-newton-std $display_places $parameters >$user_data
+        plot_analysis 1 2 '[:]' '[:]' 'x' 'y' &
+        plot_analysis 3 4 '[:]' '[:]' 'qr' 'pr' &
+        plot_hamiltonian_error 5 6 & ;;
     Coupled)
-        parameters=$(yad --title="Coupled Oscillator System" --form --separator=" " --align=right \
+        parameters=$(yad --columns=2 --title="Coupled Oscillator System" --form --separator=" " --align=right \
+        --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
         --field="mass" --field="spring constant" --field="q1"  --field="q2"\
-        -- "1" "1" "1.01" "2.0")
-        ./h-coupled-std $display_places $1 $2 $3 $parameters >$user_data;
-        plot_analysis 5 1 '[:]' '[:]' 'time' 'q1';
-        plot_analysis 5 3 '[:]' '[:]' 'time' 'q2';
-        plot_hamiltonian_error 5 6 ;;
+        -- '8!2..16!2' '.01!0.001..1.0!0.001!3' '10000!1..1000000!1000' \
+           '1' '1' '1.01' '2.0')
+        time -p ./h-coupled-std $display_places $parameters >$user_data
+        plot_analysis 1 2 '[:]' '[:]' 'q1' 'q1-dot' &
+        plot_analysis 3 4 '[:]' '[:]' 'q2' 'q2-dot' &
+        plot_analysis 5 1 '[:]' '[:]' 'time' 'q1' &
+        plot_analysis 5 3 '[:]' '[:]' 'time' 'q2' &
+        plot_hamiltonian_error 5 6 & ;;
     Analysis)
-        ./h-analysis-std $display_places $1 1.0 1 >$user_data;
+        parameters=$(yad --title="Step Display" --form --separator=" " --align=right \
+        --field="Order":NUM \
+        -- '8!2..16!2')
+        ./h-analysis-std $display_places $parameters 1.0 1 >$user_data;
         plot_analysis 1 2 '[-0.1:1.1]' '[-0.1:1.1]' 'coordinate steps' 'momentum steps' ;;
     *Body*)
+        set $(yad --columns=2 --title="N-Body System" --form --separator=" " --align=right \
+            --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+               '2000!1000..10000!1000' '8!2..16!2' '.01!0.001..1.0!0.001!3' '10000!1..1000000!1000')
+        track_length=$1
+        shift
+        control=$*
         case $model in
             EightBody) g=0.05
                 bodies=$(yad --width=350 --height=280 --list --title="Eight Bodies" --separator=" " \
@@ -107,6 +121,6 @@ case $model in
                 -- 1.0 0.0  1.0 0.0  1.0 0.0 0.0 \
                    1.0 0.0 -1.0 0.0 -1.0 0.0 0.0) ;;
         esac
-        (./h-nbody-std $display_places $control $g $bodies >$user_data; plot_hamiltonian_error 1 2) &
+        (time -p ./h-nbody-std $display_places $control $g $bodies >$user_data; plot_hamiltonian_error 1 2) &
         ./h-nbody-gl $track_length $control $g $bodies ;;
 esac

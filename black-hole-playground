@@ -17,7 +17,7 @@ type=$1
 analysis=$2
 time=$3
 
-plot () {
+plot_errors () {
 /usr/bin/gnuplot << EOF
 set key left
 set terminal qt size 600,450
@@ -27,6 +27,9 @@ set ylabel 'approximate places'
 plot '$user_data' using $1:5 title 'v4' with lines, '' u $1:6 t 'r' w l, '' u $1:7 t 'theta' w l
 pause mouse close
 EOF
+}
+
+plot_gamma () {
 /usr/bin/gnuplot << EOF
 set key left
 set terminal qt size 600,450
@@ -46,7 +49,7 @@ case $analysis in
                 --field="BH spin":NUM --field="particle mass":RO \
                 --field="particle energy" --field="particle momentum" --field="momentum factor" --field="Carter's constant" \
                 --field="r0" --field="theta0" \
-                -- '2000!1000..10000!1000' '4!2..10!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' \
+                -- '2000!1000..10000!1000' '4!2..16!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' \
                    "0.8!-1.0..1.0!0.1!1" "1.0" \
                    "0.9455050956749083" "1.434374509531738" "1.0" "7.978759958927879" \
                    "12.0" "63.0") ;;
@@ -56,7 +59,7 @@ case $analysis in
                 --field="BH spin":NUM --field="particle mass":RO \
                 --field="particle energy":RO --field="particle momentum" --field="momentum factor" --field="Carter's constant" \
                 --field="r0" --field="theta0" \
-                -- '2000!1000..10000!1000' '4!2..10!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' \
+                -- '2000!1000..10000!1000' '4!2..16!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' \
                    "0.8!-1.0..1.0!0.1!1" "0.0" \
                    "1.0" "-1.6" "1.0" "27.0" \
                    "3.0" "0.0") ;;
@@ -64,29 +67,31 @@ case $analysis in
     Gnuplot)
         case $type in
             Timelike)
-                ./plot 10000 ./h-kerr-std $(yad --columns=2 --title="Kerr Particle Orbit Gnuplot" --form --separator=" " --align=right \
+                time -p ./plot 10000 \
+                    ./h-kerr-std $(yad --columns=2 --title="Kerr Particle Orbit Gnuplot" --form --separator=" " --align=right \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="BH spin":NUM --field="particle mass":RO \
                 --field="particle energy" --field="particle momentum" --field="momentum factor" --field="Carter's constant" \
                 --field="r0" --field="theta0" \
-                -- '6!0..36!3' '4!2..10!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' \
+                -- '6!0..36!3' '4!2..16!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' \
                    "0.8!-1.0..1.0!0.1!1" "1.0" \
                    "0.9455050956749083" "1.434374509531738" "1.0" "7.978759958927879" \
                    "12.0" "63.0") ;;
             Lightlike)
-                ./plot 10000 ./h-kerr-std $(yad --columns=2 --title="Kerr Light Orbit Gnuplot" --form --separator=" " --align=right \
+                time -p ./plot 10000 \
+                    ./h-kerr-std $(yad --columns=2 --title="Kerr Light Orbit Gnuplot" --form --separator=" " --align=right \
                 --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                 --field="BH spin":NUM --field="particle mass":RO \
                 --field="particle energy":RO --field="particle momentum" --field="momentum factor" --field="Carter's constant" \
                 --field="r0" --field="theta0" \
-                -- '6!0..36!3' '4!2..10!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' \
+                -- '6!0..36!3' '4!2..16!2' '0.01!0.001..1!0.001!3' '10000!1..100000!1' \
                    "0.8!-1.0..1.0!0.1!1" "0.0" \
                    "1.0" "-1.6" "1.0" "27.0" \
                    "3.0" "0.0") ;;
         esac
         case $time in
-            Mino) plot 4 'Mino Time';;
-            Proper) plot 10 'Proper Time';;
-            Coordinate) plot 11 'Coordinate Time';;
+            Mino) plot_errors 4 'Mino Time' & plot_gamma 4 'Mino Time' & ;;
+            Proper) plot_errors 10 'Proper Time' & plot_gamma 10 'Proper Time' & ;;
+            Coordinate) plot_errors 11 'Coordinate Time' & plot_gamma 11 'Coordinate Time' & ;;
         esac ;;
 esac

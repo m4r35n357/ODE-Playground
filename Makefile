@@ -124,7 +124,7 @@ ctags-system-all:
 	@/usr/bin/ctags -R --c-kinds=+p --fields=+iaS --extras=+q /usr/include .
 
 clean:
-	@rm -rf *.o *.gcda *.gcno *-std *-gl h-kerr-gen-light h-kerr-gen-particle divergence libad-test libdual-test \
+	@rm -rf *.so *.o *.gcda *.gcno *-std *-gl h-kerr-gen-light h-kerr-gen-particle divergence libad-test libdual-test \
 		coverage* gmon.out
 
 depclean: clean
