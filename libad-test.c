@@ -143,13 +143,15 @@ int main (int argc, char **argv) {
     if (positive) ad_sqrt(sqrt_x, x);
     if (positive) ad_ln(ln_x, x);
     series sin_x = tsm_jet(n), cos_x = tsm_jet(n), tan_x = tsm_jet(n), sec2_x = tsm_jet(n);
+    series asin_x = tsm_jet(n), acos_x = tsm_jet(n), atan_x = tsm_jet(n);
     series sin2_x = tsm_jet(n), cos2_x = tsm_jet(n), tan2_x = tsm_jet(n), sin_2x = tsm_jet(n), cos_2x = tsm_jet(n);
     ad_sin_cos(sin_x, cos_x, x, true);
-    ad_tan_sec2(tan_x, sec2_x, x, true);
+    if (lt_pi_2) ad_tan_sec2(tan_x, sec2_x, x, true);
     ad_sqr(sin2_x, sin_x);
     ad_sqr(cos2_x, cos_x);
     ad_sin_cos(sin_2x, cos_2x, ad_scale(r1, x, 2.0L), true);
     series sinh_x = tsm_jet(n), cosh_x = tsm_jet(n), tanh_x = tsm_jet(n), sech2_x = tsm_jet(n);
+    series asinh_x = tsm_jet(n), acosh_x = tsm_jet(n), atanh_x = tsm_jet(n);
     series sinh2_x = tsm_jet(n), cosh2_x = tsm_jet(n), tanh2_x = tsm_jet(n), sinh_2x = tsm_jet(n), cosh_2x = tsm_jet(n);
     ad_sin_cos(sinh_x, cosh_x, x, false);
     ad_tan_sec2(tanh_x, sech2_x, x, false);
@@ -162,32 +164,29 @@ int main (int argc, char **argv) {
     ad_exp(neg_exp_x, ad_scale(r1, x, -1.0L));
     ad_ln(gd_1, ad_abs(r3, ad_div(r2, ad_add(r1, sin_x, S1), cos_x)));
 
-    char* name = "inv(x)"; non_zero ? compare_s_d(name, ad_div(r1, S1, x), d_div(d_dual(1.0L), xd)) : skip(name);
-    name = "sqr(x)"; compare_s_d(name, ad_sqr(r1, x), d_sqr(xd));
-    name = "sqrt(x)"; positive ? compare_s_d(name, ad_sqrt(r1, x), d_sqrt(xd)) : skip(name);
+    char* name = "inv(x)"; non_zero ? compare_s_d(name, inv_x, d_inv(xd)) : skip(name);
+    name = "sqr(x)"; compare_s_d(name, sqr_x, d_sqr(xd));
+    name = "sqrt(x)"; positive ? compare_s_d(name, sqrt_x, d_sqrt(xd)) : skip(name);
 
-    name = "exp(x)"; compare_s_d(name, ad_exp(r1, x), d_exp(xd));
+    name = "exp(x)"; compare_s_d(name, exp_x, d_exp(xd));
 
-    ad_sin_cos(r1, r2, x, true);
-    name = "sin(x)"; compare_s_d(name, r1, d_sin(xd));
-    name = "cos(x)"; compare_s_d(name, r2, d_cos(xd));
-    name = "tan(x)"; ad_tan_sec2(r1, r2, x, true); compare_s_d(name, r1, d_tan(xd));
+    name = "sin(x)"; compare_s_d(name, sin_x, d_sin(xd));
+    name = "cos(x)"; compare_s_d(name, cos_x, d_cos(xd));
+    name = "tan(x)"; lt_pi_2 ? compare_s_d(name, tan_x, d_tan(xd)) : skip(name);
 
-    ad_sin_cos(r1, r2, x, false);
-    name = "sinh(x)"; compare_s_d(name, r1, d_sinh(xd));
-    name = "cosh(x)"; compare_s_d(name, r2, d_cosh(xd));
-    name = "tanh(x)"; ad_tan_sec2(r1, r2, x, false); compare_s_d(name, r1, d_tanh(xd));
+    name = "sinh(x)"; compare_s_d(name, sinh_x, d_sinh(xd));
+    name = "cosh(x)"; compare_s_d(name, cosh_x, d_cosh(xd));
+    name = "tanh(x)"; compare_s_d(name, tanh_x, d_tanh(xd));
 
-    name = "ln(x)"; positive ? compare_s_d(name, ad_ln(r1, x), d_ln(xd)) : skip(name);
+    name = "ln(x)"; positive ? compare_s_d(name, ln_x, d_ln(xd)) : skip(name);
 
-    name = "asin(x)"; if (lt_1) {ad_asin_cos(r1, r2, x, true); compare_s_d(name, r1, d_asin(xd));} else skip(name);
-    name = "acos(x)"; if (lt_1) {ad_acos_sin(r1, r2, x, true); compare_s_d(name, r1, d_acos(xd));} else skip(name);
-    name = "atan(x)"; ad_atan_sec2(r1, r2, x, true); compare_s_d(name, r1, d_atan(xd));
+    name = "asin(x)"; if (lt_1) {ad_asin_cos(asin_x, r2, x, true); compare_s_d(name, asin_x, d_asin(xd));} else skip(name);
+    name = "acos(x)"; if (lt_1) {ad_acos_sin(acos_x, r2, x, true); compare_s_d(name, acos_x, d_acos(xd));} else skip(name);
+    name = "atan(x)"; ad_atan_sec2(atan_x, r2, x, true); compare_s_d(name, atan_x, d_atan(xd));
 
-    ad_asin_cos(r1, r2, x, false);
-    name = "asinh(x)"; compare_s_d(name, r1, d_asinh(xd));
-    name = "acosh(x)"; if (gt_1) {ad_acos_sin(r1, r2, x, false); compare_s_d(name, r1, d_acosh(xd));} else skip(name);
-    name = "atanh(x)"; if (lt_1) {ad_atan_sec2(r1, r2, x, false); compare_s_d(name, r1, d_atanh(xd));}  else skip(name);
+    name = "asinh(x)"; ad_asin_cos(asinh_x, r2, x, false); compare_s_d(name, asinh_x, d_asinh(xd));
+    name = "acosh(x)"; if (gt_1) {ad_acos_sin(acosh_x, r2, x, false); compare_s_d(name, acosh_x, d_acosh(xd));} else skip(name);
+    name = "atanh(x)"; if (lt_1) {ad_atan_sec2(atanh_x, r2, x, false); compare_s_d(name, atanh_x, d_atanh(xd));}  else skip(name);
 
     name = "x^1.5"; positive ? compare_s_d(name, ad_pwr(r1, x, 1.5L), d_pow(xd, 1.5L)) : skip(name);
 

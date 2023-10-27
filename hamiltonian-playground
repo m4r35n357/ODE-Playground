@@ -6,7 +6,7 @@
 
 choice=$(yad --columns=2 --title="Hamiltonian Playground" --form --separator=" " --align=right \
     --field="Model:CB" \
-    -- 'Newton!Coupled!Analysis!^EightBody!FourBodyA!FourBodyB!ThreeBody!TwoBody')
+    -- 'Newton!Analysis!^EightBody!FourBodyA!FourBodyB!ThreeBody!TwoBody')
 
 case $? in
     1) exit;;
@@ -34,7 +34,7 @@ plot_hamiltonian_error () {
 /usr/bin/gnuplot << EOF
 set key left
 set terminal qt size 600,450
-set yrange [40.0:0.0]
+set yrange [36.0:0.0]
 set xlabel 'time'
 set ylabel 'approximate places'
 plot '$user_data' using $1:$2 with linespoints pt 7 ps 0
@@ -52,18 +52,6 @@ case $model in
         time -p ./h-newton-std $display_places $parameters >$user_data
         plot_analysis 1 2 '[:]' '[:]' 'x' 'y' &
         plot_analysis 3 4 '[:]' '[:]' 'qr' 'pr' &
-        plot_hamiltonian_error 5 6 & ;;
-    Coupled)
-        parameters=$(yad --columns=2 --title="Coupled Oscillator System" --form --separator=" " --align=right \
-        --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
-        --field="mass" --field="spring constant" --field="q1"  --field="q2"\
-        -- '8!2..16!2' '.01!0.001..1.0!0.001!3' '10000!1..1000000!1000' \
-           '1' '1' '1.01' '2.0')
-        time -p ./h-coupled-std $display_places $parameters >$user_data
-        plot_analysis 1 2 '[:]' '[:]' 'q1' 'q1-dot' &
-        plot_analysis 3 4 '[:]' '[:]' 'q2' 'q2-dot' &
-        plot_analysis 5 1 '[:]' '[:]' 'time' 'q1' &
-        plot_analysis 5 3 '[:]' '[:]' 'time' 'q2' &
         plot_hamiltonian_error 5 6 & ;;
     Analysis)
         parameters=$(yad --title="Step Display" --form --separator=" " --align=right \

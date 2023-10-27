@@ -162,7 +162,7 @@ pair t_sin_cos (series s, series c, series u, int k, bool trig) {
 }
 
 pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
-    CHECK(t != s && t != u && s != u);
+    CHECK(trig ? fabsl(u[0]) < 0.5L * acosl(-1.0L) : true); CHECK(t != s && t != u && s != u);
     return !k ? (pair){
         .a = t[k] = trig ? tanl(u[k]) : tanhl(u[k]),
         .b = s[k] = trig ? 1.0L + t[k] * t[k] : 1.0L - t[k] * t[k]
