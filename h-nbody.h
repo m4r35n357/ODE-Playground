@@ -14,7 +14,7 @@ typedef struct Body {
 struct Parameters {
     int n;
     body *bodies;
-    real g, h0;
+    real G, h0;
 };
 
 /*
@@ -30,4 +30,4 @@ void reset_cog (model *nb);
 /*
  * Hamiltonian
  */
-real hamiltonian (model *nb);
+real H (model *nb);

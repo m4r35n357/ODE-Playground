@@ -34,7 +34,7 @@ void Animate () {
 
     if (osd_active) {
         glColor3f(0.0F, 0.5F, 0.5F);
-        real h = hamiltonian(nb);
+        real h = H(nb);
         sprintf(hud, "t: %.1Lf  h: %.6Le  ~sf: %.1Lf", c->step * c->h, h, error(h - nb->h0));
         osd(10, glutGet(GLUT_WINDOW_HEIGHT) - 20, hud);
         osd_summary();
@@ -55,14 +55,14 @@ void Animate () {
 }
 
 void CloseWindow () {
-    fprintf(stderr, "H : % .18Le\n", hamiltonian(nb));
+    fprintf(stderr, "H : % .18Le\n", H(nb));
 }
 
 int main (int argc, char **argv) {
     since = clock();
     c = symp_get_c(argc, argv);
     nb = get_p_nbody(argc, argv);
-    fprintf(stderr, "\nH0: % .18Le\n", hamiltonian(nb));
+    fprintf(stderr, "\nH0: % .18Le\n", H(nb));
 
     length = (int)strtol(argv[1], NULL, BASE); CHECK(length >= 0 && length <= c->steps);
     t = malloc((size_t)nb->n * sizeof (trail)); CHECK(t);

@@ -107,7 +107,7 @@ test-all: test
 	@if ! ./tsm-thomas-std  6 8 0.100 10000  1.0 0.0 0.0  0.185 >/dev/null; then exit 1; fi
 	@if ! ./tsm-wimol-banlue-std  6 8 0.010 10000  1.0 0.1 0.1  1.0 >/dev/null; then exit 1; fi
 	@if ! ./h-analysis-std 6 4 1.0 1 >/dev/null; then exit 1; fi
-	@if ! ./h-newton-std  6 10 1 1000  1 12 .6 >/dev/null; then exit 1; fi
+	@if ! ./h-newton-std  6 10 0.1 10000  1.0 1.0 12.0 0.6 >/dev/null; then exit 1; fi
 	@if ! ./h-kerr-std 6 8 0.010 1000 0.8 1.0 0.9455050956749083 1.434374509531738 1.0 7.978759958927879 12.0 63.0 >/dev/null; then exit 1; fi
 	@if ! ./h-nbody-std 6 6 0.010 1000 0.05 100.0 0.0 0.0 0.0 0.0 0.0 0.0 2.0 0.0 4.5 0.4 -0.2 0.0 1.8 3.0 -6.0 0.0 -0.4 0.0 -2.0 1.0 5.0 3.0 0.0 -0.2 0.0 5.8 -0.2 4.0 0.0 -4.0 0.1 -3.6 0.0 0.2 3.0 -4.0 0.0 -0.1 0.0 -0.2 -2.6 3.0 8.0 0.0 -0.3 0.0 2.0 -0.2 4.0 0.0 4.0 -0.2 -4.8 0.0 -0.2 >/dev/null; then exit 1; fi
 	@if ! ./h-kerr-gen-particle 1.0e-9 4.0 12.0 63.0 0.8 >/dev/null; then exit 1; fi

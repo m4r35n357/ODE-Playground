@@ -11,7 +11,7 @@
 model *get_p_nbody (int argc, char **argv) {
     CHECK((argc - 6) % 7 == 0);
     model *_ = malloc(sizeof (model)); CHECK(_);
-    _->g = strtold(argv[5], NULL); CHECK(_->g > 0.0L);
+    _->G = strtold(argv[5], NULL); CHECK(_->G > 0.0L);
     _->n = (argc - 6) / 7;
     _->bodies = malloc((size_t)_->n * sizeof (body)); CHECK(_->bodies);
     for (int i = 0; i < _->n; i++) {
@@ -25,7 +25,7 @@ model *get_p_nbody (int argc, char **argv) {
         _->bodies[i].pz = strtold(argv[7 * i + 12], NULL);
     }
     reset_cog(_);
-    _->h0 = hamiltonian(_);
+    _->h0 = H(_);
     return _;
 }
 
@@ -49,13 +49,13 @@ static real distance (real x, real y, real z, real X, real Y, real Z) {
     return sqrtl((x - X) * (x - X) + (y - Y) * (y - Y) + (z - Z) * (z - Z));
 }
 
-real hamiltonian (model *p) {
+real H (model *p) {
     body *b = p->bodies;
     real e = 0.0L;
     for (int i = 0; i < p->n; i++) {
         e += 0.5L * (b[i].px * b[i].px + b[i].py * b[i].py + b[i].pz * b[i].pz) / b[i].m;
         for (int j = 0; j < i; j++) {
-            e -= p->g * b[i].m * b[j].m / distance(b[i].x, b[i].y, b[i].z, b[j].x, b[j].y, b[j].z);
+            e -= p->G * b[i].m * b[j].m / distance(b[i].x, b[i].y, b[i].z, b[j].x, b[j].y, b[j].z);
         }
     }
     return e;
@@ -76,7 +76,7 @@ void update_p (model *p, real c) {
     for (int i = 0; i < p->n; i++) {
         for (int j = 0; j < i; j++) {
             real d = distance(b[i].x, b[i].y, b[i].z, b[j].x, b[j].y, b[j].z);
-            real _ = c * p->g * b[i].m * b[j].m / (d * d * d);
+            real _ = c * p->G * b[i].m * b[j].m / (d * d * d);
             real dPx = (b[j].x - b[i].x) * _;
             real dPy = (b[j].y - b[i].y) * _;
             real dPz = (b[j].z - b[i].z) * _;
