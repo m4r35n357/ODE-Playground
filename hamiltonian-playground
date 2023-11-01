@@ -4,9 +4,9 @@
 
 . ./base.sh
 
-choice=$(yad --columns=2 --title="Hamiltonian Playground" --form --separator=" " --align=right \
-    --field="Model:CB" \
-    -- 'Newton!Analysis!^EightBody!FourBodyA!FourBodyB!ThreeBody!TwoBody')
+choice=$(yad --columns=2 --title="Playground" --form --separator=" " --align=right \
+    --field="Hamiltonian Model:CB" \
+    -- 'Newton!Analysis!^EightBody!SixBody!FourBodyA!FourBodyB!ThreeBody!TwoBody')
 
 case $? in
     1) exit;;
@@ -60,15 +60,16 @@ case $model in
         ./h-analysis-std $display_places $parameters 1.0 1 >$user_data;
         plot_analysis 1 2 '[-0.1:1.1]' '[-0.1:1.1]' 'coordinate steps' 'momentum steps' ;;
     *Body*)
-        set $(yad --columns=2 --title="N-Body System" --form --separator=" " --align=right \
+        set $(yad --columns=2 --title="N-Body - Integrator Control" --form --separator=" " --align=right \
             --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
                '2000!1000..10000!1000' '8!2..16!2' '.01!0.001..1.0!0.001!3' '10000!1..1000000!1000')
         track_length=$1
         shift
         control=$*
         case $model in
-            EightBody) g=0.05
-                bodies=$(yad --width=350 --height=280 --list --title="Eight Bodies" --separator=" " \
+            EightBody) g=$(yad --title="Eight Body - G" --form --separator=" " --align=right \
+                --field="Gravitational Constant" -- '0.050')
+                bodies=$(yad --width=350 --height=280 --list --title="Eight Body - Bodies" --separator=" " \
                 --print-all --grid-lines=BOTH --no-click --editable \
                 --column=Mass --column=X --column=Y --column=Z --column=pX --column=pY --column=pZ \
                 -- 100.0  0.0  0.0  0.0  0.0  0.0  0.0 \
@@ -79,31 +80,46 @@ case $model in
                      3.0 -4.0  0.0 -0.1  0.0 -0.2 -2.6 \
                      3.0  8.0  0.0 -0.3  0.0  2.0 -0.2 \
                      4.0  0.0  4.0 -0.2 -4.8  0.0 -0.2) ;;
-            FourBodyA) g=1
-                bodies=$(yad --width=450 --height=180 --list --title="Four Body A" --separator=" " \
+            SixBody) g=$(yad --title="Six Body - G" --form --separator=" " --align=right \
+                --field="Gravitational Constant" -- '0.010')
+                bodies=$(yad --width=350 --height=280 --list --title="Six Body - Bodies" --separator=" " \
+                --print-all --grid-lines=BOTH --no-click --editable \
+                --column=Mass --column=X --column=Y --column=Z --column=pX --column=pY --column=pZ \
+                -- 1.0  1.0  0.0  0.0  0.0  0.1  0.0 \
+                   1.0 -1.0  0.0  0.0  0.0 -0.1  0.0 \
+                   1.0  0.0  1.0  0.0  0.0  0.0  0.1 \
+                   1.0  0.0 -1.0  0.0  0.0  0.0 -0.1 \
+                   1.0  0.0  0.0  1.0  0.1  0.0  0.0 \
+                   1.0  0.0  0.0 -1.0 -0.1  0.0  0.0) ;;
+            FourBodyA) g=$(yad --title="Four Body A - G" --form --separator=" " --align=right \
+                --field="Gravitational Constant" -- '1.000')
+                bodies=$(yad --width=450 --height=180 --list --title="Four Body A - Bodies" --separator=" " \
                 --print-all --grid-lines=BOTH --no-click --editable \
                 --column=mass --column=x --column=y --column=z --column=px --column=py --column=pz \
                 -- 1.0 0.0 -0.69548  0.69548  0.87546 -0.31950 -0.31950 \
                    1.0 0.0  0.69548 -0.69548  0.87546  0.31950  0.31950 \
                    1.0 0.0 -0.69548 -0.69548 -0.87546 -0.31950  0.31950 \
                    1.0 0.0  0.69548  0.69548 -0.87546  0.31950 -0.31950) ;;
-            FourBodyB) g=3.5
-                bodies=$(yad --width=350 --height=180 --list --title="Four Body B" --separator=" " \
+            FourBodyB) g=$(yad --title="Four Body B - G" --form --separator=" " --align=right \
+                --field="Gravitational Constant" -- '3.500')
+                bodies=$(yad --width=350 --height=180 --list --title="Four Body B - Bodies" --separator=" " \
                 --print-all --grid-lines=BOTH --no-click --editable \
                 --column=mass --column=x --column=y --column=z --column=px --column=py --column=pz \
                 -- 1.0  1.0  1.0  1.0 -1.0  1.0 -1.0 \
                    1.0 -1.0 -1.0  1.0  1.0 -1.0 -1.0 \
                    1.0  1.0 -1.0 -1.0  1.0  1.0  1.0 \
                    1.0 -1.0  1.0 -1.0 -1.0 -1.0  1.0) ;;
-            ThreeBody) g=1
-                bodies=$(yad --width=400 --height=150 --list --title="Three Body" --separator=" " \
+            ThreeBody) g=$(yad --title="Three Body - G" --form --separator=" " --align=right \
+                --field="Gravitational Constant" -- '1.000')
+                bodies=$(yad --width=400 --height=150 --list --title="Three Body - Bodies" --separator=" " \
                 --print-all --grid-lines=BOTH --no-click --editable \
                 --column=mass --column=x --column=y --column=z --column=px --column=py --column=pz \
                 -- 1.0 -1.6 0.0 0.0  0.08058  0.58884  0.2 \
                    1.0  1.6 0.0 0.0  0.08058  0.58884 -0.2 \
                    1.0  0.0 0.0 0.0 -0.16116 -1.17768  0.0) ;;
-            TwoBody) g=4
-                bodies=$(yad --width=350 --height=120 --list --title="Two Body" --separator=" " \
+            TwoBody) g=$(yad --title="Two Body - G" --form --separator=" " --align=right \
+                --field="Gravitational Constant" -- '4.000')
+                bodies=$(yad --width=350 --height=120 --list --title="Two Body - Bodies" --separator=" " \
                 --print-all --grid-lines=BOTH --no-click --editable \
                 --column=mass --column=x --column=y --column=z --column=px --column=py --column=pz \
                 -- 1.0 0.0  1.0 0.0  1.0 0.0 0.0 \

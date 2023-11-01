@@ -70,7 +70,7 @@ h-kerr-gl: symplectic.o dual.o h-kerr.o opengl.o h-kerr-gl.o
 
 
 h-nbody-std: symplectic.o h-nbody.o main-nbody.o
-	$(CC) $(CFLAGS) -o $@ $^ $(LIB_STD) $(LIB_GL)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIB_STD)
 
 h-nbody-gl: symplectic.o h-nbody.o opengl.o h-nbody-gl.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LIB_STD) $(LIB_GL)
