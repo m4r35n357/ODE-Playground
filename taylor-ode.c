@@ -86,17 +86,17 @@ static void _out_ (int dp, real x, real y, real z, real t, char x_tag, char y_ta
     }
 }
 
-static char _tp_ (series u, real *slope, char min) {
-    char tag = *slope * u[1] >= 0.0L ? '_' : (u[2] > 0.0L ? min : (char)toupper(min));
-    *slope = u[1];
+static char _tp_ (series u, real *v_old, char min) {
+    char tag = *v_old * u[1] >= 0.0L ? '_' : (u[2] > 0.0L ? min : (char)toupper(min));
+    *v_old = u[1];
     return tag;
 }
 
 void tsm_out (controls *c, xyz *_, model *p, clock_t t0) {
-    real sX = 0.0L, sY = 0.0L, sZ = 0.0L;
+    real vX = 0.0L, vY = 0.0L, vZ = 0.0L;
     for (int step = 0; step < c->steps; step++) {
         _diff_(_, p, c->order);
-        _out_(c->dp, _->x[0], _->y[0], _->z[0], c->h * step, _tp_(_->x, &sX, 'x'), _tp_(_->y, &sY, 'y'), _tp_(_->z, &sZ, 'z'), t0);
+        _out_(c->dp, _->x[0], _->y[0], _->z[0], c->h * step, _tp_(_->x, &vX, 'x'), _tp_(_->y, &vY, 'y'), _tp_(_->z, &vZ, 'z'), t0);
         _next_(_, c->order, c->h);
     }
     _out_(c->dp, _->x[0], _->y[0], _->z[0], c->h * c->steps, '_', '_', '_', t0);

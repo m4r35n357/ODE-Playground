@@ -11,9 +11,11 @@
 
 static void plot (int dp, model *nb, real t) {
     body *b = nb->bodies;
-    printf("%.6Le %+*Le", t, dp, error(H(nb) - nb->h0));
+    reset_cog(nb);
+    printf("%.6Le %+.*Le", t, dp, error(H(nb) - nb->h0));
     for (int i = 0; i < nb->n; i++) {
-        printf("  %+*Le %+*Le %+*Le %+*Le %+*Le %+*Le", dp, b[i].x, dp, b[i].y, dp, b[i].z, dp, b[i].px, dp, b[i].py, dp, b[i].pz);
+        printf("  %+.*Le %+.*Le %+.*Le %+.*Le %+.*Le %+.*Le",
+                dp, b[i].x, dp, b[i].y, dp, b[i].z, dp, b[i].px, dp, b[i].py, dp, b[i].pz);
     }
     printf("\n");
 }
