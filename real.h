@@ -21,8 +21,8 @@
 #define BLU "\x1B[1;34m"
 #define MGT "\x1B[0;35m"
 #define CYN "\x1B[0;36m"
-#define NRM "\x1B[0;37m"
 #define WHT "\x1B[1;37m"
+#define NRM "\x1B[0m"
 
 /*
  * Report program arguments in colour
