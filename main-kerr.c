@@ -14,7 +14,7 @@
 static real v2 (real vt, real vr, real vth, real vph, real a, real ra2, real sth2, real S, real D) {
     real va = (a * vt - ra2 * vph) / S;
     real vb = (vt - a * sth2 * vph) / S;
-    return sth2 / S * va * va + vr * vr / D / S + vth * vth / S - D / S * vb * vb;
+    return SQR(va) * sth2 / S + SQR(vr) / D / S + SQR(vth) / S -  SQR(vb) * D / S;
 }
 
 static void plot (int dp, model *p, real mino) {
@@ -25,8 +25,8 @@ static void plot (int dp, model *p, real mino) {
     printf("%+.*Le %+.*Le %+.*Le  %.6Le %+.*Le %+.*Le %+.*Le  %+.*Le %+.*Le  %.6Le %.6Le\n",
            dp, ra_sth * cosl(p->q_ph), dp, ra_sth * sinl(p->q_ph), dp, p->q_r * cosl(p->q_th), mino,
            dp, error(1.0L + v2(p->v_t, p->v_r, p->v_th, p->v_ph, p->a, p->ra2.val, p->sth2.val, S, p->D.val)),
-           dp, error(0.5L * (p->v_r * p->v_r - p->R.val)),      // "H" = p_r^2 / 2 + (- R(r) / 2) = 0
-           dp, error(0.5L * (p->v_th * p->v_th - p->TH.val)),   // "H" = p_th^2 / 2 + (- TH(th) / 2) = 0
+           dp, error(0.5L * (SQR(p->v_r) - p->R.val)),      // "H" = p_r^2 / 2 + (- R(r) / 2) = 0
+           dp, error(0.5L * (SQR(p->v_th) - p->TH.val)),   // "H" = p_th^2 / 2 + (- TH(th) / 2) = 0
            dp, Y.a, dp, Y.b, p->tau, p->q_t);
 }
 

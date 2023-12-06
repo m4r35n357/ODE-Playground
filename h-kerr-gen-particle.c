@@ -54,21 +54,21 @@ static bool converged (vector3 v, real epsilon) {
 }
 
 static dual R (real r, dual E, dual L, dual Q, real a) {
-    real ra2 = r * r + a * a;
+    real ra2 = SQR(r) + SQR(a);
     return d_sub(d_sqr(d_sub(d_scale(E, ra2), d_scale(L, a))),
-                 d_scale(d_add(d_sqr(d_sub(L, d_scale(E, a))), d_shift(Q, r * r)), ra2 - 2.0L * r));
+                 d_scale(d_add(d_sqr(d_sub(L, d_scale(E, a))), d_shift(Q, SQR(r))), ra2 - 2.0L * r));
 }
 
 static dual dR_dr (real r, dual E, dual L, dual Q, real a) {
-    real ra2 = r * r + a * a;
+    real ra2 = SQR(r) + SQR(a);
     return d_sub(d_scale(d_mul(E, d_sub(d_scale(E, ra2), d_scale(L, a))), 4.0L * r),
-                 d_shift(d_scale(d_shift(d_add(Q, d_sqr(d_sub(L, d_scale(E, a)))), r * r), 2.0L * r - 2.0L),
+                 d_shift(d_scale(d_shift(d_add(Q, d_sqr(d_sub(L, d_scale(E, a)))), SQR(r)), 2.0L * r - 2.0L),
                          2.0L * r * (ra2 - 2.0L * r)));
 }
 
 static dual THETA (real theta, dual E, dual L, dual Q, real a) {
-    real sth2 = sinl(theta) * sinl(theta);
-    return d_sub(Q, d_scale(d_add(d_scale(d_shift(d_sqr(E), - 1.0L), - a * a), d_scale(d_sqr(L), 1.0L / sth2)), 1.0L - sth2));
+    real sth2 = SQR(sinl(theta));
+    return d_sub(Q, d_scale(d_add(d_scale(d_shift(d_sqr(E), - 1.0L), - SQR(a)), d_scale(d_sqr(L), 1.0L / sth2)), 1.0L - sth2));
 }
 
 static model *get_p_gen (char **argv) {

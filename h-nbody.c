@@ -46,14 +46,14 @@ void reset_cog (model *p) {
 }
 
 static real distance (real x, real y, real z, real X, real Y, real Z) {
-    return sqrtl((x - X) * (x - X) + (y - Y) * (y - Y) + (z - Z) * (z - Z));
+    return sqrtl(SQR(x - X) + SQR(y - Y) + SQR(z - Z));
 }
 
 real H (model *p) {
     body *b = p->bodies;
     real e = 0.0L;
     for (int i = 0; i < p->n; i++) {
-        e += 0.5L * (b[i].px * b[i].px + b[i].py * b[i].py + b[i].pz * b[i].pz) / b[i].m;
+        e += 0.5L * (SQR(b[i].px) + SQR(b[i].py) + SQR(b[i].pz)) / b[i].m;
         for (int j = 0; j < i; j++) {
             e -= p->G * b[i].m * b[j].m / distance(b[i].x, b[i].y, b[i].z, b[j].x, b[j].y, b[j].z);
         }

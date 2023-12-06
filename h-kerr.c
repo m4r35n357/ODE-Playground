@@ -13,12 +13,12 @@ real elevation_to_colatitude (real elevation) {
 }
 
 real sigma (model *_) {
-    return _->q_r * _->q_r + _->a * _->a * (1.0L - _->sth2.val);
+    return SQR(_->q_r) + _->a2 * (1.0L - _->sth2.val);
 }
 
 pair gamma_v (model *_, real sigma) {
     real g = _->v_t / sigma;
-    return (pair){g, sqrtl(1.0L - 1.0L / (g * g))};
+    return (pair){g, sqrtl(1.0L - SQR(1.0L / g))};
 }
 
 static void refresh (model *_) {
@@ -44,13 +44,13 @@ model *kerr_get_p (int argc, char **argv, real step_size) {
     real m_factor = strtold(argv[9], NULL); CHECK(m_factor >= 0.0L && m_factor <= 1.0L);
     _->L = strtold(argv[8], NULL) * m_factor;
     _->Q = strtold(argv[10], NULL) * m_factor;
-    _->a2 = _->a * _->a;
+    _->a2 = SQR(_->a);
     _->horizon = 1.0F + (float)sqrtl(1.0L - _->a2);
-    _->L2 = _->L * _->L;
+    _->L2 = SQR(_->L);
     _->aL = _->a * _->L;
     _->aE = _->a * _->E;
-    _->K = _->Q + (_->L - _->aE) * (_->L - _->aE);
-    _->a2xmu2_E2 = _->a2 * (_->mu2 - _->E * _->E);
+    _->K = _->Q + SQR(_->L - _->aE);
+    _->a2xmu2_E2 = _->a2 * (_->mu2 - SQR(_->E));
     _->q_t = _->tau = 0.0L;  // coordinates & proper time
     _->q_r = strtold(argv[11], NULL);;
     _->q_th = elevation_to_colatitude(strtold(argv[12], NULL));

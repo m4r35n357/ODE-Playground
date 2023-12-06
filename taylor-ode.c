@@ -122,17 +122,17 @@ real t_div (series q, series u, series v, int k) {
     return q[k] = (!k ? u[k] : u[k] - _cauchy_(q, v, k, 0, k - 1)) / v[0];
 }
 
-static real _half_ (series a, int k, int k0) {
-    return 2.0L * _cauchy_(a, a, k, k0, (k - (k % 2 ? 1 : 2)) / 2) + (k % 2 ? 0.0L : a[k / 2] * a[k / 2]);
+static real _half_ (series a, int k, int k0, bool even) {
+    return 2.0L * _cauchy_(a, a, k, k0, (even ? k - 1 : k - 2) / 2) + (even ? 0.0L : SQR(a[k / 2]));
 }
 
 real t_sqr (series u, int k) {
-    return _half_(u, k, 0);
+    return _half_(u, k, 0, k % 2);
 }
 
 real t_sqrt (series r, series u, int k) {
     CHECK(u[0] > 0.0L); CHECK(r != u);
-    return r[k] = !k ? sqrtl(u[k]) : 0.5L * (u[k] - _half_(r, k, 1)) / r[0];
+    return r[k] = !k ? sqrtl(u[k]) : 0.5L * (u[k] - _half_(r, k, 1, k % 2)) / r[0];
 }
 
 static real _chain_ (series b, series a, int k, int k0) {
@@ -165,7 +165,7 @@ pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
     CHECK(trig ? fabsl(u[0]) < 0.5L * acosl(-1.0L) : true); CHECK(t != s && t != u && s != u);
     return !k ? (pair){
         .a = t[k] = trig ? tanl(u[k]) : tanhl(u[k]),
-        .b = s[k] = trig ? 1.0L + t[k] * t[k] : 1.0L - t[k] * t[k]
+        .b = s[k] = trig ? 1.0L + SQR(t[k]) : 1.0L - SQR(t[k])
     } : (pair){
         .a = t[k] = _fk_(s, u, k),
         .b = s[k] = _fk_(t, t, k) * (trig ? 2.0L : -2.0L)
@@ -207,7 +207,7 @@ pair t_atan_sec2 (series u, series s, series t, int k, bool trig) {
     CHECK(trig ? true : t[0] > -1.0L && t[0] < 1.0L); CHECK(u != s && u != t && s != t);
     return !k ? (pair){
         .a = u[k] = trig ? atanl(t[k]) : atanhl(t[k]),
-        .b = s[k] = trig ? 1.0L + t[k] * t[k] : 1.0L - t[k] * t[k]
+        .b = s[k] = trig ? 1.0L + SQR(t[k]) : 1.0L - SQR(t[k])
     } : (pair){
         .a = u[k] = _uk_(s, u, k, t[k], 1.0L),
         .b = s[k] = _fk_(t, t, k) * (trig ? 2.0L : -2.0L)

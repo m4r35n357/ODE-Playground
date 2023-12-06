@@ -103,7 +103,7 @@ int main (int argc, char **argv) {
     n = (int)strtol(argv[2], NULL, BASE); CHECK(n > 8);
     series x = tsm_jet(n + 1);
     for (int k = 0; k <= n; k++) {
-        x[k] = !k ? strtold(argv[3], NULL) : 0.5L / (k * k);
+        x[k] = !k ? strtold(argv[3], NULL) : 0.5L / SQR(k);
     }
     dual xd = {.val = x[0], .dot = x[1]};
     tolerance = strtold(argv[4], NULL); CHECK(tolerance > 0.0L);

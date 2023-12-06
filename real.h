@@ -25,6 +25,11 @@
 #define NRM "\x1B[0m"
 
 /*
+ * "Low-noise" squaring for arguments with no side-effects
+ */
+#define SQR(x) ((x) * (x))
+
+/*
  * Report program arguments in colour
  */
 #define PRINT_ARGS(argc, argv) do { \
