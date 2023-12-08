@@ -10,11 +10,9 @@
 #include "taylor-ode.h"
 #include "dual.h"
 
-static int k_max = 0, dp, n, debug = 0, total = 0, passed = 0, skipped = 0;
+static int dp, n, debug = 0, total = 0, passed = 0, skipped = 0;
 
-static real delta, delta_max = 0.0L, tolerance;
-
-static char *name_max = "N/A";
+static real tolerance;
 
 struct Parameters { real a, b, c; };
 
@@ -65,27 +63,31 @@ static void skip (char* name) {
 }
 
 static void compare (char* name, series a, series b) {
+    real delta_max = 0.0L;
     total++;
     for (int k = 0; k < n; k++) {
-        delta = fabsl(a[k] - b[k]);
+        real delta = fabsl(a[k] - b[k]);
         if (delta > delta_max) {
             delta_max = delta;
-            name_max = name;
-            k_max = k;
         }
-        if (!isfinite(delta) || delta > tolerance) {
-            fprintf(stderr, "%s FAIL%s %s%s%s\n  k=%d  LHS: %+.*Le  RHS: %+.*Le  (%.1Le)\n",
-                    RED, NRM, WHT, name, NRM, k, dp, a[k], dp, b[k], delta);
-            return;
-        }
-        if (debug >= 2) {
+        if (debug == 2) {
             if (!k) fprintf(stderr, "\n");
-            fprintf(stderr, "%s  DEBUG%s  k: %2d  %+.*Le %+.*Le  (%.1Le)\n",
-                    NRM, NRM, k, dp, a[k], dp, b[k], delta);
+            if (delta > tolerance) {
+                fprintf(stderr, "  %s%2d  %s%+.*Le %+.*Le%s  %.1Le%s\n", RED, k, NRM, dp, a[k], dp, b[k], RED, delta, NRM);
+            } else {
+                fprintf(stderr, "  %2d  %s%+.*Le %+.*Le%s  %.1Le\n", k, GRY, dp, a[k], dp, b[k], NRM, delta);
+            }
         }
     }
-    if (debug) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
-    passed++;
+    bool failed = delta_max > tolerance;
+    if (debug) {
+        if (failed) {
+            fprintf(stderr, "%s FAIL%s %s%s%s\n", RED, NRM, WHT, name, NRM);
+        } else {
+            fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
+        }
+    }
+    if (!failed) passed++;
 }
 
 static void compare_s_d (char* name, series a, dual b) {
@@ -102,8 +104,8 @@ int main (int argc, char **argv) {
     dp = (int)strtol(argv[1], NULL, BASE);
     n = (int)strtol(argv[2], NULL, BASE); CHECK(n > 8);
     series x = tsm_jet(n + 1);
-    for (int k = 0; k <= n; k++) {
-        x[k] = !k ? strtold(argv[3], NULL) : 0.5L / SQR(k);
+    for (int k = 0, s = 1; k <= n; k++, s *= -1) {
+        x[k] = !k ? strtold(argv[3], NULL) : 0.5L * s / SQR(k);
     }
     dual xd = {.val = x[0], .dot = x[1]};
     tolerance = strtold(argv[4], NULL); CHECK(tolerance > 0.0L);
@@ -224,8 +226,8 @@ int main (int argc, char **argv) {
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "cosh^2(x) - sinh^2(x) == 1"; compare(name, ad_sub(r1, cosh2_x, sinh2_x), S1);
-    name = "sech^2(x) + tanh^2(x) == 1"; compare(name, ad_add(r1, sech2_x, ad_sqr(tanh2_x, tanh_x)), S1);
+    name = "cosh^2(x) == 1 + sinh^2(x)"; compare(name, cosh2_x, ad_add(r1, S1, sinh2_x));
+    name = "sech^2(x) == 1 - tanh^2(x)"; compare(name, sech2_x, ad_sub(r1, S1, ad_sqr(tanh2_x, tanh_x)));
     name = "tanh(x) == sinh(x) / cosh(x)"; compare(name, tanh_x, ad_div(r1, sinh_x, cosh_x));
     name = "sech^2(x) == 1 / cosh^2(x)"; compare(name, sech2_x, ad_div(r1, S1, cosh2_x));
     name = "sinh(2x) == 2 * sinh(x) * cosh(x)"; compare(name, sinh_2x, ad_scale(r1, ad_mul(r2, sinh_x, cosh_x), 2.0L));
@@ -244,8 +246,8 @@ int main (int argc, char **argv) {
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "cos^2(x) + sin^2(x) == 1"; compare(name, ad_add(r1, cos2_x, sin2_x), S1);
-    name = "sec^2(x) - tan^2(x) == 1"; lt_pi_2 ? compare(name, ad_sub(r1, sec2_x, ad_sqr(tan2_x, tan_x)), S1) : skip(name);
+    name = "cos^2(x) == 1 - sin^2(x)"; compare(name, cos2_x, ad_sub(r1, S1, sin2_x));
+    name = "sec^2(x) == 1 + tan^2(x)"; lt_pi_2 ? compare(name, sec2_x, ad_add(r1, S1, ad_sqr(tan2_x, tan_x))) : skip(name);
     name = "tan(x) == sin(x) / cos(x)"; lt_pi_2 ? compare(name, tan_x, ad_div(r1, sin_x, cos_x)) : skip(name);
     name = "sec^2(x) == 1 / cos^2(x)"; lt_pi_2 ? compare(name, sec2_x, ad_div(r1, S1, cos2_x)) : skip(name);
     name = "sin(2x) == 2 * sin(x) * cos(x)"; compare(name, sin_2x, ad_scale(r1, ad_mul(r2, sin_x, cos_x), 2.0L));
@@ -265,13 +267,13 @@ int main (int argc, char **argv) {
     name = "arctan(sinh(gd^-1 x)) == x"; if (lt_pi_2) {ad_sin_cos(r3, r2, gd_1, false); ad_atan_sec2(r1, r2, r3, true); compare(name, r1, x);} else skip(name);
 
     if (debug) fprintf(stderr, "\n");
+
     fprintf(stderr, "%sTotal%s %d  %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
     if (skipped) fprintf(stderr, "  %sSKIPPED%s %d", YLW, NRM, skipped);
-    if (passed == total - skipped) {
-        fprintf(stderr, "\n%sDelta%s %.1Le %s%s%s %sk == %d%s\n", GRY, NRM, delta_max, BLU, name_max, NRM, GRY, k_max, NRM);
-        return 0;
-    } else {
-        fprintf(stderr, "  %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);
-        return 3;
+    if (passed < total - skipped) {
+        fprintf(stderr, "  %sFAILED%s %d\n", RED, NRM, total - passed - skipped);
+        return 1;
     }
+    fprintf(stderr, "\n");
+    return 0;
 }

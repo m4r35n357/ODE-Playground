@@ -11,9 +11,7 @@
 
 static int dp, debug = 0, total = 0, passed = 0, skipped = 0;
 
-static real delta_val, delta_dot, delta_max = 0.0L, tolerance;
-
-static char *name_max = "N/A", *field_max = "N/A";
+static real tolerance;
 
 static void skip (char* name) {
     total++;
@@ -22,32 +20,40 @@ static void skip (char* name) {
 }
 
 static void compare (char* name, dual a, dual b) {
+    real delta_max = 0.0L;
     total++;
-    delta_val = fabsl(a.val - b.val);
+    real delta_val = fabsl(a.val - b.val);
     if (delta_val > delta_max) {
         delta_max = delta_val;
-        name_max = name;
-        field_max = "VAL";
     }
-    if (fabsl(delta_val) > tolerance) {
-        fprintf(stderr, "%s FAIL%s %s%s%s\n  VAL  LHS: %+.*Le  RHS: %+.*Le  (%+.1Le)\n", RED, NRM, WHT, name, NRM, dp, a.val, dp, b.val, delta_val);
-        return;
+    if (debug == 2) {
+        if (delta_val > tolerance) {
+            fprintf(stderr, "  %sval  %s%+.*Le %+.*Le  %s%.1Le%s\n", RED, NRM, dp, a.val, dp, b.val, RED, delta_val, NRM);
+        } else {
+            fprintf(stderr, "  val  %s%+.*Le %+.*Le%s  %.1Le\n", GRY, dp, a.val, dp, b.val, NRM, delta_val);
+        }
     }
-    delta_dot = fabsl(a.dot - b.dot);
+    real delta_dot = fabsl(a.dot - b.dot);
     if (delta_dot > delta_max) {
         delta_max = delta_dot;
-        name_max = name;
-        field_max = "DOT";
     }
-    if (fabsl(delta_dot) > tolerance) {
-        fprintf(stderr, "%s FAIL%s %s%s%s\n  DOT  LHS: %+.*Le  RHS: %+.*Le  (%+.1Le)\n", RED, NRM, WHT, name, NRM, dp, a.dot, dp, b.dot, delta_dot);
-        return;
+    if (debug == 2) {
+        if (delta_dot > tolerance) {
+            fprintf(stderr, "  %sdot  %s%+.*Le %+.*Le%s  %.1Le%s\n", RED, NRM, dp, a.dot, dp, b.dot, RED, delta_dot, NRM);
+        } else {
+            fprintf(stderr, "  dot  %s%+.*Le %+.*Le%s  %.1Le\n", GRY, dp, a.dot, dp, b.dot, NRM, delta_dot);
+        }
     }
-    if (debug >= 2) fprintf(stderr, "\n");
-    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.*Le %+.*Le  %+.1Le\n", NRM, NRM, dp, a.val, dp, b.val, delta_val);
-    if (debug >= 2) fprintf(stderr, "%s  DEBUG%s  %+.*Le %+.*Le  %+.1Le\n", NRM, NRM, dp, a.dot, dp, b.dot, delta_dot);
-    if (debug) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
-    passed++;
+    bool failed = delta_max > tolerance;
+    if (debug) {
+        if (failed) {
+            fprintf(stderr, "%s FAIL%s %s%s%s\n", RED, NRM, WHT, name, NRM);
+        } else {
+            fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
+        }
+    }
+    if (debug == 2) fprintf(stderr, "\n");
+    if (!failed) passed++;
 }
 
 int main (int argc, char **argv) {
@@ -108,7 +114,7 @@ int main (int argc, char **argv) {
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "cosh^2(x) - sinh^2(x) == 1"; compare(name, d_sub(cosh2_x, sinh2_x), D1);
+    name = "cosh^2(x) == 1 + sinh^2(x)"; compare(name, cosh2_x, d_add(D1, sinh2_x));
     name = "tanh(x) == sinh(x) / cosh(x)"; compare(name, tanh_x, d_div(sinh_x, cosh_x));
     name = "sinh(2x) == 2 * sinh(x) * cosh(x)"; compare(name, sinh_2x, d_scale(d_mul(sinh_x, cosh_x), 2.0L));
     name = "cosh(2x) == cosh^2(x) + sinh^2(x)"; compare(name, cosh_2x, d_add(cosh2_x, sinh2_x));
@@ -126,7 +132,7 @@ int main (int argc, char **argv) {
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "cos^2(x) + sin^2(x) == 1"; compare(name, d_add(cos2_x, sin2_x), D1);
+    name = "cos^2(x) == 1 - sin^2(x)"; compare(name, cos2_x, d_sub(D1, sin2_x));
     name = "tan(x) == sin(x) / cos(x)"; lt_pi_2 ? compare(name, tan_x, d_div(sin_x, cos_x)) : skip(name);
     name = "sin(2x) == 2 * sin(x) * cos(x)"; compare(name, sin_2x, d_scale(d_mul(sin_x, cos_x), 2.0L));
     name = "cos(2x) == cos^2(x) - sin^2(x)"; compare(name, cos_2x, d_sub(cos2_x, sin2_x));
@@ -145,13 +151,13 @@ int main (int argc, char **argv) {
     name = "arctan(sinh(gd^-1 x)) == x"; if (lt_pi_2) {compare(name, d_atan(d_sinh(gd_1)), x);} else skip(name);
 
     if (debug) fprintf(stderr, "\n");
+
     fprintf(stderr, "%sTotal%s %d  %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
     if (skipped) fprintf(stderr, "  %sSKIPPED%s %d", YLW, NRM, skipped);
-    if (passed == total - skipped) {
-        fprintf(stderr, "\n%sDelta%s %.1Le %s%s%s %s%s%s\n", GRY, NRM, delta_max, BLU, name_max, NRM, GRY, field_max, NRM);
-        return 0;
-    } else {
-        fprintf(stderr, "  %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);
-        return 4;
+    if (passed < total - skipped) {
+        fprintf(stderr, "  %sFAILED%s %d\n", RED, NRM, total - passed - skipped);
+        return 1;
     }
+    fprintf(stderr, "\n");
+    return 0;
 }
