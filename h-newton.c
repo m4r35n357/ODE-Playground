@@ -41,7 +41,7 @@ void update_p (model *_, real d) {
 
 static void plot (int dp, model *_, real t) {
     real h = H(_->GM, _->m, d_dual(_->r), d_dual(_->p_r), d_dual(_->p_phi)).val;
-    printf("%+.*Le %+.*Le %+.*Le %+.*Le %.6Le %+.*Le %+.*Le\n",
+    printf("% .*Le % .*Le % .*Le % .*Le %.6Le % .*Le % .*Le\n",
            dp, _->r * sinl(_->phi), dp, _->r * cosl(_->phi), dp, _->r, dp, _->p_r, t, dp, error(h - _->h0), dp, h);
 }
 

@@ -22,7 +22,7 @@ static void plot (int dp, model *p, real mino) {
     pair Y = gamma_v(p, S);
     p->tau += p->step_size * S;
     real ra_sth = sqrtl(p->ra2.val) * sinl(p->q_th);
-    printf("%+.*Le %+.*Le %+.*Le  %.6Le %+.*Le %+.*Le %+.*Le  %+.*Le %+.*Le  %.6Le %.6Le\n",
+    printf("% .*Le % .*Le % .*Le  %.6Le % .*Le % .*Le % .*Le  % .*Le % .*Le  %.6Le %.6Le\n",
            dp, ra_sth * cosl(p->q_ph), dp, ra_sth * sinl(p->q_ph), dp, p->q_r * cosl(p->q_th), mino,
            dp, error(1.0L + v2(p->v_t, p->v_r, p->v_th, p->v_ph, p->a, p->ra2.val, p->sth2.val, S, p->D.val)),
            dp, error(0.5L * (SQR(p->v_r) - p->R.val)),      // "H" = p_r^2 / 2 + (- R(r) / 2) = 0

@@ -19,7 +19,7 @@ model *symp_init_p (int argc, char **argv) { (void)argc; (void)argv;
 }
 
 static void plot (int dp, model *p, real t) { (void)dp; (void)t;
-    printf("%+.3Le %+.3Le\n", p->c, p->d);
+    printf("% .3Le % .3Le\n", p->c, p->d);
 }
 
 void update_q (model *p, real c) {

@@ -73,9 +73,9 @@ static void compare (char* name, series a, series b) {
         if (debug == 2) {
             if (!k) fprintf(stderr, "\n");
             if (delta > tolerance) {
-                fprintf(stderr, "  %s%2d  %s%+.*Le %+.*Le%s  %.1Le%s\n", RED, k, NRM, dp, a[k], dp, b[k], RED, delta, NRM);
+                fprintf(stderr, "  %s%2d  %s% .*Le % .*Le%s  %.1Le%s\n", RED, k, NRM, dp, a[k], dp, b[k], RED, delta, NRM);
             } else {
-                fprintf(stderr, "  %2d  %s%+.*Le %+.*Le%s  %.1Le\n", k, GRY, dp, a[k], dp, b[k], NRM, delta);
+                fprintf(stderr, "  %2d  %s% .*Le % .*Le%s  %.1Le\n", k, GRY, dp, a[k], dp, b[k], NRM, delta);
             }
         }
     }

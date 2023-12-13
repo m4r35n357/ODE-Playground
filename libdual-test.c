@@ -28,9 +28,9 @@ static void compare (char* name, dual a, dual b) {
     }
     if (debug == 2) {
         if (delta_val > tolerance) {
-            fprintf(stderr, "  %sval  %s%+.*Le %+.*Le  %s%.1Le%s\n", RED, NRM, dp, a.val, dp, b.val, RED, delta_val, NRM);
+            fprintf(stderr, "  %sval  %s% .*Le % .*Le  %s%.1Le%s\n", RED, NRM, dp, a.val, dp, b.val, RED, delta_val, NRM);
         } else {
-            fprintf(stderr, "  val  %s%+.*Le %+.*Le%s  %.1Le\n", GRY, dp, a.val, dp, b.val, NRM, delta_val);
+            fprintf(stderr, "  val  %s% .*Le % .*Le%s  %.1Le\n", GRY, dp, a.val, dp, b.val, NRM, delta_val);
         }
     }
     real delta_dot = fabsl(a.dot - b.dot);
@@ -39,9 +39,9 @@ static void compare (char* name, dual a, dual b) {
     }
     if (debug == 2) {
         if (delta_dot > tolerance) {
-            fprintf(stderr, "  %sdot  %s%+.*Le %+.*Le%s  %.1Le%s\n", RED, NRM, dp, a.dot, dp, b.dot, RED, delta_dot, NRM);
+            fprintf(stderr, "  %sdot  %s% .*Le % .*Le%s  %.1Le%s\n", RED, NRM, dp, a.dot, dp, b.dot, RED, delta_dot, NRM);
         } else {
-            fprintf(stderr, "  dot  %s%+.*Le %+.*Le%s  %.1Le\n", GRY, dp, a.dot, dp, b.dot, NRM, delta_dot);
+            fprintf(stderr, "  dot  %s% .*Le % .*Le%s  %.1Le\n", GRY, dp, a.dot, dp, b.dot, NRM, delta_dot);
         }
     }
     bool failed = delta_max > tolerance;
