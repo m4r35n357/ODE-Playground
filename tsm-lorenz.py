@@ -6,6 +6,12 @@ from sys import argv, stderr
 from collections import namedtuple
 from ad import Components, Context, tsm, t_mul
 
+#from ctypes import cdll
+#lib = cdll.LoadLibrary('./librecurrences.so')
+
+def tsm_jet(n, value=0.0):
+    return [value if isinstance(value, float) else float(value)] + [0.0] * (n - 1)
+
 class Parameters(namedtuple('ParametersType', ['σ', 'ρ', 'β'])):
     pass
 
