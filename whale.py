@@ -9,10 +9,12 @@ import sys # max float
 
 # rastrigin function
 def fitness_rastrigin(position):
-	fitness_value = 0.0
+	A = 10.0
+	n = len(position)
+	fitness_value = A * n
 	for i in range(len(position)):
 		xi = position[i]
-		fitness_value += (xi * xi) - (10 * math.cos(2 * math.pi * xi)) + 10
+		fitness_value += xi * xi - A * math.cos(2 * math.pi * xi)
 	return fitness_value
 
 
