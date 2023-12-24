@@ -307,7 +307,7 @@ real *t_ln (series U, series EXP, int k);
  *
  *     COSH[k] = sum{j=0->k-1} SINH[j].(k-j).U[k-j] / k                          "forward"
  */
-pair t_asin (series U, series COSH, series SINH, int k, bool trig);
+pair t_asin_cos (series U, series COSH, series SINH, int k, bool trig);
 
 /*
  * Returns pointers to kth elements of arccos/arcosh (inverse of COS/COSH), results stored in jets U and SINH
@@ -323,7 +323,7 @@ pair t_asin (series U, series COSH, series SINH, int k, bool trig);
  *
  *     SINH[k] = sum{j=0->k-1} COSH[j].(k-j).U[k-j] / k                          "forward"
  */
-pair t_acos (series U, series SINH, series COSH, int k, bool trig);
+pair t_acos_sin (series U, series SINH, series COSH, int k, bool trig);
 
 /*
  * Returns pointers to kth elements of arctan/artanh (inverse of TAN/TANH), results stored in jets U and SEC2
@@ -339,7 +339,7 @@ pair t_acos (series U, series SINH, series COSH, int k, bool trig);
  *
  *     SEC2[k] = sum{j=0->k-1} 2.TAN[j].(k-j).TAN[k-j] / k                       "forward"
  */
-pair t_atan (series U, series SEC2, series TAN, int k, bool trig);
+pair t_atan_sec2 (series U, series SEC2, series TAN, int k, bool trig);
 
 /*
  * Returns kth element of P = U^a (where a is scalar), results stored in jet PWR

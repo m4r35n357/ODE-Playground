@@ -111,18 +111,18 @@ series ad_ln (series l, series u) {
 
 void ad_asin (series as, series du_df, series u, bool trig) {
     for (int k = 0; k < order; k++) {
-        t_asin(as, du_df, u, k, trig);
+    	t_asin_cos(as, du_df, u, k, trig);
     }
 }
 
 void ad_acos (series ac, series du_df, series u, bool trig) {
     for (int k = 0; k < order; k++) {
-        t_acos(ac, du_df, u, k, trig);
+    	t_acos_sin(ac, du_df, u, k, trig);
     }
 }
 
 void ad_atan (series at, series du_df, series u, bool trig) {
     for (int k = 0; k < order; k++) {
-        t_atan(at, du_df, u, k, trig);
+    	t_atan_sec2(at, du_df, u, k, trig);
     }
 }
