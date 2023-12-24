@@ -16,7 +16,7 @@ model *tsm_init_p (int argc, char **argv, int n) {
     model *_ = malloc(sizeof (model)); CHECK(_);
     tsm_get_p(argv, argc, &_->a, &_->b, &_->c);
     _->x2py2 = tsm_jet(n);
-    _->_B = tsm_const(n, _->b);
+    _->_B = tsm_jet(n); mpfr_set(_->_B[0], _->b, RND);
     return _;
 }
 

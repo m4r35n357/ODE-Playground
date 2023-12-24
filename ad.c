@@ -14,10 +14,6 @@ void ad_init (int n) {
     order = n;
 }
 
-series ad_const (real a) {
-    return tsm_const(order, a);
-}
-
 series ad_scale (series s, series u, real a) {
     for (int k = 0; k < order; k++) {
         mpfr_mul(s[k], u[k], a, RND);

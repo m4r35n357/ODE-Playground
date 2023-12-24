@@ -58,7 +58,7 @@ test:
 	@echo "\033[1;32mCore Tests Passed\033[0;37m\n"
 
 test-all: test
-	@if ! ./tsm-lorenz-std  6 237 8 .01 10000  -15.8 -17.48 35.64  10 28 8 3 >/dev/null; then exit 1; fi
+	@if ! ./tsm-lorenz-std 6 237 8 0.01 10000 -15.8 -17.48 35.64 10 28 8 3 >/dev/null; then exit 1; fi
 	@if ! ./tsm-thomas-std 6 237 8 0.100 10000 1.0 0.0 0.0 0.185 >/dev/null; then exit 1; fi
 	@if ! ./tsm-wimol-banlue-std 6 237 8 0.010 10000 1.0 0.1 0.1 1.0 >/dev/null; then exit 1; fi
 	@echo "\n\033[1;32mSanity Tests Passed\033[0;37m"

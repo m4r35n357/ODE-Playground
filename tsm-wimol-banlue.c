@@ -17,7 +17,7 @@ model *tsm_init_p (int argc, char **argv, int n) {
     tsm_get_p(argv, argc, &_->a);
     _->tx = tsm_jet(n);
     _->sx = tsm_jet(n);
-    _->_A = tsm_const(n, _->a);
+    _->_A = tsm_jet(n); mpfr_set(_->_A[0], _->a, RND);
     return _;
 }
 

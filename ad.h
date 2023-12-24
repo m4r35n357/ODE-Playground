@@ -13,11 +13,6 @@ void ad_init (int n);
 
 
 /*
- * Set up a constant jet of value a, result stored in jet C
- */
-series ad_const (real a);
-
-/*
  * Scales Taylor Series U by a factor a, result stored in jet SCL
  */
 series ad_scale (series SCL, series U, real a);

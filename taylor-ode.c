@@ -15,6 +15,16 @@ static real __, _a, _m, _h, _p, _fk, D0, D1, D2, D_1, D_2;
 
 static char format[60];
 
+void tsm_init (int dp) {
+    sprintf(format, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", dp, dp, dp);
+    mpfr_inits(__, _a, _m, _h, _p, _fk, NULL);
+    mpfr_init_set_si(D0, 0, RND);
+    mpfr_init_set_si(D1, 1, RND);
+    mpfr_init_set_si(D2, 2, RND);
+    mpfr_init_set_si(D_1, -1, RND);
+    mpfr_init_set_si(D_2, -2, RND);
+}
+
 void tsm_get_p (char **argv, int argc, ...) {
     va_list _;
     va_start(_, argc);
@@ -25,24 +35,11 @@ void tsm_get_p (char **argv, int argc, ...) {
 series tsm_jet (int n) {
     CHECK(n > 0);
     series _ = malloc((size_t)n * sizeof (real)); CHECK(_);
-    for (int i = 0; i < n; i++) mpfr_init(_[i]);
+    for (int i = 0; i < n; i++) {
+        mpfr_init(_[i]);
+        mpfr_set_zero(_[i], 1);
+    }
     return _;
-}
-
-series tsm_const (int n, real a) {
-    series _ = tsm_jet(n);
-    for (int i = 0; i < n; i++) mpfr_set(_[i], i ? D0 : a, RND);
-    return _;
-}
-
-void tsm_init (int dp) {
-    sprintf(format, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", dp, dp, dp);
-    mpfr_inits(__, _a, _m, _h, _p, _fk, NULL);
-    mpfr_init_set_si(D0, 0, RND);
-    mpfr_init_set_si(D1, 1, RND);
-    mpfr_init_set_si(D2, 2, RND);
-    mpfr_init_set_si(D_1, -1, RND);
-    mpfr_init_set_si(D_2, -2, RND);
 }
 
 real *horner (series u, int o, real h) {

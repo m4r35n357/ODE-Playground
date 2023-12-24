@@ -95,11 +95,6 @@ void tsm_get_p (char **argv, int count, ...);
 series tsm_jet (int size);
 
 /*
- * Set up a constant jet of value a
- */
-series tsm_const (int size, real a);
-
-/*
  * Initialize constants
  */
 void tsm_init (int display_precision);

@@ -20,8 +20,8 @@ model *tsm_init_p (int argc, char **argv, int n) {
     _->a = tsm_jet(n);
     _->b = tsm_jet(n);
     _->c = tsm_jet(n);
-    _->_ALPHA = tsm_const(n, _->alpha);
-    _->_1 = tsm_const(n, _->D1);
+    _->_ALPHA = tsm_jet(n); mpfr_set(_->_ALPHA[0], _->alpha, RND);
+    _->_1 = tsm_jet(n); mpfr_set(_->_1[0], _->D1, RND);
     return _;
 }
 

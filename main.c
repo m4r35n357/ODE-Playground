@@ -28,9 +28,9 @@ int main (int argc, char **argv) {
     mpfr_inits(lhs->x, lhs->y, lhs->z, NULL);
 
     xyz *jets = malloc(sizeof (xyz)); CHECK(jets);
-    jets->x = tsm_const(order + 1, x0);
-    jets->y = tsm_const(order + 1, y0);
-    jets->z = tsm_const(order + 1, z0);
+    jets->x = tsm_jet(order + 1); mpfr_set(jets->x[0], x0, RND);
+    jets->y = tsm_jet(order + 1); mpfr_set(jets->y[0], y0, RND);
+    jets->z = tsm_jet(order + 1); mpfr_set(jets->z[0], z0, RND);
 
     tsm_init(display_precision);
     tsm(order, step_size, steps, lhs, jets, tsm_init_p(argc, argv, order), clock());

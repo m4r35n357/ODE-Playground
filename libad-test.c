@@ -108,9 +108,9 @@ int main (int argc, char **argv) {
     triplet *v = malloc(sizeof (triplet)); CHECK(v);
     mpfr_inits(v->x, v->y, v->z, NULL);
     xyz *_ = malloc(sizeof (xyz)); CHECK(_);
-    _->x = tsm_const(n + 1, D1);
-    _->y = tsm_const(n + 1, D1);
-    _->z = tsm_const(n + 1, D1);
+    _->x = tsm_jet(n + 1); mpfr_set(_->x[0], D1, RND);
+    _->y = tsm_jet(n + 1); mpfr_set(_->y[0], D1, RND);
+    _->z = tsm_jet(n + 1); mpfr_set(_->z[0], D1, RND);
     tsm_init(dp);
     tsm(n, D01, steps, v, _, tsm_init_p(argc, argv, n), clock());
     fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);
@@ -147,7 +147,7 @@ int main (int argc, char **argv) {
 
     fprintf(stderr, "Taylor Arithmetic %sx = %s%.1Lf%s\n", GRY, WHT, mpfr_get_ld(x[0], RND), NRM);
     bool positive = mpfr_sgn(x[0]) > 0, non_zero = mpfr_zero_p(x[0]) == 0, lt_pi_2 = mpfr_cmpabs(x[0], PI_2) < 0;
-    series r1 = tsm_jet(n), r2 = tsm_jet(n), r3 = tsm_jet(n), S1 = tsm_const(n, D1);
+    series r1 = tsm_jet(n), r2 = tsm_jet(n), r3 = tsm_jet(n), S1 = tsm_jet(n); mpfr_set(S1[0], D1, RND);
     series abs_x = tsm_jet(n), inv_x = tsm_jet(n), sqrt_x = tsm_jet(n), ln_x = tsm_jet(n);
     if (non_zero) ad_abs(abs_x, x);
     if (non_zero) ad_div(inv_x, S1, x);
