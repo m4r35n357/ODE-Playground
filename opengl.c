@@ -129,6 +129,7 @@ void buffer_point () {
 }
 
 void line_trail (trail *track) {
+    glDisable(GL_LIGHTING);
     glColor3f(track->colour.a, track->colour.b, track->colour.c);
     glBegin(GL_LINE_STRIP);
     for (int i = oldest; i != newest; i = (i + 1) % length) {  // read buffers
@@ -136,14 +137,17 @@ void line_trail (trail *track) {
     }
     glVertex3f(track->points[newest].a, track->points[newest].b, track->points[newest].c);
     glEnd();
+    glEnable(GL_LIGHTING);
 }
 
 void line_position (point p, rgb colour, float scale) {
+    glDisable(GL_LIGHTING);
     glColor3f(0.3F, 0.3F, 0.3F);
     glBegin(GL_LINES);
     glVertex3f(0.0F, 0.0F, 0.0F);
     glVertex3f(p.a, p.b, p.c);
     glEnd();
+    glEnable(GL_LIGHTING);
     glColor3f(colour.a, colour.b, colour.c);
     glPushMatrix();
     glTranslatef(p.a, p.b, p.c);
