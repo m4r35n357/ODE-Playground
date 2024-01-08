@@ -99,7 +99,11 @@ void SetupView () {
     glTranslatef(0.0F, 0.0F, - radius);
     glRotatef(latitude, 1.0F, 0.0F, 0.0F);
     glRotatef(longitude, 0.0F, 0.0F, 1.0F);
-    glLightfv(GL_LIGHT0, GL_POSITION, (float []){-100.0F, 100.0F, -100.0F, 0.0F});
+    glLightfv(GL_LIGHT0, GL_AMBIENT, (float[]){0.0F, 0.0F, 0.0F, 1.0F});
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, (float[]){1.0F, 1.0F, 1.0F, 1.0F});
+    glLightfv(GL_LIGHT0, GL_SPECULAR, (float[]){1.0F, 1.0F, 1.0F, 1.0F});
+    glLightfv(GL_LIGHT0, GL_POSITION, (float[]){-100.0F, 100.0F, -100.0F, 0.0F});
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 }
 
 void ReDraw () {
