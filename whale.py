@@ -9,7 +9,7 @@ import sys # max float
 class Whale:
 	def __init__(self, cost, n, min_x, max_x, seed):
 		self.rnd = random.Random(seed)
-		self.position = [0.0 for j in range(n)]
+		self.position = [0.0 for _ in range(n)]
 		for j in range(n):
 			self.position[j] = ((max_x - min_x) * self.rnd.random() + min_x)
 		self.value = cost(self.position) # curr fitness
@@ -21,7 +21,7 @@ def woa(cost, i_max, n_whales, n, min_x, max_x):
 	whale = [Whale(cost, n, min_x, max_x, j) for j in range(n_whales)]
 
 	# compute the value of best_position and best_fitness in the whale Population
-	x_best = [0.0 for j in range(n)]
+	x_best = [0.0 for _ in range(n)]
 	f_best = sys.float_info.max
 
 	for k in range(n_whales): # check each whale
@@ -47,9 +47,9 @@ def woa(cost, i_max, n_whales, n, min_x, max_x):
 			l = (a2 - 1) * rnd.random() + 1
 			p = rnd.random()
 
-			d = [0.0 for j in range(n)]
-			d_1 = [0.0 for j in range(n)]
-			x_new = [0.0 for j in range(n)]
+			d = [0.0 for _ in range(n)]
+			d_1 = [0.0 for _ in range(n)]
+			x_new = [0.0 for _ in range(n)]
 			if p < 0.5:
 				if abs(A) > 1:
 					for j in range(n):
@@ -84,7 +84,6 @@ def woa(cost, i_max, n_whales, n, min_x, max_x):
 			if whale[k].value < f_best:
 				x_best = copy.copy(whale[k].position)
 				f_best = whale[k].value
-
 
 		iteration += 1
 	# end-while
