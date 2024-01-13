@@ -27,23 +27,21 @@ def woa(cost, i_max, n_whales, n, min_x, max_x):
 	# main loop of woa
 	iteration = 0
 	while iteration < i_max:
-		# after every 10 iterations print iteration number and best fitness value so far
 		if iteration % 10 == 0 and iteration > 1:
 			print("Iter = " + str(iteration) + " best fitness = %.3f" % f_best)
-		# linearly decreased from 2 to 0
 		a = 2.0 * (1 - iteration / i_max)
-		a2 = -1.0 + iteration * ((-1) / i_max)
 		for k in range(n_whales):
-			aa = 2 * a * rnd.random() - a
-			cc = 2 * rnd.random()
-			b = 1
-			l = (a2 - 1) * rnd.random() + 1
+			aa = a * (2.0 * rnd.random() - 1.0)
+			cc = 2.0 * rnd.random()
+			b = 1.0
+			l = 1.0 - (iteration / i_max + 2.0) * rnd.random()
+#			l = 2.0 * rnd.random() - 1.0
 			p = rnd.random()
 			d = [0.0 for _ in range(n)]
 			d_1 = [0.0 for _ in range(n)]
 			x_new = [0.0 for _ in range(n)]
 			if p < 0.5:
-				if abs(aa) > 1:
+				if abs(aa) > 1.0:
 					for j in range(n):
 						d[j] = abs(cc * x_best[j] - whales[k].position[j])
 						x_new[j] = x_best[j] - aa * d[j]
@@ -51,9 +49,7 @@ def woa(cost, i_max, n_whales, n, min_x, max_x):
 					p = randint(0, n_whales - 1)
 					while p == k:
 						p = randint(0, n_whales - 1)
-
 					x_rand = whales[p].position
-
 					for j in range(n):
 						d[j] = abs(cc * x_rand[j] - whales[k].position[j])
 						x_new[j] = x_rand[j] - aa * d[j]
@@ -64,7 +60,6 @@ def woa(cost, i_max, n_whales, n, min_x, max_x):
 			for j in range(n):
 				whales[k].position[j] = x_new[j]
 		for k in range(n_whales):
-			# if Xnew < minx OR Xnew > maxx then clip it
 			for j in range(n):
 				whales[k].position[j] = max(whales[k].position[j], min_x)
 				whales[k].position[j] = min(whales[k].position[j], max_x)
@@ -73,5 +68,4 @@ def woa(cost, i_max, n_whales, n, min_x, max_x):
 				x_best = copy(whales[k].position)
 				f_best = whales[k].value
 		iteration += 1
-	# end-while
 	return x_best
