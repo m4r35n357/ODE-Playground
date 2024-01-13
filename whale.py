@@ -32,7 +32,7 @@ def woa(cost, i_max, n_whales, n, min_x, max_x):
 			print("Iter = " + str(iteration) + " best fitness = %.3f" % f_best)
 		# linearly decreased from 2 to 0
 		a = 2.0 * (1 - iteration / i_max)
-		a2 = -1 + iteration * ((-1) / i_max)
+		a2 = -1.0 + iteration * ((-1) / i_max)
 		for k in range(n_whales):
 			aa = 2 * a * rnd.random() - a
 			cc = 2 * rnd.random()
