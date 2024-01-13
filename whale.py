@@ -41,8 +41,8 @@ def woa(cost, i_max, n_whales, n, min_x, max_x):
 		a2 = -1 + iteration * ((-1) / i_max)
 
 		for k in range(n_whales):
-			A = 2 * a * rnd.random() - a
-			C = 2 * rnd.random()
+			aa = 2 * a * rnd.random() - a
+			cc = 2 * rnd.random()
 			b = 1
 			l = (a2 - 1) * rnd.random() + 1
 			p = rnd.random()
@@ -51,10 +51,10 @@ def woa(cost, i_max, n_whales, n, min_x, max_x):
 			d_1 = [0.0 for _ in range(n)]
 			x_new = [0.0 for _ in range(n)]
 			if p < 0.5:
-				if abs(A) > 1:
+				if abs(aa) > 1:
 					for j in range(n):
-						d[j] = abs(C * x_best[j] - whale[k].position[j])
-						x_new[j] = x_best[j] - A * d[j]
+						d[j] = abs(cc * x_best[j] - whale[k].position[j])
+						x_new[j] = x_best[j] - aa * d[j]
 				else:
 					p = randint(0, n_whales - 1)
 					while p == k:
@@ -63,8 +63,8 @@ def woa(cost, i_max, n_whales, n, min_x, max_x):
 					x_rand = whale[p].position
 
 					for j in range(n):
-						d[j] = abs(C * x_rand[j] - whale[k].position[j])
-						x_new[j] = x_rand[j] - A * d[j]
+						d[j] = abs(cc * x_rand[j] - whale[k].position[j])
+						x_new[j] = x_rand[j] - aa * d[j]
 			else:
 				for j in range(n):
 					d_1[j] = abs(x_best[j] - whale[k].position[j])
