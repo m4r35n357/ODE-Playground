@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # python implementation of whale optimization algorithm (WOA)
 # minimizing rastrigin and sphere function
 import random
