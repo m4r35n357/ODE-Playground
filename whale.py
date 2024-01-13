@@ -1,33 +1,33 @@
 
 # python implementation of whale optimization algorithm (WOA)
 # minimizing rastrigin and sphere function
-import random
-import math # cos() for Rastrigin
-import copy # array-copying convenience
-import sys # max float
+from random import Random, randint
+from math import exp, cos, pi
+from copy import copy # array-copying convenience
+from sys import float_info # max float
 
 class Whale:
 	def __init__(self, cost, n, min_x, max_x, seed):
-		self.rnd = random.Random(seed)
+		self.rnd = Random(seed)
 		self.position = [0.0 for _ in range(n)]
 		for j in range(n):
 			self.position[j] = ((max_x - min_x) * self.rnd.random() + min_x)
 		self.value = cost(self.position) # curr fitness
 
 def woa(cost, i_max, n_whales, n, min_x, max_x):
-	rnd = random.Random(0)
+	rnd = Random(0)
 
 	# create n random whales
 	whale = [Whale(cost, n, min_x, max_x, j) for j in range(n_whales)]
 
 	# compute the value of best_position and best_fitness in the whale Population
 	x_best = [0.0 for _ in range(n)]
-	f_best = sys.float_info.max
+	f_best = float_info.max
 
 	for k in range(n_whales): # check each whale
 		if whale[k].value < f_best:
 			f_best = whale[k].value
-			x_best = copy.copy(whale[k].position)
+			x_best = copy(whale[k].position)
 
 	# main loop of woa
 	iteration = 0
@@ -56,9 +56,9 @@ def woa(cost, i_max, n_whales, n, min_x, max_x):
 						d[j] = abs(C * x_best[j] - whale[k].position[j])
 						x_new[j] = x_best[j] - A * d[j]
 				else:
-					p = random.randint(0, n_whales - 1)
+					p = randint(0, n_whales - 1)
 					while p == k:
-						p = random.randint(0, n_whales - 1)
+						p = randint(0, n_whales - 1)
 
 					x_rand = whale[p].position
 
@@ -68,7 +68,7 @@ def woa(cost, i_max, n_whales, n, min_x, max_x):
 			else:
 				for j in range(n):
 					d_1[j] = abs(x_best[j] - whale[k].position[j])
-					x_new[j] = d_1[j] * math.exp(b * l) * math.cos(2 * math.pi * l) + x_best[j]
+					x_new[j] = d_1[j] * exp(b * l) * cos(2 * pi * l) + x_best[j]
 
 			for j in range(n):
 				whale[k].position[j] = x_new[j]
@@ -82,7 +82,7 @@ def woa(cost, i_max, n_whales, n, min_x, max_x):
 			whale[k].value = cost(whale[k].position)
 
 			if whale[k].value < f_best:
-				x_best = copy.copy(whale[k].position)
+				x_best = copy(whale[k].position)
 				f_best = whale[k].value
 
 		iteration += 1
