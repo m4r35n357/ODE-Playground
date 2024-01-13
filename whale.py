@@ -1,4 +1,5 @@
 # python implementation of whale optimization algorithm (WOA)
+# https://www.geeksforgeeks.org/implementation-of-whale-optimization-algorithm/
 from random import Random, randint
 from math import exp, cos, pi
 from copy import copy # array-copying convenience
