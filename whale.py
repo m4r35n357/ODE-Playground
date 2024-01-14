@@ -16,21 +16,21 @@ class Whale:
 def woa(cost, i_max, n_whales, n, min_x, max_x):
 	rnd = Random(0)
 	# create n random whales
-	whales = [Whale(cost, n, min_x, max_x, j) for j in range(n_whales)]
+	whales = [Whale(cost, n, min_x, max_x, i) for i in range(n_whales)]
 	# compute the value of best_position and best_fitness in the whale Population
-	x_best = [0.0 for _ in range(n)]
+	x_p = [0.0 for _ in range(n)]
 	f_best = float_info.max
-	for k in range(n_whales): # find best whale
-		if whales[k].value < f_best:
-			f_best = whales[k].value
-			x_best = copy(whales[k].position)
+	for i in range(n_whales): # find best whale
+		if whales[i].value < f_best:
+			f_best = whales[i].value
+			x_p = copy(whales[i].position)
 	# main loop of woa
 	iteration = 0
 	while iteration < i_max:
 		if iteration % 10 == 0 and iteration > 1:
 			print("Iter = " + str(iteration) + " best fitness = %.3f" % f_best)
-		a = 2.0 * (1 - iteration / i_max)
-		for k in range(n_whales):
+		a = 2.0 * (1.0 - iteration / i_max)
+		for i in range(n_whales):
 			aa = a * (2.0 * rnd.random() - 1.0)
 			cc = 2.0 * rnd.random()
 			b = 1.0
@@ -38,34 +38,35 @@ def woa(cost, i_max, n_whales, n, min_x, max_x):
 #			l = 2.0 * rnd.random() - 1.0
 			p = rnd.random()
 			d = [0.0 for _ in range(n)]
-			d_1 = [0.0 for _ in range(n)]
+			d_dash = [0.0 for _ in range(n)]
+			d_ddash = [0.0 for _ in range(n)]
 			x_new = [0.0 for _ in range(n)]
 			if p < 0.5:
 				if abs(aa) > 1.0:
 					for j in range(n):
-						d[j] = abs(cc * x_best[j] - whales[k].position[j])
-						x_new[j] = x_best[j] - aa * d[j]
+						d[j] = abs(cc * x_p[j] - whales[i].position[j])
+						x_new[j] = x_p[j] - aa * d[j]
 				else:
 					p = randint(0, n_whales - 1)
-					while p == k:
+					while p == i:
 						p = randint(0, n_whales - 1)
 					x_rand = whales[p].position
 					for j in range(n):
-						d[j] = abs(cc * x_rand[j] - whales[k].position[j])
-						x_new[j] = x_rand[j] - aa * d[j]
+						d_ddash[j] = abs(cc * x_rand[j] - whales[i].position[j])
+						x_new[j] = x_rand[j] - aa * d_ddash[j]
 			else:
 				for j in range(n):
-					d_1[j] = abs(x_best[j] - whales[k].position[j])
-					x_new[j] = d_1[j] * exp(b * l) * cos(2 * pi * l) + x_best[j]
+					d_dash[j] = abs(x_p[j] - whales[i].position[j])
+					x_new[j] = d_dash[j] * exp(b * l) * cos(2 * pi * l) + x_p[j]
 			for j in range(n):
-				whales[k].position[j] = x_new[j]
-		for k in range(n_whales):
+				whales[i].position[j] = x_new[j]
+		for i in range(n_whales):
 			for j in range(n):
-				whales[k].position[j] = max(whales[k].position[j], min_x)
-				whales[k].position[j] = min(whales[k].position[j], max_x)
-			whales[k].value = cost(whales[k].position)
-			if whales[k].value < f_best:
-				x_best = copy(whales[k].position)
-				f_best = whales[k].value
+				whales[i].position[j] = max(whales[i].position[j], min_x)
+				whales[i].position[j] = min(whales[i].position[j], max_x)
+			whales[i].value = cost(whales[i].position)
+			if whales[i].value < f_best:
+				x_p = copy(whales[i].position)
+				f_best = whales[i].value
 		iteration += 1
-	return x_best
+	return x_p
