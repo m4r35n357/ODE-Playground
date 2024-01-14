@@ -8,10 +8,10 @@ from sys import float_info # max float
 class Whale:
 	def __init__(self, cost, n, min_x, max_x, seed):
 		self.rnd = Random(seed)
-		self.position = [0.0 for _ in range(n)]
+		self.x = [0.0 for _ in range(n)]
 		for j in range(n):
-			self.position[j] = ((max_x - min_x) * self.rnd.random() + min_x)
-		self.value = cost(self.position) # curr fitness
+			self.x[j] = ((max_x - min_x) * self.rnd.random() + min_x)
+		self.value = cost(self.x) # curr fitness
 
 def woa(cost, i_max, n_whales, n, min_x, max_x):
 	rnd = Random(0)
@@ -23,7 +23,7 @@ def woa(cost, i_max, n_whales, n, min_x, max_x):
 	for i in range(n_whales): # find best whale
 		if whales[i].value < f_best:
 			f_best = whales[i].value
-			x_p = copy(whales[i].position)
+			x_p = copy(whales[i].x)
 	# main loop of woa
 	iteration = 0
 	while iteration < i_max:
@@ -44,29 +44,29 @@ def woa(cost, i_max, n_whales, n, min_x, max_x):
 			if p < 0.5:
 				if abs(aa) > 1.0:
 					for j in range(n):
-						d[j] = abs(cc * x_p[j] - whales[i].position[j])
+						d[j] = abs(cc * x_p[j] - whales[i].x[j])
 						x_new[j] = x_p[j] - aa * d[j]
 				else:
 					p = randint(0, n_whales - 1)
 					while p == i:
 						p = randint(0, n_whales - 1)
-					x_rand = whales[p].position
+					x_rand = whales[p].x
 					for j in range(n):
-						d_ddash[j] = abs(cc * x_rand[j] - whales[i].position[j])
+						d_ddash[j] = abs(cc * x_rand[j] - whales[i].x[j])
 						x_new[j] = x_rand[j] - aa * d_ddash[j]
 			else:
 				for j in range(n):
-					d_dash[j] = abs(x_p[j] - whales[i].position[j])
+					d_dash[j] = abs(x_p[j] - whales[i].x[j])
 					x_new[j] = d_dash[j] * exp(b * l) * cos(2 * pi * l) + x_p[j]
 			for j in range(n):
-				whales[i].position[j] = x_new[j]
+				whales[i].x[j] = x_new[j]
 		for i in range(n_whales):
 			for j in range(n):
-				whales[i].position[j] = max(whales[i].position[j], min_x)
-				whales[i].position[j] = min(whales[i].position[j], max_x)
-			whales[i].value = cost(whales[i].position)
+				whales[i].x[j] = max(whales[i].x[j], min_x)
+				whales[i].x[j] = min(whales[i].x[j], max_x)
+			whales[i].value = cost(whales[i].x)
 			if whales[i].value < f_best:
-				x_p = copy(whales[i].position)
+				x_p = copy(whales[i].x)
 				f_best = whales[i].value
 		iteration += 1
 	return x_p
