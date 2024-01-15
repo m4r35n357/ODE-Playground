@@ -36,19 +36,19 @@ def woa(cost, i_max, n_whales, dim, min_x, max_x):
 #			l = 2.0 * rnd.random() - 1.0
 			x_next = [0.0 for _ in range(dim)]
 			if rnd.random() < 0.5:
-				if abs(aa) < 1.0:  # "encircling" update
+				if abs(aa) < 1.0:  # "encircling" update (1)
 					for j in range(dim):
 						x_next[j] = x_p[j] - aa * abs(cc * x_p[j] - whales[i].x[j])
-				else:  # "searching/random" update
+				else:  # "searching/random" update (9)
 					p = randint(0, n_whales - 1)
 					while p == i:
 						p = randint(0, n_whales - 1)
 					x_rand = whales[p].x
 					for j in range(dim):
 						x_next[j] = x_rand[j] - aa * abs(cc * x_rand[j] - whales[i].x[j])
-			else:  # "spiral" update
+			else:  # "spiral" update (7)
 				for j in range(dim):
-					x_next[j] = abs(x_p[j] - whales[i].x[j]) * exp(b * l) * cos(2 * pi * l) + x_p[j]
+					x_next[j] = abs(x_p[j] - whales[i].x[j]) * exp(b * l) * cos(2.0 * pi * l) + x_p[j]
 			for j in range(dim):
 				whales[i].x[j] = x_next[j]
 		for i in range(n_whales):
