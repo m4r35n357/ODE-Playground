@@ -34,7 +34,6 @@ def woa(cost, i_max, n_whales, dim, min_x, max_x):
 			b = 1.0
 			l = 1.0 - (iteration / i_max + 2.0) * rnd.random()
 #			l = 2.0 * rnd.random() - 1.0
-			p = rnd.random()
 			d = [0.0 for _ in range(dim)]
 			d_dash = [0.0 for _ in range(dim)]
 			d_ddash = [0.0 for _ in range(dim)]
