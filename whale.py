@@ -34,27 +34,21 @@ def woa(cost, i_max, n_whales, dim, min_x, max_x):
 			b = 1.0
 			l = 1.0 - (iteration / i_max + 2.0) * rnd.random()
 #			l = 2.0 * rnd.random() - 1.0
-			d = [0.0 for _ in range(dim)]
-			d_dash = [0.0 for _ in range(dim)]
-			d_ddash = [0.0 for _ in range(dim)]
 			x_next = [0.0 for _ in range(dim)]
 			if rnd.random() < 0.5:
 				if abs(aa) < 1.0:  # "encircling" update
 					for j in range(dim):
-						d[j] = abs(cc * x_p[j] - whales[i].x[j])
-						x_next[j] = x_p[j] - aa * d[j]
+						x_next[j] = x_p[j] - aa * abs(cc * x_p[j] - whales[i].x[j])
 				else:  # "searching/random" update
 					p = randint(0, n_whales - 1)
 					while p == i:
 						p = randint(0, n_whales - 1)
 					x_rand = whales[p].x
 					for j in range(dim):
-						d_ddash[j] = abs(cc * x_rand[j] - whales[i].x[j])
-						x_next[j] = x_rand[j] - aa * d_ddash[j]
+						x_next[j] = x_rand[j] - aa * abs(cc * x_rand[j] - whales[i].x[j])
 			else:  # "spiral" update
 				for j in range(dim):
-					d_dash[j] = abs(x_p[j] - whales[i].x[j])
-					x_next[j] = d_dash[j] * exp(b * l) * cos(2 * pi * l) + x_p[j]
+					x_next[j] = abs(x_p[j] - whales[i].x[j]) * exp(b * l) * cos(2 * pi * l) + x_p[j]
 			for j in range(dim):
 				whales[i].x[j] = x_next[j]
 		for i in range(n_whales):
