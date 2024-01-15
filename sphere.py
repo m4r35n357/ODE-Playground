@@ -10,7 +10,6 @@ def sphere(position):
 		value += xi * xi
 	return value
 
-print("\nBegin whale optimization algorithm on sphere function\n")
 dim = int(argv[1])
 model = sphere
 if len(argv) == 1:
@@ -22,19 +21,8 @@ else:
 	num_whales = int(argv[2])
 	max_iter = int(argv[3])
 
-print("Goal is to minimize sphere function in " + str(dim) + " variables")
-print("Function has known min = 0.0 at (", end="")
-for i in range(dim - 1):
-	print("0, ", end="")
-print("0)")
-
-print("Setting num_whales = " + str(num_whales))
-print("Setting max_iter = " + str(max_iter))
-print("\nStarting WOA algorithm\n")
-
 best_x = woa(model, max_iter, num_whales, dim, -10.0, 10.0)
 
-print("\nWOA completed")
 print("Best solution found:")
 print(["%.6f" % best_x[k] for k in range(dim)])
 print("fitness of best solution = %.6f\n" % model(best_x))
