@@ -34,5 +34,8 @@ best_x = woa(model, max_iter, num_whales, dim, -10.0, 10.0)
 print("\nWOA completed")
 print("Best solution found:")
 print(["%.6f" % best_x[k] for k in range(dim)])
-err = model(best_x)
-print("fitness of best solution = %.6f\n" % err)
+print("fitness of best solution = %.6f\n" % model(best_x))
+for i in range(dim):
+	print("", best_x[i], end=" ")
+print("")
+
