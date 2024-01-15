@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from sys import argv
 from whale import woa
 
 def sphere(position):
@@ -10,17 +11,22 @@ def sphere(position):
 	return value
 
 print("\nBegin whale optimization algorithm on sphere function\n")
-dim = 3
+dim = int(argv[1])
 model = sphere
+if len(argv) == 1:
+	dim = 3
+	num_whales = 50
+	max_iter = 100
+else:
+	dim = int(argv[1])
+	num_whales = int(argv[2])
+	max_iter = int(argv[3])
 
 print("Goal is to minimize sphere function in " + str(dim) + " variables")
 print("Function has known min = 0.0 at (", end="")
 for i in range(dim - 1):
 	print("0, ", end="")
 print("0)")
-
-num_whales = 50
-max_iter = 100
 
 print("Setting num_whales = " + str(num_whales))
 print("Setting max_iter = " + str(max_iter))

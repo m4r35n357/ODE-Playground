@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from sys import argv
 from whale import woa
 
 def rosenbrock(position):
@@ -9,18 +10,22 @@ def rosenbrock(position):
 		value += (1.0 - xi)**2 + 100.0 * (position[j + 1] - xi * xi)**2
 	return value
 
-print("\nBegin whale optimization algorithm on sphere function\n")
-dim = 3
+print("\nBegin whale optimization algorithm on rosenbrock function\n")
 model = rosenbrock
+if len(argv) == 1:
+	dim = 3
+	num_whales = 50
+	max_iter = 100
+else:
+	dim = int(argv[1])
+	num_whales = int(argv[2])
+	max_iter = int(argv[3])
 
 print("Goal is to minimize sphere function in " + str(dim) + " variables")
 print("Function has known min = 0.0 at (", end="")
 for i in range(dim - 1):
 	print("0, ", end="")
 print("0)")
-
-num_whales = 50
-max_iter = 100
 
 print("Setting num_whales = " + str(num_whales))
 print("Setting max_iter = " + str(max_iter))
