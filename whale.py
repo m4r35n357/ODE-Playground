@@ -15,7 +15,6 @@ class Whale:
 
 def woa(cost, i_max, n_whales, dim, min_x, max_x):
 	rnd = Random(0)
-	# create n random whales
 	whales = [Whale(cost, dim, min_x, max_x, i) for i in range(n_whales)]
 	x_p = [0.0 for _ in range(dim)]
 	f_best = float_info.max
@@ -32,8 +31,7 @@ def woa(cost, i_max, n_whales, dim, min_x, max_x):
 			aa = a * (2.0 * rnd.random() - 1.0)
 			cc = 2.0 * rnd.random()
 			b = 1.0
-			l = 1.0 - (iteration / i_max + 2.0) * rnd.random()
-#			l = 2.0 * rnd.random() - 1.0
+			l = 2.0 * rnd.random() - 1.0
 			x_next = [0.0 for _ in range(dim)]
 			if rnd.random() < 0.5:
 				if abs(aa) < 1.0:  # "encircling" update (1)
