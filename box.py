@@ -24,8 +24,7 @@ min_edge = 0.001
 best_x = woa(model, max_iter, num_whales, dim, min_edge, sqrt(0.5 * A) - min_edge)
 
 print("Best solution found:")
-print(["%.6f" % best_x[k] for k in range(dim)])
-print("fitness of best solution = %.6f\n" % model(best_x))
 for i in range(dim):
-	print("", best_x[i], end=" ")
+	print(f'{best_x[i]: .{6}f}', end=" ")
 print("")
+print("fitness of best solution = %.6f\n" % model(best_x))
