@@ -25,7 +25,7 @@ def woa(cost, i_max, n_whales, dim, min_x, max_x):
 	iteration = 0
 	while iteration < i_max:
 		if iteration % 10 == 0 and iteration > 1:
-			print("Iter = " + str(iteration) + " best fitness = %.3f" % f_best)
+			print("Iter = " + str(iteration) + " best fitness = %.6f" % f_best)
 		a = 2.0 * (1.0 - iteration / i_max)
 		for i in range(n_whales):
 			A = a * (2.0 * rnd.random() - 1.0)

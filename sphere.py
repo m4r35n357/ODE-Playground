@@ -10,7 +10,6 @@ def sphere(position):
 		value += xi * xi
 	return value
 
-dim = int(argv[1])
 model = sphere
 if len(argv) == 1:
 	dim = 3
