@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 from sys import argv
+from math import sqrt
 from whale import woa
 
 def box(position):
-	A = 48.0
-	xi = position[0]
-	yi = position[1]
-	return A / (xi * yi * (A - 2.0 * xi * yi) / (2.0 * (xi + yi)))
+	x = position[0]
+	y = position[1]
+	return A / (x * y * (A - 2.0 * x * y) / (2.0 * (x + y)))
 
 model = box
 if len(argv) == 1:
@@ -19,7 +19,9 @@ else:
 	num_whales = int(argv[2])
 	max_iter = int(argv[3])
 
-best_x = woa(model, max_iter, num_whales, dim, 0.001, 4.5)
+A = 48.0
+min_edge = 0.001
+best_x = woa(model, max_iter, num_whales, dim, min_edge, sqrt(0.5 * A) - min_edge)
 
 print("Best solution found:")
 print(["%.6f" % best_x[k] for k in range(dim)])
