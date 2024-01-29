@@ -6,28 +6,28 @@ from copy import copy # array-copying convenience
 from sys import float_info # max float
 
 class Whale:
-	def __init__(self, cost, n_dim, min_x, max_x, seed):
+	def __init__(self, cost, dim, min_x, max_x, seed):
 		self.rnd = Random(seed)
-		self.x = [0.0 for _ in range(n_dim)]
-		for j in range(n_dim):
+		self.x = [0.0 for _ in range(dim)]
+		for j in range(dim):
 			self.x[j] = ((max_x - min_x) * self.rnd.random() + min_x)
 		self.value = cost(self.x) # curr fitness
 
-def woa(cost, i_max, n_whales, dim, min_x, max_x):
+def woa(cost, max_i, n, dim, min_x, max_x):
 	rnd = Random(0)
-	whales = [Whale(cost, dim, min_x, max_x, i) for i in range(n_whales)]
+	whales = [Whale(cost, dim, min_x, max_x, i) for i in range(n)]
 	Xp = [0.0 for _ in range(dim)]
 	f_best = float_info.max
-	for i in range(n_whales): # find best whale
+	for i in range(n): # find best whale
 		if whales[i].value < f_best:
 			f_best = whales[i].value
 			Xp = copy(whales[i].x)
 	iteration = 0
-	while iteration < i_max:
+	while iteration < max_i:
 		if iteration % 10 == 0 and iteration > 1:
 			print("Iter = " + str(iteration) + " best fitness = %.6f" % f_best)
-		a = 2.0 * (1.0 - iteration / i_max)
-		for i in range(n_whales):
+		a = 2.0 * (1.0 - iteration / max_i)
+		for i in range(n):
 			A = a * (2.0 * rnd.random() - 1.0)
 			C = 2.0 * rnd.random()
 			b = 1.0
@@ -38,9 +38,9 @@ def woa(cost, i_max, n_whales, dim, min_x, max_x):
 					for j in range(dim):
 						X_next[j] = Xp[j] - A * abs(C * Xp[j] - whales[i].x[j])
 				else:  # "searching/random" update (9)
-					p = randint(0, n_whales - 1)
+					p = randint(0, n - 1)
 					while p == i:
-						p = randint(0, n_whales - 1)
+						p = randint(0, n - 1)
 					Xr = whales[p].x
 					for j in range(dim):
 						X_next[j] = Xr[j] - A * abs(C * Xr[j] - whales[i].x[j])
@@ -49,7 +49,7 @@ def woa(cost, i_max, n_whales, dim, min_x, max_x):
 					X_next[j] = abs(Xp[j] - whales[i].x[j]) * exp(b * l) * cos(2.0 * pi * l) + Xp[j]
 			for j in range(dim):
 				whales[i].x[j] = X_next[j]
-		for i in range(n_whales):
+		for i in range(n):
 			for j in range(dim):
 				whales[i].x[j] = max(whales[i].x[j], min_x)
 				whales[i].x[j] = min(whales[i].x[j], max_x)
