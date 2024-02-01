@@ -98,12 +98,12 @@ def SOA_nd(xlow,xup,m,kmax,theta,r,d):
             if f(x[i])<f(xstar):
                 found=True
                 for k in x[i]:
-                    if k>xlow and k<xup:
+                    if xlow < k < xup:
                         found=True
                     else:
                         found=False
                         break
-                if found==True:
+                if found:
                     xstar=x[i]
 
     #    spiral process
