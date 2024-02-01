@@ -1,4 +1,4 @@
-import math
+from math import exp, sin, cos, pi
 import numpy as np
 import time
 from matplotlib import pyplot as plt
@@ -21,6 +21,7 @@ def f(x):
     #for i in range(d):
     #    pp=pp+p[i]**2
     ##g=-1/(1+pp)
+
     #problem 3 : sprinter finding problem
     #function to be minimized
     tau=[[12.27,11.57,11.54,12.07],[11.34,11.45,12.45,12.34],
@@ -63,56 +64,56 @@ def f(x):
 
 def val(x):
     d = 6
-    exp=math.exp(1)
+    e = exp(1)
     p = np.zeros(d)
     p[0] = x[0] + ((x[1]**2)*x[3]*x[5])*0.25 + 0.75
-    p[1] = x[1] + 0.405*exp**(1 + x[0]*x[1]) - 1.405
+    p[1] = x[1] + 0.405*e**(1 + x[0]*x[1]) - 1.405
     p[2] = x[2] - (x[3]*x[5])*0.5 + 1.5
-    p[3] = x[3] - 0.605*exp**(1 - x[2]**2) - 0.395
+    p[3] = x[3] - 0.605*e**(1 - x[2]**2) - 0.395
     p[4] = x[4] - (x[1]*x[5])*0.5 + 1.5
     p[5] = x[5] - x[0]*x[4]
     return p
 
-def SOA_nd(xlow,xup,m,kmax,theta,r,d):
+def soa_nd (xlow, xup, m, kmax, theta, r, d):
     ## Rotation matrix for n dimensional spiral
-    R=np.identity(d)
-    for i in range(d-1):
+    R = np.identity(d)
+    for i in range(d - 1):
         for j in range(i):
-            Rr=np.identity(d)
-            Rr[d-2-i][d-2-i]=math.cos(theta)
-            Rr[d-2-i][d-2+1-j]=-math.sin(theta)
-            Rr[d-2+1-j][d-2-i]=math.sin(theta)
-            Rr[d-2+1-j][d-2+1-j]=math.cos(theta)
-            R=np.matmul(R,Rr)
-    I=np.identity(d)
-    D=r*I
-    S=np.matmul(D,R)
+            Rr = np.identity(d)
+            Rr[d - 2 - i][d - 2 - i] = cos(theta)
+            Rr[d - 2 - i][d - 2 + 1 - j] = - sin(theta)
+            Rr[d - 2 + 1 - j][d - 2 - i] = sin(theta)
+            Rr[d - 2 + 1 - j][d - 2 + 1 - j] = cos(theta)
+            R = np.matmul(R, Rr)
+    I = np.identity(d)
+    D = r * I
+    S = np.matmul(D, R)
     tm = time.time()
-    x = np.random.uniform(xlow,xup,[m,d])                    #Generate random numbers
+    x = np.random.uniform(xlow, xup, [m, d])                    #Generate random numbers
     #x = xlow+(xup-xlow)*np.random.rand(m,d)
 
     #spiral algorithm
-    xstar=x[0]
+    xstar = x[0]
     for j in range(kmax):                                   #finding the next center of spiral
         for i in range (m):
-            if f(x[i])<f(xstar):
-                found=True
+            if f(x[i]) < f(xstar):
+                found = True
                 for k in x[i]:
                     if xlow < k < xup:
-                        found=True
+                        found = True
                     else:
-                        found=False
+                        found = False
                         break
                 if found:
-                    xstar=x[i]
+                    xstar = x[i]
 
     #    spiral process
-        v=np.zeros(shape=[m,d])
+        v = np.zeros(shape=[m,d])
         for i in range(m):
-            v[i]=np.matmul(S,x[i])-np.matmul((S-I),xstar)
-        x=v
-        plt.plot([X[2] for X in x],[X[5] for X in x],'ro')
-        plt.axis([xlow,xup,xlow,xup])
+            v[i] = np.matmul(S, x[i]) - np.matmul((S - I), xstar)
+        x = v
+        plt.plot([X[2] for X in x],[X[5] for X in x], 'ro')
+        plt.axis([xlow, xup, xlow, xup])
         plt.show()
 
     elapsed = time.time() - tm
@@ -121,5 +122,5 @@ def SOA_nd(xlow,xup,m,kmax,theta,r,d):
     print('feval:',f(xstar))
     print('value:', val(xstar))
 
-#SOA_nd(0,1,100,100,math.pi/4,0.95,24)
-SOA_nd(0,1,100,1,math.pi/4,0.95,24)
+#soa_nd(0,1,100,100,pi/4,0.95,24)
+soa_nd(0, 1, 100, 2, pi / 4, 0.95, 24)
