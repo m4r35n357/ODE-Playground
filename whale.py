@@ -7,7 +7,7 @@ from sys import float_info # max float
 
 class Whale:
 	def __init__(self, cost, dim, min_x, max_x, seed):
-		self.rnd = Random(seed)
+		self.rnd = Random(seed + 1)
 		self.x = [0.0 for _ in range(dim)]
 		for j in range(dim):
 			self.x[j] = ((max_x - min_x) * self.rnd.random() + min_x)
