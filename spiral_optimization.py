@@ -8,8 +8,9 @@ import numpy as np
 
 
 def sq_rt(x, dim):
+    dim = len(x)
     value = 0.0
-    for j in range(len(x)):
+    for j in range(dim):
         xi = x[j]
         value += sqrt(fabs(xi))
     return value
@@ -37,9 +38,9 @@ def sphere(x, dim):
 
 def rastrigin(x, dim):
     a = 10.0
-    n = len(x)
-    value = a * n
-    for j in range(n):
+    dim = len(x)
+    value = a * dim
+    for j in range(dim):
         xi = x[j]
         value += xi * xi - a * cos(2.0 * pi * xi)
     return value
@@ -49,21 +50,21 @@ def find_center(points, m):
     # center is point with smallest error
     # note: m = len(points) (number of points / solutions)
     n = len(points[0])  # n = dim
-    best_err = rastrigin(points[0], n)
+    best_err = sq_rt(points[0], n)
     idx = 0
     for i in range(m):
-        err = rastrigin(points[i], n)
+        err = sq_rt(points[i], n)
         if err < best_err:
             idx = i
             best_err = err
     return np.copy(points[idx])
 
 
-def move_point(x, R, RminusI, center):
+def move_point(x, rr, r_minus_i, center):
     # move x vector to new position, spiraling around center
     # note: matmul() automatically promotes vector to matrix
-    offset = np.matmul(RminusI, center)  # (3,3) x (3,) = (3,)
-    new_x = np.matmul(R, x) - offset  # (3,3) x (3,) - (3,) = (3,)
+    offset = np.matmul(r_minus_i, center)  # (3,3) x (3,) = (3,)
+    new_x = np.matmul(rr, x) - offset  # (3,3) x (3,) - (3,) = (3,)
     return new_x
 
 
@@ -75,7 +76,7 @@ def new_point(x, r, c):
     return new_x
 
 
-def make_Rab(a, b, n, theta):
+def make_rab(a, b, n, theta):
     # make Rotation matrix, dim = n, a, b are 1-based
     # helper for make_R() function
     a -= 1
@@ -96,7 +97,7 @@ def make_Rab(a, b, n, theta):
     return result
 
 
-def make_R(n, theta):
+def make_r(n, theta):
     result = np.zeros((n, n))
     for i in range(n):
         for j in range(n):
@@ -105,8 +106,8 @@ def make_R(n, theta):
     for i in range(1, n):
         for j in range(1, i + 1):
             print("making R " + str(n - i) + " " + str(n + 1 - j))
-            R = make_Rab(n - i, n + 1 - j, n, theta)
-            result = np.matmul(result, R)  # compose
+            rr = make_rab(n - i, n + 1 - j, n, theta)
+            result = np.matmul(result, rr)  # compose
     return result
 
 
@@ -126,7 +127,6 @@ def main():
     r = 0.98  # closer to 1 = tight spiral, closer 0 = loose
     m = 50  # number of points / possible solutions
     n = 3  # problem dimension
-    max_iter = 1000
 
     print("\nSetting theta = %0.4f " % theta)
     print("Setting r = %0.2f " % r)
@@ -138,25 +138,25 @@ def main():
 
     ct = np.cos(theta)
     st = np.sin(theta)
-    R12 = np.array([[ct, -st, 0],
+    r12 = np.array([[ct, -st, 0],
                     [st, ct, 0],
                     [0, 0, 1]])
 
-    R13 = np.array([[ct, 0, -st],
+    r13 = np.array([[ct, 0, -st],
                     [0, 1, 0],
                     [st, 0, ct]])
 
-    R23 = np.array([[1, 0, 0],
+    r23 = np.array([[1, 0, 0],
                     [0, ct, -st],
                     [0, st, ct]])
 
-    R = np.matmul(R23, np.matmul(R13, R12))  # compose
-    # R = make_R(3, theta)  # programmatic approach
+    rr = np.matmul(r23, np.matmul(r13, r12))  # compose
+    # R = make_r(3, theta)  # programmatic approach
 
-    R = r * R  # scale / shrink
+    rr = r * rr  # scale / shrink
 
-    I3 = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    RminusI = R - I3
+    i3 = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    r_minus_i = rr - i3
 
     # 2. create m initial points and
     # find curr center (best point)
@@ -177,8 +177,8 @@ def main():
             print(center)
         for i in range(m):  # move each pt toward center
             x = points[i]
-            #            points[i] = move_point(x, R, RminusI, center)
-            points[i] = new_point(x, r, center)
+            points[i] = move_point(x, rr, r_minus_i, center)
+            #points[i] = new_point(x, r, center)
             # print(points); input()
         center = find_center(points, m)  # find new center
 
