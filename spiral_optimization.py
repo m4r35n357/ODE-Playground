@@ -63,19 +63,21 @@ def new_point(x, r, c):
         new_x[k] = c[k] - r * (x[n - 1] - c[n - 1]) if k == 0 else c[k] + r * (x[k - 1] - c[k - 1])
     return new_x
 
-def main():
+def soa():
     function = dixon_price
 
     # 0. prepare
     np.set_printoptions(precision=4, suppress=True, sign=" ")
     np.set_printoptions(formatter={'float': '{: 0.4f}'.format})
-    np.random.seed(4)
+    #np.random.seed(4)
 
     n = int(argv[1])  # problem dimension
     m = int(argv[2])  # number of points / possible solutions
     max_iter = int(argv[3])
     delta = float(argv[4])
     r = pow(delta, 1.0 / max_iter)  # "Periodic Descent Direction Setting" rule
+    min_x = float(argv[5])
+    max_x = float(argv[6])
 
     print("Setting number of points m = %d " % m)
     print("Setting max_iter = %d " % max_iter)
@@ -84,7 +86,7 @@ def main():
     # 1. set up the Rotation matrix for n=3 - N/A - using newer method
 
     # 2. create m initial points and find initial centre (best point)
-    points = np.random.uniform(low=-10.0, high=10.0, size=(m, n))
+    points = np.random.uniform(low=min_x, high=max_x, size=(m, n))
 
     centre = find_centre(points, m, function)
     print("\nInitial centre (best) point: ")
@@ -106,6 +108,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    soa()
 else:
     print(__name__ + " module loaded", file=stderr)
