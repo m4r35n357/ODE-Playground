@@ -1,8 +1,5 @@
-#!/usr/bin/env python3
- 
-from sys import argv
+from sys import argv, stderr
 from math import cos, pi, sqrt, fabs
-
 import numpy as np
 
 def sq_rt(x, dim):
@@ -110,3 +107,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+else:
+    print(__name__ + " module loaded", file=stderr)
