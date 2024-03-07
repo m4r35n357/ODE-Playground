@@ -374,14 +374,15 @@ LEFT arrow | increase view azimuth
 RIGHT arrow | decrease view azimuth
 HOME | zoom in (fine)
 END | zoom out (fine)
-PAGE UP | zoom in (coarse)
-PAGE DOWN | zoom out (coarse)
-'C' 'c' | show centroid for Nelder-Mead
+INSERT | toggle solid/mesh spheres
+PAGE UP | finer mesh for spheres
+PAGE DOWN | coarser mesh for spheres
 'G' 'g' | increase ball size
 'B' 'b' | decrease ball size
 'P' 'p' | pause
 'S' 's' | single-step (if paused)
 'F' 'f' | toggle fullscreen mode
+'V' 'v' | toggle line/ball display mode
 'H' 'h' | toggle OSD text
 'Q' 'q' ESC | exit
 
