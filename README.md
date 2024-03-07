@@ -366,7 +366,7 @@ args: 12, [ ./cns-scan 32 1.0 ./tsm-thomas-std 6 _ 0.100 10000 1.0 0.0 0.0 0.185
 ```
 
 ## OpenGL Keyboard Controls
-Parameter | Meaning
+Key | Action
 ----------|-----------
 UP arrow | increase view elevation
 DOWN arrow | decrease view elevation
