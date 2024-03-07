@@ -372,8 +372,8 @@ UP arrow | increase view elevation
 DOWN arrow | decrease view elevation
 LEFT arrow | increase view azimuth
 RIGHT arrow | decrease view azimuth
-HOME | zoom in (fine)
-END | zoom out (fine)
+HOME | zoom in
+END | zoom out
 INSERT | toggle solid/mesh spheres
 PAGE UP | finer mesh for spheres
 PAGE DOWN | coarser mesh for spheres
