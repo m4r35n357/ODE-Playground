@@ -365,6 +365,26 @@ args: 12, [ ./cns-scan 32 1.0 ./tsm-thomas-std 6 _ 0.100 10000 1.0 0.0 0.0 0.185
 <output not shown>
 ```
 
+## OpenGL Keyboard Controls
+Parameter | Meaning
+----------|-----------
+UP arrow | increase view elevation
+DOWN arrow | decrease view elevation
+LEFT arrow | increase view azimuth
+RIGHT arrow | decrease view azimuth
+HOME | zoom in (fine)
+END | zoom out (fine)
+PAGE UP | zoom in (coarse)
+PAGE DOWN | zoom out (coarse)
+'C' 'c' | show centroid for Nelder-Mead
+'G' 'g' | increase ball size
+'B' 'b' | decrease ball size
+'P' 'p' | pause
+'S' 's' | single-step (if paused)
+'F' 'f' | toggle fullscreen mode
+'H' 'h' | toggle OSD text
+'Q' 'q' ESC | exit
+
 ##Finally
 For more background on the Taylor Series Method for solving ODEs, see the old README:
 https://github.com/m4r35n357/ODE-Playground/blob/master/README.md
