@@ -16,16 +16,17 @@ class Population:
 		self.max = [max_x for _ in range(n)]
 		self.min = [min_x for _ in range(n)]
 		self.agents = [Point(n) for _ in range(m)]
+		self.evaluations = 0
 		for i in range(m):
 			for j in range(n):
 				self.agents[i].x[j] = rand_range(min_x, max_x)
-				self.agents[i].f = cost(self.agents[i].x)
+			self.agents[i].f = cost(self.agents[i].x)
+			self.evaluations += 1
 		self.best = self.agents[0]
 		for i in range(1, m):
 			if self.agents[i].f < self.best.f:
 				self.best = self.agents[i]
 		self.delta = pow(1.0e-6, 1.0 / iterations)
-		self.evaluations = 0
 		self.updated = False
 
 def coa(cost, n, m, max_i, min_x, max_x):
@@ -48,15 +49,15 @@ def coa(cost, n, m, max_i, min_x, max_x):
 			if p.agents[i] != p.best:
 				for j in range(n):
 					p.agents[i].x[j] = rand_range(p.min[j], p.max[j])
-					p.agents[i].f = cost(p.agents[i].x)
-					p.evaluations += 1
+				p.agents[i].f = cost(p.agents[i].x)
+				p.evaluations += 1
 		p.updated = False
 		for i in range(m):
 			if p.agents[i].f < p.best.f:
 				p.best = p.agents[i]
 				p.updated = True
 		iteration += 1
-		if p.updated:
+		if p.updated or iteration == max_i:
 			print(f'{iteration:4} {p.evaluations:6}  [ ', end='')
 			print(''.join(f'{term: .6e} ' for term in p.best.x), end='')
 			print(f']  {p.best.f: .6e} ')
