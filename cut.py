@@ -1,7 +1,7 @@
 # python implementation of cut optimization algorithm
-from random import random
-from math import inf, pow
 from sys import stderr
+from math import inf, pow
+from random import random
 
 def rand_range (lower, upper):
 	return (upper - lower) * random() + lower
@@ -13,8 +13,8 @@ class Point:
 
 class Population:
 	def __init__(self, cost, n, m, iterations, min_x, max_x):
-		self.max = [max_x for _ in range(n)]
-		self.min = [min_x for _ in range(n)]
+		self.upper = [max_x for _ in range(n)]
+		self.lower = [min_x for _ in range(n)]
 		self.agents = [Point(n) for _ in range(m)]
 		self.evaluations = 0
 		for i in range(m):
@@ -33,7 +33,7 @@ def coa(cost, n, m, max_i, min_x, max_x):
 	p = Population(cost, n, m, max_i, min_x, max_x)
 	iteration = 0
 	while iteration < max_i:
-		side = 0.5 * p.delta * (p.max[0] - p.min[0])
+		side = 0.5 * p.delta * (p.upper[0] - p.lower[0])
 		for j in range(n):
 			upper = p.best.x[j] + side
 			lower = p.best.x[j] - side
@@ -43,12 +43,12 @@ def coa(cost, n, m, max_i, min_x, max_x):
 			elif upper > max_x:
 				lower += max_x - upper
 				upper = max_x
-			p.max[j] = upper
-			p.min[j] = lower
+			p.upper[j] = upper
+			p.lower[j] = lower
 		for i in range(m):
 			if p.agents[i] != p.best:
 				for j in range(n):
-					p.agents[i].x[j] = rand_range(p.min[j], p.max[j])
+					p.agents[i].x[j] = rand_range(p.lower[j], p.upper[j])
 				p.agents[i].f = cost(p.agents[i].x)
 				p.evaluations += 1
 		p.updated = False
