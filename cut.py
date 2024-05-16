@@ -27,7 +27,6 @@ class Population:
 			if self.agents[i].f < self.best.f:
 				self.best = self.agents[i]
 		self.delta = pow(1.0e-6, 1.0 / iterations)
-		self.updated = False
 
 def coa(cost, n, m, max_i, min_x, max_x):
 	p = Population(cost, n, m, max_i, min_x, max_x)
