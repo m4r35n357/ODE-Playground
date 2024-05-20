@@ -58,7 +58,7 @@ def coa(cost, n, m, max_i, min_x, max_x):
 		iteration += 1
 		if p.updated or iteration == max_i:
 			print(f'{iteration:4} {p.evaluations:6}  [ ', end='')
-			print(''.join(f'{term: .6e} ' for term in p.best.x), end='')
-			print(f']  {p.best.f: .6e} ')
+			print(''.join(f'{term: .6f} ' for term in p.best.x), end='')
+			print(f']  {p.best.f: .6f} ')
 
 print(__name__ + " module loaded", file=stderr)
