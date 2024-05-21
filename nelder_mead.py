@@ -78,5 +78,8 @@ def nelder_mead(function, n, max_iterations, s):
         print(f'{s.iterations:4} {s.evaluations:6}  [ ', end='')
         print(''.join(f'{term: .6f} ' for term in s.vertices[0].x), end='')
         print(f']  {s.vertices[0].f: .6f} ')
+    print(f'{s.iterations:4} {s.evaluations:6}  [ ', end='', file=stderr)
+    print(''.join(f'{term: .6f} ' for term in s.vertices[0].x), end='', file=stderr)
+    print(f']  {s.vertices[0].f: .6f} ', file=stderr)
 
 print(__name__ + " module loaded", file=stderr)
