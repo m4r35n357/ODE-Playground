@@ -28,8 +28,7 @@ class Simplex:
                 self.vertices[i].x[j] = r
             b += r * r
         for i in range(n + 1):
-            for j in range(n):
-                self.vertices[i].x[j] = size * self.vertices[i].x[j] + x0[j]
+            self.vertices[i].x = [size * self.vertices[i].x[j] + x0[j] for j in range(n)]
             self.vertices[i].f = function(self.vertices[i].x)
             self.evaluations += 1
         sort(self, n)
@@ -45,11 +44,7 @@ def distance (a, b, n):
 
 def sort (s, n):
     s.vertices.sort(key=attrgetter('f'))
-    for j in range(n):
-        s.centroid.x[j] = 0.0
-        for i in range(n):
-            s.centroid.x[j] += s.vertices[i].x[j]
-        s.centroid.x[j] /= n
+    s.centroid.x = [fsum(s.vertices[i].x[j] for i in range(n)) / n for j in range(n)]
 
 def nelder_mead(function, n, max_iterations, s):
     while ((distance(s.vertices[0], s.vertices[n], n) > 1.0e-6) or (s.vertices[0].f - s.vertices[n].f > 1.0e-6)) and s.iterations < max_iterations:
