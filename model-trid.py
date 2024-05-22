@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# CUT: ./model-trid.py 8 256 100 0 30 >/dev/null
+#  NM: ./model-trid.py 8 10000 0 30 >/dev/null
 from sys import argv
 from random import random
 

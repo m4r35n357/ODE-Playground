@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# CUT: ./model-sphere.py 8 256 100 0 10 >/dev/null
+#  NM: ./model-sphere.py 8 10000 0 10 >/dev/null
 from sys import argv
 from random import random
 

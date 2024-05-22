@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# CUT: ./model-easom.py 8 256 100 0 10 >/dev/null
+#  NM: ./model-easom.py 8 10000 0 10 >/dev/null
 from sys import argv
 from math import cos, pi, exp
 from random import random

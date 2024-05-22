@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# CUT: ./model-rastrigin.py 8 256 100 0 5 >/dev/null
+#  NM: ./model-rastrigin.py 8 10000 0 5 >/dev/null
 from sys import argv
 from math import cos, pi
 from random import random
