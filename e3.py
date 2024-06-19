@@ -20,7 +20,7 @@ if len(argv) == 8:
     w_axis = [0.0] * L
     response = [0.0] * L
     for i in range(L):
-        w_axis[i] = pow(10.0, 3.0 * (2.0 * i / L - 1.0))
+        w_axis[i] = pow(10.0, 2.0 * i / L - 1.0)
         t = e3(values, w_axis[i])
         response[i] = 10.0 * log10(t) if t > 1.0e-18 else -180.0
     plt.figure()
@@ -28,8 +28,8 @@ if len(argv) == 8:
     plt.plot(w_axis, response)
     plt.xlabel('w / w0')
     plt.ylabel('Transmission [dB]')
-    plt.hlines(y=10.0 * log10(pb), xmin=1.0e-3, xmax=1.0e3, colors='r')
-    plt.hlines(y=10.0 * log10(sb), xmin=1.0e-3, xmax=1.0e3, colors='r')
+    plt.hlines(y=10.0 * log10(pb), xmin=1.0e-1, xmax=1.0e1, colors='r')
+    plt.hlines(y=10.0 * log10(sb), xmin=1.0e-1, xmax=1.0e1, colors='r')
     plt.vlines(x=1.0, ymin=-70.0, ymax=0.0, colors='b')
     plt.vlines(x=ksi, ymin=-70.0, ymax=0.0, colors='b')
     plt.grid()
