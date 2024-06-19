@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# ./e3.py 0.8 0.001 1.5 3 1.701658972 0.760578520 0.430175117
+
 from sys import argv
 from math import log10
 import matplotlib.pyplot as plt

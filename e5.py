@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# ./e5.py 0.8 0.0001 1.2 6 1.569771623 0.931740540 0.344074589 2.094462346 0.532291777 1.233067458
 from sys import argv
 from math import log10
 import matplotlib.pyplot as plt
