@@ -32,10 +32,12 @@ if len(argv) == 11:
     plt.plot(w_axis, response)
     plt.xlabel('w / w0')
     plt.ylabel('Transmission [dB]')
+    y_lim = -80.0
+    plt.ylim(y_lim, 0.0)
     plt.hlines(y=10.0 * log10(pb), xmin=1.0e-1, xmax=1.0e1, colors='r')
     plt.hlines(y=10.0 * log10(sb), xmin=1.0e-1, xmax=1.0e1, colors='r')
-    plt.vlines(x=1.0, ymin=-70.0, ymax=0.0, colors='b')
-    plt.vlines(x=ksi, ymin=-70.0, ymax=0.0, colors='b')
+    plt.vlines(x=1.0, ymin=y_lim, ymax=0.0, colors='b')
+    plt.vlines(x=ksi, ymin=y_lim, ymax=0.0, colors='b')
     plt.grid()
     plt.show()
 else:
