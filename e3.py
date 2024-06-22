@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # ./e3.py 0.8 0.001 1.5 3 1.701658972 0.760578520 0.430175117
-
-from sys import argv
+from sys import argv, stderr
 from math import log10
 import matplotlib.pyplot as plt
 
@@ -11,6 +10,7 @@ def e3(p, w):
     g = 1.0 / g + complex(0.0, w * p[0])
     return 1.0 - abs((g - 1.0) / (g + 1.0))**2
 
+print(f'3rd-order filter frequency response: {argv}', file=stderr)
 if len(argv) == 8:
     pb = float(argv[1])
     sb = float(argv[2])

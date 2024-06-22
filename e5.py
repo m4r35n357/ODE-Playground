@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # ./e5.py 0.8 0.0001 1.2 6 1.569771623 0.931740540 0.344074589 2.094462346 0.532291777 1.233067458
-from sys import argv
+from sys import argv, stderr
 from math import log10
 import matplotlib.pyplot as plt
 
@@ -12,6 +12,7 @@ def e5(p, w):
     g = 1.0 / g + complex(0.0, w * p[0])
     return 1.0 - abs((g - 1.0) / (g + 1.0))**2
 
+print(f'5th-order filter frequency response: {argv}', file=stderr)
 if len(argv) == 11:
     pb = float(argv[1])
     sb = float(argv[2])
