@@ -27,6 +27,7 @@ if len(argv) == 8:
         t = e3(values, w_axis[i])
         response[i] = 10.0 * log10(t) if t > 1.0e-18 else -180.0
     plt.figure()
+    plt.title(argv, fontsize=10)
     plt.semilogx()
     plt.plot(w_axis, response)
     plt.xlabel('w / w0')
