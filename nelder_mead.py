@@ -46,8 +46,8 @@ def sort (s, n):
     s.vertices.sort(key=attrgetter('f'))
     s.centroid.x = [fsum(s.vertices[i].x[j] for i in range(n)) / n for j in range(n)]
 
-def nelder_mead(cost, n, max_iterations, s):
-    while ((distance(s.vertices[0], s.vertices[n], n) > 1.0e-6) or (s.vertices[0].f - s.vertices[n].f > 1.0e-6)) and s.iterations < max_iterations:
+def nelder_mead(cost, n, tol, max_iterations, s):
+    while ((distance(s.vertices[0], s.vertices[n], n) > tol) or (s.vertices[0].f - s.vertices[n].f > tol)) and s.iterations < max_iterations:
         shrink = False
         s.reflect = project(s.reflect, s, cost, n, 1.0, s.vertices[n], s.centroid)
         if s.vertices[0].f <= s.reflect.f < s.vertices[n - 1].f:
