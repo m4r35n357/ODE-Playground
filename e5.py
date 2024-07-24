@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 
 def e5(p, w):
     g = 1.0 + 1j * w * p[0]
-    g = 1.0 / g + 1.0 / (1j * w * p[2] + 1.0 / (1j * w * p[1]))
+    g = 1.0 / g + 1.0 / (1.0 / (1j * w * p[1]) + 1j * w * p[2])
     g = 1.0 / g + 1j * w * p[3]
-    g = 1.0 / g + 1.0 / (1j * w * p[5] + 1.0 / (1j * w * p[4]))
+    g = 1.0 / g + 1.0 / (1.0 / (1j * w * p[4]) + 1j * w * p[5])
     g = 1.0 / g + 1j * w * p[0]
     return 1.0 - abs((g - 1.0) / (g + 1.0))**2
 
