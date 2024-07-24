@@ -5,11 +5,11 @@ from math import log10
 import matplotlib.pyplot as plt
 
 def e5(p, w):
-    g = complex(1.0, w * p[0])
-    g = 1.0 / g + 1.0 / (complex(0.0, w * p[2]) + 1.0 / complex(0.0, w * p[1]))
-    g = 1.0 / g + complex(0.0, w * p[3])
-    g = 1.0 / g + 1.0 / (complex(0.0, w * p[5]) + 1.0 / complex(0.0, w * p[4]))
-    g = 1.0 / g + complex(0.0, w * p[0])
+    g = 1.0 + 1j * w * p[0]
+    g = 1.0 / g + 1.0 / (1j * w * p[2] + 1.0 / (1j * w * p[1]))
+    g = 1.0 / g + 1j * w * p[3]
+    g = 1.0 / g + 1.0 / (1j * w * p[5] + 1.0 / (1j * w * p[4]))
+    g = 1.0 / g + 1j * w * p[0]
     return 1.0 - abs((g - 1.0) / (g + 1.0))**2
 
 print(f'5th-order filter frequency response: {argv}', file=stderr)

@@ -5,11 +5,11 @@ from math import log10
 import matplotlib.pyplot as plt
 
 def bw(n, p, w):
-    g = complex(1.0, w * p[0])
+    g = 1.0 + 1j * w * p[0]
     for r in range(1, n):
-        g = 1.0 / g + complex(0.0, w * p[r])
+        g = 1.0 / g + 1j * w * p[r]
     for r in range(n - 2, -1, -1):
-        g = 1.0 / g + complex(0.0, w * p[r])
+        g = 1.0 / g + 1j * w * p[r]
     return 1.0 - abs((g - 1.0) / (g + 1.0))**2
 
 print(f'Butterworth filter frequency response: {argv}', file=stderr)
