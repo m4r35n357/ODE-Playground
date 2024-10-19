@@ -20,7 +20,7 @@ model *tsm_init_p (int argc, char **argv, int n) {
     return _;
 }
 
-triplet ode (series x, series y, series z, model *_, int k) {
+triplet ode (series x, series y, series z, const model *_, int k) {
     return (triplet) {
         .x = t_sin_cos(_->sy, _->cy, y, k, true).a - _->b * x[k],
         .y = t_sin_cos(_->sz, _->cz, z, k, true).a - _->b * y[k],

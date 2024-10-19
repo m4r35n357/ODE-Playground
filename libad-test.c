@@ -48,7 +48,7 @@ static void ad_atan_sec2 (series u, series s, series t, bool trig) { for (int k 
 
 static series ad_pwr (series p, series u, real a) { for (int k = 0; k < n; k++) t_pwr(p, u, a, k); return p; }
 
-triplet ode (series x, series y, series z, model *p, int k) {
+triplet ode (series x, series y, series z, const model *p, int k) {
     return (triplet) {
         .x = p->a * x[k],
         .y = p->b * y[k],
