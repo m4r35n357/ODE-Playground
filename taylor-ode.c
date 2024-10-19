@@ -102,7 +102,7 @@ void tsm_out (controls *c, xyz *_, const model *p, clock_t t0) {
     _out_(c->dp, _->x[0], _->y[0], _->z[0], c->h * c->steps, '_', '_', '_', t0);
 }
 
-real t_abs (series u, int k) {
+real t_abs (const series u, int k) {
     CHECK(u[0] != 0.0L);
     return u[0] < 0.0L ? -u[k] : u[k];
 }
@@ -172,7 +172,7 @@ pair t_tan_sec2 (series t, series s, const series u, int k, bool trig) {
     };
 }
 
-static real _uk_(series df_du, const series u, int k, real f_k, real sign) {
+static real _uk_(const series df_du, const series u, int k, real f_k, real sign) {
     return (f_k - _chain_(df_du, u, k, 1) * sign) / df_du[0];
 }
 
@@ -214,7 +214,7 @@ pair t_atan_sec2 (series u, series s, const series t, int k, bool trig) {
     };
 }
 
-real t_pwr (series p, series u, real a, int k) {
+real t_pwr (series p, const series u, real a, int k) {
     CHECK(u[0] > 0.0L); CHECK(p != u);
     return p[k] = !k ? powl(u[k], a) : _uk_(u, p, k, _fk_(p, u, k) * a, 1.0L);
 }

@@ -141,4 +141,4 @@ pair t_atan_sec2 (series U, series SEC2, const series TAN, int k, bool trig);
 /*
  * Returns kth element of P = U^a (where a is scalar), results stored in PWR
  */
-real t_pwr (series PWR, series U, real a, int k);
+real t_pwr (series PWR, const series U, real a, int k);
