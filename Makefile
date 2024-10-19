@@ -95,7 +95,7 @@ kerr-image: kerr-image.o
 
 .PHONY: test clean depclean ctags ctags-system ctags-system-all coverage
 
-test:
+test: all
 	@for x in -2 -1 -.5 0 .5 1 2; do \
 		./libad-test 24 20 $$x 1e-12 >/dev/null || exit 1; echo ""; \
 		./libdual-test 24 $$x 1e-12 >/dev/null || exit 1; echo ""; \
