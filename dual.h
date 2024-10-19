@@ -15,52 +15,52 @@ dual d_dual (real a);
 
 dual d_var (real a);
 
-dual d_abs (dual a);
+dual d_abs (const dual a);
 
-dual d_inv (dual a);
+dual d_inv (const dual a);
 
-dual d_sqr (dual a);
+dual d_sqr (const dual a);
 
-dual d_shift (dual a, real b);
+dual d_shift (const dual a, real b);
 
-dual d_scale (dual a, real b);
+dual d_scale (const dual a, real b);
 
-dual d_add (dual a, dual b);
+dual d_add (const dual a, dual b);
 
-dual d_sub (dual a, dual b);
+dual d_sub (const dual a, dual b);
 
-dual d_mul (dual a, dual b);
+dual d_mul (const dual a, dual b);
 
-dual d_div (dual a, dual b);
+dual d_div (const dual a, dual b);
 
-dual d_exp (dual a);
+dual d_exp (const dual a);
 
-dual d_ln (dual a);
+dual d_ln (const dual a);
 
-dual d_sqrt (dual a);
+dual d_sqrt (const dual a);
 
-dual d_pow (dual a, real b);
+dual d_pow (const dual a, real b);
 
-dual d_sin (dual a);
+dual d_sin (const dual a);
 
-dual d_cos (dual a);
+dual d_cos (const dual a);
 
-dual d_tan (dual a);
+dual d_tan (const dual a);
 
-dual d_sinh (dual a);
+dual d_sinh (const dual a);
 
-dual d_cosh (dual a);
+dual d_cosh (const dual a);
 
-dual d_tanh (dual a);
+dual d_tanh (const dual a);
 
-dual d_asin (dual a);
+dual d_asin (const dual a);
 
-dual d_acos (dual a);
+dual d_acos (const dual a);
 
-dual d_atan (dual a);
+dual d_atan (const dual a);
 
-dual d_asinh (dual a);
+dual d_asinh (const dual a);
 
-dual d_acosh (dual a);
+dual d_acosh (const dual a);
 
-dual d_atanh (dual a);
+dual d_atanh (const dual a);
