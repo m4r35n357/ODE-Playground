@@ -1,6 +1,7 @@
 #
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
+#  make clean && make CCC=gcc -j 4 all test-all
 
 CFLAGS=-std=c99 -O3 -fno-math-errno -flto -s
 WARNINGS=-Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wconversion -Wredundant-decls -Wmissing-declarations
