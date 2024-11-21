@@ -1,3 +1,5 @@
 #!/bin/sh
 
-pytest ad_test.py solver_test.py -q
+/usr/bin/ctags *.py
+
+pytest-3 ad_test.py solver_test.py -q
