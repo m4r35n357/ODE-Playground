@@ -280,13 +280,13 @@ class Series:
             return (o.ln * self).exp
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
-    def _exp_log_sqrt(self, f):
+    def _single(self, f):
         a = tsm_jet(self.n)
         for k in self.index:
             a[k] = f(a, self.jet, k)
         return Series(a)
 
-    def _trig_hyp(self, f, trig=True):
+    def _pair(self, f, trig=True):
         a, b = tsm_jet(self.n), tsm_jet(self.n)
         for k in self.index:
             a[k], b[k] = f(a, b, self.jet, k, trig)
@@ -294,16 +294,16 @@ class Series:
 
     @property
     def exp(self):
-        return self._exp_log_sqrt(t_exp)
+        return self._single(t_exp)
 
     @property
     def ln(self):
         assert self.val > 0.0, f"self.val = {self.val}"
-        return self._exp_log_sqrt(t_ln)
+        return self._single(t_ln)
 
     @property
     def sin_cos(self):
-        return self._trig_hyp(t_sin_cos)
+        return self._pair(t_sin_cos)
 
     @property
     def sin(self):
@@ -315,7 +315,7 @@ class Series:
 
     @property
     def tan_sec2(self):
-        return self._trig_hyp(t_tan_sec2)
+        return self._pair(t_tan_sec2)
 
     @property
     def tan(self):
@@ -327,7 +327,7 @@ class Series:
 
     @property
     def sinh_cosh(self):
-        return self._trig_hyp(t_sin_cos, trig=False)
+        return self._pair(t_sin_cos, trig=False)
 
     @property
     def sinh(self):
@@ -339,7 +339,7 @@ class Series:
 
     @property
     def tanh_sech2(self):
-        return self._trig_hyp(t_tan_sec2, trig=False)
+        return self._pair(t_tan_sec2, trig=False)
 
     @property
     def tanh(self):
@@ -352,30 +352,30 @@ class Series:
     @property
     def asin(self):
         assert abs(self.val) < 1.0, f"self.val = {self.val}"
-        return self._trig_hyp(t_asin)[0]
+        return self._pair(t_asin)[0]
 
     @property
     def acos(self):
         assert abs(self.val) < 1.0, f"self.val = {self.val}"
-        return self._trig_hyp(t_acos)[0]
+        return self._pair(t_acos)[0]
 
     @property
     def atan(self):
-        return self._trig_hyp(t_atan)[0]
+        return self._pair(t_atan)[0]
 
     @property
     def asinh(self):
-        return self._trig_hyp(t_asin, trig=False)[0]
+        return self._pair(t_asin, trig=False)[0]
 
     @property
     def acosh(self):
         assert self.val > 1.0, f"self.val = {self.val}"
-        return self._trig_hyp(t_acos, trig=False)[0]
+        return self._pair(t_acos, trig=False)[0]
 
     @property
     def atanh(self):
         assert abs(self.val) < 1.0, f"self.val = {self.val}"
-        return self._trig_hyp(t_atan, trig=False)[0]
+        return self._pair(t_atan, trig=False)[0]
 
     @property
     def sqr(self):
@@ -384,7 +384,7 @@ class Series:
     @property
     def sqrt(self):
         assert abs(self.val) > 0.0, f"self.val = {self.val}"
-        return self._exp_log_sqrt(t_sqrt)
+        return self._single(t_sqrt)
 
     @property
     def val(self):
