@@ -255,7 +255,12 @@ class Series:
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __pow__(self, o):
-        if isinstance(o, (float, int)):
+        if isinstance(o, int):
+            i_pow = Series(self.jet)
+            for _ in range(abs(o) - 1):
+                i_pow = i_pow * self
+            return i_pow if o > 0 else (1.0 / i_pow if o < 0 else Series(tsm_jet(self.n, 1.0)))
+        elif isinstance(o, float):
             assert self.val > 0.0, f"self.val = {self.val}"  # pragma: no mutate
             jet = tsm_jet(self.n)
             for k in self.index:
@@ -454,7 +459,12 @@ class Dual:
         raise RuntimeError(f"Incompatible Type: {type(o)}")
 
     def __pow__(self, o):
-        if isinstance(o, (float, int)):
+        if isinstance(o, int):
+            i_pow = Dual(self.val, self.dot)
+            for _ in range(abs(o) - 1):
+                i_pow = i_pow * self
+            return i_pow if o > 0 else (1.0 / i_pow if o < 0 else Dual(1.0, 0.0))
+        elif isinstance(o, float):
             assert self.val > 0.0, f"self.val = {self.val}"  # pragma: no mutate
             pwr = self.val**o
             return Dual(pwr, self.dot * o * pwr / self.val)

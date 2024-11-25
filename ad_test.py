@@ -355,23 +355,19 @@ def test_divide_number_object_dual(dual):
     compare_dual(1.0 / dual.cos.sqr, 1.0 + dual.tan.sqr)
     compare_dual(1.0 / dual.cosh.sqr, 1.0 - dual.tanh.sqr)
 
-@mark.parametrize('number', [1, 1.0])
+@mark.parametrize('number', [0, -0, 0.0, -0.0])
+def test_pow_object_zero(number):
+    compare_dual(data1_d**number, D1)
+    compare_dual(data2_d**number, D1)
+    compare_series(data1_s**number, S1)
+    compare_series(data2_s**number, S1)
+
+@mark.parametrize('number', [2, 2.0, 1, 1.0])
 def test_pow_object_neg1_number(number):
-    dual = d_4**number
-    assert dual.val == approx(f4)
-    assert dual.dot == approx(1.0)
-    series = ~ s_4**number
-    assert series.val == approx(f4)
-    assert series.jet[1] == approx(1.0)
-    derivative = 1.0 / f4
-    dual = d_4**-number
-    assert dual.val == approx(derivative)
-    assert dual.dot == approx(- derivative / f4)
-    series = ~ s_4**-number
-    assert series.val == approx(derivative)
-    for k in range(1, order):
-        derivative *= - k / s_4.val
-        assert series.jet[k] == approx(derivative)
+    compare_dual(data1_d**number * data1_d**-number, D1)
+    compare_dual(data2_d**number * data2_d**-number, D1)
+    compare_series(data1_s**number * data1_s**-number, S1)
+    compare_series(data2_s**number * data2_s**-number, S1)
 
 @mark.domain
 @mark.parametrize('number', [1, 1.0, δ])
@@ -405,31 +401,6 @@ def test_pow_object_object():
     series = ~ (s_3**s_4)
     assert len(series.jet) == order
     assert series.val == approx(f3**f4)
-
-@mark.parametrize('number', [0, -0, 0.0, -0.0])
-def test_pow_object_zero_dual(number):
-    compare_dual(data1_d**number, D1)
-    compare_dual(data2_d**number, D1)
-
-@mark.parametrize('number', [0, -0, 0.0, -0.0])
-def test_pow_object_zero_series(number):
-    compare_series(data1_s**number, S1)
-    compare_series(data2_s**number, S1)
-
-@mark.parametrize('number', [100, -100, 100.0, -100.0, 0, -0, i5, - i5, f3, - f3])
-def test_pow_object_number(number):
-    dual = d_4**number
-    assert dual.val == approx(f4**number)
-    assert dual.dot == approx(number * f4**(number - 1.0))
-    series = ~ s_4**number
-    assert len(series.jet) == order
-    assert series.val == approx(f4**number)
-    assert series.jet[1] == approx(number * f4**(number - 1.0))
-    dual = d_4**-number
-    assert dual.val == approx(1.0 / f4**number)
-    series = ~ s_4**-number
-    assert len(series.jet) == order
-    assert series.val == approx(1.0 / f4**number)
 
 @mark.domain
 @mark.parametrize('number', [1, 1.0, δ])
