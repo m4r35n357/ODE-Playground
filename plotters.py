@@ -219,11 +219,11 @@ def msave_d(filename, model, x_min=-2.0, x_max=2.0, steps=1000, y_min=-10.0, y_m
 if __name__ == "__main__":  # hard-coded example
     function = lambda a: (a - 1)**2 / (a.cosh + 1).ln - 1
     print(f'Root Scan (Dual)')
-    scan_d(function)
-    mplot_d(function)
+    scan_d(function, x_min=-8.0, x_max=8.0)
+    mplot_d(function, x_min=-8.0, x_max=8.0)
     print(f'Multi Scan (Series)')
-    scan_s(function)
-    mplot_s(function)
+    scan_s(function, x_min=-8.0, x_max=8.0)
+    mplot_s(function, x_min=-8.0, x_max=8.0)
 else:
     print(__name__ + " module loaded", file=stderr)
 

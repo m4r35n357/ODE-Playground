@@ -307,11 +307,11 @@ class Series:
 
     @property
     def sin(self):
-        return self._trig_hyp(t_sin_cos)[0]
+        return self.sin_cos[0]
 
     @property
     def cos(self):
-        return self._trig_hyp(t_sin_cos)[1]
+        return self.sin_cos[1]
 
     @property
     def tan_sec2(self):
@@ -319,11 +319,11 @@ class Series:
 
     @property
     def tan(self):
-        return self._trig_hyp(t_tan_sec2)[0]
+        return self.tan_sec2[0]
 
     @property
     def sec2(self):
-        return self._trig_hyp(t_tan_sec2)[1]
+        return self.tan_sec2[1]
 
     @property
     def sinh_cosh(self):
@@ -331,11 +331,11 @@ class Series:
 
     @property
     def sinh(self):
-        return self._trig_hyp(t_sin_cos, trig=False)[0]
+        return self.sinh_cosh[0]
 
     @property
     def cosh(self):
-        return self._trig_hyp(t_sin_cos, trig=False)[1]
+        return self.sinh_cosh[1]
 
     @property
     def tanh_sech2(self):
@@ -343,11 +343,11 @@ class Series:
 
     @property
     def tanh(self):
-        return self._trig_hyp(t_tan_sec2, trig=False)[0]
+        return self.tanh_sech2[0]
 
     @property
     def sech2(self):
-        return self._trig_hyp(t_tan_sec2, trig=False)[1]
+        return self.tanh_sech2[1]
 
     @property
     def asin(self):
