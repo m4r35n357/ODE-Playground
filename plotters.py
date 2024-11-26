@@ -31,8 +31,8 @@ class Mode(Enum):
 
 class Result(namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', 'label', 'mode'])):
     def __str__(self):
-        return f'{self.method}  x: {self.x:+.{Context.places}e}  δx: {self.δx:+.{Context.places}e}  ' \
-               f'f: {self.f:+.{Context.places}e}  {self.label} {self.mode} {self.count}'
+        return f'{self.method}  x: {self.x: .{Context.places}e}  δx: {self.δx: .{Context.places}e}  ' \
+               f'f: {self.f: .{Context.places}e}  {self.label} {self.mode} {self.count}'
 
 def _analyze_s(model, method, x0, x1, steps, εf, εx, limit, mode, console, debug):
     x_prev = f0_prev = f1_prev = f2_prev = None
@@ -221,8 +221,9 @@ if __name__ == "__main__":  # hard-coded example
 
     print(f'Dual (3.0)')
     dual = Dual(3.0).var
-    print(f'    3: {dual}')
-    print(f'3 * 3: {dual * dual}')
+    print(f'        3: {dual}')
+    print(f'    3 * 3: {dual * dual}')
+    print(f'3 * 3 * 3: {dual * dual * dual}')
     print(f'Root Scan')
     scan_d(function, x_min=-8.0, x_max=8.0, newton=False)
     scan_d(function, x_min=-8.0, x_max=8.0)
@@ -230,8 +231,9 @@ if __name__ == "__main__":  # hard-coded example
 
     print(f'Series (3.0)')
     series = Series.get(4, 3.0).var
-    print(f'    3: {series}')
-    print(f'3 * 3: {~(series * series)}')
+    print(f'        3: {series}')
+    print(f'    3 * 3: {~(series * series)}')
+    print(f'3 * 3 * 3: {~(series * series * series)}')
     print(f'Multi Scan')
     scan_s(function, x_min=-8.0, x_max=8.0, newton=False)
     scan_s(function, x_min=-8.0, x_max=8.0)

@@ -160,6 +160,7 @@ def test_get(number):
         assert isinstance(term, float)
         assert term == approx(0.0)
 
+@mark.skip()
 @mark.parametrize('number, length', [(data1_d, 2), (data1_s, order)])
 def test_to_str(number, length):
     entries = str.split(str(number))

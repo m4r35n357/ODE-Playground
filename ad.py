@@ -176,7 +176,7 @@ class Series:
         return cls(tsm_jet(size, value))
 
     def __str__(self):
-        return ''.join(f'{term:+.{Context.places}e} ' for term in self.jet)
+        return ''.join(f'{term: .{Context.places}e} ' for term in self.jet)
 
     def __abs__(self):
         return (-self) if self.val < 0.0 else (+self)
@@ -405,7 +405,7 @@ class Dual:
         self.dot = derivative
 
     def __str__(self):
-        return f'{self.val:+.{Context.places}e} {self.dot:+.{Context.places}e}'
+        return f'{self.val: .{Context.places}e} {self.dot: .{Context.places}e}'
 
     def __abs__(self):
         return (-self) if self.val < 0.0 else (+self)
