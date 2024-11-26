@@ -208,12 +208,12 @@ def mplot_d(model, x_min=-2.0, x_max=2.0, steps=1000, y_min=-10.0, y_max=10.0):
 def msave_s(filename, model, order=12, x_min=-2.0, x_max=2.0, steps=1000, y_min=-10.0, y_max=10.0):
     _plot_s(model, order, x_min, x_max, steps, y_min, y_max)
     pyplot.savefig(filename)
-    #pyplot.close(filename)
+    pyplot.close(filename)
 
 def msave_d(filename, model, x_min=-2.0, x_max=2.0, steps=1000, y_min=-10.0, y_max=10.0):
     _plot_d(model, x_min, x_max, steps, y_min, y_max)
     pyplot.savefig(filename)
-    #pyplot.close(filename)
+    pyplot.close(filename)
 
 
 if __name__ == "__main__":  # hard-coded example
@@ -266,11 +266,10 @@ f = lambda a: a.cos.acos - value
 f = lambda a: a.tan.atan - value
 f = lambda a: (a + 7) / (3.0 - a)
 
+# DO NOT RUN THIS IN PYCHARM!!!  (unless you want to close 101 images by hand) :(
 for i in range(-50, 51):
     print(i * 0.1)
     f = lambda a: (a.sqr + 1)**(i*0.1)
-    #scan(f)
-    #mplot(f)
     msave_s(f'output/test_{i+50:03d}.png', f)
 
 for i in range(-10, 10):
@@ -287,7 +286,7 @@ f = lambda a: - (abs(a) - 1.5)**3 + 4 * (abs(a) - 1.5) - 2
 f = lambda a: a.sin / pi + (3 * a).sin / (3 * pi) + (5 * a).sin / (5 * pi) + (7 * a).sin / (7 * pi)
 
 rm -f output/*.png
-ffmpeg -y -framerate 1 -pattern_type glob -i "/tmp/$USER/output/*.png" -c:v libx264 -pix_fmt yuv420p /tmp/$USER/plots.mp4
+ffmpeg -y -framerate 1 -pattern_type glob -i "output/*.png" -c:v libx264 -pix_fmt yuv420p /tmp/$USER/plots.mp4
 #ffmpeg -y -i output/test_%03d.png taylor.mp4
 mplayer /tmp/$USER/plots.mp4
 '''
