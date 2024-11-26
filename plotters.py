@@ -217,11 +217,23 @@ def msave_d(filename, model, x_min=-2.0, x_max=2.0, steps=1000, y_min=-10.0, y_m
 
 
 if __name__ == "__main__":  # hard-coded example
-    function = lambda a: (a - 1)**2 / (a.cosh + 1).ln - 1
-    print(f'Root Scan (Dual)')
+    function = lambda z: (z - 1)**2 / (z.cosh + 1).ln - 1
+
+    print(f'Dual (3.0)')
+    dual = Dual(3.0).var
+    print(f'    3: {dual}')
+    print(f'3 * 3: {dual * dual}')
+    print(f'Root Scan')
+    scan_d(function, x_min=-8.0, x_max=8.0, newton=False)
     scan_d(function, x_min=-8.0, x_max=8.0)
     mplot_d(function, x_min=-8.0, x_max=8.0)
-    print(f'Multi Scan (Series)')
+
+    print(f'Series (3.0)')
+    series = Series.get(4, 3.0).var
+    print(f'    3: {series}')
+    print(f'3 * 3: {~(series * series)}')
+    print(f'Multi Scan')
+    scan_s(function, x_min=-8.0, x_max=8.0, newton=False)
     scan_s(function, x_min=-8.0, x_max=8.0)
     mplot_s(function, x_min=-8.0, x_max=8.0)
 else:
@@ -231,29 +243,13 @@ else:
 from ad import *
 from plotters import *
 
-a = Series.get(4, 3.0).var
-print(a)
-print(~(a * a))
-
-b = Dual(3.0).var
-print(b)
-print(b * b)
-
 f = lambda a: a * a * a + 2.0 * a * a - 3.0 * a + 1.0
-
-scan_s(f)
-mplot_s(f)
-
-scan_d(f)
-mplot_d(f)
-
 
 bisect_d(f, -4.0, -2.0)
 newton_d(f, -4.0)
 
 bisect_s(f, -4.0, -2.0)
 newton_s(f, -4.0)
-
 
 f = lambda a: (a.exp + (a.sqr - 4.0).exp).ln - value
 f = lambda a: (a.sqr + (a.exp - 4).sqr).sqrt - value
