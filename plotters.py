@@ -8,7 +8,6 @@ from enum import Enum, unique
 from matplotlib import pyplot
 from ad import Series, Dual, Context
 
-
 @unique
 class Solver(Enum):
     NA = "No analysis, or all"
@@ -27,7 +26,6 @@ class Mode(Enum):
     MIN_MAX = 1
     INFLECT = 2
     ALL = 3
-
 
 class Result(namedtuple('ResultType', ['method', 'x', 'f', 'δx', 'count', 'label', 'mode'])):
     def __str__(self):

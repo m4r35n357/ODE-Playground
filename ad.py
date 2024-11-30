@@ -1,4 +1,6 @@
 #
+# Taylor Series Method for solving ODEs, with a Taylor Arithmetic class & a Dual Numbers class
+#
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 from sys import stderr
@@ -22,7 +24,9 @@ def _out_(dp, x, y, z, t, cpu):
     print(f'{x:+.{dp}e} {y:+.{dp}e} {z:+.{dp}e} {t:.5e} _ _ _ {cpu:.5e}')
 
 def tsm(ode, places, n, h, steps, x0, y0, z0, p):
-    x, y, z = tsm_jet(n + 1, x0), tsm_jet(n + 1, y0), tsm_jet(n + 1, z0)
+    x = tsm_jet(n + 1, x0)
+    y = tsm_jet(n + 1, y0)
+    z = tsm_jet(n + 1, z0)
     t0 = clock_gettime(CLOCK_MONOTONIC)
     for step in range(steps):
         _out_(places, x[0], y[0], z[0], step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
@@ -31,7 +35,9 @@ def tsm(ode, places, n, h, steps, x0, y0, z0, p):
             x[k + 1] = v.x / (k + 1)
             y[k + 1] = v.y / (k + 1)
             z[k + 1] = v.z / (k + 1)
-        x[0], y[0], z[0] = horner(x, h), horner(y, h), horner(z, h)
+        x[0] = horner(x, h)
+        y[0] = horner(y, h)
+        z[0] = horner(z, h)
     _out_(places, x[0], y[0], z[0], steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
 
 def rk4(ode, places, skip, h, steps, x, y, z, p):
@@ -143,14 +149,6 @@ def t_pwr(p, u, a, k):
     assert u[0] > 0.0
     p[k] = u[k]**a if k == 0 else _uk_(u, p, k, _fk_(p, u, k, a))
     return p[k]
-
-
-class Components(namedtuple('ParametersType', ['x', 'y', 'z'])):
-    pass
-
-
-class Context:
-    places = 3
 
 
 class Series:
@@ -551,6 +549,14 @@ class Dual:
     @property
     def var(self):
         return Dual(self.val, 1.0)
+
+
+class Components(namedtuple('ParametersType', ['x', 'y', 'z'])):
+    pass
+
+
+class Context:
+    places = 3
 
 
 print(f'{__name__} module loaded', file=stderr)
