@@ -48,17 +48,6 @@ def rk4(ode, places, skip, h, steps, x, y, z, p):
         z += h * (k1.z + 2.0 * (k2.z + k3.z) + k4.z) / 6.0
     _out_(places, x, y, z, steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
 
-def euler(ode, places, skip, h, steps, x, y, z, p):
-    t0 = clock_gettime(CLOCK_MONOTONIC)
-    for step in range(steps):
-        if step % skip == 0:
-            _out_(places, x, y, z, step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
-        k = ode(x, y, z, p)
-        x += h * k.x
-        y += h * k.y
-        z += h * k.z
-    _out_(places, x, y, z, steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
-
 def _cauchy_(b, a, k, k0, k1):
     return fsum(b[j] * a[k - j] for j in range(k0, k1 + 1))
 
