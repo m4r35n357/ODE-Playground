@@ -160,14 +160,6 @@ def test_get(number):
         assert isinstance(term, float)
         assert term == approx(0.0)
 
-@mark.skip()
-@mark.parametrize('number, length', [(data1_d, 2), (data1_s, order)])
-def test_to_str(number, length):
-    entries = str.split(str(number))
-    assert len(entries) == length
-    for entry in entries:
-        assert len(entry) == 10
-
 def test_to_derivatives():
     coefficients = data1_s
     derivatives = ~ data1_s
