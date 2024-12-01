@@ -1,0 +1,34 @@
+# Halvorsen system
+#
+# BC_LINE_LENGTH=0 bc taylor.bc tsm-halvorsen.bc | ./plotAnimated.py -15 10
+
+# solver variables
+scale=36
+n=16
+h=0.01
+steps=10000
+
+# initial conditions
+x=1.0
+y=0.0
+z=0.0
+
+# model parameters
+a=1.4
+
+t_print(x, y, z, 0.0)
+for (step = 1; step < steps + 1; step++) {
+    x[0] = x
+    y[0] = y
+    z[0] = z
+    for (k = 0; k < n; k++) {
+        x[k + 1] = - a * x[k] - 4.0 * (y[k] + z[k]) - t_mul(y[], y[], k) / (k + 1)
+        y[k + 1] = - a * y[k] - 4.0 * (z[k] + x[k]) - t_mul(z[], z[], k) / (k + 1)
+        z[k + 1] = - a * z[k] - 4.0 * (x[k] + y[k]) - t_mul(x[], x[], k) / (k + 1)
+    }
+    x = horner(n, x[], h)
+    y = horner(n, y[], h)
+    z = horner(n, z[], h)
+    t_print(x, y, z, h * step)
+}
+quit

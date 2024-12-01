@@ -1,13 +1,19 @@
+# Lorenz system
 #
 # BC_LINE_LENGTH=0 bc taylor.bc tsm-lorenz.bc | ./plotAnimated.py -30 50
 
+# solver variables
 scale=36
 n=16
 h=0.01
 steps=10000
+
+# initial conditions
 x=-15.8
 y=-17.48
 z=35.64
+
+# model parameters
 a=10.0
 b=28.0
 c=8.0/3.0
