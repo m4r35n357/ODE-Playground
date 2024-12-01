@@ -1,6 +1,5 @@
-#!/usr/bin/bc -q
 #
-# BC_LINE_LENGTH=0 ./tsm-lorenz.bc | ./plotAnimated.py -30 50
+# BC_LINE_LENGTH=0 bc taylor.bc tsm-lorenz.bc | ./plotAnimated.py -30 50
 
 scale=36
 n=16
@@ -12,28 +11,6 @@ z=35.64
 a=10.0
 b=28.0
 c=8.0/3.0
-
-define void t_print(x, y, z, t) {
-    print x, " ", y, " ", z, " ", t, " _ _ _ 0.0\n"
-}
-
-define horner(n, j[], h) {
-    auto i, s
-    s = 0.0
-    for (i = n; i > -1; i--) {
-        s = s * h + j[i]
-    }
-    return(s)
-}
- 
-define t_mul(u[], v[], k) {
-    auto j, p
-    p = 0.0
-    for (j = 0; j < k + 1; j++) {
-        p = p + u[j] * v[k - j]
-    }
-    return(p)
-}
 
 t_print(x, y, z, 0.0)
 for (step = 1; step < steps + 1; step++) {
