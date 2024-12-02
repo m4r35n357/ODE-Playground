@@ -21,6 +21,11 @@ define cauchy (u[], v[], k) {
     return p
 }
  
+define t_const (v, k) {
+    if (k == 0) return v
+    return 0.0
+}
+ 
 define t_mul (u[], v[], k) {
     return cauchy(u[], v[], k)
 }
@@ -39,11 +44,11 @@ define chain (b[], a[], k) {
 }
 
 define t_sin (s[], c[], u[], k) {
-    if(k == 0) return s(u[k])
+    if (k == 0) return s(u[k])
     return chain(c[], u[], k)
 }
 
 define t_cos (s[], c[], u[], k) {
-    if(k == 0) return c(u[k])
+    if (k == 0) return c(u[k])
     return - chain(s[], u[], k)
 }
