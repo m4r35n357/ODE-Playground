@@ -39,8 +39,8 @@ def update(data):
 
 
 print(f'Animated ODE Plotter: {argv}', file=stderr)
-if len(argv) < 2:
-    raise Exception('>>> ERROR! Please supply min and max <<<')
+if len(argv) != 3:
+    raise Exception('>>> ERROR! Please supply two parameters: min and max "y" values <<<')
 minimum, maximum = float(argv[1]), float(argv[2])
 fig, ax = plt.subplots()
 line_x, = ax.plot([], [], 'g', lw=1, ms=0)
