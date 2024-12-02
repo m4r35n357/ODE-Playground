@@ -12,6 +12,11 @@ define horner (n, j[], h) {
     return s
 }
  
+define t_const (v, k) {
+    if (k == 0) return v
+    return 0.0
+}
+ 
 define cauchy (u[], v[], k) {
     auto j, p
     p = 0.0
@@ -19,11 +24,6 @@ define cauchy (u[], v[], k) {
         p += u[j] * v[k - j]
     }
     return p
-}
- 
-define t_const (v, k) {
-    if (k == 0) return v
-    return 0.0
 }
  
 define t_mul (u[], v[], k) {
