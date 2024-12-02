@@ -1,0 +1,40 @@
+# Thomas system
+#
+# BC_LINE_LENGTH=0 bc -l taylor.bc tsm-thomas.bc | ./plotAnimated.py -5 5
+
+# solver variables
+scale=36
+n=16
+h=0.01
+steps=10000
+
+# initial conditions
+x=1.0
+y=0.0
+z=0.0
+
+# model parameters
+b=0.185
+
+t_print(x, y, z, 0.0)
+for (step = 1; step < steps + 1; step++) {
+    x[0] = x
+    y[0] = y
+    z[0] = z
+    for (k = 0; k < n; k++) {
+        a[k] = t_sin(a[], b[], x[], k)
+        b[k] = t_cos(a[], b[], x[], k)
+        c[k] = t_sin(c[], d[], y[], k)
+        d[k] = t_cos(c[], d[], y[], k)
+        e[k] = t_sin(e[], f[], z[], k)
+        f[k] = t_cos(e[], f[], z[], k)
+        x[k + 1] = (c[k] - b * x[k]) / (k + 1)
+        y[k + 1] = (e[k] - b * y[k]) / (k + 1)
+        z[k + 1] = (a[k] - b * z[k]) / (k + 1)
+    }
+    x = horner(n, x[], h)
+    y = horner(n, y[], h)
+    z = horner(n, z[], h)
+    t_print(x, y, z, h * step)
+}
+quit

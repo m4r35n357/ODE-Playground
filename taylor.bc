@@ -1,22 +1,49 @@
 
-define void t_print(x, y, z, t) {
+define void t_print (x, y, z, t) {
     print x, " ", y, " ", z, " ", t, " _ _ _ 0.0\n"
 }
 
-define horner(n, j[], h) {
+define horner (n, j[], h) {
     auto i, s
     s = 0.0
     for (i = n; i > -1; i--) {
         s = s * h + j[i]
     }
-    return(s)
+    return s
 }
  
-define t_mul(u[], v[], k) {
+define cauchy (u[], v[], k) {
     auto j, p
     p = 0.0
     for (j = 0; j < k + 1; j++) {
-        p = p + u[j] * v[k - j]
+        p += u[j] * v[k - j]
     }
-    return(p)
+    return p
+}
+ 
+define t_mul (u[], v[], k) {
+    return cauchy(u[], v[], k)
+}
+ 
+define t_sqr (u[], k) {
+    return cauchy(u[], u[], k)
+}
+
+define chain (b[], a[], k) {
+    auto j, x
+    x = 0.0
+    for (j = 0; j < k; j++) {
+        x += b[j] * (k - j) * a[k - j]
+    }
+    return x / k
+}
+
+define t_sin (s[], c[], u[], k) {
+    if(k == 0) return s(u[k])
+    return chain(c[], u[], k)
+}
+
+define t_cos (s[], c[], u[], k) {
+    if(k == 0) return c(u[k])
+    return - chain(s[], u[], k)
 }
