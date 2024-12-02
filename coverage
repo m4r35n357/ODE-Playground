@@ -2,7 +2,7 @@
 
 PYTHON_OUT='cov_html'
 
-pytest --cov=ad --cov=plotters --cov-report html:$PYTHON_OUT ad_test.py solver_test.py -q
+pytest-3 --cov=ad --cov=analysis --cov-report html:$PYTHON_OUT ad_test.py analysis_test.py -q
 echo ""
 
 echo "Python: file://$(pwd)/$PYTHON_OUT/index.html"

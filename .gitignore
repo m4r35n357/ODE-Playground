@@ -7,3 +7,5 @@
 # Vim/Python/Pycharm stuff
 tags
 __pycache__/
+.coverage
+cov_html/
