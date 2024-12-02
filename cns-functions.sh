@@ -7,7 +7,7 @@ fileB="/tmp/$USER/dataB"  # results of the requested simulation
 
 halfstep () {  # step / 2
     case $1 in
-        *tsm-*.py|*rk4-*.py) start="$1 $2 $3";;
+        *tsm-*.py|*tsm-*-bc) start="$1 $2 $3";;
                  *) echo "CNS: Bad Executable Name";
                     exit;;
     esac

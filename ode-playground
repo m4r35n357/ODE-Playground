@@ -44,7 +44,7 @@ case $model in
             --field="Mode":CB --field="Separation" --field="Model":CB \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
-            --  'step2!nosim' '1.0' './tsm-lorenz.py!./rk4-lorenz.py' \
+            --  'step2!nosim' '1.0' './tsm-lorenz.py!./tsm-lorenz-bc' \
                 '6!0..36!3' '8!1..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
