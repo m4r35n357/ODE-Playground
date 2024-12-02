@@ -5,7 +5,7 @@
 #  pytest --cov=ad --cov=plotters --cov-report html:cov_html ad_test.py solver_test.py -v
 
 from math import sqrt
-from plotters import Solver, Mode, Label, bisect_s, newton_s, _analyze_s, bisect_d, newton_d, _analyze_d
+from analysis import Solver, Mode, Label, bisect_s, newton_s, _analyze_s, bisect_d, newton_d, _analyze_d
 import pytest
 
 εf = 1.0e-9

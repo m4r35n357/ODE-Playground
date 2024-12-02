@@ -2,4 +2,4 @@
 
 /usr/bin/ctags *.py
 
-pytest-3 ad_test.py solver_test.py -q
+pytest-3 ad_test.py analysis_test.py -q
