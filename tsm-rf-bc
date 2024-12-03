@@ -1,21 +1,23 @@
-# Rabinovich-Fabrikant system
-#
-# BC_LINE_LENGTH=0 bc taylor.bc tsm-rf.bc | ./plotAnimated.py -3 3
+#!/bin/sh
 
+. ./base.sh
+
+# Rabinovich-Fabrikant system
+BC_LINE_LENGTH=0 /usr/bin/bc taylor.bc << EOF
 # solver variables
-scale=36
-n=16
-h=0.01
-steps=10000
+scale=$1
+n=$2
+h=$3
+steps=$4
 
 # initial conditions
-x=0.05
-y=-0.05
-z=0.3
+x=$5
+y=$6
+z=$7
 
 # model parameters
-alpha=0.2875
-gamma=0.1
+alpha=$8
+gamma=$9
 
 t_print(x, y, z, 0.0)
 for (step = 1; step < steps + 1; step++) {
@@ -36,3 +38,4 @@ for (step = 1; step < steps + 1; step++) {
     t_print(x, y, z, h * step)
 }
 quit
+EOF

@@ -1,20 +1,22 @@
-# Thomas system
-#
-# BC_LINE_LENGTH=0 bc -l taylor.bc tsm-thomas.bc | ./plotAnimated.py -5 5
+#!/bin/sh
 
+. ./base.sh
+
+# Thomas system
+BC_LINE_LENGTH=0 /usr/bin/bc taylor.bc << EOF
 # solver variables
-scale=36
-n=16
-h=0.01
-steps=10000
+scale=$1
+n=$2
+h=$3
+steps=$4
 
 # initial conditions
-x=1.0
-y=0.0
-z=0.0
+x=$5
+y=$6
+z=$7
 
 # model parameters
-b=0.185
+b=$8
 
 t_print(x, y, z, 0.0)
 for (step = 1; step < steps + 1; step++) {
@@ -38,3 +40,4 @@ for (step = 1; step < steps + 1; step++) {
     t_print(x, y, z, h * step)
 }
 quit
+EOF
