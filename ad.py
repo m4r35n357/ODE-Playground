@@ -11,9 +11,6 @@ from time import clock_gettime, CLOCK_MONOTONIC
 def tsm_jet(n, value=0.0):
     return [value if isinstance(value, float) else float(value)] + [0.0] * (n - 1)
 
-def tsm_const(a, k):
-    return tsm_jet(k, a)
-
 def horner(jet, h):
     result = 0.0
     for term in reversed(jet):
@@ -54,6 +51,12 @@ def rk4(ode, places, skip, h, steps, x, y, z, p):
         z += h * (k1.z + 2.0 * (k2.z + k3.z) + k4.z) / 6.0
     _out_(places, x, y, z, steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
 
+def t_const(v, k):
+    return v if k == 0 else 0.0
+
+def t_abs(u, k):
+    return - u[k] if u[0] < 0.0 else u[k]
+
 def _cauchy_(b, a, k, k0, k1):
     return fsum(b[j] * a[k - j] for j in range(k0, k1 + 1))
 
@@ -68,9 +71,6 @@ def _fk_(df_du, u, k, scale=1.0):
 
 def _uk_(df_du, u, k, f_k, scale=1.0):
     return (f_k - _chain_(df_du, u, k, 1) * scale) / df_du[0]
-
-def t_abs(u, k):
-    return - u[k] if u[0] < 0.0 else u[k]
 
 def t_mul(u, v, k):
     return _cauchy_(u, v, k, 0, k)
@@ -233,7 +233,7 @@ class Series:
             return Series(jet)
         elif isinstance(o, (float, int)):
             assert self.val != 0.0, f"self.val = {self.val}"
-            j_o = tsm_const(o, self.n)
+            j_o = tsm_jet(self.n, o)
             jet = tsm_jet(self.n)
             for k in self.index:
                 # noinspection PyTypeChecker
