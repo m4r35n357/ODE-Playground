@@ -3,7 +3,7 @@
 . ./base.sh
 
 # Thomas system
-BC_LINE_LENGTH=0 /usr/bin/bc taylor.bc << EOF
+BC_LINE_LENGTH=0 /usr/bin/bc -l taylor.bc << EOF
 # solver variables
 scale=$1
 n=$2

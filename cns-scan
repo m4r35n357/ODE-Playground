@@ -61,10 +61,8 @@ max_clean=$(echo "scale=2; $timestep * $steps;" | /usr/bin/bc)
 set $(tail -1 $user_data)
 if [ $(printf "scale=3; $3 > 0.0;\n" | /usr/bin/bc) -eq 1 ]
 then
-    echo "CPU > 0"
     max_cpu=$(echo "scale=2; 1.5 * $3;" | /usr/bin/bc)
 else
-    echo "CPU == 0"
     max_cpu=1.0
 fi
 
