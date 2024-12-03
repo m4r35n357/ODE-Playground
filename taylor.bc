@@ -16,7 +16,7 @@ define t_const (v, k) {
     return 0.0
 }
  
-define cauchy (u[], v[], k) {
+define t_mul (u[], v[], k) {
     auto j, p
     for (j = 0; j < k + 1; j++) {
         p += u[j] * v[k - j]
@@ -24,14 +24,6 @@ define cauchy (u[], v[], k) {
     return p
 }
  
-define t_mul (u[], v[], k) {
-    return cauchy(u[], v[], k)
-}
- 
-define t_sqr (u[], k) {
-    return cauchy(u[], u[], k)
-}
-
 define chain (b[], a[], k) {
     auto j, x
     for (j = 0; j < k; j++) {
