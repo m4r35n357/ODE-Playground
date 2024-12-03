@@ -8,7 +8,7 @@ user_data="$user_dir/data"
 
 choice=$(yad --columns=2 --title="ODE Playground" --form --separator=" " --align=right \
     --field="Model:CB" --field="Analysis type:CB" \
-    -- 'Halvorsen!Lorenz!RF!^Thomas' '^GLplot!IC!Animated!Gnuplot!CNS!CNSScan')
+    -- 'Halvorsen!Lorenz!Rossler!RF!^Thomas' '^GLplot!IC!Animated!Gnuplot!CNS!CNSScan')
 
 case $? in
     1) exit;;
@@ -55,6 +55,39 @@ case $model in
                 '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
     esac ;;
+    Rossler) case $analysis in
+        GLplot) ./tsm-rossler.py $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
+            --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+            --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
+            --  '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
+                '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
+        Gnuplot) ./plot 10000 ./tsm-rossler.py $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
+            --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+            --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
+            --  '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
+                '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
+        CNS) ./cns $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
+            --field="Mode":CB --field="Separation" --field="Model":CB \
+            --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+            --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
+            --  'step2!nosim' '1.0' './tsm-rossler.py!./tsm-rossler-bc' \
+                '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
+                '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
+        CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
+            --field="Maximum Order":NUM --field="Separation" --field="Model":RO \
+            --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
+            --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
+            --  'step2!nosim' '1.0' './tsm-rossler.py!./tsm-rossler-bc' \
+                '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
+                '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
+        ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
+            --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB --field="Model":RO \
+            --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+            --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c":RO \
+            --  '0.0' '50.0' '10000!20000!50000!100000' 'no-snaps!snaps' './tsm-rossler.py' \
+                '6!0..36!3' '4!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                '0.0' '-6.78' '0.02' '.2' '.2' '$p') ;;
+    esac ;;
     Thomas) case $analysis in
         GLplot) ./tsm-thomas.py $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
@@ -80,7 +113,7 @@ case $model in
             --field="Mode":CB --field="Separation" --field="Model":CB \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="b" \
-            --  'step2!nosim' '1.0' './tsm-thomas.py!./rk4-thomas.py' \
+            --  'step2!nosim' '1.0' './tsm-thomas.py!./tsm-thomas-bc' \
                 '6!0..36!3' '8!1..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '0.185') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
@@ -116,7 +149,7 @@ case $model in
             --field="Mode":CB --field="Separation" --field="Model":CB \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
-            --  'step2!nosim' '1.0' './tsm-rf.py!./rk4-rf.py' \
+            --  'step2!nosim' '1.0' './tsm-rf.py!./tsm-rf-bc' \
                 '6!0..36!3' '8!1..32!1' '0.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
@@ -152,7 +185,7 @@ case $model in
             --field="Mode":CB --field="Separation" --field="Model":CB \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  'step2!nosim' '1.0' './tsm-halvorsen.py!./rk4-halvorsen.py' \
+            --  'step2!nosim' '1.0' './tsm-halvorsen.py!./tsm-halvorsen-bc' \
                 '6!0..36!3' '8!1..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '1.4') ;;
         CNSScan) ./cns-scan $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
