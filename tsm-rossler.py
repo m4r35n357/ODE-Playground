@@ -2,21 +2,24 @@
 #
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 
-from sys import argv
+from sys import argv, stderr
 from collections import namedtuple
-from ad import tsm, t_prod, Components, t_jet
+from ad import Components, Context, tsm, t_mul, tsm_jet
 
 class Parameters(namedtuple('ParametersType', ['a', 'b', 'c'])):
     pass
 
-def get_p(order):
+def get_p():
     return Parameters(a = float(argv[8]),
-                      b = t_jet(order, float(argv[9])),
+                      b = tsm_jet(order, float(argv[9])),
                       c = float(argv[10]))
 
-def ode(x, y, z, p, i, k):
+def ode(x, y, z, p, k):
     return Components(x = - y[k] - z[k],
                       y = x[k] + p.a * y[k],
-                      z = p.b[k] + t_prod(x, z, k) - p.c * z[k])
+                      z = p.b[k] + t_mul(x, z, k) - p.c * z[k])
 
-tsm(ode, get_p, None)
+
+print(f'TSM: {argv}', file=stderr)
+Context.places, order, h, steps = int(argv[1]), int(argv[2]), float(argv[3]), int(argv[4])  # controls
+tsm(ode, Context.places, order, h, steps, float(argv[5]), float(argv[6]), float(argv[7]), get_p())
