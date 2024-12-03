@@ -75,6 +75,11 @@ triplet ode (series X, series Y, series Z, const model *p, int k);
  */
 
 /*
+ * Returns a constant as if it were part of a series
+ */
+real t_const (const real value, int k);
+
+/*
  * Returns kth element of the absolute value of U, no storage needed
  */
 real t_abs (const series U, int k);

@@ -102,6 +102,10 @@ void tsm_out (controls *c, xyz *_, const model *p, clock_t t0) {
     _out_(c->dp, _->x[0], _->y[0], _->z[0], c->h * c->steps, '_', '_', '_', t0);
 }
 
+real t_const (const real value, int k) {
+    return k ? 0.0L : value;
+}
+
 real t_abs (const series u, int k) {
     CHECK(u[0] != 0.0L);
     return u[0] < 0.0L ? -u[k] : u[k];

@@ -104,7 +104,9 @@ test: all
 	@echo "\e[1;32mCore Tests Passed\e[0m\n"
 
 test-all: test
-	@if ! ./tsm-lorenz-std  6 8 .01 1000  -15.8 -17.48 35.64  10 28 8 3 >/dev/null; then exit 1; fi
+	@if ! ./tsm-lorenz-std  6 8 .01 10000  -15.8 -17.48 35.64  10 28 8 3 >/dev/null; then exit 1; fi
+	@if ! ./tsm-rossler-std 6 8 0.010 10000 0.0 -6.78 0.02 .2 .2 5.7  >/dev/null; then exit 1; fi
+	@if ! ./tsm-rf-std 6 8 0.010 10000 0.05 -0.05 0.3 .2875 .1  >/dev/null; then exit 1; fi
 	@if ! ./tsm-thomas-std  6 8 0.100 10000  1.0 0.0 0.0  0.185 >/dev/null; then exit 1; fi
 	@if ! ./tsm-wimol-banlue-std  6 8 0.010 10000  1.0 0.1 0.1  1.0 >/dev/null; then exit 1; fi
 	@if ! ./h-analysis-std 6 4 1.0 1 >/dev/null; then exit 1; fi
