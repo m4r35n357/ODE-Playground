@@ -33,7 +33,7 @@ endif
 %.o: %.c
 	$(CC) $(CFLAGS) -MT $@ -MMD -MP -c -o $@ $< $(WARNINGS)
 
-all: tsm-std tsm-gl hamiltonian generators h-kerr-std h-kerr-gl h-nbody-std h-nbody-gl divergence tests
+all: tsm-std tsm-gl hamiltonian generators h-kerr-std h-kerr-gl h-nbody-std h-nbody-gl divergence tests ctags
 
 
 tsm-%-std: tsm-%.o taylor-ode.o main-tsm.o
@@ -131,7 +131,7 @@ clean:
 		coverage* gmon.out
 
 depclean: clean
-	@rm -f *.d
+	@rm -f *.d tags
 
 C_OUT_DIR=coverage-out
 C_OUT_FILE=coverage.info
