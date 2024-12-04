@@ -8,7 +8,7 @@ user_data="$user_dir/data"
 
 choice=$(yad --columns=2 --title="ODE Playground" --form --separator=" " --align=right \
     --field="Model:CB" --field="Analysis type:CB" \
-    -- 'Halvorsen!Lorenz!Rossler!RF!^Thomas' '^GLplot!IC!Animated!Gnuplot!CNS!CNSScan')
+    -- 'Lorenz!Rossler!RF!Halvorsen!^Thomas' '^GLplot!IC!Animated!Gnuplot!CNS!CNSScan')
 
 case $? in
     1) exit;;
@@ -141,7 +141,7 @@ case $model in
         Animated) $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
-            --  './tsm-rf.py!./tsm-rf-bc!./rk4-rf.py' '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
+            --  './tsm-rf.py!./tsm-rf-bc!./rk4-rf.py' '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '.2875' '.1') | ./plotAnimated.py -3 3 ;;
         Gnuplot) ./plot $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
@@ -177,7 +177,7 @@ case $model in
         Animated) $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  './tsm-halvorsen.py!./tsm-halvorsen-bc!./rk4-halvorsen.py' '5000!1000..10000!1000' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+            --  './tsm-halvorsen.py!./tsm-halvorsen-bc!./rk4-halvorsen.py' '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '1.4') | ./plotAnimated.py -15 10 ;;
         Gnuplot) ./plot $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
