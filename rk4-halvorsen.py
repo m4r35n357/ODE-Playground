@@ -13,9 +13,9 @@ def get_p():
     return Parameters(a=float(argv[8]))
 
 def ode(x, y, z, p):
-    return Components(x=-p.a * x - 4.0 * (y + z) - y * y,
-                      y=-p.a * y - 4.0 * (z + x) - z * z,
-                      z=-p.a * z - 4.0 * (x + y) - x * x)
+    return Components(x=-p.a * x - 4.0 * (y + z) - y**2,
+                      y=-p.a * y - 4.0 * (z + x) - z**2,
+                      z=-p.a * z - 4.0 * (x + y) - x**2)
 
 
 print(f'RK4: {argv}', file=stderr)

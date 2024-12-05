@@ -13,7 +13,7 @@ def get_p():
     return Parameters(α=float(argv[8]), γ=float(argv[9]))
 
 def ode(x, y, z, p):
-    a = z + x * x - 1.0
+    a = z + x**2 - 1.0
     b = 4.0 * z - a
     c = p.α + x * y
     return Components(x=y * a + p.γ * x,
