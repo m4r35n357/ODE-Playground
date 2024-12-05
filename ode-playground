@@ -33,26 +33,26 @@ case $model in
         Animated) $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
-            --  './tsm-lorenz.py!./tsm-lorenz-bc!./rk4-lorenz.py' '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+            --  './tsm-lorenz.py!./tsm-lorenz-bc!./rk4-lorenz.py' '18!6..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') | ./plotAnimated.py -30 50 ;;
         Gnuplot) ./plot $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Model":CB  --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
-            --  './tsm-lorenz.py!./tsm-lorenz-bc!./rk4-lorenz.py' '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+            --  './tsm-lorenz.py!./tsm-lorenz-bc!./rk4-lorenz.py' '18!6..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":CB \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
             --  'step2!nosim' '1.0' './tsm-lorenz.py!./tsm-lorenz-bc!./rk4-lorenz.py' \
-                '6!0..36!3' '8!1..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                '18!6..36!3' '8!1..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation" --field="Model":CB \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
             --  '16!2..32!1' '1.0' './tsm-lorenz.py!./tsm-lorenz-bc' \
-                '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                '18!6..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
     esac ;;
     Rossler) case $analysis in
@@ -69,62 +69,62 @@ case $model in
         Animated) $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
-            --  './tsm-rossler.py!./tsm-rossler-bc!./rk4-rossler.py' '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
+            --  './tsm-rossler.py!./tsm-rossler-bc!./rk4-rossler.py' '18!6..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') | ./plotAnimated.py -30 50 ;;
         Gnuplot) ./plot $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
-            --  './tsm-rossler.py!./tsm-rossler-bc!./rk4-rossler.py' '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
+            --  './tsm-rossler.py!./tsm-rossler-bc!./rk4-rossler.py' '18!6..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":CB \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
             --  'step2!nosim' '1.0' './tsm-rossler.py!./tsm-rossler-bc!./rk4-rossler.py' \
-                '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
+                '18!6..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation" --field="Model":CB \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
             --  '16!2..32!1' '1.0' './tsm-rossler.py!./tsm-rossler-bc' \
-                '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
+                '18!6..36!3' '_' '.01!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
     esac ;;
     Thomas) case $analysis in
         GLplot) ./tsm-thomas.py $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="b" \
-            --  '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+            --  '18!6..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '0.185') | ./plot3d.py ;;
         IC) ./ic .001 32 ./tsm-thomas.py $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="b" \
-            --  '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+            --  '18!6..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '0.185') | ./plot3d.py ;;
         Animated) $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="b" \
-            --  './tsm-thomas.py!./tsm-thomas-bc!./rk4-thomas.py' '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+            --  './tsm-thomas.py!./tsm-thomas-bc!./rk4-thomas.py' '18!6..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '0.185') | ./plotAnimated.py -5 5 ;;
         Gnuplot) ./plot $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="b" \
-            --  './tsm-thomas.py!./tsm-thomas-bc!./rk4-thomas.py' '6!0..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+            --  './tsm-thomas.py!./tsm-thomas-bc!./rk4-thomas.py' '18!6..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '0.185') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":CB \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="b" \
             --  'step2!nosim' '1.0' './tsm-thomas.py!./tsm-thomas-bc!./rk4-thomas.py' \
-                '6!0..36!3' '8!1..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                '18!6..36!3' '8!1..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '0.185') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation" --field="Model":CB \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="b" \
             --  '16!2..64!1' '1.0' './tsm-thomas.py!./tsm-thomas-bc' \
-                '6!0..36!3' '_' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                '18!6..36!3' '_' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '0.185') ;;
     esac ;;
     RF) case $analysis in
@@ -141,26 +141,26 @@ case $model in
         Animated) $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
-            --  './tsm-rf.py!./tsm-rf-bc!./rk4-rf.py' '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
+            --  './tsm-rf.py!./tsm-rf-bc!./rk4-rf.py' '18!6..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '.2875' '.1') | ./plotAnimated.py -3 3 ;;
         Gnuplot) ./plot $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
-            --  './tsm-rf.py!./tsm-rf-bc!./rk4-rf.py' '6!0..36!3' '8!4..32!1' '0.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
+            --  './tsm-rf.py!./tsm-rf-bc!./rk4-rf.py' '18!6..36!3' '8!4..32!1' '0.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":CB \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
             --  'step2!nosim' '1.0' './tsm-rf.py!./tsm-rf-bc!./rk4-rf.py' \
-                '6!0..36!3' '8!1..32!1' '0.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
+                '18!6..36!3' '8!1..32!1' '0.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation" --field="Model":CB \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
             --  '16!2..64!1' '1.0' './tsm-rf.py!./tsm-rf-bc!./rk4-rf.py' \
-                '6!0..36!3' '_' '0.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
+                '18!6..36!3' '_' '0.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
     esac ;;
     Halvorsen) case $analysis in
@@ -177,26 +177,26 @@ case $model in
         Animated) $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  './tsm-halvorsen.py!./tsm-halvorsen-bc!./rk4-halvorsen.py' '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+            --  './tsm-halvorsen.py!./tsm-halvorsen-bc!./rk4-halvorsen.py' '18!6..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '1.4') | ./plotAnimated.py -15 10 ;;
         Gnuplot) ./plot $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  './tsm-halvorsen.py!./tsm-halvorsen-bc!./rk4-halvorsen.py' '6!0..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+            --  './tsm-halvorsen.py!./tsm-halvorsen-bc!./rk4-halvorsen.py' '18!6..36!3' '8!4..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '1.4') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":CB \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  'step2!nosim' '1.0' './tsm-halvorsen.py!./tsm-halvorsen-bc!./rk4-halvorsen.py' \
-                '6!0..36!3' '8!1..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                '18!6..36!3' '8!1..32!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '1.4') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation" --field="Model":CB \
             --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  '16!2..64!1' '1.0' './tsm-halvorsen.py!./tsm-halvorsen-bc' \
-                '6!0..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                '18!6..36!3' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '1.4') ;;
     esac ;;
 esac
