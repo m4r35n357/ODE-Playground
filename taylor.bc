@@ -5,9 +5,7 @@ define void t_print (x, y, z, t) {
 
 define horner (n, j[], h) {
     auto i, s
-    for (i = n; i > -1; i--) {
-        s = s * h + j[i]
-    }
+    for (i = n; i > -1; i--) s = s * h + j[i]
     return s
 }
  
@@ -18,17 +16,13 @@ define t_const (v, k) {
  
 define t_mul (u[], v[], k) {
     auto j, p
-    for (j = 0; j < k + 1; j++) {
-        p += u[j] * v[k - j]
-    }
+    for (j = 0; j < k + 1; j++) p += u[j] * v[k - j]
     return p
 }
  
 define chain (b[], a[], k) {
     auto j, x
-    for (j = 0; j < k; j++) {
-        x += b[j] * (k - j) * a[k - j]
-    }
+    for (j = 0; j < k; j++) x += b[j] * (k - j) * a[k - j]
     return x / k
 }
 
