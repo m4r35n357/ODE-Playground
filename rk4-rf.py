@@ -16,9 +16,9 @@ def ode(x, y, z, p):
     a = z + x**2 - 1.0
     b = 4.0 * z - a
     c = p.α + x * y
-    return Components(x=y * a + p.γ * x,
-                      y=x * b + p.γ * y,
-                      z=- 2.0 * z * c)
+    return Components(x = y * a + p.γ * x,
+                      y = x * b + p.γ * y,
+                      z = - 2.0 * z * c)
 
 
 print(f'RK4: {argv}', file=stderr)

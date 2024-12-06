@@ -6,16 +6,17 @@ from sys import argv, stderr
 from collections import namedtuple
 from ad import Components, Context, rk4
 
-class Parameters(namedtuple('ParametersType', ['a'])):
+
+class Parameters(namedtuple('ParametersType', ['a', 'b', 'c'])):
     pass
 
 def get_p():
-    return Parameters(a=float(argv[8]))
+    return Parameters(a=float(argv[8]), b=float(argv[9]), c=float(argv[10]))
 
 def ode(x, y, z, p):
-    return Components(x = - p.a * x - 4.0 * (y + z) - y**2,
-                      y = - p.a * y - 4.0 * (z + x) - z**2,
-                      z = - p.a * z - 4.0 * (x + y) - x**2)
+    return Components(x = - y - z,
+                      y = x + p.a * y,
+                      z = p.b + (x - p.c) * z)
 
 
 print(f'RK4: {argv}', file=stderr)

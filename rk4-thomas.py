@@ -14,9 +14,9 @@ def get_p():
     return Parameters(b=float(argv[8]))
 
 def ode(x, y, z, p):
-    return Components(x=sin(y) - p.b * x,
-                      y=sin(z) - p.b * y,
-                      z=sin(x) - p.b * z)
+    return Components(x = sin(y) - p.b * x,
+                      y = sin(z) - p.b * y,
+                      z = sin(x) - p.b * z)
 
 
 print(f'RK4: {argv}', file=stderr)
