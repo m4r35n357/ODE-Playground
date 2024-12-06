@@ -134,7 +134,7 @@ case $model in
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="b" \
             --  './tsm-thomas.py!./tsm-thomas-bc!./rk4-thomas.py' \
-            '18!6..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
+                '18!6..36!3' '8!4..32!1' '.1!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
                 '1.0' '0.0' '0.0' '0.185') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":CB \
@@ -177,8 +177,8 @@ case $model in
             --field="Model":CB \
             --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
-            --  './tsm-rf.py!./tsm-rf-bc!./rk4-rf.py' '18!6..36!3' \
-                '8!4..32!1' '0.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
+            --  './tsm-rf.py!./tsm-rf-bc!./rk4-rf.py' \
+	        '18!6..36!3' '8!4..32!1' '0.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation" --field="Model":CB \
