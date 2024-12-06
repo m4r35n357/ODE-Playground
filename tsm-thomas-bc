@@ -1,35 +1,29 @@
 #!/bin/sh
+# Thomas system
 
 . ./base.sh
 
-# Thomas system
 BC_LINE_LENGTH=0 /usr/bin/bc -l taylor.bc << EOF
-# solver variables
 scale=$1
 n=$2
 h=$3
 steps=$4
-
-# initial conditions
 x=$5
 y=$6
 z=$7
-
-# model parameters
 b=$8
-
 output(x, y, z, 0.0)
 for (step = 1; step < steps + 1; step++) {
     x[0] = x
     y[0] = y
     z[0] = z
     for (k = 0; k < n; k++) {
-        a[k] = sin(a[], b[], x[], k)
-        b[k] = cos(a[], b[], x[], k)
-        c[k] = sin(c[], d[], y[], k)
-        d[k] = cos(c[], d[], y[], k)
-        e[k] = sin(e[], f[], z[], k)
-        f[k] = cos(e[], f[], z[], k)
+        a[k] = sin(b[], x[], k)
+        b[k] = cos(a[], x[], k)
+        c[k] = sin(d[], y[], k)
+        d[k] = cos(c[], y[], k)
+        e[k] = sin(f[], z[], k)
+        f[k] = cos(e[], z[], k)
         x[k + 1] = (c[k] - b * x[k]) / (k + 1)
         y[k + 1] = (e[k] - b * y[k]) / (k + 1)
         z[k + 1] = (a[k] - b * z[k]) / (k + 1)
@@ -39,5 +33,4 @@ for (step = 1; step < steps + 1; step++) {
     z = horner(n, z[], h)
     output(x, y, z, h * step)
 }
-quit
 EOF

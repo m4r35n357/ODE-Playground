@@ -1,25 +1,19 @@
 #!/bin/sh
+# Rossler system
 
 . ./base.sh
 
-# Rossler system
 BC_LINE_LENGTH=0 /usr/bin/bc taylor.bc << EOF
-# solver variables
 scale=$1
 n=$2
 h=$3
 steps=$4
-
-# initial conditions
 x=$5
 y=$6
 z=$7
-
-# model parameters
 a=$8
 b=$9
 c=${10}
-
 output(x, y, z, 0.0)
 for (step = 1; step < steps + 1; step++) {
     x[0] = x
@@ -35,5 +29,4 @@ for (step = 1; step < steps + 1; step++) {
     z = horner(n, z[], h)
     output(x, y, z, h * step)
 }
-quit
 EOF
