@@ -26,31 +26,31 @@ perturb () {
     z0=$8
     shift 8
     end="$*"
-    echo 'oo' $start $x0 $y0 $z0 $end
+    echo 'oo' $start $x0 $y0 $z0 $end >&2
     $start $x0 $y0 $z0 $end >$fileG &
     y=$y0
     z=$z0
     x=$(echo "scale=$precision; $x0 + $delta;" | /usr/bin/bc)
-    echo 'x+' $start $x $y $z $end
+    echo 'x+' $start $x $y $z $end >&2
     $start $x $y $z $end >$fileA &
     x=$(echo "scale=$precision; $x0 - $delta;" | /usr/bin/bc)
-    echo 'x-' $start $x $y $z $end
+    echo 'x-' $start $x $y $z $end >&2
     $start $x $y $z $end >$fileB &
     x=$x0
     z=$z0
     y=$(echo "scale=$precision; $y0 + $delta;" | /usr/bin/bc)
-    echo 'y+' $start $x $y $z $end
+    echo 'y+' $start $x $y $z $end >&2
     $start $x $y $z $end >$fileC &
     y=$(echo "scale=$precision; $y0 - $delta;" | /usr/bin/bc)
-    echo 'y-' $start $x $y $z $end
+    echo 'y-' $start $x $y $z $end >&2
     $start $x $y $z $end >$fileD &
     x=$x0
     y=$y0
     z=$(echo "scale=$precision; $z0 + $delta;" | /usr/bin/bc)
-    echo 'z+' $start $x $y $z $end
+    echo 'z+' $start $x $y $z $end >&2
     $start $x $y $z $end >$fileE &
     z=$(echo "scale=$precision; $z0 - $delta;" | /usr/bin/bc)
-    echo 'z-' $start $x $y $z $end
+    echo 'z-' $start $x $y $z $end >&2
     $start $x $y $z $end >$fileF &
 }
 
