@@ -1,5 +1,5 @@
 
-define void t_print (x, y, z, t) {
+define void output (x, y, z, t) {
     print x, " ", y, " ", z, " ", t, " _ _ _ 0.0\n"
 }
 
@@ -9,12 +9,12 @@ define horner (n, j[], h) {
     return s
 }
  
-define t_const (v, k) {
+define const (v, k) {
     if (k == 0) return v
     return 0.0
 }
  
-define t_mul (u[], v[], k) {
+define mul (u[], v[], k) {
     auto j, p
     for (j = 0; j < k + 1; j++) p += u[j] * v[k - j]
     return p
@@ -26,12 +26,12 @@ define chain (b[], a[], k) {
     return x / k
 }
 
-define t_sin (s[], c[], u[], k) {
+define sin (s[], c[], u[], k) {
     if (k == 0) return s(u[k])
     return chain(c[], u[], k)
 }
 
-define t_cos (s[], c[], u[], k) {
+define cos (s[], c[], u[], k) {
     if (k == 0) return c(u[k])
     return - chain(s[], u[], k)
 }

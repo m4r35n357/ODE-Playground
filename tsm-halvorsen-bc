@@ -18,20 +18,20 @@ z=$7
 # model parameters
 a=$8
 
-t_print(x, y, z, 0.0)
+output(x, y, z, 0.0)
 for (step = 1; step < steps + 1; step++) {
     x[0] = x
     y[0] = y
     z[0] = z
     for (k = 0; k < n; k++) {
-        x[k + 1] = (- a * x[k] - 4.0 * (y[k] + z[k]) - t_mul(y[], y[], k)) / (k + 1)
-        y[k + 1] = (- a * y[k] - 4.0 * (z[k] + x[k]) - t_mul(z[], z[], k)) / (k + 1)
-        z[k + 1] = (- a * z[k] - 4.0 * (x[k] + y[k]) - t_mul(x[], x[], k)) / (k + 1)
+        x[k + 1] = (- a * x[k] - 4.0 * (y[k] + z[k]) - mul(y[], y[], k)) / (k + 1)
+        y[k + 1] = (- a * y[k] - 4.0 * (z[k] + x[k]) - mul(z[], z[], k)) / (k + 1)
+        z[k + 1] = (- a * z[k] - 4.0 * (x[k] + y[k]) - mul(x[], x[], k)) / (k + 1)
     }
     x = horner(n, x[], h)
     y = horner(n, y[], h)
     z = horner(n, z[], h)
-    t_print(x, y, z, h * step)
+    output(x, y, z, h * step)
 }
 quit
 EOF

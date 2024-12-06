@@ -19,23 +19,23 @@ z=$7
 alpha=$8
 gamma=$9
 
-t_print(x, y, z, 0.0)
+output(x, y, z, 0.0)
 for (step = 1; step < steps + 1; step++) {
     x[0] = x
     y[0] = y
     z[0] = z
     for (k = 0; k < n; k++) {
-        a[k] = z[k] + t_mul(x[], x[], k) - t_const(1.0, k)
+        a[k] = z[k] + mul(x[], x[], k) - const(1.0, k)
         b[k] = 4.0 * z[k] - a[k]
-        c[k] = t_const(alpha, k) + t_mul(x[], y[], k)
-        x[k + 1] = (t_mul(y[], a[], k) + gamma * x[k]) / (k + 1)
-        y[k + 1] = (t_mul(x[], b[], k) + gamma * y[k]) / (k + 1)
-        z[k + 1] = - 2.0 * t_mul(z[], c[], k) / (k + 1)
+        c[k] = const(alpha, k) + mul(x[], y[], k)
+        x[k + 1] = (mul(y[], a[], k) + gamma * x[k]) / (k + 1)
+        y[k + 1] = (mul(x[], b[], k) + gamma * y[k]) / (k + 1)
+        z[k + 1] = - 2.0 * mul(z[], c[], k) / (k + 1)
     }
     x = horner(n, x[], h)
     y = horner(n, y[], h)
     z = horner(n, z[], h)
-    t_print(x, y, z, h * step)
+    output(x, y, z, h * step)
 }
 quit
 EOF
