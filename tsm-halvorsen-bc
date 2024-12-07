@@ -7,17 +7,13 @@ BC_LINE_LENGTH=0 /usr/bin/bc taylor.bc << EOF
 scale=$1; n=$2; h=$3; steps=$4; x=$5; y=$6; z=$7; a=$8
 output(x, y, z, 0.0)
 for (step = 1; step < steps + 1; step++) {
-    x[0] = x
-    y[0] = y
-    z[0] = z
+    x[0] = x; y[0] = y; z[0] = z
     for (k = 0; k < n; k++) {
         x[k + 1] = (- a * x[k] - 4.0 * (y[k] + z[k]) - mul(y[], y[], k)) / (k + 1)
         y[k + 1] = (- a * y[k] - 4.0 * (z[k] + x[k]) - mul(z[], z[], k)) / (k + 1)
         z[k + 1] = (- a * z[k] - 4.0 * (x[k] + y[k]) - mul(x[], x[], k)) / (k + 1)
     }
-    x = horner(n, x[], h)
-    y = horner(n, y[], h)
-    z = horner(n, z[], h)
+    x = horner(n, x[], h); y = horner(n, y[], h); z = horner(n, z[], h)
     output(x, y, z, h * step)
 }
 EOF
