@@ -4,16 +4,7 @@
 . ./base.sh
 
 BC_LINE_LENGTH=0 /usr/bin/bc taylor.bc << EOF
-scale=$1
-n=$2
-h=$3
-steps=$4
-x=$5
-y=$6
-z=$7
-a=$8
-b=$9
-c=${10}
+scale=$1; n=$2; h=$3; steps=$4; x=$5; y=$6; z=$7; a=$8; b=$9, c=${10}
 output(x, y, z, 0.0)
 for (step = 1; step < steps + 1; step++) {
     x[0] = x
