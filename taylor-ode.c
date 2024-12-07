@@ -80,9 +80,9 @@ bool tsm_gen (controls *c, xyz *_, const model *p) {
 static void _out_ (int dp, real x, real y, real z, real t, char x_tag, char y_tag, char z_tag, clock_t since) {
     real cpu = (real)(clock() - since) / CLOCKS_PER_SEC;
     if (dp) {
-        printf("% .*Le % .*Le % .*Le %.6Le %c %c %c %.3Lf\n", dp, x, dp, y, dp, z, t, x_tag, y_tag, z_tag, cpu);
+        printf("%+.*Le %+.*Le %+.*Le %.6Le %c %c %c %.3Lf\n", dp, x, dp, y, dp, z, t, x_tag, y_tag, z_tag, cpu);
     } else {
-        printf("% La % La % La %.6Le %c %c %c %.3Lf\n", x, y, z, t, x_tag, y_tag, z_tag, cpu);
+        printf("%+La %+La %+La %.6Le %c %c %c %.3Lf\n", x, y, z, t, x_tag, y_tag, z_tag, cpu);
     }
 }
 
