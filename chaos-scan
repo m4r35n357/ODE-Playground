@@ -100,7 +100,7 @@ plot X '#0000c0' x '#808000' png >${user_dir}/X.png
 plot Y '#00c000' y '#800080' png >${user_dir}/Y.png
 plot Z '#c00000' z '#008080' png >${user_dir}/Z.png
 
-if [ $snapshots = "snaps" ]
+if [ $snapshots = "yes" ]
 then
     /usr/bin/ffmpeg -y -framerate 5 -pattern_type glob -i "$snaps/*.png" \
         -c:v libx264 -pix_fmt yuv420p $user_dir/chaos-scan.mp4

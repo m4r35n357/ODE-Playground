@@ -25,7 +25,7 @@ steps='^10000!20000!50000!100000!200000!500000!1000000'
 cns_range='16!2..32!1'
 cns_mode='^step2!nosim'
 cns_separation='0.1!^1.0!10.0'
-snapshots='^no-snaps!snaps'
+snapshots='^no!yes'
 
 case $model in
     Lorenz) case $analysis in
@@ -35,23 +35,23 @@ case $model in
             --  './tsm-lorenz-gl' $trail_length $order $step_size $steps \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
-            --  './tsm-lorenz-std' $places $order $step_size $steps \
+            --  '^./tsm-lorenz-std!./tsm-lorenz.py!./tsm-lorenz-bc!./rk4-lorenz.py' $places $order $step_size $steps \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
             --  $cns_mode $cns_separation \
-                './tsm-lorenz-std' $places $order $step_size $steps \
+                '^./tsm-lorenz-std!./tsm-lorenz.py!./tsm-lorenz-bc!./rk4-lorenz.py' $places $order $step_size $steps \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
             --  $cns_range $cns_separation \
-                './tsm-lorenz-std' $places '_' $step_size $steps \
+                '^./tsm-lorenz-std!./tsm-lorenz.py!./tsm-lorenz-bc!./rk4-lorenz.py' $places '_' $step_size $steps \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
@@ -68,23 +68,23 @@ case $model in
             --  './tsm-rossler-gl' $trail_length $order $step_size $steps \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
-            --  './tsm-rossler-std' $places $order $step_size $steps \
+            --  './tsm-rossler-std!./tsm-rossler.py!./tsm-rossler-bc!./rk4-rossler.py' $places $order $step_size $steps \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
             --  $cns_mode $cns_separation \
-                './tsm-rossler-std' $places $order $step_size $steps \
+                './tsm-rossler-std!./tsm-rossler.py!./tsm-rossler-bc!./rk4-rossler.py' $places $order $step_size $steps \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
             --  $cns_range $cns_separation \
-                './tsm-rossler-std' $places '_' $step_size $steps \
+                './tsm-rossler-std!./tsm-rossler.py!./tsm-rossler-bc!./rk4-rossler.py' $places '_' $step_size $steps \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
@@ -101,23 +101,24 @@ case $model in
             --  './tsm-thomas-gl' $trail_length $order $step_size $steps \
                 '1.0' '0.0' '0.0' '0.185') ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="b" \
-            --  './tsm-thomas-std' $places $order $step_size $steps \
+            --  './tsm-thomas-std!./tsm-thomas.py!./tsm-thomas-bc!./rk4-thomas.py' $places $order $step_size $steps \
                 '1.0' '0.0' '0.0' '0.185') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="b" \
             --  $cns_mode $cns_separation \
+                './tsm-thomas-std!./tsm-thomas.py!./tsm-thomas-bc!./rk4-thomas.py' $places $order $step_size $steps \
                 './tsm-thomas-std' $places $order $step_size $steps \
                 '1.0' '0.0' '0.0' '0.185') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="b" \
             --  $cns_range $cns_separation \
-                './tsm-thomas-std' $places '_' $step_size $steps \
+                './tsm-thomas-std!./tsm-thomas.py!./tsm-thomas-bc!./rk4-thomas.py' $places '_' $step_size $steps \
                 '1.0' '0.0' '0.0' '0.185') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
@@ -134,23 +135,24 @@ case $model in
             --  './tsm-rf-gl' $trail_length $order $step_size $steps \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
-            --  './tsm-rf-std' $places $order $step_size $steps \
+            --  './tsm-rf-std!./tsm-rf.py!./tsm-rf-bc!./rk4-rf.py' $places $order $step_size $steps \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
             --  $cns_mode $cns_separation \
+                './tsm-rf-std!./tsm-rf.py!./tsm-rf-bc!./rk4-rf.py' $places $order $step_size $steps \
                 './tsm-rf-std' $places $order $step_size $steps \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
             --  $cns_range $cns_separation \
-                './tsm-rf-std' $places '_' $step_size $steps \
+                './tsm-rf-std!./tsm-rf.py!./tsm-rf-bc!./rk4-rf.py' $places '_' $step_size $steps \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
@@ -167,23 +169,23 @@ case $model in
             --  './tsm-halvorsen-gl' $trail_length $order $step_size $steps \
                 '1.0' '0.0' '0.0' '1.4') ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  './tsm-halvorsen-std' $places $order $step_size $steps \
+            --  './tsm-halvorsen-std!./tsm-halvorsen.py!./tsm-halvorsen-bc!./rk4-halvorsen.py' $places $order $step_size $steps \
                 '1.0' '0.0' '0.0' '1.4') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  $cns_mode $cns_separation \
-                './tsm-halvorsen-std' $places $order $step_size $steps \
+                './tsm-halvorsen-std!./tsm-halvorsen.py!./tsm-halvorsen-bc!./rk4-halvorsen.py' $places $order $step_size $steps \
                 '1.0' '0.0' '0.0' '1.4') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  $cns_range $cns_separation \
-                './tsm-halvorsen-std' $places '_' $step_size $steps \
+                './tsm-halvorsen-std!./tsm-halvorsen.py!./tsm-halvorsen-bc!./rk4-halvorsen.py' $places '_' $step_size $steps \
                 '1.0' '0.0' '0.0' '1.4') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
