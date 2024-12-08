@@ -23,6 +23,7 @@ order='4!2..32!2'
 step_size='.01!0.001..0.1!0.001!3'
 steps='^10000!20000!50000!100000!200000!500000!1000000'
 cns_range='16!2..32!1'
+cns_mode='^step2!nosim'
 cns_separation='0.1!^1.0!10.0'
 
 case $model in
@@ -41,7 +42,7 @@ case $model in
             --field="Mode":CB --field="Separation":CB \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
-            --  'step2!nosim' $cns_separation \
+            --  $cns_mode $cns_separation \
                 './tsm-lorenz-std' $places $order $step_size $steps \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
@@ -74,7 +75,7 @@ case $model in
             --field="Mode":CB --field="Separation":CB \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
-            --  'step2!nosim' $cns_separation \
+            --  $cns_mode $cns_separation \
                 './tsm-rossler-std' $places $order $step_size $steps \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
@@ -107,7 +108,7 @@ case $model in
             --field="Mode":CB --field="Separation":CB \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="b" \
-            --  'step2!nosim' $cns_separation \
+            --  $cns_mode $cns_separation \
                 './tsm-thomas-std' $places $order $step_size $steps \
                 '1.0' '0.0' '0.0' '0.185') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
@@ -140,7 +141,7 @@ case $model in
             --field="Mode":CB --field="Separation":CB \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
-            --  'step2!nosim' $cns_separation \
+            --  $cns_mode $cns_separation \
                 './tsm-rf-std' $places $order $step_size $steps \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
@@ -173,7 +174,7 @@ case $model in
             --field="Mode":CB --field="Separation":CB \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  'step2!nosim' $cns_separation \
+            --  $cns_mode $cns_separation \
                 './tsm-halvorsen-std' $places $order $step_size $steps \
                 '1.0' '0.0' '0.0' '1.4') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
@@ -206,7 +207,7 @@ case $model in
             --field="Mode":CB --field="Separation":CB \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  'step2!nosim' $cns_separation \
+            --  $cns_mode $cns_separation \
                 './tsm-wimol-banlue-std' $places $order $step_size $steps \
                 '1.0' '0.1' '0.1' '1.0') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
@@ -239,7 +240,7 @@ case $model in
             --field="Mode":CB --field="Separation":CB \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
-            --  'step2!nosim' $cns_separation \
+            --  $cns_mode $cns_separation \
                 './tsm-yu-wang-std' $places $order $step_size $steps \
                 '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '2.5') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Yu-Wang" --form --separator=" " --align=right \
@@ -272,7 +273,7 @@ case $model in
             --field="Mode":CB --field="Separation":CB \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
-            --  'step2!nosim' $cns_separation \
+            --  $cns_mode $cns_separation \
                 './tsm-bouali-std' $places $order $step_size $steps \
                 '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Bouali" --form --separator=" " --align=right \
@@ -305,7 +306,7 @@ case $model in
             --field="Mode":CB --field="Separation":CB \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
-            --  'step2!nosim' $cns_separation \
+            --  $cns_mode $cns_separation \
                 './tsm-burke-shaw-std' $places $order $step_size $steps \
                 '1.0' '1.0' '1.0' '10.0' '4.272') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
@@ -338,7 +339,7 @@ case $model in
             --field="Mode":CB --field="Separation":CB \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="kappa" \
-            --  'step2!nosim' $cns_separation \
+            --  $cns_mode $cns_separation \
                 './tsm-rucklidge-std' $places $order $step_size $steps \
                 '1.0' '1.0' '1.0' '6.7' '2.0') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Rucklidge" --form --separator=" " --align=right \
@@ -371,7 +372,7 @@ case $model in
             --field="Mode":CB --field="Separation":CB \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
-            --  'step2!nosim' $cns_separation \
+            --  $cns_mode $cns_separation \
                 './tsm-genesio-tesi-std' $places $order $step_size $steps \
                 '0.1' '0.1' '0.1' '0.446' '1.1') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Genesio-Tesi" --form --separator=" " --align=right \
@@ -404,7 +405,7 @@ case $model in
             --field="Mode":CB --field="Separation":CB \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
-            --  'step2!nosim' $cns_separation \
+            --  $cns_mode $cns_separation \
                 './tsm-isuc-std' $places $order $step_size $steps \
                 '0.05' '-0.05' '0.3' '0.1' '0.1' '4.2') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="ISUC" --form --separator=" " --align=right \
