@@ -25,6 +25,7 @@ steps='^10000!20000!50000!100000!200000!500000!1000000'
 cns_range='16!2..32!1'
 cns_mode='^step2!nosim'
 cns_separation='0.1!^1.0!10.0'
+snapshots='^no-snaps!snaps'
 
 case $model in
     Lorenz) case $analysis in
@@ -56,7 +57,7 @@ case $model in
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho":RO --field="beta(n)" --field="beta(d)" \
-            --  '0.0' '50.0' $steps 'no-snaps!snaps' \
+            --  '0.0' '50.0' $steps $snapshots \
                 './tsm-lorenz-std' $places $order $step_size $steps \
                 '-15.8' '-18.48' '35.64' '10' '$p' '8' '3') ;;
     esac ;;
@@ -89,7 +90,7 @@ case $model in
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
 	        --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c":RO \
-            --  '0.0' '50.0' $steps 'no-snaps!snaps' \
+            --  '0.0' '50.0' $steps $snapshots \
                 './tsm-rossler-std' $places $order $step_size $steps \
                 '0.0' '-6.78' '0.02' '.2' '.2' '$p') ;;
     esac ;;
@@ -122,7 +123,7 @@ case $model in
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
 	        --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="b":RO \
-            --  '0.1' '0.23' $steps 'no-snaps!snaps' \
+            --  '0.1' '0.23' $steps $snapshots \
                 './tsm-thomas-std' $places $order $step_size $steps \
                 '1.0' '0.0' '0.0' '$p') ;;
     esac ;;
@@ -155,7 +156,7 @@ case $model in
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
 	        --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="alpha":RO --field="gamma" \
-            --  '0.1' '0.35' $steps 'no-snaps!snaps' \
+            --  '0.1' '0.35' $steps $snapshots \
                 './tsm-rf-std' $places $order $step_size $steps \
                 '0.05' '-0.05' '0.3' '$p' '.1') ;;
     esac ;;
@@ -188,7 +189,7 @@ case $model in
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
 	        --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a":RO \
-            --  '1' '4' $steps 'no-snaps!snaps' \
+            --  '1' '4' $steps $snapshots \
                 './tsm-halvorsen-std' $places $order $step_size $steps \
                 '1.0' '0.0' '0.0' '$p') ;;
     esac ;;
@@ -221,7 +222,7 @@ case $model in
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
 	        --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a":RO \
-            --  '0.0' '1.0' $steps 'no-snaps!snaps' \
+            --  '0.0' '1.0' $steps $snapshots \
                 './tsm-wimol-banlue-std' $places $order $step_size $steps \
                 '1.0' '0.1' '0.1' '$p') ;;
     esac ;;
@@ -254,7 +255,7 @@ case $model in
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
 	        --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d":RO \
-            --  '0.0' '15.0' $steps 'no-snaps!snaps' \
+            --  '0.0' '15.0' $steps $snapshots \
                 './tsm-yu-wang-std' $places $order $step_size $steps \
                 '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '$p') ;;
     esac ;;
@@ -287,7 +288,7 @@ case $model in
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
 	        --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d":RO \
-            --  '0.0' '1.0' $steps 'no-snaps!snaps' \
+            --  '0.0' '1.0' $steps $snapshots \
                 './tsm-bouali-std' $places $order $step_size $steps \
                 '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '$p') ;;
     esac ;;
@@ -320,7 +321,7 @@ case $model in
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
 	        --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="S" --field="V":RO \
-            --  '0.0' '100.0' $steps 'no-snaps!snaps' \
+            --  '0.0' '100.0' $steps $snapshots \
                 './tsm-burke-shaw-std' $places $order $step_size $steps \
                 '1.0' '1.0' '1.0' '10.0' '$p') ;;
     esac ;;
@@ -353,7 +354,7 @@ case $model in
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
 	        --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="alpha":RO --field="kappa" \
-            --  '0.0' '45.0' $steps 'no-snaps!snaps' \
+            --  '0.0' '45.0' $steps $snapshots \
                 './tsm-rucklidge-std' $places $order $step_size $steps \
                 '1.0' '1.0' '1.0' '$p' '2.0') ;;
     esac ;;
@@ -386,7 +387,7 @@ case $model in
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
 	        --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a":RO --field="b" \
-            --  '0.41' '0.51' $steps 'no-snaps!snaps' \
+            --  '0.41' '0.51' $steps $snapshots \
                 './tsm-genesio-tesi-std' $places $order $step_size $steps \
                 '0.1' '0.1' '0.1' '$p' '1.1') ;;
     esac ;;
@@ -419,7 +420,7 @@ case $model in
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
 	    --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c":RO \
-            --  '0.0' '50.0' $steps 'no-snaps!snaps' \
+            --  '0.0' '50.0' $steps $snapshots \
                 './tsm-isuc-std' $places $order $step_size $steps \
                 '0.05' '-0.05' '0.3' '0.1' '0.1' '$p') ;;
     esac ;;
