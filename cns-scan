@@ -59,6 +59,11 @@ done 2>/dev/null | tee $user_data
 max_clean=$(echo "scale=2; $timestep * $steps;" | /usr/bin/bc)
 
 set $(tail -1 $user_data)
-max_cpu=$(echo "scale=2; 1.5 * $3;" | /usr/bin/bc)
+if [ $(printf "scale=3; $3 > 0.0;\n" | /usr/bin/bc) -eq 1 ]
+then
+    max_cpu=$(echo "scale=2; 1.5 * $3;" | /usr/bin/bc)
+else
+    max_cpu=1.0
+fi
 
 scan_plot &
