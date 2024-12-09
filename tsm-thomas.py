@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
-
+import print_args
 from sys import argv, stderr
 from collections import namedtuple
 from ad import Components, Context, tsm, tsm_jet, t_sin_cos
@@ -20,7 +20,5 @@ def ode(x, y, z, p, k):
                       y=p.sz[k] - p.b * y[k],
                       z=p.sx[k] - p.b * z[k])
 
-
-print(f'TSM: {argv}', file=stderr)
 Context.places, order, h, steps = int(argv[1]), int(argv[2]), float(argv[3]), int(argv[4])  # controls
 tsm(ode, Context.places, order, h, steps, float(argv[5]), float(argv[6]), float(argv[7]), get_p(order))

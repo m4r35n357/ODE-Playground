@@ -13,7 +13,7 @@ WHT='\e[1;37m'
 NRM='\e[0m'
 
 args="$0 $*"
-echo "${GRY}args ${NRM}$(($# + 1))${GRY} [ ${MGT}${args}${GRY} ]${NRM}" >&2
+echo "${GRY}args ${NRM}$(($# + 1))${GRY}, argv [ ${MGT}${args}${GRY} ]${NRM}" >&2
 
 user_dir="/tmp/$USER"
 [ -d $user_dir ] || mkdir $user_dir
