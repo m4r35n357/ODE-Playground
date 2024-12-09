@@ -7,7 +7,7 @@
 choice=$(yad --columns=2 --title="ODE Playground" --form --separator=" " --align=right \
     --field="Model:CB" --field="Analysis type:CB" \
     -- 'Bouali!BurkeShaw!GenesioTesi!Halvorsen!ISUC!^Lorenz!RF!Rossler!Rucklidge!Thomas!WimolBanlue!YuWang' \
-       'GLplot!^Gnuplot!CNS!CNSScan!ChaosScan')
+       'GLplot!Animated!^Gnuplot!CNS!CNSScan!ChaosScan')
 
 case $? in
     1) exit;;
@@ -34,6 +34,11 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
             --  './tsm-lorenz-gl' $trail_length $order $step_size $steps \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
+        Animated) $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
+            --  '^./tsm-lorenz-std!./tsm-lorenz.py!./tsm-lorenz-bc!./rk4-lorenz.py' $places $order $step_size $steps \
+                '-15.8' '-18.48' '35.64' '10' '28' '8' '3') | ./plotAnimated.py -30 50 ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
@@ -67,6 +72,11 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
             --  './tsm-rossler-gl' $trail_length $order $step_size $steps \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
+        Animated) $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
+            --  './tsm-rossler-std!./tsm-rossler.py!./tsm-rossler-bc!./rk4-rossler.py' $places $order $step_size $steps \
+                '0.0' '-6.78' '0.02' '.2' '.2' '5.7') | ./plotAnimated.py -30 50 ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
@@ -100,6 +110,11 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="b" \
             --  './tsm-thomas-gl' $trail_length $order $step_size $steps \
                 '1.0' '0.0' '0.0' '0.185') ;;
+        Animated) $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="x0" --field="y0" --field="z0" --field="b" \
+            --  './tsm-thomas-std!./tsm-thomas.py!./tsm-thomas-bc!./rk4-thomas.py' $places $order $step_size $steps \
+                '1.0' '0.0' '0.0' '0.185') | ./plotAnimated.py -5 5 ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="b" \
@@ -134,6 +149,11 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
             --  './tsm-rf-gl' $trail_length $order $step_size $steps \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
+        Animated) $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
+            --  './tsm-rf-std!./tsm-rf.py!./tsm-rf-bc!./rk4-rf.py' $places $order $step_size $steps \
+                '0.05' '-0.05' '0.3' '.2875' '.1') | ./plotAnimated.py -3 3 ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
@@ -168,6 +188,11 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  './tsm-halvorsen-gl' $trail_length $order $step_size $steps \
                 '1.0' '0.0' '0.0' '1.4') ;;
+        Animated) $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="x0" --field="y0" --field="z0" --field="a" \
+            --  './tsm-halvorsen-std!./tsm-halvorsen.py!./tsm-halvorsen-bc!./rk4-halvorsen.py' $places $order $step_size $steps \
+                '1.0' '0.0' '0.0' '1.4') | ./plotAnimated.py -15 10 ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
