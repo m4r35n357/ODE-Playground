@@ -226,6 +226,11 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  './tsm-wimol-banlue-gl' $trail_length $order $step_size $steps \
                 '1.0' '0.1' '0.1' '1.0') ;;
+        Animated) $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
+            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="x0" --field="y0" --field="z0" --field="a" \
+            --  './tsm-wimol-banlue-std' $places $order $step_size $steps \
+                '1.0' '0.1' '0.1' '1.0') | ./plotAnimated.py -5 5 ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
@@ -259,6 +264,11 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
             --  './tsm-yu-wang-gl' $trail_length $order $step_size $steps \
                 '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '2.5') ;;
+        Animated) $(yad --columns=2 --title="Yu-Wang" --form --separator=" " --align=right \
+            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
+            --  './tsm-yu-wang-std' $places $order $step_size $steps \
+                '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '2.5') | ./plotAnimated.py -10 50 ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Yu-Wang" --form --separator=" " --align=right \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
@@ -292,6 +302,11 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
             --  './tsm-bouali-gl' $trail_length $order $step_size $steps \
                 '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
+        Animated) $(yad --columns=2 --title="Bouali" --form --separator=" " --align=right \
+            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
+            --  './tsm-bouali-std' $places $order $step_size $steps \
+                '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') | ./plotAnimated.py -5 5 ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Bouali" --form --separator=" " --align=right \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
@@ -325,6 +340,11 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="S" --field="V" \
             --  './tsm-burke-shaw-gl' $trail_length $order $step_size $steps \
                 '1.0' '1.0' '1.0' '10.0' '4.272') ;;
+        Animated) $(yad --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
+            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="x0" --field="y0" --field="z0" --field="S" --field="V" \
+            --  './tsm-burke-shaw-std' $places $order $step_size $steps \
+                '1.0' '1.0' '1.0' '10.0' '4.272') | ./plotAnimated.py -3 3 ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="S" --field="V" \
@@ -358,6 +378,11 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="kappa" \
             --  './tsm-rucklidge-gl' $trail_length $order $step_size $steps \
                 '1.0' '1.0' '1.0' '6.7' '2.0') ;;
+        Animated) $(yad --columns=2 --title="Rucklidge" --form --separator=" " --align=right \
+            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="x0" --field="y0" --field="z0" --field="alpha" --field="kappa" \
+            --  './tsm-rucklidge-std' $places $order $step_size $steps \
+                '1.0' '1.0' '1.0' '6.7' '2.0') | ./plotAnimated.py -15 20 ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Rucklidge" --form --separator=" " --align=right \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="kappa" \
@@ -391,6 +416,11 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
             --  './tsm-genesio-tesi-gl' $trail_length $order $step_size $steps \
                 '0.1' '0.1' '0.1' '0.446' '1.1') ;;
+        Animated) $(yad --columns=2 --title="Genesio-Tesi" --form --separator=" " --align=right \
+            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
+            --  './tsm-genesio-tesi-std' $places $order $step_size $steps \
+                '0.1' '0.1' '0.1' '0.446' '1.1') | ./plotAnimated.py -1.5 1 ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Genesio-Tesi" --form --separator=" " --align=right \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
@@ -424,6 +454,11 @@ case $model in
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
             --  './tsm-isuc-gl' $trail_length $order $step_size $steps \
                 '0.05' '-0.05' '0.3' '0.1' '0.1' '4.2' ) ;;
+        Animated) $(yad --columns=2 --title="ISUC" --form --separator=" " --align=right \
+            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
+            --  './tsm-isuc-std' $places $order $step_size $steps \
+                '0.05' '-0.05' '0.3' '0.1' '0.1' '4.2') | ./plotAnimated.py -5 10 ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="ISUC" --form --separator=" " --align=right \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
