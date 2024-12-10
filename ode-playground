@@ -227,26 +227,26 @@ case $model in
         Animated) $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
             --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  './tsm-wimol-banlue-std' $places $order $step_size $steps \
+            --  './tsm-wimol-banlue-std!./tsm-wimol-banlue-bc' $places $order $step_size $steps \
                 '1.0' '0.1' '0.1' '1.0') | ./plotAnimated.py -5 5 ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  './tsm-wimol-banlue-std' $places $order $step_size $steps \
+            --  './tsm-wimol-banlue-std!./tsm-wimol-banlue-bc' $places $order $step_size $steps \
                 '1.0' '0.1' '0.1' '1.0') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  $cns_mode $cns_separation \
-                './tsm-wimol-banlue-std' $places $order $step_size $steps \
+                './tsm-wimol-banlue-std!./tsm-wimol-banlue-bc' $places $order $step_size $steps \
                 '1.0' '0.1' '0.1' '1.0') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  $cns_range $cns_separation \
-                './tsm-wimol-banlue-std' $places '_' $step_size $steps \
+                './tsm-wimol-banlue-std!./tsm-wimol-banlue-bc' $places '_' $step_size $steps \
                 '1.0' '0.1' '0.1' '1.0') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
