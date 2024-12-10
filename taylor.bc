@@ -46,15 +46,15 @@ define cos (sin[], u[], k) {
 }
  
 define tanh (sech2[], u[], k) {
-    auto j, t
+    auto j, th
     if (k == 0) return (e(u[0]) - e(-u[0])) / (e(u[0]) + e(-u[0]))
-    for (j = 0; j < k; j++) t += sech2[j] * (k - j) * u[k - j]
-    return t / k
+    for (j = 0; j < k; j++) th += sech2[j] * (k - j) * u[k - j]
+    return th / k
 }
 
 define sech2 (tanh[], u[], k) {
-    auto j, s2
+    auto j, sh2
     if (k == 0) return 1.0 - (tanh[0] * tanh[0])
-    for (j = 0; j < k; j++) s2 += tanh[j] * (k - j) * tanh[k - j]
-    return - 2.0 * s2 / k
+    for (j = 0; j < k; j++) sh2 += tanh[j] * (k - j) * tanh[k - j]
+    return - 2.0 * sh2 / k
 }
