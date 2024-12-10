@@ -9,9 +9,9 @@ output(x, y, z, 0.0)
 for (step = 1; step < steps + 1; step++) {
     x[0] = x; y[0] = y; z[0] = z
     for (k = 0; k < n; k++) {
-        tx[k] = tan(s2x[], x[], k); s2x[k] = sec2(tx[], x[], k)
+        thx[k] = tanh(sh2x[], x[], k); sh2x[k] = sech2(thx[], x[], k)
         x[k + 1] = (y[k] - x[k]) / (k + 1)
-        y[k + 1] = - mul(z[], tx[], k) / (k + 1)
+        y[k + 1] = - mul(z[], thx[], k) / (k + 1)
         z[k + 1] = (- const(a, k) + mul(x[], y[], k) + abs(y[], k)) / (k + 1)
     }
     x = horner(n, x[], h); y = horner(n, y[], h); z = horner(n, z[], h)
