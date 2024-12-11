@@ -31,180 +31,180 @@ case $model in
         GLplot) $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Model":CB --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
-            --  './tsm-lorenz.py!./tsm-lorenz-bc!./rk4-lorenz.py' $trail_length $order $step_size $steps \
+            --  './tsm-lorenz.py!./rk4-lorenz.py' $trail_length $order $step_size $steps \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') | ./plot3d.py ;;
         IC) ./ic .001 32 $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Model":CB --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
-            --  './tsm-lorenz.py!./tsm-lorenz-bc!./rk4-lorenz.py' $trail_length $order $step_size $steps \
+            --  './tsm-lorenz.py!./rk4-lorenz.py' $trail_length $order $step_size $steps \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') | ./plot3d.py ;;
         Animated) $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
-            --  './tsm-lorenz.py!./tsm-lorenz-bc!./rk4-lorenz.py' $places_scale $order $step_size $steps \
+            --  './tsm-lorenz.py!./rk4-lorenz.py' $places_scale $order $step_size $steps \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') | ./plotAnimated.py -30 50 ;;
         Gnuplot) ./plot $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
-            --  './tsm-lorenz.py!./tsm-lorenz-bc!./rk4-lorenz.py' $places_scale $order $step_size $steps \
+            --  './tsm-lorenz.py!./rk4-lorenz.py' $places_scale $order $step_size $steps \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation":CB \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
             --  'step2!nosim' $cns_separation \
-                './tsm-lorenz.py!./tsm-lorenz-bc!./rk4-lorenz.py' $places_scale $order $step_size $steps \
+                './tsm-lorenz.py!./rk4-lorenz.py' $places_scale $order $step_size $steps \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Lorenz" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation":CB \
-            --field="Model":CB --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":RO --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="sigma" --field="rho" --field="beta(n)" --field="beta(d)" \
             --  $cns_range $cns_separation \
-                './tsm-lorenz.py!./tsm-lorenz-bc' $places_scale '_' $step_size $steps \
+                './tsm-lorenz.py' $places_scale '_' $step_size $steps \
                 '-15.8' '-18.48' '35.64' '10' '28' '8' '3') ;;
     esac ;;
     Rossler) case $analysis in
         GLplot) $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
             --field="Model":CB --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
-            --  './tsm-rossler.py!./tsm-rossler-bc!./rk4-rossler.py' $trail_length $order $step_size $steps \
+            --  './tsm-rossler.py!./rk4-rossler.py' $trail_length $order $step_size $steps \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') | ./plot3d.py ;;
         IC) ./ic .001 32 $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
             --field="Model":CB --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
-            --  './tsm-rossler.py!./tsm-rossler-bc!./rk4-rossler.py' $trail_length $order $step_size $steps \
+            --  './tsm-rossler.py!./rk4-rossler.py' $trail_length $order $step_size $steps \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') | ./plot3d.py ;;
         Animated) $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
-            --  './tsm-rossler.py!./tsm-rossler-bc!./rk4-rossler.py' $places_scale $order $step_size $steps \
+            --  './tsm-rossler.py!./rk4-rossler.py' $places_scale $order $step_size $steps \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') | ./plotAnimated.py -30 50 ;;
         Gnuplot) ./plot $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
-            --  './tsm-rossler.py!./tsm-rossler-bc!./rk4-rossler.py' $places_scale $order $step_size $steps \
+            --  './tsm-rossler.py!./rk4-rossler.py' $places_scale $order $step_size $steps \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation":CB \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
             --  'step2!nosim' $cns_separation \
-                './tsm-rossler.py!./tsm-rossler-bc!./rk4-rossler.py' $places_scale $order $step_size $steps \
+                './tsm-rossler.py!./rk4-rossler.py' $places_scale $order $step_size $steps \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Rossler" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation":CB \
-            --field="Model":CB --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":RO --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
             --  $cns_range $cns_separation \
-                './tsm-rossler.py!./tsm-rossler-bc' $places_scale '_' $step_size $steps \
+                './tsm-rossler.py' $places_scale '_' $step_size $steps \
                 '0.0' '-6.78' '0.02' '.2' '.2' '5.7') ;;
     esac ;;
     Thomas) case $analysis in
         GLplot) $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Model":CB --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="b" \
-            --  './tsm-thomas.py!./tsm-thomas-bc!./rk4-thomas.py' $places_scale $order $step_size $steps \
+            --  './tsm-thomas.py!./rk4-thomas.py' $places_scale $order $step_size $steps \
                 '1.0' '0.0' '0.0' '0.185') | ./plot3d.py ;;
         IC) ./ic .001 32 $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Model":CB --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="b" \
-            --  './tsm-thomas.py!./tsm-thomas-bc!./rk4-thomas.py' $places_scale $order $step_size $steps \
+            --  './tsm-thomas.py!./rk4-thomas.py' $places_scale $order $step_size $steps \
                 '1.0' '0.0' '0.0' '0.185') | ./plot3d.py ;;
         Animated) $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="b" \
-            --  './tsm-thomas.py!./tsm-thomas-bc!./rk4-thomas.py' $places_scale $order $step_size $steps \
+            --  './tsm-thomas.py!./rk4-thomas.py' $places_scale $order $step_size $steps \
                 '1.0' '0.0' '0.0' '0.185') | ./plotAnimated.py -5 5 ;;
         Gnuplot) ./plot $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="b" \
-            --  './tsm-thomas.py!./tsm-thomas-bc!./rk4-thomas.py' $places_scale $order $step_size $steps \
+            --  './tsm-thomas.py!./rk4-thomas.py' $places_scale $order $step_size $steps \
                 '1.0' '0.0' '0.0' '0.185') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation":CB \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="b" \
             --  'step2!nosim' $cns_separation \
-                './tsm-thomas.py!./tsm-thomas-bc!./rk4-thomas.py' $places_scale $order $step_size $steps \
+                './tsm-thomas.py!./rk4-thomas.py' $places_scale $order $step_size $steps \
                 '1.0' '0.0' '0.0' '0.185') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation":CB \
-            --field="Model":CB --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":RO --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="b" \
             --  $cns_range $cns_separation \
-                './tsm-thomas.py!./tsm-thomas-bc' $places_scale '_' $step_size $steps \
+                './tsm-thomas.py' $places_scale '_' $step_size $steps \
                 '1.0' '0.0' '0.0' '0.185') ;;
     esac ;;
     RF) case $analysis in
         GLplot) $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Model":CB --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
-            --  './tsm-rf.py!./tsm-rf-bc!./rk4-rf.py' $trail_length $order $step_size $steps \
+            --  './tsm-rf.py!./rk4-rf.py' $trail_length $order $step_size $steps \
                 '0.05' '-0.05' '0.3' '.2875' '.1') | ./plot3d.py ;;
         IC) ./ic .001 32 $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Model":CB --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
-            --  './tsm-rf.py!./tsm-rf-bc!./rk4-rf.py' $trail_length $order $step_size $steps \
+            --  './tsm-rf.py!./rk4-rf.py' $trail_length $order $step_size $steps \
                 '0.05' '-0.05' '0.3' '.2875' '.1') | ./plot3d.py ;;
         Animated) $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
-            --  './tsm-rf.py!./tsm-rf-bc!./rk4-rf.py' $places_scale $order $step_size $steps \
+            --  './tsm-rf.py!./rk4-rf.py' $places_scale $order $step_size $steps \
                 '0.05' '-0.05' '0.3' '.2875' '.1') | ./plotAnimated.py -3 3 ;;
         Gnuplot) ./plot $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
-            --  './tsm-rf.py!./tsm-rf-bc!./rk4-rf.py' $places_scale $order $step_size $steps \
+            --  './tsm-rf.py!./rk4-rf.py' $places_scale $order $step_size $steps \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation":CB \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
             --  'step2!nosim' $cns_separation \
-                './tsm-rf.py!./tsm-rf-bc!./rk4-rf.py' $places_scale $order $step_size $steps \
+                './tsm-rf.py!./rk4-rf.py' $places_scale $order $step_size $steps \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Rabinovich–Fabrikant" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation":CB \
-            --field="Model":CB --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":RO --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="gamma" \
             --  $cns_range $cns_separation \
-                './tsm-rf.py!./tsm-rf-bc' $places_scale '_' $step_size $steps \
+                './tsm-rf.py' $places_scale '_' $step_size $steps \
                 '0.05' '-0.05' '0.3' '.2875' '.1') ;;
     esac ;;
     Halvorsen) case $analysis in
         GLplot) $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Model":CB --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  './tsm-halvorsen.py!./tsm-halvorsen-bc!./rk4-halvorsen.py' $trail_length $order $step_size $steps \
+            --  './tsm-halvorsen.py!./rk4-halvorsen.py' $trail_length $order $step_size $steps \
                 '1.0' '0.0' '0.0' '1.4') | ./plot3d.py ;;
         IC) ./ic .001 32 $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Model":CB --field="Trail Length":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  './tsm-halvorsen.py!./tsm-halvorsen-bc!./rk4-halvorsen.py' $trail_length $order $step_size $steps \
+            --  './tsm-halvorsen.py!./rk4-halvorsen.py' $trail_length $order $step_size $steps \
                 '1.0' '0.0' '0.0' '1.4') | ./plot3d.py ;;
         Animated) $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  './tsm-halvorsen.py!./tsm-halvorsen-bc!./rk4-halvorsen.py' $places_scale $order $step_size $steps \
+            --  './tsm-halvorsen.py!./rk4-halvorsen.py' $places_scale $order $step_size $steps \
                 '1.0' '0.0' '0.0' '1.4') | ./plotAnimated.py -15 10 ;;
         Gnuplot) ./plot $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  './tsm-halvorsen.py!./tsm-halvorsen-bc!./rk4-halvorsen.py' $places_scale $order $step_size $steps \
+            --  './tsm-halvorsen.py!./rk4-halvorsen.py' $places_scale $order $step_size $steps \
                 '1.0' '0.0' '0.0' '1.4') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation":CB \
             --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  'step2!nosim' $cns_separation \
-                './tsm-halvorsen.py!./tsm-halvorsen-bc!./rk4-halvorsen.py' $places_scale $order $step_size $steps \
+                './tsm-halvorsen.py!./rk4-halvorsen.py' $places_scale $order $step_size $steps \
                 '1.0' '0.0' '0.0' '1.4') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation":CB \
-            --field="Model":CB --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":RO --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
             --  $cns_range $cns_separation \
-                './tsm-halvorsen.py!./tsm-halvorsen-bc' $places_scale '_' $step_size $steps \
+                './tsm-halvorsen.py' $places_scale '_' $step_size $steps \
                 '1.0' '0.0' '0.0' '1.4') ;;
     esac ;;
 esac
