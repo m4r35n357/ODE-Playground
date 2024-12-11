@@ -453,28 +453,28 @@ case $model in
             --  './tsm-isuc-gl' $trail_length $order $step_size $steps \
                 '0.05' '-0.05' '0.3' '0.1' '0.1' '4.2' ) ;;
         Animated) $(yad --columns=2 --title="ISUC" --form --separator=" " --align=right \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
-            --  './tsm-isuc-std' $places $order $step_size $steps \
+            --  '^./tsm-isuc-std!./tsm-isuc-bc' $places $order $step_size $steps \
                 '0.05' '-0.05' '0.3' '0.1' '0.1' '4.2') | ./plotAnimated.py -5 10 ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="ISUC" --form --separator=" " --align=right \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
-            --  './tsm-isuc-std' $places $order $step_size $steps \
+            --  '^./tsm-isuc-std!./tsm-isuc-bc' $places $order $step_size $steps \
                 '0.05' '-0.05' '0.3' '0.1' '0.1' '4.2') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="ISUC" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
             --  $cns_mode $cns_separation \
-                './tsm-isuc-std' $places $order $step_size $steps \
+                '^./tsm-isuc-std!./tsm-isuc-bc' $places $order $step_size $steps \
                 '0.05' '-0.05' '0.3' '0.1' '0.1' '4.2') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="ISUC" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
             --  $cns_range $cns_separation \
-                './tsm-isuc-std' $places '_' $step_size $steps \
+                '^./tsm-isuc-std!./tsm-isuc-bc' $places '_' $step_size $steps \
                 '0.05' '-0.05' '0.3' '0.1' '0.1' '4.2') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="ISUC" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
