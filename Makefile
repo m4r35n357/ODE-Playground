@@ -131,7 +131,7 @@ clean:
 		coverage* gmon.out
 
 depclean: clean
-	@rm -f *.d tags
+	@rm -f *.d tags kerr-image
 
 C_OUT_DIR=coverage-out
 C_OUT_FILE=coverage.info

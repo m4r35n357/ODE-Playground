@@ -339,28 +339,28 @@ case $model in
             --  './tsm-burke-shaw-gl' $trail_length $order $step_size $steps \
                 '1.0' '1.0' '1.0' '10.0' '4.272') ;;
         Animated) $(yad --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="S" --field="V" \
-            --  './tsm-burke-shaw-std' $places $order $step_size $steps \
+            --  '^./tsm-burke-shaw-std!./tsm-burke-shaw-bc' $places $order $step_size $steps \
                 '1.0' '1.0' '1.0' '10.0' '4.272') | ./plotAnimated.py -3 3 ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="S" --field="V" \
-            --  './tsm-burke-shaw-std' $places $order $step_size $steps \
+            --  '^./tsm-burke-shaw-std!./tsm-burke-shaw-bc' $places $order $step_size $steps \
                 '1.0' '1.0' '1.0' '10.0' '4.272') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
             --  $cns_mode $cns_separation \
-                './tsm-burke-shaw-std' $places $order $step_size $steps \
+                '^./tsm-burke-shaw-std!./tsm-burke-shaw-bc' $places $order $step_size $steps \
                 '1.0' '1.0' '1.0' '10.0' '4.272') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
             --  $cns_range $cns_separation \
-                './tsm-burke-shaw-std' $places '_' $step_size $steps \
+                '^./tsm-burke-shaw-std!./tsm-burke-shaw-bc' $places '_' $step_size $steps \
                 '1.0' '1.0' '1.0' '10.0' '4.272') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
