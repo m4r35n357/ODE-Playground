@@ -26,35 +26,35 @@ define mul (u[], v[], k) {
  
 define exp (exp[], u[], k) {
     auto j, e
-    if (k == 0) return e(u[0])
+    if (k == 0) return e(u[k])
     for (j = 0; j < k; j++) e += exp[j] * (k - j) * u[k - j]
     return e / k
 }
 
 define sin (cos[], u[], k) {
     auto j, s
-    if (k == 0) return s(u[0])
+    if (k == 0) return s(u[k])
     for (j = 0; j < k; j++) s += cos[j] * (k - j) * u[k - j]
     return s / k
 }
 
 define cos (sin[], u[], k) {
     auto j, c
-    if (k == 0) return c(u[0])
+    if (k == 0) return c(u[k])
     for (j = 0; j < k; j++) c += sin[j] * (k - j) * u[k - j]
     return - c / k
 }
  
 define tanh (sech2[], u[], k) {
     auto j, th
-    if (k == 0) return (e(u[0]) - e(-u[0])) / (e(u[0]) + e(-u[0]))
+    if (k == 0) return (e(u[k]) - e(-u[k])) / (e(u[k]) + e(-u[k]))
     for (j = 0; j < k; j++) th += sech2[j] * (k - j) * u[k - j]
     return th / k
 }
 
 define sech2 (tanh[], u[], k) {
     auto j, sh2
-    if (k == 0) return 1.0 - (tanh[0] * tanh[0])
+    if (k == 0) return 1.0 - (tanh[k] * tanh[k])
     for (j = 0; j < k; j++) sh2 += tanh[j] * (k - j) * tanh[k - j]
     return - 2.0 * sh2 / k
 }
