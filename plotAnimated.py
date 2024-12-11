@@ -2,7 +2,6 @@
 #
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-import print_args
 from sys import argv, stdin, stderr
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -37,6 +36,10 @@ def update(data):
         ax.figure.canvas.draw()
     return line_data()
 
+print(f'\033[1;30margs \033[0m{len(argv)}\033[1;30m, argv [\033[0;33m', file=stderr, end='')
+for i in range(len(argv)):
+    print(f' {argv[i]}', file=stderr, end='')
+print(" \033[1;30m]\033[0m", file=stderr)
 if len(argv) != 3:
     raise Exception('>>> ERROR! Please supply two parameters: min and max "y" values <<<')
 minimum, maximum = float(argv[1]), float(argv[2])
