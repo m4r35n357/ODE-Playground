@@ -301,28 +301,28 @@ case $model in
             --  './tsm-bouali-gl' $trail_length $order $step_size $steps \
                 '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
         Animated) $(yad --columns=2 --title="Bouali" --form --separator=" " --align=right \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
-            --  './tsm-bouali-std' $places $order $step_size $steps \
+            --  '^./tsm-bouali-std!./tsm-bouali-bc' $places $order $step_size $steps \
                 '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') | ./plotAnimated.py -5 5 ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Bouali" --form --separator=" " --align=right \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
-            --  './tsm-bouali-std' $places $order $step_size $steps \
+            --  '^./tsm-bouali-std!./tsm-bouali-bc' $places $order $step_size $steps \
                 '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Bouali" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
             --  $cns_mode $cns_separation \
-                './tsm-bouali-std' $places $order $step_size $steps \
+                '^./tsm-bouali-std!./tsm-bouali-bc' $places $order $step_size $steps \
                 '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Bouali" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
             --  $cns_range $cns_separation \
-                './tsm-bouali-std' $places '_' $step_size $steps \
+                '^./tsm-bouali-std!./tsm-bouali-bc' $places '_' $step_size $steps \
                 '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Bouali" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
