@@ -377,28 +377,28 @@ case $model in
             --  './tsm-rucklidge-gl' $trail_length $order $step_size $steps \
                 '1.0' '1.0' '1.0' '6.7' '2.0') ;;
         Animated) $(yad --columns=2 --title="Rucklidge" --form --separator=" " --align=right \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="kappa" \
-            --  './tsm-rucklidge-std' $places $order $step_size $steps \
+            --  '^./tsm-rucklidge-std!./tsm-rucklidge-bc' $places $order $step_size $steps \
                 '1.0' '1.0' '1.0' '6.7' '2.0') | ./plotAnimated.py -15 20 ;;
         Gnuplot) ./plot 10000 $(yad --columns=2 --title="Rucklidge" --form --separator=" " --align=right \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="kappa" \
-            --  './tsm-rucklidge-std' $places $order $step_size $steps \
+            --  '^./tsm-rucklidge-std!./tsm-rucklidge-bc' $places $order $step_size $steps \
                 '1.0' '1.0' '1.0' '6.7' '2.0') ;;
         CNS) time -p ./cns $(yad --columns=2 --title="Rucklidge" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="kappa" \
             --  $cns_mode $cns_separation \
-                './tsm-rucklidge-std' $places $order $step_size $steps \
+                '^./tsm-rucklidge-std!./tsm-rucklidge-bc' $places $order $step_size $steps \
                 '1.0' '1.0' '1.0' '6.7' '2.0') ;;
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Rucklidge" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation":CB \
-            --field="Model":RO --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
+            --field="Model":CB --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="alpha" --field="kappa" \
             --  $cns_range $cns_separation \
-                './tsm-rucklidge-std' $places '_' $step_size $steps \
+                '^./tsm-rucklidge-std!./tsm-rucklidge-bc' $places '_' $step_size $steps \
                 '1.0' '1.0' '1.0' '6.7' '2.0') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Rucklidge" --form --separator=" " --align=right \
             --field="Lower Value" --field="Upper Value" --field="Samples":CB --field="Snapshots":CB \
