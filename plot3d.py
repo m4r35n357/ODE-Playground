@@ -2,7 +2,7 @@
 #
 #  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
-
+import print_args
 from sys import stderr, argv, stdin
 from math import sin, cos, radians
 from pi3d import Sphere, Display, Camera, Shader, Keyboard, screenshot, Lines, Font, String, Mouse
@@ -39,7 +39,6 @@ class Body(Sphere):
                 self.track.draw()
 
 def main():
-    print(f'Multi 3D ODE Plotter: {argv}', file=stderr)
     argc = len(argv) - 1
     if argc == 0 or argc == 1:  # single particle plot from stdin, optional arg is track length
         files = [stdin]
