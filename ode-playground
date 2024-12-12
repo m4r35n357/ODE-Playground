@@ -19,7 +19,7 @@ analysis=$2
 
 trail_length='1000!1000..10000!1000'
 places='15!3..36!3'
-order='4!2..32!2'
+order='4!2..64!2'
 step_size='.01!0.001..0.1!0.001!3'
 steps='^10000!20000!50000!100000!200000!500000!1000000'
 cns_range='16!2..32!1'
@@ -315,7 +315,7 @@ case $model in
         CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation":CB \
             --field="Program":CB --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
-            --field="x0" --field="y0" --field="z0" --field="a" --field="b" 
+            --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
             --  $cns_range $cns_separation \
                 '^./tsm-burke-shaw-std!./tsm-burke-shaw-bc' $places '_' $step_size $steps '1.0' '1.0' '1.0' '10.0' '4.272') ;;
         ChaosScan) time -p ./chaos-scan $(yad --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
