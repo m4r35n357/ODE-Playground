@@ -7,7 +7,7 @@
 BC_LINE_LENGTH=0 /usr/bin/bc taylor.bc << EOF
 scale=$1; n=$2; h=$3; steps=$4; x=$5; y=$6; z=$7; a=$8; b=$9; c=${10}
 output(x, y, z, 0.0)
-for (step = 1; step < steps + 1; step++) {
+for (step = 1; step <= steps; step++) {
     x[0] = x; y[0] = y; z[0] = z
     for (k = 0; k < n; k++) {
         x[k + 1] = - (y[k] + z[k]) / (k + 1)
