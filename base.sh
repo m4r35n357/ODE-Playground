@@ -1,6 +1,5 @@
 #
-#  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
-#
+#  (c) 2018-2025 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 
 GRY='\e[1;30m'
 RED='\e[1;31m'
@@ -18,4 +17,3 @@ echo "${GRY}args ${NRM}$(($# + 1))${GRY}, argv [ ${MGT}${args}${GRY} ]${NRM}" >&
 user_dir="/tmp/$USER"
 [ -d $user_dir ] || mkdir $user_dir
 user_data="$user_dir/data"
-

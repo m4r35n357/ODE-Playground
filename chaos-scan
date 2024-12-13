@@ -1,7 +1,6 @@
 #!/bin/sh
 #
-#  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
-#
+#  (c) 2018-2025 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 
 . ./base.sh
 
@@ -107,4 +106,3 @@ then
     echo "\n${GRY} Slideshow [${CYN} feh --slideshow-delay .1 $snaps ${GRY}]${NRM}"
     echo "${GRY}     Video [${CYN} mplayer $video ${GRY}]${NRM}\n"
 fi
-

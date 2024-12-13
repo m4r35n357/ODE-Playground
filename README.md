@@ -1,3 +1,11 @@
+## News
+
+### (December 2025)
+
+Arbitrary-precision solver and models now using GNU bc (in preference to MPFR in master branch).
+Updated 'ode-playground' script
+Animated ODE plots added from Python branch (using Python/Matplotlib)
+Python branch now just five models (using TSM & RK4), plus interactive shell and function plotters/solvers
 
 ## STATUS: feature-complete
 
