@@ -1,4 +1,5 @@
 # python implementation of cut optimization algorithm
+#  (c) 2018-2025 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 from sys import stderr
 from math import inf, pow
 from random import random

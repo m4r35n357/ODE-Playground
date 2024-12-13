@@ -1,4 +1,5 @@
 # Nelder-Mead Algorithm in Python
+#  (c) 2018-2025 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 from sys import stderr
 from math import sqrt, fsum
 from copy import copy

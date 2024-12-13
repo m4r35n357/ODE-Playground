@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#  (c) 2018-2025 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 # CUT: ./model-trid.py cut 8    256   100 0 30 >/dev/null
 #  NM: ./model-trid.py  nm 8 1.0e-6 10000 0 30 >/dev/null
 from sys import argv

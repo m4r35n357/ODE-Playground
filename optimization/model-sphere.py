@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#  (c) 2018-2025 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 # CUT: ./model-sphere.py 8 256 100 0 10 >/dev/null
 #  NM: ./model-sphere.py 8 10000 0 10 >/dev/null
 from sys import argv

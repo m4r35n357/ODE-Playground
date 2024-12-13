@@ -1,8 +1,7 @@
 #
 # Taylor Series Method for solving ODEs, with a Taylor Arithmetic class & a Dual Numbers class
 #
-#  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
-#
+#  (c) 2018-2025 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 from sys import stderr
 from math import sin, cos, sinh, cosh, tan, tanh, exp, log, asinh, asin, acosh, acos, atanh, atan, sqrt, fsum
 from collections import namedtuple

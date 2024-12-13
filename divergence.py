@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+#  (c) 2018-2025 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 import print_args
 from math import sqrt
 from sys import argv, stderr
