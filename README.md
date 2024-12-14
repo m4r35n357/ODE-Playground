@@ -208,13 +208,13 @@ The simulation is run seven times in parallel processes, the original along with
 (3D plots not shown!)
 
 ### Taylor Series & Dual Numbers Calculator - Interactive Function Analysis with Python
-This use case involves calling the Dual and Series methods and operators from ad.py, together with the functions from plotters.py, from a Python interpreter.
+This use case involves calling the Dual and Series methods and operators from ad.py, together with the functions from analysis.py, from a Python interpreter.
 This is how I like to set things up (pip installed ipython recommended!):
 ```
 $ echo '
 from math import *
 from ad import *
-from plotters import *
+from analysis import *
 ' > ipython.py
 $ ipython3 -i ipython.py
 ```
@@ -250,7 +250,7 @@ There are also functions for (matching the lower-level t_functions):
 
 Using these "higher level" functions, Newton's method is implemented trivially, but I have also provided an implementation of the bisection method for comparison.
 
-The plotters.py script enables the analysis of a "model" function's derivatives along with the value itself, across a range of the input variable.
+The analysis.py script enables the analysis of a "model" function's derivatives along with the value itself, across a range of the input variable.
 That file contains a selection of example invocations in the comments.
 Optionally it will analyse that range for roots, extrema and inflection points using the lower order derivatives.
 Here is a seventh-degree polynomial model by way of example, and a trigonometric identity as a check of the sin and sqr functions:
@@ -271,7 +271,7 @@ Python 3.9.2 (default, Feb 28 2021, 17:03:44)
 Type 'copyright', 'credits' or 'license' for more information
 IPython 7.20.0 -- An enhanced Interactive Python. Type '?' for help.
 ad module loaded
-plotters module loaded
+analysis module loaded
 
 In [1]: f = lambda a: (a.exp + (a.sqr - 4.0).exp).ln
 
@@ -295,7 +295,7 @@ Python 3.9.2 (default, Feb 28 2021, 17:03:44)
 Type 'copyright', 'credits' or 'license' for more information
 IPython 7.20.0 -- An enhanced Interactive Python. Type '?' for help.
 ad module loaded
-plotters module loaded
+analysis module loaded
 
 In [1]: newton_d(lambda x: x * x - 2.0, x0=1.0)
 Out[1]: Result(method='NT', x=1.414213562373095, f=4.440892098500626e-16, δx=-1.570092458683775e-16, count=6, sense='_', mode='ROOT___')
@@ -319,7 +319,7 @@ Python 3.9.2 (default, Feb 28 2021, 17:03:44)
 Type 'copyright', 'credits' or 'license' for more information
 IPython 7.20.0 -- An enhanced Interactive Python. Type '?' for help.
 ad module loaded
-plotters module loaded
+analysis module loaded
 
 In [1]: a = Series.get(5, 3.0)
 
