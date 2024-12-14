@@ -101,7 +101,7 @@ case $model in
             --  './tsm-thomas-gl' $trail_length $order $step_size $steps '1.0' '0.0' '0.0' '0.185') ;;
         Animated) $(yad --fixed --columns=2 --title="Thomas" --form --separator=" " --align=right \
             --field="Program":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
-            --field="x0" --field="y0" --field="z0" --field="b" 
+            --field="x0" --field="y0" --field="z0" --field="b" \
             --  '^./tsm-thomas-std!./tsm-thomas-bc' $places $order $step_size $steps '1.0' '0.0' '0.0' '0.185') \
             | ./plotAnimated.py -5 5 ;;
         Gnuplot) ./plot 10000 $(yad --fixed --columns=2 --title="Thomas" --form --separator=" " --align=right \
@@ -167,7 +167,7 @@ case $model in
             --  './tsm-halvorsen-gl' $trail_length $order $step_size $steps '1.0' '0.0' '0.0' '1.4') ;;
         Animated) $(yad --fixed --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
             --field="Program":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
-            --field="x0" --field="y0" --field="z0" --field="a" 
+            --field="x0" --field="y0" --field="z0" --field="a" \
             --  '^./tsm-halvorsen-std!./tsm-halvorsen-bc' $places $order $step_size $steps '1.0' '0.0' '0.0' '1.4') \
             | ./plotAnimated.py -15 10 ;;
         Gnuplot) ./plot 10000 $(yad --fixed --columns=2 --title="Halvorsen" --form --separator=" " --align=right \
@@ -200,7 +200,7 @@ case $model in
             --  './tsm-wimol-banlue-gl' $trail_length $order $step_size $steps '1.0' '0.1' '0.1' '1.0') ;;
         Animated) $(yad --fixed --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
             --field="Program":RO --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
-            --field="x0" --field="y0" --field="z0" --field="a" 
+            --field="x0" --field="y0" --field="z0" --field="a" \
             --  './tsm-wimol-banlue-std!./tsm-wimol-banlue-bc' $places $order $step_size $steps '1.0' '0.1' '0.1' '1.0') \
             | ./plotAnimated.py -5 5 ;;
         Gnuplot) ./plot 10000 $(yad --fixed --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
@@ -309,13 +309,13 @@ case $model in
         CNS) time -p ./cns $(yad --fixed --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation":CB \
             --field="Program":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
-            --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
+            --field="x0" --field="y0" --field="z0" --field="S" --field="V" \
             --  $cns_mode $cns_separation \
                 '^./tsm-burke-shaw-std!./tsm-burke-shaw-bc' $places $order $step_size $steps '1.0' '1.0' '1.0' '10.0' '4.272') ;;
         CNSScan) time -p ./cns-scan $(yad --fixed --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
             --field="Maximum Order":NUM --field="Separation":CB \
             --field="Program":CB --field="Display Places":NUM --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
-            --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
+            --field="x0" --field="y0" --field="z0" --field="S" --field="V" \
             --  $cns_range $cns_separation \
                 '^./tsm-burke-shaw-std!./tsm-burke-shaw-bc' $places '_' $step_size $steps '1.0' '1.0' '1.0' '10.0' '4.272') ;;
         ChaosScan) time -p ./chaos-scan $(yad --fixed --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
@@ -375,7 +375,7 @@ case $model in
         CNS) time -p ./cns $(yad --fixed --columns=2 --title="Genesio-Tesi" --form --separator=" " --align=right \
             --field="Mode":CB --field="Separation":CB \
             --field="Program":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
-            --field="x0" --field="y0" --field="z0" --field="a" --field="b" 
+            --field="x0" --field="y0" --field="z0" --field="a" --field="b" \
             --  $cns_mode $cns_separation \
                 '^./tsm-genesio-tesi-std!./tsm-genesio-tesi-bc' $places $order $step_size $steps '0.1' '0.1' '0.1' '0.446' '1.1') ;;
         CNSScan) time -p ./cns-scan $(yad --fixed --columns=2 --title="Genesio-Tesi" --form --separator=" " --align=right \
