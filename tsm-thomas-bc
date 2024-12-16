@@ -5,19 +5,24 @@
 . ./base.sh
 
 BC_LINE_LENGTH=0 /usr/bin/bc -l taylor.bc << EOF
-scale=$1; n=$2; h=$3; steps=$4; x=$5; y=$6; z=$7; b=$8
-output(x, y, z, 0.0)
-for (step = 1; step <= steps; step++) {
-    x[0] = x; y[0] = y; z[0] = z
-    for (k = 0; k < n; k++) {
-        sx[k] = sin(cx[], x[], k); cx[k] = cos(sx[], x[], k)
-        sy[k] = sin(cy[], y[], k); cy[k] = cos(sy[], y[], k)
-        sz[k] = sin(cz[], z[], k); cz[k] = cos(sz[], z[], k)
-        x[k + 1] = (sy[k] - b * x[k]) / (k + 1)
-        y[k + 1] = (sz[k] - b * y[k]) / (k + 1)
-        z[k + 1] = (sx[k] - b * z[k]) / (k + 1)
-    }
-    x = horner(n, x[], h); y = horner(n, y[], h); z = horner(n, z[], h)
-    output(x, y, z, h * step)
+define ode_x () {
+    sy[k] = sin(cy[], y[])
+    cy[k] = cos(sy[], y[])
+    return sy[k] - b * x[k]
 }
+
+define ode_y () {
+    sz[k] = sin(cz[], z[])
+    cz[k] = cos(sz[], z[])
+    return sz[k] - b * y[k]
+}
+
+define ode_z () {
+    sx[k] = sin(cx[], x[])
+    cx[k] = cos(sx[], x[])
+    return sx[k] - b * z[k]
+}
+
+scale = $1; x[0] = $5; y[0] = $6; z[0] = $7; b = $8
+tsm($2, $3, $4)
 EOF

@@ -5,18 +5,20 @@
 . ./base.sh
 
 BC_LINE_LENGTH=0 /usr/bin/bc taylor.bc << EOF
-scale=$1; n=$2; h=$3; steps=$4; x=$5; y=$6; z=$7; a=$8; b=$9; c=${10}; d=${11}
-output(x, y, z, 0.0)
-for (step = 1; step <= steps; step++) {
-    x[0] = x; y[0] = y; z[0] = z
-    for (k = 0; k < n; k++) {
-        sa[k] = const(1.0, k) - y[k]
-        sb[k] = const(1.0, k) - mul(x[], x[], k)
-        x[k + 1] = (a * mul(x[], sa[], k) - b * z[k]) / (k + 1)
-        y[k + 1] = -c * mul(y[], sb[], k) / (k + 1)
-        z[k + 1] = (d * x[k]) / (k + 1)
-    }
-    x = horner(n, x[], h); y = horner(n, y[], h); z = horner(n, z[], h)
-    output(x, y, z, h * step)
+define ode_x () {
+    sa[k] = const(1.0) - y[k]
+    return a * mul(x[], sa[]) - b * z[k]
 }
+
+define ode_y () {
+    sb[k] = const(1.0) - mul(x[], x[])
+    return - c * mul(y[], sb[])
+}
+
+define ode_z () {
+    return d * x[k]
+}
+
+scale = $1; x[0] = $5; y[0] = $6; z[0] = $7; a = $8; b = $9; c = ${10}; d = ${11}
+tsm($2, $3, $4)
 EOF

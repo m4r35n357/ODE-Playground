@@ -5,17 +5,19 @@
 . ./base.sh
 
 BC_LINE_LENGTH=0 /usr/bin/bc taylor.bc << EOF
-scale=$1; n=$2; h=$3; steps=$4; x=$5; y=$6; z=$7; a=$8; b=$9; c=${10}
-output(x, y, z, 0.0)
-for (step = 1; step <= steps; step++) {
-    x[0] = x; y[0] = y; z[0] = z
-    for (k = 0; k < n; k++) {
-        x2py2[k] = mul(x[], x[], k) + mul(y[], y[], k)
-        x[k + 1] = (z[k] - y[k]) / (k + 1)
-        y[k + 1] = (x[k] - a * y[k]) / (k + 1)
-        z[k + 1] = (const(b, k) + c * z[k]- mul(x2py2[], z[], k)) / (k + 1)
-    }
-    x = horner(n, x[], h); y = horner(n, y[], h); z = horner(n, z[], h)
-    output(x, y, z, h * step)
+define ode_x () {
+    return z[k] - y[k]
 }
+
+define ode_y () {
+    return x[k] - a * y[k]
+}
+
+define ode_z () {
+    x2py2[k] = mul(x[], x[]) + mul(y[], y[])
+    return const(b) + c * z[k]- mul(x2py2[], z[])
+}
+
+scale = $1; x[0] = $5; y[0] = $6; z[0] = $7; a = $8; b = $9; c = ${10}
+tsm($2, $3, $4)
 EOF

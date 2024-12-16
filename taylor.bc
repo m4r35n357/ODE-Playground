@@ -10,52 +10,68 @@ define horner (n, j[], h) {
     return s
 }
  
-define const (v, k) {
+define tsm (n, h, steps) {
+    auto step
+    output(x[0], y[0], z[0], 0.0)
+    for (step = 1; step <= steps; step++) {
+        for (k = 0; k < n; k++) {
+            x[k + 1] = ode_x() / (k + 1)
+            y[k + 1] = ode_y() / (k + 1)
+            z[k + 1] = ode_z() / (k + 1)
+        }
+        x[0] = horner(n, x[], h)
+        y[0] = horner(n, y[], h)
+        z[0] = horner(n, z[], h)
+        output(x[0], y[0], z[0], h * step)
+    }
+}
+
+define const (v) {
     if (k == 0) return v
     return 0.0
 }
 
-define abs (u[], k) {
+define abs (u[]) {
     if (u[0] > 0) return u[k]
     if (u[0] < 0) return - u[k]
     return 1.0 / 0.0
 }
  
-define mul (u[], v[], k) {
+define mul (u[], v[]) {
     auto j, p
     for (j = 0; j <= k; j++) p += u[j] * v[k - j]
     return p
 }
  
-define exp (exp[], u[], k) {
+define exp (exp[], u[]) {
     auto j, e
     if (k == 0) return e(u[k])
     for (j = 0; j < k; j++) e += exp[j] * (k - j) * u[k - j]
     return e / k
 }
 
-define sin (cos[], u[], k) {
+define sin (cos[], u[]) {
     auto j, s
     if (k == 0) return s(u[k])
     for (j = 0; j < k; j++) s += cos[j] * (k - j) * u[k - j]
     return s / k
 }
 
-define cos (sin[], u[], k) {
+define cos (sin[], u[]) {
     auto j, c
     if (k == 0) return c(u[k])
     for (j = 0; j < k; j++) c += sin[j] * (k - j) * u[k - j]
     return - c / k
 }
  
-define tanh (sech2[], u[], k) {
+define tanh (sech2[], u[]) {
     auto j, th
     if (k == 0) return (e(u[k]) - e(-u[k])) / (e(u[k]) + e(-u[k]))
     for (j = 0; j < k; j++) th += sech2[j] * (k - j) * u[k - j]
     return th / k
 }
 
-define sech2 (tanh[], u[], k) {
+define sech2 (tanh[], u[]) {
     auto j, sh2
     if (k == 0) return 1.0 - (tanh[k] * tanh[k])
     for (j = 0; j < k; j++) sh2 += tanh[j] * (k - j) * tanh[k - j]

@@ -5,16 +5,18 @@
 . ./base.sh
 
 BC_LINE_LENGTH=0 /usr/bin/bc taylor.bc << EOF
-scale=$1; n=$2; h=$3; steps=$4; x=$5; y=$6; z=$7; alpha=$8; kappa=$9
-output(x, y, z, 0.0)
-for (step = 1; step <= steps; step++) {
-    x[0] = x; y[0] = y; z[0] = z
-    for (k = 0; k < n; k++) {
-        x[k + 1] = (alpha * y[k] - kappa * x[k] - mul(y[], z[], k)) / (k + 1)
-        y[k + 1] = x[k] / (k + 1)
-        z[k + 1] = (mul(y[], y[], k) - z[k]) / (k + 1)
-    }
-    x = horner(n, x[], h); y = horner(n, y[], h); z = horner(n, z[], h)
-    output(x, y, z, h * step)
+define ode_x () {
+    return alpha * y[k] - kappa * x[k] - mul(y[], z[])
 }
+
+define ode_y () {
+    return x[k]
+}
+
+define ode_z () {
+    return mul(y[], y[]) - z[k]
+}
+
+scale = $1; x[0] = $5; y[0] = $6; z[0] = $7; alpha = $8; kappa = $9
+tsm($2, $3, $4)
 EOF
