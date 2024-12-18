@@ -4,37 +4,37 @@
 
 define void output (x, y, z, t) { print x, " ", y, " ", z, " ", t, " _ _ _ 0.0\n" }
 
-define horner (n, j[], h) {
+define horner (u[], n, h) {
     auto i, s
-    for (i = n; i >= 0; i--) s = s * h + j[i]
+    for (i = n; i >= 0; i--) s = s * h + u[i]
     return s
 }
  
 define tsm (n, h, steps) {
     auto step
-    output(x[0], y[0], z[0], 0.0)
+    output(x[0], y[0], z[0], 0)
     for (step = 1; step <= steps; step++) {
         for (k = 0; k < n; k++) {
             x[k + 1] = ode_x() / (k + 1)
             y[k + 1] = ode_y() / (k + 1)
             z[k + 1] = ode_z() / (k + 1)
         }
-        x[0] = horner(n, x[], h)
-        y[0] = horner(n, y[], h)
-        z[0] = horner(n, z[], h)
+        x[0] = horner(x[], n, h)
+        y[0] = horner(y[], n, h)
+        z[0] = horner(z[], n, h)
         output(x[0], y[0], z[0], h * step)
     }
 }
 
 define const (v) {
     if (k == 0) return v
-    return 0.0
+    return 0
 }
 
 define abs (u[]) {
     if (u[0] > 0) return u[k]
     if (u[0] < 0) return - u[k]
-    return 1.0 / 0.0
+    return 1 / 0
 }
  
 define mul (u[], v[]) {
@@ -66,14 +66,14 @@ define cos (sin[], u[]) {
  
 define tanh (sech2[], u[]) {
     auto j, th
-    if (k == 0) return (e(u[k]) - e(-u[k])) / (e(u[k]) + e(-u[k]))
+    if (k == 0) return (e(2 * u[k]) - 1) / (e(2 * u[k]) + 1)
     for (j = 0; j < k; j++) th += sech2[j] * (k - j) * u[k - j]
     return th / k
 }
 
 define sech2 (tanh[], u[]) {
     auto j, sh2
-    if (k == 0) return 1.0 - (tanh[k] * tanh[k])
+    if (k == 0) return 1 - tanh[k] * tanh[k]
     for (j = 0; j < k; j++) sh2 += tanh[j] * (k - j) * tanh[k - j]
-    return - 2.0 * sh2 / k
+    return - 2 * sh2 / k
 }

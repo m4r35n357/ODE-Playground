@@ -6,18 +6,18 @@
 
 BC_LINE_LENGTH=0 /usr/bin/bc taylor.bc << EOF
 define ode_x () {
-    a[k] = z[k] + mul(x[], x[]) - const(1.0)
+    a[k] = z[k] + mul(x[], x[]) - const(1)
     return mul(y[], a[]) + gamma * x[k]
 }
 
 define ode_y () {
-    b[k] = 4.0 * z[k] - a[k]
+    b[k] = 4 * z[k] - a[k]
     return mul(x[], b[]) + gamma * y[k]
 }
 
 define ode_z () {
     c[k] = const(alpha) + mul(x[], y[])
-    return - 2.0 * mul(z[], c[])
+    return - 2 * mul(z[], c[])
 }
 
 scale = $1; x[0] = $5; y[0] = $6; z[0] = $7; alpha = $8; gamma = $9

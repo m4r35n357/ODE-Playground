@@ -71,7 +71,7 @@ int main (int argc, char **argv) {
     dual D1 = d_dual(1.0L), xpx = d_scale(x, 2.0L);
     dual abs_x, inv_x, sqrt_x, ln_x;
     if (non_zero) abs_x = d_abs(x);
-    if (positive || non_zero) inv_x = d_inv(x);
+    if (positive || non_zero) inv_x = d_rec(x);
     if (positive) sqrt_x = d_sqrt(x);
     if (positive) ln_x = d_ln(x);
     dual sin_x = d_sin(x), cos_x = d_cos(x), tan_x = d_tan(x);
@@ -93,9 +93,9 @@ int main (int argc, char **argv) {
     name = "x^1.0 == x"; positive ? compare(name, d_pow(x, 1.0L), x) : skip(name);
     name = "x^0.5 == sqrt(x)"; positive ? compare(name, d_pow(x, 0.5L), sqrt_x): skip(name);
     name = "x^0.0 == 1"; positive ? compare(name, d_pow(x, 0.0L), D1) : skip(name);
-    name = "x^-0.5 == 1 / sqrt(x)"; positive ? compare(name, d_pow(x, -0.5L), d_inv(sqrt_x)) : skip(name);
+    name = "x^-0.5 == 1 / sqrt(x)"; positive ? compare(name, d_pow(x, -0.5L), d_rec(sqrt_x)) : skip(name);
     name = "x^-1.0 == 1 / x"; positive ? compare(name, d_pow(x, -1.0L), inv_x) : skip(name);
-    name = "x^-2.0 == 1 / sqr(x)"; positive ? compare(name, d_pow(x, -2.0L), d_inv(sqr_x)) : skip(name);
+    name = "x^-2.0 == 1 / sqr(x)"; positive ? compare(name, d_pow(x, -2.0L), d_rec(sqr_x)) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
 

@@ -15,7 +15,7 @@ dual d_var (real a);
 
 dual d_abs (const dual a);
 
-dual d_inv (const dual a);
+dual d_rec (const dual a);
 
 dual d_sqr (const dual a);
 

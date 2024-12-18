@@ -28,7 +28,7 @@ static void refresh (model *_) {
     dual P = d_shift(d_scale(_->ra2, _->E), - _->aL);
     _->R = d_sub(d_sqr(P), d_mul(_->D, d_shift(d_scale(r2, _->mu2), _->K)));
     _->sth2 = d_sqr(d_sin(d_var(_->q_th)));
-    _->TH = d_shift(d_mul(d_shift(d_scale(d_inv(_->sth2), _->L2), _->a2xmu2_E2), d_shift(_->sth2, - 1.0L)), _->Q);
+    _->TH = d_shift(d_mul(d_shift(d_scale(d_rec(_->sth2), _->L2), _->a2xmu2_E2), d_shift(_->sth2, - 1.0L)), _->Q);
     _->v_t = _->a * (_->L - _->aE * _->sth2.val) + _->ra2.val * P.val / _->D.val;
     _->v_ph = (_->L / _->sth2.val - _->aE) + _->a * P.val / _->D.val;
 }

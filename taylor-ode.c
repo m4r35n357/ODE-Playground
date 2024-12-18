@@ -125,6 +125,11 @@ real t_div (series q, const series u, const series v, int k) {
     return q[k] = (!k ? u[k] : u[k] - _cauchy_(q, v, k, 0, k - 1)) / v[0];
 }
 
+real t_rec (series r, const series v, int k) {
+    CHECK(v[0] != 0.0L); CHECK(r != v);
+    return r[k] = (!k ? 1.0L : - _cauchy_(r, v, k, 0, k - 1)) / v[0];
+}
+
 static real _half_ (const series a, int k, int k0, bool even) {
     return 2.0L * _cauchy_(a, a, k, k0, (even ? k - 1 : k - 2) / 2) + (even ? 0.0L : SQR(a[k / 2]));
 }
@@ -138,19 +143,23 @@ real t_sqrt (series r, const series u, int k) {
     return r[k] = !k ? sqrtl(u[k]) : 0.5L * (u[k] - _half_(r, k, 1, k % 2)) / r[0];
 }
 
-static real _chain_ (const series b, const series a, int k, int k0) {
+real t_pwr (series p, const series u, real a, int k) {
+    CHECK(u[0] > 0.0L); CHECK(p != u);
+    if (!k) return p[k] = powl(u[k], a);
     real _ = 0.0L;
-    for (int j = k0; j < k; j++) _ += b[j] * (k - j) * a[k - j];
-    return _ / k;
+    for (int j = 0; j < k; j++) _ += (a * (k - j) - j) * p[j] * u[k - j];
+    return p[k] = _ / (k * u[0]);
 }
 
-static real _fk_ (const series df_du, const series u, int k) {
-    return _chain_(df_du, u, k, 0);
+static real _chain_ (const series df_du, const series u, int k, int k0) {
+    real _ = 0.0L;
+    for (int j = k0; j < k; j++) _ += df_du[j] * (k - j) * u[k - j];
+    return _ / k;
 }
 
 real t_exp (series e, const series u, int k) {
     CHECK(e != u);
-    return e[k] = !k ? expl(u[k]) : _fk_(e, u, k);
+    return e[k] = !k ? expl(u[k]) : _chain_(e, u, k, 0);
 }
 
 pair t_sin_cos (series s, series c, const series u, int k, bool trig) {
@@ -159,8 +168,8 @@ pair t_sin_cos (series s, series c, const series u, int k, bool trig) {
         .a = s[k] = trig ? sinl(u[k]) : sinhl(u[k]),
         .b = c[k] = trig ? cosl(u[k]) : coshl(u[k])
     } : (pair){
-        .a = s[k] = _fk_(c, u, k),
-        .b = c[k] = _fk_(s, u, k) * (trig ? -1.0L : 1.0L)
+        .a = s[k] = _chain_(c, u, k, 0),
+        .b = c[k] = _chain_(s, u, k, 0) * (trig ? -1.0L : 1.0L)
     };
 }
 
@@ -170,18 +179,14 @@ pair t_tan_sec2 (series t, series s, const series u, int k, bool trig) {
         .a = t[k] = trig ? tanl(u[k]) : tanhl(u[k]),
         .b = s[k] = trig ? 1.0L + SQR(t[k]) : 1.0L - SQR(t[k])
     } : (pair){
-        .a = t[k] = _fk_(s, u, k),
-        .b = s[k] = _fk_(t, t, k) * (trig ? 2.0L : -2.0L)
+        .a = t[k] = _chain_(s, u, k, 0),
+        .b = s[k] = _chain_(t, t, k, 0) * (trig ? 2.0L : -2.0L)
     };
-}
-
-static real _uk_(const series df_du, const series u, int k, real f_k, real sign) {
-    return (f_k - _chain_(df_du, u, k, 1) * sign) / df_du[0];
 }
 
 real t_ln (series u, const series e, int k) {
     CHECK(e[0] > 0.0L); CHECK(u != e);
-    return u[k] = !k ? logl(e[k]) : _uk_(e, u, k, e[k], 1.0L);
+    return u[k] = !k ? logl(e[k]) : (e[k] - _chain_(e, u, k, 1)) / e[0];
 }
 
 pair t_asin_cos (series u, series c, const series s, int k, bool trig) {
@@ -190,8 +195,8 @@ pair t_asin_cos (series u, series c, const series s, int k, bool trig) {
         .a = u[k] = trig ? asinl(s[k]) : asinhl(s[k]),
         .b = c[k] = trig ?  cosl(u[k]) :  coshl(u[k])
     } : (pair){
-        .a = u[k] = _uk_(c, u, k, s[k], 1.0L),
-        .b = c[k] = _fk_(s, u, k) * (trig ? -1.0L : 1.0L)
+        .a = u[k] = (s[k] - _chain_(c, u, k, 1)) / c[0],
+        .b = c[k] = _chain_(s, u, k, 0) * (trig ? -1.0L : 1.0L)
     };
 }
 
@@ -201,8 +206,8 @@ pair t_acos_sin (series u, series s, const series c, int k, bool trig) {
         .a = u[k] = trig ? acosl(c[k]) : acoshl(c[k]),
         .b = s[k] = trig ? -sinl(u[k]) :  sinhl(u[k])
     } : (pair){
-        .a = u[k] = _uk_(s, u, k, c[k], trig ? -1.0L : 1.0L),
-        .b = s[k] = _fk_(c, u, k)
+        .a = u[k] = (c[k] - _chain_(s, u, k, 1) * (trig ? -1.0L : 1.0L)) / s[0],
+        .b = s[k] = _chain_(c, u, k, 0)
     };
 }
 
@@ -212,12 +217,7 @@ pair t_atan_sec2 (series u, series s, const series t, int k, bool trig) {
         .a = u[k] = trig ? atanl(t[k]) : atanhl(t[k]),
         .b = s[k] = trig ? 1.0L + SQR(t[k]) : 1.0L - SQR(t[k])
     } : (pair){
-        .a = u[k] = _uk_(s, u, k, t[k], 1.0L),
-        .b = s[k] = _fk_(t, t, k) * (trig ? 2.0L : -2.0L)
+        .a = u[k] = (t[k] - _chain_(s, u, k, 1)) / s[0],
+        .b = s[k] = _chain_(t, t, k, 0) * (trig ? 2.0L : -2.0L)
     };
-}
-
-real t_pwr (series p, const series u, real a, int k) {
-    CHECK(u[0] > 0.0L); CHECK(p != u);
-    return p[k] = !k ? powl(u[k], a) : _uk_(u, p, k, _fk_(p, u, k) * a, 1.0L);
 }

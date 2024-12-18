@@ -10,7 +10,7 @@
 #include "dual.h"
 
 static dual H (real GM, real m, dual r, dual p_r, dual p_phi) {
-    return d_sub(d_scale(d_add(d_sqr(p_r), d_sqr(d_div(p_phi, r))), 0.5L / m), d_scale(d_inv(r), GM * m));
+    return d_sub(d_scale(d_add(d_sqr(p_r), d_sqr(d_div(p_phi, r))), 0.5L / m), d_scale(d_rec(r), GM * m));
 }
 
 struct Parameters {

@@ -19,7 +19,7 @@ dual d_abs (const dual a) {
     return (dual){.val = a.val < 0.0L ? - a.val : a.val, .dot = a.val < 0.0L ? - a.dot : a.dot};
 }
 
-dual d_inv (const dual b) {
+dual d_rec (const dual b) {
     CHECK(b.val != 0.0L);
     return (dual){.val = 1.0L / b.val, .dot = - b.dot / SQR(b.val)};
 }

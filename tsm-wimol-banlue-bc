@@ -16,7 +16,7 @@ define ode_y () {
 }
 
 define ode_z () {
-    return - const(a) + mul(x[], y[]) + abs(y[])
+    return mul(x[], y[]) + abs(y[]) - const(a)
 }
 
 scale = $1; x[0] = $5; y[0] = $6; z[0] = $7; a = $8
