@@ -6,15 +6,15 @@
 
 BC_LINE_LENGTH=0 /usr/bin/bc taylor.bc << EOF
 define ode_x () {
-    return - a * x[k] - 4 * (y[k] + z[k]) - mul(y[], y[])
+    return - a * x[k] - 4 * (y[k] + z[k]) - sqr(y[])
 }
 
 define ode_y () {
-    return - a * y[k] - 4 * (z[k] + x[k]) - mul(z[], z[])
+    return - a * y[k] - 4 * (z[k] + x[k]) - sqr(z[])
 }
 
 define ode_z () {
-    return - a * z[k] - 4 * (x[k] + y[k]) - mul(x[], x[])
+    return - a * z[k] - 4 * (x[k] + y[k]) - sqr(x[])
 }
 
 scale = $1; x[0] = $5; y[0] = $6; z[0] = $7; a = $8

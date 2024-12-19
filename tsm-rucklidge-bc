@@ -14,7 +14,7 @@ define ode_y () {
 }
 
 define ode_z () {
-    return mul(y[], y[]) - z[k]
+    return sqr(y[]) - z[k]
 }
 
 scale = $1; x[0] = $5; y[0] = $6; z[0] = $7; alpha = $8; kappa = $9

@@ -10,8 +10,7 @@ define ode_x () {
 }
 
 define ode_y () {
-    thx[k] = tanh(sh2x[], x[])
-    sh2x[k] = sech2(thx[], x[])
+    tansec2(thx[], sh2x[], x[], 0)
     return - mul(z[], thx[])
 }
 

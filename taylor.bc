@@ -1,6 +1,10 @@
-# Taylor Series Method in GNU bc - shared functions
-#
-#  (c) 2018-2025 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+/*
+ * (c) 2018-2025 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ */
+
+/*
+ * Taylor Series Method
+ */
 
 define void output (x, y, z, t) { print x, " ", y, " ", z, " ", t, " _ _ _ 0.0\n" }
 
@@ -10,7 +14,7 @@ define horner (u[], n, h) {
     return s
 }
  
-define tsm (n, h, steps) {
+define void tsm (n, h, steps) {
     auto step
     output(x[0], y[0], z[0], 0)
     for (step = 1; step <= steps; step++) {
@@ -26,54 +30,149 @@ define tsm (n, h, steps) {
     }
 }
 
+/*
+ * Taylor Series Recurrence Relationships
+ */
+
 define const (v) {
-    if (k == 0) return v
+    if (!k) return v
     return 0
 }
 
 define abs (u[]) {
-    if (u[0] > 0) return u[k]
+    if (u[0] > 0) return   u[k]
     if (u[0] < 0) return - u[k]
     return 1 / 0
 }
  
-define mul (u[], v[]) {
-    auto j, p
-    for (j = 0; j <= k; j++) p += u[j] * v[k - j]
-    return p
-}
- 
-define exp (exp[], u[]) {
-    auto j, e
-    if (k == 0) return e(u[k])
-    for (j = 0; j < k; j++) e += exp[j] * (k - j) * u[k - j]
-    return e / k
-}
-
-define sin (cos[], u[]) {
-    auto j, s
-    if (k == 0) return s(u[k])
-    for (j = 0; j < k; j++) s += cos[j] * (k - j) * u[k - j]
-    return s / k
-}
-
-define cos (sin[], u[]) {
+define cauchy (u[], v[], kl, ku) {
     auto j, c
-    if (k == 0) return c(u[k])
-    for (j = 0; j < k; j++) c += sin[j] * (k - j) * u[k - j]
-    return - c / k
+    for (j = kl; j <= ku; j++) {
+        c += u[j] * v[k - j]
+    }
+    return c
 }
  
-define tanh (sech2[], u[]) {
-    auto j, th
-    if (k == 0) return (e(2 * u[k]) - 1) / (e(2 * u[k]) + 1)
-    for (j = 0; j < k; j++) th += sech2[j] * (k - j) * u[k - j]
-    return th / k
+define mul (u[], v[]) {
+    return cauchy(u[], v[], 0, k)
+}
+ 
+define void div (*quot[], u[], v[]) {
+    if (!k) {
+        quot[k] = u[k] / v[0]
+    } else {
+        quot[k] = (u[k] - cauchy(quot[], v[], 0, k - 1)) / v[0]
+    }
 }
 
-define sech2 (tanh[], u[]) {
-    auto j, sh2
-    if (k == 0) return 1 - tanh[k] * tanh[k]
-    for (j = 0; j < k; j++) sh2 += tanh[j] * (k - j) * tanh[k - j]
-    return - 2 * sh2 / k
+define void rec (*rec[], v[]) {
+    if (!k) {
+        rec[k] = 1 / v[0]
+    } else {
+        rec[k] = - cauchy(rec[], v[], 0, k - 1) / v[0]
+    }
+}
+
+define half (a[], kl) {
+    auto previous, even
+    previous = scale; scale = 0; even = k % 2; scale = previous
+    if (even) {
+        return 2 * cauchy(a[], a[], kl, (k - 1) / 2)
+    } else {
+        return 2 * cauchy(a[], a[], kl, (k - 2) / 2) + a[k / 2] * a[k / 2]
+    }
+}
+
+define sqr (u[]) {
+    return half(u[], 0)
+}
+
+define void sqt (*root[], u[]) {
+    if (!k) {
+        root[k] = sqrt(u[k])
+    } else {
+        root[k] = 0.5 * (u[k] - half(root[], 1)) / root[0]
+    }
+}
+
+define void pwr (*pwr[], u[], a) {
+    auto j, p
+    if (!k) {
+        pwr[k] = e(l(u[k]) * a)
+    } else {
+        for (j = 0; j < k; j++) {
+            p += (a * (k - j) - j) * pwr[j] * u[k - j]
+        }
+        pwr[k] = p / (k * u[0])
+    }
+}
+
+define chain (dfdu[], u[], kl) {
+    auto j, sum
+    for (j = kl; j < k; j++) {
+        sum += dfdu[j] * (k - j) * u[k - j]
+    }
+    return sum / k
+}
+
+define void exp (*exp[], u[]) {
+    if (!k) {
+        exp[k] = e(u[k])
+    } else {
+        exp[k] = chain(exp[], u[], 0)
+    }
+}
+
+define void sincos (*sin[], *cos[], u[], trig) {
+    auto j, ssum, csum, tmp
+    if (!k) {
+        if (trig) { sin[k] = s(u[k]) } else { sin[k] = 0.5 * (e(u[k]) - e(-u[k])) }
+        if (trig) { cos[k] = c(u[k]) } else { cos[k] = 0.5 * (e(u[k]) + e(-u[k])) }
+    } else {
+        for (j = 0; j < k; j++) {
+            tmp = (k - j) * u[k - j]
+            ssum += cos[j] * tmp
+            csum += sin[j] * tmp
+        }
+        sin[k] = ssum / k
+        if (trig) { cos[k] = - csum / k } else { cos[k] = csum / k }
+    }
+}
+
+define void tansec2 (*tan[], *sec2[], u[], trig) {
+    if (!k) {
+        if (trig) {  tan[k] = s(u[k]) / c(u[k])   } else {  tan[k] = (e(2 * u[k]) - 1) / (e(2 * u[k]) + 1) }
+        if (trig) { sec2[k] = 1 + tan[k] * tan[k] } else { sec2[k] = 1 - tan[k] * tan[k] }
+    } else {
+         tan[k] =     chain(sec2[], u[], 0)
+        if (trig) { sec2[k] = 2 * chain(tan[], tan[], 0) } else { sec2[k] = - 2 * chain(tan[], tan[], 0) }
+    }
+}
+
+define void ln (*u[], exp[]) {
+    if (!k) {
+        u[k] = l(exp[k])
+    } else {
+        u[k] = (exp[k] - chain(exp[], u[], 1)) / exp[0]
+    }
+}
+
+define void asincos (*u[], *cos[], sin[], trig) {
+    if (!k) {
+        if (trig) { u[k] = a(sin[k] / sqrt(1 - sin[k] * sin[k])) } else { u[k] = l(sin[k] + sqrt(sin[k] * sin[k] + 1)) }
+        if (trig) { cos[k] = c(u[k]) } else { cos[k] = 0.5 * (e(u[k]) + e(-u[k])) }
+    } else {
+          u[k] = (sin[k] - chain(cos[], u[], 1)) / cos[0]
+        if (trig) { cos[k] = - chain(sin[], u[], 0) } else { cos[k] = chain(sin[], u[], 0) }
+    }
+}
+
+define void atansec2 (*u[], *sec2[], tan[], trig) {
+    if (!k) {
+        if (trig) { u[k] = a(tan[k]) } else { u[k] = 0.5 * l((1 + tan[k]) / (1 - tan[k])) }
+        if (trig) { sec2[k] = 1 + tan[k] * tan[k] } else { sec2[k] = 1 - tan[k] * tan[k] }
+    } else {
+           u[k] = (tan[k] - chain(sec2[], u[], 1)) / sec2[0]
+        if (trig) { sec2[k] = 2 * chain(tan[], tan[], 0) } else { sec2[k] = - 2 * chain(tan[], tan[], 0) }
+    }
 }

@@ -14,7 +14,7 @@ define ode_y () {
 }
 
 define ode_z () {
-    return - x[k] - mul(x[], x[]) - b * y[k] - a * z[k]
+    return - x[k] - sqr(x[]) - b * y[k] - a * z[k]
 }
 
 scale = $1; x[0] = $5; y[0] = $6; z[0] = $7; a = $8; b = $9

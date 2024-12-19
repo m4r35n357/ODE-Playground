@@ -15,7 +15,7 @@ define ode_y () {
 
 define ode_z () {
     xy[k] = mul(x[], y[])
-    e_xy[k] = exp(exy[], xy[])
+    exp(e_xy[], xy[])
     return e_xy[k] - d * z[k]
 }
 

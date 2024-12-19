@@ -6,20 +6,17 @@
 
 BC_LINE_LENGTH=0 /usr/bin/bc -l taylor.bc << EOF
 define ode_x () {
-    sy[k] = sin(cy[], y[])
-    cy[k] = cos(sy[], y[])
+    sincos(sy[], cy[], y[], 1)
     return sy[k] - b * x[k]
 }
 
 define ode_y () {
-    sz[k] = sin(cz[], z[])
-    cz[k] = cos(sz[], z[])
+    sincos(sz[], cz[], z[], 1)
     return sz[k] - b * y[k]
 }
 
 define ode_z () {
-    sx[k] = sin(cx[], x[])
-    cx[k] = cos(sx[], x[])
+    sincos(sx[], cx[], x[], 1)
     return sx[k] - b * z[k]
 }
 

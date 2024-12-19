@@ -1,0 +1,36 @@
+#!/bin/sh
+#  Example: ./taylor-test 18 8 2
+#  (c) 2018-2025 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+
+. ./base.sh
+
+BC_LINE_LENGTH=0 /usr/bin/bc -l taylor.bc taylor-test.bc << EOF
+scale = $1
+n = $2
+
+init($3)
+
+print "\nBasic Cauchy Tests\n"
+test_div()
+test_rec_mul()
+test_sqr_mul()
+test_sqrt_mul()
+
+print "\nCauchy vs pwr()\n"
+test_rec_pwr()
+test_mul_pwr()
+test_sqr_pwr()
+test_sqrt_pwr()
+
+print "\nLog vs Cauchy & pwr()\n"
+test_rec_log()
+test_exp_log()
+test_pwr_log(3)
+test_pwr_log(-0.5)
+
+print "\nTrig vs Hyp\n"
+test_mixed()
+test_gd_1_a()
+test_gd_1_b()
+test_gd_1_c()
+EOF

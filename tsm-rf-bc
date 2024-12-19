@@ -6,7 +6,7 @@
 
 BC_LINE_LENGTH=0 /usr/bin/bc taylor.bc << EOF
 define ode_x () {
-    a[k] = z[k] + mul(x[], x[]) - const(1)
+    a[k] = z[k] + sqr(x[]) - const(1)
     return mul(y[], a[]) + gamma * x[k]
 }
 

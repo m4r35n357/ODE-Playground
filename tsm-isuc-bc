@@ -14,7 +14,7 @@ define ode_y () {
 }
 
 define ode_z () {
-    x2py2[k] = mul(x[], x[]) + mul(y[], y[])
+    x2py2[k] = sqr(x[]) + sqr(y[])
     return const(b) + c * z[k] - mul(x2py2[], z[])
 }
 

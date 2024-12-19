@@ -11,7 +11,7 @@ define ode_x () {
 }
 
 define ode_y () {
-    sb[k] = const(1) - mul(x[], x[])
+    sb[k] = const(1) - sqr(x[])
     return - c * mul(y[], sb[])
 }
 

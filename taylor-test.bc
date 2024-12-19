@@ -1,0 +1,203 @@
+
+define void init (value) {
+    auto s[], c[], s2[]
+    x[0] = value
+    for (k = 0; k <= n; k++) {
+        if (k > 0) x[k] = - x[k - 1]
+        sincos(s[], c[], x[], 0)
+        atansec2(gd[], s2[], s[], 1)
+    }
+}
+
+define void test_div () {
+    auto q[]
+    print "\n x / x - 1\n"
+    if (x[0] == 0) {
+        print "x == 0; skipping . . .\n"
+    } else {
+        for (k = 0; k <= n; k++) {
+            div(q[], x[], x[])
+            print k, "  x: ", x[k], "  x/x: ", q[k], "  delta: ", const(1) - q[k], "\n"
+        }
+    }
+}
+
+define void test_rec_mul () {
+    auto r[], p[]
+    print "\n 1/x * x\n"
+    if (x[0] == 0) {
+        print "x == 0; skipping . . .\n"
+    } else {
+        for (k = 0; k <= n; k++) {
+            rec(r[], x[])
+            p[k] = mul(x[], r[])
+            print k, "  1/x: ", r[k], "  1/x*x: ", p[k], "  delta: ", const(1) - p[k], "\n"
+        }
+    }
+}
+
+define void test_sqr_mul () {
+    auto s[], p[]
+    print "\n sqr(x) - x * x\n"
+    for (k = 0; k <= n; k++) {
+        s[k] = sqr(x[])
+        p[k] = mul(x[], x[])
+        print k, "  sqr(x): ", s[k], "  x*x: ", p[k], "  delta: ", s[k] - p[k], "\n"
+    }
+}
+
+define void test_sqrt_mul () {
+    auto r[], p[]
+    print "\n sqrt(x) * sqrt(x) - x\n"
+    for (k = 0; k <= n; k++) {
+        sqt(r[], x[])
+        p[k] = mul(r[], r[])
+        print k, "  sqrt(x): ", r[k], "  sqrt(x)*sqrt(x): ", p[k], "  delta: ", x[k] - p[k], "\n"
+    }
+}
+
+define void test_rec_pwr () {
+    auto r[], p[]
+    print "\n 1/x - x^-1\n"
+    if (x[0] <= 0) {
+        print "x <= 0; skipping . . .\n"
+    } else {
+        for (k = 0; k <= n; k++) {
+            rec(r[], x[])
+            pwr(p[], x[], -1)
+            print k, "  1/x: ", r[k], "  x^-1: ", p[k], "  delta: ", r[k] - p[k], "\n"
+        }
+    }
+}
+
+define void test_mul_pwr () {
+    auto s[], p[]
+    print "\n x * x - x^2\n"
+    if (x[0] <= 0) {
+        print "x <= 0; skipping . . .\n"
+    } else {
+        for (k = 0; k <= n; k++) {
+            s[k] = mul(x[], x[])
+            pwr(p[], x[], 2)
+            print k, "  x*x: ", s[k], "  x^2: ", p[k], "  delta: ", s[k] - p[k], "\n"
+        }
+    }
+}
+
+define void test_sqr_pwr () {
+    auto s[], p[]
+    print "\n sqr(x) - x^2\n"
+    if (x[0] <= 0) {
+        print "x <= 0; skipping . . .\n"
+    } else {
+        for (k = 0; k <= n; k++) {
+            s[k] = sqr(x[])
+            pwr(p[], x[], 2)
+            print k, "  sqr(x): ", s[k], "  x^2: ", p[k], "  delta: ", s[k] - p[k], "\n"
+        }
+    }
+}
+
+define void test_sqrt_pwr () {
+    auto r[], p[]
+    print "\n sqrt(x) - x^0.5\n"
+    if (x[0] <= 0) {
+        print "x <= 0; skipping . . .\n"
+    } else {
+        for (k = 0; k <= n; k++) {
+            sqt(r[], x[])
+            pwr(p[], x[], 0.5)
+            print k, "  sqrt(x): ", r[k], "  x^0.5: ", p[k], "  delta: ", r[k] - p[k], "\n"
+        }
+    }
+}
+
+define void test_rec_log () {
+    auto r[], l1[], l2[]
+    print "\n ln(x) + ln(1/x)\n"
+    if (x[0] <= 0) {
+        print "x <= 0; skipping . . .\n"
+    } else {
+        for (k = 0; k <= n; k++) {
+            rec(r[], x[])
+            ln(l1[], x[])
+            ln(l2[], r[])
+            print k, "  ln(x): ", l1[k], "  ln(1/x): ", l2[k], "  delta: ", l2[k] + l1[k], "\n"
+        }
+    }
+}
+
+define void test_exp_log () {
+    auto e[], l[]
+    print "\n ln(e^x)\n"
+    for (k = 0; k <= n; k++) {
+        exp(e[], x[])
+        ln(l[], e[])
+        print k, "  e^x: ", e[k], "  ln(e^x): ", l[k], "  delta: ", x[k] - l[k], "\n"
+    }
+}
+
+define void test_pwr_log (a) {
+    auto p[], l1[], l2[]
+    print "\n ln(x^", a, ") - ", a, "ln(x)\n"
+    if (x[0] <= 0) {
+        print "x <= 0; skipping . . .\n"
+    } else {
+        for (k = 0; k <= n; k++) {
+            pwr(p[], x[], a)
+            ln(l1[], p[])
+            ln(l2[], x[])
+            print k, "  ln(x^", a, "): ", l1[k], "  ", a, "ln(x): ", a * l2[k], "  delta: ", a * l2[k] - l1[k], "\n"
+        }
+    }
+}
+
+define void test_mixed () {
+    auto t[], s2[], a[], ln[], u2[], s22[], c2[], sh2[], ath[]
+    print "\n ln(|tan(x)|) = artanh(cos(2x))\n"
+    if (x[0] == 0) {
+        print "x == 0; skipping . . .\n"
+    } else {
+        for (k = 0; k <= n; k++) {
+            tansec2(t[], s2[], x[], 1)
+            a[k] = abs(t[])
+            ln(ln[], a[])
+            u2[k] = 2 * x[k]
+            sincos(s22[], c2[], u2[], 1)
+            atansec2(ath[], sh2[], c2[], 0)
+            print k, "  ln(|tan(x)|): ", ln[k], "  artanh(cos(2x)): ", - ath[k], "  delta: ", - ath[k] - ln[k], "\n"
+        }
+    }
+}
+
+define void test_gd_1_a () {
+    auto t[], s2[], csh[], ash[]
+    print "\n arsinh(tan(gd x)) = x \n"
+    for (k = 0; k <= n; k++) {
+        tansec2(t[], s2[], gd[], 1)
+        asincos(ash[], csh[], t[], 0)
+        print k, "  gd x: ", gd[k], "  arsinh(tan(gd x)): ", ash[k], "  delta: ", ash[k] - x[k], "\n"
+    }
+}
+
+define void test_gd_1_b () {
+    auto s[], c[], sh2[], ath[]
+    print "\n artanh(sin(gd x)) = x \n"
+    for (k = 0; k <= n; k++) {
+        sincos(s[], c[], gd[], 1)
+        atansec2(ath[], sh2[], s[], 0)
+        print k, "  gd x: ", gd[k], "  artanh(sin(gd x)): ", ath[k], "  delta: ", ath[k] - x[k], "\n"
+    }
+}
+
+define void test_gd_1_c () {
+    auto s[], c[], gi1[], gi2[], gi[]
+    print "\n ln((1 + sin(gd x)) / cos(gd x)) = x \n"
+    for (k = 0; k <= n; k++) {
+        sincos(s[], c[], gd[], 1)
+        gi1[k] = const(1) + s[k]
+        div(gi2[], gi1[], c[])
+        ln(gi[], gi2[])
+        print k, "  gd x: ", gd[k], "  ln(sec(gd x) + tan(gd x)): ", gi[k], "  delta: ", gi[k] - x[k], "\n"
+    }
+}
