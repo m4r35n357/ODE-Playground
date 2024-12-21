@@ -62,15 +62,6 @@ def _cauchy_(b, a, k, k0, k1):
 def _half_(a, k, k0):
     return 2.0 * _cauchy_(a, a, k, k0, (k - (1 if k % 2 else 2)) // 2) + (0.0 if k % 2 else a[k // 2] * a[k // 2])
 
-def _chain_(b, a, k, k0):
-    return fsum(b[j] * (k - j) * a[k - j] for j in range(k0, k)) / k
-
-def _fk_(df_du, u, k, scale=1.0):
-    return _chain_(df_du, u, k, 0) * scale
-
-def _uk_(df_du, u, k, f_k, scale=1.0):
-    return (f_k - _chain_(df_du, u, k, 1) * scale) / df_du[0]
-
 def t_mul(u, v, k):
     return _cauchy_(u, v, k, 0, k)
 
@@ -78,6 +69,11 @@ def t_div(q, u, v, k):
     assert v[0] != 0.0
     q[k] = u[k] if k == 0 else u[k] - _cauchy_(q, v, k, 0, k - 1)
     return q[k] / v[0]
+
+def t_rec(r, v, k):
+    assert v[0] != 0.0
+    r[k] = 1.0 if k == 0 else - _cauchy_(r, v, k, 0, k - 1)
+    return r[k] / v[0]
 
 def t_sqr(u, k):
     return _half_(u, k, 0)
@@ -87,8 +83,16 @@ def t_sqrt(r, u, k):
     r[k] = sqrt(u[k]) if k == 0 else 0.5 * (u[k] - _half_(r, k, 1)) / r[0]
     return r[k]
 
+def t_pwr(p, u, a, k):
+    assert u[0] > 0.0
+    p[k] = u[k]**a if k == 0 else sum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
+    return p[k]
+
+def _chain_(df_du, u, k, k0=0):
+    return fsum(df_du[j] * (k - j) * u[k - j] for j in range(k0, k)) / k
+
 def t_exp(e, u, k):
-    e[k] = exp(u[k]) if k == 0 else _fk_(e, u, k)
+    e[k] = exp(u[k]) if k == 0 else _chain_(e, u, k)
     return e[k]
 
 def t_sin_cos(s, c, u, k, trig=True):
@@ -96,8 +100,8 @@ def t_sin_cos(s, c, u, k, trig=True):
         s[k] = sin(u[k]) if trig else sinh(u[k])
         c[k] = cos(u[k]) if trig else cosh(u[k])
     else:
-        s[k] = _fk_(c, u, k)
-        c[k] = _fk_(s, u, k, -1.0 if trig else 1.0)
+        s[k] = _chain_(c, u, k)
+        c[k] = _chain_(s, u, k) * (-1.0 if trig else 1.0)
     return s[k], c[k]
 
 def t_tan_sec2(t, s, u, k, trig=True):
@@ -105,33 +109,33 @@ def t_tan_sec2(t, s, u, k, trig=True):
         t[k] = tan(u[k]) if trig else tanh(u[k])
         s[k] = 1.0 + t[k] * t[k] if trig else 1.0 - t[k] * t[k]
     else:
-        t[k] = _fk_(s, u, k)
-        s[k] = _fk_(t, t, k, 2.0 if trig else -2.0)
+        t[k] = _chain_(s, u, k)
+        s[k] = _chain_(t, t, k) * (2.0 if trig else -2.0)
     return t[k], s[k]
 
 def t_ln(u, e, k):
     assert e[0] > 0.0
-    u[k] = log(e[k]) if k == 0 else _uk_(e, u, k, e[k])
+    u[k] = log(e[k]) if k == 0 else (e[k] - _chain_(e, u, k, 1)) / e[0]
     return u[k]
 
 def t_asin(u, c, s, k, trig=True):
     assert -1.0 < s[0] < 1.0 if trig else True
     if k == 0:
         u[k] = asin(s[k]) if trig else asinh(s[k])
-        c[k] = cos(u[k]) if trig else cosh(u[k])
+        c[k] =  cos(u[k]) if trig else  cosh(u[k])
     else:
-        u[k] = _uk_(c, u, k, s[k])
-        c[k] = _fk_(s, u, k, -1.0 if trig else 1.0)
+        u[k] = (s[k] - _chain_(c, u, k, 1)) / c[0]
+        c[k] = _chain_(s, u, k) * (-1.0 if trig else 1.0)
     return u[k], c[k]
 
 def t_acos(u, s, c, k, trig=True):
     assert -1.0 < c[0] < 1.0 if trig else c[0] > 1.0
     if k == 0:
         u[k] = acos(c[k]) if trig else acosh(c[k])
-        s[k] = -sin(u[k]) if trig else sinh(u[k])
+        s[k] = -sin(u[k]) if trig else  sinh(u[k])
     else:
-        u[k] = _uk_(s, u, k, c[k], -1.0 if trig else 1.0)
-        s[k] = _fk_(c, u, k)
+        u[k] = (c[k] - _chain_(s, u, k, 1) * (-1.0 if trig else 1.0)) / s[0]
+        s[k] = _chain_(c, u, k)
     return u[k], s[k]
 
 def t_atan(u, s, t, k, trig=True):
@@ -140,14 +144,9 @@ def t_atan(u, s, t, k, trig=True):
         u[k] = atan(t[k]) if trig else atanh(t[k])
         s[k] = 1.0 + t[k] * t[k] if trig else 1.0 - t[k] * t[k]
     else:
-        u[k] = _uk_(s, u, k, t[k])
-        s[k] = _fk_(t, t, k, 2.0 if trig else -2.0)
+        u[k] = (t[k] - _chain_(s, u, k, 1)) / s[0]
+        s[k] = _chain_(t, t, k) * (2.0 if trig else -2.0)
     return u[k], s[k]
-
-def t_pwr(p, u, a, k):
-    assert u[0] > 0.0
-    p[k] = u[k]**a if k == 0 else _uk_(u, p, k, _fk_(p, u, k, a))
-    return p[k]
 
 
 class Series:
@@ -366,6 +365,11 @@ class Series:
         return self._pair(t_atan, trig=False)[0]
 
     @property
+    def rec(self):
+        assert abs(self.val) != 0.0, f"self.val = {self.val}"
+        return self._single(t_rec)
+
+    @property
     def sqr(self):
         return Series([t_sqr(self.jet, k) for k in self.index])
 
@@ -534,6 +538,11 @@ class Dual:
     def atanh(self):
         assert abs(self.val) < 1.0, f"self.val = {self.val}"
         return Dual(atanh(self.val), self.dot / (1.0 - self.val * self.val))
+
+    @property
+    def rec(self):
+        assert self.val != 0.0, f"self.val = {self.val}"
+        return Dual(1.0 / self.val, - self.dot / self.val**2)
 
     @property
     def sqr(self):
