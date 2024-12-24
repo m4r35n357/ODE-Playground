@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#
+#  Example (interactive):  ipython -i ipython.py
 #  (c) 2018-2025 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 from sys import stderr
 from collections import namedtuple
@@ -242,6 +242,12 @@ else:
 from ad import *
 from plotters import *
 
+f = lambda a: a.sinh.atan
+mplot_s(f, x_min=-5, x_max=5, y_min=-5, y_max=5)
+
+f = lambda a: a.tan.asinh
+mplot_s(f, x_min=-2, x_max=2, y_min=-10, y_max=10)
+
 f = lambda a: a * a * a + 2.0 * a * a - 3.0 * a + 1.0
 
 bisect_d(f, -4.0, -2.0)
@@ -249,21 +255,6 @@ newton_d(f, -4.0)
 
 bisect_s(f, -4.0, -2.0)
 newton_s(f, -4.0)
-
-f = lambda a: (a.exp + (a.sqr - 4.0).exp).ln - value
-f = lambda a: (a.sqr + (a.exp - 4).sqr).sqrt - value
-f = lambda a: (2 * a).sin - 2 * a.sin * a.cos - value
-f = lambda a: (2 * a).cos - a.cos.sqr + a.sin.sqr - value
-f = lambda a: (3 * a).sin - 3 * a.sin + 4 * a.sin * a.sin.sqr - value
-f = lambda a: (3 * a).cos + 3 * a.cos - 4 * a.cos * a.cos.sqr - value
-f = lambda a: a.sqr.sqrt - value
-f = lambda a: a.exp.ln - value
-f = lambda a: a.tan - a.sin / a.cos - value
-f = lambda a: a.tanh - a.sinh / a.cosh - value
-f = lambda a: a.sin.asin - value
-f = lambda a: a.cos.acos - value
-f = lambda a: a.tan.atan - value
-f = lambda a: (a + 7) / (3.0 - a)
 
 # DO NOT RUN THIS IN PYCHARM!!!  (unless you want to close 101 images by hand) :(
 for i in range(-50, 51):
