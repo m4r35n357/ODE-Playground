@@ -123,7 +123,7 @@ def _plot_d(model, x_min, x_max, steps, y_min, y_max):
     ax1.legend(loc='lower right')
 
 def bisect_s(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, label=Label.FLAT, mode=Mode.ROOT___, debug=False):
-    a, b, c = Series.get(3, xa).var, Series.get(3, xb).var, Series.get(3)
+    a, b = Series.get(3, xa).var, Series.get(3, xb).var
     f_sign = model(a).jet[mode.value]
     fc = δx = i = 1
     while i <= limit and (abs(fc) > εf or abs(δx) > εx):
@@ -142,7 +142,7 @@ def bisect_s(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, label=Label.FLAT, m
     return Result(method=Solver.BI.name, count=i-1, label=label.value, mode=mode.name, x=c.val, f=fc, δx=δx)
 
 def bisect_d(model, xa, xb, εf=1e-12, εx=1e-12, limit=101, label=Label.FLAT, debug=False):
-    a, b, c = Dual(xa), Dual(xb), Dual(3)
+    a, b = Dual(xa), Dual(xb)
     f_sign = model(Dual(xa)).val
     δx = fc = i = 1
     while i <= limit and (abs(fc) > εf or abs(δx) > εx):
