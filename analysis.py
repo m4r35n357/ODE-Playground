@@ -238,6 +238,7 @@ if __name__ == "__main__":  # hard-coded example
 else:
     print(__name__ + " module loaded", file=stderr)
 
+# Some example commands to try . . .
 '''
 from ad import *
 from plotters import *
@@ -250,10 +251,16 @@ mplot_s(f, x_min=-2, x_max=2, y_min=-10, y_max=10)
 
 f = lambda a: a * a * a + 2.0 * a * a - 3.0 * a + 1.0
 
-bisect_d(f, -4.0, -2.0)
-newton_d(f, -4.0)
+scan_d(f, x_min=-8.0, x_max=8.0)
+mplot_d(f, x_min=-8.0, x_max=8.0)
 
+scan_s(f, x_min=-8.0, x_max=8.0)
+mplot_s(f, x_min=-8.0, x_max=8.0)
+
+bisect_d(f, -4.0, -2.0)
 bisect_s(f, -4.0, -2.0)
+
+newton_d(f, -4.0)
 newton_s(f, -4.0)
 
 # DO NOT RUN THIS IN PYCHARM!!!  (unless you want to close 101 images by hand) :(
