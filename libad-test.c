@@ -1,9 +1,8 @@
 /*
  * Tests for core Taylor Series Method, Horner's Method, and recurrence relations
  *
- * (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+ * (c) 2018-2025 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
  */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdio.h>

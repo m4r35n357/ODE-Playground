@@ -1,5 +1,5 @@
 #
-#  (c) 2018-2023 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
+#  (c) 2018-2025 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
 
 CFLAGS=-std=c99 -O3 -fno-math-errno -flto -s
