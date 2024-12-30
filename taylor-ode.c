@@ -10,13 +10,13 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-static real __, _a, _m, _h, _p, _fk, _s, _c, D0, D1, D2, D_1, D_2;
+static real __, _a, _m, _h, _p, _fk, D0, D1, D2, D_1, D_2;
 
 static char format[60];
 
 void tsm_init (int dp) {
     sprintf(format, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", dp, dp, dp);
-    mpfr_inits(__, _a, _m, _h, _p, _fk, _s, _c, NULL);
+    mpfr_inits(__, _a, _m, _h, _p, _fk, NULL);
     mpfr_init_set_si(D0, 0, RND);
     mpfr_init_set_si(D1, 1, RND);
     mpfr_init_set_si(D2, 2, RND);
@@ -159,17 +159,16 @@ pair t_sin_cos (series s, series c, series u, int k, bool trig) {
     CHECK(s != c && s != u && c != u);
     if (!k) trig ? mpfr_sin_cos(s[k], c[k], u[k], RND) : mpfr_sinh_cosh(s[k], c[k], u[k], RND);
     else {
-        mpfr_set_zero(_s, 1);
-        mpfr_set_zero(_c, 1);
+        mpfr_set_zero(s[k], 1);
+        mpfr_set_zero(c[k], 1);
         for (int j = 0; j < k; j++) {
             mpfr_mul_si(__, u[k - j], k - j, RND);
-            mpfr_fma(_s, c[j], __, _s, RND);
-            mpfr_fma(_c, s[j], __, _c, RND);
+            mpfr_fma(s[k], c[j], __, s[k], RND);
+            mpfr_fma(c[k], s[j], __, c[k], RND);
         }
-        mpfr_div_si(_s, _s, k, RND);
-        mpfr_div_si(_c, _c, k, RND);
-        mpfr_mul(s[k], _s, D1, RND);
-        mpfr_mul(c[k], _c, trig ? D_1 : D1, RND);
+        mpfr_div_si(s[k], s[k], k, RND);
+        mpfr_div_si(c[k], c[k], k, RND);
+        if (trig) mpfr_neg(c[k], c[k], RND);
     };
     return (pair){.a = s + k, .b = c + k};
 }
