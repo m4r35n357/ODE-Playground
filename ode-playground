@@ -4,7 +4,7 @@
 
 . ./base.sh
 
-choice=$(yad --fixed --columns=2 --title="ODE Playground" --form --separator=" " --align=right \
+choice=$(yad --fixed --columns=2 --title="ODE Playground (c99)" --form --separator=" " --align=right \
     --field="Model:CB" --field="Analysis:CB" \
     -- 'Bouali!BurkeShaw!GenesioTesi!Halvorsen!ISUC!^Lorenz!RF!Rossler!Rucklidge!Thomas!WimolBanlue!YuWang' \
        'GLplot!Animated!^Gnuplot!CNS!CNSScan!ChaosScan')
