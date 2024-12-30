@@ -10,7 +10,7 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-static real __, _a, _m, _h, _p, _fk, D0, D1, D2, D_1, D_2;
+static real __, _a, _m, _h, _p, _fk, D0, D1;
 
 static char format[60];
 
@@ -19,9 +19,6 @@ void tsm_init (int dp) {
     mpfr_inits(__, _a, _m, _h, _p, _fk, NULL);
     mpfr_init_set_si(D0, 0, RND);
     mpfr_init_set_si(D1, 1, RND);
-    mpfr_init_set_si(D2, 2, RND);
-    mpfr_init_set_si(D_1, -1, RND);
-    mpfr_init_set_si(D_2, -2, RND);
 }
 
 void tsm_get_p (char **argv, int argc, ...) {
@@ -138,20 +135,20 @@ mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {
     return &p[k];
 }
 
-static real *_chain_ (real *_, series b, series a, int k, int k0, real scale) {
+static real *_chain_ (real *_, series b, series a, int k, int k0, int scale) {
     mpfr_set_zero(*_, 1);
     for (int j = k0; j < k; j++) {
         mpfr_mul_si(__, a[k - j], k - j, RND);
         mpfr_fma(*_, b[j], __, *_, RND);
     }
     mpfr_div_si(*_, *_, k, RND);
-    mpfr_mul(*_, *_, scale, RND);
+    mpfr_mul_si(*_, *_, scale, RND);
     return _;
 }
 
 real *t_exp (series e, series u, int k) {
     CHECK(e != u);
-    if (!k) mpfr_exp(e[k], u[k], RND); else _chain_(e + k, e, u, k, 0, D1);
+    if (!k) mpfr_exp(e[k], u[k], RND); else _chain_(e + k, e, u, k, 0, 1);
     return e + k;
 }
 
@@ -180,13 +177,13 @@ pair t_tan_sec2 (series t, series s, series u, int k, bool trig) {
         trig ? mpfr_sec(s[k], u[k], RND) : mpfr_sech(s[k], u[k], RND);
         mpfr_sqr(s[k], s[k], RND);
     } else {
-        _chain_(t + k, s, u, k, 0, D1);
-        _chain_(s + k, t, t, k, 0, trig ? D2 : D_2);
+        _chain_(t + k, s, u, k, 0, 1);
+        _chain_(s + k, t, t, k, 0, trig ? 2 : -2);
     };
     return (pair){.a = t + k, .b = s + k};
 }
 
-static real *_uk_ (real *_, series df_du, series u, int k, real *f_k, real sign) {
+static real *_uk_ (real *_, series df_du, series u, int k, real *f_k, int sign) {
     mpfr_sub(*_, *f_k, *_chain_(&_fk, df_du, u, k, 1, sign), RND);
     mpfr_div(*_, *_, df_du[0], RND);
     return _;
@@ -194,7 +191,7 @@ static real *_uk_ (real *_, series df_du, series u, int k, real *f_k, real sign)
 
 real *t_ln (series u, series e, int k) {
     CHECK(mpfr_sgn(e[0]) > 0); CHECK(u != e);
-    if (!k) mpfr_log(u[k], e[k], RND); else _uk_(u + k, e, u, k, e + k, D1);
+    if (!k) mpfr_log(u[k], e[k], RND); else _uk_(u + k, e, u, k, e + k, 1);
     return u + k;
 }
 
@@ -204,8 +201,8 @@ pair t_asin_cos (series u, series c, series s, int k, bool trig) {
         trig ? mpfr_asin(u[k], s[k], RND) : mpfr_asinh(u[k], s[k], RND);
         trig ? mpfr_cos(c[k], u[k], RND) : mpfr_cosh(c[k], u[k], RND);
     } else {
-        _uk_(u + k, c, u, k, s + k, D1);
-        _chain_(c + k, s, u, k, 0, trig ? D_1 : D1);
+        _uk_(u + k, c, u, k, s + k, 1);
+        _chain_(c + k, s, u, k, 0, trig ? -1 : 1);
     };
     return (pair){.a = u + k, .b = c + k};
 }
@@ -217,8 +214,8 @@ pair t_acos_sin (series u, series s, series c, int k, bool trig) {
         trig ? mpfr_sin(s[k], u[k], RND) : mpfr_sinh(s[k], u[k], RND);
         if (trig) mpfr_neg(s[k], s[k], RND);
     } else {
-        _uk_(u + k, s, u, k, c + k, trig ? D_1 : D1);
-        _chain_(s + k, c, u, k, 0, D1);
+        _uk_(u + k, s, u, k, c + k, trig ? -1 : 1);
+        _chain_(s + k, c, u, k, 0, 1);
     };
     return (pair){.a = u + k, .b = s + k};
 }
@@ -230,8 +227,8 @@ pair t_atan_sec2 (series u, series s, series t, int k, bool trig) {
         trig ? mpfr_sec(s[k], u[k], RND) : mpfr_sech(s[k], u[k], RND);
         mpfr_sqr(s[k], s[k], RND);
     } else {
-        _uk_(u + k, s, u, k, t + k, D1);
-        _chain_(s + k, t, t, k, 0, trig ? D2 : D_2);
+        _uk_(u + k, s, u, k, t + k, 1);
+        _chain_(s + k, t, t, k, 0, trig ? 2 : -2);
     };
     return (pair){.a = u + k, .b = s + k};
 }
