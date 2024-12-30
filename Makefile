@@ -1,6 +1,7 @@
 #
 #  (c) 2018-2025 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 #
+#  make clean && make CCC=gcc -j 4 all && make test-all
 
 CFLAGS=-std=c99 -O3 -fno-math-errno -flto -s
 WARNINGS=-Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes -Wconversion -Wredundant-decls -Wmissing-declarations
@@ -32,7 +33,7 @@ endif
 %.o: %.c
 	$(CC) $(CFLAGS) -MT $@ -MMD -MP -c -o $@ $< $(WARNINGS)
 
-all: tsm-std divergence tests
+all: tsm-std divergence tests ctags
 
 
 tsm-%-std: tsm-%.o taylor-ode.o main.o
@@ -42,7 +43,7 @@ tsm-std: tsm-bouali-std tsm-burke-shaw-std tsm-genesio-tesi-std tsm-halvorsen-st
 
 
 divergence: divergence.o
-	$(CC) $(CFLAGS) -o $@ $< $(LIB_STD) -lm
+	$(CC) $(CFLAGS) -o $@ $< -lm
 
 
 libad-test: libad-test.o taylor-ode.o ad.o
@@ -50,8 +51,7 @@ libad-test: libad-test.o taylor-ode.o ad.o
 
 tests: libad-test
 
-
-.PHONY: test clean depclean ctags ctags-system ctags-system-all coverage
+.PHONY: test test-all clean depclean ctags ctags-system ctags-system-all coverage
 
 test:
 	@for x in -2 -1.5 -1 -.5 0 .5 1 1.5 2; do ./libad-test 24 1024 20 $$x 1e-64 >/dev/null || exit 1; echo ""; done
@@ -73,16 +73,17 @@ ctags-system-all:
 	@/usr/bin/ctags -R --c-kinds=+p --fields=+iaS --extras=+q /usr/include .
 
 clean:
-	@rm -rf *.o *.gcda *.gcno *-std *-gl h-kerr-gen-light h-kerr-gen-particle divergence libad-test libdual-test coverage* gmon.out
+	@rm -rf *.so *.o *.gcda *.gcno *-std *-gl h-kerr-gen-light h-kerr-gen-particle divergence libad-test \
+		coverage* gmon.out
 
 depclean: clean
-	@rm -f *.d
+	@rm -f *.d tags
 
 C_OUT_DIR=coverage-out
 C_OUT_FILE=coverage.info
 coverage: test
 	@lcov --capture --directory . --output-file $(C_OUT_FILE)
 	@genhtml $(C_OUT_FILE) --output-directory $(C_OUT_DIR)
-	@echo "\033[1;34mHTML \033[0;36mfile://$(CURDIR)/$(C_OUT_DIR)/index.html\033[0;37m"
+	@echo "\e[1;34mHTML \e[0;36mfile://$(CURDIR)/$(C_OUT_DIR)/index.html\e[0;37m"
 
 -include *.d
