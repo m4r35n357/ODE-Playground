@@ -91,7 +91,7 @@ int main (int argc, char **argv) {
     series x = tsm_jet(n + 1);
     mpfr_init_set_str(x[0], argv[4], BASE, RND);
     for (int k = 1; k <= n; k++) {
-        mpfr_div_si(x[k], D05, k * k, RND);
+        mpfr_mul_si(x[k], x[k - 1], -1, RND);
     }
     mpfr_init_set_str(tolerance, argv[5], BASE, RND); CHECK(mpfr_sgn(tolerance) > 0);
     if (argc == 7) {
@@ -147,9 +147,9 @@ int main (int argc, char **argv) {
     fprintf(stderr, "Taylor Arithmetic %sx = %s%.1Lf%s\n", GRY, WHT, mpfr_get_ld(x[0], RND), NRM);
     bool positive = mpfr_sgn(x[0]) > 0, non_zero = mpfr_zero_p(x[0]) == 0, lt_pi_2 = mpfr_cmpabs(x[0], PI_2) < 0;
     series r1 = tsm_jet(n), r2 = tsm_jet(n), r3 = tsm_jet(n), S1 = tsm_jet(n); mpfr_set(S1[0], D1, RND);
-    series abs_x = tsm_jet(n), inv_x = tsm_jet(n), sqrt_x = tsm_jet(n), ln_x = tsm_jet(n);
+    series abs_x = tsm_jet(n), rec_x = tsm_jet(n), sqrt_x = tsm_jet(n), ln_x = tsm_jet(n);
     if (non_zero) ad_abs(abs_x, x);
-    if (non_zero) ad_rec(inv_x, x);
+    if (non_zero) ad_rec(rec_x, x);
     if (positive) ad_sqrt(sqrt_x, x);
     if (positive) ad_ln(ln_x, x);
     series sin_x = tsm_jet(n), cos_x = tsm_jet(n), tan_x = tsm_jet(n), sec2_x = tsm_jet(n);
@@ -174,7 +174,7 @@ int main (int argc, char **argv) {
 
     char* name = "x * x == sqr(x)"; compare(name, ad_mul(r1, x, x), sqr_x);
     name = "sqr(x) / x == x"; non_zero ? compare(name, ad_div(r1, sqr_x, x), x) : skip(name);
-    name = "x * (1 / x) == 1"; non_zero ? compare(name, ad_mul(r1, x, inv_x), S1) : skip(name);
+    name = "x * (1 / x) == 1"; non_zero ? compare(name, ad_mul(r1, x, rec_x), S1) : skip(name);
     name = "sqrt(x) * sqrt(x) == x"; positive ? compare(name, ad_mul(r1, sqrt_x, sqrt_x), x) : skip(name);
     name = "x / sqrt(x) == sqrt(x)"; positive ? compare(name, ad_div(r1, x, sqrt_x), sqrt_x) : skip(name);
 
@@ -185,12 +185,12 @@ int main (int argc, char **argv) {
     name = "x^0.5 == sqrt(x)"; positive ? compare(name, ad_pwr(r1, x, D05), sqrt_x): skip(name);
     name = "x^0.0 == 1"; positive ? compare(name, ad_pwr(r1, x, D0), S1) : skip(name);
     name = "x^-0.5 == 1 / sqrt(x)"; positive ? compare(name, ad_pwr(r1, x, D_05), ad_rec(r2, sqrt_x)) : skip(name);
-    name = "x^-1.0 == 1 / x"; positive ? compare(name, ad_pwr(r1, x, D_1), inv_x) : skip(name);
+    name = "x^-1.0 == 1 / x"; positive ? compare(name, ad_pwr(r1, x, D_1), rec_x) : skip(name);
     name = "x^-2.0 == 1 / sqr(x)"; positive ? compare(name, ad_pwr(r1, x, D_2), ad_rec(r2, sqr_x)) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "sqr(x) * x^-3 == 1 / x"; positive ? compare(name, ad_mul(r1, sqr_x, ad_pwr(r2, x, D_3)), inv_x) : skip(name);
+    name = "sqr(x) * x^-3 == 1 / x"; positive ? compare(name, ad_mul(r1, sqr_x, ad_pwr(r2, x, D_3)), rec_x) : skip(name);
     name = "sqr(x)^0.5 == |x|"; positive ? compare(name, ad_pwr(r1, sqr_x, D05), abs_x) : skip(name);
     name = "sqrt(sqr(x) == |x|"; positive ? compare(name, ad_sqrt(r1, sqr_x), abs_x) : skip(name);
 
@@ -199,7 +199,7 @@ int main (int argc, char **argv) {
     name = "ln(e^x) == x"; compare(name, ad_ln(r1, exp_x), x);
     name = "ln(sqr(x)) == ln(x) * 2"; positive ? compare(name, ad_ln(r1, sqr_x), ad_scale(r2, ln_x, D2)) : skip(name);
     name = "ln(sqrt(x)) == ln(x) / 2"; positive ? compare(name, ad_ln(r1, sqrt_x), ad_scale(r2, ln_x, D05)) : skip(name);
-    name = "ln(1 / x) == -ln(x)"; positive ? compare(name, ad_ln(r1, inv_x), ad_scale(r2, ln_x, D_1)) : skip(name);
+    name = "ln(1 / x) == -ln(x)"; positive ? compare(name, ad_ln(r1, rec_x), ad_scale(r2, ln_x, D_1)) : skip(name);
     name = "ln(x^-3) == -3ln(x)"; positive ? compare(name, ad_ln(r1, ad_pwr(r2, x, D_3)), ad_scale(r3, ln_x, D_3)) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
