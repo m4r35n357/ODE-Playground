@@ -41,6 +41,7 @@ series ad_mul (series PROD, series V, series U);
  * Calculates Taylor Series for U / V, result stored in jet QUOT
  */
 series ad_div (series QUOT, series U, series V);
+series ad_rec (series r, series v);
 
 /*
  * Calculates Taylor Series for the square of U, result stored in jet SQR

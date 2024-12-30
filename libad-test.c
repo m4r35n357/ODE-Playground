@@ -149,7 +149,7 @@ int main (int argc, char **argv) {
     series r1 = tsm_jet(n), r2 = tsm_jet(n), r3 = tsm_jet(n), S1 = tsm_jet(n); mpfr_set(S1[0], D1, RND);
     series abs_x = tsm_jet(n), inv_x = tsm_jet(n), sqrt_x = tsm_jet(n), ln_x = tsm_jet(n);
     if (non_zero) ad_abs(abs_x, x);
-    if (non_zero) ad_div(inv_x, S1, x);
+    if (non_zero) ad_rec(inv_x, x);
     if (positive) ad_sqrt(sqrt_x, x);
     if (positive) ad_ln(ln_x, x);
     series sin_x = tsm_jet(n), cos_x = tsm_jet(n), tan_x = tsm_jet(n), sec2_x = tsm_jet(n);
@@ -184,9 +184,9 @@ int main (int argc, char **argv) {
     name = "x^1.0 == x"; positive ? compare(name, ad_pwr(r1, x, D1), x) : skip(name);
     name = "x^0.5 == sqrt(x)"; positive ? compare(name, ad_pwr(r1, x, D05), sqrt_x): skip(name);
     name = "x^0.0 == 1"; positive ? compare(name, ad_pwr(r1, x, D0), S1) : skip(name);
-    name = "x^-0.5 == 1 / sqrt(x)"; positive ? compare(name, ad_pwr(r1, x, D_05), ad_div(r2, S1, sqrt_x)) : skip(name);
+    name = "x^-0.5 == 1 / sqrt(x)"; positive ? compare(name, ad_pwr(r1, x, D_05), ad_rec(r2, sqrt_x)) : skip(name);
     name = "x^-1.0 == 1 / x"; positive ? compare(name, ad_pwr(r1, x, D_1), inv_x) : skip(name);
-    name = "x^-2.0 == 1 / sqr(x)"; positive ? compare(name, ad_pwr(r1, x, D_2), ad_div(r2, S1, sqr_x)) : skip(name);
+    name = "x^-2.0 == 1 / sqr(x)"; positive ? compare(name, ad_pwr(r1, x, D_2), ad_rec(r2, sqr_x)) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
 
@@ -207,7 +207,7 @@ int main (int argc, char **argv) {
     name = "cosh^2(x) - sinh^2(x) == 1"; compare(name, ad_sub(r1, cosh2_x, sinh2_x), S1);
     name = "sech^2(x) + tanh^2(x) == 1"; compare(name, ad_add(r1, sech2_x, ad_sqr(tanh2_x, tanh_x)), S1);
     name = "tanh(x) == sinh(x) / cosh(x)"; compare(name, tanh_x, ad_div(r1, sinh_x, cosh_x));
-    name = "sech^2(x) == 1 / cosh^2(x)"; compare(name, sech2_x, ad_div(r1, S1, cosh2_x));
+    name = "sech^2(x) == 1 / cosh^2(x)"; compare(name, sech2_x, ad_rec(r1, cosh2_x));
     name = "sinh(2x) == 2 * sinh(x) * cosh(x)"; compare(name, sinh_2x, ad_scale(r1, ad_mul(r2, sinh_x, cosh_x), D2));
     name = "cosh(2x) == cosh^2(x) + sinh^2(x)"; compare(name, cosh_2x, ad_add(r1, cosh2_x, sinh2_x));
 
@@ -227,7 +227,7 @@ int main (int argc, char **argv) {
     name = "cos^2(x) + sin^2(x) == 1"; compare(name, ad_add(r1, cos2_x, sin2_x), S1);
     name = "sec^2(x) - tan^2(x) == 1"; lt_pi_2 ? compare(name, ad_sub(r1, sec2_x, ad_sqr(tan2_x, tan_x)), S1) : skip(name);
     name = "tan(x) == sin(x) / cos(x)"; lt_pi_2 ? compare(name, tan_x, ad_div(r1, sin_x, cos_x)) : skip(name);
-    name = "sec^2(x) == 1 / cos^2(x)"; lt_pi_2 ? compare(name, sec2_x, ad_div(r1, S1, cos2_x)) : skip(name);
+    name = "sec^2(x) == 1 / cos^2(x)"; lt_pi_2 ? compare(name, sec2_x, ad_rec(r1, cos2_x)) : skip(name);
     name = "sin(2x) == 2 * sin(x) * cos(x)"; compare(name, sin_2x, ad_scale(r1, ad_mul(r2, sin_x, cos_x), D2));
     name = "cos(2x) == cos^2(x) - sin^2(x)"; compare(name, cos_2x, ad_sub(r1, cos2_x, sin2_x));
 

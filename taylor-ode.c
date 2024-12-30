@@ -92,6 +92,13 @@ real *t_div (series q, series u, series v, int k) {
     return q + k;
 }
 
+real *t_rec (series r, series v, int k) {
+    CHECK(mpfr_zero_p(v[0]) == 0); CHECK(r != v);
+    mpfr_sub(r[k], !k ? D1 : D0, !k ? D0 : *_cauchy_(r + k, r, v, k, 0, k - 1), RND);
+    mpfr_div(r[k], r[k], v[0], RND);
+    return r + k;
+}
+
 static real *_half_ (series a, int k, int k0, bool even) {
     mpfr_mul_2si(_h, *_cauchy_(&_h, a, a, k, k0, (even ? k - 1 : k - 2) / 2), 1, RND);
     if (!even) mpfr_fma(_h, a[k / 2], a[k / 2], _h, RND);

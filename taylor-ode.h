@@ -188,6 +188,7 @@ real *t_sqr (series U, int k);
  *                QUOT[k] = - sum{j=0->k-1} QUOT[j].W[k-j] / W[0]           otherwise
  */
 real *t_div (series QUOT, series U, series W, int k);
+real *t_rec (series REC, series W, int k);
 
 /*
  * Returns a pointer to kth element of the square root of U, results stored in jet ROOT
