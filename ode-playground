@@ -6,7 +6,7 @@ user_dir="/tmp/$USER"
 [ ! -d $user_dir ] && mkdir $user_dir
 user_data="$user_dir/data"
 
-choice=$(yad --columns=2 --title="ODE Playground" --form --separator=" " --align=right \
+choice=$(yad --columns=2 --title="ODE Playground (Python)" --form --separator=" " --align=right \
     --field="Model:CB" --field="Analysis type:CB" \
     -- '^Lorenz!Rossler!RF!Halvorsen!Thomas' 'GLplot!IC!Animated!^Gnuplot!CNS!CNSScan')
 
