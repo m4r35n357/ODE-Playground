@@ -117,7 +117,7 @@ real *t_sqrt (series r, series u, int k) {
     return r + k;
 }
 
-mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {
+mpfr_t *t_pwr (series p, series u, real a, int k) {
     CHECK(mpfr_sgn(u[0]) > 0); CHECK(p != u);
     if (!k) {
         mpfr_pow(p[k], u[k], a, RND);
@@ -132,7 +132,7 @@ mpfr_t *t_pwr (series p, series u, mpfr_t a, int k) {
         mpfr_div_si(p[k], p[k], k, RND);
         mpfr_div(p[k], p[k], u[0], RND);
     }
-    return &p[k];
+    return p + k;
 }
 
 static real *_chain_ (real *_, series b, series a, int k, int k0, int scale) {
