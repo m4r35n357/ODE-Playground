@@ -248,7 +248,7 @@ int main (int argc, char **argv) {
     fprintf(stderr, "%sTotal%s %d  %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
     if (skipped) fprintf(stderr, "  %sSKIPPED%s %d", YLW, NRM, skipped);
     if (passed == total - skipped) {
-        fprintf(stderr, "\n%sDelta%s %.1Le %s%s%s %sk == %s%s\n", GRY, NRM, mpfr_get_ld(delta_max, RND), BLU, name_max, NRM, GRY, name_max, NRM);
+        fprintf(stderr, "\n%sDelta%s %.1Le %s%s%s %sk == %d%s\n", GRY, NRM, mpfr_get_ld(delta_max, RND), BLU, name_max, NRM, GRY, k_max, NRM);
         return 0;
     } else {
         fprintf(stderr, "  %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);
