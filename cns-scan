@@ -21,9 +21,9 @@ set xlabel 'Taylor Series Order'
 set ylabel 'Clean Simulation Time, model units'
 set y2label 'CPU Time, seconds'
 set style fill solid border -1
-set xrange [0:]
-set yrange [0:'$max_clean']
-set y2range [0:'$max_cpu']
+set xrange [2:$max]
+set yrange [0:$max_clean]
+set y2range [0:$max_cpu]
 plot '$user_data' using 1:2 axes x1y1 title 'CNS' with boxes, '' u 1:3 axes x1y2 t 'CPU' w boxes
 pause mouse close
 EOF
@@ -48,7 +48,7 @@ do
     wait
     temp=$(./divergence $fileA $fileB $threshold)
     case $temp in
-        '') echo $n "Still within tolerance of $threshold - increase simulation time?"
+        '') echo $n "Still within $threshold - not chaotic, or simulation time too short"
             exit 1;;
          *) set $temp
             echo $n $4 $6;;
