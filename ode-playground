@@ -108,88 +108,68 @@ case $model in
             --  $cns_range $cns_separation './tsm-halvorsen-std' $places $precision '_' $step_size $steps '1.0' '0.0' '0.0' '1.4') ;;
     esac ;;
     WimolBanlue) case $analysis in
-        Gnuplot) ./plot 10000 ./tsm-wimol-banlue-std $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
-            --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+        Gnuplot) ./plot 10000 $(yad --fixed --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
+            --field="Program":RO --field="Display Places":NUM --field="Precision(bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '8!2..256!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '0.1' '0.1' '1.0') ;;
-        CNS) time -p ./cns $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
-            --field="Mode":CB --field="Separation" --field="Model":RO \
-            --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+            --  './tsm-wimol-banlue-std' $places $precision $order $step_size $steps '1.0' '0.1' '0.1' '1.0') ;;
+        CNS) time -p ./cns $(yad --fixed --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
+            --field="Mode":CB --field="Separation" \
+            --field="Program":RO --field="Display Places":NUM --field="Precision(bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  'step2!nosim' '1.0' './tsm-wimol-banlue-std' \
-                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '8!2..256!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '0.1' '0.1' '1.0') ;;
-        CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
-            --field="Maximum Order":NUM --field="Separation" --field="Model":RO \
-            --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
+            --  'step2!nosim' '1.0' './tsm-wimol-banlue-std' $places $precision $order $step_size $steps '1.0' '0.1' '0.1' '1.0') ;;
+        CNSScan) time -p ./cns-scan $(yad --fixed --columns=2 --title="Wimol-Banlue" --form --separator=" " --align=right \
+            --field="Maximum Order":NUM --field="Separation":CB \
+            --field="Program":RO --field="Display Places":NUM --field="Precision(bits)":CB --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" \
-            --  '32!2..256!1' '1.0' './tsm-wimol-banlue-std' \
-                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '_' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '0.1' '0.1' '1.0') ;;
+            --  $cns_range $cns_separation './tsm-wimol-banlue-std' $places $precision '_' $step_size $steps '1.0' '0.1' '0.1' '1.0') ;;
     esac ;;
     YuWang) case $analysis in
-        Gnuplot) ./plot 10000 ./tsm-yu-wang-std $(yad --columns=2 --title="Yu-Wang" --form --separator=" " --align=right \
-            --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+        Gnuplot) ./plot 10000 $(yad --fixed --columns=2 --title="Yu-Wang" --form --separator=" " --align=right \
+            --field="Program":RO --field="Display Places":NUM --field="Precision(bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
-            --  '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '8!2..256!1' '.001!0.001..0.1!0.001!3' '25000!1..1000000!1000' \
-                '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '2.5') ;;
-        CNS) time -p ./cns $(yad --columns=2 --title="Yu-Wang" --form --separator=" " --align=right \
-            --field="Mode":CB --field="Separation" --field="Model":RO \
-            --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+            --  './tsm-yu-wang-std' $places $precision $order $step_size $steps '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '2.5') ;;
+        CNS) time -p ./cns $(yad --fixed --columns=2 --title="Yu-Wang" --form --separator=" " --align=right \
+            --field="Mode":CB --field="Separation" \
+            --field="Program":RO --field="Display Places":NUM --field="Precision(bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
-            --  'step2!nosim' '1.0' './tsm-yu-wang-std' \
-                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '8!2..256!1' '.001!0.001..0.1!0.001!3' '25000!1..1000000!1000' \
-                '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '2.5') ;;
-        CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Yu-Wang" --form --separator=" " --align=right \
-            --field="Maximum Order":NUM --field="Separation" --field="Model":RO \
-            --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
+            --  'step2!nosim' '1.0' './tsm-yu-wang-std' $places $precision $order $step_size $steps '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '2.5') ;;
+        CNSScan) time -p ./cns-scan $(yad --fixed --columns=2 --title="Yu-Wang" --form --separator=" " --align=right \
+            --field="Maximum Order":NUM --field="Separation":CB \
+            --field="Program":RO --field="Display Places":NUM --field="Precision(bits)":CB --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
-            --  '32!2..256!1' '1.0' './tsm-yu-wang-std' \
-                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '_' '.001!0.001..0.1!0.001!3' '60000!1..1000000!1000' \
-                '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '2.5') ;;
+            --  $cns_range $cns_separation './tsm-yu-wang-std' $places $precision '_' $step_size $steps '1.0' '0.0' '0.0' '10.0' '40.0' '2.0' '2.5') ;;
     esac ;;
     Bouali) case $analysis in
-        Gnuplot) ./plot 10000 ./tsm-bouali-std $(yad --columns=2 --title="Bouali" --form --separator=" " --align=right \
-            --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+        Gnuplot) ./plot 10000 $(yad --fixed --columns=2 --title="Bouali" --form --separator=" " --align=right \
+            --field="Program":RO --field="Display Places":NUM --field="Precision(bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
-            --  '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '8!2..256!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
-        CNS) time -p ./cns $(yad --columns=2 --title="Bouali" --form --separator=" " --align=right \
-            --field="Mode":CB --field="Separation" --field="Model":RO \
-            --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+            --  './tsm-bouali-std' $places $precision $order $step_size $steps '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
+        CNS) time -p ./cns $(yad --fixed --columns=2 --title="Bouali" --form --separator=" " --align=right \
+            --field="Mode":CB --field="Separation" \
+            --field="Program":RO --field="Display Places":NUM --field="Precision(bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
-            --  'step2!nosim' '1.0' './tsm-bouali-std' \
-                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '8!2..256!1' '.01!0.001..0.1!0.001!3' '100000!1..1000000!1000' \
-                '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
-        CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Bouali" --form --separator=" " --align=right \
-            --field="Maximum Order":NUM --field="Separation" --field="Model":RO \
-            --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
+            --  'step2!nosim' '1.0' './tsm-bouali-std' $places $precision $order $step_size $steps '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
+        CNSScan) time -p ./cns-scan $(yad --fixed --columns=2 --title="Bouali" --form --separator=" " --align=right \
+            --field="Maximum Order":NUM --field="Separation":CB \
+            --field="Program":RO --field="Display Places":NUM --field="Precision(bits)":CB --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" --field="d" \
-            --  '32!2..256!1' '1.0' './tsm-bouali-std' \
-                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '_' '.01!0.001..0.1!0.01!3' '100000!1..1000000!1000' \
-                '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
+            --  $cns_range $cns_separation './tsm-bouali-std' $places $precision '_' $step_size $steps '1.0' '1.0' '0.0' '3.0' '2.2' '1.0' '0.6') ;;
     esac ;;
     BurkeShaw) case $analysis in
-        Gnuplot) ./plot 10000 ./tsm-burke-shaw-std $(yad --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
-            --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+        Gnuplot) ./plot 10000 $(yad --fixed --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
+            --field="Program":RO --field="Display Places":NUM --field="Precision(bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="S" --field="V" \
-            --  '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '8!2..256!1' '.01!0.001..0.1!0.001!3' '10000!1..1000000!1000' \
-                '1.0' '1.0' '1.0' '10.0' '4.272') ;;
-        CNS) time -p ./cns $(yad --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
-            --field="Mode":CB --field="Separation" --field="Model":RO \
-            --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":NUM \
+            --  './tsm-burke-shaw-std' $places $precision $order $step_size $steps '1.0' '1.0' '1.0' '10.0' '4.272') ;;
+        CNS) time -p ./cns $(yad --fixed --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
+            --field="Mode":CB --field="Separation" \
+            --field="Program":RO --field="Display Places":NUM --field="Precision(bits)":CB --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="S" --field="V" \
-            --  'step2!nosim' '1.0' './tsm-burke-shaw-std' \
-                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '8!2..256!1' '.01!0.001..0.1!0.001!3' '12000!1..1000000!1000' \
-                '1.0' '1.0' '1.0' '10.0' '4.272') ;;
-        CNSScan) time -p ./cns-scan $(yad --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
-            --field="Maximum Order":NUM --field="Separation" --field="Model":RO \
-            --field="Display Places":NUM --field="Precision (bits)":CB --field="Order":RO --field="Step Size":NUM --field="Steps":NUM \
+            --  'step2!nosim' '1.0' './tsm-burke-shaw-std' $places $precision $order $step_size $steps '1.0' '1.0' '1.0' '10.0' '4.272') ;;
+        CNSScan) time -p ./cns-scan $(yad --fixed --columns=2 --title="Burke-Shaw" --form --separator=" " --align=right \
+            --field="Maximum Order":NUM --field="Separation":CB \
+            --field="Program":RO --field="Display Places":NUM --field="Precision(bits)":CB --field="Order":RO --field="Step Size":NUM --field="Steps":CB \
             --field="x0" --field="y0" --field="z0" --field="S" --field="V" \
-            --  '32!2..256!1' '1.0' './tsm-burke-shaw-std' \
-                '6!0..36!3' 'double!extended!quadruple!^octuple!408!630!840' '_' '.01!0.001..0.1!0.01!3' '12000!1..1000000!1000' \
-                '1.0' '1.0' '1.0' '10.0' '4.272') ;;
+            --  $cns_range $cns_separation './tsm-burke-shaw-std' $places $precision '_' $step_size $steps '1.0' '1.0' '1.0' '10.0' '4.272') ;;
     esac ;;
     Rucklidge) case $analysis in
         Gnuplot) ./plot 10000 $(yad --fixed --columns=2 --title="Rucklidge" --form --separator=" " --align=right \
