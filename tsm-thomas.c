@@ -22,12 +22,15 @@ model *tsm_init_p (int argc, char **argv, int n) {
 
 void ode (triplet *v, series x, series y, series z, model *_, int k) {
     //  x' = sin(y) - Bx
-    mpfr_fms(v->x, _->b, x[k], *t_sin_cos(_->sy, _->cy, y, k, true).a, RND);
+    t_sin_cos(_->sy, _->cy, y, k, true);
+    mpfr_fms(v->x, _->b, x[k], _->sy[k], RND);
     mpfr_neg(v->x, v->x, RND);
     //  y' = sin(z) - By
-    mpfr_fms(v->y, _->b, y[k], *t_sin_cos(_->sz, _->cz, z, k, true).a, RND);
+    t_sin_cos(_->sz, _->cz, z, k, true);
+    mpfr_fms(v->y, _->b, y[k], _->sz[k], RND);
     mpfr_neg(v->y, v->y, RND);
     //  z' = sin(x) - Bz
-    mpfr_fms(v->z, _->b, z[k], *t_sin_cos(_->sx, _->cx, x, k, true).a, RND);
+    t_sin_cos(_->sx, _->cx, x, k, true);
+    mpfr_fms(v->z, _->b, z[k], _->sx[k], RND);
     mpfr_neg(v->z, v->z, RND);
 }

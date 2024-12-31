@@ -8,7 +8,7 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-struct Parameters { real alpha, gamma, D1, D4; series a, b, c, _ALPHA, _1; };
+struct Parameters { real alpha, gamma, D1, D4; series a, b, c; };
 
 model *tsm_init_p (int argc, char **argv, int n) {
     CHECK(argc == 11);
@@ -19,21 +19,21 @@ model *tsm_init_p (int argc, char **argv, int n) {
     _->a = tsm_jet(n);
     _->b = tsm_jet(n);
     _->c = tsm_jet(n);
-    _->_ALPHA = tsm_jet(n); mpfr_set(_->_ALPHA[0], _->alpha, RND);
-    _->_1 = tsm_jet(n); mpfr_set(_->_1[0], _->D1, RND);
     return _;
 }
 
 void ode (triplet *v, series x, series y, series z, model *_, int k) {
     //  x' = y(z - 1 + x^2) + Gx
-    mpfr_sub(_->a[k], *t_sqr(x, k), _->_1[k], RND);
+    mpfr_set(_->a[k], *t_sqr(x, k), RND);
+    if (!k) mpfr_sub(_->a[k], *t_sqr(x, k), _->D1, RND);
     mpfr_add(_->a[k], z[k], _->a[k], RND);
     mpfr_fma(v->x, _->gamma, x[k], *t_mul(y, _->a, k), RND);
     //  y' = x(3z + 1 - x^2) + Gy
     mpfr_fms(_->b[k], _->D4, z[k], _->a[k], RND);
     mpfr_fma(v->y, _->gamma, y[k], *t_mul(x, _->b, k), RND);
     //  z' = -2z(A + xy)
-    mpfr_add(_->c[k], *t_mul(x, y, k), _->_ALPHA[k], RND);
+    mpfr_set(_->c[k], *t_mul(x, y, k), RND);
+    if (!k) mpfr_add(_->c[k], *t_mul(x, y, k), _->alpha, RND);
     mpfr_mul_2si(v->z, *t_mul(z, _->c, k), 1, RND);
     mpfr_neg(v->z, v->z, RND);
 }

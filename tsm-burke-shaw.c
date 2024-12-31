@@ -8,13 +8,12 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-struct Parameters { real s, v; series _V; };
+struct Parameters { real s, v; };
 
 model *tsm_init_p (int argc, char **argv, int n) { (void)n;
     CHECK(argc == 11);
     model *_ = malloc(sizeof (model)); CHECK(_);
     tsm_get_p(argv, argc, &_->s, &_->v);
-    _->_V = tsm_jet(n); mpfr_set(_->_V[0], _->v, RND);
     return _;
 }
 
@@ -26,5 +25,6 @@ void ode (triplet *v, series x, series y, series z, model *_, int k) {
     mpfr_fma(v->y, _->s, *t_mul(x, z, k), y[k], RND);
     mpfr_neg(v->y, v->y, RND);
     //  z' = Sxy + V
-    mpfr_fma(v->z, _->s, *t_mul(x, y, k), _->_V[k], RND);
+    mpfr_mul(v->z, _->s, *t_mul(x, y, k), RND);
+    if (!k) mpfr_add(v->z, v->z, _->v, RND);
 }
