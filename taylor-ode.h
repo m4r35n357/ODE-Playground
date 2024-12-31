@@ -39,13 +39,6 @@ typedef struct triple_m {
 } triplet;
 
 /*
- * For returning combined recurrence values
- */
-typedef struct pair_m {
-    real *a, *b;
-} pair;
-
-/*
  * The Taylor Series Method (TSM) in brief; to solve a system of Ordinary Differential Equations defined by:
  *
  *                         v(t) = ode(u(t))                  (where u represents x, y, z coordinates)
@@ -187,8 +180,8 @@ real *t_sqr (series U, int k);
  *
  *                QUOT[k] = - sum{j=0->k-1} QUOT[j].W[k-j] / W[0]           otherwise
  */
-real *t_div (series QUOT, series U, series W, int k);
-real *t_rec (series REC, series W, int k);
+void t_div (series QUOT, series U, series W, int k);
+void t_rec (series REC, series W, int k);
 
 /*
  * Returns a pointer to kth element of the square root of U, results stored in jet ROOT
@@ -201,7 +194,7 @@ real *t_rec (series REC, series W, int k);
  *
  *  ROOT[k] = (U[k] - sum{j=1->k-1} ROOT[j].ROOT[k-j]) / 2.ROOT[0]
  */
-real *t_sqrt (series ROOT, series U, int k);
+void t_sqrt (series ROOT, series U, int k);
 
 /*
  * Applying the chain rule for the derivative of a composed function f(u(t)) creates another Cauchy product:
@@ -240,7 +233,7 @@ real *t_sqrt (series ROOT, series U, int k);
  *
  *    EXP[k] = sum{j=0->k-1} EXP[j].(k-j).U[k-j] / k
  */
-real *t_exp (series EXP, series U, int k);
+void t_exp (series EXP, series U, int k);
 
 /*
  * Returns pointers to kth elements of both sine and cosine of U, results stored in jets SIN and COS
@@ -256,7 +249,7 @@ real *t_exp (series EXP, series U, int k);
  *
  *    COSH[k] = sum{j=0->k-1} SINH[j].(k-j).U[k-j] / k
  */
-pair t_sin_cos (series SIN, series COS, series U, int k, bool trig);
+void t_sin_cos (series SIN, series COS, series U, int k, bool trig);
 
 /*
  * Returns pointers to kth elements of both tan(h) and sec(h)^2 of U, results stored in jets TAN(H) and SEC(H)2
@@ -272,7 +265,7 @@ pair t_sin_cos (series SIN, series COS, series U, int k, bool trig);
  *
  *   SEC2[k] = sum{j=0->k-1} 2.TAN[j].(k-j).TAN[k-j] / k
  */
-pair t_tan_sec2 (series TAN, series SEC2, series U, int k, bool trig);
+void t_tan_sec2 (series TAN, series SEC2, series U, int k, bool trig);
 
 /*
  * Returns a pointer to kth element of the logarithm (inverse of EXP), results stored in jet U
@@ -285,7 +278,7 @@ pair t_tan_sec2 (series TAN, series SEC2, series U, int k, bool trig);
  *
  *        U[k] = (EXP[k] - sum{j=1->k-1} EXP[j].(k-j).U[k-j] / k) / EXP[0]       "reverse"
  */
-real *t_ln (series U, series EXP, int k);
+void t_ln (series U, series EXP, int k);
 
 /*
  * Returns pointers to kth elements of arcsin/arsinh (inverse of SIN/SINH), results stored in jets U and COSH
@@ -301,7 +294,7 @@ real *t_ln (series U, series EXP, int k);
  *
  *     COSH[k] = sum{j=0->k-1} SINH[j].(k-j).U[k-j] / k                          "forward"
  */
-pair t_asin_cos (series U, series COSH, series SINH, int k, bool trig);
+void t_asin_cos (series U, series COSH, series SINH, int k, bool trig);
 
 /*
  * Returns pointers to kth elements of arccos/arcosh (inverse of COS/COSH), results stored in jets U and SINH
@@ -317,7 +310,7 @@ pair t_asin_cos (series U, series COSH, series SINH, int k, bool trig);
  *
  *     SINH[k] = sum{j=0->k-1} COSH[j].(k-j).U[k-j] / k                          "forward"
  */
-pair t_acos_sin (series U, series SINH, series COSH, int k, bool trig);
+void t_acos_sin (series U, series SINH, series COSH, int k, bool trig);
 
 /*
  * Returns pointers to kth elements of arctan/artanh (inverse of TAN/TANH), results stored in jets U and SEC2
@@ -333,7 +326,7 @@ pair t_acos_sin (series U, series SINH, series COSH, int k, bool trig);
  *
  *     SEC2[k] = sum{j=0->k-1} 2.TAN[j].(k-j).TAN[k-j] / k                       "forward"
  */
-pair t_atan_sec2 (series U, series SEC2, series TAN, int k, bool trig);
+void t_atan_sec2 (series U, series SEC2, series TAN, int k, bool trig);
 
 /*
  * Returns kth element of P = U^a (where a is scalar), results stored in jet PWR
@@ -347,4 +340,4 @@ pair t_atan_sec2 (series U, series SEC2, series TAN, int k, bool trig);
  *
  *       PWR[k] = (E_k - sum{j=1->k-1} U[j].(k-j).PWR[k-j]/k) / U[0]        (LHS)
  */
-real *t_pwr (series PWR, series U, real a, int k);
+void t_pwr (series PWR, series U, real a, int k);

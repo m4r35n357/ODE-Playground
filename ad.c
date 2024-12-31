@@ -83,18 +83,16 @@ series ad_exp (series e, series u) {
     return e;
 }
 
-pair ad_sin_cos (series s, series c, series u, bool trig) {
+void ad_sin_cos (series s, series c, series u, bool trig) {
     for (int k = 0; k < order; k++) {
         t_sin_cos(s, c, u, k, trig);
     }
-    return (pair){ .a = s, .b = c };
 }
 
-pair ad_tan_sec2 (series t, series s2, series u, bool trig) {
+void ad_tan_sec2 (series t, series s2, series u, bool trig) {
     for (int k = 0; k < order; k++) {
         t_tan_sec2(t, s2, u, k, trig);
     }
-    return (pair){ .a = t, .b = s2 };
 }
 
 series ad_pwr (series p, series u, real a) {

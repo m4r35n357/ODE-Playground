@@ -60,12 +60,12 @@ series ad_exp (series EXP, series U);
 /*
  * Calculates Taylor Series for the trigonometric sine and cosine of U, results stored in jets SIN and COS
  */
-pair ad_sin_cos (series SIN, series COS, series U, bool trig);
+void ad_sin_cos (series SIN, series COS, series U, bool trig);
 
 /*
  * Calculates Taylor Series for the trigonometric tangent and squared secant of U, results stored in jets TAN and SEC2
  */
-pair ad_tan_sec2 (series TAN, series SEC2, series U, bool trig);
+void ad_tan_sec2 (series TAN, series SEC2, series U, bool trig);
 
 /*
  * Calculates Taylor Series for the natural logarithm (inverse of EXP), results stored in jet U
