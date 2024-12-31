@@ -103,7 +103,7 @@ int main (int argc, char **argv) {
     CHECK(argc == 5 || argc == 6);
 
     dp = (int)strtol(argv[1], NULL, BASE);
-    n = (int)strtol(argv[2], NULL, BASE); CHECK(n > 8);
+    n = (int)strtol(argv[2], NULL, BASE); CHECK(n > 0 && n <=64);
     series x = tsm_jet(n + 1);
     for (int k = 0, s = 1; k <= n; k++, s *= -1) {
         x[k] = !k ? strtold(argv[3], NULL) : 0.5L * s / SQR(k);
@@ -115,7 +115,7 @@ int main (int argc, char **argv) {
     }
 
     fprintf(stderr, "%sHorner Summation ", GRY);
-    series s = tsm_jet(n);
+    series s = tsm_jet(8);
     s[0] = 1.0L; s[1] = 3.0L; s[2] = 0.0L; s[3] = 2.0L;
     CHECK(horner(s, 3, 2.0L) == 23.0L); fprintf(stderr, ".");
     s[0] = 3.0L; s[1] = -1.0L; s[2] = 2.0L; s[3] = -4.0L; s[4] = 0.0L; s[5] = 1.0L;
