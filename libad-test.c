@@ -86,7 +86,7 @@ int main (int argc, char **argv) {
     real PI_2;
     dp = (int)strtol(argv[1], NULL, BASE);
     mpfr_set_default_prec((int)strtol(argv[2], NULL, BASE));
-    n = (int)strtol(argv[3], NULL, BASE); CHECK(n > 8);
+    n = (int)strtol(argv[3], NULL, BASE); CHECK(n > 0 && n <=64);
     libad_test_init();
     series x = tsm_jet(n + 1);
     mpfr_init_set_str(x[0], argv[4], BASE, RND);
@@ -102,26 +102,9 @@ int main (int argc, char **argv) {
     mpfr_const_pi(PI_2, RND);
     mpfr_div_2si(PI_2, PI_2, 1, RND);
 
-    fprintf(stderr, "%sTaylor Series Method", GRY);
-    int steps = 10;
-    triplet *v = malloc(sizeof (triplet)); CHECK(v);
-    mpfr_inits(v->x, v->y, v->z, NULL);
-    xyz *_ = malloc(sizeof (xyz)); CHECK(_);
-    _->x = tsm_jet(n + 1); mpfr_set(_->x[0], D1, RND);
-    _->y = tsm_jet(n + 1); mpfr_set(_->y[0], D1, RND);
-    _->z = tsm_jet(n + 1); mpfr_set(_->z[0], D1, RND);
+    fprintf(stderr, "%sHorner Summation ", GRY);
     tsm_init(dp);
-    tsm(n, D01, steps, v, _, tsm_init_p(argc, argv, n), clock());
-    fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);
-    real e1, e0, e_1;
-    mpfr_inits(e1, e0, e_1, NULL);
-    mpfr_exp(e1, D1, RND);
-    mpfr_exp(e0, D0, RND);
-    mpfr_exp(e_1, D_1, RND);
-    _out_(e1, e0, e_1, D01, steps, 0.0F);
-
-    fprintf(stderr, "%s, Horner Summation ", GRY);
-    series p = tsm_jet(n);
+    series p = tsm_jet(8);
     mpfr_set_si(p[0], 1, RND);
     mpfr_set_si(p[1], 3, RND);
     mpfr_set_si(p[2], 0, RND);
@@ -143,6 +126,23 @@ int main (int argc, char **argv) {
     mpfr_set_si(p[6], 0, RND);
     mpfr_set_si(p[7], -2, RND);
     CHECK(!mpfr_cmp_ld(*horner(p, 7, D_2), 201.0L)); fprintf(stderr, ". %sOK%s\n", GRN, NRM);
+
+    fprintf(stderr, "%sTaylor Series Method . . . %s\n", GRY, NRM);
+    int steps = 10;
+    triplet *v = malloc(sizeof (triplet)); CHECK(v);
+    mpfr_inits(v->x, v->y, v->z, NULL);
+    xyz *_ = malloc(sizeof (xyz)); CHECK(_);
+    _->x = tsm_jet(n + 1); mpfr_set(_->x[0], D1, RND);
+    _->y = tsm_jet(n + 1); mpfr_set(_->y[0], D1, RND);
+    _->z = tsm_jet(n + 1); mpfr_set(_->z[0], D1, RND);
+    tsm(n, D01, steps, v, _, tsm_init_p(argc, argv, n), clock());
+    fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);
+    real e1, e0, e_1;
+    mpfr_inits(e1, e0, e_1, NULL);
+    mpfr_exp(e1, D1, RND);
+    mpfr_exp(e0, D0, RND);
+    mpfr_exp(e_1, D_1, RND);
+    _out_(e1, e0, e_1, D01, steps, 0.0F);
 
     fprintf(stderr, "Taylor Arithmetic %sx = %s%.1Lf%s\n", GRY, WHT, mpfr_get_ld(x[0], RND), NRM);
     bool positive = mpfr_sgn(x[0]) > 0, non_zero = mpfr_zero_p(x[0]) == 0, lt_pi_2 = mpfr_cmpabs(x[0], PI_2) < 0;
