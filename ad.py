@@ -88,8 +88,9 @@ def t_pwr(p, u, a, k):
     p[k] = u[k]**a if k == 0 else sum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
     return p[k]
 
-def _chain_(df_du, u, k, k0=0):
-    return fsum(df_du[j] * (k - j) * u[k - j] for j in range(k0, k)) / k
+def _chain_(dfdu, u, k, fk=None, scale=1):
+    _ = fsum(dfdu[j] * (k - j) * u[k - j] for j in range(1 if fk else 0, k))
+    return (fk - _ * scale / k) / dfdu[0] if fk else _ * scale / k
 
 def t_exp(e, u, k):
     e[k] = exp(u[k]) if k == 0 else _chain_(e, u, k)
@@ -101,7 +102,7 @@ def t_sin_cos(s, c, u, k, trig=True):
         c[k] = cos(u[k]) if trig else cosh(u[k])
     else:
         s[k] = _chain_(c, u, k)
-        c[k] = _chain_(s, u, k) * (-1.0 if trig else 1.0)
+        c[k] = _chain_(s, u, k, None, -1.0 if trig else 1.0)
     return s[k], c[k]
 
 def t_tan_sec2(t, s, u, k, trig=True):
@@ -110,12 +111,12 @@ def t_tan_sec2(t, s, u, k, trig=True):
         s[k] = 1.0 + t[k] * t[k] if trig else 1.0 - t[k] * t[k]
     else:
         t[k] = _chain_(s, u, k)
-        s[k] = _chain_(t, t, k) * (2.0 if trig else -2.0)
+        s[k] = _chain_(t, t, k, None, 2.0 if trig else -2.0)
     return t[k], s[k]
 
 def t_ln(u, e, k):
     assert e[0] > 0.0
-    u[k] = log(e[k]) if k == 0 else (e[k] - _chain_(e, u, k, 1)) / e[0]
+    u[k] = log(e[k]) if k == 0 else _chain_(e, u, k, e[k])
     return u[k]
 
 def t_asin(u, c, s, k, trig=True):
@@ -124,8 +125,8 @@ def t_asin(u, c, s, k, trig=True):
         u[k] = asin(s[k]) if trig else asinh(s[k])
         c[k] =  cos(u[k]) if trig else  cosh(u[k])
     else:
-        u[k] = (s[k] - _chain_(c, u, k, 1)) / c[0]
-        c[k] = _chain_(s, u, k) * (-1.0 if trig else 1.0)
+        u[k] = _chain_(c, u, k, s[k])
+        c[k] = _chain_(s, u, k, None, -1.0 if trig else 1.0)
     return u[k], c[k]
 
 def t_acos(u, s, c, k, trig=True):
@@ -134,7 +135,7 @@ def t_acos(u, s, c, k, trig=True):
         u[k] = acos(c[k]) if trig else acosh(c[k])
         s[k] = -sin(u[k]) if trig else  sinh(u[k])
     else:
-        u[k] = (c[k] - _chain_(s, u, k, 1) * (-1.0 if trig else 1.0)) / s[0]
+        u[k] = _chain_(s, u, k, c[k], -1.0 if trig else 1.0)
         s[k] = _chain_(c, u, k)
     return u[k], s[k]
 
@@ -144,8 +145,8 @@ def t_atan(u, s, t, k, trig=True):
         u[k] = atan(t[k]) if trig else atanh(t[k])
         s[k] = 1.0 + t[k] * t[k] if trig else 1.0 - t[k] * t[k]
     else:
-        u[k] = (t[k] - _chain_(s, u, k, 1)) / s[0]
-        s[k] = _chain_(t, t, k) * (2.0 if trig else -2.0)
+        u[k] = _chain_(s, u, k, t[k])
+        s[k] = _chain_(t, t, k, None, 2.0 if trig else -2.0)
     return u[k], s[k]
 
 
