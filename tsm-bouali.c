@@ -18,7 +18,7 @@ model *tsm_init_p (int argc, char **argv, int n) {
     return _;
 }
 
-void ode (triplet *v, series x, series y, series z, model *_, int k) {
+void ode (triplet *v, series x, series y, series z, const model *_, int k) {
     //  x' = Ax(1 - y) - Bz
     mpfr_fmms(v->x, _->a, x[k], _->a, *t_mul(x, y, k), RND);
     mpfr_fms(v->x, _->b, z[k], v->x, RND);

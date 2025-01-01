@@ -50,7 +50,7 @@ void _out_ (real x, real y, real z, real h, int step, clock_t since) {
     mpfr_printf(format, x, y, z, __, (double)(clock() - since) / CLOCKS_PER_SEC);
 }
 
-void tsm (int o, real h, int steps, triplet *v, xyz *_, model *p, clock_t t0) {
+void tsm (int o, real h, int steps, triplet *v, xyz *_, const model *p, clock_t t0) {
     for (int step = 0; step < steps; step++) {
         for (int k = 0; k < o; k++) {
             ode(v, _->x, _->y, _->z, p, k);
@@ -66,45 +66,45 @@ void tsm (int o, real h, int steps, triplet *v, xyz *_, model *p, clock_t t0) {
     _out_(_->x[0], _->y[0], _->z[0], h, steps, t0);
 }
 
-real *t_abs (series u, int k) {
+real *t_abs (const series u, int k) {
     CHECK(mpfr_zero_p(u[0]) == 0);
     mpfr_sgn(u[0]) < 0 ? mpfr_neg(_a, u[k], RND) : mpfr_set(_a, u[k], RND);
     return &_a;
 }
 
-static real *_cauchy_ (real *_, series b, series a, int k, int k0, int k1) {
+static real *_cauchy_ (real *_, const series b, const series a, int k, int k0, int k1) {
     mpfr_set_zero(*_, 1);
     for (int j = k0; j <= k1; j++) mpfr_fma(*_, b[j], a[k - j], *_, RND);
     return _;
 }
 
-real *t_mul (series u, series v, int k) {
+real *t_mul (const series u, const series v, int k) {
     return _cauchy_(&_m, u, v, k, 0, k);
 }
 
-void t_div (series q, series u, series v, int k) {
+void t_div (series q, const series u, const series v, int k) {
     CHECK(mpfr_zero_p(v[0]) == 0); CHECK(q != u && q != v);
     mpfr_sub(q[k], u[k], !k ? D0 : *_cauchy_(&q[k], q, v, k, 0, k - 1), RND);
     mpfr_div(q[k], q[k], v[0], RND);
 }
 
-void t_rec (series r, series v, int k) {
+void t_rec (series r, const series v, int k) {
     CHECK(mpfr_zero_p(v[0]) == 0); CHECK(r != v);
     mpfr_sub(r[k], !k ? D1 : D0, !k ? D0 : *_cauchy_(&r[k], r, v, k, 0, k - 1), RND);
     mpfr_div(r[k], r[k], v[0], RND);
 }
 
-static real *_half_ (series a, int k, int k0, bool even) {
+static real *_half_ (const series a, int k, int k0, bool even) {
     mpfr_mul_2si(_h, *_cauchy_(&_h, a, a, k, k0, (even ? k - 1 : k - 2) / 2), 1, RND);
     if (!even) mpfr_fma(_h, a[k / 2], a[k / 2], _h, RND);
     return &_h;
 }
 
-real *t_sqr (series u, int k) {
+real *t_sqr (const series u, int k) {
     return _half_(u, k, 0, k % 2);
 }
 
-void t_sqrt (series r, series u, int k) {
+void t_sqrt (series r, const series u, int k) {
     CHECK(mpfr_sgn(u[0]) > 0); CHECK(r != u);
     if (!k) mpfr_sqrt(r[k], u[k], RND);
     else {
@@ -114,7 +114,7 @@ void t_sqrt (series r, series u, int k) {
     }
 }
 
-void t_pwr (series p, series u, real a, int k) {
+void t_pwr (series p, const series u, real a, int k) {
     CHECK(mpfr_sgn(u[0]) > 0); CHECK(p != u);
     if (!k) {
         mpfr_pow(p[k], u[k], a, RND);
@@ -131,7 +131,7 @@ void t_pwr (series p, series u, real a, int k) {
     }
 }
 
-static real *_chain_ (real *_, series df_du, series u, int k, real *f_k, int scale) {
+static real *_chain_ (real *_, const series df_du, const series u, int k, const series f_k, int scale) {
     mpfr_set_zero(*_, 1);
     for (int j = f_k ? 1 : 0; j < k; j++) {
         mpfr_mul_si(__, u[k - j], k - j, RND);
@@ -143,15 +143,15 @@ static real *_chain_ (real *_, series df_du, series u, int k, real *f_k, int sca
         mpfr_sub(*_, *f_k, *_, RND);
         mpfr_div(*_, *_, df_du[0], RND);
     }
-    return _;
+    return _;  // f[k] if f_k is null (forward), u[k] if f_k is non-null (reverse)
 }
 
-void t_exp (series e, series u, int k) {
+void t_exp (series e, const series u, int k) {
     CHECK(e != u);
     if (!k) mpfr_exp(e[k], u[k], RND); else _chain_(&e[k], e, u, k, NULL, 1);
 }
 
-void t_sin_cos (series s, series c, series u, int k, bool trig) {
+void t_sin_cos (series s, series c, const series u, int k, bool trig) {
     CHECK(s != c && s != u && c != u);
     if (!k) trig ? mpfr_sin_cos(s[k], c[k], u[k], RND) : mpfr_sinh_cosh(s[k], c[k], u[k], RND);
     else {
@@ -168,7 +168,7 @@ void t_sin_cos (series s, series c, series u, int k, bool trig) {
     };
 }
 
-void t_tan_sec2 (series t, series s, series u, int k, bool trig) {
+void t_tan_sec2 (series t, series s, const series u, int k, bool trig) {
     CHECK(t != s && t != u && s != u);
     if (!k) {
         trig ? mpfr_tan(t[k], u[k], RND) : mpfr_tanh(t[k], u[k], RND);
@@ -180,12 +180,12 @@ void t_tan_sec2 (series t, series s, series u, int k, bool trig) {
     };
 }
 
-void t_ln (series u, series e, int k) {
+void t_ln (series u, const series e, int k) {
     CHECK(mpfr_sgn(e[0]) > 0); CHECK(u != e);
     if (!k) mpfr_log(u[k], e[k], RND); else _chain_(&u[k], e, u, k, &e[k], 1);
 }
 
-void t_asin_cos (series u, series c, series s, int k, bool trig) {
+void t_asin_cos (series u, series c, const series s, int k, bool trig) {
     CHECK(trig ? mpfr_cmpabs_ui(s[0], 1) < 0 : true); CHECK(u != c && u != s && c != s);
     if (!k) {
         trig ? mpfr_asin(u[k], s[k], RND) : mpfr_asinh(u[k], s[k], RND);
@@ -196,7 +196,7 @@ void t_asin_cos (series u, series c, series s, int k, bool trig) {
     };
 }
 
-void t_acos_sin (series u, series s, series c, int k, bool trig) {
+void t_acos_sin (series u, series s, const series c, int k, bool trig) {
     CHECK(trig ? mpfr_cmpabs_ui(c[0], 1) < 0 : mpfr_cmp_si(c[0], 1) > 0); CHECK(u != s && u != c && s != c);
     if (!k) {
         trig ? mpfr_acos(u[k], c[k], RND) : mpfr_acosh(u[k], c[k], RND);
@@ -208,7 +208,7 @@ void t_acos_sin (series u, series s, series c, int k, bool trig) {
     };
 }
 
-void t_atan_sec2 (series u, series s, series t, int k, bool trig) {
+void t_atan_sec2 (series u, series s, const series t, int k, bool trig) {
     CHECK(trig ? true : mpfr_cmpabs_ui(t[0], 1) < 0); CHECK(u != s && u != t && s != t);
     if (!k) {
         trig ? mpfr_atan(u[k], t[k], RND) : mpfr_atanh(u[k], t[k], RND);

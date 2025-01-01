@@ -20,7 +20,7 @@ model *tsm_init_p (int argc, char **argv, int n) {
     return _;
 }
 
-void ode (triplet *v, series x, series y, series z, model *_, int k) {
+void ode (triplet *v, series x, series y, series z, const model *_, int k) {
     //  x' = sin(y) - Bx
     t_sin_cos(_->sy, _->cy, y, k, true);
     mpfr_fms(v->x, _->b, x[k], _->sy[k], RND);

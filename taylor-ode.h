@@ -93,12 +93,12 @@ void tsm_init (int display_precision);
 /*
  * Safely and efficiently evaluates a polynomial of degree n, with the coefficients in S, and the variable in h
  */
-real *horner (series U, int order, real step_size);
+real *horner (const series U, int order, real step_size);
 
 /*
  *  Run TSM, send data to stdout
  */
-void tsm (int order, real step_size, int steps, triplet *V, xyz *JETS, model *p, clock_t since);
+void tsm (int order, real step_size, int steps, triplet *V, xyz *JETS, const model *p, clock_t since);
 
 /*
  * Obligatory client method signatures
@@ -112,7 +112,7 @@ model *tsm_init_p (int argc, char **argv, int order);
 /*
  * Calculate kth components of the velocity jet V, using the ODE model together with the functions below as necessary.
  */
-void ode (triplet *V, series X, series Y, series Z, model *p, int k);
+void ode (triplet *V, series X, series Y, series Z, const model *p, int k);
 
 /*
  * Basic Taylor Series functions
@@ -121,7 +121,7 @@ void ode (triplet *V, series X, series Y, series Z, model *p, int k);
 /*
  * Returns a pointer to kth element of the absolute value of U, no jet storage needed
  */
-real *t_abs (series U, int k);
+real *t_abs (const series U, int k);
 
 /*
  * Taylor Series recurrence relationships
@@ -142,49 +142,51 @@ real *t_abs (series U, int k);
  */
 
 /*
- * Returns a pointer to kth element of the product of U and W, no jet storage needed
+ * Returns a pointer to kth element of the product of U and V
  *
- *     PROD = U.W
+ *     PROD = U.V
  *
- *   PROD_k = sum{j=0->k} U[j].W[k-j]
+ *   PROD_k = sum{j=0->k} U[j].V[k-j]
  */
-real *t_mul (series U, series W, int k);
+real *t_mul (const series U, const series V, const int k);
 
 /*
- * Returns a pointer to kth element of the square of U, no jet storage needed
+ * Returns a pointer to kth element of the square of U
  *
  *     SQR = U.U
  *
  *   SQR_k = sum{j=0->k} U[j].U[k-j]
  */
-real *t_sqr (series U, int k);
+real *t_sqr (const series U, int k);
 
 /*
- * Returns a pointer to kth element of U / W, results stored in jet QUOT
+ * Calculates kth element of U / V, results stored in QUOT
  *
- *     QUOT = U / W ==> U = QUOT.W
+ *     QUOT = U / V ==> U = QUOT.V
  *
- *                   U[k] = sum{j=0->k} QUOT[j].W[k-j]
+ *                   U[k] = sum{j=0->k} QUOT[j].V[k-j]
  *
- *                        = sum{j=0->k-1} QUOT[j].W[k-j] + QUOT[k].W[0]
+ *                        = sum{j=0->k-1} QUOT[j].V[k-j] + QUOT[k].V[0]
  *
- *                QUOT[k] = (U[k] - sum{j=0->k-1} QUOT[j].W[k-j]) / W[0]
+ *                QUOT[k] = (U[k] - sum{j=0->k-1} QUOT[j].V[k-j]) / V[0]
  *
- *                        =  U[0] / W[0]                                    if k == 0
+ *                        =  U[0] / V[0]                                    if k == 0
  *
- *                        = (U[k] - sum{j=0->k-1} QUOT[j].W[k-j]) / V[0]    otherwise
- *
- * If U == NULL, returns kth element of 1 / W, results stored in jet QUOT,
- *
- * from above,    QUOT[k] = 1.0 / W[0]                                      if k == 0
- *
- *                QUOT[k] = - sum{j=0->k-1} QUOT[j].W[k-j] / W[0]           otherwise
+ *                        = (U[k] - sum{j=0->k-1} QUOT[j].V[k-j]) / V[0]    otherwise
  */
-void t_div (series QUOT, series U, series W, int k);
-void t_rec (series REC, series W, int k);
+void t_div (series QUOT, const series U, const series V, int k);
 
 /*
- * Returns a pointer to kth element of the square root of U, results stored in jet ROOT
+ * Calculates kth element of 1 / V, results stored in REC,
+ *
+ * from above,    REC[k] = 1.0 / V[0]                                      if k == 0
+ *
+ *                REC[k] = - sum{j=0->k-1} REC[j].V[k-j] / V[0]           otherwise
+ */
+void t_rec (series REC, const series V, int k);
+
+/*
+ * Calculates kth element of the square root of U, results stored in ROOT
  *
  *        U = ROOT.ROOT
  *
@@ -194,7 +196,7 @@ void t_rec (series REC, series W, int k);
  *
  *  ROOT[k] = (U[k] - sum{j=1->k-1} ROOT[j].ROOT[k-j]) / 2.ROOT[0]
  */
-void t_sqrt (series ROOT, series U, int k);
+void t_sqrt (series ROOT, const series U, int k);
 
 /*
  * Applying the chain rule for the derivative of a composed function f(u(t)) creates another Cauchy product:
@@ -225,7 +227,7 @@ void t_sqrt (series ROOT, series U, int k);
  */
 
 /*
- * Returns a pointer to kth element of the exponential of U, results stored in jet EXP
+ * Calculates kth element of the exponential of U, results stored in EXP
  *
  *      EXP' = dFdU.U' = EXP.U'
  *
@@ -233,10 +235,10 @@ void t_sqrt (series ROOT, series U, int k);
  *
  *    EXP[k] = sum{j=0->k-1} EXP[j].(k-j).U[k-j] / k
  */
-void t_exp (series EXP, series U, int k);
+void t_exp (series EXP, const series U, int k);
 
 /*
- * Returns pointers to kth elements of both sine and cosine of U, results stored in jets SIN and COS
+ * Calculates kth elements of both sine and cosine of U, results stored in SIN and COS
  *
  *      SINH' =   dFdU.U' = COSH.U' (=  COS.U')
  *      COSH' = d2FdU2.U' = SINH.U' (= -SIN.U')
@@ -249,10 +251,10 @@ void t_exp (series EXP, series U, int k);
  *
  *    COSH[k] = sum{j=0->k-1} SINH[j].(k-j).U[k-j] / k
  */
-void t_sin_cos (series SIN, series COS, series U, int k, bool trig);
+void t_sin_cos (series SIN, series COS, const series U, int k, bool trig);
 
 /*
- * Returns pointers to kth elements of both tan(h) and sec(h)^2 of U, results stored in jets TAN(H) and SEC(H)2
+ * Calculates kth elements of both tan(h) and sec(h)^2 of U, results stored in TAN(H) and SEC(H)2
  *
  *      TAN' =   dFdU.U' = SEC^2.U'   (=   SECH2.U')
  *     SEC2' = d2FdU2.U' = 2.TAN.TAN' (= -2.TANH.TANH')
@@ -265,10 +267,10 @@ void t_sin_cos (series SIN, series COS, series U, int k, bool trig);
  *
  *   SEC2[k] = sum{j=0->k-1} 2.TAN[j].(k-j).TAN[k-j] / k
  */
-void t_tan_sec2 (series TAN, series SEC2, series U, int k, bool trig);
+void t_tan_sec2 (series TAN, series SEC2, const series U, int k, bool trig);
 
 /*
- * Returns a pointer to kth element of the logarithm (inverse of EXP), results stored in jet U
+ * Calculates kth element of the logarithm (inverse of EXP), results stored in U
  *
  * This is the simplest "reverse" example, where the wanted quantity is now on the RHS
  *
@@ -278,10 +280,10 @@ void t_tan_sec2 (series TAN, series SEC2, series U, int k, bool trig);
  *
  *        U[k] = (EXP[k] - sum{j=1->k-1} EXP[j].(k-j).U[k-j] / k) / EXP[0]       "reverse"
  */
-void t_ln (series U, series EXP, int k);
+void t_ln (series U, const series EXP, int k);
 
 /*
- * Returns pointers to kth elements of arcsin/arsinh (inverse of SIN/SINH), results stored in jets U and COSH
+ * Calculates kth elements of arcsin/arsinh (inverse of SIN/SINH), results stored in U and COSH
  *
  *       SINH' =   dFdU.U' = COSH.U' (=  COS.U')
  *       COSH' = d2FdU2.U' = SINH.U' (= -SIN.U')
@@ -294,10 +296,10 @@ void t_ln (series U, series EXP, int k);
  *
  *     COSH[k] = sum{j=0->k-1} SINH[j].(k-j).U[k-j] / k                          "forward"
  */
-void t_asin_cos (series U, series COSH, series SINH, int k, bool trig);
+void t_asin_cos (series U, series COSH, const series SINH, int k, bool trig);
 
 /*
- * Returns pointers to kth elements of arccos/arcosh (inverse of COS/COSH), results stored in jets U and SINH
+ * Calculates kth elements of arccos/arcosh (inverse of COS/COSH), results stored in U and SINH
  *
  *       COSH' =   dFdU.U' = SINH.U' (= -SIN.U')
  *       SINH' = d2FdU2.U' = COSH.U' (=  COS.U')
@@ -310,10 +312,10 @@ void t_asin_cos (series U, series COSH, series SINH, int k, bool trig);
  *
  *     SINH[k] = sum{j=0->k-1} COSH[j].(k-j).U[k-j] / k                          "forward"
  */
-void t_acos_sin (series U, series SINH, series COSH, int k, bool trig);
+void t_acos_sin (series U, series SINH, const series COSH, int k, bool trig);
 
 /*
- * Returns pointers to kth elements of arctan/artanh (inverse of TAN/TANH), results stored in jets U and SEC2
+ * Calculates kth elements of arctan/artanh (inverse of TAN/TANH), results stored in U and SEC2
  *
  *        TAN' =   dFdU.U' = SEC2.U'    (=  SECH^2.U')
  *       SEC2' = d2FdU2.U' = 2.TAN.TAN' (= -2.TANH.TANH')
@@ -326,10 +328,10 @@ void t_acos_sin (series U, series SINH, series COSH, int k, bool trig);
  *
  *     SEC2[k] = sum{j=0->k-1} 2.TAN[j].(k-j).TAN[k-j] / k                       "forward"
  */
-void t_atan_sec2 (series U, series SEC2, series TAN, int k, bool trig);
+void t_atan_sec2 (series U, series SEC2, const series TAN, int k, bool trig);
 
 /*
- * Returns kth element of P = U^a (where a is scalar), results stored in jet PWR
+ * Calculates kth element of P = U^a (where a is scalar), results stored in PWR
  *
  *        dp/dt =   (dp/du).(du/dt)
  *   PWR'= U^a' = a.U^(a-1).U'
@@ -340,4 +342,4 @@ void t_atan_sec2 (series U, series SEC2, series TAN, int k, bool trig);
  *
  *       PWR[k] = (E_k - sum{j=1->k-1} U[j].(k-j).PWR[k-j]/k) / U[0]        (LHS)
  */
-void t_pwr (series PWR, series U, real a, int k);
+void t_pwr (series PWR, series const U, real a, int k);

@@ -17,7 +17,7 @@ model *tsm_init_p (int argc, char **argv, int n) { (void)n;
     return _;
 }
 
-void ode (triplet *v, series x, series y, series z, model *_, int k) {
+void ode (triplet *v, series x, series y, series z, const model *_, int k) {
     //  x' = - S(x + y)
     mpfr_fmma(v->x, _->s, x[k], _->s, y[k], RND);
     mpfr_neg(v->x, v->x, RND);
