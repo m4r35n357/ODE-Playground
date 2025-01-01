@@ -151,15 +151,15 @@ real t_pwr (series p, const series u, real a, int k) {
     return p[k] = _ / (k * u[0]);
 }
 
-static real _chain_ (const series df_du, const series u, int k, int k0) {
+static real _chain_ (const series dfdu, const series u, int k, const series fk, int scale) {
     real _ = 0.0L;
-    for (int j = k0; j < k; j++) _ += df_du[j] * (k - j) * u[k - j];
-    return _ / k;
+    for (int j = fk ? 1 : 0; j < k; j++) _ += dfdu[j] * (k - j) * u[k - j];
+    return fk ? (*fk - _ * scale / k) / dfdu[0] : _ * scale / k;  //  _ is f[k] if f_k NULL (forward), or u[k] if non-NULL (reverse)
 }
 
 real t_exp (series e, const series u, int k) {
     CHECK(e != u);
-    return e[k] = !k ? expl(u[k]) : _chain_(e, u, k, 0);
+    return e[k] = !k ? expl(u[k]) : _chain_(e, u, k, NULL, 1);
 }
 
 pair t_sin_cos (series s, series c, const series u, int k, bool trig) {
@@ -168,8 +168,8 @@ pair t_sin_cos (series s, series c, const series u, int k, bool trig) {
         .a = s[k] = trig ? sinl(u[k]) : sinhl(u[k]),
         .b = c[k] = trig ? cosl(u[k]) : coshl(u[k])
     } : (pair){
-        .a = s[k] = _chain_(c, u, k, 0),
-        .b = c[k] = _chain_(s, u, k, 0) * (trig ? -1.0L : 1.0L)
+        .a = s[k] = _chain_(c, u, k, NULL, 1),
+        .b = c[k] = _chain_(s, u, k, NULL, trig ? -1.0L : 1.0L)
     };
 }
 
@@ -179,14 +179,14 @@ pair t_tan_sec2 (series t, series s, const series u, int k, bool trig) {
         .a = t[k] = trig ? tanl(u[k]) : tanhl(u[k]),
         .b = s[k] = trig ? 1.0L + SQR(t[k]) : 1.0L - SQR(t[k])
     } : (pair){
-        .a = t[k] = _chain_(s, u, k, 0),
-        .b = s[k] = _chain_(t, t, k, 0) * (trig ? 2.0L : -2.0L)
+        .a = t[k] = _chain_(s, u, k, NULL, 1),
+        .b = s[k] = _chain_(t, t, k, NULL, trig ? 2.0L : -2.0L)
     };
 }
 
 real t_ln (series u, const series e, int k) {
     CHECK(e[0] > 0.0L); CHECK(u != e);
-    return u[k] = !k ? logl(e[k]) : (e[k] - _chain_(e, u, k, 1)) / e[0];
+    return u[k] = !k ? logl(e[k]) : _chain_(e, u, k, &e[k], 1);
 }
 
 pair t_asin_cos (series u, series c, const series s, int k, bool trig) {
@@ -195,8 +195,8 @@ pair t_asin_cos (series u, series c, const series s, int k, bool trig) {
         .a = u[k] = trig ? asinl(s[k]) : asinhl(s[k]),
         .b = c[k] = trig ?  cosl(u[k]) :  coshl(u[k])
     } : (pair){
-        .a = u[k] = (s[k] - _chain_(c, u, k, 1)) / c[0],
-        .b = c[k] = _chain_(s, u, k, 0) * (trig ? -1.0L : 1.0L)
+        .a = u[k] = _chain_(c, u, k, &s[k], 1),
+        .b = c[k] = _chain_(s, u, k, NULL, trig ? -1.0L : 1.0L)
     };
 }
 
@@ -206,8 +206,8 @@ pair t_acos_sin (series u, series s, const series c, int k, bool trig) {
         .a = u[k] = trig ? acosl(c[k]) : acoshl(c[k]),
         .b = s[k] = trig ? -sinl(u[k]) :  sinhl(u[k])
     } : (pair){
-        .a = u[k] = (c[k] - _chain_(s, u, k, 1) * (trig ? -1.0L : 1.0L)) / s[0],
-        .b = s[k] = _chain_(c, u, k, 0)
+        .a = u[k] = _chain_(s, u, k, &c[k], trig ? -1.0L : 1.0L),
+        .b = s[k] = _chain_(c, u, k, NULL, 1)
     };
 }
 
@@ -217,7 +217,7 @@ pair t_atan_sec2 (series u, series s, const series t, int k, bool trig) {
         .a = u[k] = trig ? atanl(t[k]) : atanhl(t[k]),
         .b = s[k] = trig ? 1.0L + SQR(t[k]) : 1.0L - SQR(t[k])
     } : (pair){
-        .a = u[k] = (t[k] - _chain_(s, u, k, 1)) / s[0],
-        .b = s[k] = _chain_(t, t, k, 0) * (trig ? 2.0L : -2.0L)
+        .a = u[k] = _chain_(s, u, k, &t[k], 1),
+        .b = s[k] = _chain_(t, t, k, NULL, trig ? 2.0L : -2.0L)
     };
 }
