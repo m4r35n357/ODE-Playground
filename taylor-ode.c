@@ -10,13 +10,13 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-static real __, _a, _m, _h, _p, _fk, D0, D1;
+static real __, _a, _m, _s, D0, D1;
 
 static char format[60];
 
 void tsm_init (int dp) {
     sprintf(format, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", dp, dp, dp);
-    mpfr_inits(__, _a, _m, _h, _p, _fk, NULL);
+    mpfr_inits(__, _a, _m, _s, NULL);
     mpfr_init_set_si(D0, 0, RND);
     mpfr_init_set_si(D1, 1, RND);
 }
@@ -94,21 +94,21 @@ void t_rec (series r, const series v, int k) {
     mpfr_div(r[k], r[k], v[0], RND);
 }
 
-static real *_half_ (const series a, int k, int k0, bool even) {
-    mpfr_mul_2si(_h, *_cauchy_(&_h, a, a, k, k0, (even ? k - 1 : k - 2) / 2), 1, RND);
-    if (!even) mpfr_fma(_h, a[k / 2], a[k / 2], _h, RND);
-    return &_h;
+static real *_half_ (real *_, const series a, int k, int k0, bool even) {
+    mpfr_mul_2si(*_, *_cauchy_(_, a, a, k, k0, (even ? k - 1 : k - 2) / 2), 1, RND);
+    if (!even) mpfr_fma(*_, a[k / 2], a[k / 2], *_, RND);
+    return _;
 }
 
 real *t_sqr (const series u, int k) {
-    return _half_(u, k, 0, k % 2);
+    return _half_(&_s, u, k, 0, k % 2);
 }
 
 void t_sqrt (series r, const series u, int k) {
     CHECK(mpfr_sgn(u[0]) > 0); CHECK(r != u);
     if (!k) mpfr_sqrt(r[k], u[k], RND);
     else {
-        mpfr_sub(r[k], u[k], *_half_(r, k, 1, k % 2), RND);
+        mpfr_sub(r[k], u[k], *_half_(&r[k], r, k, 1, k % 2), RND);
         mpfr_div_2si(r[k], r[k], 1, RND);
         mpfr_div(r[k], r[k], r[0], RND);
     }
@@ -131,19 +131,19 @@ void t_pwr (series p, const series u, real a, int k) {
     }
 }
 
-static real *_chain_ (real *_, const series df_du, const series u, int k, const series f_k, int scale) {
+static real *_chain_ (real *_, const series dfdu, const series u, int k, const series fk, int scale) {
     mpfr_set_zero(*_, 1);
-    for (int j = f_k ? 1 : 0; j < k; j++) {
+    for (int j = fk ? 1 : 0; j < k; j++) {
         mpfr_mul_si(__, u[k - j], k - j, RND);
-        mpfr_fma(*_, df_du[j], __, *_, RND);
+        mpfr_fma(*_, dfdu[j], __, *_, RND);
     }
     mpfr_div_si(*_, *_, k, RND);
     mpfr_mul_si(*_, *_, scale, RND);
-    if (f_k) {
-        mpfr_sub(*_, *f_k, *_, RND);
-        mpfr_div(*_, *_, df_du[0], RND);
+    if (fk) {
+        mpfr_sub(*_, *fk, *_, RND);
+        mpfr_div(*_, *_, dfdu[0], RND);
     }
-    return _;  // f[k] if f_k is null (forward), u[k] if f_k is non-null (reverse)
+    return _;  //  _ is f[k] if fk is NULL (forward), or u[k] if fk is non-NULL (reverse)
 }
 
 void t_exp (series e, const series u, int k) {
@@ -189,7 +189,7 @@ void t_asin_cos (series u, series c, const series s, int k, bool trig) {
     CHECK(trig ? mpfr_cmpabs_ui(s[0], 1) < 0 : true); CHECK(u != c && u != s && c != s);
     if (!k) {
         trig ? mpfr_asin(u[k], s[k], RND) : mpfr_asinh(u[k], s[k], RND);
-        trig ? mpfr_cos(c[k], u[k], RND) : mpfr_cosh(c[k], u[k], RND);
+        trig ?  mpfr_cos(c[k], u[k], RND) :  mpfr_cosh(c[k], u[k], RND);
     } else {
         _chain_(&u[k], c, u, k, &s[k], 1);
         _chain_(&c[k], s, u, k, NULL, trig ? -1 : 1);
@@ -200,7 +200,7 @@ void t_acos_sin (series u, series s, const series c, int k, bool trig) {
     CHECK(trig ? mpfr_cmpabs_ui(c[0], 1) < 0 : mpfr_cmp_si(c[0], 1) > 0); CHECK(u != s && u != c && s != c);
     if (!k) {
         trig ? mpfr_acos(u[k], c[k], RND) : mpfr_acosh(u[k], c[k], RND);
-        trig ? mpfr_sin(s[k], u[k], RND) : mpfr_sinh(s[k], u[k], RND);
+        trig ?  mpfr_sin(s[k], u[k], RND) :  mpfr_sinh(s[k], u[k], RND);
         if (trig) mpfr_neg(s[k], s[k], RND);
     } else {
         _chain_(&u[k], s, u, k, &c[k], trig ? -1 : 1);
@@ -212,7 +212,7 @@ void t_atan_sec2 (series u, series s, const series t, int k, bool trig) {
     CHECK(trig ? true : mpfr_cmpabs_ui(t[0], 1) < 0); CHECK(u != s && u != t && s != t);
     if (!k) {
         trig ? mpfr_atan(u[k], t[k], RND) : mpfr_atanh(u[k], t[k], RND);
-        trig ? mpfr_sec(s[k], u[k], RND) : mpfr_sech(s[k], u[k], RND);
+        trig ?  mpfr_sec(s[k], u[k], RND) :  mpfr_sech(s[k], u[k], RND);
         mpfr_sqr(s[k], s[k], RND);
     } else {
         _chain_(&u[k], s, u, k, &t[k], 1);

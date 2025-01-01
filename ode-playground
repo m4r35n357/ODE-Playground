@@ -22,7 +22,7 @@ precision='double!extended!quadruple!^octuple!408!630!840'
 order='8!2..256!2'
 step_size='.01!0.001..0.1!0.001!3'
 steps='^10000!20000!50000!100000!200000!500000!1000000'
-cns_range='16!4..256!4'
+cns_range='32!4..256!4'
 cns_mode='^step2!nosim'
 cns_separation='0.1!^1.0!10.0'
 

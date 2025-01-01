@@ -25,7 +25,7 @@ void ode (triplet *v, series x, series y, series z, const model *_, int k) {
     //  y' = Bx - cxz
     mpfr_fmms(v->y, _->b, x[k], _->c, *t_mul(x, z, k), RND);
     //  z' = e^(xy) - Dz
-    mpfr_swap(_->xy[k], *t_mul(x, y, k));
+    mpfr_set(_->xy[k], *t_mul(x, y, k), RND);
     t_exp(_->e_xy, _->xy, k);
     mpfr_fms(v->z, _->d, z[k], _->e_xy[k], RND);
     mpfr_neg(v->z, v->z, RND);
