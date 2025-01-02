@@ -88,10 +88,10 @@ int main (int argc, char **argv) {
     mpfr_set_default_prec((int)strtol(argv[2], NULL, BASE));
     n = (int)strtol(argv[3], NULL, BASE); CHECK(n > 0 && n <=64);
     libad_test_init();
-    series x = tsm_jet(n + 1);
-    mpfr_init_set_str(x[0], argv[4], BASE, RND);
+    series u = tsm_jet(n + 1);
+    mpfr_init_set_str(u[0], argv[4], BASE, RND);
     for (int k = 1; k <= n; k++) {
-        mpfr_mul_si(x[k], x[k - 1], -1, RND);
+        mpfr_mul_si(u[k], u[k - 1], -1, RND);
     }
     mpfr_init_set_str(tolerance, argv[5], BASE, RND); CHECK(mpfr_sgn(tolerance) > 0);
     if (argc == 7) {
@@ -131,11 +131,10 @@ int main (int argc, char **argv) {
     int steps = 10;
     triplet *v = malloc(sizeof (triplet)); CHECK(v);
     mpfr_inits(v->x, v->y, v->z, NULL);
-    xyz *_ = malloc(sizeof (xyz)); CHECK(_);
-    _->x = tsm_jet(n + 1); mpfr_set(_->x[0], D1, RND);
-    _->y = tsm_jet(n + 1); mpfr_set(_->y[0], D1, RND);
-    _->z = tsm_jet(n + 1); mpfr_set(_->z[0], D1, RND);
-    tsm(n, D01, steps, v, _, tsm_init_p(argc, argv, n), clock());
+    series x = tsm_jet(n + 1); mpfr_set(x[0], D1, RND);
+    series y = tsm_jet(n + 1); mpfr_set(y[0], D1, RND);
+    series z = tsm_jet(n + 1); mpfr_set(z[0], D1, RND);
+    tsm(n, D01, steps, v, x, y, z, tsm_init_p(argc, argv, n), clock());
     fprintf(stdout, "%sCheck: e^1  e^0  e^-1%s\n", WHT, NRM);
     real e1, e0, e_1;
     mpfr_inits(e1, e0, e_1, NULL);
@@ -144,105 +143,105 @@ int main (int argc, char **argv) {
     mpfr_exp(e_1, D_1, RND);
     _out_(e1, e0, e_1, D01, steps, 0.0F);
 
-    fprintf(stderr, "Taylor Arithmetic %sx = %s%.1Lf%s\n", GRY, WHT, mpfr_get_ld(x[0], RND), NRM);
-    bool positive = mpfr_sgn(x[0]) > 0, non_zero = mpfr_zero_p(x[0]) == 0, lt_pi_2 = mpfr_cmpabs(x[0], PI_2) < 0;
+    fprintf(stderr, "Taylor Arithmetic %su = %s%.1Lf%s\n", GRY, WHT, mpfr_get_ld(u[0], RND), NRM);
+    bool positive = mpfr_sgn(u[0]) > 0, non_zero = mpfr_zero_p(u[0]) == 0, lt_pi_2 = mpfr_cmpabs(u[0], PI_2) < 0;
     series r1 = tsm_jet(n), r2 = tsm_jet(n), r3 = tsm_jet(n), S1 = tsm_jet(n); mpfr_set(S1[0], D1, RND);
-    series abs_x = tsm_jet(n), rec_x = tsm_jet(n), sqrt_x = tsm_jet(n), ln_x = tsm_jet(n);
-    if (non_zero) ad_abs(abs_x, x);
-    if (non_zero) ad_rec(rec_x, x);
-    if (positive) ad_sqrt(sqrt_x, x);
-    if (positive) ad_ln(ln_x, x);
-    series sin_x = tsm_jet(n), cos_x = tsm_jet(n), tan_x = tsm_jet(n), sec2_x = tsm_jet(n);
-    series sin2_x = tsm_jet(n), cos2_x = tsm_jet(n), tan2_x = tsm_jet(n), sin_2x = tsm_jet(n), cos_2x = tsm_jet(n);
-    ad_sin_cos(sin_x, cos_x, x, true);
-    ad_tan_sec2(tan_x, sec2_x, x, true);
-    ad_sqr(sin2_x, sin_x);
-    ad_sqr(cos2_x, cos_x);
-    ad_sin_cos(sin_2x, cos_2x, ad_scale(r1, x, D2), true);
-    series sinh_x = tsm_jet(n), cosh_x = tsm_jet(n), tanh_x = tsm_jet(n), sech2_x = tsm_jet(n);
-    series sinh2_x = tsm_jet(n), cosh2_x = tsm_jet(n), tanh2_x = tsm_jet(n), sinh_2x = tsm_jet(n), cosh_2x = tsm_jet(n);
-    ad_sin_cos(sinh_x, cosh_x, x, false);
-    ad_tan_sec2(tanh_x, sech2_x, x, false);
-    ad_sqr(sinh2_x, sinh_x);
-    ad_sqr(cosh2_x, cosh_x);
-    ad_sin_cos(sinh_2x, cosh_2x, ad_scale(r1, x, D2), false);
-    series sqr_x = tsm_jet(n), exp_x = tsm_jet(n), neg_exp_x = tsm_jet(n), gd_1 = tsm_jet(n);
-    ad_sqr(sqr_x, x);
-    ad_exp(exp_x, x);
-    ad_exp(neg_exp_x, ad_scale(r1, x, D_1));
-    ad_ln(gd_1, ad_abs(r3, ad_div(r2, ad_add(r1, sin_x, S1), cos_x)));
+    series abs_u = tsm_jet(n), rec_u = tsm_jet(n), sqrt_u = tsm_jet(n), ln_u = tsm_jet(n);
+    if (non_zero) ad_abs(abs_u, u);
+    if (non_zero) ad_rec(rec_u, u);
+    if (positive) ad_sqrt(sqrt_u, u);
+    if (positive) ad_ln(ln_u, u);
+    series sin_u = tsm_jet(n), cos_u = tsm_jet(n), tan_u = tsm_jet(n), sec2_u = tsm_jet(n);
+    series sin2_u = tsm_jet(n), cos2_u = tsm_jet(n), tan2_u = tsm_jet(n), sin_2u = tsm_jet(n), cos_2u = tsm_jet(n);
+    ad_sin_cos(sin_u, cos_u, u, true);
+    ad_tan_sec2(tan_u, sec2_u, u, true);
+    ad_sqr(sin2_u, sin_u);
+    ad_sqr(cos2_u, cos_u);
+    ad_sin_cos(sin_2u, cos_2u, ad_scale(r1, u, D2), true);
+    series sinh_u = tsm_jet(n), cosh_u = tsm_jet(n), tanh_u = tsm_jet(n), sech2_u = tsm_jet(n);
+    series sinh2_u = tsm_jet(n), cosh2_u = tsm_jet(n), tanh2_u = tsm_jet(n), sinh_2u = tsm_jet(n), cosh_2u = tsm_jet(n);
+    ad_sin_cos(sinh_u, cosh_u, u, false);
+    ad_tan_sec2(tanh_u, sech2_u, u, false);
+    ad_sqr(sinh2_u, sinh_u);
+    ad_sqr(cosh2_u, cosh_u);
+    ad_sin_cos(sinh_2u, cosh_2u, ad_scale(r1, u, D2), false);
+    series sqr_u = tsm_jet(n), exp_u = tsm_jet(n), neg_exp_u = tsm_jet(n), gd_1 = tsm_jet(n);
+    ad_sqr(sqr_u, u);
+    ad_exp(exp_u, u);
+    ad_exp(neg_exp_u, ad_scale(r1, u, D_1));
+    ad_ln(gd_1, ad_abs(r3, ad_div(r2, ad_add(r1, sin_u, S1), cos_u)));
 
-    char* name = "x * x == sqr(x)"; compare(name, ad_mul(r1, x, x), sqr_x);
-    name = "sqr(x) / x == x"; non_zero ? compare(name, ad_div(r1, sqr_x, x), x) : skip(name);
-    name = "x * (1 / x) == 1"; non_zero ? compare(name, ad_mul(r1, x, rec_x), S1) : skip(name);
-    name = "sqrt(x) * sqrt(x) == x"; positive ? compare(name, ad_mul(r1, sqrt_x, sqrt_x), x) : skip(name);
-    name = "x / sqrt(x) == sqrt(x)"; positive ? compare(name, ad_div(r1, x, sqrt_x), sqrt_x) : skip(name);
-
-    if (debug) fprintf(stderr, "\n");
-
-    name = "x^2.0 == sqr(x)"; positive ? compare(name, ad_pwr(r1, x, D2), sqr_x) : skip(name);
-    name = "x^1.0 == x"; positive ? compare(name, ad_pwr(r1, x, D1), x) : skip(name);
-    name = "x^0.5 == sqrt(x)"; positive ? compare(name, ad_pwr(r1, x, D05), sqrt_x): skip(name);
-    name = "x^0.0 == 1"; positive ? compare(name, ad_pwr(r1, x, D0), S1) : skip(name);
-    name = "x^-0.5 == 1 / sqrt(x)"; positive ? compare(name, ad_pwr(r1, x, D_05), ad_rec(r2, sqrt_x)) : skip(name);
-    name = "x^-1.0 == 1 / x"; positive ? compare(name, ad_pwr(r1, x, D_1), rec_x) : skip(name);
-    name = "x^-2.0 == 1 / sqr(x)"; positive ? compare(name, ad_pwr(r1, x, D_2), ad_rec(r2, sqr_x)) : skip(name);
+    char* name = "u * u == sqr(u)"; compare(name, ad_mul(r1, u, u), sqr_u);
+    name = "sqr(u) / u == u"; non_zero ? compare(name, ad_div(r1, sqr_u, u), u) : skip(name);
+    name = "u * (1 / u) == 1"; non_zero ? compare(name, ad_mul(r1, u, rec_u), S1) : skip(name);
+    name = "sqrt(u) * sqrt(u) == u"; positive ? compare(name, ad_mul(r1, sqrt_u, sqrt_u), u) : skip(name);
+    name = "u / sqrt(u) == sqrt(u)"; positive ? compare(name, ad_div(r1, u, sqrt_u), sqrt_u) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "sqr(x) * x^-3 == 1 / x"; positive ? compare(name, ad_mul(r1, sqr_x, ad_pwr(r2, x, D_3)), rec_x) : skip(name);
-    name = "sqr(x)^0.5 == |x|"; positive ? compare(name, ad_pwr(r1, sqr_x, D05), abs_x) : skip(name);
-    name = "sqrt(sqr(x) == |x|"; positive ? compare(name, ad_sqrt(r1, sqr_x), abs_x) : skip(name);
+    name = "u^2.0 == sqr(u)"; positive ? compare(name, ad_pwr(r1, u, D2), sqr_u) : skip(name);
+    name = "u^1.0 == u"; positive ? compare(name, ad_pwr(r1, u, D1), u) : skip(name);
+    name = "u^0.5 == sqrt(u)"; positive ? compare(name, ad_pwr(r1, u, D05), sqrt_u): skip(name);
+    name = "u^0.0 == 1"; positive ? compare(name, ad_pwr(r1, u, D0), S1) : skip(name);
+    name = "u^-0.5 == 1 / sqrt(u)"; positive ? compare(name, ad_pwr(r1, u, D_05), ad_rec(r2, sqrt_u)) : skip(name);
+    name = "u^-1.0 == 1 / u"; positive ? compare(name, ad_pwr(r1, u, D_1), rec_u) : skip(name);
+    name = "u^-2.0 == 1 / sqr(u)"; positive ? compare(name, ad_pwr(r1, u, D_2), ad_rec(r2, sqr_u)) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "ln(e^x) == x"; compare(name, ad_ln(r1, exp_x), x);
-    name = "ln(sqr(x)) == ln(x) * 2"; positive ? compare(name, ad_ln(r1, sqr_x), ad_scale(r2, ln_x, D2)) : skip(name);
-    name = "ln(sqrt(x)) == ln(x) / 2"; positive ? compare(name, ad_ln(r1, sqrt_x), ad_scale(r2, ln_x, D05)) : skip(name);
-    name = "ln(1 / x) == -ln(x)"; positive ? compare(name, ad_ln(r1, rec_x), ad_scale(r2, ln_x, D_1)) : skip(name);
-    name = "ln(x^-3) == -3ln(x)"; positive ? compare(name, ad_ln(r1, ad_pwr(r2, x, D_3)), ad_scale(r3, ln_x, D_3)) : skip(name);
+    name = "sqr(u) * u^-3 == 1 / u"; positive ? compare(name, ad_mul(r1, sqr_u, ad_pwr(r2, u, D_3)), rec_u) : skip(name);
+    name = "sqr(u)^0.5 == |u|"; positive ? compare(name, ad_pwr(r1, sqr_u, D05), abs_u) : skip(name);
+    name = "sqrt(sqr(u) == |u|"; positive ? compare(name, ad_sqrt(r1, sqr_u), abs_u) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "cosh^2(x) - sinh^2(x) == 1"; compare(name, ad_sub(r1, cosh2_x, sinh2_x), S1);
-    name = "sech^2(x) + tanh^2(x) == 1"; compare(name, ad_add(r1, sech2_x, ad_sqr(tanh2_x, tanh_x)), S1);
-    name = "tanh(x) == sinh(x) / cosh(x)"; compare(name, tanh_x, ad_div(r1, sinh_x, cosh_x));
-    name = "sech^2(x) == 1 / cosh^2(x)"; compare(name, sech2_x, ad_rec(r1, cosh2_x));
-    name = "sinh(2x) == 2 * sinh(x) * cosh(x)"; compare(name, sinh_2x, ad_scale(r1, ad_mul(r2, sinh_x, cosh_x), D2));
-    name = "cosh(2x) == cosh^2(x) + sinh^2(x)"; compare(name, cosh_2x, ad_add(r1, cosh2_x, sinh2_x));
+    name = "ln(e^u) == u"; compare(name, ad_ln(r1, exp_u), u);
+    name = "ln(sqr(u)) == ln(u) * 2"; positive ? compare(name, ad_ln(r1, sqr_u), ad_scale(r2, ln_u, D2)) : skip(name);
+    name = "ln(sqrt(u)) == ln(u) / 2"; positive ? compare(name, ad_ln(r1, sqrt_u), ad_scale(r2, ln_u, D05)) : skip(name);
+    name = "ln(1 / x) == -ln(u)"; positive ? compare(name, ad_ln(r1, rec_u), ad_scale(r2, ln_u, D_1)) : skip(name);
+    name = "ln(u^-3) == -3ln(u)"; positive ? compare(name, ad_ln(r1, ad_pwr(r2, u, D_3)), ad_scale(r3, ln_u, D_3)) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "cosh(x) == (e^x + e^-x) / 2"; compare(name, cosh_x, ad_scale(r1, ad_add(r2, exp_x, neg_exp_x), D05));
-    name = "sinh(x) == (e^x - e^-x) / 2"; compare(name, sinh_x, ad_scale(r1, ad_sub(r2, exp_x, neg_exp_x), D05));
+    name = "cosh^2(u) - sinh^2(u) == 1"; compare(name, ad_sub(r1, cosh2_u, sinh2_u), S1);
+    name = "sech^2(u) + tanh^2(u) == 1"; compare(name, ad_add(r1, sech2_u, ad_sqr(tanh2_u, tanh_u)), S1);
+    name = "tanh(u) == sinh(u) / cosh(u)"; compare(name, tanh_u, ad_div(r1, sinh_u, cosh_u));
+    name = "sech^2(u) == 1 / cosh^2(u)"; compare(name, sech2_u, ad_rec(r1, cosh2_u));
+    name = "sinh(2u) == 2 * sinh(u) * cosh(u)"; compare(name, sinh_2u, ad_scale(r1, ad_mul(r2, sinh_u, cosh_u), D2));
+    name = "cosh(2u) == cosh^2(u) + sinh^2(u)"; compare(name, cosh_2u, ad_add(r1, cosh2_u, sinh2_u));
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "arsinh(sinh(x)) == x"; ad_asin(r1, r2, sinh_x, false); compare(name, r1, x);
-    name = "arcosh(cosh(x)) == |x|"; if (non_zero) {ad_acos(r1, r2, cosh_x, false); compare(name, r1, abs_x);} else skip(name);
-    name = "artanh(tanh(x)) == x"; ad_atan(r1, r2, tanh_x, false); compare(name, r1, x);
+    name = "cosh(u) == (e^u + e^-u) / 2"; compare(name, cosh_u, ad_scale(r1, ad_add(r2, exp_u, neg_exp_u), D05));
+    name = "sinh(u) == (e^u - e^-u) / 2"; compare(name, sinh_u, ad_scale(r1, ad_sub(r2, exp_u, neg_exp_u), D05));
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "cos^2(x) + sin^2(x) == 1"; compare(name, ad_add(r1, cos2_x, sin2_x), S1);
-    name = "sec^2(x) - tan^2(x) == 1"; lt_pi_2 ? compare(name, ad_sub(r1, sec2_x, ad_sqr(tan2_x, tan_x)), S1) : skip(name);
-    name = "tan(x) == sin(x) / cos(x)"; lt_pi_2 ? compare(name, tan_x, ad_div(r1, sin_x, cos_x)) : skip(name);
-    name = "sec^2(x) == 1 / cos^2(x)"; lt_pi_2 ? compare(name, sec2_x, ad_rec(r1, cos2_x)) : skip(name);
-    name = "sin(2x) == 2 * sin(x) * cos(x)"; compare(name, sin_2x, ad_scale(r1, ad_mul(r2, sin_x, cos_x), D2));
-    name = "cos(2x) == cos^2(x) - sin^2(x)"; compare(name, cos_2x, ad_sub(r1, cos2_x, sin2_x));
+    name = "arsinh(sinh(u)) == u"; ad_asin(r1, r2, sinh_u, false); compare(name, r1, u);
+    name = "arcosh(cosh(u)) == |u|"; if (non_zero) {ad_acos(r1, r2, cosh_u, false); compare(name, r1, abs_u);} else skip(name);
+    name = "artanh(tanh(u)) == u"; ad_atan(r1, r2, tanh_u, false); compare(name, r1, u);
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "arcsin(sin(x)) == x"; if (lt_pi_2) {ad_asin(r1, r2, sin_x, true); compare(name, r1, x);} else skip(name);
-    name = "arccos(cos(x)) == |x|"; if (non_zero) {ad_acos(r1, r2, cos_x, true); compare(name, r1, abs_x);} else skip(name);
-    name = "arctan(tan(x)) == x"; if (lt_pi_2) {ad_atan(r1, r2, tan_x, true); compare(name, r1, x);} else skip(name);
+    name = "cos^2(u) + sin^2(u) == 1"; compare(name, ad_add(r1, cos2_u, sin2_u), S1);
+    name = "sec^2(u) - tan^2(u) == 1"; lt_pi_2 ? compare(name, ad_sub(r1, sec2_u, ad_sqr(tan2_u, tan_u)), S1) : skip(name);
+    name = "tan(u) == sin(u) / cos(u)"; lt_pi_2 ? compare(name, tan_u, ad_div(r1, sin_u, cos_u)) : skip(name);
+    name = "sec^2(u) == 1 / cos^2(u)"; lt_pi_2 ? compare(name, sec2_u, ad_rec(r1, cos2_u)) : skip(name);
+    name = "sin(2u) == 2 * sin(u) * cos(u)"; compare(name, sin_2u, ad_scale(r1, ad_mul(r2, sin_u, cos_u), D2));
+    name = "cos(2u) == cos^2(u) - sin^2(u)"; compare(name, cos_2u, ad_sub(r1, cos2_u, sin2_u));
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "arsinh(tan(x)) == gd^-1 x"; if (lt_pi_2) {ad_asin(r1, r2, tan_x, false); compare(name, gd_1, r1);} else skip(name);
-    name = "artanh(sin(x)) == gd^-1 x"; ad_atan(r1, r2, sin_x, false); compare(name, gd_1, r1);
-    name = "arcsin(tanh(gd^-1 x)) == x"; if (lt_pi_2) {ad_tan_sec2(r3, r2, gd_1, false); ad_asin(r1, r2, r3, true); compare(name, r1, x);} else skip(name);
-    name = "arctan(sinh(gd^-1 x)) == x"; if (lt_pi_2) {ad_sin_cos(r3, r2, gd_1, false); ad_atan(r1, r2, r3, true); compare(name, r1, x);} else skip(name);
+    name = "arcsin(sin(u)) == u"; if (lt_pi_2) {ad_asin(r1, r2, sin_u, true); compare(name, r1, u);} else skip(name);
+    name = "arccos(cos(u)) == |u|"; if (non_zero) {ad_acos(r1, r2, cos_u, true); compare(name, r1, abs_u);} else skip(name);
+    name = "arctan(tan(u)) == u"; if (lt_pi_2) {ad_atan(r1, r2, tan_u, true); compare(name, r1, u);} else skip(name);
+
+    if (debug) fprintf(stderr, "\n");
+
+    name = "arsinh(tan(u)) == gd^-1 u"; if (lt_pi_2) {ad_asin(r1, r2, tan_u, false); compare(name, gd_1, r1);} else skip(name);
+    name = "artanh(sin(u)) == gd^-1 u"; ad_atan(r1, r2, sin_u, false); compare(name, gd_1, r1);
+    name = "arcsin(tanh(gd^-1 x)) == u"; if (lt_pi_2) {ad_tan_sec2(r3, r2, gd_1, false); ad_asin(r1, r2, r3, true); compare(name, r1, u);} else skip(name);
+    name = "arctan(sinh(gd^-1 x)) == u"; if (lt_pi_2) {ad_sin_cos(r3, r2, gd_1, false); ad_atan(r1, r2, r3, true); compare(name, r1, u);} else skip(name);
 
     if (debug) fprintf(stderr, "\n");
     fprintf(stderr, "%sTotal%s %d  %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);

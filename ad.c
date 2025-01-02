@@ -76,6 +76,13 @@ series ad_sqrt (series r, series u) {
     return r;
 }
 
+series ad_pwr (series p, series u, real a) {
+    for (int k = 0; k < order; k++) {
+        t_pwr(p, u, a, k);
+    }
+    return p;
+}
+
 series ad_exp (series e, series u) {
     for (int k = 0; k < order; k++) {
         t_exp(e, u, k);
@@ -93,13 +100,6 @@ void ad_tan_sec2 (series t, series s2, series u, bool trig) {
     for (int k = 0; k < order; k++) {
         t_tan_sec2(t, s2, u, k, trig);
     }
-}
-
-series ad_pwr (series p, series u, real a) {
-    for (int k = 0; k < order; k++) {
-        t_pwr(p, u, a, k);
-    }
-    return p;
 }
 
 series ad_ln (series l, series u) {

@@ -25,13 +25,6 @@ typedef mpfr_t real;
 typedef real *series;
 
 /*
- * Combined x, y, z series
- */
-typedef struct ts3 {
-    series x, y, z;
-} xyz;
-
-/*
  * For returning x, y, z velocities from the model
  */
 typedef struct triple_m {
@@ -66,7 +59,7 @@ real *horner (const series U, int order, real step_size);
 /*
  *  Run TSM, send data to stdout
  */
-void tsm (int order, real step_size, int steps, triplet *V, xyz *JETS, const model *p, clock_t since);
+void tsm (int order, real step_size, int steps, triplet *V, series X, series Y, series Z, const model *p, clock_t since);
 
 /*
  * Populate parameter data from command arguments
@@ -109,6 +102,11 @@ void t_rec (series REC, const series V, int k);
 void t_sqrt (series ROOT, const series U, int k);
 
 /*
+ * Calculates kth element of P = U^a (where a is scalar), results stored in PWR
+ */
+void t_pwr (series PWR, series const U, real a, int k);
+
+/*
  * Calculates kth element of the exponential of U, results stored in EXP
  */
 void t_exp (series EXP, const series U, int k);
@@ -142,8 +140,3 @@ void t_acos_sin (series U, series SINH, const series COSH, int k, bool trig);
  * Calculates kth elements of arctan/artanh (inverse of TAN/TANH), results stored in U and SEC2
  */
 void t_atan_sec2 (series U, series SEC2, const series TAN, int k, bool trig);
-
-/*
- * Calculates kth element of P = U^a (where a is scalar), results stored in PWR
- */
-void t_pwr (series PWR, series const U, real a, int k);

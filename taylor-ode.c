@@ -50,20 +50,20 @@ void _out_ (real x, real y, real z, real h, int step, clock_t since) {
     mpfr_printf(format, x, y, z, __, (double)(clock() - since) / CLOCKS_PER_SEC);
 }
 
-void tsm (int o, real h, int steps, triplet *v, xyz *_, const model *p, clock_t t0) {
+void tsm (int o, real h, int steps, triplet *v, series x, series y, series z, const model *p, clock_t t0) {
     for (int step = 0; step < steps; step++) {
         for (int k = 0; k < o; k++) {
-            ode(v, _->x, _->y, _->z, p, k);
-            mpfr_div_si(_->x[k + 1], v->x, k + 1, RND);
-            mpfr_div_si(_->y[k + 1], v->y, k + 1, RND);
-            mpfr_div_si(_->z[k + 1], v->z, k + 1, RND);
+            ode(v, x, y, z, p, k);
+            mpfr_div_si(x[k + 1], v->x, k + 1, RND);
+            mpfr_div_si(y[k + 1], v->y, k + 1, RND);
+            mpfr_div_si(z[k + 1], v->z, k + 1, RND);
         }
-        _out_(_->x[0], _->y[0], _->z[0], h, step, t0);
-        mpfr_swap(_->x[0], *horner(_->x, o, h));
-        mpfr_swap(_->y[0], *horner(_->y, o, h));
-        mpfr_swap(_->z[0], *horner(_->z, o, h));
+        _out_(x[0], y[0], z[0], h, step, t0);
+        mpfr_swap(x[0], *horner(x, o, h));
+        mpfr_swap(y[0], *horner(y, o, h));
+        mpfr_swap(z[0], *horner(z, o, h));
     }
-    _out_(_->x[0], _->y[0], _->z[0], h, steps, t0);
+    _out_(x[0], y[0], z[0], h, steps, t0);
 }
 
 real *t_abs (const series u, int k) {

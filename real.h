@@ -31,7 +31,7 @@
  * Report program arguments in colour
  */
 #define PRINT_ARGS(argc, argv) do { \
-    fprintf(stderr, "%sargc %s%d%s, argv [ %s", GRY, NRM, (argc), GRY, CYN); \
+    fprintf(stderr, "%sargc %s%2d%s, argv [ %s", GRY, NRM, (argc), GRY, CYN); \
     for (int i = 0; i < (argc); i++) fprintf(stderr, "%s ", (argv)[i]); \
     fprintf(stderr, "%s]%s\n", GRY, NRM); \
 } while (0)
@@ -42,6 +42,6 @@
 #define CHECK(x) do { \
     if(!(x)) { \
         fprintf(stderr, "%sFAIL %s%s %s%s%s %s%s:%s%i\n", RED, WHT, #x, GRY, __func__, NRM, __FILE__, GRY, NRM, __LINE__); \
-        exit(1); \
+        abort(); \
     } \
 } while (0)

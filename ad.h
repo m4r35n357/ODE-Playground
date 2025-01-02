@@ -40,7 +40,11 @@ series ad_mul (series PROD, series V, series U);
  * Calculates Taylor Series for U / V, result stored in jet QUOT
  */
 series ad_div (series QUOT, series U, series V);
-series ad_rec (series r, series v);
+
+/*
+ * Calculates Taylor Series for 1 / V, result stored in jet REC
+ */
+series ad_rec (series REC, series V);
 
 /*
  * Calculates Taylor Series for the square of U, result stored in jet SQR
@@ -51,6 +55,11 @@ series ad_sqr (series SQR, series U);
  * Calculates Taylor Series for the square root of U, result stored in jet ROOT
  */
 series ad_sqrt (series ROOT, series U);
+
+/*
+ * Calculates Taylor Series for U^a, results stored in jet PWR
+ */
+series ad_pwr (series PWR, series U, real a);
 
 /*
  * Calculates Taylor Series for the exponential of U, results stored in jet EXP
@@ -86,8 +95,3 @@ void ad_acos (series U, series SINH, series COSH, bool trig);
  * Returns kth elements of arctan/artanh (inverse of TAN/TANH), results stored in jets U and SEC2
  */
 void ad_atan (series U, series SEC2, series TAN, bool trig);
-
-/*
- * Calculates Taylor Series for U^a, results stored in jet P
- */
-series ad_pwr (series P, series U, real a);
