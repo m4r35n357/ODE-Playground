@@ -107,19 +107,24 @@ define void pwr (*pwr[], u[], a) {
     }
 }
 
-define chain (dfdu[], u[], kl) {
-    auto j, sum
+define chain (dfdu[], u[], fk, factor) {
+    auto j, sum, kl
+    if (fk) { kl = 1 } else { kl = 0 }
     for (j = kl; j < k; j++) {
         sum += dfdu[j] * (k - j) * u[k - j]
     }
-    return sum / k
+    if (fk) {
+        return (fk - sum * factor / k) / dfdu[0]
+    } else {
+        return sum * factor / k
+    }
 }
 
 define void exp (*exp[], u[]) {
     if (!k) {
         exp[k] = e(u[k])
     } else {
-        exp[k] = chain(exp[], u[], 0)
+        exp[k] = chain(exp[], u[], 0, 1)
     }
 }
 
@@ -144,8 +149,8 @@ define void tansec2 (*tan[], *sec2[], u[], trig) {
         if (trig) {  tan[k] = s(u[k]) / c(u[k])   } else {  tan[k] = (e(2 * u[k]) - 1) / (e(2 * u[k]) + 1) }
         if (trig) { sec2[k] = 1 + tan[k] * tan[k] } else { sec2[k] = 1 - tan[k] * tan[k] }
     } else {
-         tan[k] =     chain(sec2[], u[], 0)
-        if (trig) { sec2[k] = 2 * chain(tan[], tan[], 0) } else { sec2[k] = - 2 * chain(tan[], tan[], 0) }
+        tan[k] = chain(sec2[], u[], 0, 1)
+        if (trig) { sec2[k] = chain(tan[], tan[], 0, 2) } else { sec2[k] = chain(tan[], tan[], 0, -2) }
     }
 }
 
@@ -153,7 +158,7 @@ define void ln (*u[], exp[]) {
     if (!k) {
         u[k] = l(exp[k])
     } else {
-        u[k] = (exp[k] - chain(exp[], u[], 1)) / exp[0]
+        u[k] = chain(exp[], u[], exp[k], 1)
     }
 }
 
@@ -162,8 +167,8 @@ define void asincos (*u[], *cos[], sin[], trig) {
         if (trig) { u[k] = a(sin[k] / sqrt(1 - sin[k] * sin[k])) } else { u[k] = l(sin[k] + sqrt(sin[k] * sin[k] + 1)) }
         if (trig) { cos[k] = c(u[k]) } else { cos[k] = 0.5 * (e(u[k]) + e(-u[k])) }
     } else {
-          u[k] = (sin[k] - chain(cos[], u[], 1)) / cos[0]
-        if (trig) { cos[k] = - chain(sin[], u[], 0) } else { cos[k] = chain(sin[], u[], 0) }
+        u[k] = chain(cos[], u[], sin[k], 1)
+        if (trig) { cos[k] = chain(sin[], u[], 0, -1) } else { cos[k] = chain(sin[], u[], 0, 1) }
     }
 }
 
@@ -172,7 +177,7 @@ define void atansec2 (*u[], *sec2[], tan[], trig) {
         if (trig) { u[k] = a(tan[k]) } else { u[k] = 0.5 * l((1 + tan[k]) / (1 - tan[k])) }
         if (trig) { sec2[k] = 1 + tan[k] * tan[k] } else { sec2[k] = 1 - tan[k] * tan[k] }
     } else {
-           u[k] = (tan[k] - chain(sec2[], u[], 1)) / sec2[0]
-        if (trig) { sec2[k] = 2 * chain(tan[], tan[], 0) } else { sec2[k] = - 2 * chain(tan[], tan[], 0) }
+        u[k] = chain(sec2[], u[], tan[k], 1)
+        if (trig) { sec2[k] = chain(tan[], tan[], 0, 2) } else { sec2[k] = chain(tan[], tan[], 0, -2) }
     }
 }
