@@ -8,7 +8,7 @@ user_data="$user_dir/data"
 
 choice=$(yad --columns=2 --title="ODE Playground (Python)" --form --separator=" " --align=right \
     --field="Model:CB" --field="Analysis type:CB" \
-    -- '^Lorenz!Rossler!RF!Halvorsen!Thomas' 'GLplot!IC!Animated!^Gnuplot!CNS!CNSScan')
+    -- '^Lorenz!Rossler!RF!Halvorsen!Thomas!Zero!Const!Coupled!General' 'GLplot!IC!Animated!^Gnuplot!CNS!CNSScan')
 
 case $? in
     1) exit;;
@@ -206,5 +206,26 @@ case $model in
             --  $cns_range $cns_separation \
                 './tsm-halvorsen.py' $places_scale '_' $step_size $steps \
                 '1.0' '0.0' '0.0' '1.4') ;;
+    esac ;;
+    Zero) case $analysis in
+        GLPlot) echo "Not available" ;;
+        IC) echo "Not available" ;;
+        Animated) $(yad --columns=2 --title="Zero" --form --separator=" " --align=right \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="x0" --field="y0" --field="z0" \
+            --  './tsm-zero.py' $places_scale $order $step_size $steps '-1.0' '0.0' '1.0') | ./plotAnimated.py -10 10 ;;
+        Gnuplot) echo "Not available" ;;
+        CNSScan) echo "Not available" ;;
+    esac ;;
+    Const) case $analysis in
+        GLPlot) echo "Not available" ;;
+        IC) echo "Not available" ;;
+        Animated) $(yad --columns=2 --title="Zero" --form --separator=" " --align=right \
+            --field="Model":CB --field="Display Places":NUM --field="Order":NUM --field="Step Size":NUM --field="Steps":CB \
+            --field="x0" --field="y0" --field="z0" --field="a" --field="b" --field="c" \
+            --  './tsm-const.py' $places_scale $order $step_size $steps '-1.0' '0.0' '1.0' '-1.0' '0.0' '1.0') \
+            | ./plotAnimated.py -10 100 ;;
+        Gnuplot) echo "Not available" ;;
+        CNSScan) echo "Not available" ;;
     esac ;;
 esac
