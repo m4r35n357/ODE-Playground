@@ -154,12 +154,17 @@ real t_pwr (series p, const series u, real a, int k) {
 static real _chain_ (const series dfdu, const series u, int k, const series fk, int scale) {
     real _ = 0.0L;
     for (int j = fk ? 1 : 0; j < k; j++) _ += dfdu[j] * (k - j) * u[k - j];
-    return fk ? (*fk - _ * scale / k) / dfdu[0] : _ * scale / k;  //  _ is f[k] if f_k NULL (forward), or u[k] if non-NULL (reverse)
+    return fk ? (*fk - scale * _ / k) / dfdu[0] : scale * _ / k;  //  _ is f[k] if f_k NULL (forward), or u[k] if non-NULL (reverse)
 }
 
 real t_exp (series e, const series u, int k) {
     CHECK(e != u);
     return e[k] = !k ? expl(u[k]) : _chain_(e, u, k, NULL, 1);
+}
+
+real t_ln (series u, const series e, int k) {
+    CHECK(e[0] > 0.0L); CHECK(u != e);
+    return u[k] = !k ? logl(e[k]) : _chain_(e, u, k, &e[k], 1);
 }
 
 pair t_sin_cos (series s, series c, const series u, int k, bool trig) {
@@ -182,11 +187,6 @@ pair t_tan_sec2 (series t, series s, const series u, int k, bool trig) {
         .a = t[k] = _chain_(s, u, k, NULL, 1),
         .b = s[k] = _chain_(t, t, k, NULL, trig ? 2.0L : -2.0L)
     };
-}
-
-real t_ln (series u, const series e, int k) {
-    CHECK(e[0] > 0.0L); CHECK(u != e);
-    return u[k] = !k ? logl(e[k]) : _chain_(e, u, k, &e[k], 1);
 }
 
 pair t_asin_cos (series u, series c, const series s, int k, bool trig) {

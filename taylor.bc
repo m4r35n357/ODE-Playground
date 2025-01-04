@@ -108,15 +108,15 @@ define void pwr (*pwr[], u[], a) {
 }
 
 define chain (dfdu[], u[], fk, factor) {
-    auto j, sum, kl
+    auto j, s, kl
     if (fk) { kl = 1 } else { kl = 0 }
     for (j = kl; j < k; j++) {
-        sum += dfdu[j] * (k - j) * u[k - j]
+        s += dfdu[j] * (k - j) * u[k - j]
     }
     if (fk) {
-        return (fk - sum * factor / k) / dfdu[0]
+        return (fk - factor * s / k) / dfdu[0]
     } else {
-        return sum * factor / k
+        return factor * s / k
     }
 }
 
@@ -125,6 +125,14 @@ define void exp (*exp[], u[]) {
         exp[k] = e(u[k])
     } else {
         exp[k] = chain(exp[], u[], 0, 1)
+    }
+}
+
+define void ln (*u[], exp[]) {
+    if (!k) {
+        u[k] = l(exp[k])
+    } else {
+        u[k] = chain(exp[], u[], exp[k], 1)
     }
 }
 
@@ -151,14 +159,6 @@ define void tansec2 (*tan[], *sec2[], u[], trig) {
     } else {
         tan[k] = chain(sec2[], u[], 0, 1)
         if (trig) { sec2[k] = chain(tan[], tan[], 0, 2) } else { sec2[k] = chain(tan[], tan[], 0, -2) }
-    }
-}
-
-define void ln (*u[], exp[]) {
-    if (!k) {
-        u[k] = l(exp[k])
-    } else {
-        u[k] = chain(exp[], u[], exp[k], 1)
     }
 }
 
