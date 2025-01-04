@@ -90,11 +90,16 @@ def t_pwr(p, u, a, k):
 
 def _chain_(dfdu, u, k, fk=None, scale=1):
     _ = fsum(dfdu[j] * (k - j) * u[k - j] for j in range(1 if fk else 0, k))
-    return (fk - _ * scale / k) / dfdu[0] if fk else _ * scale / k
+    return (fk - scale * _ / k) / dfdu[0] if fk else scale * _ / k
 
 def t_exp(e, u, k):
     e[k] = exp(u[k]) if k == 0 else _chain_(e, u, k)
     return e[k]
+
+def t_ln(u, e, k):
+    assert e[0] > 0.0
+    u[k] = log(e[k]) if k == 0 else _chain_(e, u, k, e[k])
+    return u[k]
 
 def t_sin_cos(s, c, u, k, trig=True):
     if k == 0:
@@ -113,11 +118,6 @@ def t_tan_sec2(t, s, u, k, trig=True):
         t[k] = _chain_(s, u, k)
         s[k] = _chain_(t, t, k, None, 2.0 if trig else -2.0)
     return t[k], s[k]
-
-def t_ln(u, e, k):
-    assert e[0] > 0.0
-    u[k] = log(e[k]) if k == 0 else _chain_(e, u, k, e[k])
-    return u[k]
 
 def t_asin(u, c, s, k, trig=True):
     assert -1.0 < s[0] < 1.0 if trig else True
