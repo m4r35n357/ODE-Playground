@@ -151,6 +151,11 @@ void t_exp (series e, const series u, int k) {
     if (!k) mpfr_exp(e[k], u[k], RND); else _chain_(&e[k], e, u, k, NULL, 1);
 }
 
+void t_ln (series u, const series e, int k) {
+    CHECK(mpfr_sgn(e[0]) > 0); CHECK(u != e);
+    if (!k) mpfr_log(u[k], e[k], RND); else _chain_(&u[k], e, u, k, &e[k], 1);
+}
+
 void t_sin_cos (series s, series c, const series u, int k, bool trig) {
     CHECK(s != c && s != u && c != u);
     if (!k) trig ? mpfr_sin_cos(s[k], c[k], u[k], RND) : mpfr_sinh_cosh(s[k], c[k], u[k], RND);
@@ -178,11 +183,6 @@ void t_tan_sec2 (series t, series s, const series u, int k, bool trig) {
         _chain_(&t[k], s, u, k, NULL, 1);
         _chain_(&s[k], t, t, k, NULL, trig ? 2 : -2);
     };
-}
-
-void t_ln (series u, const series e, int k) {
-    CHECK(mpfr_sgn(e[0]) > 0); CHECK(u != e);
-    if (!k) mpfr_log(u[k], e[k], RND); else _chain_(&u[k], e, u, k, &e[k], 1);
 }
 
 void t_asin_cos (series u, series c, const series s, int k, bool trig) {
