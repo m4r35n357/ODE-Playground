@@ -122,12 +122,11 @@ real t_mul (const series u, const series v, int k) {
 
 real t_div (series q, const series u, const series v, int k) {
     CHECK(v[0] != 0.0L); CHECK(q != u && q != v);
-    return q[k] = (!k ? u[k] : u[k] - _cauchy_(q, v, k, 0, k - 1)) / v[0];
+    return q[k] = (!k ? (u ? u[k] : 1.0L) : (u ? u[k] : 0.0L) - _cauchy_(q, v, k, 0, k - 1)) / v[0];
 }
 
 real t_rec (series r, const series v, int k) {
-    CHECK(v[0] != 0.0L); CHECK(r != v);
-    return r[k] = (!k ? 1.0L : - _cauchy_(r, v, k, 0, k - 1)) / v[0];
+    return t_div(r, NULL, v, k);
 }
 
 static real _half_ (const series a, int k, int k0, bool even) {
