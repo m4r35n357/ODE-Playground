@@ -84,14 +84,12 @@ real *t_mul (const series u, const series v, int k) {
 
 void t_div (series q, const series u, const series v, int k) {
     CHECK(mpfr_zero_p(v[0]) == 0); CHECK(q != u && q != v);
-    mpfr_sub(q[k], u[k], !k ? D0 : *_cauchy_(&q[k], q, v, k, 0, k - 1), RND);
+    mpfr_sub(q[k], (u ? u[k] : (!k ? D1 : D0)), !k ? D0 : *_cauchy_(&q[k], q, v, k, 0, k - 1), RND);
     mpfr_div(q[k], q[k], v[0], RND);
 }
 
 void t_rec (series r, const series v, int k) {
-    CHECK(mpfr_zero_p(v[0]) == 0); CHECK(r != v);
-    mpfr_sub(r[k], !k ? D1 : D0, !k ? D0 : *_cauchy_(&r[k], r, v, k, 0, k - 1), RND);
-    mpfr_div(r[k], r[k], v[0], RND);
+    t_div(r, NULL, v, k);
 }
 
 static real *_half_ (real *_, const series a, int k, int k0, bool even) {
