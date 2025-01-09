@@ -83,7 +83,7 @@ def t_sqrt(r, u, k):
 
 def t_pwr(p, u, a, k):
     assert u[0] > 0.0
-    p[k] = u[k]**a if k == 0 else sum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
+    p[k] = u[k]**a if k == 0 else fsum((a * (k - j) - j) * p[j] * u[k - j] for j in range(k)) / (k * u[0])
     return p[k]
 
 def _chain_(dfdu, u, k, fk=None, scale=1):
