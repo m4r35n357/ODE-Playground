@@ -166,8 +166,7 @@ void t_sin_cos (series s, series c, const series u, int k, bool trig) {
             mpfr_fma(c[k], s[j], __, c[k], RND);
         }
         mpfr_div_si(s[k], s[k], k, RND);
-        mpfr_div_si(c[k], c[k], k, RND);
-        if (trig) mpfr_neg(c[k], c[k], RND);
+        mpfr_div_si(c[k], c[k], trig ? -k : k, RND);
     };
 }
 
