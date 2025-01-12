@@ -1,5 +1,14 @@
+## News
 
-## NEWS: Basic dialogue box UI for many operations using yad
+### (December 2025)
+
+* (pure_c) Arbitrary-precision solver and models now using GNU bc (rather than previous MPFR in master branch).
+* (pure_c) Animated ODE plots added (using Python/Matplotlib)
+* (python) Python branch now just five models (using TSM & RK4), plus interactive shell and function plotters/solvers
+* (master) MPFR branch much updated
+* Updated 'ode-playground' scripts
+
+## Basic dialogue box UI for many operations using yad
 
 Once you have set up your virtual environment, you can access many features from the UI using:
 ```
