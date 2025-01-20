@@ -14,5 +14,5 @@ halfstep () {  # step / 2
     steps=$(($5 * 2))
     shift 5
     end="$*"
-    $start $step $steps $end | /bin/sed -n '1~2p' >$fileA &
+    $start $step $steps $end | /bin/sed -n 'p;n' >$fileA &
 }
