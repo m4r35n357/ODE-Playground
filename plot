@@ -11,7 +11,7 @@ set "$(get_precision $*)"
 
 plot3d () {
 /usr/bin/gnuplot << EOF
-set terminal qt
+set terminal x11
 set title '$args'
 set xyplane 0
 set view 54.73561,135

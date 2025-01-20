@@ -12,7 +12,7 @@ processed="$(get_precision $*)"
 
 scan_plot () {
 /usr/bin/gnuplot << EOF
-set terminal qt
+set terminal x11
 set title noenhanced '$args'
 set key left
 set ytics nomirror
