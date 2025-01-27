@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
         while(fscanf(fileA, format, &xA, &yA, &zA, &tA, &cpuA) != EOF &&
               fscanf(fileB, format, &xB, &yB, &zB, &tB, &cpuB) != EOF) {
             CHECK(tB == tA);
-            if (sqrtl((xA - xB) * (xA - xB) + (yA - yB) * (yA - yB) + (zA - zB) * (zA - zB)) > threshold) {
+            if (sqrtl(SQR(xA - xB) + SQR(yA - yB) + SQR(zA - zB)) > threshold) {
                 printf("%s %.1Le  %s %6.3Lf  %s %.3Lf\n", "threshold:", threshold, "t:", tB, "cpu:", cpuB);
                 break;
             }
