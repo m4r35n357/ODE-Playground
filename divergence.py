@@ -17,7 +17,7 @@ def main():
             while line_a and line_b:
                 data_a, data_b = line_a.split(), line_b.split()
                 if diverged(data_a, data_b, threshold):
-                    print(f"threshold: {threshold:.1e}, t: {float(data_a[3]):.3f}, cpu: {float(data_a[7]):.3f}")
+                    print(f"threshold: {threshold:.1e}  t: {float(data_a[3]):.3f}  cpu: {float(data_a[7]):.3f}")
                     break
                 line_a, line_b = a.readline(), b.readline()
 
