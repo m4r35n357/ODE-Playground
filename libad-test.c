@@ -140,9 +140,9 @@ int main (int argc, char **argv) {
     bool positive = x[0] > 0.0L, non_zero = x[0] != 0.0L, lt_1 = fabsl(x[0]) < 1.0L, gt_1 = x[0] > 1.0L,
          lt_pi_2 = fabsl(x[0]) < 0.5L * acosl(-1.0L);
     series r1 = tsm_jet(n), r2 = tsm_jet(n), r3 = tsm_jet(n), S1 = tsm_jet(n); S1[0] = 1.0L;
-    series abs_x = tsm_jet(n), inv_x = tsm_jet(n), sqrt_x = tsm_jet(n), ln_x = tsm_jet(n);
+    series abs_x = tsm_jet(n), rec_x = tsm_jet(n), sqrt_x = tsm_jet(n), ln_x = tsm_jet(n);
     if (non_zero) ad_abs(abs_x, x);
-    if (non_zero) ad_rec(inv_x, x);
+    if (non_zero) ad_rec(rec_x, x);
     if (positive) ad_sqrt(sqrt_x, x);
     if (positive) ad_ln(ln_x, x);
     series sin_x = tsm_jet(n), cos_x = tsm_jet(n), tan_x = tsm_jet(n), sec2_x = tsm_jet(n);
@@ -167,7 +167,7 @@ int main (int argc, char **argv) {
     ad_exp(neg_exp_x, ad_scale(r1, x, -1.0L));
     ad_ln(gd_1, ad_abs(r3, ad_div(r2, ad_add(r1, sin_x, S1), cos_x)));
 
-    char* name = "inv(x)"; non_zero ? compare_s_d(name, inv_x, d_rec(xd)) : skip(name);
+    char* name = "inv(x)"; non_zero ? compare_s_d(name, rec_x, d_rec(xd)) : skip(name);
     name = "sqr(x)"; compare_s_d(name, sqr_x, d_sqr(xd));
     name = "sqrt(x)"; positive ? compare_s_d(name, sqrt_x, d_sqrt(xd)) : skip(name);
 
@@ -196,8 +196,11 @@ int main (int argc, char **argv) {
     if (debug) fprintf(stderr, "\n");
 
     name = "x * x == sqr(x)"; compare(name, ad_mul(r1, x, x), sqr_x);
+    name = "x / x == 1"; non_zero ? compare(name, ad_div(r1, x, x), S1) : skip(name);
+    name = "x * (1 / x) == 1"; non_zero ? compare(name, ad_mul(r1, x, rec_x), S1) : skip(name);
     name = "sqr(x) / x == x"; non_zero ? compare(name, ad_div(r1, sqr_x, x), x) : skip(name);
-    name = "x * (1 / x) == 1"; non_zero ? compare(name, ad_mul(r1, x, inv_x), S1) : skip(name);
+    name = "sqr(x) * (1 / x) == x"; non_zero ? compare(name, ad_mul(r1, sqr_x, rec_x), x) : skip(name);
+
     name = "sqrt(x) * sqrt(x) == x"; positive ? compare(name, ad_mul(r1, sqrt_x, sqrt_x), x) : skip(name);
     name = "x / sqrt(x) == sqrt(x)"; positive ? compare(name, ad_div(r1, x, sqrt_x), sqrt_x) : skip(name);
 
@@ -208,12 +211,12 @@ int main (int argc, char **argv) {
     name = "x^0.5 == sqrt(x)"; positive ? compare(name, ad_pwr(r1, x, 0.5L), sqrt_x): skip(name);
     name = "x^0.0 == 1"; positive ? compare(name, ad_pwr(r1, x, 0.0L), S1) : skip(name);
     name = "x^-0.5 == 1 / sqrt(x)"; positive ? compare(name, ad_pwr(r1, x, -0.5L), ad_rec(r2, sqrt_x)) : skip(name);
-    name = "x^-1.0 == 1 / x"; positive ? compare(name, ad_pwr(r1, x, -1.0L), inv_x) : skip(name);
+    name = "x^-1.0 == 1 / x"; positive ? compare(name, ad_pwr(r1, x, -1.0L), rec_x) : skip(name);
     name = "x^-2.0 == 1 / sqr(x)"; positive ? compare(name, ad_pwr(r1, x, -2.0L), ad_rec(r2, sqr_x)) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "sqr(x) * x^-3 == 1 / x"; positive ? compare(name, ad_mul(r1, sqr_x, ad_pwr(r2, x, -3.0L)), inv_x) : skip(name);
+    name = "sqr(x) * x^-3 == 1 / x"; positive ? compare(name, ad_mul(r1, sqr_x, ad_pwr(r2, x, -3.0L)), rec_x) : skip(name);
     name = "sqr(x)^0.5 == |x|"; non_zero ? compare(name, ad_pwr(r1, sqr_x, 0.5L), abs_x) : skip(name);
     name = "sqrt(sqr(x) == |x|"; non_zero ? compare(name, ad_sqrt(r1, sqr_x), abs_x) : skip(name);
 
@@ -222,7 +225,7 @@ int main (int argc, char **argv) {
     name = "ln(e^x) == x"; compare(name, ad_ln(r1, exp_x), x);
     name = "ln(sqr(x)) == ln(x) * 2"; positive ? compare(name, ad_ln(r1, sqr_x), ad_scale(r2, ln_x, 2.0L)) : skip(name);
     name = "ln(sqrt(x)) == ln(x) / 2"; positive ? compare(name, ad_ln(r1, sqrt_x), ad_scale(r2, ln_x, 0.5L)) : skip(name);
-    name = "ln(1 / x) == -ln(x)"; positive ? compare(name, ad_ln(r1, inv_x), ad_scale(r2, ln_x, -1.0L)) : skip(name);
+    name = "ln(1 / x) == -ln(x)"; positive ? compare(name, ad_ln(r1, rec_x), ad_scale(r2, ln_x, -1.0L)) : skip(name);
     name = "ln(x^-3) == -3ln(x)"; positive ? compare(name, ad_ln(r1, ad_pwr(r2, x, -3.0L)), ad_scale(r3, ln_x, -3.0L)) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
