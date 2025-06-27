@@ -85,7 +85,7 @@ real *t_mul (const series u, const series v, int k) {
 void t_div (series q, const series u, const series v, int k) {
     if (!k) CHECK(mpfr_zero_p(v[0]) == 0);
     if (!k) CHECK(q != u && q != v);
-    mpfr_sub(q[k], u ? u[k] : (k ? D0 : D1), k ? *_cauchy_(q + k, q, v, k, 0, k - 1) : D0, RND);
+    mpfr_sub(q[k], u ? u[k] : k ? D0 : D1, k ? *_cauchy_(q + k, q, v, k, 0, k - 1) : D0, RND);
     mpfr_div(q[k], q[k], v[0], RND);
 }
 
