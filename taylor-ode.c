@@ -94,7 +94,7 @@ void t_rec (series r, const series v, int k) {
 }
 
 static real *_half_ (real *_, const series a, int k, int k0, bool even) {
-    mpfr_mul_2si(*_, *_cauchy_(_, a, a, k, k0, (even ? k - 1 : k - 2) / 2), 1, RND);
+    mpfr_mul_2si(*_, *_cauchy_(_, a, a, k, k0, (k - (even ? 1 : 2)) / 2), 1, RND);
     if (!even) mpfr_fma(*_, a[k / 2], a[k / 2], *_, RND);
     return _;
 }
