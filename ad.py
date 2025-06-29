@@ -67,7 +67,7 @@ def t_mul(u, v, k):
 
 def t_div(q, u, v, k):
     assert v[0] != 0.0
-    q[k] = (u[k] if u else 1.0) if k == 0 else (u[k] if u else 0.0) - _cauchy_(q, v, k, 0, k - 1)
+    q[k] = (u[k] if u else (1.0 if k == 0 else 0.0)) - _cauchy_(q, v, k, 0, k - 1)
     return q[k] / v[0]
 
 def t_rec(r, v, k):
