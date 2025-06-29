@@ -122,7 +122,7 @@ real t_mul (const series u, const series v, int k) {
 
 real t_div (series q, const series u, const series v, int k) {
     CHECK(v[0] != 0.0L); CHECK(q != u && q != v);
-    return q[k] = (!k ? (u ? u[k] : 1.0L) : (u ? u[k] : 0.0L) - _cauchy_(q, v, k, 0, k - 1)) / v[0];
+    return q[k] = ((u ? u[k] : k ? 0.0L : 1.0L) - _cauchy_(q, v, k, 0, k - 1)) / v[0];
 }
 
 real t_rec (series r, const series v, int k) {
