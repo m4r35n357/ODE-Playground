@@ -102,11 +102,6 @@ real t_sqr (const series U, int k);
 real t_div (series QUOT, const series U, const series W, int k);
 
 /*
- * Returns kth element of 1 / W, results stored in QUOT
- */
-real t_rec (series QUOT, const series W, int k);
-
-/*
  * Returns kth element of the square root of U, results stored in ROOT
  */
 real t_sqrt (series ROOT, const series U, int k);

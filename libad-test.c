@@ -27,7 +27,7 @@ static series ad_mul (series p, const series u, const series v) { for (int k = 0
 
 static series ad_div (series q, const series u, const series v) { for (int k = 0; k < n; k++) t_div(q, u, v, k); return q; }
 
-static series ad_rec (series r, const series v) { for (int k = 0; k < n; k++) t_rec(r, v, k); return r; }
+static series ad_rec (series r, const series v) { for (int k = 0; k < n; k++) t_div(r, NULL, v, k); return r; }
 
 static series ad_sqr (series s, const series u) { for (int k = 0; k < n; k++) s[k] = t_sqr(u, k); return s; }
 
