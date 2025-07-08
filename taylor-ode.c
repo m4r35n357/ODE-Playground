@@ -91,10 +91,6 @@ void t_div (series q, const series u, const series v, int k) {
     mpfr_div(q[k], q[k], v[0], RND);
 }
 
-void t_rec (series r, const series v, int k) {
-    t_div(r, NULL, v, k);
-}
-
 static real *_half_ (real *_, const series a, int k, int k0, bool even) {
     mpfr_mul_2si(*_, *_cauchy_(_, a, a, k, k0, (k - (even ? 1 : 2)) / 2), 1, RND);
     if (!even) mpfr_fma(*_, a[k / 2], a[k / 2], *_, RND);

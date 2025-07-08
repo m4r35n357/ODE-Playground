@@ -87,14 +87,9 @@ real *t_mul (const series U, const series V, const int k);
 real *t_sqr (const series U, int k);
 
 /*
- * Calculates kth element of U / V, results stored in QUOT
+ * Calculates kth element of U / V, (or 1 / V if U NULL), results stored in QUOT
  */
 void t_div (series QUOT, const series U, const series V, int k);
-
-/*
- * Calculates kth element of 1 / V, results stored in REC,
- */
-void t_rec (series REC, const series V, int k);
 
 /*
  * Calculates kth element of the square root of U, results stored in ROOT

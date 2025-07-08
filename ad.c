@@ -57,7 +57,7 @@ series ad_div (series q, series u, series v) {
 
 series ad_rec (series r, series v) {
     for (int k = 0; k < order; k++) {
-        t_rec(r, v, k);
+        t_div(r, NULL, v, k);
     }
     return r;
 }
