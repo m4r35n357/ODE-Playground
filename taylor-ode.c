@@ -128,7 +128,7 @@ real t_div (series q, const series u, const series v, int k) {
 }
 
 static real _half_ (const series a, int k, int k0, bool even) {
-    return 2.0L * _cauchy_(a, a, k, k0, (even ? k - 1 : k - 2) / 2) + (even ? 0.0L : SQR(a[k / 2]));
+    return 2.0L * _cauchy_(a, a, k, k0, (k - (even ? 1 : 2)) / 2) + (even ? 0.0L : SQR(a[k / 2]));
 }
 
 real t_sqr (const series u, int k) {
