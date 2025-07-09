@@ -12,8 +12,7 @@ Since last update:
 branch | contents
 ----------|-----------
 master | MPFR/c99 code for TSM
-pure_c | Pure c99 code for TSM & RK4, plus symplectic integration and dual numbers for Hamiltonians
-pure_c_python | all the above, plus Python TSM/RK4, plotters, and interactive solvers/plotters for IPython
+python | all the above, plus Python TSM/RK4, plotters, and interactive solvers/plotters for IPython
 
 The arc/ar-functions have been added (and fully tested).
 
