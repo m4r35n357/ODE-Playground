@@ -145,7 +145,7 @@ static real *_chain_ (real *_, const series dfdu, const series u, int k, const s
         mpfr_sub(*_, *fk, *_, RND);
         mpfr_div(*_, *_, dfdu[0], RND);
     }
-    return _;  //  _ is f[k] if fk is NULL (forward), or u[k] if fk is non-NULL (reverse)
+    return _;  // f[k] if fk NULL (forward), u[k] if non-NULL (reverse)
 }
 
 void t_exp (series e, const series u, int k) {
