@@ -86,7 +86,7 @@ def _analyze_d(model, method, x0, x1, steps, εf, εx, limit, console, debug):
 def _plot_s(model, order, x_min, x_max, steps, y_min, y_max):
     #  Plot the function and its derivatives
     ax1 = pyplot.figure().add_subplot(111)
-    pyplot.grid(b=True, color='0.25', linestyle='-')
+    pyplot.grid(visible=True, color='0.25', linestyle='-')
     ax1.set_xlabel('x.val', color='.2')
     ax1.set_ylabel(f'f(x) and the first {order} derivatives', color='.2')
     ax1.set_xlim(x_min, x_max)
@@ -105,7 +105,7 @@ def _plot_s(model, order, x_min, x_max, steps, y_min, y_max):
 
 def _plot_d(model, x_min, x_max, steps, y_min, y_max):
     ax1 = pyplot.figure().add_subplot(111)
-    pyplot.grid(b=True, color='0.25', linestyle='-')
+    pyplot.grid(visible=True, color='0.25', linestyle='-')
     ax1.set_xlabel('Variable', color='.2')
     ax1.set_ylabel(f'Function value and derivative', color='.2')
     ax1.set_xlim(x_min, x_max)
