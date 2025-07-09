@@ -156,7 +156,7 @@ real t_pwr (series p, const series u, real a, int k) {
 static real _chain_ (const series dfdu, const series u, int k, const series fk, int scale) {
     real _ = 0.0L;
     for (int j = fk ? 1 : 0; j < k; j++) _ += dfdu[j] * (k - j) * u[k - j];
-    return fk ? (*fk - scale * _ / k) / dfdu[0] : scale * _ / k;  //  _ is f[k] if f_k NULL (forward), or u[k] if non-NULL (reverse)
+    return fk ? (*fk - scale * _ / k) / dfdu[0] : scale * _ / k;  // forward if fk NULL, reverse if non-NULL
 }
 
 real t_exp (series e, const series u, int k) {
