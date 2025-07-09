@@ -45,5 +45,5 @@ line_y, = ax.plot([], [], 'y', lw=1, ms=0)
 line_z, = ax.plot([], [], 'c', lw=1, ms=0)
 ax.grid()
 t_data, x_data, y_data, z_data = [], [], [], []
-_ = animation.FuncAnimation(fig, update, data_gen, blit=True, interval=10, repeat=False, init_func=init)
+_ = animation.FuncAnimation(fig, update, data_gen, blit=True, interval=10, repeat=False, init_func=init, cache_frame_data=False)
 plt.show()
