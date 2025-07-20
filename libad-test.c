@@ -7,14 +7,12 @@
 #include <stdlib.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
-#include "ad.h"
 
 static int k_max = 0, dp, n, debug = 0, total = 0, passed = 0, skipped = 0;
 
 static real delta, delta_max, tolerance, D0, D01, D05, D_05, D1, D_1, D2, D_2, D3, D_3;
 
 static void libad_test_init (void) {
-    ad_init(n);
     mpfr_inits(delta, delta_max, NULL);
     mpfr_set_zero(delta_max, 1);
     mpfr_init_set_si(D0, 0, RND);
@@ -33,7 +31,75 @@ static char *name_max = "N/A";
 
 struct Parameters { real a, b, c; };
 
-model *tsm_init_p (int argc, char **argv, int order) { (void)argc; (void)argv; (void)order;
+static series ad_scale (series s, series u, real a) {
+    for (int k = 0; k < n; k++) { mpfr_mul(s[k], u[k], a, RND); } return s;
+}
+
+static series ad_add (series p, series u, series v) {
+    for (int k = 0; k < n; k++) { mpfr_add(p[k], u[k], v[k], RND); } return p;
+}
+
+static series ad_sub (series m, series u, series v) {
+    for (int k = 0; k < n; k++) { mpfr_sub(m[k], u[k], v[k], RND); } return m;
+}
+
+static series ad_abs (series a, series u) {
+    for (int k = 0; k < n; k++) { mpfr_swap(a[k], *t_abs(u, k)); } return a;
+}
+
+static series ad_mul (series p, series u, series v) {
+    for (int k = 0; k < n; k++) { mpfr_swap(p[k], *t_mul(u, v, k)); } return p;
+}
+
+static series ad_div (series q, series u, series v) {
+    for (int k = 0; k < n; k++) { t_div(q, u, v, k); } return q;
+}
+
+static series ad_rec (series r, series v) {
+    for (int k = 0; k < n; k++) { t_div(r, NULL, v, k); } return r;
+}
+
+static series ad_sqr (series s, series u) {
+    for (int k = 0; k < n; k++) { mpfr_swap(s[k], *t_sqr(u, k)); } return s;
+}
+
+static series ad_sqrt (series r, series u) {
+    for (int k = 0; k < n; k++) { t_sqrt(r, u, k); } return r;
+}
+
+static series ad_pwr (series p, series u, real a) {
+    for (int k = 0; k < n; k++) { t_pwr(p, u, a, k); } return p;
+}
+
+static series ad_exp (series e, series u) {
+    for (int k = 0; k < n; k++) { t_exp(e, u, k); } return e;
+}
+
+static void ad_sin_cos (series s, series c, series u, bool trig) {
+    for (int k = 0; k < n; k++) { t_sin_cos(s, c, u, k, trig); }
+}
+
+static void ad_tan_sec2 (series t, series s2, series u, bool trig) {
+    for (int k = 0; k < n; k++) { t_tan_sec2(t, s2, u, k, trig); }
+}
+
+static series ad_ln (series l, series u) {
+    for (int k = 0; k < n; k++) { t_ln(l, u, k); } return l;
+}
+
+static void ad_asin_cos (series as, series du_df, series u, bool trig) {
+    for (int k = 0; k < n; k++) { t_asin_cos(as, du_df, u, k, trig); }
+}
+
+static void ad_acos_sin (series ac, series du_df, series u, bool trig) {
+    for (int k = 0; k < n; k++) { t_acos_sin(ac, du_df, u, k, trig); }
+}
+
+static void ad_atan_sec2 (series at, series du_df, series u, bool trig) {
+    for (int k = 0; k < n; k++) { t_atan_sec2(at, du_df, u, k, trig); }
+}
+
+model *tsm_init_p (int argc, char **argv, int o) { (void)argc; (void)argv; (void)o;
     model *p = malloc(sizeof (model));
     mpfr_init_set_si(p->a, 1, RND);
     mpfr_init_set_si(p->b, 0, RND);

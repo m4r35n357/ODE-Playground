@@ -46,7 +46,7 @@ divergence: divergence.o
 	$(CC) $(CFLAGS) -o $@ $< -lm
 
 
-libad-test: libad-test.o taylor-ode.o ad.o
+libad-test: libad-test.o taylor-ode.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LIB_STD)
 
 tests: libad-test
