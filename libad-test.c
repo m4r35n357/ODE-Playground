@@ -5,7 +5,6 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <mpfr.h>
 #include "taylor-ode.h"
 #include "ad.h"
@@ -217,9 +216,9 @@ int main (int argc, char **argv) {
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "arsinh(sinh(u)) == u"; ad_asin(r1, r2, sinh_u, false); compare(name, r1, u);
-    name = "arcosh(cosh(u)) == |u|"; if (non_zero) {ad_acos(r1, r2, cosh_u, false); compare(name, r1, abs_u);} else skip(name);
-    name = "artanh(tanh(u)) == u"; ad_atan(r1, r2, tanh_u, false); compare(name, r1, u);
+    name = "arsinh(sinh(u)) == u"; ad_asin_cos(r1, r2, sinh_u, false); compare(name, r1, u);
+    name = "arcosh(cosh(u)) == |u|"; if (non_zero) {ad_acos_sin(r1, r2, cosh_u, false); compare(name, r1, abs_u);} else skip(name);
+    name = "artanh(tanh(u)) == u"; ad_atan_sec2(r1, r2, tanh_u, false); compare(name, r1, u);
 
     if (debug) fprintf(stderr, "\n");
 
@@ -232,16 +231,16 @@ int main (int argc, char **argv) {
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "arcsin(sin(u)) == u"; if (lt_pi_2) {ad_asin(r1, r2, sin_u, true); compare(name, r1, u);} else skip(name);
-    name = "arccos(cos(u)) == |u|"; if (non_zero) {ad_acos(r1, r2, cos_u, true); compare(name, r1, abs_u);} else skip(name);
-    name = "arctan(tan(u)) == u"; if (lt_pi_2) {ad_atan(r1, r2, tan_u, true); compare(name, r1, u);} else skip(name);
+    name = "arcsin(sin(u)) == u"; if (lt_pi_2) {ad_asin_cos(r1, r2, sin_u, true); compare(name, r1, u);} else skip(name);
+    name = "arccos(cos(u)) == |u|"; if (non_zero) {ad_acos_sin(r1, r2, cos_u, true); compare(name, r1, abs_u);} else skip(name);
+    name = "arctan(tan(u)) == u"; if (lt_pi_2) {ad_atan_sec2(r1, r2, tan_u, true); compare(name, r1, u);} else skip(name);
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "arsinh(tan(u)) == gd^-1 u"; if (lt_pi_2) {ad_asin(r1, r2, tan_u, false); compare(name, gd_1, r1);} else skip(name);
-    name = "artanh(sin(u)) == gd^-1 u"; ad_atan(r1, r2, sin_u, false); compare(name, gd_1, r1);
-    name = "arcsin(tanh(gd^-1 x)) == u"; if (lt_pi_2) {ad_tan_sec2(r3, r2, gd_1, false); ad_asin(r1, r2, r3, true); compare(name, r1, u);} else skip(name);
-    name = "arctan(sinh(gd^-1 x)) == u"; if (lt_pi_2) {ad_sin_cos(r3, r2, gd_1, false); ad_atan(r1, r2, r3, true); compare(name, r1, u);} else skip(name);
+    name = "arsinh(tan(u)) == gd^-1 u"; if (lt_pi_2) {ad_asin_cos(r1, r2, tan_u, false); compare(name, gd_1, r1);} else skip(name);
+    name = "artanh(sin(u)) == gd^-1 u"; ad_atan_sec2(r1, r2, sin_u, false); compare(name, gd_1, r1);
+    name = "arcsin(tanh(gd^-1 u)) == u"; if (lt_pi_2) {ad_tan_sec2(r3, r2, gd_1, false); ad_asin_cos(r1, r2, r3, true); compare(name, r1, u);} else skip(name);
+    name = "arctan(sinh(gd^-1 u)) == u"; if (lt_pi_2) {ad_sin_cos(r3, r2, gd_1, false); ad_atan_sec2(r1, r2, r3, true); compare(name, r1, u);} else skip(name);
 
     if (debug) fprintf(stderr, "\n");
     fprintf(stderr, "%sTotal%s %d  %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);

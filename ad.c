@@ -109,19 +109,19 @@ series ad_ln (series l, series u) {
     return l;
 }
 
-void ad_asin (series as, series du_df, series u, bool trig) {
+void ad_asin_cos (series as, series du_df, series u, bool trig) {
     for (int k = 0; k < order; k++) {
         t_asin_cos(as, du_df, u, k, trig);
     }
 }
 
-void ad_acos (series ac, series du_df, series u, bool trig) {
+void ad_acos_sin (series ac, series du_df, series u, bool trig) {
     for (int k = 0; k < order; k++) {
         t_acos_sin(ac, du_df, u, k, trig);
     }
 }
 
-void ad_atan (series at, series du_df, series u, bool trig) {
+void ad_atan_sec2 (series at, series du_df, series u, bool trig) {
     for (int k = 0; k < order; k++) {
         t_atan_sec2(at, du_df, u, k, trig);
     }

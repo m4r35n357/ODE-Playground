@@ -84,14 +84,14 @@ series ad_ln (series U, series EXP);
 /*
  * Returns kth elements of arcsin/arsinh (inverse of SIN/SINH), results stored in jets U and COSH
  */
-void ad_asin (series U, series COSH, series SINH, bool trig);
+void ad_asin_cos (series U, series COSH, series SINH, bool trig);
 
 /*
  * Returns kth elements of arccos/arcosh (inverse of COS/COSH), results stored in jets U and SINH
  */
-void ad_acos (series U, series SINH, series COSH, bool trig);
+void ad_acos_sin (series U, series SINH, series COSH, bool trig);
 
 /*
  * Returns kth elements of arctan/artanh (inverse of TAN/TANH), results stored in jets U and SEC2
  */
-void ad_atan (series U, series SEC2, series TAN, bool trig);
+void ad_atan_sec2 (series U, series SEC2, series TAN, bool trig);
