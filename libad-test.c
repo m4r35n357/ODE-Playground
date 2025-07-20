@@ -190,8 +190,8 @@ int main (int argc, char **argv) {
     if (debug) fprintf(stderr, "\n");
 
     name = "sqr(u) * u^-3 == 1 / u"; positive ? compare(name, ad_mul(r1, sqr_u, ad_pwr(r2, u, D_3)), rec_u) : skip(name);
-    name = "sqr(u)^0.5 == |u|"; positive ? compare(name, ad_pwr(r1, sqr_u, D05), abs_u) : skip(name);
-    name = "sqrt(sqr(u) == |u|"; positive ? compare(name, ad_sqrt(r1, sqr_u), abs_u) : skip(name);
+    name = "sqr(u)^0.5 == |u|"; non_zero ? compare(name, ad_pwr(r1, sqr_u, D05), abs_u) : skip(name);
+    name = "sqrt(sqr(u) == |u|"; non_zero ? compare(name, ad_sqrt(r1, sqr_u), abs_u) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
 
