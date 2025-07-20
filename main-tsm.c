@@ -9,7 +9,7 @@ int main (int argc, char **argv) {
     CHECK(argc > 8);
 
     controls *c = tsm_get_c(argc, argv);
-    tsm_out(c, tsm_init(argv, c->order), tsm_init_p(argc, argv, c->order), clock());
+    tsm(c, tsm_init(argv, c->order), tsm_init_p(argc, argv, c->order), clock());
 
     return 0;
 }

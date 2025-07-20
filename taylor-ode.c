@@ -91,7 +91,7 @@ static char _tp_ (series u, real *v_old, char min) {
     return tag;
 }
 
-void tsm_out (controls *c, xyz *_, const model *p, clock_t t0) {
+void tsm (controls *c, xyz *_, const model *p, clock_t t0) {
     real vX = 0.0L, vY = 0.0L, vZ = 0.0L;
     for (int step = 0; step < c->steps; step++) {
         _diff_(_, p, c->order);
