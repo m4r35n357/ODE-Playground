@@ -85,24 +85,17 @@ static void compare (char* name, series a, series b) {
             name_max = name;
             k_max = k;
         }
+        if (! isfinite(delta) || delta_max > tolerance) {
+            fprintf(stderr, "%s FAIL%s %s%s%s\n", RED, NRM, WHT, name, NRM);
+            return;
+        }
         if (debug == 2) {
             if (!k) fprintf(stderr, "\n");
-            if (delta > tolerance) {
-                fprintf(stderr, "  %s%2d  %s% .*Le % .*Le%s  %.1Le%s\n", RED, k, NRM, dp, a[k], dp, b[k], RED, delta, NRM);
-            } else {
-                fprintf(stderr, "  %2d  %s% .*Le % .*Le%s  %.1Le\n", k, GRY, dp, a[k], dp, b[k], NRM, delta);
-            }
+            fprintf(stderr, "  %2d  %s% .*Le % .*Le%s  %.1Le\n", k, GRY, dp, a[k], dp, b[k], NRM, delta);
         }
     }
-    bool failed = delta_max > tolerance;
-    if (debug) {
-        if (failed) {
-            fprintf(stderr, "%s FAIL%s %s%s%s\n", RED, NRM, WHT, name, NRM);
-        } else {
-            fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
-        }
-    }
-    if (!failed) passed++;
+    if (debug) fprintf(stderr, "%s PASS%s %s\n", GRN, NRM, name);
+    passed++;
 }
 
 static void compare_s_d (char* name, series a, dual b) {
