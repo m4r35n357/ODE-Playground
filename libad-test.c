@@ -37,15 +37,15 @@ static series ad_add (series p, series u, series v) { for (int k = 0; k < n; k++
 
 static series ad_sub (series m, series u, series v) { for (int k = 0; k < n; k++) mpfr_sub(m[k], u[k], v[k], RND); return m; }
 
-static series ad_abs (series a, series u) { for (int k = 0; k < n; k++) mpfr_swap(a[k], *t_abs(u, k)); return a; }
+static series ad_abs (series a, series u) { for (int k = 0; k < n; k++) mpfr_set(a[k], *t_abs(u, k), RND); return a; }
 
-static series ad_mul (series p, series u, series v) { for (int k = 0; k < n; k++) mpfr_swap(p[k], *t_mul(u, v, k)); return p; }
+static series ad_mul (series p, series u, series v) { for (int k = 0; k < n; k++) mpfr_set(p[k], *t_mul(u, v, k), RND); return p; }
 
 static series ad_div (series q, series u, series v) { for (int k = 0; k < n; k++) t_div(q, u, v, k); return q; }
 
 static series ad_rec (series r, series v) { for (int k = 0; k < n; k++) t_div(r, NULL, v, k); return r; }
 
-static series ad_sqr (series s, series u) { for (int k = 0; k < n; k++) mpfr_swap(s[k], *t_sqr(u, k)); return s; }
+static series ad_sqr (series s, series u) { for (int k = 0; k < n; k++) mpfr_set(s[k], *t_sqr(u, k), RND); return s; }
 
 static series ad_sqrt (series r, series u) { for (int k = 0; k < n; k++) t_sqrt(r, u, k); return r; }
 
