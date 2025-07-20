@@ -31,73 +31,39 @@ static char *name_max = "N/A";
 
 struct Parameters { real a, b, c; };
 
-static series ad_scale (series s, series u, real a) {
-    for (int k = 0; k < n; k++) { mpfr_mul(s[k], u[k], a, RND); } return s;
-}
+static series ad_scale (series s, series u, real a) { for (int k = 0; k < n; k++) mpfr_mul(s[k], u[k], a, RND); return s; }
 
-static series ad_add (series p, series u, series v) {
-    for (int k = 0; k < n; k++) { mpfr_add(p[k], u[k], v[k], RND); } return p;
-}
+static series ad_add (series p, series u, series v) { for (int k = 0; k < n; k++) mpfr_add(p[k], u[k], v[k], RND); return p; }
 
-static series ad_sub (series m, series u, series v) {
-    for (int k = 0; k < n; k++) { mpfr_sub(m[k], u[k], v[k], RND); } return m;
-}
+static series ad_sub (series m, series u, series v) { for (int k = 0; k < n; k++) mpfr_sub(m[k], u[k], v[k], RND); return m; }
 
-static series ad_abs (series a, series u) {
-    for (int k = 0; k < n; k++) { mpfr_swap(a[k], *t_abs(u, k)); } return a;
-}
+static series ad_abs (series a, series u) { for (int k = 0; k < n; k++) mpfr_swap(a[k], *t_abs(u, k)); return a; }
 
-static series ad_mul (series p, series u, series v) {
-    for (int k = 0; k < n; k++) { mpfr_swap(p[k], *t_mul(u, v, k)); } return p;
-}
+static series ad_mul (series p, series u, series v) { for (int k = 0; k < n; k++) mpfr_swap(p[k], *t_mul(u, v, k)); return p; }
 
-static series ad_div (series q, series u, series v) {
-    for (int k = 0; k < n; k++) { t_div(q, u, v, k); } return q;
-}
+static series ad_div (series q, series u, series v) { for (int k = 0; k < n; k++) t_div(q, u, v, k); return q; }
 
-static series ad_rec (series r, series v) {
-    for (int k = 0; k < n; k++) { t_div(r, NULL, v, k); } return r;
-}
+static series ad_rec (series r, series v) { for (int k = 0; k < n; k++) t_div(r, NULL, v, k); return r; }
 
-static series ad_sqr (series s, series u) {
-    for (int k = 0; k < n; k++) { mpfr_swap(s[k], *t_sqr(u, k)); } return s;
-}
+static series ad_sqr (series s, series u) { for (int k = 0; k < n; k++) mpfr_swap(s[k], *t_sqr(u, k)); return s; }
 
-static series ad_sqrt (series r, series u) {
-    for (int k = 0; k < n; k++) { t_sqrt(r, u, k); } return r;
-}
+static series ad_sqrt (series r, series u) { for (int k = 0; k < n; k++) t_sqrt(r, u, k); return r; }
 
-static series ad_pwr (series p, series u, real a) {
-    for (int k = 0; k < n; k++) { t_pwr(p, u, a, k); } return p;
-}
+static series ad_pwr (series p, series u, real a) { for (int k = 0; k < n; k++) t_pwr(p, u, a, k); return p; }
 
-static series ad_exp (series e, series u) {
-    for (int k = 0; k < n; k++) { t_exp(e, u, k); } return e;
-}
+static series ad_exp (series e, series u) { for (int k = 0; k < n; k++) t_exp(e, u, k); return e; }
 
-static void ad_sin_cos (series s, series c, series u, bool trig) {
-    for (int k = 0; k < n; k++) { t_sin_cos(s, c, u, k, trig); }
-}
+static void ad_sin_cos (series s, series c, series u, bool trig) { for (int k = 0; k < n; k++) t_sin_cos(s, c, u, k, trig); }
 
-static void ad_tan_sec2 (series t, series s2, series u, bool trig) {
-    for (int k = 0; k < n; k++) { t_tan_sec2(t, s2, u, k, trig); }
-}
+static void ad_tan_sec2 (series t, series s2, series u, bool trig) { for (int k = 0; k < n; k++) t_tan_sec2(t, s2, u, k, trig); }
 
-static series ad_ln (series l, series u) {
-    for (int k = 0; k < n; k++) { t_ln(l, u, k); } return l;
-}
+static series ad_ln (series u, series e) { for (int k = 0; k < n; k++) t_ln(u, e, k); return u; }
 
-static void ad_asin_cos (series as, series du_df, series u, bool trig) {
-    for (int k = 0; k < n; k++) { t_asin_cos(as, du_df, u, k, trig); }
-}
+static void ad_asin_cos (series u, series c, series s, bool trig) { for (int k = 0; k < n; k++) t_asin_cos(u, c, s, k, trig); }
 
-static void ad_acos_sin (series ac, series du_df, series u, bool trig) {
-    for (int k = 0; k < n; k++) { t_acos_sin(ac, du_df, u, k, trig); }
-}
+static void ad_acos_sin (series u, series s, series c, bool trig) { for (int k = 0; k < n; k++) t_acos_sin(u, s, c, k, trig); }
 
-static void ad_atan_sec2 (series at, series du_df, series u, bool trig) {
-    for (int k = 0; k < n; k++) { t_atan_sec2(at, du_df, u, k, trig); }
-}
+static void ad_atan_sec2 (series u, series s, series t, bool trig) { for (int k = 0; k < n; k++) t_atan_sec2(u, s, t, k, trig); }
 
 model *tsm_init_p (int argc, char **argv, int o) { (void)argc; (void)argv; (void)o;
     model *p = malloc(sizeof (model));
@@ -237,8 +203,11 @@ int main (int argc, char **argv) {
     ad_ln(gd_1, ad_abs(r3, ad_div(r2, ad_add(r1, sin_u, S1), cos_u)));
 
     char* name = "u * u == sqr(u)"; compare(name, ad_mul(r1, u, u), sqr_u);
-    name = "sqr(u) / u == u"; non_zero ? compare(name, ad_div(r1, sqr_u, u), u) : skip(name);
+    name = "u / u == 1"; non_zero ? compare(name, ad_div(r1, u, u), S1) : skip(name);
     name = "u * (1 / u) == 1"; non_zero ? compare(name, ad_mul(r1, u, rec_u), S1) : skip(name);
+    name = "sqr(u) / u == u"; non_zero ? compare(name, ad_div(r1, sqr_u, u), u) : skip(name);
+    name = "sqr(u) * (1 / u) == u"; non_zero ? compare(name, ad_mul(r1, sqr_u, rec_u), u) : skip(name);
+
     name = "sqrt(u) * sqrt(u) == u"; positive ? compare(name, ad_mul(r1, sqrt_u, sqrt_u), u) : skip(name);
     name = "u / sqrt(u) == sqrt(u)"; positive ? compare(name, ad_div(r1, u, sqrt_u), sqrt_u) : skip(name);
 
