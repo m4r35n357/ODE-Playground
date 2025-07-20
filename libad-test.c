@@ -9,9 +9,22 @@
 #include "taylor-ode.h"
 #include "dual.h"
 
-static int dp, n, debug = 0, total = 0, passed = 0, skipped = 0;
+static int k_max = 0, dp, n, debug = 0, total = 0, passed = 0, skipped = 0;
 
-static real tolerance;
+static real delta, delta_max, tolerance;
+
+real D0 = 0.0L;
+real D01 = 0.1L;
+real D05 = 0.5L;
+real D_05 = -0.5L;
+real D1 = 1.0L;
+real D2 = 2.0L;
+real D3 = 3.0L;
+real D_1 = -1.0L;
+real D_2 = -2.0L;
+real D_3 = -3.0L;
+
+static char *name_max = "N/A";
 
 struct Parameters { real a, b, c; };
 
@@ -64,12 +77,13 @@ static void skip (char* name) {
 }
 
 static void compare (char* name, series a, series b) {
-    real delta_max = 0.0L;
     total++;
     for (int k = 0; k < n; k++) {
-        real delta = fabsl(a[k] - b[k]);
+        delta = fabsl(a[k] - b[k]);
         if (delta > delta_max) {
             delta_max = delta;
+            name_max = name;
+            k_max = k;
         }
         if (debug == 2) {
             if (!k) fprintf(stderr, "\n");
@@ -206,41 +220,41 @@ int main (int argc, char **argv) {
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "u^2.0 == sqr(u)"; positive ? compare(name, ad_pwr(r1, u, 2.0L), sqr_u) : skip(name);
-    name = "u^1.0 == u"; positive ? compare(name, ad_pwr(r1, u, 1.0L), u) : skip(name);
-    name = "u^0.5 == sqrt(u)"; positive ? compare(name, ad_pwr(r1, u, 0.5L), sqrt_u): skip(name);
-    name = "u^0.0 == 1"; positive ? compare(name, ad_pwr(r1, u, 0.0L), S1) : skip(name);
-    name = "u^-0.5 == 1 / sqrt(u)"; positive ? compare(name, ad_pwr(r1, u, -0.5L), ad_rec(r2, sqrt_u)) : skip(name);
-    name = "u^-1.0 == 1 / u"; positive ? compare(name, ad_pwr(r1, u, -1.0L), rec_u) : skip(name);
-    name = "u^-2.0 == 1 / sqr(u)"; positive ? compare(name, ad_pwr(r1, u, -2.0L), ad_rec(r2, sqr_u)) : skip(name);
+    name = "u^2.0 == sqr(u)"; positive ? compare(name, ad_pwr(r1, u, D2), sqr_u) : skip(name);
+    name = "u^1.0 == u"; positive ? compare(name, ad_pwr(r1, u, D1), u) : skip(name);
+    name = "u^0.5 == sqrt(u)"; positive ? compare(name, ad_pwr(r1, u, D05), sqrt_u): skip(name);
+    name = "u^0.0 == 1"; positive ? compare(name, ad_pwr(r1, u, D0), S1) : skip(name);
+    name = "u^-0.5 == 1 / sqrt(u)"; positive ? compare(name, ad_pwr(r1, u, D_05), ad_rec(r2, sqrt_u)) : skip(name);
+    name = "u^-1.0 == 1 / u"; positive ? compare(name, ad_pwr(r1, u, D_1), rec_u) : skip(name);
+    name = "u^-2.0 == 1 / sqr(u)"; positive ? compare(name, ad_pwr(r1, u, D_2), ad_rec(r2, sqr_u)) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "sqr(u) * u^-3 == 1 / u"; positive ? compare(name, ad_mul(r1, sqr_u, ad_pwr(r2, u, -3.0L)), rec_u) : skip(name);
-    name = "sqr(u)^0.5 == |u|"; non_zero ? compare(name, ad_pwr(r1, sqr_u, 0.5L), abs_u) : skip(name);
+    name = "sqr(u) * u^-3 == 1 / u"; positive ? compare(name, ad_mul(r1, sqr_u, ad_pwr(r2, u, D_3)), rec_u) : skip(name);
+    name = "sqr(u)^0.5 == |u|"; non_zero ? compare(name, ad_pwr(r1, sqr_u, D05), abs_u) : skip(name);
     name = "sqrt(sqr(u) == |u|"; non_zero ? compare(name, ad_sqrt(r1, sqr_u), abs_u) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
 
     name = "ln(e^u) == u"; compare(name, ad_ln(r1, exp_u), u);
-    name = "ln(sqr(u)) == ln(u) * 2"; positive ? compare(name, ad_ln(r1, sqr_u), ad_scale(r2, ln_u, 2.0L)) : skip(name);
-    name = "ln(sqrt(u)) == ln(u) / 2"; positive ? compare(name, ad_ln(r1, sqrt_u), ad_scale(r2, ln_u, 0.5L)) : skip(name);
-    name = "ln(1 / u) == -ln(u)"; positive ? compare(name, ad_ln(r1, rec_u), ad_scale(r2, ln_u, -1.0L)) : skip(name);
-    name = "ln(u^-3) == -3ln(u)"; positive ? compare(name, ad_ln(r1, ad_pwr(r2, u, -3.0L)), ad_scale(r3, ln_u, -3.0L)) : skip(name);
+    name = "ln(sqr(u)) == ln(u) * 2"; positive ? compare(name, ad_ln(r1, sqr_u), ad_scale(r2, ln_u, D2)) : skip(name);
+    name = "ln(sqrt(u)) == ln(u) / 2"; positive ? compare(name, ad_ln(r1, sqrt_u), ad_scale(r2, ln_u, D05)) : skip(name);
+    name = "ln(1 / x) == -ln(u)"; positive ? compare(name, ad_ln(r1, rec_u), ad_scale(r2, ln_u, D_1)) : skip(name);
+    name = "ln(u^-3) == -3ln(u)"; positive ? compare(name, ad_ln(r1, ad_pwr(r2, u, D_3)), ad_scale(r3, ln_u, D_3)) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "cosh^2(u) == 1 + sinh^2(u)"; compare(name, cosh2_u, ad_add(r1, S1, sinh2_u));
-    name = "sech^2(u) == 1 - tanh^2(u)"; compare(name, sech2_u, ad_sub(r1, S1, ad_sqr(tanh2_u, tanh_u)));
+    name = "cosh^2(u) - sinh^2(u) == 1"; compare(name, ad_sub(r1, cosh2_u, sinh2_u), S1);
+    name = "sech^2(u) + tanh^2(u) == 1"; compare(name, ad_add(r1, sech2_u, ad_sqr(tanh2_u, tanh_u)), S1);
     name = "tanh(u) == sinh(u) / cosh(u)"; compare(name, tanh_u, ad_div(r1, sinh_u, cosh_u));
     name = "sech^2(u) == 1 / cosh^2(u)"; compare(name, sech2_u, ad_rec(r1, cosh2_u));
-    name = "sinh(2u) == 2 * sinh(u) * cosh(u)"; compare(name, sinh_2u, ad_scale(r1, ad_mul(r2, sinh_u, cosh_u), 2.0L));
+    name = "sinh(2u) == 2 * sinh(u) * cosh(u)"; compare(name, sinh_2u, ad_scale(r1, ad_mul(r2, sinh_u, cosh_u), D2));
     name = "cosh(2u) == cosh^2(u) + sinh^2(u)"; compare(name, cosh_2u, ad_add(r1, cosh2_u, sinh2_u));
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "cosh(u) == (e^u + e^-u) / 2"; compare(name, cosh_u, ad_scale(r1, ad_add(r2, exp_u, neg_exp_u), 0.5L));
-    name = "sinh(u) == (e^u - e^-u) / 2"; compare(name, sinh_u, ad_scale(r1, ad_sub(r2, exp_u, neg_exp_u), 0.5L));
+    name = "cosh(u) == (e^u + e^-u) / 2"; compare(name, cosh_u, ad_scale(r1, ad_add(r2, exp_u, neg_exp_u), D05));
+    name = "sinh(u) == (e^u - e^-u) / 2"; compare(name, sinh_u, ad_scale(r1, ad_sub(r2, exp_u, neg_exp_u), D05));
 
     if (debug) fprintf(stderr, "\n");
 
@@ -250,11 +264,11 @@ int main (int argc, char **argv) {
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "cos^2(u) == 1 - sin^2(u)"; compare(name, cos2_u, ad_sub(r1, S1, sin2_u));
-    name = "sec^2(u) == 1 + tan^2(u)"; lt_pi_2 ? compare(name, sec2_u, ad_add(r1, S1, ad_sqr(tan2_u, tan_u))) : skip(name);
+    name = "cos^2(u) + sin^2(u) == 1"; compare(name, ad_add(r1, cos2_u, sin2_u), S1);
+    name = "sec^2(u) - tan^2(u) == 1"; lt_pi_2 ? compare(name, ad_sub(r1, sec2_u, ad_sqr(tan2_u, tan_u)), S1) : skip(name);
     name = "tan(u) == sin(u) / cos(u)"; lt_pi_2 ? compare(name, tan_u, ad_div(r1, sin_u, cos_u)) : skip(name);
     name = "sec^2(u) == 1 / cos^2(u)"; lt_pi_2 ? compare(name, sec2_u, ad_rec(r1, cos2_u)) : skip(name);
-    name = "sin(2u) == 2 * sin(u) * cos(u)"; compare(name, sin_2u, ad_scale(r1, ad_mul(r2, sin_u, cos_u), 2.0L));
+    name = "sin(2u) == 2 * sin(u) * cos(u)"; compare(name, sin_2u, ad_scale(r1, ad_mul(r2, sin_u, cos_u), D2));
     name = "cos(2u) == cos^2(u) - sin^2(u)"; compare(name, cos_2u, ad_sub(r1, cos2_u, sin2_u));
 
     if (debug) fprintf(stderr, "\n");
@@ -271,13 +285,13 @@ int main (int argc, char **argv) {
     name = "arctan(sinh(gd^-1 u)) == u"; if (lt_pi_2) {ad_sin_cos(r3, r2, gd_1, false); ad_atan_sec2(r1, r2, r3, true); compare(name, r1, u);} else skip(name);
 
     if (debug) fprintf(stderr, "\n");
-
     fprintf(stderr, "%sTotal%s %d  %sPASSED%s %d", WHT, NRM, total, GRN, NRM, passed);
     if (skipped) fprintf(stderr, "  %sSKIPPED%s %d", YLW, NRM, skipped);
-    if (passed < total - skipped) {
-        fprintf(stderr, "  %sFAILED%s %d\n", RED, NRM, total - passed - skipped);
-        return 1;
+    if (passed == total - skipped) {
+        fprintf(stderr, "\n%sDelta%s %.1Le %s%s%s %sk == %d%s\n", GRY, NRM, delta_max, BLU, name_max, NRM, GRY, k_max, NRM);
+        return 0;
+    } else {
+        fprintf(stderr, "  %sFAILED%s %d\n\n", RED, NRM, total - passed - skipped);
+        return 3;
     }
-    fprintf(stderr, "\n");
-    return 0;
 }
