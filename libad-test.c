@@ -28,39 +28,39 @@ static char *name_max = "N/A";
 
 struct Parameters { real a, b, c; };
 
-static series ad_scale (series s, const series u, real a) { for (int k = 0; k < n; k++) s[k] = u[k] * a; return s; }
+static series ad_scale (series s, series u, real a) { for (int k = 0; k < n; k++) s[k] = u[k] * a; return s; }
 
-static series ad_add (series p, const series u, const series v) { for (int k = 0; k < n; k++) p[k] = u[k] + v[k]; return p; }
+static series ad_add (series p, series u, series v) { for (int k = 0; k < n; k++) p[k] = u[k] + v[k]; return p; }
 
-static series ad_sub (series m, const series u, const series v) { for (int k = 0; k < n; k++) m[k] = u[k] - v[k]; return m; }
+static series ad_sub (series m, series u, series v) { for (int k = 0; k < n; k++) m[k] = u[k] - v[k]; return m; }
 
-static series ad_abs (series a, const series u) { for (int k = 0; k < n; k++) a[k] = t_abs(u, k); return a; }
+static series ad_abs (series a, series u) { for (int k = 0; k < n; k++) a[k] = t_abs(u, k); return a; }
 
-static series ad_mul (series p, const series u, const series v) { for (int k = 0; k < n; k++) p[k] = t_mul(u, v, k); return p; }
+static series ad_mul (series p, series u, series v) { for (int k = 0; k < n; k++) p[k] = t_mul(u, v, k); return p; }
 
-static series ad_div (series q, const series u, const series v) { for (int k = 0; k < n; k++) t_div(q, u, v, k); return q; }
+static series ad_div (series q, series u, series v) { for (int k = 0; k < n; k++) t_div(q, u, v, k); return q; }
 
-static series ad_rec (series r, const series v) { for (int k = 0; k < n; k++) t_div(r, NULL, v, k); return r; }
+static series ad_rec (series r, series v) { for (int k = 0; k < n; k++) t_div(r, NULL, v, k); return r; }
 
-static series ad_sqr (series s, const series u) { for (int k = 0; k < n; k++) s[k] = t_sqr(u, k); return s; }
+static series ad_sqr (series s, series u) { for (int k = 0; k < n; k++) s[k] = t_sqr(u, k); return s; }
 
-static series ad_sqrt (series r, const series u) { for (int k = 0; k < n; k++) t_sqrt(r, u, k); return r; }
+static series ad_sqrt (series r, series u) { for (int k = 0; k < n; k++) t_sqrt(r, u, k); return r; }
 
-static series ad_exp (series e, const series u) { for (int k = 0; k < n; k++) t_exp(e, u, k); return e; }
+static series ad_pwr (series p, series u, real a) { for (int k = 0; k < n; k++) t_pwr(p, u, a, k); return p; }
 
-static void ad_sin_cos (series s, series c, const series u, bool trig) { for (int k = 0; k < n; k++) t_sin_cos(s, c, u, k, trig); }
+static series ad_exp (series e, series u) { for (int k = 0; k < n; k++) t_exp(e, u, k); return e; }
 
-static void ad_tan_sec2 (series t, series s2, const series u, bool trig) { for (int k = 0; k < n; k++) t_tan_sec2(t, s2, u, k, trig); }
+static void ad_sin_cos (series s, series c, series u, bool trig) { for (int k = 0; k < n; k++) t_sin_cos(s, c, u, k, trig); }
+
+static void ad_tan_sec2 (series t, series s2, series u, bool trig) { for (int k = 0; k < n; k++) t_tan_sec2(t, s2, u, k, trig); }
 
 static series ad_ln (series u, series e) { for (int k = 0; k < n; k++) t_ln(u, e, k); return u; }
 
-static void ad_asin_cos (series u, series c, const series s, bool trig) { for (int k = 0; k < n; k++) t_asin_cos(u, c, s, k, trig); }
+static void ad_asin_cos (series u, series c, series s, bool trig) { for (int k = 0; k < n; k++) t_asin_cos(u, c, s, k, trig); }
 
-static void ad_acos_sin (series u, series s, const series c, bool trig) { for (int k = 0; k < n; k++) t_acos_sin(u, s, c, k, trig); }
+static void ad_acos_sin (series u, series s, series c, bool trig) { for (int k = 0; k < n; k++) t_acos_sin(u, s, c, k, trig); }
 
-static void ad_atan_sec2 (series u, series s, const series t, bool trig) { for (int k = 0; k < n; k++) t_atan_sec2(u, s, t, k, trig); }
-
-static series ad_pwr (series p, const series u, real a) { for (int k = 0; k < n; k++) t_pwr(p, u, a, k); return p; }
+static void ad_atan_sec2 (series u, series s, series t, bool trig) { for (int k = 0; k < n; k++) t_atan_sec2(u, s, t, k, trig); }
 
 triplet ode (series x, series y, series z, const model *p, int k) {
     return (triplet) {
