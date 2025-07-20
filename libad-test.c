@@ -166,7 +166,7 @@ int main (int argc, char **argv) {
     if (lt_pi_2) ad_tan_sec2(tan_u, sec2_u, u, true);
     ad_sqr(sin2_u, sin_u);
     ad_sqr(cos2_u, cos_u);
-    ad_sin_cos(sin_2u, cos_2u, ad_scale(r1, u, 2.0L), true);
+    ad_sin_cos(sin_2u, cos_2u, ad_scale(r1, u, D2), true);
     series sinh_u = tsm_jet(n), cosh_u = tsm_jet(n), tanh_u = tsm_jet(n), sech2_u = tsm_jet(n);
     series asinh_u = tsm_jet(n), acosh_u = tsm_jet(n), atanh_u = tsm_jet(n);
     series sinh2_u = tsm_jet(n), cosh2_u = tsm_jet(n), tanh2_u = tsm_jet(n), sinh_2u = tsm_jet(n), cosh_2u = tsm_jet(n);
@@ -174,11 +174,11 @@ int main (int argc, char **argv) {
     ad_tan_sec2(tanh_u, sech2_u, u, false);
     ad_sqr(sinh2_u, sinh_u);
     ad_sqr(cosh2_u, cosh_u);
-    ad_sin_cos(sinh_2u, cosh_2u, ad_scale(r1, u, 2.0L), false);
+    ad_sin_cos(sinh_2u, cosh_2u, ad_scale(r1, u, D2), false);
     series sqr_u = tsm_jet(n), exp_u = tsm_jet(n), neg_exp_u = tsm_jet(n), gd_1 = tsm_jet(n);
     ad_sqr(sqr_u, u);
     ad_exp(exp_u, u);
-    ad_exp(neg_exp_u, ad_scale(r1, u, -1.0L));
+    ad_exp(neg_exp_u, ad_scale(r1, u, D_1));
     ad_ln(gd_1, ad_abs(r3, ad_div(r2, ad_add(r1, sin_u, S1), cos_u)));
 
     char* name = "inv(u)"; non_zero ? compare_s_d(name, rec_u, d_rec(ud)) : skip(name);
