@@ -13,8 +13,6 @@ static int k_max = 0, dp, n, debug = 0, total = 0, passed = 0, skipped = 0;
 
 static real delta, delta_max, tolerance, D0, D01, D05, D_05, D1, D_1, D2, D_2, D3, D_3;
 
-static char *name_max = "N/A";
-
 static void libad_test_init (void) {
     ad_init(n);
     mpfr_inits(delta, delta_max, NULL);
@@ -30,6 +28,8 @@ static void libad_test_init (void) {
     mpfr_init_set_si(D_2, -2, RND);
     mpfr_init_set_si(D_3, -3, RND);
 }
+
+static char *name_max = "N/A";
 
 struct Parameters { real a, b, c; };
 
@@ -153,7 +153,7 @@ int main (int argc, char **argv) {
     series sin_u = tsm_jet(n), cos_u = tsm_jet(n), tan_u = tsm_jet(n), sec2_u = tsm_jet(n);
     series sin2_u = tsm_jet(n), cos2_u = tsm_jet(n), tan2_u = tsm_jet(n), sin_2u = tsm_jet(n), cos_2u = tsm_jet(n);
     ad_sin_cos(sin_u, cos_u, u, true);
-    ad_tan_sec2(tan_u, sec2_u, u, true);
+    if (lt_pi_2) ad_tan_sec2(tan_u, sec2_u, u, true);
     ad_sqr(sin2_u, sin_u);
     ad_sqr(cos2_u, cos_u);
     ad_sin_cos(sin_2u, cos_2u, ad_scale(r1, u, D2), true);
