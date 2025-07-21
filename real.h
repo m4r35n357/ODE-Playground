@@ -3,6 +3,7 @@
  */
 #pragma once
 #include <stdbool.h>
+#include <mpfr.h>
 
 /*
  * Default MPFR rounding mode
@@ -50,3 +51,32 @@
         abort(); \
     } \
 } while (0)
+
+/*
+ * Client model data
+ */
+typedef struct Parameters model;
+
+/*
+ * Main floating point type
+ */
+typedef mpfr_t real;
+
+/*
+ * For returning combined values from trig/hyp functions
+ */
+typedef struct pair_m {
+    real *a, *b;
+} pair;
+
+/*
+ * Type for Taylor Series coordinate jets
+ */
+typedef real *series;
+
+/*
+ * For returning x, y, z velocities from the model
+ */
+typedef struct triple_m {
+    real x, y, z;
+} triplet;

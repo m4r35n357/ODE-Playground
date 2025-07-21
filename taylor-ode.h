@@ -10,35 +10,6 @@
 #include "real.h"
 
 /*
- * Client model data
- */
-typedef struct Parameters model;
-
-/*
- * Main floating point type
- */
-typedef mpfr_t real;
-
-/*
- * For returning combined values from trig/hyp functions
- */
-typedef struct pair_m {
-    real *a, *b;
-} pair;
-
-/*
- * Type for Taylor Series coordinate jets
- */
-typedef real *series;
-
-/*
- * For returning x, y, z velocities from the model
- */
-typedef struct triple_m {
-    real x, y, z;
-} triplet;
-
-/*
  * Prints a line of data to stdout
  */
 void _out_ (real x, real y, real z, real step_size, int step, clock_t since);

@@ -5,7 +5,6 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-#include <mpfr.h>
 #include "taylor-ode.h"
 
 static int k_max = 0, dp, n, debug = 0, total = 0, passed = 0, skipped = 0;
