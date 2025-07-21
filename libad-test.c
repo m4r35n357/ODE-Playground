@@ -10,10 +10,10 @@
 
 static int k_max = 0, dp, n, debug = 0, total = 0, passed = 0, skipped = 0;
 
-static real delta, delta_max, tolerance, D0, D01, D05, D_05, D1, D_1, D2, D_2, D3, D_3;
+static real delta, delta_max, tolerance, D0, D01, D05, D_05, D1, D_1, D2, D_2, D3, D_3, PI_2;
 
 static void libad_test_init (void) {
-    mpfr_inits(delta, delta_max, NULL);
+    mpfr_inits(delta, delta_max, PI_2, NULL);
     mpfr_set_zero(delta_max, 1);
     mpfr_init_set_si(D0, 0, RND);
     mpfr_init_set_str(D01, "0.1", BASE, RND);
@@ -25,6 +25,8 @@ static void libad_test_init (void) {
     mpfr_init_set_si(D_1, -1, RND);
     mpfr_init_set_si(D_2, -2, RND);
     mpfr_init_set_si(D_3, -3, RND);
+    mpfr_const_pi(PI_2, RND);
+    mpfr_div_2si(PI_2, PI_2, 1, RND);
 }
 
 static char *name_max = "N/A";
@@ -114,7 +116,6 @@ int main (int argc, char **argv) {
     PRINT_ARGS(argc, argv);
     CHECK(argc == 6 || argc == 7);
 
-    real PI_2;
     dp = (int)strtol(argv[1], NULL, BASE);
     mpfr_set_default_prec((int)strtol(argv[2], NULL, BASE));
     n = (int)strtol(argv[3], NULL, BASE); CHECK(n > 0 && n <=64);
@@ -128,10 +129,6 @@ int main (int argc, char **argv) {
     if (argc == 7) {
         debug = (int)strtol(argv[6], NULL, BASE); CHECK(debug == 0 || debug == 1 || debug == 2);
     }
-
-    mpfr_init(PI_2);
-    mpfr_const_pi(PI_2, RND);
-    mpfr_div_2si(PI_2, PI_2, 1, RND);
 
     fprintf(stderr, "%sHorner Summation ", GRY);
     tsm_init(dp);

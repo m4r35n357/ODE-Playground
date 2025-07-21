@@ -10,15 +10,17 @@
 #include <mpfr.h>
 #include "taylor-ode.h"
 
-static real __, _a, _m, _s, D0, D1;
+static real __, _a, _m, _s, D0, D1, PI_2;
 
 static char format[60];
 
 void tsm_init (int dp) {
     sprintf(format, "%%+.%uRNe %%+.%uRNe %%+.%uRNe %%+.9RNe %%.3f\n", dp, dp, dp);
-    mpfr_inits(__, _a, _m, _s, NULL);
+    mpfr_inits(__, _a, _m, _s, PI_2, NULL);
     mpfr_init_set_si(D0, 0, RND);
     mpfr_init_set_si(D1, 1, RND);
+    mpfr_const_pi(PI_2, RND);
+    mpfr_div_2si(PI_2, PI_2, 1, RND);
 }
 
 void tsm_get_p (char **argv, int argc, ...) {
@@ -190,6 +192,7 @@ void t_tan_sec2 (series t, series s, const series u, int k, bool trig) {
         _chain_(s + k, t, t, k, NULL, trig ? 2 : -2);
     } else {
         CHECK(t != s && t != u && s != u);
+        CHECK(trig ? mpfr_cmpabs(u[0], PI_2) < 0 : true);
         trig ? mpfr_tan(t[k], u[k], RND) : mpfr_tanh(t[k], u[k], RND);
         trig ? mpfr_sec(s[k], u[k], RND) : mpfr_sech(s[k], u[k], RND);
         mpfr_sqr(s[k], s[k], RND);
