@@ -20,6 +20,13 @@ typedef struct Parameters model;
 typedef mpfr_t real;
 
 /*
+ * For returning combined values from trig/hyp functions
+ */
+typedef struct pair_m {
+    real *a, *b;
+} pair;
+
+/*
  * Type for Taylor Series coordinate jets
  */
 typedef real *series;
@@ -89,49 +96,49 @@ real *t_sqr (const series U, int k);
 /*
  * Calculates kth element of U / V, (or 1 / V if U NULL), results stored in QUOT
  */
-void t_div (series QUOT, const series U, const series V, int k);
+real *t_div (series QUOT, const series U, const series V, int k);
 
 /*
  * Calculates kth element of the square root of U, results stored in ROOT
  */
-void t_sqrt (series ROOT, const series U, int k);
+real *t_sqrt (series ROOT, const series U, int k);
 
 /*
  * Calculates kth element of P = U^a (where a is scalar), results stored in PWR
  */
-void t_pwr (series PWR, series const U, real a, int k);
+real *t_pwr (series PWR, series const U, real a, int k);
 
 /*
  * Calculates kth element of the exponential of U, results stored in EXP
  */
-void t_exp (series EXP, const series U, int k);
-
-/*
- * Calculates kth elements of both sine and cosine of U, results stored in SIN and COS
- */
-void t_sin_cos (series SIN, series COS, const series U, int k, bool trig);
-
-/*
- * Calculates kth elements of both tan(h) and sec(h)^2 of U, results stored in TAN(H) and SEC(H)2
- */
-void t_tan_sec2 (series TAN, series SEC2, const series U, int k, bool trig);
+real *t_exp (series EXP, const series U, int k);
 
 /*
  * Calculates kth element of the logarithm (inverse of EXP), results stored in U
  */
-void t_ln (series U, const series EXP, int k);
+real *t_ln (series U, const series EXP, int k);
+
+/*
+ * Calculates kth elements of both sine and cosine of U, results stored in SIN and COS
+ */
+pair t_sin_cos (series SIN, series COS, const series U, int k, bool trig);
+
+/*
+ * Calculates kth elements of both tan(h) and sec(h)^2 of U, results stored in TAN(H) and SEC(H)2
+ */
+pair t_tan_sec2 (series TAN, series SEC2, const series U, int k, bool trig);
 
 /*
  * Calculates kth elements of arcsin/arsinh (inverse of SIN/SINH), results stored in U and COSH
  */
-void t_asin_cos (series U, series COSH, const series SINH, int k, bool trig);
+pair t_asin_cos (series U, series COSH, const series SINH, int k, bool trig);
 
 /*
  * Calculates kth elements of arccos/arcosh (inverse of COS/COSH), results stored in U and SINH
  */
-void t_acos_sin (series U, series SINH, const series COSH, int k, bool trig);
+pair t_acos_sin (series U, series SINH, const series COSH, int k, bool trig);
 
 /*
  * Calculates kth elements of arctan/artanh (inverse of TAN/TANH), results stored in U and SEC2
  */
-void t_atan_sec2 (series U, series SEC2, const series TAN, int k, bool trig);
+pair t_atan_sec2 (series U, series SEC2, const series TAN, int k, bool trig);
