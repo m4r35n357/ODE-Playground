@@ -228,7 +228,7 @@ int main (int argc, char **argv) {
     name = "ln(e^u) == u"; compare(name, ad_ln(r1, exp_u), u);
     name = "ln(sqr(u)) == ln(u) * 2"; positive ? compare(name, ad_ln(r1, sqr_u), ad_scale(r2, ln_u, D2)) : skip(name);
     name = "ln(sqrt(u)) == ln(u) / 2"; positive ? compare(name, ad_ln(r1, sqrt_u), ad_scale(r2, ln_u, D05)) : skip(name);
-    name = "ln(1 / x) == -ln(u)"; positive ? compare(name, ad_ln(r1, rec_u), ad_scale(r2, ln_u, D_1)) : skip(name);
+    name = "ln(1 / u) == -ln(u)"; positive ? compare(name, ad_ln(r1, rec_u), ad_scale(r2, ln_u, D_1)) : skip(name);
     name = "ln(u^-3) == -3ln(u)"; positive ? compare(name, ad_ln(r1, ad_pwr(r2, u, D_3)), ad_scale(r3, ln_u, D_3)) : skip(name);
 
     if (debug) fprintf(stderr, "\n");
