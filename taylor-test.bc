@@ -3,7 +3,7 @@ define void init (value) {
     auto s[], c[], s2[]
     x[0] = value
     for (k = 0; k <= n; k++) {
-        if (k > 0) x[k] = - x[k - 1]
+        if (k > 0) x[k] = - x[k - 1] / k
         sincos(s[], c[], x[], 0)
         atansec2(gd[], s2[], s[], 1)
     }
