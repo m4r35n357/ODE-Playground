@@ -5,6 +5,8 @@ define void init (value) {
     for (k = 0; k <= n; k++) {
         if (k > 0) x[k] = - x[k - 1] / k
         xm[k] = - x[k]
+        exp(ep[], x[])
+        exp(em[], xm[])
         sincos(s[], c[], x[], 0)
         atansec2(gd[], s2[], s[], 1)
     }
@@ -123,7 +125,7 @@ define void test_rec_log () {
             rec(r[], x[])
             ln(l1[], x[])
             ln(l2[], r[])
-            print k, "  x: ", x[k], "  ln(x): ", l1[k], "  1/x: ", r[k], "  ln(1/x): ", l2[k], "  delta: ", l2[k] + l1[k], "\n"
+            print k, "  x: ", x[k], "  1/x: ", r[k], "  ln(x): ", l1[k], "  ln(1/x): ", l2[k], "  delta: ", l2[k] + l1[k], "\n"
         }
     }
 }
@@ -154,37 +156,31 @@ define void test_pwr_log (a) {
 }
 
 define void test_exp_sinh () {
-    auto ep[], em[], s[], c[], tmp[]
+    auto s[], c[], tmp[]
     print "\n sinh(x) = 0.5*(e^x-e^-x)\n"
     for (k = 0; k <= n; k++) {
-        exp(ep[], x[])
-        exp(em[], xm[])
-        tmp[k] = 0.5*(ep[k] - em[k])
+        tmp[k] = 0.5 * (ep[k] - em[k])
         sincos(s[], c[], x[], 0)
         print k, "  sinh(x): ", s[k], "  0.5*(e^x-e^-x): ", tmp[k], "  delta: ", s[k] - tmp[k], "\n"
     }
 }
 
 define void test_exp_cosh () {
-    auto ep[], em[], s[], c[], tmp[]
+    auto s[], c[], tmp[]
     print "\n cosh(x) = 0.5*(e^x+e^-x)\n"
     for (k = 0; k <= n; k++) {
-        exp(ep[], x[])
-        exp(em[], xm[])
-        tmp[k] = 0.5*(ep[k] + em[k])
+        tmp[k] = 0.5 * (ep[k] + em[k])
         sincos(s[], c[], x[], 0)
         print k, "  cosh(x): ", c[k], "  0.5*(e^x+e^-x): ", tmp[k], "  delta: ", c[k] - tmp[k], "\n"
     }
 }
 
 define void test_exp_tanh () {
-    auto ep[], em[], t[], s[], tmp[]
+    auto t[], s2[], tmp[]
     print "\n tanh(x) = (e^x-e^-x)/(e^x+e^-x)\n"
     for (k = 0; k <= n; k++) {
-        exp(ep[], x[])
-        exp(em[], xm[])
         tmp[k] = (ep[k] - em[k]) / (ep[k] + em[k])
-        tansec2(t[], s[], x[], 0)
+        tansec2(t[], s2[], x[], 0)
         print k, "  tanh(x): ", t[k], "  (e^x-e^-x)/(e^x+e^-x): ", tmp[k], "  delta: ", t[k] - tmp[k], "\n"
     }
 }
@@ -235,6 +231,6 @@ define void test_gd_1_c () {
         gi1[k] = const(1) + s[k]
         div(gi2[], gi1[], c[])
         ln(gi[], gi2[])
-        print k, "  gd x: ", gd[k], "  ln(sec(gd x) + tan(gd x)): ", gi[k], "  delta: ", gi[k] - x[k], "\n"
+        print k, "  gd x: ", gd[k], "  ln((1 + sin(gd x)) / cos(gd x)) ", gi[k], "  delta: ", gi[k] - x[k], "\n"
     }
 }

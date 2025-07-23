@@ -22,7 +22,7 @@ test_mul_pwr()
 test_sqr_pwr()
 test_sqrt_pwr()
 
-print "\nLog vs Cauchy & pwr()\n"
+print "\nChain vs Cauchy & pwr()\n"
 test_rec_log()
 test_exp_log()
 test_pwr_log(3)
