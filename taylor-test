@@ -28,6 +28,11 @@ test_exp_log()
 test_pwr_log(3)
 test_pwr_log(-0.5)
 
+print "\nExp vs Hyp\n"
+test_exp_sinh()
+test_exp_cosh()
+test_exp_tanh()
+
 print "\nTrig vs Hyp\n"
 test_mixed()
 test_gd_1_a()

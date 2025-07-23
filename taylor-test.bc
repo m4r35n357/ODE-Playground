@@ -4,6 +4,7 @@ define void init (value) {
     x[0] = value
     for (k = 0; k <= n; k++) {
         if (k > 0) x[k] = - x[k - 1] / k
+        xm[k] = - x[k]
         sincos(s[], c[], x[], 0)
         atansec2(gd[], s2[], s[], 1)
     }
@@ -122,7 +123,7 @@ define void test_rec_log () {
             rec(r[], x[])
             ln(l1[], x[])
             ln(l2[], r[])
-            print k, "  ln(x): ", l1[k], "  ln(1/x): ", l2[k], "  delta: ", l2[k] + l1[k], "\n"
+            print k, "  x: ", x[k], "  ln(x): ", l1[k], "  1/x: ", r[k], "  ln(1/x): ", l2[k], "  delta: ", l2[k] + l1[k], "\n"
         }
     }
 }
@@ -149,6 +150,42 @@ define void test_pwr_log (a) {
             ln(l2[], x[])
             print k, "  ln(x^", a, "): ", l1[k], "  ", a, "ln(x): ", a * l2[k], "  delta: ", a * l2[k] - l1[k], "\n"
         }
+    }
+}
+
+define void test_exp_sinh () {
+    auto ep[], em[], s[], c[], tmp[]
+    print "\n sinh(x) = 0.5*(e^x-e^-x)\n"
+    for (k = 0; k <= n; k++) {
+        exp(ep[], x[])
+        exp(em[], xm[])
+        tmp[k] = 0.5*(ep[k] - em[k])
+        sincos(s[], c[], x[], 0)
+        print k, "  sinh(x): ", s[k], "  0.5*(e^x-e^-x): ", tmp[k], "  delta: ", s[k] - tmp[k], "\n"
+    }
+}
+
+define void test_exp_cosh () {
+    auto ep[], em[], s[], c[], tmp[]
+    print "\n cosh(x) = 0.5*(e^x+e^-x)\n"
+    for (k = 0; k <= n; k++) {
+        exp(ep[], x[])
+        exp(em[], xm[])
+        tmp[k] = 0.5*(ep[k] + em[k])
+        sincos(s[], c[], x[], 0)
+        print k, "  cosh(x): ", c[k], "  0.5*(e^x+e^-x): ", tmp[k], "  delta: ", c[k] - tmp[k], "\n"
+    }
+}
+
+define void test_exp_tanh () {
+    auto ep[], em[], t[], s[], tmp[]
+    print "\n tanh(x) = (e^x-e^-x)/(e^x+e^-x)\n"
+    for (k = 0; k <= n; k++) {
+        exp(ep[], x[])
+        exp(em[], xm[])
+        tmp[k] = (ep[k] - em[k]) / (ep[k] + em[k])
+        tansec2(t[], s[], x[], 0)
+        print k, "  tanh(x): ", t[k], "  (e^x-e^-x)/(e^x+e^-x): ", tmp[k], "  delta: ", t[k] - tmp[k], "\n"
     }
 }
 
