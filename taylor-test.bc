@@ -176,10 +176,12 @@ define void test_exp_cosh () {
 }
 
 define void test_exp_tanh () {
-    auto t[], s2[], tmp[]
+    auto t[], s2[], tmp[], tmpa[], tmpb[]
     print "\n tanh(x) = (e^x-e^-x)/(e^x+e^-x)\n"
     for (k = 0; k <= n; k++) {
-        tmp[k] = (ep[k] - em[k]) / (ep[k] + em[k])
+        tmpa[k] = 0.5 * (ep[k] - em[k])
+        tmpb[k] = 0.5 * (ep[k] + em[k])
+        div(tmp[], tmpa[], tmpb[])
         tansec2(t[], s2[], x[], 0)
         print k, "  tanh(x): ", t[k], "  (e^x-e^-x)/(e^x+e^-x): ", tmp[k], "  delta: ", t[k] - tmp[k], "\n"
     }
