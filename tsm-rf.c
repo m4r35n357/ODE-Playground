@@ -22,7 +22,7 @@ model *tsm_init_p (int argc, char **argv, int n) {
     return _;
 }
 
-void ode (triplet *v, series x, series y, series z, const model *_, int k) {
+void ode (triplet *v, series x, series y, series z, const model *_, const int k) {
     //  x' = y(z - 1 + x^2) + Gx
     mpfr_set(_->a[k], *t_sqr(x, k), RND);
     if (!k) mpfr_sub(_->a[k], *t_sqr(x, k), _->D1, RND);
