@@ -18,7 +18,7 @@ model *tsm_init_p (int argc, char **argv, int n) {
     return _;
 }
 
-triplet ode (series x, series y, series z, const model *_, int k) {
+triplet ode (series x, series y, series z, const model *_, const int k) {
     t_tan_sec2(_->tx, _->sx, x, k, false);
     return (triplet) {
         .x = y[k] - x[k],

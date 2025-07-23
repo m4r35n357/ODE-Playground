@@ -16,7 +16,7 @@ model *tsm_init_p (int argc, char **argv, int n) { (void)n;
     return _;
 }
 
-triplet ode (series x, series y, series z, const model *_, int k) {
+triplet ode (series x, series y, series z, const model *_, const int k) {
     return (triplet) {
         .x = - y[k] - z[k],
         .y = x[k] + _->a * y[k],

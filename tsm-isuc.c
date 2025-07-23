@@ -17,7 +17,7 @@ model *tsm_init_p (int argc, char **argv, int n) {
     return _;
 }
 
-triplet ode (series x, series y, series z, const model *_, int k) {
+triplet ode (series x, series y, series z, const model *_, const int k) {
     _->x2py2[k] = t_sqr(x, k) + t_sqr(y, k);
     return (triplet) {
         .x = z[k] - y[k],

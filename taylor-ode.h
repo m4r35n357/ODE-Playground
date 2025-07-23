@@ -66,7 +66,7 @@ model *tsm_init_p (int argc, char **argv, int order);
 /*
  * Calculate kth components of the velocity V, using the ODE model together with the functions below as necessary.
  */
-triplet ode (series X, series Y, series Z, const model *p, int k);
+triplet ode (series X, series Y, series Z, const model *p, const int k);
 
 /*
  * Basic Taylor Series functions
