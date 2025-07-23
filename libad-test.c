@@ -246,8 +246,9 @@ int main (int argc, char **argv) {
 
     if (debug) fprintf(stderr, "\n");
 
-    name = "cosh(u) == (e^u + e^-u) / 2"; compare(name, cosh_u, ad_scale(r1, ad_add(r2, exp_u, neg_exp_u), D05));
+    name = "cosh(u) == (e^u + e^-u) / 2"; compare(name, cosh_u, ad_scale(r1, ad_add(r1, exp_u, neg_exp_u), D05));
     name = "sinh(u) == (e^u - e^-u) / 2"; compare(name, sinh_u, ad_scale(r1, ad_sub(r2, exp_u, neg_exp_u), D05));
+    name = "tanh(u) == (e^u - e^-u) / (e^u + e^-u)"; compare(name, tanh_u, ad_div(r3, ad_sub(r2, exp_u, neg_exp_u), ad_add(r1, exp_u, neg_exp_u)));
 
     if (debug) fprintf(stderr, "\n");
 

@@ -122,6 +122,7 @@ int main (int argc, char **argv) {
 
     name = "cosh(u) == (e^u + e^-u) / 2"; compare(name, cosh_u, d_scale(d_add(exp_u, neg_exp_u), 0.5L));
     name = "sinh(u) == (e^u - e^-u) / 2"; compare(name, sinh_u, d_scale(d_sub(exp_u, neg_exp_u), 0.5L));
+    name = "tanh(u) == (e^u - e^-u) / (e^u + e^-u)"; compare(name, tanh_u, d_div(d_sub(exp_u, neg_exp_u), d_add(exp_u, neg_exp_u)));
 
     if (debug) fprintf(stderr, "\n");
 
