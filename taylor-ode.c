@@ -188,7 +188,7 @@ pair t_sin_cos (series s, series c, const series u, int k, bool trig) {
         CHECK(s != c && s != u && c != u);
         trig ? mpfr_sin_cos(s[k], c[k], u[k], RND) : mpfr_sinh_cosh(s[k], c[k], u[k], RND);
     }
-    return (pair){ .a = s + k, .b = c + k };
+    return (pair){ s + k, c + k };
 }
 
 pair t_tan_sec2 (series t, series s, const series u, int k, bool trig) {
@@ -202,7 +202,7 @@ pair t_tan_sec2 (series t, series s, const series u, int k, bool trig) {
         trig ? mpfr_sec(s[k], u[k], RND) : mpfr_sech(s[k], u[k], RND);
         mpfr_sqr(s[k], s[k], RND);
     }
-    return (pair){ .a = t + k, .b = s + k };
+    return (pair){ t + k, s + k };
 }
 
 pair t_asin_cos (series u, series c, const series s, int k, bool trig) {
@@ -215,7 +215,7 @@ pair t_asin_cos (series u, series c, const series s, int k, bool trig) {
         trig ? mpfr_asin(u[k], s[k], RND) : mpfr_asinh(u[k], s[k], RND);
         trig ?  mpfr_cos(c[k], u[k], RND) :  mpfr_cosh(c[k], u[k], RND);
     }
-    return (pair){ .a = u + k, .b = c + k };
+    return (pair){ u + k, c + k };
 }
 
 pair t_acos_sin (series u, series s, const series c, int k, bool trig) {
@@ -229,7 +229,7 @@ pair t_acos_sin (series u, series s, const series c, int k, bool trig) {
         trig ?  mpfr_sin(s[k], u[k], RND) :  mpfr_sinh(s[k], u[k], RND);
         if (trig) mpfr_neg(s[k], s[k], RND);
     }
-    return (pair){ .a = u + k, .b = s + k };
+    return (pair){ u + k, s + k };
 }
 
 pair t_atan_sec2 (series u, series s, const series t, int k, bool trig) {
@@ -243,5 +243,5 @@ pair t_atan_sec2 (series u, series s, const series t, int k, bool trig) {
         trig ?  mpfr_sec(s[k], u[k], RND) :  mpfr_sech(s[k], u[k], RND);
         mpfr_sqr(s[k], s[k], RND);
     }
-    return (pair){ .a = u + k, .b = s + k };
+    return (pair){ u + k, s + k };
 }
