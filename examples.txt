@@ -2,6 +2,14 @@
 #
 # Some example commands to try . . .
 
+a = Series.get(4, 3.0).var
+print(a)
+print(~(a * a))
+
+b = Dual(3.0).var
+print(b)
+print(b * b)
+
 f = lambda a: a.sinh.atan
 mplot_s(f, x_min=-5, x_max=5, y_min=-5, y_max=5)
 
