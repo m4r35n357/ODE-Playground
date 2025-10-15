@@ -2,9 +2,8 @@
 #  Example: ./zero.py 15 4 0.010 10000 -1.0 0.0 1.0 | ./plotAnimated.py -10 10
 #  (c) 2018-2025 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 import print_args
-from sys import argv, stderr
-from collections import namedtuple
-from ad import Components, Context, tsm, t_mul
+from sys import argv
+from ad import Components, Context, tsm
 
 def tsm_jet(n, value=0.0):
     return [value if isinstance(value, float) else float(value)] + [0.0] * (n - 1)

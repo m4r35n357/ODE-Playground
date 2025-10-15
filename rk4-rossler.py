@@ -2,7 +2,7 @@
 #
 #  (c) 2018-2025 m4r35n357@gmail.com (Ian Smith), for licencing see the LICENCE file
 import print_args
-from sys import argv, stderr
+from sys import argv
 from collections import namedtuple
 from ad import Components, Context, rk4
 
