@@ -16,16 +16,29 @@ def horner(jet, h):
         result = result * h + term
     return result
 
-def _out_(dp, x, y, z, t, cpu):
-    print(f'{x:+.{dp}e} {y:+.{dp}e} {z:+.{dp}e} {t:.5e} _ _ _ {cpu:.5e}')
+def _out_(dp, x, y, z, t, x_tag, y_tag, z_tag, cpu):
+    print(f'{x:+.{dp}e} {y:+.{dp}e} {z:+.{dp}e} {t:.5e} {x_tag} {y_tag} {z_tag} {cpu:.5e}')
+
+def _tp_(u, v, char):
+    tag = '_'
+    product = v[0] * u[1]
+    if u[2] != 0.0 and product != 0.0:
+        if product < 0.0:
+            tag = char if u[2] > 0.0 else char.upper()
+    v[0] = u[1]
+    return tag
 
 def tsm(ode, places, n, h, steps, x0, y0, z0, p):
+    vx = tsm_jet(1, 0.0)
+    vy = tsm_jet(1, 0.0)
+    vz = tsm_jet(1, 0.0)
     x = tsm_jet(n + 1, x0)
     y = tsm_jet(n + 1, y0)
     z = tsm_jet(n + 1, z0)
     t0 = clock_gettime(CLOCK_MONOTONIC)
     for step in range(steps):
-        _out_(places, x[0], y[0], z[0], step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
+        _out_(places, x[0], y[0], z[0], step * h, _tp_(x, vx, 'x'), _tp_(y, vy, 'y'), _tp_(z, vz, 'z'),
+              clock_gettime(CLOCK_MONOTONIC) - t0)
         for k in range(n):
             v = ode(x, y, z, p, k)
             x[k + 1] = v.x / (k + 1)
@@ -34,13 +47,13 @@ def tsm(ode, places, n, h, steps, x0, y0, z0, p):
         x[0] = horner(x, h)
         y[0] = horner(y, h)
         z[0] = horner(z, h)
-    _out_(places, x[0], y[0], z[0], steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
+    _out_(places, x[0], y[0], z[0], steps * h, '_', '_', '_', clock_gettime(CLOCK_MONOTONIC) - t0)
 
 def rk4(ode, places, skip, h, steps, x, y, z, p):
     t0 = clock_gettime(CLOCK_MONOTONIC)
     for step in range(steps):
         if step % skip == 0:
-            _out_(places, x, y, z, step * h, clock_gettime(CLOCK_MONOTONIC) - t0)
+            _out_(places, x, y, z, step * h, '_', '_', '_', clock_gettime(CLOCK_MONOTONIC) - t0)
         k1 = ode(x, y, z, p)
         k2 = ode(x + 0.5 * k1.x * h, y + 0.5 * k1.y * h, z + 0.5 * k1.z * h, p)
         k3 = ode(x + 0.5 * k2.x * h, y + 0.5 * k2.y * h, z + 0.5 * k2.z * h, p)
@@ -48,7 +61,7 @@ def rk4(ode, places, skip, h, steps, x, y, z, p):
         x += h * (k1.x + 2.0 * (k2.x + k3.x) + k4.x) / 6.0
         y += h * (k1.y + 2.0 * (k2.y + k3.y) + k4.y) / 6.0
         z += h * (k1.z + 2.0 * (k2.z + k3.z) + k4.z) / 6.0
-    _out_(places, x, y, z, steps * h, clock_gettime(CLOCK_MONOTONIC) - t0)
+    _out_(places, x, y, z, steps * h, '_', '_', '_', clock_gettime(CLOCK_MONOTONIC) - t0)
 
 def t_const(v, k):
     return v if k == 0 else 0.0
