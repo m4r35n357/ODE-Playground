@@ -22,8 +22,8 @@ def _out_(dp, x, y, z, t, x_tag, y_tag, z_tag, cpu):
 def _tp_(u, v, char):
     tag = '_'
     product = v[0] * u[1]
-    if u[2] != 0.0 and product != 0.0:
-        if product < 0.0:
+    if u[2] != 0.0:
+        if product <= 0.0:
             tag = char if u[2] > 0.0 else char.upper()
     v[0] = u[1]
     return tag
