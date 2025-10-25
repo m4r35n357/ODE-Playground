@@ -14,8 +14,24 @@ cns_plot () {
 set terminal qt
 set key horizontal left
 set title '$args'
-plot '$fileA' using 4:1 t 'X' w l lc 'dark-red', '' u 4:2 t 'Y' w l lc 'dark-red', '' u 4:3 t 'Z' w l lc 'dark-red', \
+set grid back
+set border back
+plot '$fileA' using 4:1 t 'X' w l lc '$better', '' u 4:2 t 'Y' w l lc '$better', '' u 4:3 t 'Z' w l lc '$better', \
      '$fileB' using 4:1 t 'x' w l lc 'forest-green', '' u 4:2 t 'y' w l lc 'dark-yellow', '' u 4:3 t 'z' w l lc 'dark-turquoise'
+pause mouse close
+EOF
+}
+
+plot3d () {
+/usr/bin/gnuplot << EOF
+set terminal qt
+set title '$args'
+set xyplane 0
+set view 54.73561,135
+set xlabel 'X'
+set ylabel 'Y'
+set zlabel 'Z'
+splot '$fileA' with lines lc '$better', '$fileB' with lines lc 'blue'
 pause mouse close
 EOF
 }
@@ -32,4 +48,7 @@ esac
 
 ./divergence.py $fileA $fileB $threshold
 
+better='dark-red'
+
 cns_plot &
+plot3d &
