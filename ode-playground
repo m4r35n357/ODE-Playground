@@ -12,7 +12,7 @@ case $? in
     1) exit;;
 esac
 
-set $choice
+set -- $choice
 model=$1
 analysis=$2
 

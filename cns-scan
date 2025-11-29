@@ -39,7 +39,7 @@ steps=$5
 n=2
 while [ $n -le $max ]
 do
-    set $original
+    set -- $original
     begin="$1 $2"
     shift 3
     current="$begin $n $*"
@@ -50,7 +50,7 @@ do
     case $temp in
         '') echo $n "Still within tolerance of $threshold - increase simulation time?"
             exit 1;;
-         *) set $temp
+         *) set -- $temp
             echo $n $4 $6;;
     esac
     n=$((n + 1))
@@ -58,7 +58,7 @@ done 2>/dev/null | tee $user_data
 
 max_clean=$(echo "scale=2; $timestep * $steps;" | /usr/bin/bc)
 
-set $(tail -1 $user_data)
+set -- $(tail -1 $user_data)
 if [ $(printf "scale=3; $3 > 0.0;\n" | /usr/bin/bc) -eq 1 ]
 then
     max_cpu=$(echo "scale=2; 1.5 * $3;" | /usr/bin/bc)
